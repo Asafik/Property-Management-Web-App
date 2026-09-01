@@ -437,6 +437,139 @@
     z-index: 5;
 }
 
+/* Custom Responsive Modal Sizing (Lega & Nyaman) */
+.modal-custom .modal-dialog,
+.modal-dialog-compact {
+    max-width: 760px !important;
+    width: 92%;
+    margin: 1.5rem auto !important;
+}
+
+#modalSpkUnit .modal-dialog {
+    max-width: 780px !important;
+    width: 92%;
+    margin: 1.5rem auto !important;
+}
+
+.modal-dialog-scrollable {
+    max-height: calc(100vh - 2.5rem) !important;
+}
+
+.modal-dialog-scrollable .modal-content {
+    max-height: calc(100vh - 2.5rem) !important;
+    border-radius: 14px !important;
+    border: none !important;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18) !important;
+}
+
+.modal-header {
+    padding: 1rem 1.25rem !important;
+    border-bottom: 1px solid #f0f2f5 !important;
+}
+
+.modal-body {
+    padding: 1.25rem !important;
+}
+
+.modal-dialog-scrollable .modal-body {
+    max-height: calc(100vh - 11rem) !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    scrollbar-width: thin;
+    scrollbar-color: #da8cff #f1f5f9;
+}
+
+.modal-footer {
+    padding: 0.75rem 1.25rem !important;
+    border-top: 1px solid #f0f2f5 !important;
+}
+
+/* Prevent outer body background scroll when modal is open */
+html.modal-open,
+body.modal-open {
+    overflow: hidden !important;
+    height: 100vh !important;
+    padding-right: 0 !important;
+    touch-action: none;
+}
+
+body.modal-open .container-scroller,
+body.modal-open .main-panel,
+body.modal-open .content-wrapper,
+body.modal-open .page-body-wrapper {
+    overflow: hidden !important;
+    height: 100vh !important;
+}
+
+.modal {
+    padding: 1.25rem 0.5rem !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+}
+
+.modal-dialog-scrollable .modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-dialog-scrollable .modal-body::-webkit-scrollbar-thumb {
+    background: #da8cff;
+    border-radius: 4px;
+}
+
+@media (max-width: 991.98px) {
+    .modal-custom .modal-dialog,
+    .modal-dialog-compact,
+    #modalSpkUnit .modal-dialog {
+        max-width: 94% !important;
+        width: 94% !important;
+        margin: 1rem auto !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .modal {
+        padding: 0.5rem 0.25rem 2rem 0.25rem !important;
+    }
+
+    .modal-dialog-centered {
+        align-items: flex-start !important;
+        min-height: auto !important;
+        margin-top: 0.75rem !important;
+        margin-bottom: 2rem !important;
+    }
+
+    .modal-custom .modal-dialog,
+    .modal-dialog-compact,
+    #modalSpkUnit .modal-dialog {
+        max-width: 96% !important;
+        width: 96% !important;
+        margin: 0.75rem auto 2rem auto !important;
+        max-height: calc(100dvh - 3.5rem) !important;
+        max-height: calc(100vh - 3.5rem) !important;
+    }
+
+    .modal-dialog-scrollable .modal-content {
+        max-height: calc(100dvh - 3.5rem) !important;
+        max-height: calc(100vh - 3.5rem) !important;
+        border-radius: 12px !important;
+    }
+
+    .modal-dialog-scrollable .modal-body {
+        max-height: calc(100dvh - 9.5rem) !important;
+        max-height: calc(100vh - 9.5rem) !important;
+        padding: 0.85rem 0.75rem !important;
+    }
+
+    .modal-header {
+        padding: 0.75rem 0.9rem !important;
+    }
+
+    .modal-footer {
+        padding: 0.6rem 0.85rem !important;
+    }
+}
+
 /* Interactive Siteplan Styles */
 .siteplan-viewer-wrapper {
     background: #f8fafc;
@@ -628,23 +761,19 @@
     <div class="row mb-3 mb-md-4">
         <div class="col-12">
             <div class="card shadow-sm border-0 header-card">
-                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3" style="min-height: 105px;">
+                <div class="card-body p-3 p-md-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                     <div>
                         <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
                             Buat Kavling / Master Unit
                         </h3>
-                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                            Kelola dan pecah unit kavling dari tanah induk yang telah terverifikasi
+                        <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                            Kelola pembagian unit kavling tanah induk
                         </p>
                     </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <a href="{{ route('properti-all') }}" class="btn btn-sm btn-gradient-secondary d-flex align-items-center gap-1 btn-back shadow-sm px-3 py-2">
-                            <i class="mdi mdi-arrow-left" style="font-size: 1rem;"></i>
-                            <span>Kembali</span>
+                    <div>
+                        <a href="{{ route('properti-all') }}" class="btn btn-sm btn-gradient-secondary px-3 py-2" style="border-radius: 6px;">
+                            Kembali
                         </a>
-                        <div class="d-none d-md-block pe-2">
-                            <i class="mdi mdi-pencil-ruler" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -670,48 +799,37 @@
     <div class="row mb-3 mb-md-4">
         <div class="col-12">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex align-items-center gap-2">
-                    <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
-                        <i class="mdi mdi-office-building" style="font-size: 1.1rem;"></i>
-                    </span>
-                    <h5 class="card-title mb-0 fw-bold text-dark">Informasi Tanah Induk</h5>
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h5 class="card-title mb-0 fw-bold text-dark" style="font-size: 1.05rem;">Informasi Tanah Induk</h5>
                 </div>
                 <div class="card-body p-3 p-md-4">
                     <div class="row g-3">
                         <div class="col-sm-6 col-md-3">
-                            <small class="text-muted d-block mb-1">
-                                <i class="mdi mdi-home-outline me-1 text-primary"></i>Nama Tanah / Proyek
-                            </small>
+                            <small class="text-muted d-block mb-1">Nama Tanah</small>
                             <h6 class="fw-bold text-dark mb-0">{{ $land->name ?? '-' }}</h6>
                         </div>
 
                         <div class="col-sm-6 col-md-3">
-                            <small class="text-muted d-block mb-1">
-                                <i class="mdi mdi-ruler-square me-1 text-primary"></i>Luas Total Tanah
-                            </small>
+                            <small class="text-muted d-block mb-1">Luas Total</small>
                             <h6 class="fw-bold text-dark mb-0">{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</h6>
                         </div>
 
                         <div class="col-sm-6 col-md-3">
-                            <small class="text-muted d-block mb-1">
-                                <i class="mdi mdi-chart-arc me-1 text-primary"></i>Sisa Luas Belum Dikavling
-                            </small>
+                            <small class="text-muted d-block mb-1">Sisa Luas</small>
                             <h6 class="fw-bold text-primary mb-0">
                                 {{ number_format($land->remaining_area ?? ($land->area ?? 0), 0, ',', '.') }} m²
                             </h6>
                         </div>
 
                         <div class="col-sm-6 col-md-3">
-                            <small class="text-muted d-block mb-1">
-                                <i class="mdi mdi-gavel me-1 text-primary"></i>Status Legal
-                            </small>
+                            <small class="text-muted d-block mb-1">Status Legalitas</small>
                             @if ($land->legal_status == 'verified')
-                                <span class="badge badge-success px-3 py-1">
-                                    <i class="mdi mdi-check-circle me-1"></i>Terverifikasi
+                                <span class="badge badge-success px-2.5 py-1">
+                                    Terverifikasi
                                 </span>
                             @else
-                                <span class="badge badge-warning px-3 py-1">
-                                    <i class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($land->legal_status ?? 'Pending') }}
+                                <span class="badge badge-warning px-2.5 py-1">
+                                    {{ ucfirst($land->legal_status ?? 'Pending') }}
                                 </span>
                             @endif
                         </div>
@@ -721,11 +839,8 @@
 
                     <div class="row">
                         <div class="col-12">
-                            <small class="text-muted d-block mb-1">
-                                <i class="mdi mdi-map-marker-outline me-1 text-danger"></i>Alamat & Lokasi
-                            </small>
+                            <small class="text-muted d-block mb-1">Lokasi</small>
                             <p class="text-dark mb-0 fw-semibold" style="font-size: 0.88rem;">
-                                <i class="mdi mdi-map-marker text-danger me-1"></i>
                                 {{ $land->address ?? '-' }},
                                 Kel. {{ $land->village ?? '-' }},
                                 Kec. {{ $land->district ?? '-' }},
@@ -744,22 +859,18 @@
     <div class="row mb-3 mb-md-4">
         <div class="col-12">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
-                    <div class="d-flex align-items-center gap-2">
-                        <h5 class="card-title mb-0">
-                            <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Unit Kavling
-                        </h5>
-                    </div>
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 py-3 border-bottom">
+                    <h5 class="card-title mb-0 fw-bold text-dark" style="font-size: 1.05rem;">
+                        Daftar Unit Kavling
+                    </h5>
 
-                    <div class="d-flex align-items-center gap-2">
-                        <button type="button" class="btn btn-sm btn-gradient-info d-flex align-items-center gap-1 shadow-sm text-white" data-bs-toggle="modal" data-bs-target="#modalSpkUnit">
-                            <i class="mdi mdi-file-document-edit text-white" style="font-size: 1rem;"></i>
-                            <span class="text-white">Atur / Terbitkan SPK</span>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <button type="button" class="btn btn-sm btn-gradient-info text-white px-3 py-1.5" data-bs-toggle="modal" data-bs-target="#modalSpkUnit" style="border-radius: 6px;">
+                            Atur SPK
                         </button>
 
-                        <button type="button" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm text-white" data-bs-toggle="modal" data-bs-target="#tambahUnitModal">
-                            <i class="mdi mdi-plus-circle text-white" style="font-size: 1rem;"></i>
-                            <span class="text-white">Tambah Unit Kavling</span>
+                        <button type="button" class="btn btn-sm btn-gradient-primary text-white px-3 py-1.5" data-bs-toggle="modal" data-bs-target="#tambahUnitModal" style="border-radius: 6px;">
+                            + Tambah Unit
                         </button>
                     </div>
                 </div>
@@ -918,9 +1029,11 @@
                                 </div>
                             </form>
                         </div>
-                    </div>                     <!-- Table Data Kavling -->
+                    </div>
+
+                    <!-- Table Data Kavling -->
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0" style="min-width: 1200px;">
+                        <table class="table table-hover align-middle mb-0" style="min-width: 1100px;">
                             <thead>
                                 <tr>
                                     <th class="text-center" style="width: 50px;">No</th>
@@ -933,9 +1046,9 @@
                                     <th>Harga AJB</th>
                                     <th>Hadap</th>
                                     <th>Posisi</th>
-                                    <th class="text-center" style="width: 140px;">SPK / Dokumen</th>
-                                    <th class="text-center" style="width: 110px;">Status</th>
-                                    <th class="text-center" style="width: 130px;">Aksi</th>
+                                    <th class="text-center" style="width: 130px;">SPK</th>
+                                    <th class="text-center" style="width: 100px;">Status</th>
+                                    <th class="text-center" style="width: 120px;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -949,35 +1062,32 @@
                                                 $nomor = $unit->unit_number ?? (explode('.', $unit->unit_code)[1] ?? '-');
                                                 $kodeTampil = $unit->unit_code ?? ($blok . '.' . $nomor);
                                             @endphp
-                                            <div class="d-flex align-items-center gap-2">
-                                                <i class="mdi mdi-home-outline text-primary" style="font-size: 1.1rem;"></i>
-                                                <div>
-                                                    <span class="fw-bold text-dark d-block">{{ $unit->unit_name ?? '-' }}</span>
-                                                    <small class="text-muted">Kode: {{ $kodeTampil }}</small>
-                                                </div>
+                                            <div>
+                                                <span class="fw-bold text-dark d-block">{{ $unit->unit_name ?? '-' }}</span>
+                                                <small class="text-muted">Kode: {{ $kodeTampil }}</small>
                                             </div>
                                         </td>
 
                                         <td>
-                                            <span class="badge bg-light text-dark border">
-                                                <i class="mdi mdi-ruler-square text-warning me-1"></i>{{ number_format($unit->area, 0, ',', '.') }} m²
+                                            <span class="fw-semibold text-dark">
+                                                {{ number_format($unit->area, 0, ',', '.') }} m²
                                             </span>
                                         </td>
 
                                         <td>
-                                            <span class="badge bg-light text-dark border">
-                                                <i class="mdi mdi-home-floor-0 text-info me-1"></i>{{ number_format($unit->building_area ?? 0, 0, ',', '.') }} m²
+                                            <span class="fw-semibold text-dark">
+                                                {{ number_format($unit->building_area ?? 0, 0, ',', '.') }} m²
                                             </span>
                                         </td>
 
                                         <td>
                                             @if (($unit->jenis ?? $unit->type) == 'subsidi')
-                                                <span class="badge badge-success">
-                                                    <i class="mdi mdi-home-assistant me-1"></i>Subsidi - {{ $unit->type ?: '-' }}
+                                                <span class="badge badge-success px-2 py-1">
+                                                    Subsidi - {{ $unit->type ?: '-' }}
                                                 </span>
                                             @else
-                                                <span class="badge badge-primary">
-                                                    <i class="mdi mdi-office-building me-1"></i>Komersil - {{ $unit->type ?: '-' }}
+                                                <span class="badge badge-primary px-2 py-1">
+                                                    Komersil - {{ $unit->type ?: '-' }}
                                                 </span>
                                             @endif
                                         </td>
@@ -1001,15 +1111,11 @@
                                         </td>
 
                                         <td>
-                                            <span class="badge bg-light text-muted border">
-                                                <i class="mdi mdi-compass-outline text-primary me-1"></i>{{ $unit->facing ?? '-' }}
-                                            </span>
+                                            <span class="text-dark">{{ $unit->facing ?? '-' }}</span>
                                         </td>
 
                                         <td>
-                                            <span class="badge bg-light text-muted border">
-                                                <i class="mdi mdi-map-marker-outline text-primary me-1"></i>{{ $unit->position ?? '-' }}
-                                            </span>
+                                            <span class="text-dark">{{ $unit->position ?? '-' }}</span>
                                         </td>
 
                                         <td class="text-center">
@@ -1103,67 +1209,77 @@
 
                                             <!-- Modal Edit Unit -->
                                             <div class="modal fade modal-custom" id="editUnitModal{{ $unit->id }}" tabindex="-1" aria-hidden="true">
-                                                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">
-                                                                <i class="mdi mdi-pencil-circle me-2"></i>Edit Unit Kavling - {{ $unit->unit_code }}
+                                                            <h5 class="modal-title fw-bold text-dark">
+                                                                <i class="mdi mdi-pencil-circle me-1 text-primary"></i>Edit Unit Kavling - {{ $unit->unit_code }}
                                                             </h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                         </div>
-                                                        <div class="modal-body text-start p-4">
+                                                        <div class="modal-body text-start p-3 p-md-4" style="max-height: 65vh; overflow-y: auto;">
                                                             <form action="{{ route('properti.kavling.update', ['unit' => $unit->id]) }}" method="POST" id="formEditUnitManual{{ $unit->id }}" enctype="multipart/form-data">
                                                                 @csrf
                                                                 @method('PUT')
                                                                 
                                                                 <div class="row g-3">
-                                                                    <div class="col-md-3">
-                                                                        <label class="form-label fw-bold small">Blok / Kode</label>
+                                                                    <!-- Baris 1: 2 Kolom Sejajar -->
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Blok / Kode <span class="text-danger">*</span></label>
                                                                         <input type="text" name="block" class="form-control" value="{{ $unit->block }}" placeholder="Contoh: A" required>
                                                                     </div>
-                                                                    <div class="col-md-2">
-                                                                        <label class="form-label fw-bold small">No. Unit</label>
-                                                                        <input type="text" name="unit_number" class="form-control" value="{{ $unit->unit_number }}" placeholder="1" required>
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Nomor Unit <span class="text-danger">*</span></label>
+                                                                        <input type="text" name="unit_number" class="form-control" value="{{ $unit->unit_number }}" placeholder="Contoh: 1" required>
                                                                     </div>
-                                                                    <div class="col-md-3">
-                                                                        <label class="form-label fw-bold small">Jenis Unit</label>
+
+                                                                    <!-- Baris 2: 2 Kolom Sejajar -->
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Nama Unit</label>
+                                                                        <input type="text" name="unit_name" class="form-control" value="{{ $unit->unit_name }}" placeholder="Contoh: Cluster A">
+                                                                    </div>
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Jenis Unit <span class="text-danger">*</span></label>
                                                                         <select name="jenis" class="form-control" required>
                                                                             <option value="">-- Pilih Jenis --</option>
                                                                             <option value="subsidi" {{ ($unit->jenis ?? $unit->type) == 'subsidi' ? 'selected' : '' }}>Subsidi</option>
                                                                             <option value="komersil" {{ ($unit->jenis ?? $unit->type) == 'komersil' ? 'selected' : '' }}>Komersil</option>
                                                                         </select>
                                                                     </div>
-                                                                    <div class="col-md-2">
-                                                                        <label class="form-label fw-bold small">Type</label>
-                                                                        <input type="text" name="type" class="form-control" value="{{ $unit->type }}" placeholder="36/60" required>
-                                                                    </div>
-                                                                    <div class="col-md-2">
-                                                                        <label class="form-label fw-bold small">Nama Unit</label>
-                                                                        <input type="text" name="unit_name" class="form-control" value="{{ $unit->unit_name }}" placeholder="Cluster A">
-                                                                    </div>
 
-                                                                    <div class="col-md-3">
-                                                                        <label class="form-label fw-bold small">Luas Tanah (m²)</label>
+                                                                    <!-- Baris 3: 2 Kolom Sejajar -->
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Type Bangunan <span class="text-danger">*</span></label>
+                                                                        <input type="text" name="type" class="form-control" value="{{ $unit->type }}" placeholder="Contoh: 36/60" required>
+                                                                    </div>
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Luas Tanah (m²) <span class="text-danger">*</span></label>
                                                                         <input type="number" name="area" class="form-control" value="{{ $unit->area }}" placeholder="60" min="1" step="any" required>
                                                                     </div>
-                                                                    <div class="col-md-3">
-                                                                        <label class="form-label fw-bold small">Luas Bangunan (m²)</label>
+
+                                                                    <!-- Baris 4: 2 Kolom Sejajar -->
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Luas Bangunan (m²) <span class="text-danger">*</span></label>
                                                                         <input type="number" name="building_area" class="form-control" value="{{ $unit->building_area }}" placeholder="36" min="1" step="any" required>
                                                                     </div>
-                                                                    <div class="col-md-3">
-                                                                        <label class="form-label fw-bold small">Harga Unit (Rp)</label>
-                                                                        <input type="text" name="price" class="form-control price-format" value="{{ number_format($unit->price ?? 0, 0, ',', '.') }}" placeholder="150.000.000">
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Harga Unit (Rp) <span class="text-danger">*</span></label>
+                                                                        <input type="text" name="price" class="form-control price-format" value="{{ number_format($unit->price ?? 0, 0, ',', '.') }}" placeholder="150.000.000" required>
                                                                     </div>
-                                                                    <div class="col-md-3">
-                                                                        <label class="form-label fw-bold small">Harga IJB (Rp)</label>
+
+                                                                    <!-- Baris 5: 2 Kolom Sejajar -->
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Harga IJB (Rp)</label>
                                                                         <input type="text" name="ijb_price" class="form-control price-format" value="{{ number_format($unit->ijb_price ?? 0, 0, ',', '.') }}" placeholder="150.000.000">
                                                                     </div>
-                                                                    <div class="col-md-4">
-                                                                        <label class="form-label fw-bold small">Harga AJB (Rp)</label>
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Harga AJB (Rp)</label>
                                                                         <input type="text" name="ajb_price" class="form-control price-format" value="{{ number_format($unit->ajb_price ?? 0, 0, ',', '.') }}" placeholder="150.000.000">
                                                                     </div>
-                                                                    <div class="col-md-4">
-                                                                        <label class="form-label fw-bold small">Hadap</label>
+
+                                                                    <!-- Baris 6: 2 Kolom Sejajar -->
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Hadap</label>
                                                                         <select name="facing" class="form-control">
                                                                             <option value="Utara" {{ $unit->facing == 'Utara' ? 'selected' : '' }}>Utara</option>
                                                                             <option value="Selatan" {{ $unit->facing == 'Selatan' ? 'selected' : '' }}>Selatan</option>
@@ -1171,8 +1287,8 @@
                                                                             <option value="Barat" {{ $unit->facing == 'Barat' ? 'selected' : '' }}>Barat</option>
                                                                         </select>
                                                                     </div>
-                                                                    <div class="col-md-4">
-                                                                        <label class="form-label fw-bold small">Posisi</label>
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Posisi</label>
                                                                         <select name="position" class="form-control">
                                                                             <option value="Hook" {{ $unit->position == 'Hook' ? 'selected' : '' }}>Hook</option>
                                                                             <option value="Tengah" {{ $unit->position == 'Tengah' ? 'selected' : '' }}>Tengah</option>
@@ -1180,9 +1296,10 @@
                                                                         </select>
                                                                     </div>
 
+                                                                    <!-- Baris 7: Full Width -->
                                                                     <div class="col-12">
-                                                                        <label class="form-label fw-bold small">Keterangan Tambahan</label>
-                                                                        <input type="text" name="description" class="form-control" value="{{ $unit->description }}" placeholder="Opsional">
+                                                                        <label class="form-label fw-bold small mb-1">Keterangan Tambahan</label>
+                                                                        <input type="text" name="description" class="form-control" value="{{ $unit->description }}" placeholder="Catatan tambahan (opsional)">
                                                                     </div>
                                                                 </div>
                                                             </form>
@@ -1331,24 +1448,18 @@
                     }
                 @endphp
 
-                <div class="card-header bg-white d-flex flex-wrap align-items-center justify-content-between gap-2 py-3">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
-                            <i class="mdi mdi-map" style="font-size: 1.1rem;"></i>
-                        </span>
-                        <div>
-                            <h5 class="card-title mb-0 fw-bold text-dark">Denah Kavling Interaktif</h5>
-                            <small class="text-muted">Siteplan resmi tanah dari Pasca Land Bank & visualisasi blok</small>
-                        </div>
+                <div class="card-header bg-white d-flex flex-wrap align-items-center justify-content-between gap-2 py-3 border-bottom">
+                    <div>
+                        <h5 class="card-title mb-0 fw-bold text-dark" style="font-size: 1.05rem;">Denah & Siteplan</h5>
                     </div>
                     
                     <!-- Tab Switcher Header (Siteplan vs Matriks Blok vs Progress) -->
                     <div class="d-flex align-items-center gap-1 bg-light p-1 rounded-pill border">
                         <button type="button" class="siteplan-tab-btn {{ $hasDenah ? 'active' : '' }}" id="btnTabSiteplan" onclick="switchSiteplanView('siteplan')">
-                            <i class="mdi mdi-image-area me-1"></i>Siteplan Asli
+                            Siteplan Asli
                         </button>
                         <button type="button" class="siteplan-tab-btn {{ !$hasDenah ? 'active' : '' }}" id="btnTabMatriks" onclick="switchSiteplanView('matriks')">
-                            <i class="mdi mdi-grid-large me-1"></i>Matriks Unit
+                            Matriks Unit
                         </button>
                         <button type="button" class="siteplan-tab-btn" id="btnTabProgress" onclick="switchSiteplanView('progress')">
                             <i class="mdi mdi-home-city-outline me-1"></i>Progress Bangunan
@@ -1762,31 +1873,25 @@
 
     <!-- Modal Tambah Unit -->
     <div class="modal fade modal-custom" id="tambahUnitModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="mdi mdi-plus-circle me-2"></i>Tambah Unit Kavling Baru
+                    <h5 class="modal-title fw-bold text-dark">
+                        <i class="mdi mdi-plus-circle me-1 text-primary"></i>Tambah Unit Kavling Baru
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body p-4">
-                    <!-- Tab Switcher -->
-                    <div class="modal-tabs-wrapper">
-                        <ul class="modal-tabs">
-                            <li>
-                                <a class="modal-tab-link active" data-modal-tab="manual">
-                                    <i class="mdi mdi-pencil"></i>
-                                    <span>Manual Satu per Satu</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="modal-tab-link" data-modal-tab="import">
-                                    <i class="mdi mdi-file-excel"></i>
-                                    <span>Import File Excel</span>
-                                </a>
-                            </li>
-                        </ul>
+                <div class="modal-body p-3 p-md-4" style="max-height: 65vh; overflow-y: auto;">
+                    <!-- Tab Switcher as Distinct Buttons -->
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <button type="button" class="btn btn-sm btn-gradient-primary modal-tab-btn active d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm" data-modal-tab="manual" style="border-radius: 8px;">
+                            <i class="mdi mdi-pencil" style="font-size: 0.95rem;"></i>
+                            <span>Manual Satu per Satu</span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary modal-tab-btn d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm" data-modal-tab="import" style="border-radius: 8px; background: #f8f9fa; color: #475569; border-color: #e2e8f0;">
+                            <i class="mdi mdi-file-excel text-success" style="font-size: 0.95rem;"></i>
+                            <span>Import File Excel</span>
+                        </button>
                     </div>
 
                     <!-- Pane Manual -->
@@ -1794,53 +1899,63 @@
                         <form action="{{ route('properti.storeKavling', $land->id) }}" method="POST" id="formTambahUnitManual" enctype="multipart/form-data">
                             @csrf
                             <div class="row g-3">
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold small">Blok / Kode <span class="text-danger">*</span></label>
+                                <!-- Baris 1: 2 Kolom Sejajar -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Blok / Kode <span class="text-danger">*</span></label>
                                     <input type="text" name="block" class="form-control" placeholder="Contoh: A" required>
                                 </div>
-                                <div class="col-md-2">
-                                    <label class="form-label fw-bold small">Nomor <span class="text-danger">*</span></label>
-                                    <input type="text" name="unit_number" class="form-control" placeholder="1" required>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Nomor Unit <span class="text-danger">*</span></label>
+                                    <input type="text" name="unit_number" class="form-control" placeholder="Contoh: 1" required>
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold small">Jenis Unit <span class="text-danger">*</span></label>
+
+                                <!-- Baris 2: 2 Kolom Sejajar -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Nama Unit</label>
+                                    <input type="text" name="unit_name" class="form-control" placeholder="Contoh: Cluster A">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Jenis Unit <span class="text-danger">*</span></label>
                                     <select name="jenis" class="form-control" required>
                                         <option value="">-- Pilih Jenis --</option>
                                         <option value="subsidi">Subsidi</option>
                                         <option value="komersil">Komersil</option>
                                     </select>
                                 </div>
-                                <div class="col-md-2">
-                                    <label class="form-label fw-bold small">Type <span class="text-danger">*</span></label>
-                                    <input type="text" name="type" class="form-control" placeholder="36/60" required>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="form-label fw-bold small">Nama Unit</label>
-                                    <input type="text" name="unit_name" class="form-control" placeholder="Cluster A">
-                                </div>
 
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold small">Luas Tanah (m²) <span class="text-danger">*</span></label>
+                                <!-- Baris 3: 2 Kolom Sejajar -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Type Bangunan <span class="text-danger">*</span></label>
+                                    <input type="text" name="type" class="form-control" placeholder="Contoh: 36/60" required>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Luas Tanah (m²) <span class="text-danger">*</span></label>
                                     <input type="number" name="area" class="form-control" placeholder="60" min="1" step="any" required>
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold small">Luas Bangunan (m²) <span class="text-danger">*</span></label>
+
+                                <!-- Baris 4: 2 Kolom Sejajar -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Luas Bangunan (m²) <span class="text-danger">*</span></label>
                                     <input type="number" name="building_area" class="form-control" placeholder="36" min="1" step="any" required>
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold small">Harga (Rp) <span class="text-danger">*</span></label>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Harga Unit (Rp) <span class="text-danger">*</span></label>
                                     <input type="text" name="price" class="form-control price-format" placeholder="150.000.000" required>
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="form-label fw-bold small">Harga IJB (Rp)</label>
+
+                                <!-- Baris 5: 2 Kolom Sejajar -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Harga IJB (Rp)</label>
                                     <input type="text" name="ijb_price" class="form-control price-format" placeholder="150.000.000">
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold small">Harga AJB (Rp)</label>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Harga AJB (Rp)</label>
                                     <input type="text" name="ajb_price" class="form-control price-format" placeholder="150.000.000">
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold small">Hadap</label>
+
+                                <!-- Baris 6: 2 Kolom Sejajar -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Hadap</label>
                                     <select name="facing" class="form-control">
                                         <option value="Utara">Utara</option>
                                         <option value="Selatan">Selatan</option>
@@ -1848,8 +1963,8 @@
                                         <option value="Barat">Barat</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold small">Posisi</label>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Posisi</label>
                                     <select name="position" class="form-control">
                                         <option value="Hook">Hook</option>
                                         <option value="Tengah" selected>Tengah</option>
@@ -1857,8 +1972,9 @@
                                     </select>
                                 </div>
 
+                                <!-- Baris 7: Full Width -->
                                 <div class="col-12">
-                                    <label class="form-label fw-bold small">Keterangan Tambahan</label>
+                                    <label class="form-label fw-bold small mb-1">Keterangan Tambahan</label>
                                     <input type="text" name="description" class="form-control" placeholder="Catatan tambahan (opsional)">
                                 </div>
                             </div>
@@ -1945,7 +2061,7 @@
 
 <!-- MODAL: ATUR / TERBITKAN SPK KE MULTI-UNIT KAVLING -->
 <div class="modal fade" id="modalSpkUnit" tabindex="-1" aria-labelledby="modalSpkUnitLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content rounded-4 border-0 shadow">
             <div class="modal-header border-bottom py-3">
                 <div class="d-flex align-items-center gap-2">
@@ -1960,7 +2076,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body p-4">
+            <div class="modal-body p-3 p-md-4" style="max-height: 65vh; overflow-y: auto;">
                 <!-- Info Shortcut SPK Lengkap -->
                 <div class="alert alert-info py-2 px-3 small d-flex flex-wrap justify-content-between align-items-center mb-3 border-0 shadow-sm" style="border-radius: 8px;">
                     <div>
@@ -1971,26 +2087,41 @@
                         <i class="mdi mdi-open-in-new me-1"></i>Buka Form SPK Lengkap & Rincian Termin
                     </a>
                 </div>
-
                 <form id="formAssignSpkModal" action="{{ route('properti.kavling.assignSpk', $land->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold small text-dark">Nomor SPK <span class="text-danger">*</span></label>
+                    <div class="row g-3 mb-3">
+                        <!-- Baris 1: 2 Kolom Sejajar -->
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold small text-dark mb-1">Nomor SPK <span class="text-danger">*</span></label>
                             <input type="text" name="no_spk" class="form-control" placeholder="Contoh: SPK/2026/KAV/001" required>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold small text-dark">Nama Kontraktor / Pelaksana <span class="text-danger">*</span></label>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold small text-dark mb-1">Nama Kontraktor / Pelaksana <span class="text-danger">*</span></label>
                             <input type="text" name="kontraktor" class="form-control" placeholder="Contoh: PT. Maju Konstruksi Nusantara" required>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold small text-dark">Upload Berkas SPK (PDF, Opsional)</label>
-                            <input type="file" name="dokumen_spk" class="form-control" accept=".pdf">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold small text-dark">Keterangan / Scope Pekerjaan</label>
+
+                        <!-- Baris 2: Keterangan -->
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-dark mb-1">Keterangan / Scope Pekerjaan</label>
                             <input type="text" name="description" class="form-control" placeholder="Catatan lingkup pekerjaan (opsional)">
+                        </div>
+
+                        <!-- Baris 3: Styled Upload Box untuk Berkas SPK -->
+                        <div class="col-12">
+                            <label class="form-label fw-bold small text-dark mb-1">Upload Berkas Dokumen SPK (PDF)</label>
+                            <div class="upload-dropzone-box py-3 px-3">
+                                <input type="file" id="uploadDokumenSpkInput" name="dokumen_spk" accept=".pdf">
+                                <div class="d-flex align-items-center justify-content-center gap-3">
+                                    <div class="rounded-circle p-2 bg-danger bg-opacity-10 text-danger d-inline-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+                                        <i class="mdi mdi-file-pdf-box" style="font-size: 1.6rem;"></i>
+                                    </div>
+                                    <div class="text-start">
+                                        <span class="fw-bold text-dark d-block" id="dokumenSpkFileName" style="font-size: 0.88rem;">Pilih berkas PDF atau seret ke sini</span>
+                                        <small class="text-muted" style="font-size: 0.76rem;">Format didukung: PDF (Maksimal 10MB)</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1998,24 +2129,32 @@
                     <div class="border rounded-3 p-3 bg-light">
                         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 pb-2 border-bottom">
                             <div>
-                                <h6 class="fw-bold text-dark mb-0">Pilih Unit Kavling yang Termasuk SPK Ini <span class="text-danger">*</span></h6>
+                                <h6 class="fw-bold text-dark mb-0" style="font-size: 0.9rem;">Pilih Unit Kavling yang Termasuk SPK Ini <span class="text-danger">*</span></h6>
                                 <small class="text-muted" id="spkUnitCounter">0 unit kavling dipilih</small>
                             </div>
                             <div class="d-flex align-items-center gap-2">
-                                <button type="button" class="btn btn-xs btn-outline-primary px-2 py-1" id="btnSelectAllSpkUnits" style="font-size: 11px;">
-                                    <i class="mdi mdi-checkbox-multiple-marked-outline me-1"></i>Pilih Semua
+                                <button type="button" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 shadow-sm px-2.5 py-1" id="btnSelectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px;">
+                                    <i class="mdi mdi-checkbox-multiple-marked-outline"></i>
+                                    <span>Pilih Semua</span>
                                 </button>
-                                <button type="button" class="btn btn-xs btn-outline-secondary px-2 py-1" id="btnUnselectAllSpkUnits" style="font-size: 11px;">
-                                    <i class="mdi mdi-checkbox-multiple-blank-outline me-1"></i>Hapus Pilihan
+                                <button type="button" class="btn btn-sm btn-gradient-secondary d-inline-flex align-items-center gap-1 shadow-sm px-2.5 py-1" id="btnUnselectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px;">
+                                    <i class="mdi mdi-checkbox-multiple-blank-outline"></i>
+                                    <span>Hapus Pilihan</span>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Search Unit di Modal -->
+                        <!-- Search Unit di Modal (Sama seperti search tabel) -->
                         <div class="mb-3">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text bg-white border-end-0"><i class="mdi mdi-magnify text-muted"></i></span>
-                                <input type="text" class="form-control border-start-0" id="filterSpkUnitSearch" placeholder="Cari kode unit / nama / tipe...">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="filterSpkUnitSearch"
+                                    placeholder="Cari kode unit / nama / tipe..."
+                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
+                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                    type="button" id="btnSearchSpkUnit" title="Cari"
+                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                </button>
                             </div>
                         </div>
 
@@ -2776,20 +2915,23 @@ $(document).ready(function() {
         $('#filterForm').submit();
     });
 
-    // Tab switching modal
-    $('.modal-tab-link').on('click', function(e) {
+    // Tab switching modal as distinct buttons
+    $('.modal-tab-btn').on('click', function(e) {
         e.preventDefault();
-        $('.modal-tab-link').removeClass('active');
-        $(this).addClass('active');
-
+        $('.modal-tab-btn').removeClass('active btn-gradient-primary btn-gradient-success text-white')
+            .addClass('btn-outline-secondary')
+            .css({'background': '#f8f9fa', 'color': '#475569', 'border-color': '#e2e8f0'});
+        
         var target = $(this).data('modal-tab');
         $('.modal-tab-pane').removeClass('active');
 
         if (target === 'manual') {
+            $(this).addClass('active btn-gradient-primary text-white').removeClass('btn-outline-secondary').css({'background': '', 'color': '', 'border-color': ''});
             $('#modal-manual-pane').addClass('active');
             $('#btnSubmitManual').removeClass('d-none');
             $('#btnSubmitImport').addClass('d-none');
         } else {
+            $(this).addClass('active btn-gradient-success text-white').removeClass('btn-outline-secondary').css({'background': '', 'color': '', 'border-color': ''});
             $('#modal-import-pane').addClass('active');
             $('#btnSubmitManual').addClass('d-none');
             $('#btnSubmitImport').removeClass('d-none');
@@ -2809,6 +2951,22 @@ $(document).ready(function() {
             $('#fileNameModal').text(file.name);
         } else {
             $('#fileNameModal').text('Pilih atau Drag & Drop file Excel di sini');
+        }
+    });
+
+    // File change SPK PDF
+    $('#uploadDokumenSpkInput').on('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.size > 10 * 1024 * 1024) {
+                Swal.fire('Error', 'Ukuran file PDF maksimal 10MB!', 'error');
+                $(this).val('');
+                $('#dokumenSpkFileName').text('Pilih berkas PDF atau seret ke sini');
+                return;
+            }
+            $('#dokumenSpkFileName').html('<span class="text-primary fw-bold"><i class="mdi mdi-file-pdf me-1 text-danger"></i>' + file.name + '</span>');
+        } else {
+            $('#dokumenSpkFileName').text('Pilih berkas PDF atau seret ke sini');
         }
     });
 

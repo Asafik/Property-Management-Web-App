@@ -51,8 +51,8 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 32px;
-            height: 32px;
+            width: 34px;
+            height: 34px;
             border-radius: 8px;
             border: none;
             transition: all 0.2s ease;
@@ -60,15 +60,37 @@
             cursor: pointer;
         }
 
-        .btn-action.fase1 {
+        .btn-action.create {
             background: linear-gradient(135deg, #da8cff, #9a55ff);
             color: #ffffff !important;
-            box-shadow: 0 2px 5px rgba(154, 85, 255, 0.2);
+            box-shadow: 0 2px 5px rgba(154, 85, 255, 0.25);
         }
 
-        .btn-action.fase1:hover {
+        .btn-action.create i {
+            color: #ffffff !important;
+            font-size: 1.05rem;
+        }
+
+        .btn-action.create:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(154, 85, 255, 0.35);
+            box-shadow: 0 4px 10px rgba(154, 85, 255, 0.4);
+            color: #ffffff !important;
+        }
+
+        .btn-action.locked {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #ffffff !important;
+            box-shadow: 0 2px 5px rgba(245, 158, 11, 0.25);
+        }
+
+        .btn-action.locked i {
+            color: #ffffff !important;
+            font-size: 1.05rem;
+        }
+
+        .btn-action.locked:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
             color: #ffffff !important;
         }
     </style>
@@ -210,9 +232,9 @@
                                     <div class="col-6 mb-2">
                                         <select class="form-control" name="per_page" id="showSelectMobile">
                                             <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 data</option>
-                                            <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 data</option>
-                                            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 data</option>
-                                            <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100 data</option>
+                                            <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25 data</option>
+                                            <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50 data</option>
+                                            <option value="100" {{ request('per_page', 100) == 100 ? 'selected' : '' }}>100 data</option>
                                         </select>
                                     </div>
 
@@ -363,26 +385,25 @@
                                         <td class="text-center">
                                             @if($canCreateKavling)
                                                 <a href="{{ route('properti.buatKavling', ['land_bank_id' => $land->id]) }}"
-                                                   class="btn-action fase1"
+                                                   class="btn-action create"
                                                    data-bs-toggle="tooltip"
-                                                   title="Buat Kavling">
+                                                   title="Buat Unit Kavling">
                                                     <i class="mdi mdi-pencil-ruler"></i>
                                                 </a>
                                             @else
                                                 <button type="button"
-                                                        class="btn-action edit"
-                                                        style="background: #f1f5f9; color: #94a3b8; border: 1px solid #cbd5e1; cursor: pointer;"
+                                                        class="btn-action locked"
                                                         onclick="showLockedKavlingAlert('{{ addslashes($land->name) }}', '{{ $land->id }}', '{{ $land->development_status }}', '{{ $devProgress }}')"
                                                         data-bs-toggle="tooltip"
-                                                        title="Pengolahan lahan belum selesai (Terkunci)">
-                                                    <i class="mdi mdi-lock text-warning"></i>
+                                                        title="Pengolahan lahan belum selesai (Terkunci - Klik info)">
+                                                    <i class="mdi mdi-lock"></i>
                                                 </button>
                                             @endif
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="9" class="text-center text-muted py-4">
+                                        <td colspan="10" class="text-center text-muted py-4">
                                             <i class="mdi mdi-information-outline me-2"></i> Tidak ada data tanah / landbank terverifikasi
                                         </td>
                                     </tr>

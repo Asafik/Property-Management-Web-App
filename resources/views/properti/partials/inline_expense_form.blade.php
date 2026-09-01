@@ -12,7 +12,7 @@
         $priorityMaterials = $masterMaterials->filter(function($item) use ($allowedCategories) {
             return in_array($item->category, $allowedCategories);
         })->groupBy('category');
-        
+
         $otherMaterials = $masterMaterials->filter(function($item) use ($allowedCategories) {
             return !in_array($item->category, $allowedCategories);
         })->groupBy('category');
@@ -34,7 +34,7 @@
             </div>
             <button type="button" class="btn-close" onclick="toggleInlineAddExpense({{ $phase }})"></button>
         </div>
-        
+
         <form action="{{ route('properti.infrastruktur.expense.store', $land->id) }}" method="POST" enctype="multipart/form-data" id="multiExpenseForm_{{ $phase }}">
             @csrf
             <input type="hidden" name="phase" value="{{ $phase }}">
@@ -129,15 +129,15 @@
                                 <td>
                                     <!-- Select Master or Custom Input -->
                                     <div class="d-flex flex-column gap-1">
-                                        <select class="form-select form-select-sm select-master-item-row" onchange="onSelectRowMaterial(this, {{ $phase }}, 0)">
-                                            <option value="">-- Pilih dari Master Barang / Bahan --</option>
+                                        <select class="form-control form-control-sm select2 select-master-item-row" data-phase="{{ $phase }}" data-row-idx="0" onchange="onSelectRowMaterial(this, {{ $phase }}, 0)" style="width: 100%;">
+                                            <option value="">-- Cari / Pilih dari Master Bahan --</option>
                                             @foreach($priorityMaterials as $catName => $items)
                                                 <optgroup label="📂 {{ $catName }}">
                                                     @foreach($items as $mm)
-                                                        <option value="{{ $mm->id }}" 
-                                                                data-name="{{ $mm->name }}" 
-                                                                data-category="{{ $mm->category }}" 
-                                                                data-unit="{{ $mm->unit }}" 
+                                                        <option value="{{ $mm->id }}"
+                                                                data-name="{{ $mm->name }}"
+                                                                data-category="{{ $mm->category }}"
+                                                                data-unit="{{ $mm->unit }}"
                                                                 data-price="{{ $mm->default_price }}">
                                                             {{ $mm->name }} (Rp {{ number_format($mm->default_price, 0, ',', '.') }}/{{ $mm->unit }})
                                                         </option>
@@ -148,10 +148,10 @@
                                                 @foreach($otherMaterials as $catName => $items)
                                                     <optgroup label="📂 {{ $catName }} (Lainnya)">
                                                         @foreach($items as $mm)
-                                                            <option value="{{ $mm->id }}" 
-                                                                    data-name="{{ $mm->name }}" 
-                                                                    data-category="{{ $mm->category }}" 
-                                                                    data-unit="{{ $mm->unit }}" 
+                                                            <option value="{{ $mm->id }}"
+                                                                    data-name="{{ $mm->name }}"
+                                                                    data-category="{{ $mm->category }}"
+                                                                    data-unit="{{ $mm->unit }}"
                                                                     data-price="{{ $mm->default_price }}">
                                                                 {{ $mm->name }} (Rp {{ number_format($mm->default_price, 0, ',', '.') }}/{{ $mm->unit }})
                                                             </option>
@@ -174,7 +174,7 @@
                                     <input type="text" name="items[0][unit]" id="inputUnit_{{ $phase }}_0" class="form-control form-control-sm text-center" placeholder="sak, m3" required>
                                 </td>
                                 <td>
-                                    <input type="number" step="any" name="items[0][unit_price]" id="inputPrice_{{ $phase }}_0" class="form-control form-control-sm text-end" placeholder="0" required oninput="calcMultiRowTotal({{ $phase }}, 0)">
+                                    <input type="text" name="items[0][unit_price]" id="inputPrice_{{ $phase }}_0" class="form-control form-control-sm text-end price-format" placeholder="0" required oninput="calcMultiRowTotal({{ $phase }}, 0)">
                                 </td>
                                 <td>
                                     <input type="text" id="displayRowSubtotal_{{ $phase }}_0" class="form-control form-control-sm text-end fw-bold text-danger bg-light" value="Rp 0" readonly>
@@ -206,10 +206,10 @@
                 @foreach($priorityMaterials as $catName => $items)
                     <optgroup label="📂 {{ $catName }}">
                         @foreach($items as $mm)
-                            <option value="{{ $mm->id }}" 
-                                    data-name="{{ $mm->name }}" 
-                                    data-category="{{ $mm->category }}" 
-                                    data-unit="{{ $mm->unit }}" 
+                            <option value="{{ $mm->id }}"
+                                    data-name="{{ $mm->name }}"
+                                    data-category="{{ $mm->category }}"
+                                    data-unit="{{ $mm->unit }}"
                                     data-price="{{ $mm->default_price }}">
                                 {{ $mm->name }} (Rp {{ number_format($mm->default_price, 0, ',', '.') }}/{{ $mm->unit }})
                             </option>
@@ -220,10 +220,10 @@
                     @foreach($otherMaterials as $catName => $items)
                         <optgroup label="📂 {{ $catName }} (Lainnya)">
                             @foreach($items as $mm)
-                                <option value="{{ $mm->id }}" 
-                                        data-name="{{ $mm->name }}" 
-                                        data-category="{{ $mm->category }}" 
-                                        data-unit="{{ $mm->unit }}" 
+                                <option value="{{ $mm->id }}"
+                                        data-name="{{ $mm->name }}"
+                                        data-category="{{ $mm->category }}"
+                                        data-unit="{{ $mm->unit }}"
                                         data-price="{{ $mm->default_price }}">
                                     {{ $mm->name }} (Rp {{ number_format($mm->default_price, 0, ',', '.') }}/{{ $mm->unit }})
                                 </option>
@@ -242,3 +242,4 @@
         </form>
     </div>
 </div>
+    
