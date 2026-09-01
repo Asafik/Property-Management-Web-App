@@ -354,7 +354,7 @@ class DashboardController extends Controller
         // 4. PROJECT / LAND BANK BREAKDOWN DENGAN PAGINASI
         $projects = LandBank::with(['units.activeBooking'])
             ->latest()
-            ->paginate(3, ['*'], 'project_page')
+            ->paginate(4, ['*'], 'project_page')
             ->withQueryString();
 
         $projects->getCollection()->transform(function($lb) {
