@@ -2695,10 +2695,10 @@
                                 <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
                                     <i class="mdi mdi-credit-card-outline text-primary me-1"></i>Metode Pembayaran <span class="text-danger">*</span>
                                 </label>
-                                <select class="form-control" id="select_purchase_type" name="purchase_type" required style="border: 1.5px solid #e2e8f0; border-radius: 8px; min-height: 42px; font-weight: 600;">
-                                    <option value="cash">Cash Keras</option>
-                                    <option value="cash_tempo">Cash Tempo</option>
-                                    <option value="kpr" selected>KPR</option>
+                                <select class="form-control select2-purchase-type-modal" id="select_purchase_type" name="purchase_type" required style="width: 100%;">
+                                    <option value="kpr" selected>KPR (Kredit Pemilikan Rumah)</option>
+                                    <option value="cash">Cash Keras (Tunai)</option>
+                                    <option value="cash_tempo">Cash Bertahap (Tempo)</option>
                                 </select>
                             </div>
 
@@ -4216,6 +4216,12 @@
                     allowClear: true,
                     width: '100%'
                 });
+
+                $('#select_purchase_type').select2({
+                    dropdownParent: $('#modalCustomer'),
+                    minimumResultsForSearch: Infinity,
+                    width: '100%'
+                });
             });
 
             $('#modalAgency').on('shown.bs.modal', function () {
@@ -4239,6 +4245,12 @@
                 dropdownParent: $('#modalCustomer'),
                 placeholder: '-- Pilih Agency / Agent Yang Membawa --',
                 allowClear: true,
+                width: '100%'
+            });
+
+            $('#select_purchase_type').select2({
+                dropdownParent: $('#modalCustomer'),
+                minimumResultsForSearch: Infinity,
                 width: '100%'
             });
 
