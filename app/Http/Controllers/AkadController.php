@@ -160,9 +160,9 @@ class AkadController extends Controller
                 'request' => $request->all()
             ]);
 
-            // Validasi status pembayaran
-            if (!in_array($booking->status_cash, ['process', 'done'])) {
-                return redirect()->back()->with('error', 'Booking belum lunas.');
+            // Validasi status booking jika ada
+            if ($booking->status === 'cancelled') {
+                return redirect()->back()->with('error', 'Booking ini telah dibatalkan.');
             }
 
             // List tindakan valid
@@ -217,7 +217,7 @@ class AkadController extends Controller
 
                 $filename = time() . '_' . $cleanName . '.' . $extension;
 
-                $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/dokumen_akad';
+                $destination = public_path('uploads/dokumen_akad');
 
                 if (!file_exists($destination)) {
                     mkdir($destination, 0755, true);
@@ -240,7 +240,7 @@ class AkadController extends Controller
 
                 $filename = time() . '_tolak_' . $cleanName . '.' . $extension;
 
-                $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/dokumen_akad';
+                $destination = public_path('uploads/dokumen_akad');
 
                 if (!file_exists($destination)) {
                     mkdir($destination, 0755, true);
