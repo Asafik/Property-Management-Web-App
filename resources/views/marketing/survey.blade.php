@@ -496,17 +496,29 @@
     color: #9a55ff;
 }
 
+.transaksi-file-info {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
 .transaksi-file-info span {
     display: block;
     font-size: 0.85rem;
     font-weight: 700;
     color: #2c2e3f;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .transaksi-file-info small {
     display: block;
     font-size: 0.75rem;
     color: #8b8fa3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* BUTTONS */
@@ -1027,27 +1039,46 @@
                                     <div class="col-md-4">
                                         <div class="transaksi-form-group">
                                             <label class="transaksi-form-label">{{ $label }}</label>
-                                            <div class="transaksi-file-upload">
-                                                <input type="file" name="{{ $field }}"
-                                                    accept=".jpg,.jpeg,.png">
-                                                <div class="transaksi-file-label">
-                                                    <i class="mdi mdi-camera"></i>
-                                                    <div class="transaksi-file-info">
-                                                        <span>{{ $application->$field ? 'Ganti Foto (' . basename($application->$field) . ')' : 'Upload Foto' }}</span>
-                                                        <small>{{ $application->$field ? 'Sudah tersimpan' : 'Format: JPG, PNG' }}</small>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             @if ($application->$field)
                                                 @php
                                                     $photoUrl = file_exists(public_path('uploads/' . $application->$field))
                                                         ? asset('uploads/' . $application->$field)
                                                         : (file_exists(storage_path('app/public/' . $application->$field)) ? asset('storage/' . $application->$field) : asset($application->$field));
                                                 @endphp
-                                                <div class="mt-2 text-center">
-                                                    <a href="{{ $photoUrl }}" target="_blank" class="badge bg-light text-primary border text-decoration-none py-1 px-2" style="font-size: 0.75rem;">
-                                                        <i class="mdi mdi-eye me-1"></i>Lihat Foto Tersimpan
-                                                    </a>
+                                                <div class="p-2.5 px-3 bg-white rounded-3 border d-flex flex-column gap-2" style="border-color: #cbd5e1 !important;">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <div class="rounded-2 bg-success bg-opacity-10 text-success p-1.5 d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+                                                            <i class="mdi mdi-image-check text-success fs-5"></i>
+                                                        </div>
+                                                        <div style="min-width: 0; flex: 1;">
+                                                            <span class="fw-bold text-dark d-block text-truncate survey-file-title" style="font-size: 0.82rem;">Foto Tersimpan</span>
+                                                            <small class="text-success fw-semibold d-block text-truncate survey-file-subtitle" style="font-size: 0.72rem;">
+                                                                <i class="mdi mdi-check-circle me-1"></i>Sudah diunggah
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-2 pt-2 border-top" style="border-color: #f1f5f9 !important;">
+                                                        <a href="{{ $photoUrl }}" target="_blank" class="btn btn-sm btn-outline-primary flex-fill py-1 px-2 d-inline-flex align-items-center justify-content-center gap-1 text-decoration-none" style="font-size: 0.76rem; border-radius: 6px; font-weight: 600;">
+                                                            <i class="mdi mdi-eye-outline"></i>
+                                                            <span>Lihat Foto</span>
+                                                        </a>
+                                                        <label class="btn btn-sm btn-outline-secondary flex-fill py-1 px-2 d-inline-flex align-items-center justify-content-center gap-1 mb-0" style="font-size: 0.76rem; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                                                            <i class="mdi mdi-camera-flip-outline"></i>
+                                                            <span>Ganti Foto</span>
+                                                            <input type="file" name="{{ $field }}" accept=".jpg,.jpeg,.png" style="display: none;" class="survey-file-input">
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            @else
+                                                <div class="transaksi-file-upload">
+                                                    <input type="file" name="{{ $field }}" accept=".jpg,.jpeg,.png" class="survey-file-input">
+                                                    <div class="transaksi-file-label">
+                                                        <i class="mdi mdi-camera"></i>
+                                                        <div class="transaksi-file-info">
+                                                            <span>Upload Foto</span>
+                                                            <small>Format: JPG, PNG</small>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             @endif
                                         </div>
@@ -1175,15 +1206,24 @@
 
                 $(document).on('change', 'input[type="file"]', function(e) {
                     const file = e.target.files[0];
+                    const $group = $(this).closest('.transaksi-form-group');
                     const $container = $(this).closest('.transaksi-file-upload');
+                    
                     if (file) {
                         const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
-                        const displayName = truncateFileName(file.name, 28);
-                        $container.find('.transaksi-file-info span').text(displayName);
-                        $container.find('.transaksi-file-info small').text(sizeInMB + ' MB');
+                        const displayName = truncateFileName(file.name, 22);
+                        if ($container.length) {
+                            $container.find('.transaksi-file-info span').text(displayName);
+                            $container.find('.transaksi-file-info small').text(sizeInMB + ' MB (Siap upload)');
+                        } else {
+                            $group.find('.survey-file-title').text(displayName);
+                            $group.find('.survey-file-subtitle').removeClass('text-success').addClass('text-primary').html('<i class="mdi mdi-file-check me-1"></i>' + sizeInMB + ' MB (Foto baru dipilih)');
+                        }
                     } else {
-                        $container.find('.transaksi-file-info span').text('Upload Foto');
-                        $container.find('.transaksi-file-info small').text('Format: JPG, PNG');
+                        if ($container.length) {
+                            $container.find('.transaksi-file-info span').text('Upload Foto');
+                            $container.find('.transaksi-file-info small').text('Format: JPG, PNG');
+                        }
                     }
                 });
 

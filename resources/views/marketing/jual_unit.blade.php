@@ -2779,17 +2779,17 @@
                         </div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body p-4">
+                    <div class="modal-body p-3 p-md-4">
                         <!-- Ringkasan Unit Terpilih -->
-                        <div class="p-3 rounded-3 mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
-                            <div class="d-flex justify-content-between align-items-start mb-1">
-                                <div>
-                                    <span class="badge bg-primary text-white mb-1" id="agency_modal_unit_code" style="font-size: 0.75rem; border-radius: 6px;">Unit -</span>
-                                    <h6 class="fw-bold text-dark mb-0" id="agency_modal_unit_name">-</h6>
+                        <div class="p-3 rounded-3 mb-3" style="background: #faf8ff; border: 1px solid #efe8ff;">
+                            <div class="d-flex justify-content-between align-items-center mb-1.5">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge bg-primary text-white" id="agency_modal_unit_code" style="font-size: 0.75rem; border-radius: 6px; padding: 4px 8px;">Unit -</span>
+                                    <h6 class="fw-bold text-dark mb-0" id="agency_modal_unit_name" style="font-size: 0.95rem;">-</h6>
                                 </div>
-                                <span class="badge" id="agency_modal_jenis_badge" style="font-size: 0.78rem; font-weight: 700; padding: 5px 10px; border-radius: 15px;">-</span>
+                                <span class="badge" id="agency_modal_jenis_badge" style="font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 12px;">-</span>
                             </div>
-                            <div class="d-flex justify-content-between align-items-center mt-2 pt-2 border-top">
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top" style="border-color: #f1ecfc !important;">
                                 <span class="text-muted small">Harga Jual Unit:</span>
                                 <span class="fw-bold text-success" id="agency_modal_unit_price" style="font-size: 0.95rem;">Rp 0</span>
                             </div>
@@ -2801,7 +2801,7 @@
 
                             <!-- Field Pilih Agency (Select2 Search) -->
                             <div class="mb-3">
-                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
+                                <label class="form-label fw-bold mb-1" style="color: #3b3f5c; font-size: 0.85rem;">
                                     <i class="mdi mdi-account-tie text-primary me-1"></i>Nama Agency / Agent <span class="text-danger">*</span>
                                 </label>
                                 <select class="form-control select2-agency-modal" id="select_sales_id" name="sales_id" style="width: 100%;" required>
@@ -2812,52 +2812,45 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                <small class="text-muted mt-1 d-block" style="font-size: 0.78rem;">
+                                <small class="text-muted mt-1 d-block" style="font-size: 0.75rem;">
                                     <i class="mdi mdi-information-outline me-1"></i>Ketik untuk mencari nama atau nomor HP agency
                                 </small>
                             </div>
 
                             <!-- Box Notifikasi Otomatisasi Komisi -->
-                            <div class="p-2.5 px-3 rounded-3 mb-3 d-flex align-items-center justify-content-between" id="auto_calc_info_box" style="background: #eef2ff; border: 1px solid #c7d2fe;">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="mdi mdi-calculator-variant text-primary fs-5"></i>
-                                    <div>
-                                        <span class="fw-bold text-primary d-block" id="auto_calc_rule_name" style="font-size: 0.82rem;">Otomatisasi Komisi</span>
-                                        <small class="text-muted" id="auto_calc_formula" style="font-size: 0.76rem;">Dihitung berdasarkan master aturan</small>
-                                    </div>
+                            <div class="p-2.5 px-3 rounded-3 mb-3 d-flex align-items-center justify-content-between" id="auto_calc_info_box" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                                <div>
+                                    <span class="fw-bold text-success d-block" id="auto_calc_rule_name" style="font-size: 0.84rem;">Otomatisasi Komisi</span>
+                                    <small class="text-muted" id="auto_calc_formula" style="font-size: 0.75rem;">Dihitung berdasarkan master aturan</small>
                                 </div>
-                                <button type="button" class="btn btn-xs btn-outline-primary py-1 px-2.5 d-inline-flex align-items-center gap-1" id="btnRecalculateFee" title="Hitung Ulang Berdasarkan Aturan" style="font-size: 0.74rem; border-radius: 6px;">
-                                    <i class="mdi mdi-refresh"></i>
-                                    <span>Hitung Ulang</span>
+                                <button type="button" class="btn btn-sm btn-outline-success py-1 px-3" id="btnRecalculateFee" title="Hitung Ulang Berdasarkan Aturan" style="font-size: 0.76rem; border-radius: 6px; font-weight: 600;">
+                                    Hitung Ulang
                                 </button>
                             </div>
 
                             <!-- Field Nominal Agent Fee -->
                             <div class="mb-2">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label class="form-label fw-bold mb-0" style="color: #3b3f5c; font-size: 0.88rem;">
-                                        <i class="mdi mdi-cash-multiple text-primary me-1"></i>Nominal Komisi / Agent Fee <span class="text-danger">*</span>
-                                    </label>
-                                    <span class="badge bg-success bg-opacity-10 text-success" style="font-size: 0.72rem; font-weight: 700;">Otomatis Terisi</span>
+                                <label class="form-label fw-bold mb-1" style="color: #3b3f5c; font-size: 0.85rem;">
+                                    <i class="mdi mdi-cash-multiple text-primary me-1"></i>Nominal Komisi / Agent Fee <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group rupiah-input-group" style="display: flex; flex-wrap: nowrap;">
+                                    <span class="input-group-text bg-light fw-bold text-primary" style="font-size: 0.85rem; padding: 0 12px;">Rp</span>
+                                    <input type="text" class="form-control rupiah-format" name="agent_fee" id="agent_fee_modal" placeholder="Contoh: 5.000.000" autocomplete="off" required style="font-size: 0.9rem;">
                                 </div>
-                                <div class="input-group rupiah-input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="text" class="form-control rupiah-format" name="agent_fee" id="agent_fee_modal" placeholder="Contoh: 5.000.000" autocomplete="off" required>
-                                </div>
-                                <small class="text-muted mt-1 d-block" style="font-size: 0.78rem;">
-                                    <i class="mdi mdi-check-circle-outline text-success me-1"></i>Terisi otomatis sesuai aturan komisi aktif. Anda tetap dapat mengubahnya jika ada negosiasi khusus.
+                                <small class="text-muted mt-1 d-block" style="font-size: 0.75rem;">
+                                    <i class="mdi mdi-information-outline me-1"></i>Nominal dapat disesuaikan manual jika ada kesepakatan khusus
                                 </small>
                             </div>
                         </form>
                     </div>
-                    <div class="modal-footer bg-light border-top px-3 py-3 d-flex flex-wrap justify-content-end gap-2">
-                        <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 600;">
+                    <div class="modal-footer bg-white border-top px-3 py-2.5 d-flex flex-wrap justify-content-end gap-2">
+                        <button type="button" class="btn btn-sm btn-light border px-3" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 600;">
                             Batal
                         </button>
-                        <button type="button" class="btn btn-outline-primary px-3" id="btnSimpanAgencyOnly" style="border-radius: 8px; font-weight: 600;">
+                        <button type="button" class="btn btn-sm btn-outline-primary px-3" id="btnSimpanAgencyOnly" style="border-radius: 8px; font-weight: 600;">
                             <i class="mdi mdi-content-save me-1"></i>Simpan Agency
                         </button>
-                        <button type="button" class="btn btn-gradient-primary px-3" id="btnSimpanAgencyAndNext" style="border-radius: 8px; font-weight: 600;">
+                        <button type="button" class="btn btn-sm btn-gradient-primary px-3" id="btnSimpanAgencyAndNext" style="border-radius: 8px; font-weight: 600;">
                             <i class="mdi mdi-account-arrow-right me-1"></i>Lanjut Pilih Customer
                         </button>
                     </div>
@@ -2867,90 +2860,63 @@
 
         @if (empty($isStaffMarketing))
         <!-- ========================================================================= -->
+        <!-- ========================================================================= -->
         <!-- MODAL MASTER ATURAN KOMISI & FEE AGENT (PENGATURAN KOMISI OTOMATIS) -->
         <!-- ========================================================================= -->
         <div class="modal fade" id="modalMasterCommissionRules" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 670px; margin: 1.75rem auto;">
                 <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
-                    <div class="modal-header bg-gradient-primary text-white" style="padding: 1.2rem 1.5rem;">
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="rounded-circle bg-white bg-opacity-20 p-2 d-inline-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                                <i class="mdi mdi-cogs text-white fs-4"></i>
-                            </div>
-                            <div>
-                                <h5 class="modal-title fw-bold text-white mb-0">Master Aturan Komisi & Fee Agent</h5>
-                                <small class="text-white text-opacity-85" style="font-size: 0.8rem;">Otomatisasi perhitungan komisi agency setiap transaksi di Catalog Unit</small>
-                            </div>
+                    <div class="modal-header d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #da8cff, #9a55ff); padding: 1rem 1.4rem; border: none;">
+                        <div>
+                            <h5 class="modal-title fw-bold text-white mb-0" style="font-size: 1.05rem;">Master Aturan Komisi Agent</h5>
+                            <small class="text-white text-opacity-85" style="font-size: 0.78rem;">Otomatisasi perhitungan komisi agency di Catalog Unit</small>
                         </div>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <div class="modal-body p-3 p-md-4" style="background: #f8fafc;">
-                        <!-- Summary Cards -->
-                        <div class="row g-2 mb-3">
-                            <div class="col-6 col-md-3">
-                                <div class="card border-0 shadow-sm p-2.5 text-center" style="border-radius: 10px; background: #ffffff;">
-                                    <small class="text-muted d-block" style="font-size: 0.75rem;">Total Aturan</small>
-                                    <h5 class="fw-bold text-dark mb-0" id="stat_total_rules">{{ $commissionRules->count() }}</h5>
-                                </div>
+                    <div class="modal-body p-3 p-md-3" style="background: #f8fafc;">
+                        <!-- Top Summary & Action Bar -->
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 p-2.5 mb-3 rounded-3" style="background: #faf8ff; border: 1px solid #efe8ff;">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-primary text-white" style="font-size: 0.75rem; border-radius: 6px;">
+                                    <span id="stat_active_rules">{{ $commissionRules->where('is_active', true)->count() }}</span> / <span id="stat_total_rules">{{ $commissionRules->count() }}</span> Aturan Aktif
+                                </span>
+                                <small class="text-muted" style="font-size: 0.78rem;">
+                                    Komersil: <strong>{{ $commissionRules->where('target_type', 'komersil')->count() }}</strong> • Subsidi: <strong>{{ $commissionRules->where('target_type', 'subsidi')->count() }}</strong>
+                                </small>
                             </div>
-                            <div class="col-6 col-md-3">
-                                <div class="card border-0 shadow-sm p-2.5 text-center" style="border-radius: 10px; background: #ffffff;">
-                                    <small class="text-muted d-block" style="font-size: 0.75rem;">Aturan Aktif</small>
-                                    <h5 class="fw-bold text-success mb-0" id="stat_active_rules">{{ $commissionRules->where('is_active', true)->count() }}</h5>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <div class="card border-0 shadow-sm p-2.5 text-center" style="border-radius: 10px; background: #ffffff;">
-                                    <small class="text-muted d-block" style="font-size: 0.75rem;">Skema Komersil</small>
-                                    <h5 class="fw-bold text-primary mb-0">{{ $commissionRules->where('target_type', 'komersil')->count() }}</h5>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <div class="card border-0 shadow-sm p-2.5 text-center" style="border-radius: 10px; background: #ffffff;">
-                                    <small class="text-muted d-block" style="font-size: 0.75rem;">Skema Subsidi</small>
-                                    <h5 class="fw-bold text-info mb-0">{{ $commissionRules->where('target_type', 'subsidi')->count() }}</h5>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Top Action: Button Tambah Aturan Baru -->
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="fw-bold text-dark mb-0" style="font-size: 0.95rem;">
-                                <i class="mdi mdi-format-list-bulleted-type text-primary me-1"></i>Daftar Aturan Komisi Aktif
-                            </h6>
-                            <button type="button" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 shadow-sm"
-                                id="btnToggleFormRule" style="border-radius: 8px; font-weight: 600; font-size: 0.82rem;">
+                            <button type="button" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 px-3 py-1 shadow-sm"
+                                id="btnToggleFormRule" style="border-radius: 8px; font-weight: 700; font-size: 0.8rem;">
                                 <i class="mdi mdi-plus-circle"></i>
-                                <span>+ Tambah Aturan Komisi</span>
+                                <span>+ Tambah Aturan</span>
                             </button>
                         </div>
 
                         <!-- Form Tambah / Edit Aturan (Collapsible Card) -->
-                        <div class="card border-0 shadow-sm mb-3 d-none" id="formRuleContainer" style="border-radius: 12px; background: #ffffff; border: 1px solid #e0e7ff;">
-                            <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex justify-content-between align-items-center">
+                        <div class="card border-0 shadow-sm mb-3 d-none" id="formRuleContainer" style="border-radius: 12px; background: #ffffff; border: 1.5px solid #e0e7ff !important;">
+                            <div class="card-header bg-white py-2 px-3 border-bottom d-flex justify-content-between align-items-center">
                                 <span class="fw-bold text-primary small" id="formRuleTitle">
                                     <i class="mdi mdi-pencil-plus me-1"></i>Form Tambah Aturan Komisi Baru
                                 </span>
                                 <button type="button" class="btn-close btn-sm" id="btnCloseFormRule" style="font-size: 0.7rem;"></button>
                             </div>
-                            <div class="card-body p-3 p-md-3">
+                            <div class="card-body p-3">
                                 <form id="formCommissionRule">
                                     @csrf
                                     <input type="hidden" id="rule_id" name="rule_id" value="">
                                     
-                                    <div class="row g-2.5">
+                                    <div class="row g-2">
                                         <!-- Nama Aturan -->
                                         <div class="col-12 col-md-6">
-                                            <label class="form-label fw-bold small text-dark mb-1">Nama Aturan <span class="text-danger">*</span></label>
+                                            <label class="form-label fw-bold small text-dark mb-1" style="font-size: 0.78rem;">Nama Aturan <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control form-control-sm" id="rule_name" name="name" placeholder="Contoh: Komisi Komersil 2.5%" required>
                                         </div>
 
                                         <!-- Target Proyek -->
                                         <div class="col-12 col-md-6">
-                                            <label class="form-label fw-bold small text-dark mb-1">Target Proyek</label>
+                                            <label class="form-label fw-bold small text-dark mb-1" style="font-size: 0.78rem;">Target Proyek</label>
                                             <select class="form-select form-select-sm" id="rule_land_bank_id" name="land_bank_id">
-                                                <option value="">-- Berlaku untuk Semua Proyek --</option>
+                                                <option value="">-- Berlaku Semua Proyek --</option>
                                                 @foreach ($projects as $prj)
                                                     <option value="{{ $prj->id }}">{{ $prj->name }}</option>
                                                 @endforeach
@@ -2959,7 +2925,7 @@
 
                                         <!-- Target Jenis Unit -->
                                         <div class="col-12 col-md-4">
-                                            <label class="form-label fw-bold small text-dark mb-1">Target Jenis Unit <span class="text-danger">*</span></label>
+                                            <label class="form-label fw-bold small text-dark mb-1" style="font-size: 0.78rem;">Jenis Unit <span class="text-danger">*</span></label>
                                             <select class="form-select form-select-sm" id="rule_target_type" name="target_type" required>
                                                 <option value="all">Semua Jenis Unit</option>
                                                 <option value="komersil">Khusus Komersil</option>
@@ -2969,25 +2935,25 @@
 
                                         <!-- Metode Perhitungan Komisi -->
                                         <div class="col-12 col-md-4">
-                                            <label class="form-label fw-bold small text-dark mb-1">Metode Komisi <span class="text-danger">*</span></label>
+                                            <label class="form-label fw-bold small text-dark mb-1" style="font-size: 0.78rem;">Metode <span class="text-danger">*</span></label>
                                             <select class="form-select form-select-sm" id="rule_calculation_type" name="calculation_type" required>
-                                                <option value="percentage">Persentase (% dari Harga Jual)</option>
-                                                <option value="fixed">Nominal Tetap (Flat Rp)</option>
+                                                <option value="percentage">Persentase (%)</option>
+                                                <option value="fixed">Nominal Flat (Rp)</option>
                                             </select>
                                         </div>
 
                                         <!-- Nilai Komisi -->
                                         <div class="col-12 col-md-4">
-                                            <label class="form-label fw-bold small text-dark mb-1" id="rule_value_label">Nilai Komisi (%) <span class="text-danger">*</span></label>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text fw-bold text-primary" id="rule_value_prefix">%</span>
-                                                <input type="number" step="any" min="0" class="form-control form-control-sm" id="rule_value" name="value" placeholder="2.5" required>
+                                            <label class="form-label fw-bold small text-dark mb-1" id="rule_value_label" style="font-size: 0.78rem;">Nilai Komisi (%) <span class="text-danger">*</span></label>
+                                            <div class="input-group input-group-sm" style="display: flex; flex-wrap: nowrap;">
+                                                <span class="input-group-text fw-bold text-primary bg-light" id="rule_value_prefix" style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none !important; font-size: 0.85rem; padding: 0 10px;">%</span>
+                                                <input type="number" step="any" min="0" class="form-control form-control-sm" id="rule_value" name="value" placeholder="2.5" required style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important;">
                                             </div>
                                         </div>
 
                                         <!-- Keterangan -->
                                         <div class="col-12">
-                                            <label class="form-label fw-bold small text-dark mb-1">Keterangan / Deskripsi</label>
+                                            <label class="form-label fw-bold small text-dark mb-1" style="font-size: 0.78rem;">Keterangan / Catatan</label>
                                             <input type="text" class="form-control form-control-sm" id="rule_description" name="description" placeholder="Catatan aturan komisi (opsional)">
                                         </div>
                                     </div>
@@ -3002,66 +2968,44 @@
                             </div>
                         </div>
 
-                        <!-- Daftar Aturan Cards / Table -->
-                        <div class="table-responsive bg-white rounded-3 shadow-sm border">
-                            <table class="table table-hover align-middle mb-0" id="tableCommissionRules" style="font-size: 0.85rem;">
-                                <thead class="table-light">
-                                    <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
-                                        <th class="py-2.5 px-3" style="color: #334155; font-weight: 800; font-size: 0.8rem;">Nama Aturan</th>
-                                        <th class="py-2.5" style="color: #334155; font-weight: 800; font-size: 0.8rem;">Proyek</th>
-                                        <th class="py-2.5" style="color: #334155; font-weight: 800; font-size: 0.8rem;">Target Unit</th>
-                                        <th class="py-2.5" style="color: #334155; font-weight: 800; font-size: 0.8rem;">Skema Komisi</th>
-                                        <th class="py-2.5 text-center" style="color: #334155; font-weight: 800; font-size: 0.8rem;">Status</th>
-                                        <th class="py-2.5 text-center" style="width: 100px; color: #334155; font-weight: 800; font-size: 0.8rem;">Aksi</th>
+                        <!-- Daftar Aturan Komisi (Tabel Rapi & Kolom Sejajar) -->
+                        <div class="table-responsive bg-white rounded-3 border shadow-sm mb-3" style="border-color: #e9edf4 !important;">
+                            <table class="table table-hover align-middle mb-0" id="tableCommissionRules">
+                                <thead style="background: #f8fafc; border-bottom: 1.5px solid #e9edf4;">
+                                    <tr>
+                                        <th class="py-2.5 px-3 text-muted fw-bold" style="font-size: 0.73rem; letter-spacing: 0.5px;">NAMA ATURAN</th>
+                                        <th class="py-2.5 px-3 text-end text-muted fw-bold" style="font-size: 0.73rem; letter-spacing: 0.5px; width: 140px; min-width: 140px;">SKEMA KOMISI</th>
+                                        <th class="py-2.5 px-2 text-center text-muted fw-bold" style="font-size: 0.73rem; letter-spacing: 0.5px; width: 80px; min-width: 80px;">STATUS</th>
+                                        <th class="py-2.5 px-3 text-center text-muted fw-bold" style="font-size: 0.73rem; letter-spacing: 0.5px; width: 95px; min-width: 95px;">AKSI</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($commissionRules as $rule)
-                                        <tr id="rule_row_{{ $rule->id }}">
-                                            <td class="px-3">
-                                                <span class="fw-bold text-dark d-block">{{ $rule->name }}</span>
-                                                @if($rule->description)
-                                                    <small class="text-muted" style="font-size: 0.75rem;">{{ $rule->description }}</small>
-                                                @endif
+                                        <tr id="rule_row_{{ $rule->id }}" style="border-bottom: 1px solid #f1f3f7;">
+                                            <td class="py-2.5 px-3">
+                                                <div class="fw-bold text-dark text-truncate" style="font-size: 0.88rem;">{{ $rule->name }}</div>
+                                                <small class="text-muted d-block" style="font-size: 0.75rem;">
+                                                    <i class="mdi mdi-office-building-outline me-1 text-primary"></i>{{ $rule->landBank->name ?? 'Semua Proyek' }}
+                                                </small>
                                             </td>
-                                            <td>
-                                                @if($rule->land_bank_id)
-                                                    <span class="badge" style="background: #e0f2fe !important; color: #0369a1 !important; border: 1px solid #bae6fd; font-weight: 700; font-size: 0.76rem; padding: 4px 8px; border-radius: 6px;">
-                                                        <i class="mdi mdi-office-building me-1"></i>{{ $rule->landBank->name ?? '-' }}
-                                                    </span>
-                                                @else
-                                                    <span class="badge" style="background: #f1f5f9 !important; color: #1e293b !important; border: 1px solid #cbd5e1; font-weight: 700; font-size: 0.76rem; padding: 4px 8px; border-radius: 6px;">
-                                                        <i class="mdi mdi-earth me-1 text-secondary"></i>Semua Proyek
-                                                    </span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if($rule->target_type === 'komersil')
-                                                    <span class="badge" style="background: #6366f1 !important; color: #ffffff !important; font-weight: 700; font-size: 0.76rem; padding: 4px 8px; border-radius: 6px;">Komersil</span>
-                                                @elseif($rule->target_type === 'subsidi')
-                                                    <span class="badge" style="background: #10b981 !important; color: #ffffff !important; font-weight: 700; font-size: 0.76rem; padding: 4px 8px; border-radius: 6px;">Subsidi</span>
-                                                @else
-                                                    <span class="badge" style="background: #475569 !important; color: #ffffff !important; font-weight: 700; font-size: 0.76rem; padding: 4px 8px; border-radius: 6px;">Semua Unit</span>
-                                                @endif
-                                            </td>
-                                            <td>
+                                            <td class="py-2.5 px-3 text-end">
                                                 @if($rule->calculation_type === 'percentage')
-                                                    <span class="fw-bold text-primary" style="font-size: 0.88rem;">{{ floatval($rule->value) }}%</span>
-                                                    <small class="text-muted d-block" style="font-size: 0.72rem;">dari Harga Jual</small>
+                                                    <div class="fw-bold text-primary" style="font-size: 0.95rem; line-height: 1.2;">{{ floatval($rule->value) }}%</div>
+                                                    <small class="text-muted d-block" style="font-size: 0.7rem;">dari Harga Jual</small>
                                                 @else
-                                                    <span class="fw-bold text-success" style="font-size: 0.88rem;">Rp {{ number_format($rule->value, 0, ',', '.') }}</span>
-                                                    <small class="text-muted d-block" style="font-size: 0.72rem;">Nominal Flat per Unit</small>
+                                                    <div class="fw-bold text-success" style="font-size: 0.9rem; line-height: 1.2;">Rp {{ number_format($rule->value, 0, ',', '.') }}</div>
+                                                    <small class="text-muted d-block" style="font-size: 0.7rem;">Flat per Unit</small>
                                                 @endif
                                             </td>
-                                            <td class="text-center">
-                                                <div class="form-check form-switch d-inline-block m-0">
-                                                    <input class="form-check-input switch-rule-status" type="checkbox" role="switch"
-                                                        data-id="{{ $rule->id }}" {{ $rule->is_active ? 'checked' : '' }} style="cursor: pointer;">
+                                            <td class="py-2.5 px-2 text-center">
+                                                <div class="form-check form-switch m-0 p-0 d-flex justify-content-center align-items-center" style="min-height: auto;" title="Aktifkan / Nonaktifkan">
+                                                    <input class="form-check-input switch-rule-status m-0" type="checkbox" role="switch"
+                                                        data-id="{{ $rule->id }}" {{ $rule->is_active ? 'checked' : '' }} style="cursor: pointer; float: none; width: 36px; height: 18px;">
                                                 </div>
                                             </td>
-                                            <td class="text-center">
-                                                <div class="d-inline-flex gap-1">
-                                                    <button type="button" class="btn btn-xs btn-outline-primary btn-edit-rule p-1"
+                                            <td class="py-2.5 px-3 text-center">
+                                                <div class="d-inline-flex justify-content-center align-items-center gap-1.5">
+                                                    <button type="button" class="btn btn-sm btn-edit-rule d-inline-flex align-items-center justify-content-center p-0"
                                                         data-id="{{ $rule->id }}"
                                                         data-name="{{ $rule->name }}"
                                                         data-land_bank_id="{{ $rule->land_bank_id ?? '' }}"
@@ -3069,22 +3013,22 @@
                                                         data-calculation_type="{{ $rule->calculation_type }}"
                                                         data-value="{{ floatval($rule->value) }}"
                                                         data-description="{{ $rule->description ?? '' }}"
-                                                        title="Edit Aturan" style="border-radius: 5px; width: 28px; height: 28px;">
-                                                        <i class="mdi mdi-pencil" style="font-size: 0.85rem;"></i>
+                                                        title="Edit Aturan" style="width: 30px; height: 30px; border-radius: 7px; background: #f3e8ff; color: #9a55ff; border: 1px solid #d8b4fe;">
+                                                        <i class="mdi mdi-pencil" style="font-size: 0.9rem;"></i>
                                                     </button>
-                                                    <button type="button" class="btn btn-xs btn-outline-danger btn-delete-rule p-1"
+                                                    <button type="button" class="btn btn-sm btn-delete-rule d-inline-flex align-items-center justify-content-center p-0"
                                                         data-id="{{ $rule->id }}"
-                                                        title="Hapus Aturan" style="border-radius: 5px; width: 28px; height: 28px;">
-                                                        <i class="mdi mdi-trash-can-outline" style="font-size: 0.85rem;"></i>
+                                                        title="Hapus Aturan" style="width: 30px; height: 30px; border-radius: 7px; background: #fef2f2; color: #ef4444; border: 1px solid #fecaca;">
+                                                        <i class="mdi mdi-trash-can-outline" style="font-size: 0.9rem;"></i>
                                                     </button>
                                                 </div>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr id="empty_rule_row">
-                                            <td colspan="6" class="text-center py-4 text-muted">
-                                                <i class="mdi mdi-information-outline fs-4 d-block mb-1"></i>
-                                                Belum ada aturan komisi. Silakan tambah aturan baru di atas.
+                                            <td colspan="4" class="text-center py-4 text-muted">
+                                                <i class="mdi mdi-information-outline fs-3 d-block mb-1 text-muted"></i>
+                                                <small>Belum ada aturan komisi. Klik <strong>+ Tambah Aturan</strong> di atas.</small>
                                             </td>
                                         </tr>
                                     @endforelse
@@ -3092,27 +3036,23 @@
                             </table>
                         </div>
 
-                        <!-- Live Interactive Simulator Box -->
-                        <div class="card border-0 shadow-sm mt-3 p-3" style="border-radius: 12px; background: #f0fdf4; border: 1px solid #bbf7d0;">
-                            <span class="fw-bold text-success small mb-2 d-flex align-items-center">
-                                <i class="mdi mdi-calculator text-success fs-5 me-1"></i>Simulasi Kalkulator Komisi Live
-                            </span>
-                            <div class="row g-2 align-items-center">
+                        <!-- Live Interactive Simulator Box (Compact) -->
+                        <div class="card border-0 shadow-sm p-3" style="border-radius: 12px; background: #f0fdf4; border: 1px solid #bbf7d0 !important;">
+                            <div class="row g-2 align-items-end">
                                 <div class="col-12 col-md-5">
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-text bg-white">Harga Unit Rp</span>
-                                        <input type="text" class="form-control rupiah-format" id="sim_price" value="200.000.000" placeholder="200.000.000">
-                                    </div>
+                                    <label class="text-muted d-block mb-1 fw-semibold" style="font-size: 0.72rem;">Harga Unit (Rp)</label>
+                                    <input type="text" class="form-control form-control-sm rupiah-format bg-white" id="sim_price" value="200.000.000" placeholder="200.000.000" style="height: 36px; font-size: 0.85rem;">
                                 </div>
                                 <div class="col-12 col-md-3">
-                                    <select class="form-select form-select-sm" id="sim_jenis">
+                                    <label class="text-muted d-block mb-1 fw-semibold" style="font-size: 0.72rem;">Jenis Unit</label>
+                                    <select class="form-select form-select-sm bg-white" id="sim_jenis" style="height: 36px; font-size: 0.85rem;">
                                         <option value="komersil">Komersil</option>
                                         <option value="subsidi">Subsidi</option>
                                     </select>
                                 </div>
                                 <div class="col-12 col-md-4">
-                                    <div class="p-2 rounded-2 bg-white border text-end">
-                                        <small class="text-muted d-block" style="font-size: 0.72rem;">Hasil Komisi:</small>
+                                    <label class="text-muted d-block mb-1 fw-semibold" style="font-size: 0.72rem;">Estimasi Komisi:</label>
+                                    <div class="px-2 bg-white rounded-2 border d-flex align-items-center justify-content-center justify-content-md-end" style="height: 36px; border-color: #bbf7d0 !important;">
                                         <span class="fw-bold text-success" id="sim_result" style="font-size: 0.95rem;">Rp 5.000.000</span>
                                     </div>
                                 </div>
@@ -3120,9 +3060,9 @@
                         </div>
                     </div>
 
-                    <div class="modal-footer bg-white border-top px-4 py-2.5 d-flex justify-content-between align-items-center">
-                        <small class="text-muted" style="font-size: 0.78rem;">
-                            <i class="mdi mdi-shield-check text-success me-1"></i>Perhitungan komisi akan langsung terintegrasi otomatis ke setiap pemilihan Agency
+                    <div class="modal-footer bg-white border-top px-3 py-2 d-flex justify-content-between align-items-center">
+                        <small class="text-muted" style="font-size: 0.75rem;">
+                            <i class="mdi mdi-shield-check text-success me-1"></i>Terintegrasi otomatis ke setiap pemilihan Agency
                         </small>
                         <button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal" style="border-radius: 8px;">Tutup</button>
                     </div>

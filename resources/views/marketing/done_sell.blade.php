@@ -269,54 +269,80 @@
             color: white;
         }
 
-        /* ===== DOCUMENT LIST ===== */
+        /* ===== DOCUMENT LIST (COMPACT 2-COLUMN GRID) ===== */
         .document-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.65rem;
         }
 
         .document-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 0.75rem;
-            padding: 0.9rem 1rem;
-            background: #fbfaff;
-            border: 1px solid #efe8ff;
-            border-left: 4px solid #9a55ff;
-            border-radius: 10px;
-            transition: all 0.25s ease;
+            gap: 0.6rem;
+            padding: 0.65rem 0.85rem;
+            background: #ffffff;
+            border: 1px solid #e9edf4;
+            border-radius: 9px;
+            transition: all 0.2s ease;
+            min-height: 52px;
         }
 
         .document-item:hover {
-            box-shadow: 0 10px 22px rgba(154, 85, 255, 0.08);
+            background: #faf8ff;
+            border-color: #d8c5ff;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.08);
+            transform: translateY(-1px);
         }
 
         .document-info {
             display: flex;
             align-items: center;
-            gap: 0.85rem;
+            gap: 0.65rem;
             min-width: 0;
             flex: 1;
         }
 
-        .document-info i {
-            font-size: 1.2rem;
-            color: #9a55ff;
+        .document-icon-wrapper {
+            width: 32px;
+            height: 32px;
+            border-radius: 7px;
+            background: #f1ebff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             flex-shrink: 0;
+        }
+
+        .document-icon-wrapper i {
+            font-size: 1.15rem;
         }
 
         .document-name {
             font-weight: 700;
+            font-size: 0.82rem;
             color: #2c2e3f;
-            line-height: 1.4;
-            word-break: break-word;
+            line-height: 1.25;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+
+        .document-sub {
+            font-size: 0.72rem;
+            color: #8c90a4;
+            line-height: 1.2;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .btn-eye {
-            width: 38px;
-            height: 38px;
+            width: 30px;
+            height: 30px;
             border-radius: 6px;
             background: linear-gradient(135deg, #9a55ff, #da8cff);
             color: white;
@@ -325,11 +351,20 @@
             justify-content: center;
             border: none;
             flex-shrink: 0;
-            transition: all 0.25s ease;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
         }
 
         .btn-eye:hover {
-            box-shadow: 0 8px 16px rgba(154, 85, 255, 0.20);
+            box-shadow: 0 4px 10px rgba(154, 85, 255, 0.35);
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 767.98px) {
+            .document-list {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* ===== PRICE ===== */
@@ -376,15 +411,15 @@
         /* ===== TIMELINE ===== */
         .timeline-completed {
             position: relative;
-            padding-left: 2rem;
+            padding-left: 28px;
         }
 
         .timeline-completed::before {
             content: '';
             position: absolute;
-            left: 8px;
-            top: 6px;
-            bottom: 6px;
+            left: 7px;
+            top: 8px;
+            bottom: 8px;
             width: 2px;
             background: linear-gradient(to bottom, rgba(40, 167, 69, 0.35), rgba(40, 167, 69, 0.65));
         }
@@ -401,14 +436,15 @@
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -1.52rem;
-            top: 0.32rem;
-            width: 12px;
-            height: 12px;
+            left: -27px;
+            top: 3px;
+            width: 14px;
+            height: 14px;
+            box-sizing: border-box;
             border-radius: 50%;
             background: #28a745;
             border: 3px solid #ffffff;
-            box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.16);
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
         }
 
         .timeline-date {
@@ -666,14 +702,6 @@
                 text-align: left;
             }
 
-            .timeline-completed {
-                padding-left: 1.6rem;
-            }
-
-            .timeline-item::before {
-                left: -1.25rem;
-            }
-
             .timeline-title {
                 font-size: 0.94rem;
             }
@@ -691,6 +719,304 @@
                 width: 100%;
                 padding: 0.8rem 1rem;
             }
+        }
+
+        /* ===== COMPLAINT TABLE STYLES (DASHBOARD STYLE) ===== */
+        .complaint-table-card {
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid #edf2f9;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            background: #fff;
+        }
+
+        .complaint-table-card .card-header {
+            background: #ffffff;
+            border-bottom: 1.5px solid #f1f3f7;
+            padding: 1.1rem 1.25rem;
+        }
+
+        .complaint-table {
+            width: 100%;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .complaint-table thead th {
+            background-color: #faf8ff !important;
+            color: #6c7383 !important;
+            font-size: 0.78rem !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.5px !important;
+            border-top: none !important;
+            border-bottom: 1.5px solid #edf2f7 !important;
+            padding: 0.85rem 1rem !important;
+            vertical-align: middle !important;
+            white-space: nowrap;
+        }
+
+        .complaint-table tbody td {
+            padding: 0.85rem 1rem !important;
+            vertical-align: middle !important;
+            font-size: 0.88rem !important;
+            border-bottom: 1px solid #f1f3f7 !important;
+            color: #2c2e3f;
+        }
+
+        .complaint-table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+        .complaint-table tbody tr:hover {
+            background-color: #faf7ff !important;
+        }
+
+        .badge-ticket {
+            background: #f3e8ff;
+            color: #7e22ce;
+            font-weight: 700;
+            border: 1px solid #e9d5ff;
+            border-radius: 6px;
+            padding: 0.35rem 0.6rem;
+            font-size: 0.8rem;
+            font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+            display: inline-block;
+        }
+
+        .badge-category {
+            background: #ede9fe;
+            color: #6d28d9;
+            font-weight: 700;
+            border-radius: 6px;
+            padding: 0.25rem 0.55rem;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            display: inline-block;
+        }
+
+        .badge-priority {
+            padding: 0.32rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .badge-priority.darurat {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .badge-priority.tinggi {
+            background: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fde68a;
+        }
+
+        .badge-priority.sedang {
+            background: #e0f2fe;
+            color: #0284c7;
+            border: 1px solid #bae6fd;
+        }
+
+        .badge-priority.rendah {
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+
+        .badge-status-pills {
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .badge-status-pills.selesai {
+            background: linear-gradient(135deg, #28c76f, #48da89);
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(40, 199, 111, 0.2);
+        }
+
+        .badge-status-pills.diproses {
+            background: linear-gradient(135deg, #9a55ff, #da8cff);
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(154, 85, 255, 0.2);
+        }
+
+        .badge-status-pills.pengecekan {
+            background: linear-gradient(135deg, #00cfe8, #48da89);
+            color: #fff;
+        }
+
+        .badge-status-pills.diajukan {
+            background: #fff7ed;
+            color: #ea580c;
+            border: 1px solid #fed7aa;
+        }
+
+        .badge-status-pills.ditolak {
+            background: #fef2f2;
+            color: #ef4444;
+            border: 1px solid #fecaca;
+        }
+
+        .badge-foto-bukti {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.28rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            line-height: 1.2;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .badge-foto-bukti.foto-awal {
+            background: #fef2f2;
+            color: #ef4444;
+            border: 1px solid #fecaca;
+        }
+
+        .badge-foto-bukti.foto-awal:hover {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.25);
+        }
+
+        .badge-foto-bukti.foto-selesai {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .badge-foto-bukti.foto-selesai:hover {
+            background: #16a34a;
+            color: #ffffff;
+            border-color: #16a34a;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+        }
+
+        .btn-update-complaint {
+            border: 1.5px solid #9a55ff;
+            color: #9a55ff;
+            background: #fff;
+            font-weight: 700;
+            font-size: 0.82rem;
+            border-radius: 8px;
+            padding: 0.38rem 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(154, 85, 255, 0.08);
+        }
+
+        .btn-update-complaint:hover {
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            color: #fff;
+            border-color: #9a55ff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+        }
+
+        /* ===== COMPACT MODERN MODAL ===== */
+        .modal-custom-compact {
+            max-width: 620px !important;
+            margin: 1.75rem auto;
+        }
+
+        .modal-custom-compact .modal-content {
+            border: none !important;
+            border-radius: 16px !important;
+            overflow: hidden !important;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.16) !important;
+        }
+
+        .modal-custom-compact .modal-header {
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            color: #ffffff !important;
+            border: none !important;
+            padding: 1.1rem 1.4rem !important;
+        }
+
+        .modal-custom-compact .modal-header .modal-title {
+            font-size: 1.05rem !important;
+            font-weight: 700 !important;
+            color: #ffffff !important;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .modal-custom-compact .modal-header .btn-close-custom {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 1.5rem;
+            line-height: 1;
+            opacity: 0.85;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+            padding: 0;
+        }
+
+        .modal-custom-compact .modal-header .btn-close-custom:hover {
+            opacity: 1;
+        }
+
+        .modal-custom-compact .modal-body {
+            padding: 1.35rem 1.5rem !important;
+            background: #ffffff;
+        }
+
+        .modal-custom-compact .modal-footer {
+            background: #faf8ff !important;
+            border-top: 1px solid #f0edf7 !important;
+            padding: 0.85rem 1.4rem !important;
+        }
+
+        .modal-custom-compact .form-control,
+        .modal-custom-compact .form-select {
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            padding: 0.55rem 0.85rem !important;
+            font-size: 0.88rem !important;
+            color: #2c2e3f !important;
+            background-color: #ffffff !important;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .modal-custom-compact .form-control:focus,
+        .modal-custom-compact .form-select:focus {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
+            outline: none !important;
+        }
+
+        .modal-custom-compact .form-label {
+            font-size: 0.82rem !important;
+            font-weight: 700 !important;
+            color: #566a7f !important;
+            margin-bottom: 0.35rem !important;
         }
     </style>
 
@@ -909,11 +1235,14 @@
 
             <div class="col-md-6">
                 <div class="card h-100">
-                    <div class="card-header bg-white">
-                        <h5 class="card-title">
-                            <i class="mdi mdi-file-document-multiple"></i>
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <h5 class="card-title mb-0">
+                            <i class="mdi mdi-file-document-multiple text-primary"></i>
                             DOKUMEN TRANSAKSI
                         </h5>
+                        <span class="badge bg-soft-primary text-primary font-monospace px-2 py-1" style="font-size: 0.75rem; border-radius: 6px; background: #faf8ff; border: 1px solid #efe8ff;">
+                            <i class="mdi mdi-folder-check-outline me-1"></i> Berkas Transaksi
+                        </span>
                     </div>
                     <div class="card-body">
                         <div class="document-list">
@@ -921,10 +1250,12 @@
                             @if(!empty($akad?->dokumen))
                                 <div class="document-item">
                                     <div class="document-info">
-                                        <i class="mdi mdi-file-pdf text-danger"></i>
-                                        <div>
-                                            <span class="document-name d-block">Dokumen Akad (No: {{ $akad->no_akad ?? '-' }})</span>
-                                            <small class="text-muted">{{ $akad->tanggal_akad ? \Carbon\Carbon::parse($akad->tanggal_akad)->translatedFormat('d M Y') : '' }}</small>
+                                        <div class="document-icon-wrapper">
+                                            <i class="mdi mdi-file-pdf text-danger"></i>
+                                        </div>
+                                        <div style="min-width: 0; flex: 1;">
+                                            <span class="document-name" title="Dokumen Akad">Dokumen Akad</span>
+                                            <small class="document-sub">{{ $akad->no_akad ? 'No: ' . $akad->no_akad : 'Berkas Akad' }}</small>
                                         </div>
                                     </div>
                                     <a href="{{ resolveFileUrl($akad->dokumen) }}" target="_blank" class="btn-eye" title="Lihat Dokumen">
@@ -937,10 +1268,12 @@
                             @if(!empty($unit->dokumen_spk))
                                 <div class="document-item">
                                     <div class="document-info">
-                                        <i class="mdi mdi-file-document-outline text-primary"></i>
-                                        <div>
-                                            <span class="document-name d-block">Dokumen SPK Pembangunan</span>
-                                            <small class="text-muted">SPK Unit</small>
+                                        <div class="document-icon-wrapper">
+                                            <i class="mdi mdi-file-document-outline text-primary"></i>
+                                        </div>
+                                        <div style="min-width: 0; flex: 1;">
+                                            <span class="document-name" title="Dokumen SPK Pembangunan">SPK Pembangunan</span>
+                                            <small class="document-sub">SPK Unit</small>
                                         </div>
                                     </div>
                                     <a href="{{ resolveFileUrl($unit->dokumen_spk) }}" target="_blank" class="btn-eye" title="Lihat Dokumen">
@@ -953,10 +1286,12 @@
                             @if(!empty($serahTerima?->foto_serah_kunci))
                                 <div class="document-item">
                                     <div class="document-info">
-                                        <i class="mdi mdi-key text-warning"></i>
-                                        <div>
-                                            <span class="document-name d-block">Foto Serah Kunci (BAST: {{ $serahTerima->no_bast ?? '-' }})</span>
-                                            <small class="text-muted">{{ $serahTerima->tanggal_serah_terima ? \Carbon\Carbon::parse($serahTerima->tanggal_serah_terima)->translatedFormat('d M Y') : '' }}</small>
+                                        <div class="document-icon-wrapper">
+                                            <i class="mdi mdi-key text-warning"></i>
+                                        </div>
+                                        <div style="min-width: 0; flex: 1;">
+                                            <span class="document-name" title="Foto Serah Kunci">Foto Serah Kunci</span>
+                                            <small class="document-sub">{{ $serahTerima->no_bast ? 'BAST: ' . $serahTerima->no_bast : 'Serah Terima' }}</small>
                                         </div>
                                     </div>
                                     <a href="{{ resolveFileUrl($serahTerima->foto_serah_kunci) }}" target="_blank" class="btn-eye" title="Lihat Foto Serah Kunci">
@@ -969,10 +1304,12 @@
                             @if(!empty($serahTerima?->foto_kondisi_unit))
                                 <div class="document-item">
                                     <div class="document-info">
-                                        <i class="mdi mdi-camera text-info"></i>
-                                        <div>
-                                            <span class="document-name d-block">Foto Kondisi Unit Serah Terima</span>
-                                            <small class="text-muted">{{ $serahTerima->tanggal_serah_terima ? \Carbon\Carbon::parse($serahTerima->tanggal_serah_terima)->translatedFormat('d M Y') : '' }}</small>
+                                        <div class="document-icon-wrapper">
+                                            <i class="mdi mdi-camera text-info"></i>
+                                        </div>
+                                        <div style="min-width: 0; flex: 1;">
+                                            <span class="document-name" title="Foto Kondisi Unit">Kondisi Unit (BAST)</span>
+                                            <small class="document-sub">Serah Terima</small>
                                         </div>
                                     </div>
                                     <a href="{{ resolveFileUrl($serahTerima->foto_kondisi_unit) }}" target="_blank" class="btn-eye" title="Lihat Foto Kondisi">
@@ -985,10 +1322,12 @@
                             @if(!empty($kpr?->foto_depan))
                                 <div class="document-item">
                                     <div class="document-info">
-                                        <i class="mdi mdi-home-outline text-primary"></i>
-                                        <div>
-                                            <span class="document-name d-block">Foto Survey Tampak Depan</span>
-                                            <small class="text-muted">Dokumentasi Survey</small>
+                                        <div class="document-icon-wrapper">
+                                            <i class="mdi mdi-home-outline text-primary"></i>
+                                        </div>
+                                        <div style="min-width: 0; flex: 1;">
+                                            <span class="document-name" title="Foto Survey Tampak Depan">Survey Depan</span>
+                                            <small class="document-sub">Survey Unit</small>
                                         </div>
                                     </div>
                                     <a href="{{ resolveFileUrl($kpr->foto_depan) }}" target="_blank" class="btn-eye" title="Lihat Foto">
@@ -999,10 +1338,12 @@
                             @if(!empty($kpr?->foto_interior))
                                 <div class="document-item">
                                     <div class="document-info">
-                                        <i class="mdi mdi-home-floor-1 text-primary"></i>
-                                        <div>
-                                            <span class="document-name d-block">Foto Survey Interior Unit</span>
-                                            <small class="text-muted">Dokumentasi Survey</small>
+                                        <div class="document-icon-wrapper">
+                                            <i class="mdi mdi-home-floor-1 text-primary"></i>
+                                        </div>
+                                        <div style="min-width: 0; flex: 1;">
+                                            <span class="document-name" title="Foto Survey Interior Unit">Survey Interior</span>
+                                            <small class="document-sub">Survey Unit</small>
                                         </div>
                                     </div>
                                     <a href="{{ resolveFileUrl($kpr->foto_interior) }}" target="_blank" class="btn-eye" title="Lihat Foto">
@@ -1013,10 +1354,12 @@
                             @if(!empty($kpr?->foto_lingkungan))
                                 <div class="document-item">
                                     <div class="document-info">
-                                        <i class="mdi mdi-tree text-success"></i>
-                                        <div>
-                                            <span class="document-name d-block">Foto Survey Lingkungan Sekitar</span>
-                                            <small class="text-muted">Dokumentasi Survey</small>
+                                        <div class="document-icon-wrapper">
+                                            <i class="mdi mdi-tree text-success"></i>
+                                        </div>
+                                        <div style="min-width: 0; flex: 1;">
+                                            <span class="document-name" title="Foto Survey Lingkungan">Survey Lingkungan</span>
+                                            <small class="document-sub">Survey Unit</small>
                                         </div>
                                     </div>
                                     <a href="{{ resolveFileUrl($kpr->foto_lingkungan) }}" target="_blank" class="btn-eye" title="Lihat Foto">
@@ -1030,9 +1373,12 @@
                                 @foreach($kpr->documents as $doc)
                                     <div class="document-item">
                                         <div class="document-info">
-                                            <i class="mdi mdi-file-check-outline text-success"></i>
-                                            <div>
-                                                <span class="document-name d-block">{{ ucwords(str_replace('_', ' ', $doc->type ?? 'Dokumen KPR')) }}</span>
+                                            <div class="document-icon-wrapper">
+                                                <i class="mdi mdi-file-check-outline text-success"></i>
+                                            </div>
+                                            <div style="min-width: 0; flex: 1;">
+                                                <span class="document-name" title="{{ ucwords(str_replace('_', ' ', $doc->type ?? 'Dokumen KPR')) }}">{{ ucwords(str_replace('_', ' ', $doc->type ?? 'Dokumen KPR')) }}</span>
+                                                <small class="document-sub">{{ $doc->status ?? 'Terverifikasi' }}</small>
                                             </div>
                                         </div>
                                         <a href="{{ resolveFileUrl($doc->path) }}" target="_blank" class="btn-eye" title="Lihat Dokumen">
@@ -1046,17 +1392,27 @@
                             @if(empty($akad?->dokumen) && empty($unit->dokumen_spk) && (!$kpr || $kpr->documents->isEmpty()) && empty($serahTerima?->foto_kondisi_unit) && empty($serahTerima?->foto_serah_kunci) && empty($kpr?->foto_depan))
                                 <div class="document-item">
                                     <div class="document-info">
-                                        <i class="mdi mdi-file-check-outline text-success"></i>
-                                        <span class="document-name">Kelengkapan Administrasi & Berkas Unit</span>
+                                        <div class="document-icon-wrapper">
+                                            <i class="mdi mdi-file-check-outline text-success"></i>
+                                        </div>
+                                        <div style="min-width: 0; flex: 1;">
+                                            <span class="document-name">Kelengkapan Berkas</span>
+                                            <small class="document-sub">Administrasi</small>
+                                        </div>
                                     </div>
-                                    <span class="badge badge-success">Terverifikasi</span>
+                                    <span class="badge badge-success" style="font-size: 0.7rem;">Terverifikasi</span>
                                 </div>
                                 <div class="document-item">
                                     <div class="document-info">
-                                        <i class="mdi mdi-certificate text-warning"></i>
-                                        <span class="document-name">Status Sertifikat (SHGB / SHM)</span>
+                                        <div class="document-icon-wrapper">
+                                            <i class="mdi mdi-certificate text-warning"></i>
+                                        </div>
+                                        <div style="min-width: 0; flex: 1;">
+                                            <span class="document-name">Sertifikat</span>
+                                            <small class="document-sub">SHGB / SHM</small>
+                                        </div>
                                     </div>
-                                    <span class="badge badge-info">Tersedia di Legal</span>
+                                    <span class="badge badge-info" style="font-size: 0.7rem;">Legal</span>
                                 </div>
                             @endif
                         </div>
@@ -1342,65 +1698,33 @@
         <!-- Row: Modul Complaint / Keluhan & Garansi -->
         <div class="row mt-3">
             <div class="col-12">
-                <div class="card border-0 shadow-sm">
+                <div class="card complaint-table-card border-0">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2 py-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="mdi mdi-shield-alert-outline text-danger fs-4"></i>
-                            <div>
-                                <h5 class="card-title mb-0 fw-bold" style="color: #2c2e3f;">
-                                    KELUHAN & KLAIM GARANSI (COMPLAINT)
-                                </h5>
-                                <small class="text-muted">Pencatatan kendala pasca serah terima unit dan progress tindak lanjut perbaikan</small>
-                            </div>
+                        <div>
+                            <h5 class="card-title mb-0 fw-bold" style="color: #2c2e3f;">
+                                KELUHAN & KLAIM GARANSI (COMPLAINT)
+                            </h5>
+                            <small class="text-muted">Pencatatan kendala pasca serah terima unit dan progress tindak lanjut perbaikan</small>
                         </div>
-                        <button type="button" class="btn btn-danger btn-sm d-flex align-items-center gap-1 shadow-sm px-3" onclick="openAddComplaintModal()">
-                            <i class="mdi mdi-plus-circle-outline"></i> Ajukan Keluhan Baru
+                        <button type="button" class="btn btn-gradient-primary btn-sm shadow-sm px-3 fw-bold" onclick="openAddComplaintModal()">
+                            + Ajukan Keluhan Baru
                         </button>
                     </div>
-                    <div class="card-body">
-                        @if(session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <i class="mdi mdi-check-circle me-1"></i> {{ session('success') }}
-                                <button type="button" class="close" data-dismiss="alert" data-bs-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-                        @if(session('error'))
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <i class="mdi mdi-alert-circle me-1"></i> {{ session('error') }}
-                                <button type="button" class="close" data-dismiss="alert" data-bs-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-                        @if ($errors->any())
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <ul class="mb-0">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                                <button type="button" class="close" data-dismiss="alert" data-bs-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-
+                    <div class="card-body p-0">
                         @php
                             $complaints = $booking->complaints ?? collect([]);
                         @endphp
 
                         @if($complaints->count() > 0)
                             <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0">
-                                    <thead class="table-light">
+                                <table class="table complaint-table table-hover align-middle mb-0">
+                                    <thead>
                                         <tr>
                                             <th>No. Tiket</th>
                                             <th>Tgl Pengajuan</th>
                                             <th>Kategori & Keluhan</th>
-                                            <th>Prioritas</th>
-                                            <th>Status Progress</th>
+                                            <th class="text-center">Prioritas</th>
+                                            <th class="text-center">Status Progress</th>
                                             <th>Foto / Bukti</th>
                                             <th>Penanggung Jawab</th>
                                             <th class="text-center">Aksi</th>
@@ -1408,79 +1732,63 @@
                                     </thead>
                                     <tbody>
                                         @foreach($complaints as $c)
-                                            @php
-                                                $prioClass = [
-                                                    'rendah' => 'bg-secondary text-white',
-                                                    'sedang' => 'bg-info text-white',
-                                                    'tinggi' => 'bg-warning text-dark',
-                                                    'darurat' => 'bg-danger text-white'
-                                                ][$c->prioritas] ?? 'bg-secondary text-white';
-
-                                                $statusClass = [
-                                                    'diajukan' => 'badge-gradient-warning text-dark',
-                                                    'diproses' => 'badge-gradient-primary text-white',
-                                                    'pengecekan' => 'badge-gradient-info text-white',
-                                                    'selesai' => 'badge-gradient-success text-white',
-                                                    'ditolak' => 'badge-gradient-danger text-white',
-                                                ][$c->status] ?? 'badge-gradient-secondary';
-                                            @endphp
                                             <tr>
                                                 <td>
-                                                    <span class="badge bg-light text-dark border font-monospace">{{ $c->ticket_number }}</span>
+                                                    <span class="badge-ticket">{{ $c->ticket_number }}</span>
                                                 </td>
                                                 <td>
-                                                    <small class="text-muted">{{ $c->tanggal_pengajuan ? $c->tanggal_pengajuan->format('d M Y') : '-' }}</small>
+                                                    <small class="text-muted fw-semibold">{{ $c->tanggal_pengajuan ? $c->tanggal_pengajuan->format('d M Y') : '-' }}</small>
                                                 </td>
                                                 <td>
-                                                    <span class="badge bg-soft-primary text-primary mb-1 text-uppercase" style="font-size: 0.7rem;">
+                                                    <span class="badge-category mb-1">
                                                         {{ str_replace('_', ' ', $c->kategori) }}
                                                     </span>
                                                     <div class="fw-bold text-dark">{{ $c->judul_keluhan }}</div>
-                                                    <small class="text-muted text-wrap d-block" style="max-width: 250px;">{{ Str::limit($c->deskripsi, 80) }}</small>
+                                                    <small class="text-muted text-wrap d-block" style="max-width: 260px; line-height: 1.4;">{{ Str::limit($c->deskripsi, 80) }}</small>
                                                 </td>
-                                                <td>
-                                                    <span class="badge {{ $prioClass }} text-uppercase" style="font-size: 0.7rem;">
+                                                <td class="text-center">
+                                                    <span class="badge-priority {{ strtolower($c->prioritas) }}">
                                                         {{ $c->prioritas }}
                                                     </span>
                                                 </td>
-                                                <td>
-                                                    <span class="badge {{ $statusClass }} text-uppercase">
+                                                <td class="text-center">
+                                                    <span class="badge-status-pills {{ strtolower($c->status) }}">
                                                         {{ $c->status }}
                                                     </span>
                                                     @if($c->status == 'selesai' && $c->tanggal_selesai)
-                                                        <small class="d-block text-success" style="font-size: 0.7rem;">
-                                                            <i class="mdi mdi-check"></i> {{ $c->tanggal_selesai->format('d M Y') }}
+                                                        <small class="d-block text-success mt-1" style="font-size: 0.72rem; font-weight: 600;">
+                                                            {{ $c->tanggal_selesai->format('d M Y') }}
                                                         </small>
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <div class="d-flex gap-1">
+                                                    <div class="d-inline-flex flex-column gap-1.5 align-items-start">
                                                         @if($c->foto_keluhan)
-                                                            <a href="{{ resolveFileUrl($c->foto_keluhan) }}" target="_blank" class="btn btn-xs btn-outline-danger" title="Foto Keluhan Awal">
-                                                                <i class="mdi mdi-image-outline"></i> Awal
+                                                            <a href="{{ resolveFileUrl($c->foto_keluhan) }}" target="_blank" class="badge-foto-bukti foto-awal text-decoration-none" title="Lihat Foto Keluhan Awal">
+                                                                Foto Awal
                                                             </a>
                                                         @endif
                                                         @if($c->foto_penyelesaian)
-                                                            <a href="{{ resolveFileUrl($c->foto_penyelesaian) }}" target="_blank" class="btn btn-xs btn-outline-success" title="Foto Hasil Perbaikan">
-                                                                <i class="mdi mdi-image-check"></i> Selesai
+                                                            <a href="{{ resolveFileUrl($c->foto_penyelesaian) }}" target="_blank" class="badge-foto-bukti foto-selesai text-decoration-none" title="Lihat Foto Bukti Penyelesaian">
+                                                                Foto Selesai
                                                             </a>
                                                         @endif
                                                         @if(!$c->foto_keluhan && !$c->foto_penyelesaian)
-                                                            <span class="text-muted small">-</span>
+                                                            <span class="text-muted small fst-italic">Tanpa Foto</span>
                                                         @endif
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <small class="fw-semibold text-dark">{{ $c->petugas_penanggung_jawab ?? 'Belum Ditugaskan' }}</small>
+                                                    <small class="fw-bold text-dark d-block">{{ $c->petugas_penanggung_jawab ?? 'Belum Ditugaskan' }}</small>
                                                     @if($c->catatan_perbaikan)
                                                         <small class="text-muted d-block text-truncate" style="max-width: 180px;">"{{ $c->catatan_perbaikan }}"</small>
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
-                                                    <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"
+                                                    <button type="button" class="btn btn-sm btn-update-complaint"
                                                         data-complaint="{{ base64_encode(json_encode($c)) }}"
                                                         onclick="handleUpdateComplaintClick(this)">
-                                                        <i class="mdi mdi-progress-wrench"></i> Update
+                                                        Update
                                                     </button>
                                                 </td>
                                             </tr>
@@ -1495,7 +1803,7 @@
                                 </div>
                                 <h6 class="fw-bold text-dark mb-1">Belum Ada Keluhan / Komplain</h6>
                                 <p class="text-muted small mb-3">Unit dalam kondisi baik dan masa garansi aktif berjalan.</p>
-                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="openAddComplaintModal()">
+                                <button type="button" class="btn btn-gradient-primary btn-sm px-3" onclick="openAddComplaintModal()">
                                     <i class="mdi mdi-plus-circle"></i> Ajukan Keluhan Baru
                                 </button>
                             </div>
@@ -1515,7 +1823,7 @@
                                 <a href="{{ route('marketing.jual-unit') }}" class="btn btn-outline-secondary">
                                     <i class="mdi mdi-arrow-left"></i> Kembali ke Daftar
                                 </a>
-                                <a href="{{ route('servis') }}" class="btn btn-outline-danger ms-2">
+                                <a href="{{ route('servis') }}" class="btn btn-outline-primary ms-2">
                                     <i class="mdi mdi-face-agent"></i> Buka Modul Servis
                                 </a>
                             </div>
@@ -1533,34 +1841,32 @@
 
     <!-- MODAL: AJUKAN KELUHAN BARU -->
     <div class="modal fade" id="modalAddComplaint" tabindex="-1" role="dialog" aria-labelledby="modalAddComplaintLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-danger text-white py-3">
-                    <h5 class="modal-title fw-bold" id="modalAddComplaintLabel">
-                        <i class="mdi mdi-alert-circle-outline me-1"></i> Form Pengajuan Keluhan / Klaim Garansi
+        <div class="modal-dialog modal-dialog-centered modal-custom-compact" role="document">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-between align-items-center">
+                    <h5 class="modal-title mb-0" id="modalAddComplaintLabel">
+                        <i class="mdi mdi-alert-circle-outline"></i> Form Pengajuan Keluhan / Garansi
                     </h5>
-                    <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close-custom" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">&times;</button>
                 </div>
                 <form action="{{ route('complaints.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="booking_id" value="{{ $booking->id }}">
-                    <div class="modal-body p-4">
-                        <div class="alert alert-light border d-flex align-items-center gap-3 mb-3 p-2">
-                            <div class="bg-primary text-white p-2 rounded-circle">
-                                <i class="mdi mdi-home"></i>
+                    <div class="modal-body">
+                        <div class="alert alert-light border d-flex align-items-center gap-3 mb-3 p-2 rounded-3" style="background: #faf8ff; border-color: #eee6ff !important;">
+                            <div class="text-white p-2 rounded-circle" style="background: linear-gradient(135deg, #da8cff, #9a55ff); width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
+                                <i class="mdi mdi-home fs-5"></i>
                             </div>
                             <div>
-                                <div class="fw-bold">{{ $unit->unit_name ?? '-' }} (Blok {{ $unit->unit_code ?? '-' }})</div>
+                                <div class="fw-bold text-dark">{{ $unit->unit_name ?? '-' }} (Blok {{ $unit->unit_code ?? '-' }})</div>
                                 <small class="text-muted">Customer: {{ $booking->customer->full_name ?? '-' }} | Telp: {{ $booking->customer->phone ?? '-' }}</small>
                             </div>
                         </div>
 
                         <div class="row g-3">
                             <div class="col-md-6 mb-2">
-                                <label class="form-label fw-bold small text-muted">Kategori Keluhan <span class="text-danger">*</span></label>
-                                <select class="form-control" name="kategori" required>
+                                <label class="form-label">Kategori Keluhan <span class="text-danger">*</span></label>
+                                <select class="form-control form-select" name="kategori" required>
                                     <option value="">-- Pilih Kategori --</option>
                                     <option value="kebocoran">Kebocoran Atap / Talang / Dinding</option>
                                     <option value="kelistrikan">Kelistrikan, Stopkontak & Lampu</option>
@@ -1572,8 +1878,8 @@
                                 </select>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label class="form-label fw-bold small text-muted">Tingkat Prioritas <span class="text-danger">*</span></label>
-                                <select class="form-control" name="prioritas" required>
+                                <label class="form-label">Tingkat Prioritas <span class="text-danger">*</span></label>
+                                <select class="form-control form-select" name="prioritas" required>
                                     <option value="rendah">Rendah (Penyelesaian santai)</option>
                                     <option value="sedang" selected>Sedang (Standar perbaikan)</option>
                                     <option value="tinggi">Tinggi (Perlu segera ditangani)</option>
@@ -1581,23 +1887,23 @@
                                 </select>
                             </div>
                             <div class="col-12 mb-2">
-                                <label class="form-label fw-bold small text-muted">Judul Ringkas Keluhan <span class="text-danger">*</span></label>
+                                <label class="form-label">Judul Ringkas Keluhan <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="judul_keluhan" placeholder="Contoh: Kran kamar mandi utama bocor dan rembes" required>
                             </div>
                             <div class="col-12 mb-2">
-                                <label class="form-label fw-bold small text-muted">Detail Deskripsi Keluhan <span class="text-danger">*</span></label>
+                                <label class="form-label">Detail Deskripsi Keluhan <span class="text-danger">*</span></label>
                                 <textarea class="form-control" name="deskripsi" rows="3" placeholder="Jelaskan titik kerusakan, kronologi kendala, dan bagian yang perlu diperbaiki secara detail..." required></textarea>
                             </div>
-                            <div class="col-12 mb-2">
-                                <label class="form-label fw-bold small text-muted">Upload Foto / Bukti Kendala (Opsional)</label>
+                            <div class="col-12 mb-1">
+                                <label class="form-label">Upload Foto / Bukti Kendala (Opsional)</label>
                                 <input type="file" class="form-control" name="foto_keluhan" accept="image/*,application/pdf">
-                                <small class="text-muted">Mendukung format JPG, PNG, WEBP, atau PDF (Max 5MB)</small>
+                                <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">Mendukung format JPG, PNG, WEBP, atau PDF (Maks. 5MB)</small>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer bg-light py-2">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-danger px-4">
+                    <div class="modal-footer d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-dismiss="modal" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-gradient-primary btn-sm px-4">
                             <i class="mdi mdi-send me-1"></i> Ajukan Keluhan
                         </button>
                     </div>
@@ -1608,35 +1914,33 @@
 
     <!-- MODAL: UPDATE PROGRESS KELUHAN -->
     <div class="modal fade" id="modalUpdateComplaint" tabindex="-1" role="dialog" aria-labelledby="modalUpdateComplaintLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-primary text-white py-3">
-                    <h5 class="modal-title fw-bold" id="modalUpdateComplaintLabel">
-                        <i class="mdi mdi-progress-wrench me-1"></i> Update Progress & Penanganan Keluhan
+        <div class="modal-dialog modal-dialog-centered modal-custom-compact" role="document">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-between align-items-center">
+                    <h5 class="modal-title mb-0" id="modalUpdateComplaintLabel">
+                        <i class="mdi mdi-progress-wrench"></i> Update Progress Keluhan
                     </h5>
-                    <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close-custom" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">&times;</button>
                 </div>
                 <form id="formUpdateComplaint" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-                    <div class="modal-body p-4">
-                        <div class="card bg-light border-0 mb-3">
+                    <div class="modal-body">
+                        <div class="card bg-light border-0 mb-3 rounded-3" style="background: #faf8ff !important; border: 1px solid #efe6ff !important;">
                             <div class="card-body p-3">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <span class="badge bg-secondary font-monospace" id="lblUpdateTicket">-</span>
-                                    <span class="badge bg-warning text-dark text-uppercase" id="lblUpdatePrioritas">-</span>
+                                    <span class="badge-ticket" id="lblUpdateTicket">-</span>
+                                    <span class="badge-priority sedang" id="lblUpdatePrioritas">-</span>
                                 </div>
-                                <h6 class="fw-bold text-dark mb-1" id="lblUpdateJudul">-</h6>
+                                <h6 class="fw-bold text-dark mb-1 mt-2" id="lblUpdateJudul">-</h6>
                                 <p class="text-muted small mb-0" id="lblUpdateDeskripsi">-</p>
                             </div>
                         </div>
 
                         <div class="row g-3">
                             <div class="col-md-6 mb-2">
-                                <label class="form-label fw-bold small text-muted">Status Progress Penanganan <span class="text-danger">*</span></label>
-                                <select class="form-control" name="status" id="selectUpdateStatus" required>
+                                <label class="form-label">Status Progress Penanganan <span class="text-danger">*</span></label>
+                                <select class="form-control form-select" name="status" id="selectUpdateStatus" required>
                                     <option value="diajukan">Diajukan (Menunggu Respon)</option>
                                     <option value="diproses">Diproses (Sedang Dikerjakan)</option>
                                     <option value="pengecekan">Pengecekan Lapangan / Uji Coba</option>
@@ -1645,28 +1949,28 @@
                                 </select>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label class="form-label fw-bold small text-muted">Petugas / Teknisi Penanggung Jawab</label>
+                                <label class="form-label">Petugas / Teknisi Penanggung Jawab</label>
                                 <input type="text" class="form-control" name="petugas_penanggung_jawab" id="inputUpdatePetugas" placeholder="Contoh: Pak Joko (Teknisi Bangunan)">
                             </div>
                             <div class="col-12 mb-2">
-                                <label class="form-label fw-bold small text-muted">Catatan Tindak Lanjut & Perbaikan</label>
+                                <label class="form-label">Catatan Tindak Lanjut & Perbaikan</label>
                                 <textarea class="form-control" name="catatan_perbaikan" id="inputUpdateCatatan" rows="3" placeholder="Tuliskan tindakan yang telah dilakukan, material yang diganti, atau hasil pengecekan lapangan..."></textarea>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label class="form-label fw-bold small text-muted">Biaya Perbaikan (Rp)</label>
+                                <label class="form-label">Biaya Perbaikan (Rp)</label>
                                 <input type="number" class="form-control" name="biaya_perbaikan" id="inputUpdateBiaya" placeholder="0 (Gratis garansi jika 0)">
-                                <small class="text-muted">Biaya diisi jika ada biaya material non-garansi</small>
+                                <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">Biaya diisi jika ada biaya material non-garansi</small>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label class="form-label fw-bold small text-muted">Upload Foto Hasil Perbaikan (Opsional)</label>
+                                <label class="form-label">Upload Foto Hasil Perbaikan (Opsional)</label>
                                 <input type="file" class="form-control" name="foto_penyelesaian" accept="image/*,application/pdf">
-                                <small class="text-muted">Foto bukti setelah unit selesai diperbaiki</small>
+                                <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">Foto bukti setelah unit selesai diperbaiki</small>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer bg-light py-2">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary px-4">
+                    <div class="modal-footer d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-dismiss="modal" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-gradient-primary btn-sm px-4">
                             <i class="mdi mdi-content-save me-1"></i> Simpan Progress
                         </button>
                     </div>
@@ -1721,5 +2025,36 @@
             modal.show();
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: {!! json_encode(session('success')) !!},
+                confirmButtonColor: '#9a55ff',
+                timer: 3500,
+                timerProgressBar: true
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: {!! json_encode(session('error')) !!},
+                confirmButtonColor: '#9a55ff'
+            });
+        @endif
+
+        @if ($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Validasi Gagal!',
+                html: {!! json_encode(implode('<br>', $errors->all())) !!},
+                confirmButtonColor: '#9a55ff'
+            });
+        @endif
+    });
 </script>
 @endpush

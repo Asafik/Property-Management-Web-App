@@ -35,7 +35,9 @@
             border-bottom: 1.5px solid #f3f4f8;
         }
 
-        .section-header-kpr i {
+        .section-header-kpr .header-icon,
+        .section-header-kpr > i,
+        .section-header-kpr > div > .header-icon {
             font-size: 1.35rem;
             color: #9a55ff;
             background: rgba(154, 85, 255, 0.1);
@@ -46,6 +48,40 @@
             justify-content: center;
             width: 38px;
             height: 38px;
+        }
+
+        .badge-utj-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #166534;
+            font-weight: 600;
+        }
+
+        .badge-utj-status i {
+            font-size: 1rem !important;
+            color: #16a34a !important;
+            background: transparent !important;
+            padding: 0 !important;
+            width: auto !important;
+            height: auto !important;
+            border-radius: 0 !important;
+            display: inline-block !important;
+        }
+
+        .badge-pill-lunas {
+            background: #16a34a;
+            color: #ffffff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 2px;
         }
 
         .section-header-kpr h5 {
@@ -466,9 +502,16 @@
                         </div>
                     </div>
 
-                    <div class="section-header-kpr">
-                        <i class="mdi mdi-home-city-outline"></i>
-                        <h5>Detail Unit yang Dibooking</h5>
+                    <div class="section-header-kpr d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="mdi mdi-home-city-outline header-icon"></i>
+                            <h5>Detail Unit yang Dibooking</h5>
+                        </div>
+                        <div class="badge-utj-status">
+                            <i class="mdi mdi-check-circle"></i>
+                            <span>UTJ Terbayar: <strong>Rp {{ number_format($booking->booking_fee ?? 0, 0, ',', '.') }}</strong></span>
+                            <span class="badge-pill-lunas">Lunas</span>
+                        </div>
                     </div>
 
                     <div class="row g-3">
@@ -520,18 +563,6 @@
                                 <option value="syariah">KPR Syariah</option>
                             </select>
                         </div>
-                    </div>
-
-                    <!-- Info Uang Tanda Jadi (UTJ) Terbayar -->
-                    <div class="p-2.5 px-3 rounded-3 mb-3 d-flex align-items-center justify-content-between" style="background: #f0fdf4; border: 1.5px solid #86efac;">
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="mdi mdi-check-decagram text-success fs-5"></i>
-                            <div>
-                                <span class="fw-bold text-dark d-block" style="font-size: 0.85rem;">Uang Tanda Jadi (UTJ) Terbayar: <strong class="text-success">Rp {{ number_format($booking->booking_fee ?? 0, 0, ',', '.') }}</strong></span>
-                                <small class="text-muted" style="font-size: 0.76rem;">*Uang Tanda Jadi (UTJ) adalah tanda kesepakatan pemesanan dan tidak mengurangi harga jual unit</small>
-                            </div>
-                        </div>
-                        <span class="badge bg-success text-white" style="font-size: 0.72rem; padding: 4px 8px; border-radius: 6px;">UTJ Lunas</span>
                     </div>
 
                     <!-- Harga Unit, DP, Promo -->
