@@ -1668,7 +1668,7 @@
                                                     <i class="mdi mdi-swap-vertical"></i>
                                                 @endif
                                             </th>
-                                            <th>Booking Fee</th>
+                                            <th>Uang Tanda Jadi (UTJ)</th>
                                             <th class="text-center">Aksi</th>
                                         </tr>
                                     </thead>
@@ -2306,11 +2306,25 @@
                                         </label>
                                         <select id="siteplanProjectSelect" class="form-control select2" style="width: 100%;">
                                             @foreach ($projects as $p)
+                                                @php
+                                                    $denahUrl = '';
+                                                    if (!empty($p->denah)) {
+                                                        if (file_exists(public_path('uploads/' . $p->denah))) {
+                                                            $denahUrl = asset('uploads/' . $p->denah);
+                                                        } elseif (file_exists(public_path($p->denah))) {
+                                                            $denahUrl = asset($p->denah);
+                                                        } elseif (file_exists(storage_path('app/public/' . $p->denah))) {
+                                                            $denahUrl = asset('storage/' . $p->denah);
+                                                        } else {
+                                                            $denahUrl = asset('uploads/' . $p->denah);
+                                                        }
+                                                    }
+                                                @endphp
                                                 <option value="{{ $p->id }}"
-                                                    data-denah="{{ $p->denah ? asset('storage/' . $p->denah) : '' }}"
+                                                    data-denah="{{ $denahUrl }}"
                                                     data-name="{{ $p->name }}"
                                                     {{ (request('project') == $p->id || (empty(request('project')) && $loop->first)) ? 'selected' : '' }}>
-                                                    {{ $p->name }} {{ $p->denah ? ' (✓ Denah Terunggah)' : ' (Denah Default)' }}
+                                                    {{ $p->name }} {{ !empty($denahUrl) ? ' (✓ Denah Terunggah)' : ' (Denah Default)' }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -2549,7 +2563,7 @@
                                                 <div class="col-md-3">
                                                     <div class="timeline-detail-item">
                                                         <div class="timeline-detail-label"><i
-                                                                class="mdi mdi-cash-multiple"></i>Booking Fee</div>
+                                                                class="mdi mdi-cash-multiple"></i>Uang Tanda Jadi (UTJ)</div>
                                                         <div class="timeline-detail-value fee-text" id="m_booking_fee">-
                                                         </div>
                                                     </div>
@@ -2706,31 +2720,31 @@
                                 </select>
                             </div>
 
-                            <!-- Field Nominal Booking Fee -->
+                            <!-- Field Nominal Uang Tanda Jadi (UTJ) -->
                             <div class="mb-3">
                                 <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
-                                    <i class="mdi mdi-cash-multiple text-primary me-1"></i>Nominal Booking Fee <span class="text-danger">*</span>
+                                    <i class="mdi mdi-cash-multiple text-primary me-1"></i>Nominal Uang Tanda Jadi (UTJ) <span class="text-danger">*</span>
                                 </label>
                                 <div class="input-group rupiah-input-group">
                                     <span class="input-group-text">Rp</span>
                                     <input type="text" class="form-control rupiah-format" id="booking_fee" name="booking_fee" placeholder="Contoh: 5.000.000" autocomplete="off" required>
                                 </div>
                                 <small class="text-muted mt-1 d-block" style="font-size: 0.78rem;">
-                                    <i class="mdi mdi-information-outline me-1"></i>Nominal booking fee yang dibayar oleh customer
+                                    <i class="mdi mdi-information-outline me-1"></i>Nominal uang tanda jadi yang dibayar oleh customer (tidak mengurangi harga jual unit)
                                 </small>
                             </div>
 
-                            <!-- Field Upload Bukti Transfer -->
+                            <!-- Field Upload Bukti Transfer UTJ -->
                             <div class="mb-2">
                                 <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
-                                    <i class="mdi mdi-cloud-upload text-primary me-1"></i>Upload Bukti Transfer <span class="text-danger">*</span>
+                                    <i class="mdi mdi-cloud-upload text-primary me-1"></i>Upload Bukti Transfer UTJ <span class="text-danger">*</span>
                                 </label>
                                 <div class="file-upload-modern">
                                     <input type="file" id="bukti_transfer" name="bukti_transfer" accept=".jpg,.jpeg,.png,.pdf" required>
                                     <div class="file-label-modern" id="buktiLabel">
                                         <i class="mdi mdi-cloud-upload" style="font-size: 1.75rem; color: #9a55ff;"></i>
                                         <div class="file-info-modern">
-                                            <span id="buktiFileName" class="fw-bold text-dark">Upload Bukti Transfer</span>
+                                            <span id="buktiFileName" class="fw-bold text-dark">Upload Bukti Transfer UTJ</span>
                                             <small class="text-muted d-block">Format: JPG, PNG, PDF (Max 2MB)</small>
                                         </div>
                                         <span class="file-size text-muted small" id="buktiFileSize"></span>

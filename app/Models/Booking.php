@@ -16,6 +16,7 @@ class Booking extends Model
         'agent_fee',
         'booking_code',
         'booking_fee',
+        'utj',
         'booking_date',
         'purchase_type',
         'status',

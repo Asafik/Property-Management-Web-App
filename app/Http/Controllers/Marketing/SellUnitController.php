@@ -372,6 +372,7 @@ class SellUnitController extends Controller
                     'booking_date'  => now(),
                     'purchase_type' => $request->purchase_type,
                     'booking_fee'   => $bookingFee,
+                    'utj'           => $bookingFee,
                     'sales_id'      => $request->sales_id ?? $booking->sales_id,
                     'agent_fee'     => $agentFee ?? $booking->agent_fee,
                     'status'        => 'active',
@@ -386,18 +387,19 @@ class SellUnitController extends Controller
                     'booking_date'  => now(),
                     'purchase_type' => $request->purchase_type,
                     'booking_fee'   => $bookingFee,
+                    'utj'           => $bookingFee,
                     'status'        => 'active',
                 ]);
             }
 
             Payment::create([
-                'booking_id'      => $booking->id,
-                'type'            => 'dp',
-                'amount'          => $bookingFee,
-                'payment_date'    => now(),
-                'method'          => 'transfer',
+                'booking_id'       => $booking->id,
+                'type'             => 'booking_fee',
+                'amount'           => $bookingFee,
+                'payment_date'     => now(),
+                'method'           => 'transfer',
                 'reference_number' => $filePath,
-                'notes'           => 'Bukti transfer booking fee',
+                'notes'            => 'Bukti transfer Uang Tanda Jadi (UTJ) - Tidak mengurangi harga jual unit',
             ]);
 
             $unit->update(['status' => 'booked']);
