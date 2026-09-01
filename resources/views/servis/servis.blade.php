@@ -262,10 +262,14 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="d-inline-flex align-items-center gap-1">
-                                                <button class="btn btn-xs btn-outline-info" title="Lihat Detail" onclick="openDetailServisModal({{ json_encode($c) }})">
+                                                <button type="button" class="btn btn-xs btn-outline-info" title="Lihat Detail"
+                                                    data-complaint="{{ base64_encode(json_encode($c)) }}"
+                                                    onclick="handleDetailServisClick(this)">
                                                     <i class="mdi mdi-eye"></i>
                                                 </button>
-                                                <button class="btn btn-xs btn-outline-primary" title="Update Progress" onclick="openUpdateServisModal({{ json_encode($c) }})">
+                                                <button type="button" class="btn btn-xs btn-outline-primary" title="Update Progress"
+                                                    data-complaint="{{ base64_encode(json_encode($c)) }}"
+                                                    onclick="handleUpdateServisClick(this)">
                                                     <i class="mdi mdi-progress-wrench"></i>
                                                 </button>
                                                 <form action="{{ route('complaints.destroy', $c->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus keluhan ini?');">
@@ -518,10 +522,32 @@ function openTambahComplaintModal() {
     }
 }
 
+function handleUpdateServisClick(btn) {
+    try {
+        var base64Data = btn.getAttribute('data-complaint');
+        var jsonStr = decodeURIComponent(escape(window.atob(base64Data)));
+        var complaint = JSON.parse(jsonStr);
+        openUpdateServisModal(complaint);
+    } catch(e) {
+        console.error('Error parsing complaint data', e);
+    }
+}
+
+function handleDetailServisClick(btn) {
+    try {
+        var base64Data = btn.getAttribute('data-complaint');
+        var jsonStr = decodeURIComponent(escape(window.atob(base64Data)));
+        var complaint = JSON.parse(jsonStr);
+        openDetailServisModal(complaint);
+    } catch(e) {
+        console.error('Error parsing complaint data', e);
+    }
+}
+
 function openUpdateServisModal(c) {
     var form = document.getElementById('formUpdateServis');
     if (form) {
-        form.action = '/complaints/' + c.id + '/update';
+        form.action = '{{ url('/complaints') }}/' + c.id + '/update';
     }
 
     if (document.getElementById('servisUpdateTicket')) document.getElementById('servisUpdateTicket').innerText = c.ticket_number || '-';

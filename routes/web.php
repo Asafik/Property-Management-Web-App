@@ -352,7 +352,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
 
     Route::get('/servis', [ComplaintController::class, 'index'])->name('servis');
     Route::post('/complaints/store', [ComplaintController::class, 'store'])->name('complaints.store');
-    Route::put('/complaints/{id}/update', [ComplaintController::class, 'update'])->name('complaints.update');
+    Route::match(['put', 'post'], '/complaints/{id}/update', [ComplaintController::class, 'update'])->name('complaints.update');
     Route::delete('/complaints/{id}', [ComplaintController::class, 'destroy'])->name('complaints.destroy');
 
 

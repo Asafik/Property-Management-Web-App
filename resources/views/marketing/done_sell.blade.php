@@ -1478,7 +1478,8 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1"
-                                                        onclick="openUpdateProgressModal({{ json_encode($c) }})">
+                                                        data-complaint="{{ base64_encode(json_encode($c)) }}"
+                                                        onclick="handleUpdateComplaintClick(this)">
                                                         <i class="mdi mdi-progress-wrench"></i> Update
                                                     </button>
                                                 </td>
@@ -1686,10 +1687,21 @@
         }
     }
 
+    function handleUpdateComplaintClick(btn) {
+        try {
+            var base64Data = btn.getAttribute('data-complaint');
+            var jsonStr = decodeURIComponent(escape(window.atob(base64Data)));
+            var complaint = JSON.parse(jsonStr);
+            openUpdateProgressModal(complaint);
+        } catch(e) {
+            console.error('Error parsing complaint data', e);
+        }
+    }
+
     function openUpdateProgressModal(complaint) {
         var form = document.getElementById('formUpdateComplaint');
         if (form) {
-            form.action = '/complaints/' + complaint.id + '/update';
+            form.action = '{{ url('/complaints') }}/' + complaint.id + '/update';
         }
 
         if (document.getElementById('lblUpdateTicket')) document.getElementById('lblUpdateTicket').innerText = complaint.ticket_number || '-';
