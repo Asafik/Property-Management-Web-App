@@ -271,6 +271,66 @@
             overscroll-behavior: contain !important;
         }
 
+        /* SELECT2 SEARCH STYLING */
+        .select2-container--bootstrap-5 .select2-selection {
+            border: 1px solid #ebedf2 !important;
+            border-radius: 6px !important;
+            min-height: 33px !important;
+            padding: 0.2rem 0.5rem !important;
+            font-size: 0.82rem !important;
+            background-color: #ffffff !important;
+        }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            color: #495057 !important;
+            padding-left: 0 !important;
+            line-height: 1.5 !important;
+            font-weight: 500;
+        }
+        .select2-container--bootstrap-5 .select2-selection:hover,
+        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
+        .select2-container--bootstrap-5.select2-container--open .select2-selection {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 0.15rem rgba(154, 85, 255, 0.15) !important;
+        }
+        .select2-container--bootstrap-5 .select2-dropdown {
+            border: 1px solid #da8cff !important;
+            border-radius: 8px !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+            z-index: 1060 !important;
+        }
+        .select2-container--bootstrap-5 .select2-search__field {
+            border-radius: 6px !important;
+            border: 1px solid #ebedf2 !important;
+            padding: 0.35rem 0.6rem !important;
+            font-size: 0.85rem !important;
+        }
+        .select2-container--bootstrap-5 .select2-search__field:focus {
+            border-color: #9a55ff !important;
+            outline: none !important;
+            box-shadow: 0 0 0 0.15rem rgba(154, 85, 255, 0.2) !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option {
+            padding: 0.4rem 0.75rem !important;
+            font-size: 0.82rem !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__option--highlighted {
+            background-color: #9a55ff !important;
+            color: #ffffff !important;
+        }
+        .select2-container--bootstrap-5 .select2-results__group {
+            font-size: 0.78rem !important;
+            font-weight: 700 !important;
+            color: #9a55ff !important;
+            background: #fbf9ff !important;
+            padding: 0.35rem 0.75rem !important;
+        }
+
+        /* Select2 Container 100% Full Width Responsive */
+        .select2-container {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
         /* ===== RESPONSIVE OPTIMIZATION (MOBILE & TABLET) ===== */
         @media (max-width: 991.98px) {
             #modalAddStep .modal-dialog,
@@ -294,28 +354,46 @@
                 padding-top: 1rem !important;
                 margin-top: 0.5rem !important;
             }
+            .fase-header-actions {
+                width: 100% !important;
+                margin-top: 0.5rem;
+            }
+            .fase-header-actions .btn {
+                flex: 1 1 auto;
+                text-align: center;
+                justify-content: center;
+            }
         }
+
         @media (max-width: 767.98px) {
             .fase-step-card .card-body {
                 padding: 0.75rem 0.65rem !important;
             }
             .fase-step-card h4 {
-                font-size: 1.1rem !important;
+                font-size: 1.05rem !important;
             }
             .fase-step-card p {
-                font-size: 0.76rem !important;
+                font-size: 0.75rem !important;
                 max-width: 100% !important;
             }
             .table-responsive table {
-                min-width: 750px;
+                min-width: 720px;
             }
             .task-card-phased {
-                padding: 1rem !important;
+                padding: 0.85rem !important;
             }
             .btn-responsive-full {
                 width: 100% !important;
             }
+            .footer-nav-actions {
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+            .footer-nav-actions .btn {
+                width: 100% !important;
+            }
         }
+
         @media (max-width: 575.98px) {
             .modal {
                 padding: 0.5rem 0.25rem 2rem 0.25rem !important;
@@ -359,18 +437,24 @@
                 padding: 0.6rem 0.85rem !important;
             }
 
+            .page-header-box {
+                padding: 1rem !important;
+            }
             .page-header-box h4 {
-                font-size: 1.15rem;
+                font-size: 1.1rem;
             }
             .fase-step-card .badge {
                 font-size: 0.65rem !important;
                 padding: 0.2rem 0.4rem !important;
             }
-            .tab-pane .d-flex.flex-wrap {
-                width: 100%;
+            .card-expense-trigger {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.35rem !important;
             }
-            .tab-pane .d-flex.flex-wrap .btn {
+            .card-expense-trigger > div:last-child {
                 width: 100%;
+                justify-content: space-between;
             }
         }
     </style>
@@ -606,7 +690,7 @@
                         <div>
                             <h5 class="fw-bold text-dark mb-0">{{ $phInfo['title'] }}</h5>
                         </div>
-                        <div class="d-flex flex-wrap align-items-center justify-content-md-end gap-2 ms-md-auto">
+                        <div class="d-flex flex-wrap align-items-center justify-content-md-end gap-2 ms-md-auto fase-header-actions">
                             <button type="button" class="btn btn-sm btn-gradient-primary rounded-2 px-3 shadow-sm fw-semibold" onclick="openAddStepModal({{ $phNum }})">
                                 + Tambah Pos
                             </button>
@@ -649,7 +733,7 @@
                     </div>
 
                     <!-- Navigation Footer -->
-                    <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 pt-4 border-top mt-4">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 pt-4 border-top mt-4 footer-nav-actions">
                         @if($prevTabTarget)
                             <button type="button" class="btn btn-outline-secondary px-4 rounded-2 mb-2 mb-sm-0" onclick="activateTab('{{ $prevTabTarget }}');">
                                 &larr; {{ $prevTitle }}
@@ -1025,10 +1109,49 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     const currentLandId = {{ $land->id }};
     const storageKey = 'active_phase_tab_' + currentLandId;
+
+    window.initSelect2Materials = function(context) {
+        if (!$.fn.select2) return;
+        let $ctx = context ? $(context) : $(document);
+        $ctx.find('.select-master-item-row').each(function() {
+            let $sel = $(this);
+            if ($sel.hasClass('select2-hidden-accessible')) {
+                $sel.select2('destroy');
+            }
+            $sel.select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: '-- Cari / Pilih dari Master Bahan --',
+                allowClear: true,
+                minimumResultsForSearch: 0,
+                language: {
+                    noResults: function() {
+                        return "Bahan tidak ditemukan";
+                    },
+                    searching: function() {
+                        return "Mencari bahan...";
+                    }
+                }
+            }).off('change.master select2:select.master select2:clear.master').on('change.master select2:select.master select2:clear.master', function() {
+                let phase = $(this).data('phase') || $(this).closest('form').find('input[name="phase"]').val() || 1;
+                let rowIdx = $(this).data('row-idx') || $(this).closest('tr').data('row-idx') || 0;
+                onSelectRowMaterial(this, phase, rowIdx);
+            });
+        });
+    };
+
+    // Auto-focus select2 search input when opened
+    $(document).on('select2:open', () => {
+        setTimeout(() => {
+            let searchField = document.querySelector('.select2-container--open .select2-search__field');
+            if (searchField) {
+                searchField.focus();
+            }
+        }, 10);
+    });
 
     // TAB PERSISTENCE ENGINE (Kompatibel Bootstrap 4 & 5)
     window.activateTab = function(tabIdOrSelector) {
@@ -1088,6 +1211,7 @@
         let formBox = $(`#inlineExpenseForm_Phase${phase}`);
         if (formBox.length) {
             formBox.removeClass('d-none');
+            initSelect2Materials(formBox);
             $(`#selectedInfraId_${phase}`).val(itemId);
             $(`#selectedPosName_${phase}`).text(itemName);
 
@@ -1150,6 +1274,9 @@
     window.toggleInlineAddExpense = function(phase) {
         let formBox = $(`#inlineExpenseForm_Phase${phase}`);
         formBox.toggleClass('d-none');
+        if (!formBox.hasClass('d-none')) {
+            initSelect2Materials(formBox);
+        }
     };
 
     window.calculateVolumePercentage = function(itemId) {
@@ -1611,7 +1738,7 @@
             <tr id="rowItem_${phase}_${newIdx}" data-row-idx="${newIdx}">
                 <td>
                     <div class="d-flex flex-column gap-1">
-                        <select class="form-select form-select-sm select-master-item-row" onchange="onSelectRowMaterial(this, ${phase}, ${newIdx})">
+                        <select class="form-select form-select-sm select-master-item-row" data-phase="${phase}" data-row-idx="${newIdx}" onchange="onSelectRowMaterial(this, ${phase}, ${newIdx})" style="width: 100%;">
                             ${optionsHtml}
                         </select>
                         <input type="hidden" name="items[${newIdx}][material_id]" id="inputMatId_${phase}_${newIdx}">
@@ -1642,6 +1769,7 @@
         `;
 
         $(`#multiItemBody_${phase}`).append(newRow);
+        initSelect2Materials(`#rowItem_${phase}_${newIdx}`);
     };
 
     window.removeMaterialRow = function(phase, rowIdx) {
@@ -1828,6 +1956,7 @@
 
     $(document).ready(function() {
         initFileUploadEvents();
+        initSelect2Materials();
 
         // 1. Simpan tab saat user mengklik / mengganti tab
         $('.fase-step-btn, .fase-step-card').on('shown.bs.tab click', function(e) {

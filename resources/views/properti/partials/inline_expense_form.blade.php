@@ -129,8 +129,8 @@
                                 <td>
                                     <!-- Select Master or Custom Input -->
                                     <div class="d-flex flex-column gap-1">
-                                        <select class="form-select form-select-sm select-master-item-row" onchange="onSelectRowMaterial(this, {{ $phase }}, 0)">
-                                            <option value="">-- Pilih dari Master Barang / Bahan --</option>
+                                        <select class="form-control form-control-sm select2 select-master-item-row" data-phase="{{ $phase }}" data-row-idx="0" onchange="onSelectRowMaterial(this, {{ $phase }}, 0)" style="width: 100%;">
+                                            <option value="">-- Cari / Pilih dari Master Bahan --</option>
                                             @foreach($priorityMaterials as $catName => $items)
                                                 <optgroup label="📂 {{ $catName }}">
                                                     @foreach($items as $mm)
