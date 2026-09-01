@@ -1353,7 +1353,7 @@
                                 <small class="text-muted">Pencatatan kendala pasca serah terima unit dan progress tindak lanjut perbaikan</small>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-danger btn-sm d-flex align-items-center gap-1 shadow-sm px-3" data-toggle="modal" data-target="#modalAddComplaint" data-bs-toggle="modal" data-bs-target="#modalAddComplaint">
+                        <button type="button" class="btn btn-danger btn-sm d-flex align-items-center gap-1 shadow-sm px-3" onclick="openAddComplaintModal()">
                             <i class="mdi mdi-plus-circle-outline"></i> Ajukan Keluhan Baru
                         </button>
                     </div>
@@ -1369,6 +1369,18 @@
                         @if(session('error'))
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <i class="mdi mdi-alert-circle me-1"></i> {{ session('error') }}
+                                <button type="button" class="close" data-dismiss="alert" data-bs-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        @endif
+                        @if ($errors->any())
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <ul class="mb-0">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
                                 <button type="button" class="close" data-dismiss="alert" data-bs-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -1482,7 +1494,7 @@
                                 </div>
                                 <h6 class="fw-bold text-dark mb-1">Belum Ada Keluhan / Komplain</h6>
                                 <p class="text-muted small mb-3">Unit dalam kondisi baik dan masa garansi aktif berjalan.</p>
-                                <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#modalAddComplaint" data-bs-toggle="modal" data-bs-target="#modalAddComplaint">
+                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="openAddComplaintModal()">
                                     <i class="mdi mdi-plus-circle"></i> Ajukan Keluhan Baru
                                 </button>
                             </div>
@@ -1661,30 +1673,41 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function openUpdateProgressModal(complaint) {
-            var form = document.getElementById('formUpdateComplaint');
-            if (form) {
-                form.action = '/complaints/' + complaint.id + '/update';
-            }
-
-            if (document.getElementById('lblUpdateTicket')) document.getElementById('lblUpdateTicket').innerText = complaint.ticket_number || '-';
-            if (document.getElementById('lblUpdatePrioritas')) document.getElementById('lblUpdatePrioritas').innerText = (complaint.prioritas || 'SEDANG').toUpperCase();
-            if (document.getElementById('lblUpdateJudul')) document.getElementById('lblUpdateJudul').innerText = complaint.judul_keluhan || '-';
-            if (document.getElementById('lblUpdateDeskripsi')) document.getElementById('lblUpdateDeskripsi').innerText = complaint.deskripsi || '-';
-
-            if (document.getElementById('selectUpdateStatus')) document.getElementById('selectUpdateStatus').value = complaint.status || 'diajukan';
-            if (document.getElementById('inputUpdatePetugas')) document.getElementById('inputUpdatePetugas').value = complaint.petugas_penanggung_jawab || '';
-            if (document.getElementById('inputUpdateCatatan')) document.getElementById('inputUpdateCatatan').value = complaint.catatan_perbaikan || '';
-            if (document.getElementById('inputUpdateBiaya')) document.getElementById('inputUpdateBiaya').value = complaint.biaya_perbaikan || 0;
-
-            if (window.jQuery && typeof $('#modalUpdateComplaint').modal === 'function') {
-                $('#modalUpdateComplaint').modal('show');
-            } else if (window.bootstrap && bootstrap.Modal) {
-                var modal = new bootstrap.Modal(document.getElementById('modalUpdateComplaint'));
-                modal.show();
-            }
-        }
-    </script>
 @endsection
+
+@push('scripts')
+<script>
+    function openAddComplaintModal() {
+        if (window.jQuery && typeof $('#modalAddComplaint').modal === 'function') {
+            $('#modalAddComplaint').modal('show');
+        } else if (window.bootstrap && bootstrap.Modal) {
+            var modal = new bootstrap.Modal(document.getElementById('modalAddComplaint'));
+            modal.show();
+        }
+    }
+
+    function openUpdateProgressModal(complaint) {
+        var form = document.getElementById('formUpdateComplaint');
+        if (form) {
+            form.action = '/complaints/' + complaint.id + '/update';
+        }
+
+        if (document.getElementById('lblUpdateTicket')) document.getElementById('lblUpdateTicket').innerText = complaint.ticket_number || '-';
+        if (document.getElementById('lblUpdatePrioritas')) document.getElementById('lblUpdatePrioritas').innerText = (complaint.prioritas || 'SEDANG').toUpperCase();
+        if (document.getElementById('lblUpdateJudul')) document.getElementById('lblUpdateJudul').innerText = complaint.judul_keluhan || '-';
+        if (document.getElementById('lblUpdateDeskripsi')) document.getElementById('lblUpdateDeskripsi').innerText = complaint.deskripsi || '-';
+
+        if (document.getElementById('selectUpdateStatus')) document.getElementById('selectUpdateStatus').value = complaint.status || 'diajukan';
+        if (document.getElementById('inputUpdatePetugas')) document.getElementById('inputUpdatePetugas').value = complaint.petugas_penanggung_jawab || '';
+        if (document.getElementById('inputUpdateCatatan')) document.getElementById('inputUpdateCatatan').value = complaint.catatan_perbaikan || '';
+        if (document.getElementById('inputUpdateBiaya')) document.getElementById('inputUpdateBiaya').value = complaint.biaya_perbaikan || 0;
+
+        if (window.jQuery && typeof $('#modalUpdateComplaint').modal === 'function') {
+            $('#modalUpdateComplaint').modal('show');
+        } else if (window.bootstrap && bootstrap.Modal) {
+            var modal = new bootstrap.Modal(document.getElementById('modalUpdateComplaint'));
+            modal.show();
+        }
+    }
+</script>
+@endpush
