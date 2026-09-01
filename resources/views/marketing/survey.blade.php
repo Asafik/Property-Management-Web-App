@@ -937,14 +937,14 @@
                                     <div class="transaksi-form-group">
                                         <label class="transaksi-form-label">Tanggal Survey</label>
                                         <input type="date" class="transaksi-form-control" name="survey_date"
-                                            value="{{ $application->survey_date?->format('Y-m-d') ?? '' }}">
+                                            value="{{ $application->survey_date ? \Carbon\Carbon::parse($application->survey_date)->format('Y-m-d') : '' }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="transaksi-form-group">
                                         <label class="transaksi-form-label">Jam Survey</label>
                                         <input type="time" class="transaksi-form-control" name="survey_time"
-                                            value="{{ $application->survey_time?->format('H:i') ?? '' }}">
+                                            value="{{ $application->survey_time ? (is_string($application->survey_time) ? substr($application->survey_time, 0, 5) : \Carbon\Carbon::parse($application->survey_time)->format('H:i')) : '' }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -983,8 +983,8 @@
                                                 class="text-danger">*</span></label>
                                         <div class="survey-input-group">
                                             <span class="survey-input-group-text">Rp</span>
-                                            <input type="text" class="transaksi-form-control" name="appraisal_value"
-                                                value="{{ number_format($application->jumlah_pinjaman ?? 0, 0, ',', '.') }}">
+                                            <input type="text" class="transaksi-form-control rupiah-format" name="appraisal_value"
+                                                value="{{ number_format($application->appraisal_value ?? $application->jumlah_pinjaman ?? 0, 0, ',', '.') }}" required>
                                         </div>
                                     </div>
                                 </div>
@@ -1028,11 +1028,23 @@
                                                 <div class="transaksi-file-label">
                                                     <i class="mdi mdi-camera"></i>
                                                     <div class="transaksi-file-info">
-                                                        <span>Upload Foto</span>
-                                                        <small>Format: JPG, PNG</small>
+                                                        <span>{{ $application->$field ? 'Ganti Foto (' . basename($application->$field) . ')' : 'Upload Foto' }}</span>
+                                                        <small>{{ $application->$field ? 'Sudah tersimpan' : 'Format: JPG, PNG' }}</small>
                                                     </div>
                                                 </div>
                                             </div>
+                                            @if ($application->$field)
+                                                @php
+                                                    $photoUrl = file_exists(public_path('uploads/' . $application->$field))
+                                                        ? asset('uploads/' . $application->$field)
+                                                        : (file_exists(storage_path('app/public/' . $application->$field)) ? asset('storage/' . $application->$field) : asset($application->$field));
+                                                @endphp
+                                                <div class="mt-2 text-center">
+                                                    <a href="{{ $photoUrl }}" target="_blank" class="badge bg-light text-primary border text-decoration-none py-1 px-2" style="font-size: 0.75rem;">
+                                                        <i class="mdi mdi-eye me-1"></i>Lihat Foto Tersimpan
+                                                    </a>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 @endforeach
@@ -1096,7 +1108,7 @@
                                 <div class="transaksi-summary-box success">
                                     <div class="label">Appraisal</div>
                                     <div class="value" style="font-size: 0.95rem; font-weight: 700;">
-                                        Rp {{ number_format($application->jumlah_pinjaman ?? 0, 0, ',', '.') }}
+                                        Rp {{ number_format($application->appraisal_value ?? $application->jumlah_pinjaman ?? 0, 0, ',', '.') }}
                                     </div>
                                 </div>
                                 <div class="transaksi-summary-box">

@@ -136,22 +136,41 @@ class AkadController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan saat memproses akad. Silakan coba lagi.');
         }
     }
+    public function generateNoAkadKPR($excludeBookingId = null)
+    {
+        $month = date('m');
+        $year = date('Y');
+        $prefix = "AKAD/$month/$year/";
+
+        $lastNumber = Akad::whereYear('created_at', $year)->count() + 1;
+
+        do {
+            $noAkad = $prefix . str_pad($lastNumber, 3, '0', STR_PAD_LEFT);
+            $query = Akad::where('no_akad', $noAkad);
+            if ($excludeBookingId) {
+                $query->where('booking_id', '!=', $excludeBookingId);
+            }
+            $exists = $query->exists();
+            $lastNumber++;
+        } while ($exists);
+
+        return $noAkad;
+    }
+
     public function akadKPR($id)
     {
         $kpr = KprApplication::with(['customer', 'unit', 'bank', 'sales', 'documents'])
             ->where('booking_id', $id)
             ->firstOrFail();
 
+        $existingAkad = Akad::where('booking_id', $id)->first();
+        $noAkadDraf = $existingAkad && !empty($existingAkad->no_akad) 
+            ? $existingAkad->no_akad 
+            : $this->generateNoAkadKPR($id);
 
-        $noAkadDraf = 'AKAD/' . date('m/Y') . '/' . str_pad(
-            KprApplication::count() + 1,
-            3,
-            '0',
-            STR_PAD_LEFT
-        );
-
-        return view('marketing.akad_closing', compact('kpr', 'noAkadDraf'));
+        return view('marketing.akad_closing', compact('kpr', 'noAkadDraf', 'existingAkad'));
     }
+
     public function storeKPR(Request $request, Booking $booking)
     {
         try {
@@ -160,9 +179,9 @@ class AkadController extends Controller
                 'request' => $request->all()
             ]);
 
-            // Validasi status pembayaran
-            if (!in_array($booking->status_cash, ['process', 'done'])) {
-                return redirect()->back()->with('error', 'Booking belum lunas.');
+            // Validasi status booking jika ada
+            if ($booking->status === 'cancelled') {
+                return redirect()->back()->with('error', 'Booking ini telah dibatalkan.');
             }
 
             // List tindakan valid
@@ -206,48 +225,39 @@ class AkadController extends Controller
             // =========================
             // UPLOAD FILE
             // =========================
-            $filePath = null;
+            $existingAkad = Akad::where('booking_id', $booking->id)->first();
+            $filePath = $existingAkad ? $existingAkad->dokumen : null;
+
             if ($request->hasFile('dokumen_akad')) {
-
                 $file = $request->file('dokumen_akad');
-
                 $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                 $cleanName    = preg_replace('/[^A-Za-z0-9\-]/', '_', $originalName);
                 $extension    = $file->getClientOriginalExtension();
-
                 $filename = time() . '_' . $cleanName . '.' . $extension;
-
-                $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/dokumen_akad';
+                $destination = public_path('uploads/dokumen_akad');
 
                 if (!file_exists($destination)) {
                     mkdir($destination, 0755, true);
                 }
 
                 $file->move($destination, $filename);
-
                 $filePath = 'dokumen_akad/' . $filename;
             }
 
-
-            $filePathTolak = null;
+            $filePathTolak = $existingAkad ? $existingAkad->dokumen : null;
             if ($request->hasFile('dokumen_tolak')) {
-
                 $file = $request->file('dokumen_tolak');
-
                 $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                 $cleanName    = preg_replace('/[^A-Za-z0-9\-]/', '_', $originalName);
                 $extension    = $file->getClientOriginalExtension();
-
                 $filename = time() . '_tolak_' . $cleanName . '.' . $extension;
-
-                $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/dokumen_akad';
+                $destination = public_path('uploads/dokumen_akad');
 
                 if (!file_exists($destination)) {
                     mkdir($destination, 0755, true);
                 }
 
                 $file->move($destination, $filename);
-
                 $filePathTolak = 'dokumen_akad/' . $filename;
             }
 
@@ -256,19 +266,32 @@ class AkadController extends Controller
             // =========================
             if ($request->status === 'completed') {
 
-                $noAkad = $request->nomor_akad ?? $this->generateNoAkad();
+                $noAkad = $request->nomor_akad;
+                if (empty($noAkad)) {
+                    $noAkad = $this->generateNoAkadKPR($booking->id);
+                } else {
+                    // Cek jika nomor akad sudah dipakai oleh booking lain
+                    $conflict = Akad::where('no_akad', $noAkad)
+                        ->where('booking_id', '!=', $booking->id)
+                        ->exists();
+                    if ($conflict) {
+                        $noAkad = $this->generateNoAkadKPR($booking->id);
+                    }
+                }
 
-                Akad::create([
-                    'booking_id' => $booking->id,
-                    'no_akad' => $noAkad,
-                    'tanggal_akad' => $request->tanggal_akad,
-                    'lokasi_akad' => $request->lokasi_akad,
-                    'nama_notaris' => $request->nama_notaris,
-                    'dokumen' => $filePath,
-                    'catatan' => $request->catatan,
-                    'status' => 'selesai',
-                    'tindakan' => null
-                ]);
+                Akad::updateOrCreate(
+                    ['booking_id' => $booking->id],
+                    [
+                        'no_akad' => $noAkad,
+                        'tanggal_akad' => $request->tanggal_akad,
+                        'lokasi_akad' => $request->lokasi_akad,
+                        'nama_notaris' => $request->nama_notaris,
+                        'dokumen' => $filePath,
+                        'catatan' => $request->catatan,
+                        'status' => 'selesai',
+                        'tindakan' => null
+                    ]
+                );
 
                 $booking->update([
                     'status_akad' => 'done',
@@ -278,10 +301,13 @@ class AkadController extends Controller
 
                 $kpr = KprApplication::where('booking_id', $booking->id)->first();
                 if ($kpr) {
-                    $kpr->update(['status' => 'akad']);
+                    $kpr->update([
+                        'status' => 'akad',
+                        'akad_at' => $request->tanggal_akad ?? now(),
+                    ]);
                 }
 
-                return redirect()->back()->with('success', 'Akad selesai berhasil diproses.');
+                return redirect()->back()->with('success', 'Akad selesai berhasil diproses!');
             }
 
             // =========================
@@ -289,15 +315,17 @@ class AkadController extends Controller
             // =========================
             if ($request->status === 'cancelled') {
 
-                Akad::create([
-                    'booking_id' => $booking->id,
-                    'no_akad' => null,
-                    'tanggal_akad' => $request->tanggal_akad_tolak,
-                    'dokumen' => $filePathTolak,
-                    'catatan' => $request->catatan_masalah,
-                    'status' => 'batal',
-                    'tindakan' => $request->tindakan
-                ]);
+                Akad::updateOrCreate(
+                    ['booking_id' => $booking->id],
+                    [
+                        'no_akad' => null,
+                        'tanggal_akad' => $request->tanggal_akad_tolak,
+                        'dokumen' => $filePathTolak,
+                        'catatan' => $request->catatan_masalah,
+                        'status' => 'batal',
+                        'tindakan' => $request->tindakan
+                    ]
+                );
 
                 $booking->update([
                     'status_akad' => 'cancelled'
@@ -313,7 +341,7 @@ class AkadController extends Controller
                 'message' => $e->getMessage()
             ]);
 
-            return redirect()->back()->with('error', 'Terjadi kesalahan.');
+            return redirect()->back()->with('error', 'Gagal memproses akad: ' . $e->getMessage());
         }
     }
 }

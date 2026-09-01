@@ -25,6 +25,8 @@ class KprApplication extends Model
         'akad_at',
         'catatan',
         'catatan_survey',        // catatan dari survey
+        'survey_date',           // tanggal survey
+        'survey_time',           // jam survey
         'berita_acara',
         'no_sp3k',
         'appraisal_value',       // nilai appraisal dari survey
@@ -46,6 +48,10 @@ class KprApplication extends Model
         'promo_id',
         'promo_name',
         'promo_value',
+    ];
+
+    protected $casts = [
+        'survey_date' => 'date',
     ];
 
     // relasi
