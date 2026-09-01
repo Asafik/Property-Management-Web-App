@@ -42,7 +42,8 @@ class ComplaintController extends Controller
             });
         }
 
-        $complaints = $query->paginate(15);
+        $perPage = (int) $request->input('per_page', 10);
+        $complaints = $query->paginate($perPage);
 
         // Statistik
         $stats = [

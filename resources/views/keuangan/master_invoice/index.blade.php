@@ -52,13 +52,13 @@
         }
 
         .table thead th {
-            color: #9a55ff;
+            color: #3b3f5c;
             font-weight: 700;
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            background: #fbf9ff;
-            border-bottom: 1px solid #ebe5f5;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
             padding: 0.75rem 0.85rem;
             white-space: nowrap;
         }
@@ -66,15 +66,25 @@
         .table tbody td {
             padding: 0.75rem 0.85rem;
             vertical-align: middle;
-            border-bottom: 1px solid #f2eff8;
+            border-bottom: 1px solid #f2f4f8;
             font-size: 0.88rem;
+        }
+
+        .btn-icon-only {
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
         }
 
         .badge-cat {
             font-size: 11px;
             font-weight: 700;
             padding: 4px 10px;
-            border-radius: 20px;
+            border-radius: 5px;
             display: inline-flex;
             align-items: center;
             gap: 4px;
@@ -101,8 +111,8 @@
         .badge-status-pill {
             font-size: 11px;
             font-weight: 700;
-            padding: 4px 12px;
-            border-radius: 20px;
+            padding: 4px 10px;
+            border-radius: 5px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -131,46 +141,60 @@
             border: 1px solid #e5e7eb;
         }
 
-        .btn-action-icon {
+        /* Action Buttons Standard (Persis Master Data Bank & Transaksi) */
+        .btn-action {
             width: 32px;
             height: 32px;
-            border-radius: 6px;
+            padding: 0;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid #e2e8f0;
-            background: #ffffff;
-            color: #475569;
-            font-size: 15px;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.95rem;
             transition: all 0.2s ease;
             text-decoration: none;
+            cursor: pointer;
         }
 
-        .btn-action-icon:hover {
-            background: #f8fafc;
-            color: #1e293b;
-            border-color: #cbd5e1;
-            transform: translateY(-1px);
-        }
-
-        .btn-action-print {
+        .btn-action.view {
+            background: #ede9fe;
             color: #7c3aed;
-            border-color: #ddd6fe;
-            background: #f5f3ff;
         }
-        .btn-action-print:hover {
+        .btn-action.view:hover {
             background: #7c3aed;
             color: #ffffff;
+            transform: translateY(-2px);
         }
 
-        .btn-action-edit {
-            color: #0284c7;
-            border-color: #bae6fd;
-            background: #f0f9ff;
+        .btn-action.print {
+            background: #fef3c7;
+            color: #d97706;
         }
-        .btn-action-edit:hover {
+        .btn-action.print:hover {
+            background: #d97706;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .btn-action.edit {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+        .btn-action.edit:hover {
             background: #0284c7;
             color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .btn-action.delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .btn-action.delete:hover {
+            background: #dc2626;
+            color: #ffffff;
+            transform: translateY(-2px);
         }
 
         .pagination {
@@ -324,13 +348,13 @@
         <!-- Tabel Data Master Invoice -->
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
-                <div class="card">
+                <div class="card shadow-sm border-0">
                     <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 py-3">
                         <h5 class="card-title mb-0">
-                            Daftar Master Invoice Database
+                            <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Master Invoice Database
                         </h5>
-                        <button type="button" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 shadow-sm py-2 px-3" data-bs-toggle="modal" data-bs-target="#modalCreateInvoice">
-                            <i class="mdi mdi-plus me-1 fs-6"></i>
+                        <button type="button" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalCreateInvoice">
+                            <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
                             <span>Tambah Invoice</span>
                         </button>
                     </div>
@@ -398,10 +422,10 @@
                                                     <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                                                 </select>
                                             </div>
-                                            <button type="submit" class="btn btn-gradient-primary d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0;" title="Filter">
+                                            <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Filter">
                                                 <i class="mdi mdi-filter"></i>
                                             </button>
-                                            <a href="{{ route('keuangan.master-invoice.index') }}" class="btn btn-gradient-secondary d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0;" title="Reset">
+                                            <a href="{{ route('keuangan.master-invoice.index') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset" onclick="showResetLoading(event)">
                                                 <i class="mdi mdi-refresh"></i>
                                             </a>
                                         </div>
@@ -576,29 +600,29 @@
                                             <td class="text-center">
                                                 <div class="d-inline-flex gap-1">
                                                     <!-- Tombol Detail / Preview -->
-                                                    <button type="button" class="btn-action-icon" title="Lihat Detail Invoice" onclick="showInvoiceDetail({{ $inv->id }})">
-                                                        <i class="mdi mdi-eye-outline"></i>
+                                                    <button type="button" class="btn-action view" title="Lihat Detail Invoice" onclick="showInvoiceDetail({{ $inv->id }})">
+                                                        <i class="mdi mdi-eye"></i>
                                                     </button>
 
                                                     <!-- Tombol Cetak / PDF Format Resmi -->
                                                     @if($inv->pra_landbank_id)
-                                                        <a href="{{ route('pra-landbank.invoice', $inv->pra_landbank_id) }}" target="_blank" class="btn-action-icon btn-action-print" title="Cetak Format Resmi Pra Land Bank">
+                                                        <a href="{{ route('pra-landbank.invoice', $inv->pra_landbank_id) }}" target="_blank" class="btn-action print" title="Cetak Format Resmi Pra Land Bank">
                                                             <i class="mdi mdi-printer"></i>
                                                         </a>
                                                     @else
-                                                        <button type="button" class="btn-action-icon btn-action-print" title="Cetak Rincian Invoice" onclick="printInvoiceDirect({{ $inv->id }})">
+                                                        <button type="button" class="btn-action print" title="Cetak Rincian Invoice" onclick="printInvoiceDirect({{ $inv->id }})">
                                                             <i class="mdi mdi-printer"></i>
                                                         </button>
                                                     @endif
 
                                                     <!-- Tombol Edit / Update Pembayaran -->
-                                                    <button type="button" class="btn-action-icon btn-action-edit" title="Update Pembayaran / Status" onclick="openEditModal({{ json_encode($inv) }})">
-                                                        <i class="mdi mdi-pencil-outline"></i>
+                                                    <button type="button" class="btn-action edit" title="Update Pembayaran / Status" onclick="openEditModal({{ json_encode($inv) }})">
+                                                        <i class="mdi mdi-pencil"></i>
                                                     </button>
 
                                                     <!-- Tombol Hapus -->
-                                                    <button type="button" class="btn-action-icon btn-action-delete" title="Hapus Invoice" onclick="confirmDeleteInvoice({{ $inv->id }}, '{{ $inv->invoice_number }}')">
-                                                        <i class="mdi mdi-trash-can-outline"></i>
+                                                    <button type="button" class="btn-action delete" title="Hapus Invoice" onclick="confirmDeleteInvoice({{ $inv->id }}, '{{ $inv->invoice_number }}')">
+                                                        <i class="mdi mdi-delete"></i>
                                                     </button>
                                                 </div>
                                             </td>
@@ -931,6 +955,19 @@
             } catch (e) {
                 return dateStr;
             }
+        }
+
+        function showResetLoading(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Memuat...',
+                html: 'Sedang mereset filter',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            window.location.href = event.currentTarget.href;
         }
 
         // ==========================================
