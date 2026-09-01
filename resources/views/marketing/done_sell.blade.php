@@ -1520,9 +1520,9 @@
                                 </a>
                             </div>
                             <div class="action-right">
-                                <button class="btn btn-outline-primary" onclick="window.print()">
-                                    <i class="mdi mdi-printer"></i> Cetak
-                                </button>
+                                <a href="{{ route('serah-terima.cetak', $booking->id) }}" target="_blank" class="btn btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm">
+                                    <i class="mdi mdi-printer"></i> Cetak Lembar BAST Resmi
+                                </a>
                             </div>
                         </div>
                     </div>

@@ -403,24 +403,43 @@
     @php
         $statusSerahTerima = 'Selesai';
 
-        $checklists = $serahTerima->checklists ?? [
-            ['nama' => 'Listrik berfungsi normal', 'status' => true, 'keterangan' => '-'],
-            ['nama' => 'Air mengalir lancar', 'status' => true, 'keterangan' => '-'],
-            ['nama' => 'Pintu & jendela berfungsi baik', 'status' => true, 'keterangan' => '-'],
-            ['nama' => 'Kunci lengkap (pintu utama, pagar)', 'status' => true, 'keterangan' => '3 buah'],
-            ['nama' => 'Dinding & plafon baik', 'status' => true, 'keterangan' => '-'],
-            ['nama' => 'Lantai keramik baik', 'status' => true, 'keterangan' => '-'],
-            ['nama' => 'Kloset & sanitasi berfungsi', 'status' => true, 'keterangan' => '-'],
-            ['nama' => 'Meteran listrik & air terpasang', 'status' => true, 'keterangan' => '-'],
-        ];
+        if (isset($serahTerima) && $serahTerima && $serahTerima->items && $serahTerima->items->count() > 0) {
+            $checklists = $serahTerima->items->map(function($item) {
+                return [
+                    'nama' => $item->item_name,
+                    'status' => (bool)$item->is_checked,
+                    'keterangan' => $item->status ?? ($item->is_checked ? 'Baik' : 'Perlu Perbaikan')
+                ];
+            })->toArray();
+        } else {
+            $checklists = [
+                ['nama' => 'Listrik & Instalasi Penerangan', 'status' => true, 'keterangan' => 'Berfungsi Normal'],
+                ['nama' => 'Saluran Air Bersih & Kran', 'status' => true, 'keterangan' => 'Mengalir Lancar'],
+                ['nama' => 'Pintu, Jendela, Kunci & Kusen', 'status' => true, 'keterangan' => 'Berfungsi Baik'],
+                ['nama' => 'Kelengkapan Kunci Unit (Utama & Kamar)', 'status' => true, 'keterangan' => 'Lengkap Diserahkan'],
+                ['nama' => 'Kondisi Dinding, Cat & Plafon', 'status' => true, 'keterangan' => 'Rapi & Baik'],
+                ['nama' => 'Lantai Keramik / Granit', 'status' => true, 'keterangan' => 'Rapi & Baik'],
+                ['nama' => 'Sanitasi, Kloset & Saluran Buang', 'status' => true, 'keterangan' => 'Berfungsi Normal'],
+                ['nama' => 'Meteran Listrik (PLN) & Air', 'status' => true, 'keterangan' => 'Terpasang'],
+            ];
+        }
 
-        $dokumenDiserahkan = $serahTerima->dokumen ?? [
-            ['nama' => 'Kunci Unit', 'status' => true, 'keterangan' => '3 buah'],
-            ['nama' => 'Akad KPR Asli', 'status' => true, 'keterangan' => '-'],
-            ['nama' => 'Sertifikat Hak Milik (SHM)', 'status' => true, 'keterangan' => '-'],
-            ['nama' => 'IMB / PBG', 'status' => true, 'keterangan' => '-'],
-            ['nama' => 'Buku Panduan & Garansi', 'status' => true, 'keterangan' => '-'],
-        ];
+        if (isset($serahTerima) && $serahTerima && $serahTerima->documents && $serahTerima->documents->count() > 0) {
+            $dokumenDiserahkan = $serahTerima->documents->map(function($doc) {
+                return [
+                    'nama' => $doc->document_name,
+                    'status' => (bool)$doc->is_submitted,
+                    'keterangan' => $doc->status ?? ($doc->is_submitted ? 'Diserahkan' : 'Proses')
+                ];
+            })->toArray();
+        } else {
+            $dokumenDiserahkan = [
+                ['nama' => 'Kunci Fisik Unit & Cadangan', 'status' => true, 'keterangan' => 'Diserahkan'],
+                ['nama' => 'Salinan Berkas Akad / SPK', 'status' => true, 'keterangan' => 'Lengkap'],
+                ['nama' => 'Sertifikat & Legalitas Unit Terdaftar', 'status' => true, 'keterangan' => 'Arsip Resmi'],
+                ['nama' => 'Buku Petunjuk & Garansi Bangunan', 'status' => true, 'keterangan' => 'Aktif'],
+            ];
+        }
     @endphp
 
     <div class="watermark-text">BAST SERAH TERIMA UNIT</div>
@@ -438,18 +457,13 @@
         <div class="btn-container d-print-none">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                 <div>
-                    <button class="btn btn-outline-secondary" onclick="history.back()">
-                        <i class="mdi mdi-arrow-left"></i> Kembali
+                    <button class="btn btn-outline-secondary" onclick="window.close(); if(!window.closed){ history.back(); }">
+                        <i class="mdi mdi-arrow-left"></i> Tutup / Kembali
                     </button>
                 </div>
                 <div style="display:flex; gap:10px;">
-                    @if(isset($downloadUrl))
-                    <a href="{{ $downloadUrl }}" class="btn btn-success" target="_blank">
-                        <i class="mdi mdi-download"></i> Download PDF
-                    </a>
-                    @endif
                     <button class="btn btn-primary" onclick="window.print()">
-                        <i class="mdi mdi-printer"></i> Cetak
+                        <i class="mdi mdi-printer"></i> Cetak / Simpan PDF
                     </button>
                 </div>
             </div>
@@ -467,30 +481,30 @@
                 </div>
 
                 <div class="document-title">
-                    <h3>Berita Acara Serah Terima Unit</h3>
+                    <h3>BERITA ACARA SERAH TERIMA (BAST) UNIT</h3>
                     <div class="document-subtitle">
-                        Nomor: <strong>{{ $serahTerima->nomor_bast ?? 'BAST/KPR/03/2024/012' }}</strong>
+                        Nomor: <strong>{{ $serahTerima->no_bast ?? ($serahTerima->nomor_bast ?? 'BAST/' . date('m/Y') . '/' . str_pad($booking->id ?? 1, 3, '0', STR_PAD_LEFT)) }}</strong>
                     </div>
                 </div>
 
                 <div class="paragraph">
                     Pada hari ini,
-                    <strong>{{ \Carbon\Carbon::parse($serahTerima->tanggal_serah_terima ?? now())->translatedFormat('d F Y') }}</strong>,
+                    <strong>{{ \Carbon\Carbon::parse($serahTerima->tanggal_serah_terima ?? ($booking->serah_terima_date ?? now()))->translatedFormat('l, d F Y') }}</strong>,
                     bertempat di
-                    <strong>{{ $serahTerima->lokasi_serah_terima ?? 'Di Site / Proyek' }}</strong>,
-                    telah dilakukan serah terima unit rumah dari pihak
+                    <strong>{{ $serahTerima->lokasi_serah_terima ?? 'Lokasi Proyek Perumahan' }}</strong>,
+                    telah dilakukan serah terima fisik bangunan dan dokumen unit properti dari pihak
                     <strong>PT Properti Management</strong>
-                    kepada pembeli/customer dengan rincian sebagaimana tercantum di bawah ini.
+                    kepada pihak pembeli/konsumen dengan rincian data sebagai berikut:
                 </div>
 
                 <!-- DATA CUSTOMER -->
                 <div class="info-section">
-                    <h5>DATA CUSTOMER</h5>
+                    <h5>DATA KONSUMEN / PEMBELI</h5>
                     <table class="info-table">
                         <tr>
-                            <td>Nama Customer</td>
+                            <td>Nama Lengkap</td>
                             <td>:</td>
-                            <td><strong>{{ $booking->customer->full_name ?? 'Muhamad Ilham' }}</strong></td>
+                            <td><strong>{{ $booking->customer->full_name ?? '-' }}</strong></td>
                         </tr>
                         <tr>
                             <td>NIK</td>
@@ -498,53 +512,53 @@
                             <td>{{ $booking->customer->nik ?? '-' }}</td>
                         </tr>
                         <tr>
-                            <td>No. HP</td>
+                            <td>Nomor Telepon / WA</td>
                             <td>:</td>
                             <td>{{ $booking->customer->phone ?? '-' }}</td>
                         </tr>
                         <tr>
                             <td>Kode Booking</td>
                             <td>:</td>
-                            <td>{{ $booking->booking_code ?? 'BK-KPR-2024-089' }}</td>
+                            <td><strong style="font-family: monospace;">{{ $booking->booking_code ?? '-' }}</strong></td>
                         </tr>
                         <tr>
-                            <td>Jenis Pembiayaan</td>
+                            <td>Skema Pembayaran</td>
                             <td>:</td>
-                            <td>{{ $booking->payment_method ?? 'KPR Subsidi' }}</td>
+                            <td><strong>{{ strtoupper($booking->payment_method ?? 'KPR / CASH') }}</strong></td>
                         </tr>
                     </table>
                 </div>
 
                 <!-- DATA UNIT -->
                 <div class="info-section">
-                    <h5>DATA UNIT</h5>
+                    <h5>RINCIAN UNIT PROPERTI</h5>
                     <table class="info-table">
                         <tr>
-                            <td>Nama Unit</td>
+                            <td>Nama Unit / Proyek</td>
                             <td>:</td>
-                            <td>{{ $booking->unit->cluster ?? 'Cluster Kamboja' }}</td>
+                            <td><strong>{{ $unit->unit_name ?? ($booking->unit->unit_name ?? '-') }}</strong></td>
                         </tr>
                         <tr>
-                            <td>Blok / Nomor</td>
+                            <td>Blok & Nomor</td>
                             <td>:</td>
-                            <td>{{ $booking->unit->unit_code ?? 'C-08' }}</td>
+                            <td><strong>Blok {{ $unit->unit_code ?? ($booking->unit->unit_code ?? '-') }}</strong></td>
                         </tr>
                         <tr>
-                            <td>Tipe Unit</td>
+                            <td>Tipe / Luas Bangunan</td>
                             <td>:</td>
-                            <td>{{ $booking->unit->type ?? '-' }}</td>
+                            <td>{{ $unit->type ?? ($booking->unit->type ?? 'Standar') }} (LT: {{ $unit->land_area ?? '-' }} m² / LB: {{ $unit->building_area ?? '-' }} m²)</td>
                         </tr>
                         <tr>
-                            <td>Harga Unit</td>
+                            <td>Harga Jual Unit</td>
                             <td>:</td>
-                            <td>Rp {{ number_format($booking->unit->price ?? 650000000, 0, ',', '.') }}</td>
+                            <td><strong>Rp {{ number_format($unit->price ?? ($booking->unit->price ?? 0), 0, ',', '.') }}</strong></td>
                         </tr>
                         <tr>
-                            <td>Status Serah Terima</td>
+                            <td>Status Unit</td>
                             <td>:</td>
                             <td>
                                 <span class="badge-status badge-success">
-                                    {{ $statusSerahTerima }}
+                                    {{ strtoupper($statusSerahTerima) }} (Unit Diserahterimakan)
                                 </span>
                             </td>
                         </tr>
@@ -553,38 +567,38 @@
 
                 <!-- PIHAK -->
                 <div class="info-section">
-                    <h5>PIHAK YANG MENYERAHKAN & MENERIMA</h5>
+                    <h5>PIHAK PENYERAH & PENERIMA</h5>
                     <table class="info-table">
                         <tr>
                             <td>Diserahkan Oleh</td>
                             <td>:</td>
-                            <td>{{ $serahTerima->handled_by_name ?? ($booking->sales->name ?? 'Dian Permata') }}</td>
+                            <td><strong>{{ $serahTerima->handled_by_name ?? ($booking->sales->name ?? 'Tim Marketing & Legal') }}</strong></td>
                         </tr>
                         <tr>
-                            <td>Jabatan</td>
+                            <td>Jabatan / Peran</td>
                             <td>:</td>
-                            <td>{{ $serahTerima->handled_by_role ?? 'Marketing KPR' }}</td>
+                            <td>{{ $serahTerima->handled_by_role ?? 'Pengelola / Marketing Resmi' }}</td>
                         </tr>
                         <tr>
                             <td>Diterima Oleh</td>
                             <td>:</td>
-                            <td>{{ $booking->customer->full_name ?? 'Muhamad Ilham' }}</td>
+                            <td><strong>{{ $booking->customer->full_name ?? '-' }}</strong> (Konsumen)</td>
                         </tr>
                         <tr>
-                            <td>Saksi</td>
+                            <td>Saksi Serah Terima</td>
                             <td>:</td>
                             <td>{{ $serahTerima->saksi ?? '-' }}</td>
                         </tr>
                     </table>
                 </div>
 
-                <h5>CHECKLIST KONDISI UNIT</h5>
+                <h5>CHECKLIST HASIL PEMERIKSAAN FISIK UNIT</h5>
                 <table class="check-table">
                     <thead>
                         <tr>
                             <th width="7%">No</th>
                             <th>Item Pemeriksaan</th>
-                            <th width="18%">Status</th>
+                            <th width="20%">Kondisi</th>
                             <th width="28%">Keterangan</th>
                         </tr>
                     </thead>
@@ -597,7 +611,7 @@
                                 @if(is_array($item) ? $item['status'] : $item->status)
                                     <span class="checkmark">Baik / Sesuai</span>
                                 @else
-                                    <span class="xmark">Belum Sesuai</span>
+                                    <span class="xmark">Perlu Perbaikan</span>
                                 @endif
                             </td>
                             <td>{{ is_array($item) ? ($item['keterangan'] ?? '-') : ($item->keterangan ?? '-') }}</td>
@@ -607,13 +621,13 @@
                 </table>
 
                 <div class="mt-20">
-                    <h5>DOKUMEN YANG DISERAHKAN</h5>
+                    <h5>DOKUMEN & KELENGKAPAN YANG DISERAHKAN</h5>
                     <table class="doc-list">
                         <thead>
                             <tr>
                                 <th width="7%">No</th>
                                 <th>Nama Dokumen / Item</th>
-                                <th width="18%">Status</th>
+                                <th width="20%">Status</th>
                                 <th width="28%">Keterangan</th>
                             </tr>
                         </thead>
@@ -633,27 +647,32 @@
                 </div>
 
                 <div class="mt-20">
-                    <h5>DOKUMENTASI SERAH TERIMA</h5>
-
-                    <div class="mb-15">
-                        <strong>Foto Serah Terima Kunci</strong>
-                        <div class="photo-box">
-                            {{ $serahTerima->foto_kunci ?? 'Terlampir / sesuai arsip sistem' }}
-                        </div>
-                    </div>
-
-                    <div class="mb-15">
-                        <strong>Foto Kondisi Unit</strong>
-                        <div class="photo-box">
-                            {{ $serahTerima->foto_unit ?? 'Terlampir / sesuai arsip sistem' }}
-                        </div>
+                    <h5>DOKUMENTASI FOTO SERAH TERIMA</h5>
+                    <div style="display: flex; gap: 20px; margin-top: 10px; page-break-inside: avoid;">
+                        @if($serahTerima && $serahTerima->foto_serah_kunci)
+                            <div style="flex: 1; border: 1px solid #ccc; padding: 10px; border-radius: 6px; text-align: center; background: #fafafa;">
+                                <strong style="font-size: 13px; display: block; margin-bottom: 8px;">Foto Serah Terima Kunci</strong>
+                                <img src="{{ resolveFileUrl($serahTerima->foto_serah_kunci) }}" alt="Foto Kunci" style="max-width: 100%; max-height: 180px; object-fit: contain; border-radius: 4px; border: 1px solid #e0e0e0;">
+                            </div>
+                        @endif
+                        @if($serahTerima && $serahTerima->foto_kondisi_unit)
+                            <div style="flex: 1; border: 1px solid #ccc; padding: 10px; border-radius: 6px; text-align: center; background: #fafafa;">
+                                <strong style="font-size: 13px; display: block; margin-bottom: 8px;">Foto Kondisi Fisik Unit</strong>
+                                <img src="{{ resolveFileUrl($serahTerima->foto_kondisi_unit) }}" alt="Foto Unit" style="max-width: 100%; max-height: 180px; object-fit: contain; border-radius: 4px; border: 1px solid #e0e0e0;">
+                            </div>
+                        @endif
+                        @if(!$serahTerima || (!$serahTerima->foto_serah_kunci && !$serahTerima->foto_kondisi_unit))
+                            <div style="flex: 1; border: 1px dashed #bbb; padding: 15px; border-radius: 6px; text-align: center; color: #666; font-size: 13px;">
+                                Dokumentasi foto fisik tersimpan dalam arsip berkas digital sistem.
+                            </div>
+                        @endif
                     </div>
                 </div>
 
                 <div class="mt-20">
-                    <h5>CATATAN</h5>
+                    <h5>CATATAN KHUSUS</h5>
                     <div class="notes-box">
-                        {{ $serahTerima->catatan ?? 'Tidak ada catatan tambahan.' }}
+                        {{ $serahTerima->catatan ?? 'Tidak ada catatan tambahan. Unit diserahterimakan dalam keadaan baik dan siap dihuni.' }}
                     </div>
                 </div>
 

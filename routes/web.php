@@ -555,6 +555,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
     Route::post('/cash-tempo/update', [TimelineCashTempoController::class, 'update'])->name('cash-tempo.update');
     Route::post('/cash-tempo/payments', [TimelineCashTempoController::class, 'storePayment'])->name('cash-tempo.storePayment');
 
+    Route::get('/serah-terima/cetak/{id}', [SerahTerimaController::class, 'cetak'])->name('serah-terima.cetak');
     Route::get('/serah-terima-cetak', fn() => view('cetak.serah_terima_cetak'));
 
     Route::get('/dokumen/preview/{path}', function ($path) {

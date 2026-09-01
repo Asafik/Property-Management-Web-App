@@ -159,4 +159,26 @@ class SerahTerimaController extends Controller
 
         return view('marketing.done_sell', compact('booking', 'unit'));
     }
+
+    /**
+     * Cetak Lembar Resmi Berita Acara Serah Terima (BAST) & Rincian Unit Terjual
+     */
+    public function cetak($bookingId)
+    {
+        $booking = Booking::with([
+            'unit',
+            'unit.landBank',
+            'customer',
+            'sales',
+            'serahTerima.items',
+            'serahTerima.documents',
+            'akad',
+            'complaints'
+        ])->findOrFail($bookingId);
+
+        $serahTerima = $booking->serahTerima;
+        $unit = $booking->unit;
+
+        return view('cetak.serah_terima_cetak', compact('booking', 'serahTerima', 'unit'));
+    }
 }
