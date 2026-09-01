@@ -1399,12 +1399,14 @@
                                     <i class="mdi mdi-map"></i><span>Siteplan</span>
                                 </button>
                             </div>
-                            <!-- Aturan Komisi Agent Button -->
-                            <button type="button" class="btn btn-sm btn-gradient-info text-white d-inline-flex align-items-center gap-1.5 px-3 shadow-sm"
-                                style="height: 32px; border-radius: 6px; font-weight: 600;" data-bs-toggle="modal" data-bs-target="#modalMasterCommissionRules">
-                                <i class="mdi mdi-cogs text-white"></i>
-                                <span class="text-white">Aturan Komisi</span>
-                            </button>
+                            <!-- Aturan Komisi Agent Button (Hanya Kepala Marketing & Admin) -->
+                            @if (empty($isStaffMarketing))
+                                <button type="button" class="btn btn-sm btn-gradient-info text-white d-inline-flex align-items-center gap-1.5 px-3 shadow-sm"
+                                    style="height: 32px; border-radius: 6px; font-weight: 600;" data-bs-toggle="modal" data-bs-target="#modalMasterCommissionRules">
+                                    <i class="mdi mdi-cogs text-white"></i>
+                                    <span class="text-white">Aturan Komisi</span>
+                                </button>
+                            @endif
                             <!-- Export Buttons -->
                             <a href="{{ route('marketing.jual-unit.export.excel') }}"
                                 class="btn btn-sm btn-gradient-success d-inline-flex align-items-center gap-1 px-3" style="height: 32px; border-radius: 6px;">
@@ -1879,14 +1881,16 @@
                                                             <i class="mdi mdi-eye"></i>
                                                         </button>
                                                         @if (auth()->user()->position_id != 4)
-                                                            <button class="btn-action customer" title="Pilih Customer"
+                                                            <button class="btn-action customer" title="Booking Unit / Pilih Customer"
                                                                 onclick="openCustomerModal({{ $unit->id }})">
                                                                 <i class="mdi mdi-account-plus"></i>
                                                             </button>
-                                                            <button class="btn-action agent" title="Pilih Agent"
-                                                                onclick="openAgentModal({{ $unit->id }})">
-                                                                <i class="mdi mdi-account-search"></i>
-                                                            </button>
+                                                            @if (empty($isStaffMarketing))
+                                                                <button class="btn-action agent" title="Pasang Agency & Komisi"
+                                                                    onclick="openAgentModal({{ $unit->id }})">
+                                                                    <i class="mdi mdi-account-search"></i>
+                                                                </button>
+                                                            @endif
                                                         @endif
                                                     </div>
                                                 </td>
@@ -2847,6 +2851,7 @@
             </div>
         </div>
 
+        @if (empty($isStaffMarketing))
         <!-- ========================================================================= -->
         <!-- MODAL MASTER ATURAN KOMISI & FEE AGENT (PENGATURAN KOMISI OTOMATIS) -->
         <!-- ========================================================================= -->
@@ -3110,6 +3115,7 @@
                 </div>
             </div>
         </div>
+        @endif
 
     <!-- Form tersembunyi untuk submit customer -->
     <form id="formBooking" method="POST" enctype="multipart/form-data" style="display: none;">
@@ -3490,18 +3496,22 @@
 
         // Function Load Siteplan Berdasarkan Proyek & Denah yang Diupload
         function loadProjectSiteplan(landBankId) {
+            if (typeof canvas === 'undefined' || !canvas) return;
+
             const projectSelect = document.getElementById('siteplanProjectSelect');
             let selectedOption = null;
-            if (projectSelect) {
+            if (projectSelect && projectSelect.options && projectSelect.options.length > 0) {
                 if (landBankId) {
                     projectSelect.value = landBankId;
                 }
-                selectedOption = projectSelect.options[projectSelect.selectedIndex];
+                if (projectSelect.selectedIndex >= 0) {
+                    selectedOption = projectSelect.options[projectSelect.selectedIndex];
+                }
             }
 
-            const denahUrl = (selectedOption && selectedOption.dataset.denah) ? selectedOption.dataset.denah : "{{ asset('images/siteplan.jpeg') }}";
-            const hasCustomDenah = !!(selectedOption && selectedOption.dataset.denah);
-            const projectName = selectedOption ? selectedOption.dataset.name : 'Proyek';
+            const denahUrl = (selectedOption && selectedOption.dataset && selectedOption.dataset.denah) ? selectedOption.dataset.denah : "{{ asset('images/siteplan.jpeg') }}";
+            const hasCustomDenah = !!(selectedOption && selectedOption.dataset && selectedOption.dataset.denah);
+            const projectName = (selectedOption && selectedOption.dataset) ? (selectedOption.dataset.name || 'Proyek') : 'Proyek';
 
             const statusBadge = document.getElementById('siteplanDenahStatusBadge');
             if (statusBadge) {
@@ -3516,16 +3526,17 @@
             canvas.clear();
 
             fabric.Image.fromURL(denahUrl, function(img) {
-                originalWidth = img.width;
-                originalHeight = img.height;
+                if (!img) return;
+                originalWidth = img.width || 1200;
+                originalHeight = img.height || 800;
 
                 canvas.defaultCursor = 'grab';
 
                 canvas.setBackgroundImage(img, function() {
                     const curProjectId = projectSelect ? projectSelect.value : landBankId;
-                    const unitsToShow = curProjectId 
-                        ? allUnitsData.filter(u => u.land_bank_id == curProjectId)
-                        : allUnitsData;
+                    const unitsToShow = (typeof allUnitsData !== 'undefined' && allUnitsData.length > 0)
+                        ? (curProjectId ? allUnitsData.filter(u => u.land_bank_id == curProjectId) : allUnitsData)
+                        : [];
 
                     unitsToShow.forEach(u => {
                         let fillColor = '#adb5bd'; // default abu-abu untuk Belum Mulai (0%)
@@ -3631,14 +3642,14 @@
         }
 
         // Listener jika dropdown proyek di tab siteplan diganti
-        document.addEventListener('DOMContentLoaded', function() {
-            const projectSelect = document.getElementById('siteplanProjectSelect');
-            if (projectSelect) {
-                projectSelect.addEventListener('change', function() {
-                    loadProjectSiteplan(this.value);
-                });
-            }
-            loadProjectSiteplan(projectSelect ? projectSelect.value : null);
+        $(document).ready(function() {
+            $('#siteplanProjectSelect').on('change', function() {
+                loadProjectSiteplan($(this).val());
+            });
+            setTimeout(function() {
+                const projectSelect = document.getElementById('siteplanProjectSelect');
+                loadProjectSiteplan(projectSelect ? projectSelect.value : null);
+            }, 100);
         });
 
         // Zoom on Mouse Wheel (Figma/Canva style: Zoom to the exact mouse pointer position!)

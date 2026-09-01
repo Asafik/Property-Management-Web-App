@@ -35,8 +35,16 @@ class SellUnitController extends Controller
             'activeBooking.sales',
             'activeBooking.customer',
         ]);
-        // jika posisi marketing → hanya unit miliknya
-        if (($user->position->name ?? '') === 'Marketing') {
+        // Jika posisi Staff Marketing (sales) -> hanya tampilkan unit yang sudah dikaitkan oleh Kepala Marketing ke dirinya
+        $isStaffMarketing = false;
+        if ($user) {
+            $posName = strtolower($user->position->name ?? '');
+            if ($user->position_id == 2 || (strpos($posName, 'marketing') !== false && strpos($posName, 'kepala') === false)) {
+                $isStaffMarketing = true;
+            }
+        }
+
+        if ($isStaffMarketing) {
             $query->whereHas('activeBooking', function ($q) use ($user) {
                 $q->where('sales_id', $user->id);
             });
@@ -240,7 +248,25 @@ class SellUnitController extends Controller
         // DATA SUPPORT
         // =========================
         $projects = LandBank::select('id', 'name', 'denah', 'address')->orderBy('name')->get();
-        $customers = Customer::latest()->get();
+        
+        // Filter Customer: Staff Marketing hanya melihat customernya sendiri
+        if ($isStaffMarketing) {
+            $customers = Customer::where(function ($q) use ($user) {
+                $q->whereHas('guest', function ($gq) use ($user) {
+                    $gq->where('assigned_to', $user->id);
+                })
+                ->orWhereHas('units.activeBooking', function ($bq) use ($user) {
+                    $bq->where('sales_id', $user->id);
+                });
+            })->latest()->get();
+
+            if ($customers->isEmpty()) {
+                $customers = Customer::latest()->get();
+            }
+        } else {
+            $customers = Customer::latest()->get();
+        }
+
         $agencies = Employee::where('position_id', 2)->latest()->get();
         $types = LandBankUnit::select('type')->distinct()->pluck('type');
         $commissionRules = AgentCommissionRule::with('landBank')->orderBy('land_bank_id')->orderBy('target_type')->get();
@@ -287,7 +313,8 @@ class SellUnitController extends Controller
             'unitPaths',
             'sortField',
             'sortDirection',
-            'commissionRules'
+            'commissionRules',
+            'isStaffMarketing'
         ));
     }
 
@@ -393,6 +420,21 @@ class SellUnitController extends Controller
 
     public function setAgency(Request $request, $unitId)
     {
+        $user = Auth::user();
+        $isStaffMarketing = false;
+        if ($user) {
+            $posName = strtolower($user->position->name ?? '');
+            if ($user->position_id == 2 || (strpos($posName, 'marketing') !== false && strpos($posName, 'kepala') === false)) {
+                $isStaffMarketing = true;
+            }
+        }
+
+        if ($isStaffMarketing) {
+            return response()->json([
+                'message' => 'Hanya Kepala Marketing yang berwenang memasang atau mengubah agency pada unit.'
+            ], 403);
+        }
+
         Log::info('=== UPDATE SALES BOOKING START ===');
         Log::info('Unit ID: ' . $unitId);
         Log::info('Request Data:', $request->all());
@@ -512,6 +554,19 @@ class SellUnitController extends Controller
 
     public function commissionRulesIndex(Request $request)
     {
+        $user = Auth::user();
+        $isStaffMarketing = false;
+        if ($user) {
+            $posName = strtolower($user->position->name ?? '');
+            if ($user->position_id == 2 || (strpos($posName, 'marketing') !== false && strpos($posName, 'kepala') === false)) {
+                $isStaffMarketing = true;
+            }
+        }
+
+        if ($isStaffMarketing) {
+            abort(403, 'Akses terbatas hanya untuk Kepala Marketing dan Admin.');
+        }
+
         $projects = LandBank::select('id', 'name', 'address')->orderBy('name')->get();
         $query = AgentCommissionRule::with('landBank');
 
@@ -550,6 +605,11 @@ class SellUnitController extends Controller
 
     public function storeCommissionRule(Request $request)
     {
+        $user = Auth::user();
+        if ($user && ($user->position_id == 2 || (strpos(strtolower($user->position->name ?? ''), 'marketing') !== false && strpos(strtolower($user->position->name ?? ''), 'kepala') === false))) {
+            return response()->json(['message' => 'Hanya Kepala Marketing dan Admin yang berwenang mengelola aturan komisi.'], 403);
+        }
+
         $validated = $request->validate([
             'name'             => 'required|string|max:255',
             'land_bank_id'     => 'nullable|exists:land_banks,id',
@@ -578,6 +638,11 @@ class SellUnitController extends Controller
 
     public function updateCommissionRule(Request $request, $id)
     {
+        $user = Auth::user();
+        if ($user && ($user->position_id == 2 || (strpos(strtolower($user->position->name ?? ''), 'marketing') !== false && strpos(strtolower($user->position->name ?? ''), 'kepala') === false))) {
+            return response()->json(['message' => 'Hanya Kepala Marketing dan Admin yang berwenang mengelola aturan komisi.'], 403);
+        }
+
         $rule = AgentCommissionRule::findOrFail($id);
 
         $validated = $request->validate([
@@ -608,6 +673,11 @@ class SellUnitController extends Controller
 
     public function destroyCommissionRule($id)
     {
+        $user = Auth::user();
+        if ($user && ($user->position_id == 2 || (strpos(strtolower($user->position->name ?? ''), 'marketing') !== false && strpos(strtolower($user->position->name ?? ''), 'kepala') === false))) {
+            return response()->json(['message' => 'Hanya Kepala Marketing dan Admin yang berwenang mengelola aturan komisi.'], 403);
+        }
+
         $rule = AgentCommissionRule::findOrFail($id);
         $rule->delete();
 
@@ -619,6 +689,11 @@ class SellUnitController extends Controller
 
     public function toggleCommissionRule($id)
     {
+        $user = Auth::user();
+        if ($user && ($user->position_id == 2 || (strpos(strtolower($user->position->name ?? ''), 'marketing') !== false && strpos(strtolower($user->position->name ?? ''), 'kepala') === false))) {
+            return response()->json(['message' => 'Hanya Kepala Marketing dan Admin yang berwenang mengelola aturan komisi.'], 403);
+        }
+
         $rule = AgentCommissionRule::findOrFail($id);
         $rule->is_active = !$rule->is_active;
         $rule->save();
