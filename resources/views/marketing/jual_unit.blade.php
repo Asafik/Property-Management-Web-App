@@ -654,6 +654,57 @@
             box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
         }
 
+        /* Select2 Styling inside Modals */
+        .select2-container {
+            width: 100% !important;
+        }
+        .select2-container .select2-selection--single {
+            height: 42px !important;
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            display: flex !important;
+            align-items: center !important;
+            background-color: #ffffff !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 40px !important;
+            color: #1e293b !important;
+            font-weight: 600 !important;
+            padding-left: 12px !important;
+            font-size: 0.88rem !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 40px !important;
+            right: 8px !important;
+        }
+        .select2-dropdown {
+            z-index: 999999 !important;
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+            font-size: 0.88rem !important;
+            background: #ffffff !important;
+        }
+        .select2-search--dropdown {
+            padding: 8px !important;
+        }
+        .select2-search--dropdown .select2-search__field {
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            padding: 6px 10px !important;
+            font-size: 0.86rem !important;
+            outline: none !important;
+            width: 100% !important;
+        }
+        .select2-results__option {
+            padding: 8px 12px !important;
+            font-size: 0.86rem !important;
+        }
+        .select2-results__option--highlighted[aria-selected] {
+            background-color: #9a55ff !important;
+            color: #ffffff !important;
+        }
+
         /* Siteplan */
         .siteplan-scroll-container {
             width: 100%;
@@ -2552,7 +2603,7 @@
         </div>
 
         <!-- MODAL CUSTOMER & BOOKING UNIT -->
-        <div class="modal fade" id="modalCustomer" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="modalCustomer" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
                 <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
                     <div class="modal-header bg-light border-bottom" style="padding: 1.1rem 1.4rem;">
@@ -2678,7 +2729,7 @@
         </div>
 
         <!-- MODAL AGENCY DENGAN OTOMATISASI KOMISI -->
-        <div class="modal fade" id="modalAgency" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="modalAgency" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
                 <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
                     <div class="modal-header bg-light border-bottom" style="padding: 1.1rem 1.4rem;">
@@ -4114,20 +4165,50 @@
         }
 
         $(document).ready(function () {
-            // Inisialisasi Select2 untuk Pilih Customer di dalam Modal
+            // Re-inisialisasi Select2 saat Modal Terbuka Sempurna (Mencegah Bug Dropdown & Search)
+            $('#modalCustomer').on('shown.bs.modal', function () {
+                $('#select_customer_id').select2({
+                    dropdownParent: $('#modalCustomer'),
+                    placeholder: '-- Cari & Pilih Customer (ID / Nama) --',
+                    allowClear: true,
+                    width: '100%'
+                });
+
+                $('#customer_select_sales_id').select2({
+                    dropdownParent: $('#modalCustomer'),
+                    placeholder: '-- Pilih Agency / Agent Yang Membawa --',
+                    allowClear: true,
+                    width: '100%'
+                });
+            });
+
+            $('#modalAgency').on('shown.bs.modal', function () {
+                $('#select_sales_id').select2({
+                    dropdownParent: $('#modalAgency'),
+                    placeholder: '-- Cari & Pilih Agency / Agent --',
+                    allowClear: true,
+                    width: '100%'
+                });
+            });
+
+            // Inisialisasi awal
             $('#select_customer_id').select2({
-                theme: 'bootstrap-5',
                 dropdownParent: $('#modalCustomer'),
                 placeholder: '-- Cari & Pilih Customer (ID / Nama) --',
                 allowClear: true,
                 width: '100%'
             });
 
-            // Inisialisasi Select2 untuk Pilih Agency di dalam Modal Customer
             $('#customer_select_sales_id').select2({
-                theme: 'bootstrap-5',
                 dropdownParent: $('#modalCustomer'),
                 placeholder: '-- Pilih Agency / Agent Yang Membawa --',
+                allowClear: true,
+                width: '100%'
+            });
+
+            $('#select_sales_id').select2({
+                dropdownParent: $('#modalAgency'),
+                placeholder: '-- Cari & Pilih Agency / Agent --',
                 allowClear: true,
                 width: '100%'
             });
@@ -4147,15 +4228,6 @@
                     }
                     $('#customer_auto_calc_label').text('(' + calc.ruleName + ')');
                 }
-            });
-
-            // Inisialisasi Select2 untuk Pilih Agency di dalam Modal Agency
-            $('#select_sales_id').select2({
-                theme: 'bootstrap-5',
-                dropdownParent: $('#modalAgency'),
-                placeholder: '-- Cari & Pilih Agency / Agent --',
-                allowClear: true,
-                width: '100%'
             });
 
             // Format Rupiah
