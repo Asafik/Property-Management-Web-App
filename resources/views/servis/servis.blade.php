@@ -303,22 +303,24 @@
 </div>
 
 <!-- MODAL: TAMBAH PENGALUAN KELUHAN -->
-<div class="modal fade" id="modalTambahComplaint" tabindex="-1" aria-labelledby="modalTambahComplaintLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+<div class="modal fade" id="modalTambahComplaint" tabindex="-1" role="dialog" aria-labelledby="modalTambahComplaintLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-danger text-white py-3">
                 <h5 class="modal-title fw-bold" id="modalTambahComplaintLabel">
                     <i class="mdi mdi-alert-circle-outline me-1"></i> Form Pengajuan Keluhan / Garansi Baru
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <form action="{{ route('complaints.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body p-4">
                     <div class="row g-3">
-                        <div class="col-12">
+                        <div class="col-12 mb-2">
                             <label class="form-label fw-bold small text-muted">Pilih Unit & Konsumen <span class="text-danger">*</span></label>
-                            <select class="form-select" name="booking_id" required>
+                            <select class="form-control" name="booking_id" required>
                                 <option value="">-- Pilih Booking Unit Terjual --</option>
                                 @foreach($soldBookings as $sb)
                                     <option value="{{ $sb->id }}">
@@ -327,9 +329,9 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-2">
                             <label class="form-label fw-bold small text-muted">Kategori Keluhan <span class="text-danger">*</span></label>
-                            <select class="form-select" name="kategori" required>
+                            <select class="form-control" name="kategori" required>
                                 <option value="">-- Pilih Kategori --</option>
                                 <option value="kebocoran">Kebocoran Atap / Talang / Dinding</option>
                                 <option value="kelistrikan">Kelistrikan, Stopkontak & Lampu</option>
@@ -340,24 +342,24 @@
                                 <option value="lainnya">Lainnya / Masalah Umum</option>
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-2">
                             <label class="form-label fw-bold small text-muted">Tingkat Prioritas <span class="text-danger">*</span></label>
-                            <select class="form-select" name="prioritas" required>
+                            <select class="form-control" name="prioritas" required>
                                 <option value="rendah">Rendah (Penyelesaian santai)</option>
                                 <option value="sedang" selected>Sedang (Standar perbaikan)</option>
                                 <option value="tinggi">Tinggi (Perlu segera ditangani)</option>
                                 <option value="darurat">Darurat / Emergency (Segera hari ini)</option>
                             </select>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 mb-2">
                             <label class="form-label fw-bold small text-muted">Judul Ringkas Keluhan <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="judul_keluhan" placeholder="Contoh: Kran kamar mandi utama bocor dan rembes" required>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 mb-2">
                             <label class="form-label fw-bold small text-muted">Detail Deskripsi Keluhan <span class="text-danger">*</span></label>
                             <textarea class="form-control" name="deskripsi" rows="3" placeholder="Jelaskan titik kerusakan, kronologi kendala, dan bagian yang perlu diperbaiki secara detail..." required></textarea>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 mb-2">
                             <label class="form-label fw-bold small text-muted">Upload Foto / Bukti Kendala (Opsional)</label>
                             <input type="file" class="form-control" name="foto_keluhan" accept="image/*,application/pdf">
                             <small class="text-muted">Mendukung format JPG, PNG, WEBP, atau PDF (Max 5MB)</small>
@@ -365,7 +367,7 @@
                     </div>
                 </div>
                 <div class="modal-footer bg-light py-2">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-danger px-4">
                         <i class="mdi mdi-send me-1"></i> Simpan Keluhan
                     </button>
@@ -376,14 +378,16 @@
 </div>
 
 <!-- MODAL: UPDATE PROGRESS -->
-<div class="modal fade" id="modalUpdateServis" tabindex="-1" aria-labelledby="modalUpdateServisLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+<div class="modal fade" id="modalUpdateServis" tabindex="-1" role="dialog" aria-labelledby="modalUpdateServisLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-primary text-white py-3">
                 <h5 class="modal-title fw-bold" id="modalUpdateServisLabel">
                     <i class="mdi mdi-progress-wrench me-1"></i> Update Progress Penanganan Keluhan
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <form id="formUpdateServis" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -401,9 +405,9 @@
                     </div>
 
                     <div class="row g-3">
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-2">
                             <label class="form-label fw-bold small text-muted">Status Progress Penanganan <span class="text-danger">*</span></label>
-                            <select class="form-select" name="status" id="servisSelectStatus" required>
+                            <select class="form-control" name="status" id="servisSelectStatus" required>
                                 <option value="diajukan">Diajukan (Menunggu Respon)</option>
                                 <option value="diproses">Diproses (Sedang Dikerjakan)</option>
                                 <option value="pengecekan">Pengecekan Lapangan / Uji Coba</option>
@@ -411,26 +415,26 @@
                                 <option value="ditolak">Ditolak (Di luar cakupan garansi)</option>
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-2">
                             <label class="form-label fw-bold small text-muted">Petugas / Teknisi Penanggung Jawab</label>
                             <input type="text" class="form-control" name="petugas_penanggung_jawab" id="servisInputPetugas" placeholder="Contoh: Pak Joko (Teknisi Bangunan)">
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 mb-2">
                             <label class="form-label fw-bold small text-muted">Catatan Tindak Lanjut & Perbaikan</label>
                             <textarea class="form-control" name="catatan_perbaikan" id="servisInputCatatan" rows="3" placeholder="Tuliskan tindakan yang telah dilakukan, material yang diganti, atau hasil pengecekan lapangan..."></textarea>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-2">
                             <label class="form-label fw-bold small text-muted">Biaya Perbaikan (Rp)</label>
                             <input type="number" class="form-control" name="biaya_perbaikan" id="servisInputBiaya" placeholder="0 (Gratis garansi jika 0)">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 mb-2">
                             <label class="form-label fw-bold small text-muted">Upload Foto Hasil Perbaikan (Opsional)</label>
                             <input type="file" class="form-control" name="foto_penyelesaian" accept="image/*,application/pdf">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer bg-light py-2">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">Tutup</button>
                     <button type="submit" class="btn btn-primary px-4">
                         <i class="mdi mdi-content-save me-1"></i> Simpan Perubahan
                     </button>
@@ -441,18 +445,20 @@
 </div>
 
 <!-- MODAL: DETAIL KELUHAN -->
-<div class="modal fade" id="modalDetailServis" tabindex="-1" aria-labelledby="modalDetailServisLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+<div class="modal fade" id="modalDetailServis" tabindex="-1" role="dialog" aria-labelledby="modalDetailServisLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-white border-bottom py-3">
                 <h5 class="modal-title fw-bold" id="modalDetailServisLabel" style="color: #2c2e3f;">
                     <i class="mdi mdi-information-outline me-2 text-info"></i>Detail Informasi Keluhan
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body p-4">
                 <div class="row g-3 mb-3">
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-2">
                         <div class="p-3 bg-light rounded-3 border h-100">
                             <span class="text-muted small d-block">No. Tiket</span>
                             <h5 class="fw-bold text-primary font-monospace mb-2" id="detTicket">-</h5>
@@ -462,7 +468,7 @@
                             <span class="fw-semibold text-dark d-block" id="detCustomer">-</span>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-2">
                         <div class="p-3 bg-light rounded-3 border h-100">
                             <span class="text-muted small d-block">Kategori & Prioritas</span>
                             <div class="d-flex gap-2 my-1">
@@ -493,7 +499,7 @@
                 </div>
             </div>
             <div class="modal-footer bg-light border-top py-2">
-                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-secondary px-4" data-dismiss="modal" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
@@ -504,63 +510,79 @@
 @push('scripts')
 <script>
 function openTambahComplaintModal() {
-    const modal = new bootstrap.Modal(document.getElementById('modalTambahComplaint'));
-    modal.show();
+    if (window.jQuery && typeof $('#modalTambahComplaint').modal === 'function') {
+        $('#modalTambahComplaint').modal('show');
+    } else if (window.bootstrap && bootstrap.Modal) {
+        var modal = new bootstrap.Modal(document.getElementById('modalTambahComplaint'));
+        modal.show();
+    }
 }
 
 function openUpdateServisModal(c) {
-    const form = document.getElementById('formUpdateServis');
-    form.action = '/complaints/' + c.id + '/update';
+    var form = document.getElementById('formUpdateServis');
+    if (form) {
+        form.action = '/complaints/' + c.id + '/update';
+    }
 
-    document.getElementById('servisUpdateTicket').innerText = c.ticket_number;
-    document.getElementById('servisUpdatePrioritas').innerText = (c.prioritas || 'SEDANG').toUpperCase();
-    document.getElementById('servisUpdateJudul').innerText = c.judul_keluhan;
-    document.getElementById('servisUpdateDeskripsi').innerText = c.deskripsi;
+    if (document.getElementById('servisUpdateTicket')) document.getElementById('servisUpdateTicket').innerText = c.ticket_number || '-';
+    if (document.getElementById('servisUpdatePrioritas')) document.getElementById('servisUpdatePrioritas').innerText = (c.prioritas || 'SEDANG').toUpperCase();
+    if (document.getElementById('servisUpdateJudul')) document.getElementById('servisUpdateJudul').innerText = c.judul_keluhan || '-';
+    if (document.getElementById('servisUpdateDeskripsi')) document.getElementById('servisUpdateDeskripsi').innerText = c.deskripsi || '-';
 
-    document.getElementById('servisSelectStatus').value = c.status;
-    document.getElementById('servisInputPetugas').value = c.petugas_penanggung_jawab || '';
-    document.getElementById('servisInputCatatan').value = c.catatan_perbaikan || '';
-    document.getElementById('servisInputBiaya').value = c.biaya_perbaikan || 0;
+    if (document.getElementById('servisSelectStatus')) document.getElementById('servisSelectStatus').value = c.status || 'diajukan';
+    if (document.getElementById('servisInputPetugas')) document.getElementById('servisInputPetugas').value = c.petugas_penanggung_jawab || '';
+    if (document.getElementById('servisInputCatatan')) document.getElementById('servisInputCatatan').value = c.catatan_perbaikan || '';
+    if (document.getElementById('servisInputBiaya')) document.getElementById('servisInputBiaya').value = c.biaya_perbaikan || 0;
 
-    const modal = new bootstrap.Modal(document.getElementById('modalUpdateServis'));
-    modal.show();
+    if (window.jQuery && typeof $('#modalUpdateServis').modal === 'function') {
+        $('#modalUpdateServis').modal('show');
+    } else if (window.bootstrap && bootstrap.Modal) {
+        var modal = new bootstrap.Modal(document.getElementById('modalUpdateServis'));
+        modal.show();
+    }
 }
 
 function openDetailServisModal(c) {
-    document.getElementById('detTicket').innerText = c.ticket_number;
-    document.getElementById('detUnit').innerText = (c.unit ? c.unit.unit_name + ' (Blok ' + c.unit.unit_code + ')' : '-');
-    document.getElementById('detCustomer').innerText = (c.customer ? c.customer.full_name + ' (' + (c.customer.phone || '-') + ')' : '-');
-    document.getElementById('detKategori').innerText = (c.kategori || '-').replace('_', ' ');
-    document.getElementById('detPrioritas').innerText = (c.prioritas || 'SEDANG');
-    document.getElementById('detStatus').innerText = (c.status || '-');
-    document.getElementById('detPetugas').innerText = (c.petugas_penanggung_jawab || 'Belum Ditugaskan');
-    document.getElementById('detJudul').innerText = c.judul_keluhan;
-    document.getElementById('detDeskripsi').innerText = c.deskripsi;
-    document.getElementById('detCatatan').innerText = c.catatan_perbaikan || 'Belum ada catatan perbaikan dari teknisi.';
+    if (document.getElementById('detTicket')) document.getElementById('detTicket').innerText = c.ticket_number || '-';
+    if (document.getElementById('detUnit')) document.getElementById('detUnit').innerText = (c.unit ? c.unit.unit_name + ' (Blok ' + c.unit.unit_code + ')' : '-');
+    if (document.getElementById('detCustomer')) document.getElementById('detCustomer').innerText = (c.customer ? c.customer.full_name + ' (' + (c.customer.phone || '-') + ')' : '-');
+    if (document.getElementById('detKategori')) document.getElementById('detKategori').innerText = (c.kategori || '-').replace('_', ' ');
+    if (document.getElementById('detPrioritas')) document.getElementById('detPrioritas').innerText = (c.prioritas || 'SEDANG').toUpperCase();
+    if (document.getElementById('detStatus')) document.getElementById('detStatus').innerText = (c.status || '-').toUpperCase();
+    if (document.getElementById('detPetugas')) document.getElementById('detPetugas').innerText = (c.petugas_penanggung_jawab || 'Belum Ditugaskan');
+    if (document.getElementById('detJudul')) document.getElementById('detJudul').innerText = c.judul_keluhan || '-';
+    if (document.getElementById('detDeskripsi')) document.getElementById('detDeskripsi').innerText = c.deskripsi || '-';
+    if (document.getElementById('detCatatan')) document.getElementById('detCatatan').innerText = c.catatan_perbaikan || 'Belum ada catatan perbaikan dari teknisi.';
 
-    const box = document.getElementById('boxBuktiFoto');
-    box.innerHTML = '';
-    if (c.foto_keluhan) {
-        box.innerHTML += `
-            <div class="col-6">
-                <a href="/${c.foto_keluhan}" target="_blank" class="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-1">
-                    <i class="mdi mdi-image-outline"></i> Lihat Foto Bukti Keluhan
-                </a>
-            </div>
-        `;
-    }
-    if (c.foto_penyelesaian) {
-        box.innerHTML += `
-            <div class="col-6">
-                <a href="/${c.foto_penyelesaian}" target="_blank" class="btn btn-outline-success btn-sm w-100 d-flex align-items-center justify-content-center gap-1">
-                    <i class="mdi mdi-image-check"></i> Lihat Foto Hasil Perbaikan
-                </a>
-            </div>
-        `;
+    var box = document.getElementById('boxBuktiFoto');
+    if (box) {
+        box.innerHTML = '';
+        if (c.foto_keluhan) {
+            box.innerHTML += `
+                <div class="col-6">
+                    <a href="/${c.foto_keluhan}" target="_blank" class="btn btn-outline-danger btn-sm w-100 d-flex align-items-center justify-content-center gap-1">
+                        <i class="mdi mdi-image-outline"></i> Lihat Foto Bukti Keluhan
+                    </a>
+                </div>
+            `;
+        }
+        if (c.foto_penyelesaian) {
+            box.innerHTML += `
+                <div class="col-6">
+                    <a href="/${c.foto_penyelesaian}" target="_blank" class="btn btn-outline-success btn-sm w-100 d-flex align-items-center justify-content-center gap-1">
+                        <i class="mdi mdi-image-check"></i> Lihat Foto Hasil Perbaikan
+                    </a>
+                </div>
+            `;
+        }
     }
 
-    const modal = new bootstrap.Modal(document.getElementById('modalDetailServis'));
-    modal.show();
+    if (window.jQuery && typeof $('#modalDetailServis').modal === 'function') {
+        $('#modalDetailServis').modal('show');
+    } else if (window.bootstrap && bootstrap.Modal) {
+        var modal = new bootstrap.Modal(document.getElementById('modalDetailServis'));
+        modal.show();
+    }
 }
 </script>
 @endpush
