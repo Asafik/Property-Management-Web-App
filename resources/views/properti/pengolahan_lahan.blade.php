@@ -197,8 +197,89 @@
             color: #ffffff !important;
         }
 
+        /* Modal Custom Styling & Responsive (Sisa Dikit & Tidak Terlalu Lebar) */
+        .modal-custom .modal-dialog,
+        .modal-dialog-compact,
+        #modalAddStep .modal-dialog {
+            max-width: 680px !important;
+            width: 92%;
+            margin: 1.5rem auto !important;
+        }
+
+        #modalValidasiLegalitas .modal-dialog,
+        #modalEditTarget .modal-dialog {
+            max-width: 560px !important;
+            width: 92%;
+            margin: 1.5rem auto !important;
+        }
+
+        .modal-dialog-scrollable {
+            max-height: calc(100vh - 2.5rem) !important;
+        }
+
+        .modal-dialog-scrollable .modal-content,
+        .modal-content {
+            max-height: calc(100vh - 2.5rem) !important;
+            border-radius: 14px !important;
+            border: none !important;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18) !important;
+        }
+
+        .modal-header {
+            padding: 1rem 1.25rem !important;
+            border-bottom: 1px solid #f0f2f5 !important;
+        }
+
+        .modal-body {
+            padding: 1.25rem !important;
+        }
+
+        .modal-dialog-scrollable .modal-body {
+            max-height: calc(100vh - 11rem) !important;
+            overflow-y: auto !important;
+            overscroll-behavior: contain !important;
+            scrollbar-width: thin;
+            scrollbar-color: #da8cff #f1f5f9;
+        }
+
+        .modal-footer {
+            padding: 0.75rem 1.25rem !important;
+            border-top: 1px solid #f0f2f5 !important;
+        }
+
+        /* Prevent outer body background scroll when modal is open */
+        html.modal-open,
+        body.modal-open {
+            overflow: hidden !important;
+            height: 100vh !important;
+            padding-right: 0 !important;
+            touch-action: none;
+        }
+
+        body.modal-open .container-scroller,
+        body.modal-open .main-panel,
+        body.modal-open .content-wrapper,
+        body.modal-open .page-body-wrapper {
+            overflow: hidden !important;
+            height: 100vh !important;
+        }
+
+        .modal {
+            padding: 1.25rem 0.5rem !important;
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            overscroll-behavior: contain !important;
+        }
+
         /* ===== RESPONSIVE OPTIMIZATION (MOBILE & TABLET) ===== */
         @media (max-width: 991.98px) {
+            #modalAddStep .modal-dialog,
+            #modalValidasiLegalitas .modal-dialog,
+            #modalEditTarget .modal-dialog {
+                max-width: 94% !important;
+                width: 94% !important;
+                margin: 1rem auto !important;
+            }
             .page-header-box .d-flex.flex-wrap {
                 width: 100%;
             }
@@ -236,6 +317,48 @@
             }
         }
         @media (max-width: 575.98px) {
+            .modal {
+                padding: 0.5rem 0.25rem 2rem 0.25rem !important;
+            }
+
+            .modal-dialog-centered {
+                align-items: flex-start !important;
+                min-height: auto !important;
+                margin-top: 0.75rem !important;
+                margin-bottom: 2rem !important;
+            }
+
+            #modalAddStep .modal-dialog,
+            #modalValidasiLegalitas .modal-dialog,
+            #modalEditTarget .modal-dialog {
+                max-width: 96% !important;
+                width: 96% !important;
+                margin: 0.75rem auto 2rem auto !important;
+                max-height: calc(100dvh - 3.5rem) !important;
+                max-height: calc(100vh - 3.5rem) !important;
+            }
+
+            .modal-dialog-scrollable .modal-content,
+            .modal-content {
+                max-height: calc(100dvh - 3.5rem) !important;
+                max-height: calc(100vh - 3.5rem) !important;
+                border-radius: 12px !important;
+            }
+
+            .modal-dialog-scrollable .modal-body {
+                max-height: calc(100dvh - 9.5rem) !important;
+                max-height: calc(100vh - 9.5rem) !important;
+                padding: 0.85rem 0.75rem !important;
+            }
+
+            .modal-header {
+                padding: 0.75rem 0.9rem !important;
+            }
+
+            .modal-footer {
+                padding: 0.6rem 0.85rem !important;
+            }
+
             .page-header-box h4 {
                 font-size: 1.15rem;
             }
@@ -261,17 +384,14 @@
                         Pengolahan Lahan: <span class="text-primary">{{ $land->name }}</span>
                     </h4>
                     <span class="small text-muted">
-                        Progres bertahap pembangunan kawasan (Semua tahapan pekerjaan harus 100% selesai untuk membuka Tambah Kavling)
+                        Progres bertahap pembangunan infrastruktur kawasan
                     </span>
                 </div>
             </div>
             <div class="d-flex flex-wrap gap-2 align-items-center">
                 <a href="{{ route('properti-all') }}" class="btn btn-outline-secondary btn-sm px-3 rounded-2 d-flex align-items-center gap-1 shadow-sm">
-                    <i class="mdi mdi-arrow-left"></i> Kembali
+                    Kembali
                 </a>
-                <button type="button" class="btn btn-gradient-primary btn-sm px-3 rounded-2 d-flex align-items-center gap-1 shadow-sm" onclick="openAddStepModal(1)">
-                    + Tambah Step / Pos
-                </button>
                 <!-- Validasi Legalitas Status Trigger -->
                 @if($land->legal_status == 'verified' || $land->isFromPraLandbank())
                     <button type="button" class="btn btn-sm btn-outline-success px-3 rounded-2 d-flex align-items-center gap-1 shadow-sm" onclick="openLegalitasModal()" title="Status Legalitas Terverifikasi">
@@ -297,7 +417,7 @@
                     </a>
                 @else
                     <button type="button" class="btn btn-secondary btn-sm px-3 rounded-2 shadow-sm opacity-75 d-flex align-items-center gap-1" onclick="showKavlingLockedInfo()" title="Tambah Kavling Terkunci">
-                        <i class="mdi mdi-lock me-1"></i> Tambah Kavling
+                        Tambah Kavling
                     </button>
                 @endif
             </div>
@@ -340,9 +460,9 @@
                     </div>
 
                     <div class="d-flex justify-content-between small text-muted">
-                        <span>Total Akumulasi Progres: <b class="text-primary" id="headerProgressText">{{ $progress }}%</b></span>
+                        <span>Total: <b class="text-primary" id="headerProgressText">{{ $progress }}%</b></span>
                         @if($isCanKavling)
-                            <span class="badge bg-soft-success text-success fw-bold">Syarat Kavling Terpenuhi (Terbuka)</span>
+                            <span class="badge bg-soft-success text-success fw-bold">Kavling Terbuka</span>
                         @else
                             <span class="badge bg-soft-danger text-danger fw-bold">Kavling Terkunci</span>
                         @endif
@@ -353,10 +473,10 @@
                     <div class="p-3 rounded-3 border-0 small" style="background: #f8faff; border: 1px solid #dcd6f7 !important;">
                         <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
                             <strong class="text-dark">
-                                Validasi Syarat Tambah Kavling:
+                                Syarat Tambah Kavling:
                             </strong>
                             @if($isCanKavling)
-                                <span class="badge bg-success text-white rounded-2 px-2 py-1 small">Lolos Validasi</span>
+                                <span class="badge bg-success text-white rounded-2 px-2 py-1 small">Lolos</span>
                             @else
                                 <span class="badge bg-danger text-white rounded-2 px-2 py-1 small">Belum Lengkap</span>
                             @endif
@@ -364,25 +484,25 @@
 
                         <!-- Rule 1: Validasi Legalitas Tanah -->
                         <div class="d-flex align-items-center justify-content-between py-1">
-                            <span class="text-muted">1. Dokumen Legalitas:</span>
+                            <span class="text-muted">1. Legalitas:</span>
                             @if($isLegalValid)
                                 <span class="badge bg-soft-success text-success fw-bold rounded-2">
-                                    Terverifikasi (Valid)
+                                    Terverifikasi
                                 </span>
                             @elseif($land->legal_status === 'rejected')
                                 <a href="javascript:void(0)" onclick="openLegalitasModal()" class="badge bg-soft-danger text-danger fw-bold rounded-2 text-decoration-none">
-                                    Ditolak / Revisi
+                                    Revisi
                                 </a>
                             @else
                                 <a href="javascript:void(0)" onclick="openLegalitasModal()" class="badge bg-soft-warning text-warning fw-bold rounded-2 text-decoration-none">
-                                    Pending (Validasi)
+                                    Pending
                                 </a>
                             @endif
                         </div>
 
                         <!-- Rule 2: Pengolahan Lahan Selesai -->
                         <div class="d-flex align-items-center justify-content-between py-1">
-                            <span class="text-muted">2. Fisik Pengolahan:</span>
+                            <span class="text-muted">2. Fisik Lahan:</span>
                             @if($isDevSelesai)
                                 <span class="badge bg-soft-success text-success fw-bold rounded-2">
                                     100% Selesai
@@ -427,9 +547,6 @@
                             </div>
                             <p class="text-muted mb-0 fw-semibold text-truncate small">{{ $phInfo['title'] }}</p>
                         </div>
-                        <div class="d-none d-md-block">
-                            <i class="mdi mdi-layers-triple" style="font-size: 2rem; color: #9a55ff; opacity: 0.25;"></i>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -440,14 +557,11 @@
             <div class="card shadow-sm border-0 h-100" 
                  style="border: 2px dashed #9a55ff !important; background: #faf5ff; cursor: pointer; transition: all 0.2s ease;" 
                  onclick="openAddStepModal({{ $nextPhaseNum }})" 
-                 title="Klik untuk menambah Tahapan Pembangunan Baru">
+                 title="Tambah Tahapan Baru">
                 <div class="card-body d-flex justify-content-between align-items-center p-2 p-md-3">
                     <div>
                         <span class="fw-bold text-primary d-block small" style="font-size: 0.85rem;">+ Tambah Tahapan</span>
                         <small class="text-muted" style="font-size: 0.72rem;">Kustom Fase</small>
-                    </div>
-                    <div class="d-none d-md-block">
-                        <i class="mdi mdi-plus-circle" style="font-size: 2rem; color: #9a55ff; opacity: 0.35;"></i>
                     </div>
                 </div>
             </div>
@@ -466,9 +580,6 @@
                     <div class="overflow-hidden">
                         <h4 class="text-danger mb-1 fw-bold fs-6 fs-md-5 text-truncate">Rp {{ number_format($totalExpense, 0, ',', '.') }}</h4>
                         <p class="text-muted mb-0 fw-semibold text-truncate small">Total Belanja ({{ $expenses->count() }} Nota)</p>
-                    </div>
-                    <div class="d-none d-md-block">
-                        <i class="mdi mdi-cash-multiple" style="font-size: 2rem; color: #dc3545; opacity: 0.25;"></i>
                     </div>
                 </div>
             </div>
@@ -493,22 +604,17 @@
                     <!-- Fase Header Info -->
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 pb-3 mb-4 border-bottom">
                         <div>
-                            <div class="d-flex align-items-center gap-2">
-                                <h5 class="fw-bold text-dark mb-0">{{ $phInfo['title'] }}</h5>
-                            </div>
-                            <span class="small text-muted mt-1 d-block">
-                                {{ $phInfo['subtitle'] }}
-                            </span>
+                            <h5 class="fw-bold text-dark mb-0">{{ $phInfo['title'] }}</h5>
                         </div>
-                        <div class="d-flex flex-wrap gap-2 w-100 w-md-auto">
-                            <button type="button" class="btn btn-sm btn-gradient-primary rounded-2 px-3 shadow-sm fw-semibold flex-fill flex-md-grow-0" onclick="openAddStepModal({{ $phNum }})">
-                                + Tambah Step
+                        <div class="d-flex flex-wrap align-items-center justify-content-md-end gap-2 ms-md-auto">
+                            <button type="button" class="btn btn-sm btn-gradient-primary rounded-2 px-3 shadow-sm fw-semibold" onclick="openAddStepModal({{ $phNum }})">
+                                + Tambah Pos
                             </button>
-                            <button type="button" class="btn btn-sm btn-primary text-white rounded-2 px-3 shadow-sm fw-semibold flex-fill flex-md-grow-0" onclick="toggleInlineAddExpense({{ $phNum }})">
-                                + Catat Belanja Bahan
+                            <button type="button" class="btn btn-sm btn-primary text-white rounded-2 px-3 shadow-sm fw-semibold" onclick="toggleInlineAddExpense({{ $phNum }})">
+                                + Catat Belanja
                             </button>
-                            <button type="button" class="btn btn-sm btn-success rounded-2 px-3 shadow-sm fw-semibold flex-fill flex-md-grow-0" onclick="finalizePhaseAction({{ $phNum }})">
-                                Selesaikan ({{ $phInfo['title'] }}) 100%
+                            <button type="button" class="btn btn-sm btn-success rounded-2 px-3 shadow-sm fw-semibold" onclick="finalizePhaseAction({{ $phNum }})">
+                                Selesaikan (100%)
                             </button>
                         </div>
                     </div>
@@ -517,17 +623,16 @@
                     @include('properti.partials.inline_expense_form', ['phase' => $phNum, 'infrastructures' => $pItems])
 
                     <!-- Tasks Grid -->
-                    <h6 class="fw-bold text-dark mb-3">Pos Pekerjaan Fisik: {{ $phInfo['title'] }}</h6>
+                    <h6 class="fw-bold text-dark mb-3">Pos Pekerjaan: {{ $phInfo['title'] }}</h6>
                     <div class="row g-3 g-md-4 mb-4">
                         @forelse($pItems as $item)
                             @include('properti.partials.phase_item_card', ['item' => $item])
                         @empty
                             <div class="col-12">
                                 <div class="p-4 text-center bg-light rounded-3 border border-dashed">
-                                    <h6 class="text-dark fw-bold mb-1">Belum Ada Pos Pekerjaan di {{ $phInfo['title'] }}</h6>
-                                    <p class="small text-muted mb-3">Klik tombol di bawah untuk menambahkan rincian pekerjaan atau step untuk tahapan ini.</p>
+                                    <h6 class="text-dark fw-bold mb-2">Belum ada pos pekerjaan di {{ $phInfo['title'] }}</h6>
                                     <button type="button" class="btn btn-sm btn-gradient-primary px-3 rounded-2 shadow-sm fw-semibold" onclick="openAddStepModal({{ $phNum }})">
-                                        + Tambah Step Pertama
+                                        + Tambah Pos
                                     </button>
                                 </div>
                             </div>
@@ -537,7 +642,7 @@
                     <!-- Expenses Table -->
                     <div class="mt-4 pt-3 border-top">
                         <h6 class="fw-bold text-dark mb-3 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2">
-                            <span>Riwayat Belanja Bahan / Nota: {{ $phInfo['title'] }}</span>
+                            <span>Riwayat Belanja Bahan</span>
                             <span class="badge bg-soft-danger text-danger">Total: Rp {{ number_format($pExpenses->sum('total_amount'), 0, ',', '.') }}</span>
                         </h6>
                         @include('properti.partials.phase_expense_table', ['phase' => $phNum, 'phaseExpenses' => $pExpenses])
@@ -547,7 +652,7 @@
                     <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 pt-4 border-top mt-4">
                         @if($prevTabTarget)
                             <button type="button" class="btn btn-outline-secondary px-4 rounded-2 mb-2 mb-sm-0" onclick="activateTab('{{ $prevTabTarget }}');">
-                                &larr; Kembali ke {{ $prevTitle }}
+                                &larr; {{ $prevTitle }}
                             </button>
                         @else
                             <div></div>
@@ -556,7 +661,7 @@
                         @if($isLastPhase)
                             @if($land->canCreateKavling())
                                 <a href="{{ route('properti.buatKavling', $land->id) }}" class="btn btn-gradient-success px-4 rounded-2 shadow-sm text-center">
-                                    PENGOLAHAN SELESAI &rarr; Buat Unit Kavling
+                                    Buat Unit Kavling &rarr;
                                 </a>
                             @else
                                 <button type="button" class="btn btn-gradient-success px-4 rounded-2 shadow-sm" onclick="finalizeAllInfrastruktur()">
@@ -565,7 +670,7 @@
                             @endif
                         @else
                             <button type="button" class="btn btn-primary px-4 rounded-2 shadow-sm" onclick="activateTab('{{ $nextTabTarget }}');">
-                                Lanjut ke {{ $nextTitle }} &rarr;
+                                Lanjut: {{ $nextTitle }} &rarr;
                             </button>
                         @endif
                     </div>
@@ -580,28 +685,28 @@
                 <div class="row g-3 mb-4">
                     <div class="col-6 col-md-3">
                         <div class="p-3 rounded-4 bg-light border">
-                            <span class="text-muted small fw-bold">Total Belanja Realisasi</span>
+                            <span class="text-muted small fw-bold">Total Belanja</span>
                             <h4 class="fw-bold text-danger mb-0 mt-1">Rp {{ number_format($totalExpense, 0, ',', '.') }}</h4>
-                            <span class="small text-muted">{{ $expenses->count() }} total transaksi</span>
+                            <span class="small text-muted">{{ $expenses->count() }} transaksi</span>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="p-3 rounded-4 bg-light border">
-                            <span class="text-muted small fw-bold">Lunas Terbayar</span>
+                            <span class="text-muted small fw-bold">Lunas</span>
                             <h4 class="fw-bold text-success mb-0 mt-1">Rp {{ number_format($totalLunas, 0, ',', '.') }}</h4>
-                            <span class="small text-muted">{{ $expenses->where('payment_status', 'Lunas')->count() }} transaksi lunas</span>
+                            <span class="small text-muted">{{ $expenses->where('payment_status', 'Lunas')->count() }} transaksi</span>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="p-3 rounded-4 bg-light border">
-                            <span class="text-muted small fw-bold">Hutang / Tempo Vendor</span>
+                            <span class="text-muted small fw-bold">Hutang / Tempo</span>
                             <h4 class="fw-bold text-warning mb-0 mt-1">Rp {{ number_format($totalHutang, 0, ',', '.') }}</h4>
-                            <span class="small text-muted">{{ $expenses->where('payment_status', '!=', 'Lunas')->count() }} belum lunas</span>
+                            <span class="small text-muted">{{ $expenses->where('payment_status', '!=', 'Lunas')->count() }} transaksi</span>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="p-3 rounded-4 bg-light border">
-                            <span class="text-muted small fw-bold">Rincian per Fase</span>
+                            <span class="text-muted small fw-bold">Rekap per Fase</span>
                             <div class="small mt-1">
                                 <div>Fase 1: <b>Rp {{ number_format($expenses->where('phase', 1)->sum('total_amount'), 0, ',', '.') }}</b></div>
                                 <div>Fase 2: <b>Rp {{ number_format($expenses->where('phase', 2)->sum('total_amount'), 0, ',', '.') }}</b></div>
@@ -613,7 +718,7 @@
 
                 <!-- Grand Total Expenses Table -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold text-dark mb-0"><i class="mdi mdi-cash-multiple text-danger me-1"></i> Seluruh Rekapitulasi Pengeluaran Bahan & Jasa</h5>
+                    <h5 class="fw-bold text-dark mb-0">Rekap Pengeluaran Bahan & Jasa</h5>
                 </div>
                 <div class="table-responsive bg-white rounded-4 border">
                     <table class="table table-elevated table-hover align-middle mb-0" style="min-width: 960px;">
@@ -709,7 +814,7 @@
 
     <!-- Modal Edit Target Volume & Bobot Pos Pekerjaan -->
     <div class="modal fade" id="modalEditTarget" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-dialog-compact">
             <div class="modal-content rounded-4 border-0 shadow">
                 <div class="modal-header border-bottom-0 pb-0">
                     <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2">
@@ -743,7 +848,7 @@
                             </div>
                             <div class="col-6">
                                 <label class="small text-muted fw-bold mb-1">Estimasi Biaya / RAB (Rp)</label>
-                                <input type="number" step="any" class="form-control" id="editTargetCostInput" name="cost_estimate" placeholder="0">
+                                <input type="text" class="form-control price-format" id="editTargetCostInput" name="cost_estimate" placeholder="Contoh: 25.000.000">
                             </div>
                         </div>
                     </div>
@@ -760,7 +865,7 @@
 
     <!-- Modal Validasi Legalitas Tanah -->
     <div class="modal fade" id="modalValidasiLegalitas" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-dialog-compact">
             <div class="modal-content rounded-4 border-0 shadow">
                 <div class="modal-header border-bottom-0 pb-0">
                     <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2">
@@ -831,7 +936,7 @@
 
     <!-- Modal Tambah Pos Pekerjaan / Step Baru (Dinamis oleh Kepala Legal / Admin) -->
     <div class="modal fade" id="modalAddStep" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-dialog-compact">
             <div class="modal-content rounded-4 border-0 shadow">
                 <div class="modal-header border-bottom-0 pb-0">
                     <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2" id="modalAddStepTitle">
@@ -884,7 +989,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="small text-muted fw-bold mb-1">Estimasi Biaya / RAB Pos (Rp)</label>
-                                <input type="number" step="any" class="form-control" id="addStepCostEstimate" name="cost_estimate" placeholder="Contoh: 25000000">
+                                <input type="text" class="form-control price-format" id="addStepCostEstimate" name="cost_estimate" placeholder="Contoh: 25.000.000">
                             </div>
                             <div class="col-md-6">
                                 <label class="small text-muted fw-bold mb-1">Kontraktor / Mandor Pelaksana</label>
@@ -1219,13 +1324,25 @@
         });
     };
 
+    window.formatRupiahNumber = function(val) {
+        if (val === null || val === undefined || val === '') return '';
+        let num = parseInt(val.toString().replace(/\D/g, ''), 10);
+        return isNaN(num) ? '' : new Intl.NumberFormat('id-ID').format(num);
+    };
+
+    window.cleanRupiahNumber = function(val) {
+        if (!val) return 0;
+        let clean = val.toString().replace(/\D/g, '');
+        return clean ? parseInt(clean, 10) : 0;
+    };
+
     window.openEditTargetModal = function(itemId, itemName, targetVol, unit, bobot, cost) {
         $('#editTargetItemId').val(itemId);
         $('#editTargetItemName').text(itemName);
         $('#editTargetVolInput').val(targetVol);
         $('#editTargetUnitInput').val(unit);
         $('#editTargetBobotInput').val(bobot);
-        $('#editTargetCostInput').val(cost);
+        $('#editTargetCostInput').val(cost ? formatRupiahNumber(cost) : '');
         $('#modalEditTarget').modal('show');
     };
 
@@ -1235,6 +1352,9 @@
         let submitBtn = $('#btnSaveTarget');
         submitBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...');
 
+        let rawCost = $('#editTargetCostInput').val();
+        let cleanCost = cleanRupiahNumber(rawCost);
+
         $.ajax({
             url: `/properti/infrastruktur/${itemId}/update`,
             type: 'POST',
@@ -1243,7 +1363,7 @@
                 target_volume: $('#editTargetVolInput').val(),
                 volume_unit: $('#editTargetUnitInput').val(),
                 bobot_persen: $('#editTargetBobotInput').val(),
-                cost_estimate: $('#editTargetCostInput').val()
+                cost_estimate: cleanCost
             },
             dataType: 'json',
             success: function(res) {
@@ -1334,6 +1454,10 @@
         e.preventDefault();
         let form = document.getElementById('formAddStep');
         let formData = new FormData(form);
+        
+        let costEst = cleanRupiahNumber($('#addStepCostEstimate').val());
+        formData.set('cost_estimate', costEst);
+        
         let phase = $('#addStepPhase').val() || 1;
         let btn = $('#btnSaveNewStep');
         btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...');
@@ -1448,7 +1572,7 @@
             $(`#inputUnit_${phase}_${rowIdx}`).val(opt.data('unit') || opt.attr('data-unit') || '');
             
             let price = parseFloat(opt.data('price') || opt.attr('data-price')) || 0;
-            $(`#inputPrice_${phase}_${rowIdx}`).val(price);
+            $(`#inputPrice_${phase}_${rowIdx}`).val(price ? formatRupiahNumber(price) : '');
         } else {
             $(`#inputMatId_${phase}_${rowIdx}`).val('');
         }
@@ -1457,7 +1581,8 @@
 
     window.calcMultiRowTotal = function(phase, rowIdx) {
         let qty = parseFloat($(`#inputQty_${phase}_${rowIdx}`).val()) || 0;
-        let price = parseFloat($(`#inputPrice_${phase}_${rowIdx}`).val()) || 0;
+        let rawPrice = $(`#inputPrice_${phase}_${rowIdx}`).val() || '0';
+        let price = cleanRupiahNumber(rawPrice);
         let total = qty * price;
         $(`#displayRowSubtotal_${phase}_${rowIdx}`).val('Rp ' + total.toLocaleString('id-ID'));
         recalculateGrandTotal(phase);
@@ -1468,7 +1593,8 @@
         $(`#multiItemBody_${phase} tr`).each(function() {
             let rowIdx = $(this).attr('data-row-idx');
             let qty = parseFloat($(`#inputQty_${phase}_${rowIdx}`).val()) || 0;
-            let price = parseFloat($(`#inputPrice_${phase}_${rowIdx}`).val()) || 0;
+            let rawPrice = $(`#inputPrice_${phase}_${rowIdx}`).val() || '0';
+            let price = cleanRupiahNumber(rawPrice);
             grandTotal += (qty * price);
         });
         $(`#grandTotalNotaDisplay_${phase}`).text('Rp ' + grandTotal.toLocaleString('id-ID'));
@@ -1502,7 +1628,7 @@
                     <input type="text" name="items[${newIdx}][unit]" id="inputUnit_${phase}_${newIdx}" class="form-control form-control-sm text-center" placeholder="sak, m3" required>
                 </td>
                 <td>
-                    <input type="number" step="any" name="items[${newIdx}][unit_price]" id="inputPrice_${phase}_${newIdx}" class="form-control form-control-sm text-end" placeholder="0" required oninput="calcMultiRowTotal(${phase}, ${newIdx})">
+                    <input type="text" name="items[${newIdx}][unit_price]" id="inputPrice_${phase}_${newIdx}" class="form-control form-control-sm text-end price-format" placeholder="0" required oninput="calcMultiRowTotal(${phase}, ${newIdx})">
                 </td>
                 <td>
                     <input type="text" id="displayRowSubtotal_${phase}_${newIdx}" class="form-control form-control-sm text-end fw-bold text-danger bg-light" value="Rp 0" readonly>
@@ -1711,10 +1837,31 @@
             }
         });
 
-        // 2. Simpan tab saat submit form belanja bahan
+        // 2. Simpan tab saat submit form belanja bahan & unmask harga rupiah ke angka murni
         $('form[id^="multiExpenseForm_"]').on('submit', function() {
             let phase = $(this).find('input[name="phase"]').val() || 1;
             setSavedActiveTab('#step-fase' + phase + '-tab');
+
+            // Unmask semua input harga agar controller menerima integer/angka murni
+            $(this).find('.price-format, [name*="[unit_price]"]').each(function() {
+                let val = $(this).val();
+                if (val) {
+                    $(this).val(val.toString().replace(/\D/g, ''));
+                }
+            });
+        });
+
+        // 3. Realtime auto-format ribuan Rupiah saat user mengetik nominal
+        $(document).on('input keyup change paste', '.price-format', function() {
+            let val = $(this).val();
+            if (val) {
+                let clean = val.toString().replace(/\D/g, '');
+                if (clean) {
+                    $(this).val(new Intl.NumberFormat('id-ID').format(clean));
+                } else {
+                    $(this).val('');
+                }
+            }
         });
 
         // 3. Event Delegation Realtime untuk input volume capaian progres

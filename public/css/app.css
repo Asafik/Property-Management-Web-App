@@ -608,7 +608,7 @@ body.sidebar-icon-only .sidebar-child-link .menu-icon-minimized {
 /* ==========================================================================
    4. DESKTOP MINIMIZED SIDEBAR (COLLAPSED)
    ========================================================================== */
-@media (min-width: 992px) {
+@media (min-width: 1200px) {
   body.sidebar-icon-only .custom-sidebar {
     width: var(--sidebar-mini-width);
   }
@@ -673,7 +673,7 @@ body.sidebar-icon-only .sidebar-child-link .menu-icon-minimized {
 }
 
 /* ==========================================================================
-   5. MOBILE & TABLET RESPONSIVE (OFFCANVAS)
+   5. MOBILE & TABLET (MODE TAB) RESPONSIVE (OFFCANVAS OVERLAY)
    ========================================================================== */
 .sidebar-backdrop {
   display: none;
@@ -694,7 +694,7 @@ body.sidebar-icon-only .sidebar-child-link .menu-icon-minimized {
   opacity: 1;
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 1199.98px) {
   .custom-navbar .brand-text-mini {
     display: block;
   }
@@ -710,7 +710,7 @@ body.sidebar-icon-only .sidebar-child-link .menu-icon-minimized {
     top: 0;
     height: 100vh;
     z-index: 1040;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
   }
 
   body.sidebar-open .custom-sidebar {

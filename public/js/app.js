@@ -10,24 +10,24 @@ document.addEventListener('DOMContentLoaded', function () {
   const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
 
   // =========================================================================
-  // 1. SIDEBAR TOGGLE HANDLER (DESKTOP & MOBILE)
+  // 1. SIDEBAR TOGGLE HANDLER (DESKTOP & MOBILE/TABLET)
   // =========================================================================
   if (sidebarToggleBtn) {
     sidebarToggleBtn.addEventListener('click', function (e) {
       e.preventDefault();
-      if (window.innerWidth >= 992) {
-        // Desktop: Toggle Icon Only mode
+      if (window.innerWidth >= 1200) {
+        // Desktop (Widescreen): Toggle Icon Only mode
         body.classList.toggle('sidebar-icon-only');
         localStorage.setItem('sidebar_icon_only', body.classList.contains('sidebar-icon-only') ? '1' : '0');
       } else {
-        // Mobile / Tablet: Toggle Offcanvas
+        // Mobile / Tablet (Mode Tab): Toggle Offcanvas Overlay
         toggleMobileSidebar();
       }
     });
   }
 
   // Restore desktop sidebar state from localStorage
-  if (window.innerWidth >= 992) {
+  if (window.innerWidth >= 1200) {
     if (localStorage.getItem('sidebar_icon_only') === '1') {
       body.classList.add('sidebar-icon-only');
     }
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const isExpanded = this.getAttribute('aria-expanded') === 'true';
 
       // If sidebar is minimized in desktop, expand it first
-      if (body.classList.contains('sidebar-icon-only') && window.innerWidth >= 992) {
+      if (body.classList.contains('sidebar-icon-only') && window.innerWidth >= 1200) {
         body.classList.remove('sidebar-icon-only');
         localStorage.setItem('sidebar_icon_only', '0');
       }
