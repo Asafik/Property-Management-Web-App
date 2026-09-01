@@ -401,6 +401,19 @@
 <body>
 
     @php
+        if (!function_exists('resolveFileUrl')) {
+            function resolveFileUrl(?string $path): string {
+                if (empty($path)) return '';
+                if (preg_match('/^https?:\/\//i', $path)) return $path;
+                $cleanPath = ltrim($path, '/');
+                if (file_exists(public_path($cleanPath))) return asset($cleanPath);
+                if (!str_starts_with($cleanPath, 'uploads/') && file_exists(public_path('uploads/' . $cleanPath))) return asset('uploads/' . $cleanPath);
+                if (!str_starts_with($cleanPath, 'storage/') && file_exists(public_path('storage/' . $cleanPath))) return asset('storage/' . $cleanPath);
+                if (str_starts_with($cleanPath, 'uploads/') || str_starts_with($cleanPath, 'storage/')) return asset($cleanPath);
+                return asset('uploads/' . $cleanPath);
+            }
+        }
+
         $statusSerahTerima = 'Selesai';
 
         if (isset($serahTerima) && $serahTerima && $serahTerima->items && $serahTerima->items->count() > 0) {
