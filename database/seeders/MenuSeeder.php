@@ -64,12 +64,6 @@ class MenuSeeder extends Seeder
         ])->positions()->attach($marketingRoles);
 
         Menu::create([
-            'name'      => 'Master Fee Agency',
-            'route'     => 'marketing.commission-rules.index',
-            'parent_id' => $marketingMenu->id
-        ])->positions()->attach($marketingRoles);
-
-        Menu::create([
             'name'      => 'Tugas Marketing',
             'route'     => 'master.data.tugas-staff-marketing',
             'parent_id' => $marketingMenu->id
@@ -237,6 +231,12 @@ class MenuSeeder extends Seeder
         Menu::create([
             'name'      => 'Master Invoice',
             'route'     => 'keuangan.master-invoice.index',
+            'parent_id' => $keuangan->id
+        ])->positions()->attach($marketingRoles);
+
+        Menu::create([
+            'name'      => 'Master Fee Agency',
+            'route'     => 'marketing.commission-rules.index',
             'parent_id' => $keuangan->id
         ])->positions()->attach($marketingRoles);
 

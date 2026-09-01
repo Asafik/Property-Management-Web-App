@@ -35,7 +35,6 @@
             // Marketing
             'marketing.jual-unit' => 'mdi-view-grid-outline',
             'marketing.list_pengajuan' => 'mdi-book-check-outline',
-            'marketing.commission-rules.index' => 'mdi-cash-cog',
             // Tanah Induk / Land Bank
             'pralandbank.all' => 'mdi-map-clock-outline',
             'properti-all' => 'mdi-domain',
@@ -71,6 +70,7 @@
             'master.data.posisi' => 'mdi-badge-account-outline',
             // Keuangan
             'keuangan.master-invoice.index' => 'mdi-receipt-text-outline',
+            'marketing.commission-rules.index' => 'mdi-cash-cog',
             // Pengaturan
             'setting.index' => 'mdi-cog-outline',
         ];
