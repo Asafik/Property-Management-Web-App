@@ -13,7 +13,13 @@ class AgencyPropertyController extends Controller
     // Menampilkan daftar sales/agent dengan filter dan search
     public function index(Request $request)
     {
-        $query = Employee::query();
+        $authUser = auth()->user();
+        $query = Employee::with(['division', 'position']);
+
+        // Jika login sebagai Kepala Marketing / Staff Marketing (bukan Admin), filter hanya anggota divisi Marketing
+        if ($authUser && $authUser->position_id != 1 && ($authUser->division_id == 1 || $authUser->position_id == 2)) {
+            $query->where('division_id', 1);
+        }
 
         // Filter search (nama atau username)
         if ($request->filled('search')) {
@@ -45,14 +51,41 @@ class AgencyPropertyController extends Controller
     // Menampilkan form tambah sales/agent
     public function create()
     {
-        $divisions = Division::all();
-        $positions = Position::all();
+        $authUser = auth()->user();
 
-        return view('sales.buat_sales_agent', compact('divisions', 'positions'));
+        // Jika user adalah Kepala Marketing, otomatis batasi ke Divisi Marketing dan Posisi Staff Marketing
+        if ($authUser && $authUser->position_id != 1 && ($authUser->division_id == 1 || $authUser->position_id == 2)) {
+            $divisions = Division::where('id', 1)->orWhere('name', 'Marketing')->get();
+            $positions = Position::where('division_id', 1)->get();
+            $defaultDivisionId = $divisions->first()->id ?? 1;
+            
+            $staffPosition = Position::where('division_id', $defaultDivisionId)
+                ->where(function($q) {
+                    $q->where('name', 'like', '%Staff%')
+                      ->orWhere('name', 'like', '%Marketing%');
+                })
+                ->where('name', 'not like', '%Kepala%')
+                ->first();
+            $defaultPositionId = $staffPosition ? $staffPosition->id : ($positions->first()->id ?? null);
+        } else {
+            $divisions = Division::all();
+            $positions = Position::all();
+            $defaultDivisionId = null;
+            $defaultPositionId = null;
+        }
+
+        return view('sales.buat_sales_agent', compact('divisions', 'positions', 'defaultDivisionId', 'defaultPositionId'));
     }
 
     public function store(Request $request)
     {
+        $authUser = auth()->user();
+        if ($authUser && $authUser->position_id != 1 && ($authUser->division_id == 1 || $authUser->position_id == 2)) {
+            $request->merge([
+                'division_id' => 1
+            ]);
+        }
+
         $request->validate([
             'name' => 'required',
             'username' => 'required|unique:employees,username',
@@ -81,10 +114,21 @@ class AgencyPropertyController extends Controller
     public function edit($id)
     {
         $employee = Employee::findOrFail($id);
-        $divisions = Division::all();
-        $positions = Position::all();
+        $authUser = auth()->user();
 
-        return view('sales.buat_sales_agent', compact('employee', 'divisions', 'positions'));
+        if ($authUser && $authUser->position_id != 1 && ($authUser->division_id == 1 || $authUser->position_id == 2)) {
+            $divisions = Division::where('id', 1)->orWhere('name', 'Marketing')->get();
+            $positions = Position::where('division_id', 1)->get();
+            $defaultDivisionId = $employee->division_id ?? 1;
+            $defaultPositionId = $employee->position_id;
+        } else {
+            $divisions = Division::all();
+            $positions = Position::all();
+            $defaultDivisionId = $employee->division_id;
+            $defaultPositionId = $employee->position_id;
+        }
+
+        return view('sales.buat_sales_agent', compact('employee', 'divisions', 'positions', 'defaultDivisionId', 'defaultPositionId'));
     }
 
     // Menyimpan perubahan data sales/agent
