@@ -55,6 +55,7 @@ use App\Http\Controllers\JobStaffMarketingController;
 use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\SpkController;
 use App\Http\Controllers\Finance\InvoiceMasterController;
+use App\Http\Controllers\Finance\ProjectAccountingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -354,6 +355,16 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
     Route::post('/complaints/store', [ComplaintController::class, 'store'])->name('complaints.store');
     Route::match(['put', 'post'], '/complaints/{id}/update', [ComplaintController::class, 'update'])->name('complaints.update');
     Route::delete('/complaints/{id}', [ComplaintController::class, 'destroy'])->name('complaints.destroy');
+
+    // ==========================================
+    // SISTEM KEUANGAN & PROJECT ACCOUNTING (ERP)
+    // ==========================================
+    Route::get('/keuangan/project-accounting', [ProjectAccountingController::class, 'index'])->name('keuangan.project-accounting.index');
+    Route::get('/keuangan/project-accounting/cetak', [ProjectAccountingController::class, 'cetak'])->name('keuangan.project-accounting.cetak');
+    Route::get('/keuangan/master-invoice', [InvoiceMasterController::class, 'index'])->name('keuangan.master-invoice.index');
+    Route::get('/keuangan/master-invoice/export/excel', [InvoiceMasterController::class, 'exportExcel'])->name('keuangan.master-invoice.export');
+    Route::post('/keuangan/master-invoice/sync', [InvoiceMasterController::class, 'syncPraLandbanks'])->name('keuangan.master-invoice.sync');
+    Route::get('/keuangan/master-invoice/{id}', [InvoiceMasterController::class, 'show'])->name('keuangan.master-invoice.show');
 
 
     Route::resource('dokument', LandBankDocumentController::class);

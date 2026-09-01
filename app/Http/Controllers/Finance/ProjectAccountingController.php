@@ -1,0 +1,318 @@
+<?php
+
+namespace App\Http\Controllers\Finance;
+
+use App\Http\Controllers\Controller;
+use App\Models\LandBank;
+use App\Models\LandBankUnit;
+use App\Models\Booking;
+use App\Models\Spk;
+use App\Models\SpkTermin;
+use App\Models\Invoice;
+use App\Models\Complaint;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
+class ProjectAccountingController extends Controller
+{
+    /**
+     * Halaman Utama Project Accounting, Penelusuran HPP & Arus Kas Proyek
+     */
+    public function index(Request $request)
+    {
+        $landBankId = $request->get('land_bank_id');
+        $unitId = $request->get('unit_id');
+        $statusUnit = $request->get('status_unit');
+        $search = $request->get('search');
+        $startDate = $request->get('start_date');
+        $endDate = $request->get('end_date');
+
+        // 1. List Projects & Units for Filters
+        $projects = LandBank::withCount('units')->orderBy('name', 'asc')->get();
+        $unitsList = LandBankUnit::when($landBankId, fn($q) => $q->where('land_bank_id', $landBankId))
+            ->orderBy('block', 'asc')
+            ->orderBy('unit_number', 'asc')
+            ->get();
+
+        // 2. Query Units with Financial Relations
+        $unitsQuery = LandBankUnit::with([
+            'landBank',
+            'rabs',
+            'complaints',
+            'activeBooking.customer',
+            'activeBooking.payments',
+            'activeBooking.akad'
+        ]);
+
+        if ($landBankId) {
+            $unitsQuery->where('land_bank_id', $landBankId);
+        }
+
+        if ($unitId) {
+            $unitsQuery->where('id', $unitId);
+        }
+
+        if ($statusUnit && $statusUnit !== 'all') {
+            $unitsQuery->where('status', $statusUnit);
+        }
+
+        if ($search) {
+            $unitsQuery->where(function($q) use ($search) {
+                $q->where('unit_name', 'like', "%{$search}%")
+                  ->orWhere('unit_code', 'like', "%{$search}%")
+                  ->orWhere('block', 'like', "%{$search}%")
+                  ->orWhere('type', 'like', "%{$search}%")
+                  ->orWhereHas('activeBooking.customer', function($cq) use ($search) {
+                      $cq->where('full_name', 'like', "%{$search}%")
+                         ->orWhere('phone', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $units = $unitsQuery->get();
+
+        // Ambil data SPK yang berelasi
+        $spkList = Spk::with(['termins', 'landBank', 'unit'])
+            ->when($landBankId, fn($q) => $q->where('land_bank_id', $landBankId))
+            ->when($unitId, fn($q) => $q->where('land_bank_unit_id', $unitId))
+            ->get();
+
+        // 3. Kalkulasi HPP & Keuangan per Unit
+        $unitFinancials = $units->map(function ($u) use ($spkList) {
+            $booking = $u->activeBooking;
+            $customerName = $booking?->customer?->full_name ?? '-';
+            $bookingCode = $booking?->booking_code ?? '-';
+
+            // Pendapatan / Harga Jual
+            $hargaJual = (float) ($booking->harga_kesepakatan ?? $u->price ?? 0);
+
+            // Realisasi Uang Masuk dari Konsumen
+            $uangMasukKonsumen = 0;
+            if ($booking) {
+                // UTJ
+                $uangMasukKonsumen += (float) ($booking->utj ?? 0);
+                // Payments (DP / Angsuran Cash Tempo)
+                if ($booking->payments) {
+                    $uangMasukKonsumen += (float) $booking->payments->sum('amount');
+                }
+                // Jika Akad KPR Selesai
+                if ($booking->akad && $booking->akad->status === 'selesai' && $booking->payment_method === 'kpr') {
+                    $nilaiKpr = (float) ($booking->kprApplication->realisasi_nominal ?? ($hargaJual - ($booking->dp ?? 0)));
+                    if ($nilaiKpr > 0 && $uangMasukKonsumen < $hargaJual) {
+                        $uangMasukKonsumen += $nilaiKpr;
+                    }
+                }
+            }
+
+            // A. Alokasi Biaya Tanah (Land Cost Allocation)
+            $totalLuasLahan = (float) ($u->landBank->area ?? 0);
+            $hargaBeliLahan = (float) ($u->landBank->acquisition_price ?? 0);
+            $luasUnit = (float) ($u->area ?? $u->land_area ?? 60);
+            
+            $biayaTanahUnit = 0;
+            if ($totalLuasLahan > 0 && $hargaBeliLahan > 0) {
+                $biayaTanahUnit = ($luasUnit / $totalLuasLahan) * $hargaBeliLahan;
+            } elseif ($u->landBank && $u->landBank->units_count > 0 && $hargaBeliLahan > 0) {
+                $biayaTanahUnit = $hargaBeliLahan / $u->landBank->units_count;
+            }
+
+            // B. Biaya Konstruksi SPK (SPK Kontraktor)
+            $unitSpk = $spkList->firstWhere('land_bank_unit_id', $u->id);
+            $biayaSpkKontrak = (float) ($unitSpk->nilai_kontrak ?? 0);
+            $realisasiBayarSpk = 0;
+            if ($unitSpk && $unitSpk->termins) {
+                $realisasiBayarSpk = (float) $unitSpk->termins->where('status_bayar', 'lunas')->sum('nominal');
+            }
+
+            // C. Estimasi RAB / Biaya Material Tambahan
+            $biayaRab = (float) ($u->rabs ? $u->rabs->sum('total_biaya') : 0);
+
+            // D. Biaya Servis & Klaim Garansi
+            $biayaServis = (float) ($u->complaints ? $u->complaints->sum('biaya_perbaikan') : 0);
+
+            // Total HPP Realisasi vs Komitmen
+            $totalHppKomitmen = $biayaTanahUnit + ($biayaSpkKontrak > 0 ? $biayaSpkKontrak : $biayaRab) + $biayaServis;
+            $totalHppRealisasi = $biayaTanahUnit + $realisasiBayarSpk + $biayaServis;
+
+            // Gross Profit & Margin
+            $grossProfit = $hargaJual > 0 ? ($hargaJual - $totalHppKomitmen) : 0;
+            $marginPersen = ($hargaJual > 0 && $totalHppKomitmen > 0) ? round(($grossProfit / $hargaJual) * 100, 1) : 0;
+
+            // Cashflow Net Unit
+            $netCashflowUnit = $uangMasukKonsumen - $totalHppRealisasi;
+
+            return (object) [
+                'unit'                 => $u,
+                'project_name'         => $u->landBank->name ?? 'Tanah Induk',
+                'block_code'           => 'Blok ' . ($u->unit_code ?? $u->block . '-' . $u->unit_number),
+                'unit_name'            => $u->unit_name ?? ('Unit ' . $u->unit_code),
+                'type'                 => $u->type ?? 'Standar',
+                'status'               => $u->status ?? 'available',
+                'customer_name'        => $customerName,
+                'booking_code'         => $bookingCode,
+                'booking'              => $booking,
+                'harga_jual'           => $hargaJual,
+                'uang_masuk_konsumen'  => $uangMasukKonsumen,
+                'piutang_konsumen'     => max(0, $hargaJual - $uangMasukKonsumen),
+                'biaya_tanah'          => $biayaTanahUnit,
+                'spk'                  => $unitSpk,
+                'biaya_spk_kontrak'    => $biayaSpkKontrak,
+                'realisasi_bayar_spk'  => $realisasiBayarSpk,
+                'utang_spk_kontraktor' => max(0, $biayaSpkKontrak - $realisasiBayarSpk),
+                'biaya_rab'            => $biayaRab,
+                'biaya_servis'         => $biayaServis,
+                'total_hpp_komitmen'   => $totalHppKomitmen,
+                'total_hpp_realisasi'  => $totalHppRealisasi,
+                'gross_profit'         => $grossProfit,
+                'margin_persen'        => $marginPersen,
+                'net_cashflow'         => $netCashflowUnit,
+            ];
+        });
+
+        // 4. Executive Summary KPI
+        $summary = [
+            'total_units_count'       => $unitFinancials->count(),
+            'total_units_sold'        => $unitFinancials->whereIn('status', ['sold', 'booked'])->count(),
+            'total_revenue_potential' => $unitFinancials->whereIn('status', ['sold', 'booked'])->sum('harga_jual'),
+            'total_cash_inflow'       => $unitFinancials->sum('uang_masuk_konsumen'),
+            'total_hpp_project'       => $unitFinancials->sum('total_hpp_komitmen'),
+            'total_cash_outflow'      => $unitFinancials->sum('total_hpp_realisasi'),
+            'total_gross_profit'      => $unitFinancials->whereIn('status', ['sold', 'booked'])->sum('gross_profit'),
+            'total_piutang'           => $unitFinancials->whereIn('status', ['sold', 'booked'])->sum('piutang_konsumen'),
+            'total_utang_kontraktor'  => $unitFinancials->sum('utang_spk_kontraktor'),
+        ];
+
+        if ($summary['total_revenue_potential'] > 0) {
+            $summary['avg_margin_persen'] = round(($summary['total_gross_profit'] / $summary['total_revenue_potential']) * 100, 1);
+        } else {
+            $summary['avg_margin_persen'] = 0;
+        }
+
+        // 5. Jurnal Transaksi ERP Terpadu (Audit Trail & General Ledger Stream)
+        $journalEntries = collect();
+
+        // A. Entri Invoice Pra Land Bank (Pengadaan Lahan)
+        $invoices = Invoice::with('praLandbank')
+            ->when($startDate, fn($q) => $q->whereDate('invoice_date', '>=', $startDate))
+            ->when($endDate, fn($q) => $q->whereDate('invoice_date', '<=', $endDate))
+            ->get();
+
+        foreach ($invoices as $inv) {
+            $journalEntries->push((object)[
+                'date'        => $inv->invoice_date ? Carbon::parse($inv->invoice_date) : $inv->created_at,
+                'ref_no'      => $inv->invoice_number,
+                'category'    => 'Pengadaan Lahan (Land Bank)',
+                'description' => 'Pembayaran Pengadaan Lahan: ' . ($inv->title ?? $inv->praLandbank?->nama_penjual ?? 'Invoice Lahan'),
+                'project'     => $inv->praLandbank?->lokasi ?? 'Pra Land Bank',
+                'unit'        => 'Semua Kavling (Induk)',
+                'type'        => 'KAS KELUAR',
+                'debit'       => 0,
+                'kredit'      => (float) $inv->paid_amount,
+                'status'      => strtoupper($inv->payment_status ?? 'LUNAS'),
+            ]);
+        }
+
+        // B. Entri SPK Termin Pembayaran (Biaya Konstruksi Pemborong)
+        $termins = SpkTermin::with(['spk.landBank', 'spk.unit'])
+            ->where('status_bayar', 'lunas')
+            ->when($startDate, fn($q) => $q->whereDate('tanggal_bayar', '>=', $startDate))
+            ->when($endDate, fn($q) => $q->whereDate('tanggal_bayar', '<=', $endDate))
+            ->get();
+
+        foreach ($termins as $t) {
+            $journalEntries->push((object)[
+                'date'        => $t->tanggal_bayar ? Carbon::parse($t->tanggal_bayar) : $t->created_at,
+                'ref_no'      => ($t->spk?->no_spk ?? 'SPK') . ' - T' . $t->termin_ke,
+                'category'    => 'Konstruksi & SPK Pemborong',
+                'description' => 'Bayar Termin ' . $t->termin_ke . ' (' . $t->nama_tahap . ') - Kontraktor: ' . ($t->spk?->kontraktor_nama ?? '-'),
+                'project'     => $t->spk?->landBank?->name ?? 'Proyek',
+                'unit'        => $t->spk?->unit ? ('Blok ' . $t->spk->unit->unit_code) : 'Umum',
+                'type'        => 'KAS KELUAR',
+                'debit'       => 0,
+                'kredit'      => (float) $t->nominal,
+                'status'      => 'LUNAS',
+            ]);
+        }
+
+        // C. Entri Pembayaran Konsumen (Penerimaan Penjualan Unit)
+        $bookings = Booking::with(['unit.landBank', 'customer', 'payments'])
+            ->whereIn('status', ['sold', 'booked', 'completed'])
+            ->get();
+
+        foreach ($bookings as $b) {
+            // UTJ Entry
+            if ($b->utj > 0) {
+                $journalEntries->push((object)[
+                    'date'        => $b->created_at ? Carbon::parse($b->created_at) : now(),
+                    'ref_no'      => $b->booking_code . '-UTJ',
+                    'category'    => 'Pendapatan Unit (UTJ)',
+                    'description' => 'Penerimaan UTJ Booking Unit ' . ($b->unit?->unit_name ?? '') . ' dari ' . ($b->customer?->full_name ?? 'Konsumen'),
+                    'project'     => $b->unit?->landBank?->name ?? 'Proyek Perumahan',
+                    'unit'        => 'Blok ' . ($b->unit?->unit_code ?? '-'),
+                    'type'        => 'KAS MASUK',
+                    'debit'       => (float) $b->utj,
+                    'kredit'      => 0,
+                    'status'      => 'DITERIMA',
+                ]);
+            }
+
+            // Payment / Angsuran Cash Tempo Entries
+            if ($b->payments) {
+                foreach ($b->payments as $p) {
+                    $journalEntries->push((object)[
+                        'date'        => $p->payment_date ? Carbon::parse($p->payment_date) : $p->created_at,
+                        'ref_no'      => $b->booking_code . '-PAY-' . $p->id,
+                        'category'    => 'Pendapatan Angsuran Unit',
+                        'description' => 'Pembayaran ' . ($p->payment_type ?? 'Angsuran') . ' Unit ' . ($b->unit?->unit_name ?? '') . ' dari ' . ($b->customer?->full_name ?? '-'),
+                        'project'     => $b->unit?->landBank?->name ?? 'Proyek Perumahan',
+                        'unit'        => 'Blok ' . ($b->unit?->unit_code ?? '-'),
+                        'type'        => 'KAS MASUK',
+                        'debit'       => (float) $p->amount,
+                        'kredit'      => 0,
+                        'status'      => 'DITERIMA',
+                    ]);
+                }
+            }
+        }
+
+        // Sort journal entries descending
+        $journalEntries = $journalEntries->sortByDesc('date')->values();
+
+        return view('keuangan.project_accounting.index', compact(
+            'projects',
+            'unitsList',
+            'unitFinancials',
+            'summary',
+            'journalEntries',
+            'spkList',
+            'landBankId',
+            'unitId',
+            'statusUnit',
+            'search',
+            'startDate',
+            'endDate'
+        ));
+    }
+
+    /**
+     * Cetak Laporan Project Accounting & HPP Matrix (A4 Printable Format)
+     */
+    public function cetak(Request $request)
+    {
+        $landBankId = $request->get('land_bank_id');
+        $unitId = $request->get('unit_id');
+
+        $project = $landBankId ? LandBank::find($landBankId) : null;
+        $unit = $unitId ? LandBankUnit::with(['landBank', 'activeBooking.customer', 'rabs', 'complaints'])->find($unitId) : null;
+
+        // Ambil data unit financials
+        $reqClone = Request::create('/keuangan/project-accounting', 'GET', $request->all());
+        $indexData = $this->index($reqClone)->getData();
+
+        return view('keuangan.project_accounting.cetak', array_merge((array)$indexData, [
+            'selectedProject' => $project,
+            'selectedUnit'    => $unit
+        ]));
+    }
+}
