@@ -50,4 +50,9 @@ class Employee extends Authenticatable
     {
         return $this->hasMany(MarketingTask::class, 'employee_id');
     }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'sales_id');
+    }
 }
