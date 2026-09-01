@@ -151,7 +151,8 @@ class SerahTerimaController extends Controller
             'kprApplication.bank',
             'kprApplication.documents',
             'payments',
-            'documentUploads'
+            'documentUploads',
+            'complaints'
         ])->findOrFail($bookingId);
 
         $unit = $booking->unit;

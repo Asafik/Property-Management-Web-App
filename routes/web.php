@@ -43,6 +43,7 @@ use App\Http\Controllers\DokumentLegalPersiapanController;
 use App\Http\Controllers\PraLandBankController;
 use App\Http\Controllers\RABDeadlineController;
 use App\Http\Controllers\SerahTerimaController;
+use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TransaksiKPRController;
 use App\Http\Controllers\CompanySettingController;
@@ -349,9 +350,10 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
 
 
 
-    Route::get('/servis', function () {
-        return view('servis.servis');
-    })->name('servis');
+    Route::get('/servis', [ComplaintController::class, 'index'])->name('servis');
+    Route::post('/complaints/store', [ComplaintController::class, 'store'])->name('complaints.store');
+    Route::put('/complaints/{id}/update', [ComplaintController::class, 'update'])->name('complaints.update');
+    Route::delete('/complaints/{id}', [ComplaintController::class, 'destroy'])->name('complaints.destroy');
 
 
     Route::resource('dokument', LandBankDocumentController::class);

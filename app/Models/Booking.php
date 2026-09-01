@@ -93,4 +93,9 @@ public function promos()
                 ->withPivot('nominal') // optional kalau mau simpan nilai saat itu
                 ->withTimestamps();
 }
+
+public function complaints()
+{
+    return $this->hasMany(Complaint::class, 'booking_id');
+}
 }
