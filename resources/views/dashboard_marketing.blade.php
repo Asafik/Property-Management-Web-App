@@ -391,6 +391,16 @@
                             @endforeach
                         </div>
                     </div>
+                    @if($projects->hasPages())
+                        <div class="card-footer bg-white border-top py-2.5 px-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <small class="text-muted" style="font-size: 0.75rem;">
+                                Proyek {{ $projects->firstItem() }}-{{ $projects->lastItem() }} dari {{ $projects->total() }}
+                            </small>
+                            <div class="pagination-wrapper">
+                                {{ $projects->appends(request()->except('project_page'))->links('pagination::bootstrap-5') }}
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         @endif
@@ -510,9 +520,43 @@
                         @endforelse
                     </div>
                 </div>
+                @if($projects->hasPages())
+                    <div class="card-footer bg-white border-top py-2.5 px-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <small class="text-muted" style="font-size: 0.75rem;">
+                            Menampilkan {{ $projects->firstItem() }}-{{ $projects->lastItem() }} dari {{ $projects->total() }} Proyek
+                        </small>
+                        <div class="pagination-wrapper">
+                            {{ $projects->appends(request()->except('project_page'))->links('pagination::bootstrap-5') }}
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
 
 </div>
+
+<style>
+    .pagination {
+        margin-bottom: 0 !important;
+        gap: 3px;
+    }
+    .page-item .page-link {
+        font-size: 0.74rem !important;
+        padding: 3px 8px !important;
+        border-radius: 6px !important;
+        color: #475569 !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+        border-color: #9a55ff !important;
+        color: #ffffff !important;
+        font-weight: bold;
+    }
+    .page-item.disabled .page-link {
+        opacity: 0.5;
+        border-color: #e2e8f0 !important;
+    }
+</style>
 @endsection

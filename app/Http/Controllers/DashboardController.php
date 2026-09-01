@@ -351,8 +351,13 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-        // 4. PROJECT / LAND BANK BREAKDOWN
-        $projects = LandBank::with(['units.activeBooking'])->get()->map(function($lb) {
+        // 4. PROJECT / LAND BANK BREAKDOWN DENGAN PAGINASI
+        $projects = LandBank::with(['units.activeBooking'])
+            ->latest()
+            ->paginate(3, ['*'], 'project_page')
+            ->withQueryString();
+
+        $projects->getCollection()->transform(function($lb) {
             $units = $lb->units;
             $ready = $units->whereIn('status', ['ready', 'tersedia'])->count();
             $booked = $units->where('status', 'booked')->count();
