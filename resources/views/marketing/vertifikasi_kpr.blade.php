@@ -227,11 +227,17 @@
     transition: all 0.25s ease;
 }
 
-.transaksi-step.completed .transaksi-step-icon,
-.transaksi-step.active .transaksi-step-icon {
+.transaksi-step.completed .transaksi-step-icon {
     background: #28c76f !important;
     border: 3px solid #ffffff !important;
     box-shadow: 0 0 0 1px #28c76f;
+    color: #ffffff !important;
+}
+
+.transaksi-step.active .transaksi-step-icon {
+    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+    border: 3px solid #ffffff !important;
+    box-shadow: 0 0 0 2px #9a55ff;
     color: #ffffff !important;
 }
 

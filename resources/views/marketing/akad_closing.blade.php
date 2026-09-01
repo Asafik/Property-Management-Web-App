@@ -219,12 +219,11 @@
     background: #f1f3f7 !important;
     border: 3px solid #ffffff !important;
     box-shadow: 0 0 0 1px #edf2f7;
-    color: #94a3b8;
+    color: #94a3b8 !important;
     transition: all 0.25s ease;
 }
 
-.transaksi-step.completed .transaksi-step-icon,
-.transaksi-step.active .transaksi-step-icon {
+.transaksi-step.completed .transaksi-step-icon {
     background: #28c76f !important;
     border: 3px solid #ffffff !important;
     box-shadow: 0 0 0 1px #28c76f;
@@ -861,16 +860,19 @@
         $isSubsidi = strtolower($kpr->booking->unit->jenis ?? '') === 'subsidi';
         $surveyDone = !empty($kpr->rekomendasi) || strtolower($kpr->status_survey ?? '') == 'done' || ($kpr->booking->status_survey ?? 0) == 1;
 
-        $spkDone = !empty($kpr->booking->unit->dokumen_spk);
+        $unit = $kpr->booking->unit ?? ($kpr->unit ?? null);
+        $spkDone = !empty($unit?->no_spk) || !empty($unit?->dokumen_spk) || !empty($unit?->kontraktor);
+        $status = strtolower($unit->construction_progress ?? '');
+        $devDone = $status == 'selesai';
 
         $totalSteps = 7;
+        $completedCount = 2; // Pengajuan + Verifikasi
+        if ($spkDone) $completedCount++;
+        if ($devDone) $completedCount++;
+        if ($surveyDone) $completedCount++;
+        if ($akadSelesai) $completedCount++;
 
-        if ($isSubsidi) {
-            $currentStep = $akadSelesai ? 7 : 6;
-        } else {
-            $currentStep = $akadSelesai ? 6 : 5;
-        }
-        $progressWidth = intval(($currentStep / $totalSteps) * 100);
+        $progressWidth = intval(($completedCount / $totalSteps) * 100);
     @endphp
 
     <div class="transaksi-page">
@@ -939,7 +941,7 @@
 
                         <div class="transaksi-progress-top">
                             <span class="transaksi-muted">Progress Proses</span>
-                            <span>Tahap {{ $currentStep }} dari {{ $totalSteps }}</span>
+                            <span>Tahap {{ $completedCount }} dari {{ $totalSteps }}</span>
                         </div>
 
                         <div class="transaksi-progress">
@@ -972,8 +974,6 @@
                             </div>
 
                             @php
-                                $status = strtolower($kpr->unit->construction_progress ?? '');
-
                                 $statusText = [
                                     'belum_mulai' => 'Belum mulai pembangunan',
                                     'pondasi' => 'Tahap pondasi',
@@ -984,8 +984,8 @@
                                 ];
                             @endphp
 
-                            <div class="transaksi-step {{ $status == 'selesai' ? 'completed' : '' }}">
-                                @if ($status == 'selesai')
+                            <div class="transaksi-step {{ $devDone ? 'completed' : '' }}">
+                                @if ($devDone)
                                     <div class="transaksi-step-icon">
                                         <i class="mdi mdi-check"></i>
                                     </div>
@@ -1009,34 +1009,34 @@
                                     <small>{{ $surveyDone ? 'Selesai' : 'Menunggu' }}</small>
                                 </div>
 
-                                <div class="transaksi-step {{ $akadSelesai ? 'completed' : 'active' }}">
+                                <div class="transaksi-step {{ $akadSelesai ? 'completed' : '' }}">
                                     @if ($akadSelesai)
                                         <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
                                     @else
                                         <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
                                     @endif
                                     <span class="transaksi-step-title">Akad</span>
-                                    <small>{{ $akadSelesai ? 'Selesai' : 'Proses Closing' }}</small>
+                                    <small>{{ $akadSelesai ? 'Selesai' : 'Menunggu' }}</small>
                                 </div>
                             @else
-                                <div class="transaksi-step {{ $surveyDone ? 'completed' : ($akadSelesai ? 'active' : '') }}">
+                                <div class="transaksi-step {{ $surveyDone ? 'completed' : '' }}">
                                     @if ($surveyDone)
                                         <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
                                     @else
                                         <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
                                     @endif
                                     <span class="transaksi-step-title">Survey</span>
-                                    <small>{{ $surveyDone ? 'Selesai' : ($akadSelesai ? 'Progress' : 'Menunggu') }}</small>
+                                    <small>{{ $surveyDone ? 'Selesai' : 'Menunggu' }}</small>
                                 </div>
 
-                                <div class="transaksi-step {{ $akadSelesai ? 'completed' : 'active' }}">
+                                <div class="transaksi-step {{ $akadSelesai ? 'completed' : '' }}">
                                     @if ($akadSelesai)
                                         <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
                                     @else
                                         <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
                                     @endif
                                     <span class="transaksi-step-title">Akad</span>
-                                    <small>{{ $akadSelesai ? 'Selesai' : 'Proses Closing' }}</small>
+                                    <small>{{ $akadSelesai ? 'Selesai' : 'Menunggu' }}</small>
                                 </div>
                             @endif
 

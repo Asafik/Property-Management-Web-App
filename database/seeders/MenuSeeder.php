@@ -27,12 +27,14 @@ class MenuSeeder extends Seeder
         $staffMarketing = Position::where('name', 'Staff Marketing')->first();
         $legal          = Position::where('name', 'Kepala Legal')->first();
         $staffLegal     = Position::where('name', 'Staff Legal')->first();
+        $staffKpr       = Position::where('name', 'Staff KPR')->orWhere('name', 'KPR')->first();
 
         // Role Groups
-        $allRoles       = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $legal?->id, $staffLegal?->id]));
+        $allRoles       = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $legal?->id, $staffLegal?->id, $staffKpr?->id]));
         $marketingRoles = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id]));
         $legalRoles     = array_values(array_filter([$admin?->id, $legal?->id, $staffLegal?->id]));
         $adminOnly      = array_values(array_filter([$admin?->id]));
+        $kprTransaksiRoles = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $staffKpr?->id]));
 
         // ================= 1. DASHBOARD =================
         $dashboard = Menu::create([
@@ -127,12 +129,12 @@ class MenuSeeder extends Seeder
             'icon'  => 'mdi-cash-multiple',
             'order' => 5
         ]);
-        $transaksi->positions()->attach($marketingRoles);
+        $transaksi->positions()->attach($kprTransaksiRoles);
 
         $transaksiMenus = [
-            'customer.kpr'          => ['name' => 'Cicilan / KPR', 'roles' => $marketingRoles],
-            'kpr.customer-verified' => ['name' => 'User verifikasi dokumen kpr', 'roles' => $marketingRoles],
-            'customer.kpr.survey'   => ['name' => 'User Acc kpr', 'roles' => $marketingRoles],
+            'customer.kpr'          => ['name' => 'Cicilan / KPR', 'roles' => $kprTransaksiRoles],
+            'kpr.customer-verified' => ['name' => 'User verifikasi dokumen kpr', 'roles' => $kprTransaksiRoles],
+            'customer.kpr.survey'   => ['name' => 'User Acc kpr', 'roles' => $kprTransaksiRoles],
             'customer.kpr.rijected' => ['name' => 'User Rijected kpr', 'roles' => $marketingRoles],
             'cash-tempo.timeline'   => ['name' => 'User Cash Tempo', 'roles' => $marketingRoles],
             'analisa.kpr.komersil'  => ['name' => 'User KPR Komersil', 'roles' => $marketingRoles],

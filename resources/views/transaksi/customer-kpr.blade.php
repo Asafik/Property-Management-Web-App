@@ -1317,27 +1317,7 @@ $(document).ready(function() {
 
 
 
-    $(document).on('click', '.btnApproveKpr', function(e) {
-        e.preventDefault();
-
-        let href = $(this).attr('href');
-        let customerName = $(this).closest('tr').find('.customer-name').text();
-
-        Swal.fire({
-            title: 'Approve KPR?',
-            text: "User " + customerName + " akan di-approve",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#28a745',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Ya, Approve',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = href;
-            }
-        });
-    });
+    // SweetAlert modal confirmation removed as requested: button navigates directly
 });
 
 function showPaginationLoading(event) {

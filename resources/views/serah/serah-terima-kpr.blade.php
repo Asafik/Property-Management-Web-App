@@ -224,12 +224,11 @@
     background: #f1f3f7 !important;
     border: 3px solid #ffffff !important;
     box-shadow: 0 0 0 1px #edf2f7;
-    color: #94a3b8;
+    color: #94a3b8 !important;
     transition: all 0.25s ease;
 }
 
-.transaksi-step.completed .transaksi-step-icon,
-.transaksi-step.active .transaksi-step-icon {
+.transaksi-step.completed .transaksi-step-icon {
     background: #28c76f !important;
     border: 3px solid #ffffff !important;
     box-shadow: 0 0 0 1px #28c76f;
@@ -815,25 +814,30 @@ select.serah-form-control {
                             $isSubsidi = $jenis === 'subsidi';
                             $totalSteps = 7;
 
-                            // Di halaman Serah Terima, asumsinya semua tahap sebelumnya sudah selesai
-                            $pembangunanDone = true;
-                            $akadDone = true;
+                            $unit = $application->unit ?? null;
+                            $spkDone = !empty($unit?->no_spk) || !empty($unit?->dokumen_spk) || !empty($unit?->kontraktor);
+                            $status = strtolower($unit->construction_progress ?? '');
+                            $pembangunanDone = $status == 'selesai';
                             $surveyDone = true;
+                            $akadDone = true;
                             $serahTerimaDone =
                                 $application->booking->status == 'completed' &&
                                 !empty($application->booking->serah_terima_date);
-                            $spkDone = !empty($application->unit->dokumen_spk);
 
-                            // Jika Serah terima sudah tersubmit dan berstatus completed, current step = 7 (selesai).
-                            // Jika belum disubmit (ada di form ini), masih tahap 7 tapi belum selesai (active).
-                            $currentStep = 7;
-                            $progressWidth = intval(($currentStep / $totalSteps) * 100);
+                            $completedCount = 2; // Pengajuan + Verifikasi
+                            if ($spkDone) $completedCount++;
+                            if ($pembangunanDone) $completedCount++;
+                            if ($surveyDone) $completedCount++;
+                            if ($akadDone) $completedCount++;
+                            if ($serahTerimaDone) $completedCount++;
+
+                            $progressWidth = intval(($completedCount / $totalSteps) * 100);
                             $stepStyle = 'style="grid-template-columns: repeat(' . $totalSteps . ', 1fr);"';
                         @endphp
 
                         <div class="transaksi-progress-top">
                             <span class="transaksi-muted">Progress Transaksi</span>
-                            <span>Tahap {{ $currentStep }} dari {{ $totalSteps }}</span>
+                            <span>Tahap {{ $completedCount }} dari {{ $totalSteps }}</span>
                         </div>
 
                         <div class="transaksi-progress">
@@ -878,8 +882,6 @@ select.serah-form-control {
                             </div>
 
                             @php
-                                $status = strtolower($application->unit->construction_progress ?? '');
-
                                 $statusText = [
                                     'belum_mulai' => 'Belum mulai pembangunan',
                                     'pondasi' => 'Tahap pondasi',
@@ -888,21 +890,10 @@ select.serah-form-control {
                                     'finishing' => 'Tahap finishing',
                                     'selesai' => 'Pembangunan selesai',
                                 ];
-
-                                $statusConfig = [
-                                    'belum_mulai' => ['icon' => 'mdi-home-city', 'color' => 'secondary'],
-                                    'pondasi' => ['icon' => 'mdi-hammer', 'color' => 'warning'],
-                                    'dinding' => ['icon' => 'mdi-wall', 'color' => 'warning'],
-                                    'atap' => ['icon' => 'mdi-home-roof', 'color' => 'info'],
-                                    'finishing' => ['icon' => 'mdi-brush', 'color' => 'primary'],
-                                    'selesai' => ['icon' => 'mdi-check-circle', 'color' => 'success'],
-                                ];
-
-                                $config = $statusConfig[$status] ?? ['icon' => 'mdi-home-city', 'color' => 'secondary'];
                             @endphp
 
-                            <div class="transaksi-step {{ $status == 'selesai' ? 'completed' : '' }}">
-                                @if ($status == 'selesai')
+                            <div class="transaksi-step {{ $pembangunanDone ? 'completed' : '' }}">
+                                @if ($pembangunanDone)
                                     <div class="transaksi-step-icon">
                                         <i class="mdi mdi-check"></i>
                                     </div>
@@ -950,7 +941,7 @@ select.serah-form-control {
                                 </div>
                             @endif
 
-                            <div class="transaksi-step {{ $serahTerimaDone ? 'completed' : 'active' }}">
+                            <div class="transaksi-step {{ $serahTerimaDone ? 'completed' : '' }}">
                                 <div class="transaksi-step-icon">
                                     @if ($serahTerimaDone)
                                         <i class="mdi mdi-check"></i>
@@ -963,7 +954,7 @@ select.serah-form-control {
                                     @if ($serahTerimaDone)
                                         {{ \Carbon\Carbon::parse($application->booking->serah_terima_date)->translatedFormat('d F Y') }}
                                     @else
-                                        Progress
+                                        Menunggu
                                     @endif
                                 </small>
                             </div>

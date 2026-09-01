@@ -239,12 +239,11 @@
     background: #f1f3f7 !important;
     border: 3px solid #ffffff !important;
     box-shadow: 0 0 0 1px #edf2f7;
-    color: #94a3b8;
+    color: #94a3b8 !important;
     transition: all 0.25s ease;
 }
 
-.transaksi-step.completed .transaksi-step-icon,
-.transaksi-step.active .transaksi-step-icon {
+.transaksi-step.completed .transaksi-step-icon {
     background: #28c76f !important;
     border: 3px solid #ffffff !important;
     box-shadow: 0 0 0 1px #28c76f;
@@ -974,7 +973,7 @@ select.serah-form-control {
                             <small>Selesai</small>
                         </div>
 
-                        <div class="transaksi-step {{ $serahTerimaDone ? 'completed' : 'active' }}">
+                        <div class="transaksi-step {{ $serahTerimaDone ? 'completed' : '' }}">
                             <div class="transaksi-step-icon">
                                 @if($serahTerimaDone)
                                     <i class="mdi mdi-check"></i>
@@ -983,7 +982,7 @@ select.serah-form-control {
                                 @endif
                             </div>
                             <span class="transaksi-step-title">Serah Terima</span>
-                            <small>{{ $serahTerimaDone ? ($booking->serah_terima_date ? \Carbon\Carbon::parse($booking->serah_terima_date)->translatedFormat('d F Y') : 'Selesai') : 'Dalam Proses' }}</small>
+                            <small>{{ $serahTerimaDone ? ($booking->serah_terima_date ? \Carbon\Carbon::parse($booking->serah_terima_date)->translatedFormat('d F Y') : 'Selesai') : 'Menunggu' }}</small>
                         </div>
                     </div>
                     @endif
