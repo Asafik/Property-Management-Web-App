@@ -451,8 +451,19 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
     Route::delete('/documents/{id}', [DocumentPersiapanPecahLegalController::class, 'destroy'])->name('documents.destroy');
     Route::post('/documents/{booking}/store', [DokumentLegalPersiapanController::class, 'store'])->name('document_legal.store');
 
-    // MASTER DATA SPK KONTRAKTOR (DUMMY UI)
+    // ==============================================================
+    // MASTER DATA & MANAJEMEN SPK KONTRAKTOR
+    // ==============================================================
     Route::get('/spk', [SpkController::class, 'index'])->name('spk.index');
+    Route::get('/spk/create', [SpkController::class, 'create'])->name('spk.create');
+    Route::post('/spk/store', [SpkController::class, 'store'])->name('spk.store');
+    Route::get('/spk/{id}', [SpkController::class, 'show'])->name('spk.show');
+    Route::get('/spk/{id}/edit', [SpkController::class, 'edit'])->name('spk.edit');
+    Route::put('/spk/{id}', [SpkController::class, 'update'])->name('spk.update');
+    Route::delete('/spk/{id}', [SpkController::class, 'destroy'])->name('spk.destroy');
+    Route::get('/spk/{id}/cetak', [SpkController::class, 'cetak'])->name('spk.cetak');
+    Route::get('/api/spk/project-units/{landBankId}', [SpkController::class, 'getUnitsByProject'])->name('spk.project-units');
+    Route::get('/api/spk/generate-number', [SpkController::class, 'generateNoSpk'])->name('spk.generate-number');
 
 
     // EMPLOYEE/AGENCY

@@ -2283,7 +2283,39 @@
                                 <div class="siteplan-scroll-container">
                                     <canvas id="siteplanCanvas"></canvas>
                                 </div>
-                                <div class="mt-4 text-center">
+
+                                <!-- Legend Status Penjualan & Status Pembangunan Fisik -->
+                                <div class="mt-3 p-3 bg-white rounded-3 border shadow-sm">
+                                    <div class="row g-3">
+                                        <!-- Status Progress Pembangunan -->
+                                        <div class="col-md-7 border-end">
+                                            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.82rem;">
+                                                <i class="mdi mdi-hammer-wrench text-warning me-1"></i>Status Pembangunan Fisik (Warna Bulatan):
+                                            </h6>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                <span class="badge" style="background: #adb5bd; color: #fff; font-size: 11px; padding: 4px 8px;">Belum Mulai (0%)</span>
+                                                <span class="badge" style="background: #fd7e14; color: #fff; font-size: 11px; padding: 4px 8px;">Pondasi (20%)</span>
+                                                <span class="badge" style="background: #ffc107; color: #212529; font-size: 11px; padding: 4px 8px;">Dinding (40%)</span>
+                                                <span class="badge" style="background: #17a2b8; color: #fff; font-size: 11px; padding: 4px 8px;">Atap (60%)</span>
+                                                <span class="badge" style="background: #9a55ff; color: #fff; font-size: 11px; padding: 4px 8px;">Finishing (80%)</span>
+                                                <span class="badge" style="background: #28a745; color: #fff; font-size: 11px; padding: 4px 8px;">Selesai (100%)</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Status Penjualan -->
+                                        <div class="col-md-5">
+                                            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.82rem;">
+                                                <i class="mdi mdi-circle-outline text-primary me-1"></i>Status Penjualan (Garis Border):
+                                            </h6>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                <span class="badge" style="background: rgba(220, 53, 69, 0.15); color: #dc3545; border: 1.5px solid #dc3545; font-size: 11px; padding: 4px 8px;">Terjual / Sold (Border Merah)</span>
+                                                <span class="badge" style="background: rgba(255, 193, 7, 0.15); color: #d39e00; border: 1.5px solid #ffc107; font-size: 11px; padding: 4px 8px;">Booked (Border Emas)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3 text-center">
                                     <button type="button" class="btn btn-save-position" onclick="savePosition()"><i
                                             class="mdi mdi-content-save me-2"></i>Simpan Posisi Unit</button>
                                 </div>
@@ -2965,15 +2997,68 @@
                         : allUnitsData;
 
                     unitsToShow.forEach(u => {
+                        let fillColor = '#adb5bd'; // default abu-abu untuk Belum Mulai (0%)
+                        let strokeColor = '#495057';
+                        let strokeWidth = 1.5;
+                        let strokeDash = null;
+
+                        switch (u.construction) {
+                            case 'pondasi':
+                                fillColor = '#fd7e14'; // Oranye
+                                strokeColor = '#d96509';
+                                strokeWidth = 3;
+                                strokeDash = [5, 2];
+                                break;
+                            case 'dinding':
+                                fillColor = '#ffc107'; // Kuning Emas
+                                strokeColor = '#d39e00';
+                                strokeWidth = 3;
+                                strokeDash = [5, 2];
+                                break;
+                            case 'atap':
+                                fillColor = '#17a2b8'; // Cyan
+                                strokeColor = '#117a8b';
+                                strokeWidth = 3.5;
+                                strokeDash = [6, 2];
+                                break;
+                            case 'finishing':
+                                fillColor = '#9a55ff'; // Ungu
+                                strokeColor = '#7a3bcf';
+                                strokeWidth = 3.5;
+                                strokeDash = [6, 2];
+                                break;
+                            case 'selesai':
+                                fillColor = '#28a745'; // HIJAU HANYA JIKA PEMBANGUNAN SUDAH SELESAI (100%)
+                                strokeColor = '#1e7e34';
+                                strokeWidth = 3;
+                                break;
+                            default:
+                                fillColor = '#adb5bd';
+                                strokeColor = '#6c757d';
+                                strokeWidth = 1.5;
+                                break;
+                        }
+
+                        // Border status penjualan
+                        if (u.statusRaw === 'sold') {
+                            strokeColor = '#dc3545';
+                            strokeWidth = 4;
+                            strokeDash = null;
+                        } else if (u.statusRaw === 'booked') {
+                            strokeColor = '#ffc107';
+                            strokeWidth = 3.5;
+                        }
+
                         const circle = new fabric.Circle({
                             left: u.pos_x,
                             top: u.pos_y,
                             radius: u.width / 2,
                             angle: u.angle,
-                            fill: getColor(u.statusRaw, u.type),
-                            opacity: 0.6,
-                            stroke: 'black',
-                            strokeWidth: 1,
+                            fill: fillColor,
+                            opacity: 0.75,
+                            stroke: strokeColor,
+                            strokeWidth: strokeWidth,
+                            strokeDashArray: strokeDash,
                             hasControls: true,
                             hasBorders: true,
                             lockRotation: false
@@ -3250,42 +3335,156 @@
 
         function getColor(status, type) {
             if (type === "komersil" && status === "ready") return "#2675BB";
-            if (status === "ready") return "#CE2A2E";
+            if (status === "ready") return "#28a745";
             if (status === "booked") return "#FFD700";
             if (status === "sold") return "#FA2800";
-            return "gray";
+            return "#6c757d";
         }
 
+        // Info Border / Stroke Status Konstruksi Bangunan
+        function getConstructionStrokeInfo(progress) {
+            switch (progress) {
+                case 'pondasi':
+                    return { stroke: '#fd7e14', strokeWidth: 3.5, dash: [6, 3], label: 'Pondasi (20%)', color: '#fd7e14' };
+                case 'dinding':
+                    return { stroke: '#ffc107', strokeWidth: 3.5, dash: [6, 3], label: 'Dinding (40%)', color: '#ffc107' };
+                case 'atap':
+                    return { stroke: '#17a2b8', strokeWidth: 4,   dash: [8, 3], label: 'Atap (60%)',    color: '#17a2b8' };
+                case 'finishing':
+                    return { stroke: '#9a55ff', strokeWidth: 4,   dash: [8, 3], label: 'Finishing (80%)', color: '#9a55ff' };
+                case 'selesai':
+                    return { stroke: '#28a745', strokeWidth: 3,   dash: null,   label: 'Selesai (100%)', color: '#28a745' };
+                default:
+                    return { stroke: '#212529', strokeWidth: 1.2, dash: null,   label: 'Belum Mulai (0%)', color: '#6c757d' };
+            }
+        }
+
+        // Populate Modal Detail Unit secara langsung dari objek Canvas
+        window.populateModalDirectly = function(data) {
+            document.getElementById('m_unit_name').innerText = data.unitName || '-';
+            document.getElementById('m_block').innerText = data.block || '-';
+            document.getElementById('m_unit_number').innerText = data.unitNumber || '-';
+            document.getElementById('m_jenis').innerText = data.jenis ? (data.jenis.charAt(0).toUpperCase() + data.jenis.slice(1)) : '-';
+            document.getElementById('m_type').innerText = data.type || '-';
+            document.getElementById('m_area').innerText = data.area ? data.area + ' m²' : '-';
+            document.getElementById('m_building').innerText = data.building ? data.building + ' m²' : '-';
+            document.getElementById('m_price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.price || 0);
+            document.getElementById('m_direction').innerText = data.direction || '-';
+            document.getElementById('m_address').innerText = data.address || '-';
+
+            // Status Penjualan
+            const sRaw = (data.statusRaw || '').toLowerCase();
+            const jRaw = (data.jenis || '').toLowerCase();
+            const tRaw = (data.type || '').toLowerCase();
+            let sHtml = '';
+            if (sRaw === 'ready' || sRaw === 'tersedia') {
+                if (tRaw === 'komersil' || jRaw === 'komersil') {
+                    sHtml = `<span class="badge shadow-sm" style="background: #2675BB; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-office-building me-1"></i>Tersedia (Ready Komersil)</span>`;
+                } else {
+                    sHtml = `<span class="badge shadow-sm" style="background: #28a745; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia (Ready Subsidi)</span>`;
+                }
+            } else if (sRaw === 'booked') {
+                sHtml = `<span class="badge shadow-sm" style="background: #ffc107; color: #212529 !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-bookmark-check me-1"></i>Booked (Terbooking)</span>`;
+            } else if (sRaw === 'sold' || sRaw === 'terjual') {
+                sHtml = `<span class="badge shadow-sm" style="background: #dc3545; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-close-circle me-1"></i>Terjual (Sold)</span>`;
+            } else {
+                sHtml = `<span class="badge bg-secondary shadow-sm" style="color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;">${data.statusText || sRaw}</span>`;
+            }
+            document.getElementById('m_status').innerHTML = sHtml;
+
+            // Progress Pembangunan Fisik
+            const progressMap = { belum_mulai: 0, pondasi: 20, dinding: 40, atap: 60, finishing: 80, selesai: 100 };
+            const prog = data.construction || 'belum_mulai';
+            const pct = progressMap[prog] !== undefined ? progressMap[prog] : 0;
+            const strokeInfo = getConstructionStrokeInfo(prog);
+
+            document.getElementById('m_progress_bar').style.width = pct + '%';
+            document.getElementById('m_progress_bar').style.background = strokeInfo.color;
+            document.getElementById('m_progress_pct').innerText = pct + '% (' + strokeInfo.label + ')';
+
+            // Booking info
+            const hasBooking = data.hasBooking == 1 || data.hasBooking === true;
+            document.getElementById('m_booking_card').style.display = hasBooking ? '' : 'none';
+            document.getElementById('m_no_booking_card').style.display = hasBooking ? 'none' : '';
+
+            if (hasBooking) {
+                const cust = data.customer || '-';
+                const sales = data.sales || '-';
+                document.getElementById('m_customer').innerText = cust;
+                document.getElementById('m_customer_initial').innerText = (cust !== '-' && cust) ? cust.trim().charAt(0).toUpperCase() : '?';
+                document.getElementById('m_sales').innerText = sales;
+                document.getElementById('m_sales_initial').innerText = (sales !== '-' && sales) ? sales.trim().charAt(0).toUpperCase() : '?';
+                document.getElementById('m_booking_date').innerText = data.bookingDate || '-';
+                document.getElementById('m_booking_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.bookingFee || 0);
+                document.getElementById('m_agent_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.agentFee || 0);
+
+                const bStatus = data.bookingStatus || '-';
+                let bBadge = '';
+                if (bStatus === 'active') {
+                    bBadge = `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Aktif</span>`;
+                } else if (bStatus === 'completed' || bStatus === 'lunas') {
+                    bBadge = `<span class="badge-soft badge-available-subsidi"><i class="mdi mdi-check-circle"></i>Selesai</span>`;
+                } else if (bStatus === 'cancelled') {
+                    bBadge = `<span class="badge-soft badge-sold"><i class="mdi mdi-close-circle-outline"></i>Dibatalkan</span>`;
+                } else {
+                    bBadge = `<span class="badge-soft badge-draft">${bStatus}</span>`;
+                }
+                document.getElementById('m_booking_status').innerHTML = bBadge;
+            }
+        };
+
+        function openUnitDetailFromObject(target) {
+            if (!target || !target.unitId) return;
+            const data = {
+                unitName: target.unitName,
+                unitCode: target.unitCode,
+                unitNumber: target.unitNumber,
+                block: target.block,
+                jenis: target.jenis,
+                type: target.type,
+                address: target.address,
+                area: target.area,
+                building: target.building,
+                price: target.price,
+                direction: target.direction,
+                statusRaw: target.statusRaw,
+                statusText: target.statusText,
+                construction: target.construction,
+                hasBooking: target.hasBooking,
+                customer: target.customer,
+                sales: target.sales,
+                bookingDate: target.bookingDate,
+                bookingFee: target.bookingFee,
+                agentFee: target.agentFee,
+                bookingStatus: target.bookingStatus
+            };
+
+            window.populateModalDirectly(data);
+            const modal = new bootstrap.Modal(document.getElementById('detailUnitModal'));
+            modal.show();
+        }
+
+        // Buka modal detail saat bulatan di-KLIK (single click)
+        let clickStartPos = { x: 0, y: 0 };
+        canvas.on('mouse:down', function(e) {
+            if (e.e) {
+                clickStartPos = { x: e.e.clientX, y: e.e.clientY };
+            }
+        });
+
+        canvas.on('mouse:up', function(e) {
+            if (e.target && e.target.unitId && e.e) {
+                const dist = Math.hypot(e.e.clientX - clickStartPos.x, e.e.clientY - clickStartPos.y);
+                if (dist < 6) {
+                    openUnitDetailFromObject(e.target);
+                }
+            }
+        });
+
+        // Double click cadangan
         canvas.on('mouse:dblclick', function(e) {
             if (e.target && e.target.unitId) {
-                const target = e.target;
-                const data = {
-                    unitName: target.unitName,
-                    unitCode: target.unitCode,
-                    unitNumber: target.unitNumber,
-                    block: target.block,
-                    jenis: target.jenis,
-                    type: target.type,
-                    address: target.address,
-                    area: target.area,
-                    building: target.building,
-                    price: target.price,
-                    direction: target.direction,
-                    statusRaw: target.statusRaw,
-                    statusText: target.statusText,
-                    construction: target.construction,
-                    hasBooking: target.hasBooking,
-                    customer: target.customer,
-                    sales: target.sales,
-                    bookingDate: target.bookingDate,
-                    bookingFee: target.bookingFee,
-                    agentFee: target.agentFee,
-                    bookingStatus: target.bookingStatus
-                };
-
-                window.populateModalDirectly(data);
-                const modal = new bootstrap.Modal(document.getElementById('detailUnitModal'));
-                modal.show();
+                openUnitDetailFromObject(e.target);
             }
         });
 

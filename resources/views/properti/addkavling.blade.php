@@ -134,10 +134,12 @@
     justify-content: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     transition: transform 0.2s ease;
+    cursor: pointer;
 }
 
 .denah-unit-box:hover {
     transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.18);
 }
 
 .denah-type-badge {
@@ -151,6 +153,206 @@
     border-radius: 50%;
     border: 1px solid #ffffff;
 }
+
+/* =========================================== */
+/* HOUSE CARD — Visualisasi Progress Bangunan  */
+/* =========================================== */
+.house-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 10px;
+    padding: 4px;
+}
+
+.house-card {
+    position: relative;
+    background: #ffffff;
+    border-radius: 10px;
+    border: 2px solid #dee2e6;
+    padding: 8px 6px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(.34,1.56,.64,1);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.house-card:hover {
+    transform: translateY(-4px) scale(1.04);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+    border-color: #9a55ff;
+    z-index: 5;
+}
+
+/* Atap rumah SVG */
+.house-roof {
+    width: 48px;
+    height: 24px;
+    margin: 0 auto 2px;
+    display: block;
+}
+
+/* Progress bar vertikal di dalam rumah */
+.house-progress-wrap {
+    position: relative;
+    width: 32px;
+    height: 38px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    margin: 0 auto 4px;
+    overflow: hidden;
+    border: 1px solid #dee2e6;
+}
+
+.house-progress-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 0 0 4px 4px;
+    transition: height 0.8s ease;
+}
+
+.house-unit-code {
+    font-size: 9px;
+    font-weight: 800;
+    color: #2c2e3f;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.house-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 2px;
+    flex-shrink: 0;
+}
+
+.house-status-label {
+    font-size: 8px;
+    font-weight: 600;
+    opacity: 0.85;
+    white-space: nowrap;
+}
+
+/* Animasi shimmer untuk unit yang sedang dibangun */
+@keyframes construction-shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+.house-card.in-progress::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff9800 0%, #ffc107 40%, #ff9800 100%);
+    background-size: 200% auto;
+    animation: construction-shimmer 1.5s linear infinite;
+}
+
+.house-card.selesai {
+    border-color: #28a74540;
+    background: linear-gradient(135deg, #f8fff8, #ffffff);
+}
+
+.house-card.selesai::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: #28a745;
+}
+
+.house-card.sold-unit {
+    opacity: 0.75;
+    border-color: #dc354540;
+    background: linear-gradient(135deg, #fff5f5, #ffffff);
+}
+
+.house-card.booked-unit {
+    border-color: #ffc10760;
+    background: linear-gradient(135deg, #fffdf0, #ffffff);
+}
+
+/* Badge progress di pojok kanan atas */
+.house-progress-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 8px;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 4px;
+    color: #fff;
+    line-height: 1.4;
+}
+
+/* Filter pill buttons */
+.denah-filter-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    background: #f0f0f5;
+    color: #6c757d;
+}
+
+.denah-filter-pill:hover,
+.denah-filter-pill.active {
+    background: #9a55ff;
+    color: #fff;
+    border-color: #9a55ff;
+    box-shadow: 0 2px 8px rgba(154,85,255,0.25);
+}
+
+/* Tooltip on hover */
+.house-tooltip {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e1e2d;
+    color: #fff;
+    font-size: 10px;
+    line-height: 1.5;
+    padding: 6px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    z-index: 99;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    transition: opacity 0.18s ease, visibility 0.18s ease;
+}
+
+.house-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #1e1e2d;
+}
+
+.house-card:hover .house-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Tab button siteplan */
 
 .modal-tabs-wrapper {
     background: #f6f9ff;
@@ -289,11 +491,131 @@
     background: #e2e8f0;
     color: #334155;
 }
-.siteplan-tab-btn.active {
-    background: #9a55ff;
+/* ===== MODAL DETAIL UNIT LENGKAP STYLES ===== */
+.modal-detail-unit .modal-header {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 1rem 1.5rem;
+    border: none;
+}
+.modal-detail-unit .modal-title {
     color: #ffffff;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.modal-detail-unit .modal-header .btn-close {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+}
+.modal-detail-unit .modal-content {
+    border: none;
+    border-radius: 16px;
+}
+.modal-detail-unit .modal-body {
+    padding: 1.5rem;
+    background: #ffffff;
+}
+.timeline-detail-card {
+    background: linear-gradient(135deg, #faf7ff, #f4efff);
+    border: 1px solid #eadcff;
+    border-radius: 14px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+.timeline-detail-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #9a55ff;
+    margin-bottom: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.timeline-detail-item {
+    background: #ffffff;
+    border: 1px solid #efe6ff;
+    border-radius: 10px;
+    padding: 0.75rem 0.85rem;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+.timeline-detail-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.1);
     border-color: #9a55ff;
-    box-shadow: 0 2px 8px rgba(154, 85, 255, 0.25);
+}
+.timeline-detail-label {
+    font-size: 0.8rem;
+    color: #4b5563 !important;
+    margin-bottom: 0.35rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.timeline-detail-label i {
+    color: #9a55ff;
+    font-size: 1rem;
+}
+.timeline-detail-value {
+    font-size: 0.95rem;
+    color: #111827;
+    font-weight: 700;
+}
+.timeline-detail-value.price, .timeline-detail-value.fee-text {
+    color: #16a34a;
+    font-weight: 800;
+}
+.name-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+.name-initial {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+.name-title {
+    font-weight: 700;
+    color: #111827;
+    font-size: 0.9rem;
+}
+.progress-wrapper {
+    margin-top: 4px;
+}
+.progress-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.progress-row .progress {
+    flex: 1;
+    height: 10px;
+    border-radius: 6px;
+    background: #e5e7eb;
+}
+.progress-bar-custom {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.4s ease;
+}
+.progress-green {
+    background: linear-gradient(135deg, #28a745, #5cb85c);
+}
+.progress-percent {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #111827;
+    white-space: nowrap;
 }
 </style>
 @endpush
@@ -698,16 +1020,23 @@
                                                         $cleanSpk = ltrim($unit->dokumen_spk, '/');
                                                         $spkDocUrl = asset(str_starts_with($cleanSpk, 'uploads/') ? $cleanSpk : 'uploads/' . $cleanSpk);
                                                     }
+                                                    $spkRecord = \App\Models\Spk::where('no_spk', $unit->no_spk)->first();
                                                 @endphp
 
-                                                @if ($spkDocUrl)
+                                                @if ($spkRecord)
+                                                    <a href="{{ route('spk.cetak', $spkRecord->id) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2 d-inline-flex align-items-center gap-1 shadow-sm rounded-pill text-decoration-none" title="Cetak / Buka Surat Resmi SPK {{ $unit->no_spk }} (Kontraktor: {{ $unit->kontraktor ?? '-' }})">
+                                                        <i class="mdi mdi-printer text-success fs-6"></i>
+                                                        <span class="fw-bold">{{ $unit->no_spk }}</span>
+                                                        <i class="mdi mdi-open-in-new" style="font-size: 10px;"></i>
+                                                    </a>
+                                                @elseif ($spkDocUrl)
                                                     <a href="{{ $spkDocUrl }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2 d-inline-flex align-items-center gap-1 shadow-sm rounded-pill text-decoration-none" title="Buka berkas PDF SPK {{ $unit->no_spk }} (Kontraktor: {{ $unit->kontraktor ?? '-' }})">
                                                         <i class="mdi mdi-file-pdf text-danger fs-6"></i>
                                                         <span class="fw-bold">{{ $unit->no_spk }}</span>
                                                         <i class="mdi mdi-open-in-new" style="font-size: 10px;"></i>
                                                     </a>
                                                 @else
-                                                    <span class="badge bg-light text-dark border py-1 px-2 d-inline-flex align-items-center gap-1" title="Kontraktor: {{ $unit->kontraktor ?? '-' }} (Belum ada berkas PDF)">
+                                                    <span class="badge bg-light text-dark border py-1 px-2 d-inline-flex align-items-center gap-1" title="Kontraktor: {{ $unit->kontraktor ?? '-' }}">
                                                         <i class="mdi mdi-file-document-outline text-primary"></i>
                                                         <span>{{ $unit->no_spk }}</span>
                                                     </span>
@@ -899,16 +1228,15 @@
         </div>
     </div>
 
-    <!-- Card 3 & 4: Ringkasan & Denah Kavling -->
-    <div class="row g-3">
-        <!-- Ringkasan Kavling -->
-        <div class="col-lg-5">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-header bg-white d-flex align-items-center gap-2">
+    <!-- Card 3: Ringkasan Kavling (Full Width 4 Kolom) -->
+    <div class="row mb-3 mb-md-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white d-flex align-items-center gap-2 py-3">
                     <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
                         <i class="mdi mdi-chart-pie" style="font-size: 1.1rem;"></i>
                     </span>
-                    <h5 class="card-title mb-0 fw-bold text-dark">Ringkasan Kavling</h5>
+                    <h5 class="card-title mb-0 fw-bold text-dark">Ringkasan Kavling & Pembangunan</h5>
                 </div>
                 <div class="card-body p-3 p-md-4">
                     @php
@@ -935,48 +1263,50 @@
                     @endphp
 
                     <div class="row g-3">
-                        <div class="col-6">
-                            <div class="p-3 bg-light rounded-3">
+                        <div class="col-6 col-md-3">
+                            <div class="p-3 bg-light rounded-3 h-100 border-start border-primary border-3">
                                 <small class="text-muted d-block mb-1"><i class="mdi mdi-counter me-1 text-primary"></i>Total Unit</small>
                                 <h4 class="fw-bold text-dark mb-0">{{ $totalUnits }} Unit</h4>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="p-3 bg-light rounded-3">
-                                <small class="text-muted d-block mb-1"><i class="mdi mdi-ruler-square me-1 text-primary"></i>Total Luas Unit</small>
+                        <div class="col-6 col-md-3">
+                            <div class="p-3 bg-light rounded-3 h-100 border-start border-info border-3">
+                                <small class="text-muted d-block mb-1"><i class="mdi mdi-ruler-square me-1 text-info"></i>Total Luas Unit</small>
                                 <h4 class="fw-bold text-dark mb-0">{{ number_format($totalArea, 0, ',', '.') }} m²</h4>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="p-3 bg-light rounded-3">
-                                <small class="text-muted d-block mb-1"><i class="mdi mdi-chart-arc me-1 text-primary"></i>Sisa Luas Tanah</small>
-                                <h4 class="fw-bold text-primary mb-0">{{ number_format($sisaLuas, 0, ',', '.') }} m²</h4>
+                        <div class="col-6 col-md-3">
+                            <div class="p-3 bg-light rounded-3 h-100 border-start border-warning border-3">
+                                <small class="text-muted d-block mb-1"><i class="mdi mdi-chart-arc me-1 text-warning"></i>Sisa Luas Tanah</small>
+                                <h4 class="fw-bold text-warning mb-0">{{ number_format($sisaLuas, 0, ',', '.') }} m²</h4>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="p-3 bg-light rounded-3">
+                        <div class="col-6 col-md-3">
+                            <div class="p-3 bg-light rounded-3 h-100 border-start border-success border-3">
                                 <small class="text-muted d-block mb-1"><i class="mdi mdi-currency-usd me-1 text-success"></i>Nilai Total Unit</small>
-                                <h4 class="fw-bold text-success mb-0" style="font-size: 1rem;">Rp {{ number_format($totalNilai, 0, ',', '.') }}</h4>
+                                <h4 class="fw-bold text-success mb-0" style="font-size: 1.05rem;">Rp {{ number_format($totalNilai, 0, ',', '.') }}</h4>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-4">
+                    <div class="mt-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <small class="fw-bold text-dark"><i class="mdi mdi-progress-clock me-1 text-primary"></i>Progress Pembangunan</small>
-                            <small class="fw-bold text-primary">{{ number_format($progressPercent, 0) }}%</small>
+                            <small class="fw-bold text-dark"><i class="mdi mdi-progress-clock me-1 text-primary"></i>Progress Pembangunan Keseluruhan</small>
+                            <small class="fw-bold text-primary">{{ number_format($progressPercent, 0) }}% Rata-rata</small>
                         </div>
-                        <div class="progress" style="height: 10px; border-radius: 6px;">
+                        <div class="progress" style="height: 8px; border-radius: 6px;">
                             <div class="progress-bar bg-gradient-primary" role="progressbar" style="width: {{ $progressPercent }}%;"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Denah Kavling -->
-        <div class="col-lg-7">
-            <div class="card shadow-sm border-0 h-100">
+    <!-- Card 4: Denah Kavling Interaktif (Full Width Luas & Besar) -->
+    <div class="row mb-3 mb-md-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
                 @php
                     $hasDenah = !empty($land->denah);
                     $denahUrl = null;
@@ -1012,13 +1342,16 @@
                         </div>
                     </div>
                     
-                    <!-- Tab Switcher Header (Siteplan vs Matriks Blok) -->
+                    <!-- Tab Switcher Header (Siteplan vs Matriks Blok vs Progress) -->
                     <div class="d-flex align-items-center gap-1 bg-light p-1 rounded-pill border">
                         <button type="button" class="siteplan-tab-btn {{ $hasDenah ? 'active' : '' }}" id="btnTabSiteplan" onclick="switchSiteplanView('siteplan')">
                             <i class="mdi mdi-image-area me-1"></i>Siteplan Asli
                         </button>
                         <button type="button" class="siteplan-tab-btn {{ !$hasDenah ? 'active' : '' }}" id="btnTabMatriks" onclick="switchSiteplanView('matriks')">
                             <i class="mdi mdi-grid-large me-1"></i>Matriks Unit
+                        </button>
+                        <button type="button" class="siteplan-tab-btn" id="btnTabProgress" onclick="switchSiteplanView('progress')">
+                            <i class="mdi mdi-home-city-outline me-1"></i>Progress Bangunan
                         </button>
                     </div>
                 </div>
@@ -1070,14 +1403,49 @@
                                         </a>
                                     </div>
                                 @else
-                                    <div class="siteplan-viewport" id="siteplanViewport" title="Gunakan tombol kontrol di atas untuk memperbesar/memperkecil">
-                                        <img src="{{ $denahUrl }}" alt="Siteplan {{ $land->name }}" class="siteplan-img" id="siteplanImageElement" draggable="false">
+                                    <!-- Interactive Fabric.js Canvas Engine untuk Tim Legal (Tinggi 620px Besar & Luas) -->
+                                    <div class="siteplan-scroll-container" style="min-height: 580px; height: 620px; overflow: hidden; border: 2px solid #9a55ff; border-radius: 12px; background: #ffffff; display: flex; justify-content: center; align-items: center; position: relative;">
+                                        <canvas id="siteplanCanvasLegal"></canvas>
                                     </div>
-                                    <div class="p-2 px-3 bg-light border-top d-flex justify-content-between align-items-center small text-muted">
-                                        <span><i class="mdi mdi-cursor-move me-1"></i>Tips: Gunakan tombol zoom atau buka layar penuh</span>
-                                        <a href="{{ route('properti.edit', $land->id) }}" class="text-primary text-decoration-none fw-bold small">
-                                            <i class="mdi mdi-pencil-box-outline me-1"></i>Ganti Siteplan
-                                        </a>
+
+                                    <!-- Legend Status Penjualan & Progress Pembangunan -->
+                                    <div class="mt-2 p-2 bg-light rounded-3 border small">
+                                        <div class="row g-2">
+                                            <div class="col-md-7 border-end">
+                                                <strong class="d-block text-dark mb-1" style="font-size: 10px;">
+                                                    <i class="mdi mdi-hammer-wrench text-warning me-1"></i>Status Pembangunan Fisik (Warna Bulatan):
+                                                </strong>
+                                                <div class="d-flex flex-wrap gap-1">
+                                                    <span class="badge" style="background: #adb5bd; color: #fff; font-size: 9px;">Belum Mulai (0%)</span>
+                                                    <span class="badge" style="background: #fd7e14; color: #fff; font-size: 9px;">Pondasi (20%)</span>
+                                                    <span class="badge" style="background: #ffc107; color: #212529; font-size: 9px;">Dinding (40%)</span>
+                                                    <span class="badge" style="background: #17a2b8; color: #fff; font-size: 9px;">Atap (60%)</span>
+                                                    <span class="badge" style="background: #9a55ff; color: #fff; font-size: 9px;">Finishing (80%)</span>
+                                                    <span class="badge" style="background: #28a745; color: #fff; font-size: 9px;">Selesai (100%)</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <strong class="d-block text-dark mb-1" style="font-size: 10px;">
+                                                    <i class="mdi mdi-circle-outline text-primary me-1"></i>Status Penjualan (Garis Border):
+                                                </strong>
+                                                <div class="d-flex flex-wrap gap-1">
+                                                    <span class="badge" style="background: rgba(220,53,69,0.15); color: #dc3545; border: 1.5px solid #dc3545; font-size: 9px;">Terjual / Sold (Border Merah)</span>
+                                                    <span class="badge" style="background: rgba(255,193,7,0.15); color: #d39e00; border: 1.5px solid #ffc107; font-size: 9px;">Booked (Border Emas)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-2 px-3 bg-light border-top d-flex flex-wrap justify-content-between align-items-center gap-2 small text-muted">
+                                        <span><i class="mdi mdi-cursor-move me-1"></i>Geser buletan unit untuk memposisikan kavling di siteplan</span>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <button type="button" class="btn btn-xs btn-primary px-2 py-1 shadow-sm" onclick="savePositionLegal()">
+                                                <i class="mdi mdi-content-save me-1"></i>Simpan Posisi Unit
+                                            </button>
+                                            <a href="{{ route('properti.edit', $land->id) }}" class="text-primary text-decoration-none fw-bold small">
+                                                <i class="mdi mdi-pencil-box-outline me-1"></i>Ganti Siteplan
+                                            </a>
+                                        </div>
                                     </div>
                                 @endif
                             </div>
@@ -1196,6 +1564,197 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- ============================================== -->
+                    <!-- VIEW 3: PROGRESS BANGUNAN — VISUALISASI RUMAH  -->
+                    <!-- ============================================== -->
+                    <div id="viewProgressContainer" class="d-none">
+                        @php
+                            $allUnitsProgress = $land->units->sortBy('unit_code');
+                            $progressMap = [
+                                'belum_mulai' => ['label' => 'Belum Mulai', 'pct' => 0,   'color' => '#adb5bd'],
+                                'pondasi'     => ['label' => 'Pondasi',     'pct' => 20,  'color' => '#fd7e14'],
+                                'dinding'     => ['label' => 'Dinding',     'pct' => 40,  'color' => '#ffc107'],
+                                'atap'        => ['label' => 'Atap',        'pct' => 60,  'color' => '#17a2b8'],
+                                'finishing'   => ['label' => 'Finishing',   'pct' => 80,  'color' => '#9a55ff'],
+                                'selesai'     => ['label' => 'Selesai',     'pct' => 100, 'color' => '#28a745'],
+                            ];
+                            $blokGroupsProgress = [];
+                            foreach ($allUnitsProgress as $u) {
+                                $blk = explode('.', $u->unit_code)[0] ?? 'A';
+                                $blokGroupsProgress[$blk][] = $u;
+                            }
+                            $totalUnits      = $allUnitsProgress->count();
+                            $selesaiCount    = $allUnitsProgress->where('construction_progress', 'selesai')->count();
+                            $inProgressCount = $allUnitsProgress->whereIn('construction_progress', ['pondasi','dinding','atap','finishing'])->count();
+                            $belumCount      = $totalUnits - $selesaiCount - $inProgressCount;
+                            $avgPct = $totalUnits > 0 ? round($allUnitsProgress->map(fn($u) => ($progressMap[$u->construction_progress ?? 'belum_mulai']['pct'] ?? 0))->average()) : 0;
+                        @endphp
+
+                        @if($allUnitsProgress->isEmpty())
+                            <div class="text-center py-5 text-muted">
+                                <i class="mdi mdi-home-outline" style="font-size: 3rem; opacity: 0.3;"></i>
+                                <p class="mt-2 small">Belum ada unit kavling untuk divisualisasikan.</p>
+                            </div>
+                        @else
+                            <!-- Statistik Ringkasan -->
+                            <div class="row g-2 mb-3">
+                                <div class="col-6 col-md-3">
+                                    <div class="rounded-3 p-2 text-center" style="background: linear-gradient(135deg,#28a74515,#28a74508); border: 1px solid #28a74530;">
+                                        <div class="fw-bold fs-5 text-success">{{ $selesaiCount }}</div>
+                                        <div style="font-size: 10px;" class="text-muted">Selesai</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="rounded-3 p-2 text-center" style="background: linear-gradient(135deg,#ffc10715,#ff980008); border: 1px solid #ffc10740;">
+                                        <div class="fw-bold fs-5" style="color: #fd7e14;">{{ $inProgressCount }}</div>
+                                        <div style="font-size: 10px;" class="text-muted">Dibangun</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="rounded-3 p-2 text-center" style="background: linear-gradient(135deg,#6c757d15,#adb5bd08); border: 1px solid #adb5bd40;">
+                                        <div class="fw-bold fs-5 text-secondary">{{ $belumCount }}</div>
+                                        <div style="font-size: 10px;" class="text-muted">Belum Mulai</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="rounded-3 p-2 text-center" style="background: linear-gradient(135deg,#9a55ff15,#9a55ff08); border: 1px solid #9a55ff30;">
+                                        <div class="fw-bold fs-5" style="color: #9a55ff;">{{ $avgPct }}%</div>
+                                        <div style="font-size: 10px;" class="text-muted">Rata-rata</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Progress Bar Keseluruhan -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between small text-muted mb-1">
+                                    <span><i class="mdi mdi-home-city-outline me-1"></i>Progress Pembangunan Keseluruhan</span>
+                                    <span class="fw-bold">{{ $avgPct }}% rata-rata</span>
+                                </div>
+                                <div class="progress rounded-pill" style="height: 8px;">
+                                    <div class="progress-bar" role="progressbar"
+                                         style="width: {{ $avgPct }}%; background: linear-gradient(90deg, #9a55ff, #da8cff);"
+                                         aria-valuenow="{{ $avgPct }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                            <!-- Filter Pills Per Blok -->
+                            <div class="d-flex flex-wrap gap-1 mb-3">
+                                <button class="denah-filter-pill active" onclick="filterHouseBlok('all', this)">
+                                    <i class="mdi mdi-apps" style="font-size: 10px;"></i>Semua
+                                </button>
+                                @foreach(array_keys($blokGroupsProgress) as $blkKey)
+                                    <button class="denah-filter-pill" onclick="filterHouseBlok('{{ $blkKey }}', this)">
+                                        Blok {{ $blkKey }}
+                                    </button>
+                                @endforeach
+                            </div>
+
+                            <!-- Grid House Cards Per Blok -->
+                            @foreach($blokGroupsProgress as $blkName => $blokUnits)
+                                <div class="house-blok-section mb-4" data-blok="{{ $blkName }}">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span class="badge bg-dark px-2 py-1" style="font-size: 10px; border-radius: 6px;">Blok {{ $blkName }}</span>
+                                        <span style="font-size: 10px; color: #adb5bd;">{{ count($blokUnits) }} unit</span>
+                                        <hr class="flex-grow-1 my-0" style="border-color: #dee2e6;">
+                                    </div>
+                                    <div class="house-card-grid">
+                                        @foreach($blokUnits as $hu)
+                                            @php
+                                                $prog  = $hu->construction_progress ?? 'belum_mulai';
+                                                $pInfo = $progressMap[$prog] ?? $progressMap['belum_mulai'];
+                                                $pct   = $pInfo['pct'];
+                                                $isInProgress = in_array($prog, ['pondasi','dinding','atap','finishing']);
+                                                $isSelesai    = ($prog === 'selesai');
+
+                                                $roofColor = match($hu->status ?? 'draft') {
+                                                    'sold'   => '#dc3545',
+                                                    'booked' => '#ffc107',
+                                                    'ready'  => ($hu->type === 'subsidi' ? '#28a745' : '#0d6efd'),
+                                                    default  => '#6c757d',
+                                                };
+
+                                                $cardClasses = 'house-card';
+                                                if ($isInProgress)         $cardClasses .= ' in-progress';
+                                                if ($isSelesai)            $cardClasses .= ' selesai';
+                                                if ($hu->status === 'sold')   $cardClasses .= ' sold-unit';
+                                                if ($hu->status === 'booked') $cardClasses .= ' booked-unit';
+
+                                                $hasSpk    = !empty($hu->no_spk);
+                                                $spkRecord = $hasSpk ? \App\Models\Spk::where('no_spk', $hu->no_spk)->first() : null;
+                                            @endphp
+
+                                            <div class="{{ $cardClasses }}" data-blok="{{ $blkName }}"
+                                                 data-bs-toggle="modal" data-bs-target="#editUnitModal{{ $hu->id }}"
+                                                 title="{{ $hu->unit_code }} — {{ $pInfo['label'] }} ({{ $pct }}%) — {{ ucfirst($hu->status ?? '-') }}">
+
+                                                <!-- Tooltip -->
+                                                <div class="house-tooltip">
+                                                    <strong>{{ $hu->unit_code }}</strong><br>
+                                                    Type: {{ $hu->type ?? '-' }}{{ $hu->building_area ? ' | ' . $hu->building_area . 'm²' : '' }}<br>
+                                                    Status: {{ ucfirst($hu->status ?? '-') }}<br>
+                                                    Bangunan: {{ $pInfo['label'] }} ({{ $pct }}%)<br>
+                                                    SPK: {{ $hasSpk ? $hu->no_spk : 'Belum diterbitkan' }}
+                                                </div>
+
+                                                <!-- Badge % progress -->
+                                                @if($pct > 0)
+                                                    <div class="house-progress-badge" style="background: {{ $pInfo['color'] }};">{{ $pct }}%</div>
+                                                @endif
+
+                                                <!-- Atap Rumah -->
+                                                <svg class="house-roof" viewBox="0 0 48 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <polygon points="0,24 24,2 48,24" fill="{{ $roofColor }}" />
+                                                    @if($isInProgress)
+                                                        <polygon points="22,13 26,13 25,19 23,19" fill="#fff" opacity="0.4"/>
+                                                    @endif
+                                                </svg>
+
+                                                <!-- Progress Bar Vertikal (Badan Rumah) -->
+                                                <div class="house-progress-wrap">
+                                                    <div class="house-progress-fill" style="height: {{ $pct }}%; background: {{ $pInfo['color'] }};"></div>
+                                                    @if($isInProgress)
+                                                        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;">
+                                                            <i class="mdi mdi-hammer-wrench" style="font-size:11px;color:#fd7e14;"></i>
+                                                        </div>
+                                                    @elseif($isSelesai)
+                                                        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;">
+                                                            <i class="mdi mdi-check" style="font-size:11px;color:#28a745;"></i>
+                                                        </div>
+                                                    @endif
+                                                </div>
+
+                                                <!-- Kode Unit -->
+                                                <div class="house-unit-code mb-1">{{ $hu->unit_code }}</div>
+
+                                                <!-- Status dot + label -->
+                                                <div class="d-flex align-items-center justify-content-center" style="gap:2px;">
+                                                    <span class="house-status-dot" style="background:{{ $pInfo['color'] }};"></span>
+                                                    <span class="house-status-label" style="color:{{ $pInfo['color'] }};">{{ $pInfo['label'] }}</span>
+                                                </div>
+
+                                                @if($hasSpk)
+                                                    <i class="mdi mdi-file-check" style="font-size:9px;color:#28a745;margin-top:2px;" title="SPK: {{ $hu->no_spk }}"></i>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+
+                            <!-- Legend -->
+                            <hr class="my-3">
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach($progressMap as $pv)
+                                    <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;background:{{ $pv['color'] }}18;color:{{ $pv['color'] }};padding:2px 8px;border-radius:8px;border:1px solid {{ $pv['color'] }}35;font-weight:600;">
+                                        <span style="width:6px;height:6px;border-radius:50%;background:{{ $pv['color'] }};display:inline-block;"></span>
+                                        {{ $pv['label'] }} {{ $pv['pct'] }}%
+                                    </span>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -1402,6 +1961,17 @@
             </div>
 
             <div class="modal-body p-4">
+                <!-- Info Shortcut SPK Lengkap -->
+                <div class="alert alert-info py-2 px-3 small d-flex flex-wrap justify-content-between align-items-center mb-3 border-0 shadow-sm" style="border-radius: 8px;">
+                    <div>
+                        <i class="mdi mdi-information-outline me-1"></i>
+                        Ingin membuat SPK lengkap dengan jadwal termin & pasal resmi?
+                    </div>
+                    <a href="{{ route('spk.create', ['land_bank_id' => $land->id]) }}" target="_blank" class="btn btn-xs btn-primary text-white text-nowrap ms-auto mt-1 mt-sm-0" style="font-size: 11px;">
+                        <i class="mdi mdi-open-in-new me-1"></i>Buka Form SPK Lengkap & Rincian Termin
+                    </a>
+                </div>
+
                 <form id="formAssignSpkModal" action="{{ route('properti.kavling.assignSpk', $land->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
@@ -1503,29 +2073,658 @@
     </div>
 </div>
 
+<!-- Modal Detail Unit Lengkap (Legal View) -->
+<div class="modal fade modal-detail-unit" id="detailUnitModalLegal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="mdi mdi-home-circle me-2"></i>
+                    Detail Unit Kavling Lengkap
+                </h5>
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-sm btn-light text-primary fw-bold px-3 rounded-pill" id="btnEditFromDetailLegal" style="display: none;">
+                        <i class="mdi mdi-pencil me-1"></i>Edit Data Unit
+                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+            </div>
+            <div class="modal-body p-4">
+                <!-- Informasi Unit -->
+                <div class="timeline-detail-card">
+                    <div class="timeline-detail-title">
+                        <i class="mdi mdi-home-outline me-1"></i>Informasi Unit
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-home-outline"></i>Nama Unit</div>
+                                <div class="timeline-detail-value" id="leg_unit_name">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-alpha-b-box-outline"></i>Blok</div>
+                                <div class="timeline-detail-value" id="leg_block">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-numeric"></i>Nomor Unit</div>
+                                <div class="timeline-detail-value" id="leg_unit_number">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-format-list-bulleted-type"></i>Jenis Unit</div>
+                                <div class="timeline-detail-value" id="leg_jenis">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-home-group"></i>Tipe Unit</div>
+                                <div class="timeline-detail-value" id="leg_type">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-ruler-square"></i>Luas Tanah</div>
+                                <div class="timeline-detail-value" id="leg_area">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-home-city-outline"></i>Luas Bangunan</div>
+                                <div class="timeline-detail-value" id="leg_building">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-cash-outline"></i>Harga</div>
+                                <div class="timeline-detail-value price" id="leg_price">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-compass-outline"></i>Arah Hadap</div>
+                                <div class="timeline-detail-value" id="leg_direction">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-toggle-switch-outline"></i>Status Unit</div>
+                                <div class="timeline-detail-value" id="leg_status">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-progress-check"></i>Status Pembangunan</div>
+                                <div class="timeline-detail-value">
+                                    <div class="progress-wrapper">
+                                        <div class="progress-row">
+                                            <div class="progress">
+                                                <div class="progress-bar-custom progress-green" id="leg_progress_bar" style="width: 0%"></div>
+                                            </div>
+                                            <span class="progress-percent" id="leg_progress_pct">0%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-map-marker-outline"></i>Alamat / Lokasi</div>
+                                <div class="timeline-detail-value" id="leg_address">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Informasi Booking -->
+                <div class="timeline-detail-card" id="leg_booking_card">
+                    <div class="timeline-detail-title">
+                        <i class="mdi mdi-calendar-check-outline me-1"></i>Informasi Penjualan & Booking
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-account-outline"></i>Customer</div>
+                                <div class="timeline-detail-value">
+                                    <div class="name-wrap">
+                                        <div class="name-initial" id="leg_customer_initial" style="background: linear-gradient(135deg, #da8cff, #9a55ff);">-</div>
+                                        <div class="name-info">
+                                            <div class="name-title" id="leg_customer">-</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-account-tie-outline"></i>Sales / Agency</div>
+                                <div class="timeline-detail-value">
+                                    <div class="name-wrap">
+                                        <div class="name-initial" id="leg_sales_initial" style="background: linear-gradient(135deg, #667eea, #764ba2);">-</div>
+                                        <div class="name-info">
+                                            <div class="name-title" id="leg_sales">-</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-calendar-today"></i>Tanggal Booking</div>
+                                <div class="timeline-detail-value" id="leg_booking_date">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-cash-multiple"></i>Booking Fee</div>
+                                <div class="timeline-detail-value fee-text" id="leg_booking_fee">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-hand-coin-outline"></i>Agent Fee</div>
+                                <div class="timeline-detail-value fee-text" id="leg_agent_fee">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-toggle-switch"></i>Status Booking</div>
+                                <div class="timeline-detail-value" id="leg_booking_status">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Placeholder jika tidak ada booking -->
+                <div class="timeline-detail-card" id="leg_no_booking_card" style="display:none;">
+                    <div class="text-center text-muted py-4">
+                        <i class="mdi mdi-information-outline text-primary" style="font-size: 2.5rem;"></i>
+                        <p class="mb-0 fw-semibold">Belum ada booking atau transaksi penjualan untuk unit ini.</p>
+                        <small class="text-muted">Unit masih berstatus Tersedia / Ready.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-// Switch Siteplan vs Matriks Grid View
+// Switch Siteplan vs Matriks Grid View vs Progress Bangunan
 function switchSiteplanView(view) {
+    // Reset all tab button active states
+    $('#btnTabSiteplan, #btnTabMatriks, #btnTabProgress').removeClass('active');
+    // Hide all containers
+    $('#viewSiteplanContainer, #viewMatriksContainer, #viewProgressContainer').addClass('d-none');
+
     if (view === 'siteplan') {
         $('#btnTabSiteplan').addClass('active');
-        $('#btnTabMatriks').removeClass('active');
         $('#viewSiteplanContainer').removeClass('d-none');
-        $('#viewMatriksContainer').addClass('d-none');
-    } else {
+        if (typeof initLegalSiteplanCanvas === 'function') {
+            setTimeout(initLegalSiteplanCanvas, 100);
+        }
+    } else if (view === 'matriks') {
         $('#btnTabMatriks').addClass('active');
-        $('#btnTabSiteplan').removeClass('active');
         $('#viewMatriksContainer').removeClass('d-none');
-        $('#viewSiteplanContainer').addClass('d-none');
+    } else if (view === 'progress') {
+        $('#btnTabProgress').addClass('active');
+        $('#viewProgressContainer').removeClass('d-none');
     }
 }
 
-// Zoom Interactive Engine for Siteplan Image
+@if($hasDenah && !$isPdf)
+// =========================================================================
+// FABRIC.JS SITEPLAN CANVAS ENGINE (TIM LEGAL MEMETAKAN BULETAN UNIT)
+// =========================================================================
+// FABRIC.JS SITEPLAN CANVAS ENGINE (TIM LEGAL MEMETAKAN BULETAN UNIT)
+// =========================================================================
+let canvasLegal = null;
+let isDraggingLegal = false;
+let lastPosXLegal, lastPosYLegal;
+
+const legalUnitsData = [
+    @foreach ($land->units as $unit)
+    @php
+        $booking = $unit->bookings ? $unit->bookings->first() : null;
+        $custName = $booking ? ($booking->customer_name ?? ($booking->customer->name ?? '-')) : '-';
+        $salesName = $booking ? ($booking->sales_name ?? ($booking->sales->name ?? '-')) : '-';
+        $bDate = $booking && $booking->booking_date ? \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('d F Y') : '-';
+        $bFee = $booking->booking_fee ?? 0;
+        $aFee = $booking->agent_fee ?? 0;
+        $bStat = $booking->status ?? '-';
+        $hasBk = $booking ? true : false;
+    @endphp
+    {
+        id: "{{ $unit->id }}",
+        unitCode: "{{ $unit->unit_code }}",
+        unitName: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_name ?? '-')) }}",
+        unitNumber: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_number ?? '-')) }}",
+        block: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->block ?? '-')) }}",
+        jenis: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->jenis ?? 'rumah')) }}",
+        type: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->type ?? '-')) }}",
+        address: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->address ?? ($land->address ?? '-'))) }}",
+        area: "{{ $unit->area ?? '-' }}",
+        building: "{{ $unit->building_area ?? '-' }}",
+        price: {{ $unit->price ?? 0 }},
+        direction: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->facing ?? ($unit->direction ?? '-'))) }}",
+        statusRaw: "{{ $unit->status ?? 'ready' }}",
+        statusText: "{{ ucfirst($unit->status ?? 'ready') }}",
+        construction: "{{ $unit->construction_progress ?? 'belum_mulai' }}",
+        pos_x: {{ $unit->pos_x ?? 100 }},
+        pos_y: {{ $unit->pos_y ?? 100 }},
+        width: {{ $unit->width ?? 70 }},
+        angle: {{ $unit->angle ?? 0 }},
+        hasBooking: {{ $hasBk ? 'true' : 'false' }},
+        customer: "{{ str_replace(["\r", "\n"], ' ', addslashes($custName)) }}",
+        sales: "{{ str_replace(["\r", "\n"], ' ', addslashes($salesName)) }}",
+        bookingDate: "{{ $bDate }}",
+        bookingFee: {{ $bFee }},
+        agentFee: {{ $aFee }},
+        bookingStatus: "{{ $bStat }}",
+    },
+    @endforeach
+];
+
+function populateModalLegal(data) {
+    document.getElementById('leg_unit_name').innerText = data.unitName || '-';
+    document.getElementById('leg_block').innerText = data.block || '-';
+    document.getElementById('leg_unit_number').innerText = data.unitNumber || '-';
+    document.getElementById('leg_jenis').innerText = data.jenis ? (data.jenis.charAt(0).toUpperCase() + data.jenis.slice(1)) : '-';
+    document.getElementById('leg_type').innerText = data.type || '-';
+    document.getElementById('leg_area').innerText = data.area ? data.area + ' m²' : '-';
+    document.getElementById('leg_building').innerText = data.building ? data.building + ' m²' : '-';
+    document.getElementById('leg_price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.price || 0);
+    document.getElementById('leg_direction').innerText = data.direction || '-';
+    document.getElementById('leg_address').innerText = data.address || '-';
+
+    // Status Penjualan (Jelas & Kontras Tinggi)
+    const sRaw = (data.statusRaw || '').toLowerCase();
+    const tRaw = (data.type || '').toLowerCase();
+    let sHtml = '';
+    if (sRaw === 'ready' || sRaw === 'tersedia') {
+        if (tRaw === 'komersil') {
+            sHtml = `<span class="badge shadow-sm" style="background: #2675BB; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-office-building me-1"></i>Tersedia (Ready Komersil)</span>`;
+        } else {
+            sHtml = `<span class="badge shadow-sm" style="background: #28a745; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia (Ready Subsidi)</span>`;
+        }
+    } else if (sRaw === 'booked') {
+        sHtml = `<span class="badge shadow-sm" style="background: #ffc107; color: #212529 !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-bookmark-check me-1"></i>Booked (Terbooking)</span>`;
+    } else if (sRaw === 'sold' || sRaw === 'terjual') {
+        sHtml = `<span class="badge shadow-sm" style="background: #dc3545; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-close-circle me-1"></i>Terjual (Sold)</span>`;
+    } else {
+        sHtml = `<span class="badge bg-secondary shadow-sm" style="color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;">${data.statusText || sRaw}</span>`;
+    }
+    document.getElementById('leg_status').innerHTML = sHtml;
+
+    // Progress Pembangunan Fisik (Gradient & Jelas)
+    const cMap = {
+        'belum_mulai': { pct: 0, label: '0% - Belum Mulai', bg: '#adb5bd' },
+        'pondasi': { pct: 20, label: '20% - Pondasi', bg: 'linear-gradient(135deg, #fd7e14, #ff922b)' },
+        'dinding': { pct: 40, label: '40% - Dinding', bg: 'linear-gradient(135deg, #ffc107, #ffd43b)' },
+        'atap': { pct: 60, label: '60% - Atap', bg: 'linear-gradient(135deg, #17a2b8, #3bc9db)' },
+        'finishing': { pct: 80, label: '80% - Finishing', bg: 'linear-gradient(135deg, #9a55ff, #da8cff)' },
+        'selesai': { pct: 100, label: '100% - Selesai', bg: 'linear-gradient(135deg, #28a745, #5cb85c)' }
+    };
+    const cInfo = cMap[data.construction] || { pct: 0, label: '0% - Belum Mulai', bg: '#adb5bd' };
+    const pBar = document.getElementById('leg_progress_bar');
+    pBar.style.width = cInfo.pct + '%';
+    pBar.style.background = cInfo.bg;
+    document.getElementById('leg_progress_pct').innerText = cInfo.label;
+
+    // Tombol Edit Unit
+    const btnEdit = document.getElementById('btnEditFromDetailLegal');
+    if (data.unitId) {
+        btnEdit.style.display = 'inline-block';
+        btnEdit.onclick = function() {
+            const detailModal = bootstrap.Modal.getInstance(document.getElementById('detailUnitModalLegal'));
+            if (detailModal) detailModal.hide();
+            setTimeout(() => {
+                const editModalEl = document.getElementById('editUnitModal' + data.unitId);
+                if (editModalEl) {
+                    const m = new bootstrap.Modal(editModalEl);
+                    m.show();
+                }
+            }, 300);
+        };
+    } else {
+        btnEdit.style.display = 'none';
+    }
+
+    // Informasi Booking
+    if (data.hasBooking) {
+        document.getElementById('leg_booking_card').style.display = 'block';
+        document.getElementById('leg_no_booking_card').style.display = 'none';
+
+        const cust = data.customer || '-';
+        const sales = data.sales || '-';
+        document.getElementById('leg_customer').innerText = cust;
+        document.getElementById('leg_customer_initial').innerText = (cust !== '-' && cust) ? cust.trim().charAt(0).toUpperCase() : '?';
+        document.getElementById('leg_sales').innerText = sales;
+        document.getElementById('leg_sales_initial').innerText = (sales !== '-' && sales) ? sales.trim().charAt(0).toUpperCase() : '?';
+        document.getElementById('leg_booking_date').innerText = data.bookingDate || '-';
+        document.getElementById('leg_booking_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.bookingFee || 0);
+        document.getElementById('leg_agent_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.agentFee || 0);
+
+        const bStatus = data.bookingStatus || '-';
+        let bBadge = '';
+        if (bStatus === 'active') {
+            bBadge = `<span class="badge bg-success px-2 py-1 rounded-pill"><i class="mdi mdi-check-circle me-1"></i>Aktif</span>`;
+        } else if (bStatus === 'completed' || bStatus === 'lunas') {
+            bBadge = `<span class="badge bg-success px-2 py-1 rounded-pill"><i class="mdi mdi-check-circle me-1"></i>Selesai</span>`;
+        } else if (bStatus === 'cancelled') {
+            bBadge = `<span class="badge bg-danger px-2 py-1 rounded-pill"><i class="mdi mdi-close-circle me-1"></i>Dibatalkan</span>`;
+        } else {
+            bBadge = `<span class="badge bg-secondary px-2 py-1 rounded-pill">${bStatus}</span>`;
+        }
+        document.getElementById('leg_booking_status').innerHTML = bBadge;
+    } else {
+        document.getElementById('leg_booking_card').style.display = 'none';
+        document.getElementById('leg_no_booking_card').style.display = 'block';
+    }
+}
+
+function openUnitDetailModalLegal(target) {
+    if (!target || !target.unitId) return;
+    populateModalLegal(target);
+    const modal = new bootstrap.Modal(document.getElementById('detailUnitModalLegal'));
+    modal.show();
+}
+
+function initLegalSiteplanCanvas() {
+    if (typeof fabric === 'undefined') return;
+    const canvasEl = document.getElementById('siteplanCanvasLegal');
+    if (!canvasEl) return;
+
+    const scrollContainer = canvasEl.closest('.siteplan-scroll-container') || canvasEl.parentElement;
+    const containerWidth = (scrollContainer && scrollContainer.clientWidth > 100) ? scrollContainer.clientWidth : 1100;
+    const containerHeight = (scrollContainer && scrollContainer.clientHeight > 100) ? scrollContainer.clientHeight : 620;
+
+    if (!canvasLegal) {
+        canvasLegal = new fabric.Canvas('siteplanCanvasLegal', {
+            defaultCursor: 'grab'
+        });
+
+        // Zoom via Mouse Wheel
+        canvasLegal.on('mouse:wheel', function(opt) {
+            const delta = opt.e.deltaY;
+            let zoomVal = canvasLegal.getZoom();
+            zoomVal *= (delta < 0 ? 1.1 : 0.9);
+            if (zoomVal > 3.5) zoomVal = 3.5;
+            if (zoomVal < 0.3) zoomVal = 0.3;
+            legalZoomLevel = zoomVal;
+            const pointer = canvasLegal.getPointer(opt.e);
+            canvasLegal.zoomToPoint(new fabric.Point(pointer.x, pointer.y), legalZoomLevel);
+            opt.e.preventDefault();
+            opt.e.stopPropagation();
+            canvasLegal.renderAll();
+        });
+
+        // Background Drag to Pan & Click to Open Detail Modal
+        let clickStartPosLegal = { x: 0, y: 0 };
+        canvasLegal.on('mouse:down', function(opt) {
+            if (opt.e) {
+                clickStartPosLegal = { x: opt.e.clientX, y: opt.e.clientY };
+            }
+            if (!canvasLegal.getActiveObject()) {
+                isDraggingLegal = true;
+                canvasLegal.selection = false;
+                canvasLegal.setCursor('grabbing');
+                lastPosXLegal = opt.e.clientX;
+                lastPosYLegal = opt.e.clientY;
+            }
+        });
+        canvasLegal.on('mouse:move', function(opt) {
+            if (isDraggingLegal) {
+                const e = opt.e;
+                const vpt = canvasLegal.viewportTransform;
+                vpt[4] += e.clientX - lastPosXLegal;
+                vpt[5] += e.clientY - lastPosYLegal;
+                canvasLegal.requestRenderAll();
+                lastPosXLegal = e.clientX;
+                lastPosYLegal = e.clientY;
+            }
+        });
+        canvasLegal.on('mouse:up', function(opt) {
+            canvasLegal.setViewportTransform(canvasLegal.viewportTransform);
+            isDraggingLegal = false;
+            canvasLegal.selection = true;
+            canvasLegal.setCursor('grab');
+
+            // Buka Modal Detail Unit saat bulatan di-KLIK (tanpa drag)
+            if (opt.target && opt.target.unitId && opt.e) {
+                const dist = Math.hypot(opt.e.clientX - clickStartPosLegal.x, opt.e.clientY - clickStartPosLegal.y);
+                if (dist < 6) {
+                    openUnitDetailModalLegal(opt.target);
+                }
+            }
+        });
+
+        // Buka Modal Detail Unit saat bulatan di-DOUBLE CLICK
+        canvasLegal.on('mouse:dblclick', function(opt) {
+            if (opt.target && opt.target.unitId) {
+                openUnitDetailModalLegal(opt.target);
+            }
+        });
+    } else {
+        canvasLegal.clear();
+    }
+
+    const denahUrl = "{{ $denahUrl }}";
+    fabric.Image.fromURL(denahUrl, function(img) {
+        if (!img || !img.width) return;
+
+        // Skala agar gambar denah mengisi bidang kanvas secara optimal dan besar
+        const scaleX = containerWidth / img.width;
+        const scaleY = containerHeight / img.height;
+        const scaleFactor = Math.max(scaleX, scaleY);
+
+        canvasLegal.setWidth(containerWidth);
+        canvasLegal.setHeight(containerHeight);
+
+        img.set({
+            scaleX: scaleFactor,
+            scaleY: scaleFactor,
+            originX: 'left',
+            originY: 'top'
+        });
+
+        canvasLegal.setBackgroundImage(img, function() {
+            legalUnitsData.forEach(u => {
+                // Warna & Gaya Utama mengikuti STATUS PEMBANGUNAN FISIK
+                let fillColor = '#adb5bd'; // default abu-abu untuk Belum Mulai (0%)
+                let strokeColor = '#495057';
+                let strokeWidth = 1.5;
+                let strokeDash = null;
+
+                switch (u.construction) {
+                    case 'pondasi':
+                        fillColor = '#fd7e14'; // Oranye
+                        strokeColor = '#d96509';
+                        strokeWidth = 3;
+                        strokeDash = [5, 2];
+                        break;
+                    case 'dinding':
+                        fillColor = '#ffc107'; // Kuning Emas
+                        strokeColor = '#d39e00';
+                        strokeWidth = 3;
+                        strokeDash = [5, 2];
+                        break;
+                    case 'atap':
+                        fillColor = '#17a2b8'; // Cyan
+                        strokeColor = '#117a8b';
+                        strokeWidth = 3.5;
+                        strokeDash = [6, 2];
+                        break;
+                    case 'finishing':
+                        fillColor = '#9a55ff'; // Ungu
+                        strokeColor = '#7a3bcf';
+                        strokeWidth = 3.5;
+                        strokeDash = [6, 2];
+                        break;
+                    case 'selesai':
+                        fillColor = '#28a745'; // HIJAU HANYA JIKA PEMBANGUNAN SUDAH SELESAI (100%)
+                        strokeColor = '#1e7e34';
+                        strokeWidth = 3;
+                        break;
+                    default:
+                        // Belum Mulai -> Abu-abu Netral
+                        fillColor = '#adb5bd';
+                        strokeColor = '#6c757d';
+                        strokeWidth = 1.5;
+                        break;
+                }
+
+                // Border Khusus jika unit sudah Sold atau Booked
+                if (u.statusRaw === 'sold') {
+                    strokeColor = '#dc3545'; // Merah Sold
+                    strokeWidth = 4;
+                    strokeDash = null;
+                } else if (u.statusRaw === 'booked') {
+                    strokeColor = '#ffc107'; // Kuning Emas Booked
+                    strokeWidth = 3.5;
+                }
+
+                const circle = new fabric.Circle({
+                    left: (u.pos_x || 100) * scaleFactor,
+                    top: (u.pos_y || 100) * scaleFactor,
+                    radius: ((u.width || 70) * scaleFactor) / 2,
+                    angle: u.angle || 0,
+                    fill: fillColor,
+                    opacity: 0.75,
+                    stroke: strokeColor,
+                    strokeWidth: strokeWidth,
+                    strokeDashArray: strokeDash,
+                    hasControls: true,
+                    hasBorders: true,
+                    lockRotation: false
+                });
+
+                // Attach all rich attributes
+                circle.unitId = u.id;
+                circle.unitCode = u.unitCode;
+                circle.unitName = u.unitName;
+                circle.unitNumber = u.unitNumber;
+                circle.block = u.block;
+                circle.jenis = u.jenis;
+                circle.type = u.type;
+                circle.address = u.address;
+                circle.area = u.area;
+                circle.building = u.building;
+                circle.price = u.price;
+                circle.direction = u.direction;
+                circle.statusRaw = u.statusRaw;
+                circle.statusText = u.statusText;
+                circle.construction = u.construction;
+                circle.hasBooking = u.hasBooking;
+                circle.customer = u.customer;
+                circle.sales = u.sales;
+                circle.bookingDate = u.bookingDate;
+                circle.bookingFee = u.bookingFee;
+                circle.agentFee = u.agentFee;
+                circle.bookingStatus = u.bookingStatus;
+                circle.scaleFactor = scaleFactor;
+
+                canvasLegal.add(circle);
+            });
+
+            canvasLegal.renderAll();
+        });
+    });
+}
+
+function savePositionLegal() {
+    if (!canvasLegal) return;
+    let units = [];
+    canvasLegal.getObjects().forEach(function(obj) {
+        if (obj.unitId) {
+            const sf = obj.scaleFactor || 1;
+            units.push({
+                id: obj.unitId,
+                pos_x: Math.round(obj.left / sf),
+                pos_y: Math.round(obj.top / sf),
+                width: Math.round(obj.getScaledWidth() / sf),
+                height: Math.round(obj.getScaledHeight() / sf),
+                angle: Math.round(obj.angle || 0)
+            });
+        }
+    });
+
+    Swal.fire({
+        title: 'Menyimpan Posisi...',
+        text: 'Menyimpan koordinat buletan unit di siteplan',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    fetch("{{ route('unit.save.position') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ units: units })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Posisi buletan unit di siteplan berhasil disimpan dan tersinkronisasi ke marketing.',
+                timer: 1800,
+                showConfirmButton: false
+            });
+        } else {
+            Swal.fire('Gagal', 'Gagal menyimpan posisi unit', 'error');
+        }
+    })
+    .catch(error => {
+        Swal.fire('Error', 'Terjadi kesalahan sistem', 'error');
+    });
+}
+
+$(document).ready(function() {
+    setTimeout(initLegalSiteplanCanvas, 300);
+});
+@endif
+
+// Filter House Cards berdasarkan Blok di Tab Progress
+function filterHouseBlok(blok, btn) {
+    $('.denah-filter-pill').removeClass('active');
+    $(btn).addClass('active');
+
+    if (blok === 'all') {
+        $('.house-blok-section').removeClass('d-none');
+        $('.house-card').removeClass('d-none');
+    } else {
+        $('.house-blok-section').each(function() {
+            if ($(this).data('blok') === blok) {
+                $(this).removeClass('d-none');
+            } else {
+                $(this).addClass('d-none');
+            }
+        });
+    }
+}
+
+// Zoom Interactive Engine for Siteplan
 let currentZoom = 1.0;
+let legalZoomLevel = 1.0;
+
 function zoomSiteplan(delta) {
+    if (typeof canvasLegal !== 'undefined' && canvasLegal) {
+        legalZoomLevel = Math.max(0.3, Math.min(3.0, legalZoomLevel + delta));
+        canvasLegal.zoomToPoint(new fabric.Point(canvasLegal.getWidth() / 2, canvasLegal.getHeight() / 2), legalZoomLevel);
+        canvasLegal.renderAll();
+        return;
+    }
     const img = document.getElementById('siteplanImageElement');
     if (!img) return;
     currentZoom = Math.max(0.5, Math.min(3.5, currentZoom + delta));
@@ -1533,6 +2732,13 @@ function zoomSiteplan(delta) {
 }
 
 function resetSiteplanZoom() {
+    if (typeof canvasLegal !== 'undefined' && canvasLegal) {
+        legalZoomLevel = 1.0;
+        canvasLegal.setZoom(1.0);
+        canvasLegal.setViewportTransform([1, 0, 0, 1, 0, 0]);
+        canvasLegal.renderAll();
+        return;
+    }
     const img = document.getElementById('siteplanImageElement');
     if (!img) return;
     currentZoom = 1.0;

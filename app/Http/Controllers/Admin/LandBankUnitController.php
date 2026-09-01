@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\LandBank;
 use App\Models\LandBankUnit;
+use App\Models\Spk;
 use App\Imports\LandBankUnitImport;
 use Maatwebsite\Excel\Facades\Excel;
 class LandBankUnitController extends Controller
@@ -457,6 +458,28 @@ class LandBankUnitController extends Controller
         $affectedCount = LandBankUnit::whereIn('id', $request->unit_ids)
             ->where('land_bank_id', $land->id)
             ->update($updateData);
+
+        // Sync / Create record di tabel spks
+        Spk::firstOrCreate(
+            ['no_spk' => $request->no_spk],
+            [
+                'land_bank_id'        => $land->id,
+                'land_bank_unit_id'   => count($request->unit_ids) == 1 ? $request->unit_ids[0] : null,
+                'jenis_spk'           => 'Pembangunan Unit',
+                'nama_pekerjaan'      => 'Pembangunan Unit Kavling Proyek ' . $land->name,
+                'kontraktor_nama'     => $request->kontraktor,
+                'tanggal_spk'         => date('Y-m-d'),
+                'tanggal_mulai'       => date('Y-m-d'),
+                'tanggal_selesai'     => date('Y-m-d', strtotime('+90 days')),
+                'durasi_hari'         => 90,
+                'nilai_kontrak'       => 0,
+                'sistem_pembayaran'   => 'termin',
+                'status'              => 'berjalan',
+                'progress'            => 0,
+                'file_lampiran'       => $spkPath,
+                'keterangan'          => $request->description,
+            ]
+        );
 
         return redirect()->route('properti.buatKavling', $land->id)
             ->with('success', "SPK '{$request->no_spk}' berhasil diterbitkan dan dihubungkan ke {$affectedCount} unit kavling!");
