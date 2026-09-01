@@ -937,14 +937,14 @@
                                     <div class="transaksi-form-group">
                                         <label class="transaksi-form-label">Tanggal Survey</label>
                                         <input type="date" class="transaksi-form-control" name="survey_date"
-                                            value="{{ $application->survey_date?->format('Y-m-d') ?? '' }}">
+                                            value="{{ $application->survey_date ? \Carbon\Carbon::parse($application->survey_date)->format('Y-m-d') : '' }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="transaksi-form-group">
                                         <label class="transaksi-form-label">Jam Survey</label>
                                         <input type="time" class="transaksi-form-control" name="survey_time"
-                                            value="{{ $application->survey_time?->format('H:i') ?? '' }}">
+                                            value="{{ $application->survey_time ? (is_string($application->survey_time) ? substr($application->survey_time, 0, 5) : \Carbon\Carbon::parse($application->survey_time)->format('H:i')) : '' }}">
                                     </div>
                                 </div>
                                 <div class="col-md-4">

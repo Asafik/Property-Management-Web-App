@@ -128,6 +128,12 @@ class SurveyController extends Controller
             if ($persentaseKelayakan !== null) {
                 $kpr->persentase_kelayakan = $persentaseKelayakan;
             }
+            if ($request->filled('survey_date')) {
+                $kpr->survey_date = $request->survey_date;
+            }
+            if ($request->filled('survey_time')) {
+                $kpr->survey_time = $request->survey_time;
+            }
             if ($request->filled('surveyor_id')) {
                 $kpr->surveyor_id = $request->surveyor_id;
             }
