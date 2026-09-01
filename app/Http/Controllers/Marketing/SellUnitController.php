@@ -502,6 +502,44 @@ class SellUnitController extends Controller
     // MASTER ATURAN KOMISI & FEE AGENT (OTOMATISASI PERHITUNGAN KOMISI)
     // =========================================================================
 
+    public function commissionRulesIndex(Request $request)
+    {
+        $projects = LandBank::select('id', 'name', 'address')->orderBy('name')->get();
+        $query = AgentCommissionRule::with('landBank');
+
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('description', 'like', '%' . $search . '%');
+            });
+        }
+
+        if ($request->filled('target_type')) {
+            $query->where('target_type', $request->target_type);
+        }
+
+        if ($request->filled('land_bank_id')) {
+            $query->where('land_bank_id', $request->land_bank_id);
+        }
+
+        $commissionRules = $query->orderBy('land_bank_id')->orderBy('target_type')->get();
+
+        $totalRules = AgentCommissionRule::count();
+        $activeRules = AgentCommissionRule::where('is_active', true)->count();
+        $komersilRules = AgentCommissionRule::where('target_type', 'komersil')->count();
+        $subsidiRules = AgentCommissionRule::where('target_type', 'subsidi')->count();
+
+        return view('marketing.fee_agency', compact(
+            'commissionRules',
+            'projects',
+            'totalRules',
+            'activeRules',
+            'komersilRules',
+            'subsidiRules'
+        ));
+    }
+
     public function storeCommissionRule(Request $request)
     {
         $validated = $request->validate([

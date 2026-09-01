@@ -35,6 +35,7 @@
             // Marketing
             'marketing.jual-unit' => 'mdi-view-grid-outline',
             'marketing.list_pengajuan' => 'mdi-book-check-outline',
+            'marketing.commission-rules.index' => 'mdi-cash-cog',
             // Tanah Induk / Land Bank
             'pralandbank.all' => 'mdi-map-clock-outline',
             'properti-all' => 'mdi-domain',
@@ -84,6 +85,7 @@
             'lokasi.index' => ['lokasi.index', 'lokasi.*'],
             'marketing.jual-unit' => ['marketing.jual-unit*', 'unit.save.position', 'marketing.setAgency', 'set.customer'],
             'marketing.list_pengajuan' => ['marketing.list_pengajuan*', 'marketing.cash*', 'pengajuan.*', 'bookings.*', 'cetak.*', 'dashboard.cetak.*'],
+            'marketing.commission-rules.index' => ['marketing.commission-rules.*'],
             'customer.kpr' => ['customer.kpr'],
             'kpr.customer-verified' => ['kpr.customer-verified*', 'kpr.approve*', 'kpr.survey*'],
             'customer.kpr.survey' => ['customer.kpr.survey*', 'kpr.pecahlegal*'],

@@ -120,6 +120,8 @@ Route::middleware(['auth', 'position:1,2,3,4,5'])->group(function () {
         ->name('marketing.jual-unit.export.pdf');
 
     // Master Aturan Komisi Agent
+    Route::get('/marketing/commission-rules', [SellUnitController::class, 'commissionRulesIndex'])
+        ->name('marketing.commission-rules.index');
     Route::post('/marketing/commission-rules/store', [SellUnitController::class, 'storeCommissionRule'])
         ->name('marketing.commission-rules.store');
     Route::put('/marketing/commission-rules/{id}', [SellUnitController::class, 'updateCommissionRule'])
