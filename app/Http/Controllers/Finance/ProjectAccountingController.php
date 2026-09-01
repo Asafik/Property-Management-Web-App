@@ -16,11 +16,27 @@ use Carbon\Carbon;
 
 class ProjectAccountingController extends Controller
 {
+    protected function authorizeFinanceAccess()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            abort(403, 'Unauthorized');
+        }
+        $posName = strtolower($user->position->name ?? '');
+        $isAllowed = ($user->position_id == 1 || $user->position_id == 5 || str_contains($posName, 'kepala') || str_contains($posName, 'admin'));
+
+        if (!$isAllowed) {
+            abort(403, 'Akses ditolak. Modul Keuangan hanya dapat diakses oleh Kepala Marketing dan Administrator.');
+        }
+    }
+
     /**
      * Halaman Utama Project Accounting, Penelusuran HPP & Arus Kas Proyek
      */
     public function index(Request $request)
     {
+        $this->authorizeFinanceAccess();
+
         $landBankId = $request->get('land_bank_id');
         $unitId = $request->get('unit_id');
         $statusUnit = $request->get('status_unit');

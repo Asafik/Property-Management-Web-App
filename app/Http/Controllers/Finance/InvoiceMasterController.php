@@ -11,11 +11,27 @@ use Illuminate\Support\Facades\Log;
 
 class InvoiceMasterController extends Controller
 {
+    protected function authorizeFinanceAccess()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            abort(403, 'Unauthorized');
+        }
+        $posName = strtolower($user->position->name ?? '');
+        $isAllowed = ($user->position_id == 1 || $user->position_id == 5 || str_contains($posName, 'kepala') || str_contains($posName, 'admin'));
+
+        if (!$isAllowed) {
+            abort(403, 'Akses ditolak. Modul Keuangan hanya dapat diakses oleh Kepala Marketing dan Administrator.');
+        }
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        $this->authorizeFinanceAccess();
+
         // Auto sync PraLandbank records if invoice table is empty or on load
         if (Invoice::count() === 0) {
             $this->syncPraLandbanksInternal();
