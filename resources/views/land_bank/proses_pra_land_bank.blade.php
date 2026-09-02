@@ -1366,9 +1366,9 @@
                                                             Status Fisik / Keberadaan Dokumen
                                                         </label>
                                                         <select name="documents[{{ $doc->id }}][document_status]" class="form-select form-select-sm" onchange="toggleDocProcessNotes(this, {{ $doc->id }})" style="font-size: 0.85rem;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                            <option value="ada" {{ ($existingDoc->document_status ?? 'ada') === 'ada' ? 'selected' : '' }}>✅ Ada / Lengkap</option>
-                                                            <option value="proses" {{ ($existingDoc->document_status ?? '') === 'proses' ? 'selected' : '' }}>⏳ Masih Proses (Pengurusan Notaris/BPN/Dinas)</option>
-                                                            <option value="belum_ada" {{ ($existingDoc->document_status ?? '') === 'belum_ada' ? 'selected' : '' }}>❌ Belum Ada</option>
+                                                            <option value="ada" {{ ($existingDoc->document_status ?? 'ada') === 'ada' ? 'selected' : '' }}>Ada / Lengkap</option>
+                                                            <option value="proses" {{ ($existingDoc->document_status ?? '') === 'proses' ? 'selected' : '' }}>Masih Proses (Pengurusan Notaris/BPN/Dinas)</option>
+                                                            <option value="belum_ada" {{ ($existingDoc->document_status ?? '') === 'belum_ada' ? 'selected' : '' }}>Belum Ada</option>
                                                         </select>
                                                     </div>
 
@@ -1804,11 +1804,11 @@
                                                         <small class="text-muted d-block" style="font-size: 0.75rem;">Status Keberadaan:</small>
                                                         <span class="fw-semibold {{ $docPhysStatus === 'proses' ? 'text-warning-emphasis' : ($docPhysStatus === 'belum_ada' ? 'text-danger' : 'text-success') }}" style="font-size: 0.82rem;">
                                                             @if($docPhysStatus === 'proses')
-                                                                ⏳ Masih Proses Pengurusan
+                                                                <i class="mdi mdi-clock-outline me-1"></i>Masih Proses Pengurusan
                                                             @elseif($docPhysStatus === 'belum_ada')
-                                                                ❌ Belum Ada
+                                                                <i class="mdi mdi-close-circle-outline me-1"></i>Belum Ada
                                                             @else
-                                                                ✅ Fisik Lengkap
+                                                                <i class="mdi mdi-check-circle-outline me-1"></i>Fisik Lengkap
                                                             @endif
                                                         </span>
                                                     </div>

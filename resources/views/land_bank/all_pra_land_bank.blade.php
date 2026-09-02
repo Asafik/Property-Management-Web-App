@@ -56,6 +56,103 @@
             padding: 0.32rem 0.55rem;
         }
 
+        /* Process Document Pill & Action Button */
+        .process-doc-pill {
+            background: #ffffff;
+            border: 1px solid #e9e4f5 !important;
+            box-shadow: 0 2px 5px rgba(154, 85, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+        .process-doc-pill:hover {
+            border-color: #c4b5fd !important;
+            box-shadow: 0 3px 8px rgba(154, 85, 255, 0.12) !important;
+            transform: translateY(-1px);
+        }
+        .btn-upload-doc-pill {
+            padding: 3px 8px !important;
+            font-size: 9.5px !important;
+            font-weight: 700 !important;
+            border-radius: 6px !important;
+            border: none !important;
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            color: #ffffff !important;
+            box-shadow: 0 2px 4px rgba(154, 85, 255, 0.25);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            line-height: 1.2;
+        }
+        .btn-upload-doc-pill:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(154, 85, 255, 0.4);
+            color: #ffffff !important;
+        }
+
+        /* Modern File Upload (Sama seperti Proses Pra Tanah) */
+        .pratanah-file-upload-modern {
+            position: relative;
+            width: 100%;
+        }
+
+        .pratanah-file-upload-modern input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .pratanah-file-label-modern {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.65rem 1rem;
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            border: 2px dashed #d0d4db;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pratanah-file-upload-modern:hover .pratanah-file-label-modern {
+            border-color: #9a55ff;
+            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+        }
+
+        .pratanah-file-label-modern i {
+            font-size: 1.3rem;
+            color: #9a55ff;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .pratanah-file-info-modern {
+            flex: 1;
+        }
+
+        .pratanah-file-info-modern span {
+            display: block;
+            font-weight: 600;
+            color: #2c2e3f;
+            font-size: 0.8rem;
+        }
+
+        .pratanah-file-info-modern small {
+            color: #6c7383;
+            font-size: 0.65rem;
+        }
+
+        .pratanah-file-size {
+            font-size: 0.7rem;
+            color: #9a55ff;
+            font-weight: 600;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
         /* Select2 Theme Alignment */
         .select2-container--bootstrap-5 .select2-selection {
             min-height: 38px !important;
@@ -451,18 +548,21 @@
                                                         @if($processDocs->isNotEmpty())
                                                             <div class="mt-2 d-flex flex-column gap-1">
                                                                 @foreach($processDocs as $pDoc)
-                                                                    <div class="d-flex align-items-center justify-content-between p-1 px-2 rounded-2 border" style="background: #fffdf5; border-color: #fde68a !important; font-size: 10px;">
-                                                                        <div class="d-flex align-items-center gap-1 overflow-hidden" title="Catatan Pengurusan: {{ $pDoc->process_notes ?? 'Sedang diurus' }}">
-                                                                            <i class="mdi mdi-progress-clock text-warning flex-shrink-0"></i>
-                                                                            <span class="text-dark fw-bold text-truncate">{{ $pDoc->documentType->name ?? 'Dokumen' }}</span>
-                                                                            @if($pDoc->status === 'verified')
-                                                                                <span class="badge bg-success text-white py-0 px-1" style="font-size: 8.5px;" title="Telah di-ACC Legal secara paralel">ACC Paralel</span>
-                                                                            @else
-                                                                                <span class="badge bg-warning text-dark py-0 px-1" style="font-size: 8.5px;">Proses</span>
-                                                                            @endif
+                                                                    <div class="process-doc-pill d-flex align-items-center justify-content-between p-1 px-2 rounded-2" style="font-size: 10px;">
+                                                                        <div class="d-flex align-items-center gap-1.5 overflow-hidden me-1" title="Catatan Pengurusan: {{ $pDoc->process_notes ?? 'Sedang proses pengurusan' }}">
+                                                                            <i class="mdi {{ $pDoc->status === 'verified' ? 'mdi-check-decagram text-success' : 'mdi-progress-clock text-warning' }} flex-shrink-0" style="font-size: 13px;"></i>
+                                                                            <div class="d-flex align-items-center gap-1 overflow-hidden">
+                                                                                <span class="text-dark fw-bold text-truncate" style="font-size: 10.5px; max-width: 80px;">{{ $pDoc->documentType->name ?? 'Dokumen' }}</span>
+                                                                                @if($pDoc->status === 'verified')
+                                                                                    <span class="badge py-0 px-1 rounded-pill" style="font-size: 8px; font-weight: 700; background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0;" title="Telah diverifikasi legal secara paralel">ACC Paralel</span>
+                                                                                @else
+                                                                                    <span class="badge py-0 px-1 rounded-pill" style="font-size: 8px; font-weight: 700; background: #fef3c7; color: #92400e; border: 1px solid #fde68a;">Proses</span>
+                                                                                @endif
+                                                                            </div>
                                                                         </div>
-                                                                        <button type="button" class="btn btn-xs btn-outline-primary py-0 px-1.5 ms-1 rounded d-inline-flex align-items-center gap-0.5 text-nowrap" onclick="openUploadDocModal({{ $pDoc->id }}, '{{ addslashes($pDoc->documentType->name ?? 'Dokumen') }}', '{{ addslashes($land->land_name) }}', '{{ $pDoc->document_number ?? '' }}')" title="Staff Legal: Upload Berkas Fisik Jika Sudah Selesai/Jadi" style="font-size: 9.5px; font-weight: 600;">
-                                                                            <i class="mdi mdi-upload"></i> Upload Jadi
+                                                                        <button type="button" class="btn-upload-doc-pill d-inline-flex align-items-center gap-1 flex-shrink-0" onclick="openUploadDocModal({{ $pDoc->id }}, '{{ addslashes($pDoc->documentType->name ?? 'Dokumen') }}', '{{ addslashes($land->land_name) }}', '{{ $pDoc->document_number ?? '' }}')" title="Upload Berkas Fisik Jika Sudah Selesai/Jadi">
+                                                                            <i class="mdi mdi-cloud-upload"></i>
+                                                                            <span>Upload Jadi</span>
                                                                         </button>
                                                                     </div>
                                                                 @endforeach
@@ -611,50 +711,86 @@
     <!-- MODAL QUICK UPDATE / UPLOAD BERKAS FISIK DOKUMEN SELESAI (STAFF LEGAL) -->
     <div class="modal fade" id="modalUploadCompletedDoc" tabindex="-1" aria-labelledby="modalUploadCompletedDocLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
-                <div class="modal-header border-0 pb-0" style="background: linear-gradient(135deg, #f8f9fa, #f1f5f9);">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="p-2 rounded-circle bg-white shadow-sm text-primary">
-                            <i class="mdi mdi-file-document-check fs-4"></i>
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+                <!-- Header -->
+                <div class="modal-header border-0 p-4 pb-3" style="background: linear-gradient(135deg, #fcfaff, #f5efff);">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center justify-content-center shadow-sm" style="width: 46px; height: 46px; border-radius: 14px; background: linear-gradient(135deg, #da8cff, #9a55ff); color: #ffffff;">
+                            <i class="mdi mdi-file-check-outline" style="font-size: 1.5rem;"></i>
                         </div>
                         <div>
-                            <h5 class="modal-title fw-bold text-dark mb-0" id="modalUploadCompletedDocLabel">Upload Berkas Fisik Dokumen</h5>
-                            <small class="text-muted">Staff Legal: Perbarui status dokumen yang telah selesai diurus</small>
+                            <h5 class="modal-title fw-bold text-dark mb-0" id="modalUploadCompletedDocLabel" style="font-size: 1.15rem;">Upload Berkas Fisik Jadi</h5>
+                            <small class="text-muted" style="font-size: 0.82rem;">Perbarui status pengurusan dokumen yang telah terbit & selesai</small>
                         </div>
                     </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-size: 0.8rem;"></button>
                 </div>
+
                 <form id="formUploadCompletedDoc" onsubmit="submitUploadCompletedDoc(event)" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" id="uploadDocId" name="doc_id">
-                    <div class="modal-body pt-3 pb-4">
-                        <!-- Info Banner -->
-                        <div class="p-3 mb-3 rounded-3 bg-light border">
-                            <div class="small text-muted mb-1">Target Dokumen & Lokasi:</div>
-                            <div class="fw-bold text-primary fs-6" id="uploadDocTargetName">-</div>
-                            <div class="small text-dark" id="uploadDocLandName">-</div>
+                    
+                    <div class="modal-body p-4 pt-3">
+                        <!-- Info Card -->
+                        <div class="p-3 mb-3 rounded-3" style="background: #faf8ff; border: 1px solid #ede8f8;">
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <span class="text-muted fw-semibold" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Dokumen Target</span>
+                                <span class="badge rounded-pill" style="background: #fef3c7; color: #92400e; font-size: 10px; font-weight: 700;">
+                                    <i class="mdi mdi-clock-outline me-0.5"></i> Masih Proses
+                                </span>
+                            </div>
+                            <div class="fw-bold text-dark fs-6 d-flex align-items-center gap-1 mb-1" id="uploadDocTargetName">
+                                -
+                            </div>
+                            <div class="text-muted small d-flex align-items-center gap-1" id="uploadDocLandName">
+                                <i class="mdi mdi-map-marker text-primary"></i> -
+                            </div>
                         </div>
 
+                        <!-- Form Field: Nomor Dokumen -->
                         <div class="mb-3">
-                            <label class="form-label small fw-bold text-dark">Nomor Dokumen / Sertifikat Final <span class="text-muted">(Opsional)</span></label>
-                            <input type="text" class="form-control" id="uploadDocNumber" name="document_number" placeholder="Contoh: 503/IMB/2026 atau No. SHM 12345">
+                            <label class="form-label mb-1 text-dark fw-bold" style="font-size: 0.83rem;">
+                                Nomor Dokumen / Sertifikat Final <span class="text-muted fw-normal">(Opsional)</span>
+                            </label>
+                            <input type="text" class="form-control" id="uploadDocNumber" name="document_number" placeholder="Contoh: 503/IMB/2026 atau No. SHM 12345" style="border-radius: 10px; font-size: 0.88rem; padding: 0.6rem 0.85rem; border-color: #e0e4e9;">
                         </div>
 
+                        <!-- Form Field: Upload File (Sama persis dengan Proses) -->
                         <div class="mb-3">
-                            <label class="form-label small fw-bold text-dark">File Fisik / Bukti Dokumen <span class="text-danger">*</span></label>
-                            <input type="file" class="form-control" id="uploadDocFile" name="file" accept=".pdf,.jpg,.jpeg,.png" required>
-                            <small class="text-muted d-block mt-1" style="font-size: 11px;">Format: PDF, JPG, PNG (Maks 20MB). File ini akan melengkapi arsip fisik legalitas.</small>
+                            <label class="form-label mb-1 text-dark fw-bold" style="font-size: 0.83rem;">
+                                Upload Berkas Fisik Dokumen <span class="text-danger">*</span>
+                            </label>
+                            <div class="pratanah-file-upload-modern">
+                                <input type="file" id="uploadDocFile" name="file" accept=".pdf,.jpg,.jpeg,.png" required onchange="handleModalFileChange(this)">
+                                <div class="pratanah-file-label-modern py-2 px-3" style="border: 1.5px dashed #9a55ff; background: #faf5ff;">
+                                    <i class="mdi mdi-cloud-upload" style="color: #9a55ff; font-size: 1.3rem;"></i>
+                                    <div class="pratanah-file-info-modern">
+                                        <span class="file-label-text fw-bold text-primary" id="modalUploadFileLabelText" style="font-size: 0.82rem;">Pilih Berkas Dokumen Fisik</span>
+                                        <small style="font-size: 0.72rem; color: #8c98a4;">Format PDF, JPG, PNG (Maks 20MB)</small>
+                                    </div>
+                                    <span class="pratanah-file-size d-none" id="modalUploadFileSize">0 KB</span>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="mb-2">
-                            <label class="form-label small fw-bold text-dark">Keterangan / Catatan Serah Terima</label>
-                            <textarea class="form-control" id="uploadDocNotes" name="process_notes" rows="2" placeholder="Contoh: Berkas asli fisik telah diterima dari Notaris dan disimpan di brankas legal."></textarea>
+                        <!-- Form Field: Catatan -->
+                        <div class="mb-1">
+                            <label class="form-label mb-1 text-dark fw-bold" style="font-size: 0.83rem;">
+                                Catatan Serah Terima / Keterangan
+                            </label>
+                            <textarea class="form-control" id="uploadDocNotes" name="process_notes" rows="2" placeholder="Contoh: Berkas asli fisik telah diterima dan disimpan di brankas legal." style="border-radius: 10px; font-size: 0.85rem; border-color: #e0e4e9; padding: 0.6rem 0.85rem;"></textarea>
                         </div>
                     </div>
-                    <div class="modal-footer border-0 pt-0 bg-light">
-                        <button type="button" class="btn btn-secondary px-3 rounded-pill" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-gradient-primary px-4 rounded-pill shadow-sm" id="btnSubmitUploadDoc">
-                            <i class="mdi mdi-check-circle me-1"></i> Simpan & Jadikan Selesai (Lengkap)
+
+                    <!-- Footer -->
+                    <div class="modal-footer border-0 p-4 pt-0 d-flex justify-content-end gap-2" style="background: transparent;">
+                        <button type="button" class="btn btn-light px-4 rounded-pill fw-semibold text-muted d-inline-flex align-items-center gap-1" data-bs-dismiss="modal" style="font-size: 0.85rem; border: 1px solid #e2e8f0;">
+                            <i class="mdi mdi-close-circle-outline"></i>
+                            <span>Batal</span>
+                        </button>
+                        <button type="submit" class="btn btn-gradient-primary px-4 py-2 rounded-pill shadow-sm fw-bold d-inline-flex align-items-center gap-1" id="btnSubmitUploadDoc" style="font-size: 0.85rem;">
+                            <i class="mdi mdi-check-circle"></i>
+                            <span>Simpan & Lengkapi Dokumen</span>
                         </button>
                     </div>
                 </form>
@@ -790,14 +926,48 @@
 
         window.openUploadDocModal = function(docId, docName, landName, docNumber) {
             $('#uploadDocId').val(docId);
-            $('#uploadDocTargetName').text(docName);
-            $('#uploadDocLandName').text('Properti: ' + landName);
+            $('#uploadDocTargetName').html('<i class="mdi mdi-file-document-outline me-1" style="color: #9a55ff;"></i> ' + docName);
+            $('#uploadDocLandName').html('<i class="mdi mdi-map-marker text-primary me-1"></i> Properti: ' + landName);
             $('#uploadDocNumber').val(docNumber || '');
             $('#uploadDocFile').val('');
-            $('#uploadDocNotes').val('Dokumen fisik telah selesai diurus dan berkas resmi telah diunggah.');
+            $('#uploadDocNotes').val('Dokumen fisik telah selesai diurus dan berkas resmi telah diterima.');
+            
+            // Reset file label text & size badge (sama persis dengan proses)
+            const labelText = document.getElementById('modalUploadFileLabelText');
+            const sizeSpan = document.getElementById('modalUploadFileSize');
+            if (labelText) {
+                labelText.textContent = 'Pilih Berkas Dokumen Fisik';
+                labelText.classList.remove('text-success');
+                labelText.classList.add('text-primary');
+            }
+            if (sizeSpan) {
+                sizeSpan.classList.add('d-none');
+                sizeSpan.textContent = '0 KB';
+            }
             
             let modal = new bootstrap.Modal(document.getElementById('modalUploadCompletedDoc'));
             modal.show();
+        };
+
+        window.handleModalFileChange = function(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const fileName = file.name;
+                const fileSize = (file.size / (1024 * 1024)).toFixed(2);
+                
+                const labelText = document.getElementById('modalUploadFileLabelText');
+                const sizeSpan = document.getElementById('modalUploadFileSize');
+                
+                if (labelText) {
+                    labelText.textContent = fileName;
+                    labelText.classList.remove('text-primary');
+                    labelText.classList.add('text-success');
+                }
+                if (sizeSpan) {
+                    sizeSpan.textContent = fileSize + ' MB';
+                    sizeSpan.classList.remove('d-none');
+                }
+            }
         };
 
         window.submitUploadCompletedDoc = function(e) {
