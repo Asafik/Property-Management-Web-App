@@ -609,6 +609,43 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
 
         abort(404, 'Dokumen fisik tidak ditemukan di server.');
     })->where('path', '.*')->name('dokumen.preview');
+
+    Route::get('/storage/{path}', function ($path) {
+        $path = urldecode($path);
+        $cleanPath = ltrim($path, '/\\');
+
+        $candidates = [
+            storage_path('app/public/' . $cleanPath),
+            storage_path('app/' . $cleanPath),
+            public_path('storage/' . $cleanPath),
+            public_path('uploads/' . $cleanPath),
+            public_path($cleanPath),
+            base_path('storage/app/public/' . $cleanPath),
+        ];
+
+        foreach ($candidates as $fullPath) {
+            if (file_exists($fullPath) && is_file($fullPath)) {
+                $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+                $mimeType = match ($ext) {
+                    'pdf' => 'application/pdf',
+                    'jpg', 'jpeg' => 'image/jpeg',
+                    'png' => 'image/png',
+                    'webp' => 'image/webp',
+                    'gif' => 'image/gif',
+                    'svg' => 'image/svg+xml',
+                    default => mime_content_type($fullPath) ?: 'application/octet-stream'
+                };
+
+                return response()->file($fullPath, [
+                    'Content-Type' => $mimeType,
+                    'Content-Disposition' => 'inline; filename="' . basename($fullPath) . '"',
+                    'Cache-Control' => 'public, max-age=86400',
+                ]);
+            }
+        }
+
+        abort(404, 'File storage tidak ditemukan di server.');
+    })->where('path', '.*')->name('storage.preview');
     // Master data laporan job staf marketing
     Route::get('/job-staff-marketing', [JobStaffMarketingController::class, 'index'])->name('master.data.tugas-staff-marketing');
     Route::get('/job-staff-marketing/create', [JobStaffMarketingController::class, 'create'])->name('marketing.create');
