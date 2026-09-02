@@ -170,12 +170,22 @@ class LandBankInfrastructureController extends Controller
         if ($request->hasFile('photo_proof')) {
             $file = $request->file('photo_proof');
             $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $targetDir = public_path("uploads/landbank/{$land->id}/infrastructure");
-            if (!file_exists($targetDir)) {
-                @mkdir($targetDir, 0755, true);
+            $relPath = "uploads/landbank/{$land->id}/infrastructure";
+
+            $dir1 = public_path($relPath);
+            $dir2 = base_path($relPath);
+            $dir3 = base_path('public/' . $relPath);
+
+            foreach ([$dir1, $dir2, $dir3] as $d) {
+                if (!file_exists($d)) @mkdir($d, 0755, true);
             }
-            $file->move($targetDir, $filename);
-            $photoPath = "uploads/landbank/{$land->id}/infrastructure/{$filename}";
+
+            $file->move($dir1, $filename);
+            if ($dir2 !== $dir1 && file_exists($dir2) && file_exists($dir1 . '/' . $filename)) {
+                @copy($dir1 . '/' . $filename, $dir2 . '/' . $filename);
+            }
+
+            $photoPath = "{$relPath}/{$filename}";
         }
 
         $targetVolume = $request->filled('target_volume') ? (float)$request->target_volume : 100;
@@ -286,17 +296,29 @@ class LandBankInfrastructureController extends Controller
 
         $photoPath = null;
         if ($request->hasFile('photo_proof')) {
-            if ($item->photo_proof && file_exists(public_path($item->photo_proof))) {
+            if ($item->photo_proof) {
                 @unlink(public_path($item->photo_proof));
+                @unlink(base_path($item->photo_proof));
+                @unlink(base_path('public/' . $item->photo_proof));
             }
             $file = $request->file('photo_proof');
             $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $targetDir = public_path("uploads/landbank/{$land->id}/infrastructure");
-            if (!file_exists($targetDir)) {
-                @mkdir($targetDir, 0755, true);
+            $relPath = "uploads/landbank/{$land->id}/infrastructure";
+
+            $dir1 = public_path($relPath);
+            $dir2 = base_path($relPath);
+            $dir3 = base_path('public/' . $relPath);
+
+            foreach ([$dir1, $dir2, $dir3] as $d) {
+                if (!file_exists($d)) @mkdir($d, 0755, true);
             }
-            $file->move($targetDir, $filename);
-            $photoPath = "uploads/landbank/{$land->id}/infrastructure/{$filename}";
+
+            $file->move($dir1, $filename);
+            if ($dir2 !== $dir1 && file_exists($dir2) && file_exists($dir1 . '/' . $filename)) {
+                @copy($dir1 . '/' . $filename, $dir2 . '/' . $filename);
+            }
+
+            $photoPath = "{$relPath}/{$filename}";
             $data['photo_proof'] = $photoPath;
         }
 
@@ -434,12 +456,22 @@ class LandBankInfrastructureController extends Controller
         if ($request->hasFile('receipt_proof')) {
             $file = $request->file('receipt_proof');
             $fileName = 'receipt_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $targetDir = public_path("uploads/landbank/{$land->id}/infrastructure_receipts");
-            if (!file_exists($targetDir)) {
-                @mkdir($targetDir, 0755, true);
+            $relPath = "uploads/landbank/{$land->id}/infrastructure_receipts";
+
+            $dir1 = public_path($relPath);
+            $dir2 = base_path($relPath);
+            $dir3 = base_path('public/' . $relPath);
+
+            foreach ([$dir1, $dir2, $dir3] as $d) {
+                if (!file_exists($d)) @mkdir($d, 0755, true);
             }
-            $file->move($targetDir, $fileName);
-            $receiptPath = "uploads/landbank/{$land->id}/infrastructure_receipts/{$fileName}";
+
+            $file->move($dir1, $fileName);
+            if ($dir2 !== $dir1 && file_exists($dir2) && file_exists($dir1 . '/' . $fileName)) {
+                @copy($dir1 . '/' . $fileName, $dir2 . '/' . $fileName);
+            }
+
+            $receiptPath = "{$relPath}/{$fileName}";
         }
 
         $infraId = $request->filled('land_bank_infrastructure_id') ? $request->land_bank_infrastructure_id : null;
@@ -560,17 +592,29 @@ class LandBankInfrastructureController extends Controller
 
         // Handle receipt update
         if ($request->hasFile('receipt_proof')) {
-            if ($expense->receipt_proof && file_exists(public_path($expense->receipt_proof))) {
+            if ($expense->receipt_proof) {
                 @unlink(public_path($expense->receipt_proof));
+                @unlink(base_path($expense->receipt_proof));
+                @unlink(base_path('public/' . $expense->receipt_proof));
             }
             $file = $request->file('receipt_proof');
             $fileName = 'receipt_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $targetDir = public_path("uploads/landbank/{$expense->land_bank_id}/infrastructure_receipts");
-            if (!file_exists($targetDir)) {
-                @mkdir($targetDir, 0755, true);
+            $relPath = "uploads/landbank/{$expense->land_bank_id}/infrastructure_receipts";
+
+            $dir1 = public_path($relPath);
+            $dir2 = base_path($relPath);
+            $dir3 = base_path('public/' . $relPath);
+
+            foreach ([$dir1, $dir2, $dir3] as $d) {
+                if (!file_exists($d)) @mkdir($d, 0755, true);
             }
-            $file->move($targetDir, $fileName);
-            $validated['receipt_proof'] = "uploads/landbank/{$expense->land_bank_id}/infrastructure_receipts/{$fileName}";
+
+            $file->move($dir1, $fileName);
+            if ($dir2 !== $dir1 && file_exists($dir2) && file_exists($dir1 . '/' . $fileName)) {
+                @copy($dir1 . '/' . $fileName, $dir2 . '/' . $fileName);
+            }
+
+            $validated['receipt_proof'] = "{$relPath}/{$fileName}";
         }
 
         $expense->update($validated);
