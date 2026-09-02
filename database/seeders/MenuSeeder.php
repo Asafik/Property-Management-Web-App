@@ -239,12 +239,20 @@ class MenuSeeder extends Seeder
         }
 
         // ================= 9. KEUANGAN =================
+        $keuanganRoles = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $legal?->id]));
+
         $keuangan = Menu::create([
             'name'  => 'Keuangan',
             'icon'  => 'mdi-cash-register',
             'order' => 9
         ]);
-        $keuangan->positions()->attach($marketingRoles);
+        $keuangan->positions()->attach($keuanganRoles);
+
+        Menu::create([
+            'name'      => 'Master HPP & Project Accounting',
+            'route'     => 'keuangan.project-accounting.index',
+            'parent_id' => $keuangan->id
+        ])->positions()->attach($keuanganRoles);
 
         Menu::create([
             'name'      => 'Master Invoice',
