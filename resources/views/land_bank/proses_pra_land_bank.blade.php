@@ -2211,54 +2211,92 @@
 
     </div>
 
-    {{-- MODAL PREVIEW DOKUMEN --}}
+    {{-- MODAL PREVIEW DOKUMEN (ZOOMABLE IMAGE + PDF READER + SCROLLABLE) --}}
     <div class="modal fade" id="modalPreviewDokumen" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
         <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content" style="border-radius:12px; overflow:hidden; border:none; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-                <div class="modal-header bg-white border-bottom py-2.5 px-3">
+            <div class="modal-content shadow-lg" style="border-radius:14px; overflow:hidden; border:none;">
+                <div class="modal-header bg-white border-bottom py-2 px-3 d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center gap-2">
                         <i class="mdi mdi-file-eye-outline fs-5 text-primary" id="modalDocIcon"></i>
-                        <h6 class="modal-title mb-0 fw-bold text-dark" id="modalDocLabel">Preview Dokumen</h6>
+                        <h6 class="modal-title mb-0 fw-bold text-dark text-truncate" style="max-width: 280px;" id="modalDocLabel">Preview Dokumen</h6>
                         <span class="badge bg-secondary ms-1" id="modalDocExt" style="font-size:0.68rem;"></span>
                     </div>
+
+                    {{-- Toolbar Zoom & Aksi --}}
                     <div class="d-flex align-items-center gap-2">
-                        <a href="#" id="btnDownloadDoc" class="btn btn-sm btn-outline-primary py-1 px-2.5 d-flex align-items-center gap-1" download title="Download Dokumen">
-                            <i class="mdi mdi-download"></i> <span class="d-none d-sm-inline" style="font-size: 0.8rem;">Unduh</span>
+                        {{-- Toolbar Image Zoom (Hanya aktif saat gambar) --}}
+                        <div id="imgZoomToolbar" class="d-none align-items-center bg-light border rounded-pill px-2 py-0.5 gap-1">
+                            <button type="button" class="btn btn-xs btn-link text-dark p-1" onclick="changeImageZoom(-0.25)" title="Zoom Out (-)">
+                                <i class="mdi mdi-magnify-minus-outline fs-6"></i>
+                            </button>
+                            <span id="imgZoomLevelText" class="fw-bold text-muted px-1" style="font-size: 0.75rem; min-width: 42px; text-align: center;">100%</span>
+                            <button type="button" class="btn btn-xs btn-link text-dark p-1" onclick="changeImageZoom(0.25)" title="Zoom In (+)">
+                                <i class="mdi mdi-magnify-plus-outline fs-6"></i>
+                            </button>
+                            <div class="vr my-1"></div>
+                            <button type="button" class="btn btn-xs btn-link text-dark p-1" onclick="resetImageTransform()" title="Reset Ukuran (100%)">
+                                <i class="mdi mdi-fit-to-screen-outline fs-6"></i>
+                            </button>
+                            <button type="button" class="btn btn-xs btn-link text-dark p-1" onclick="rotateImagePreview()" title="Putar 90°">
+                                <i class="mdi mdi-rotate-right fs-6"></i>
+                            </button>
+                        </div>
+
+                        {{-- Tombol Buka Tab Baru --}}
+                        <a href="#" id="btnOpenNewTab" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2 d-flex align-items-center gap-1" title="Buka di Tab Baru">
+                            <i class="mdi mdi-open-in-new"></i> <span class="d-none d-md-inline" style="font-size: 0.78rem;">Tab Baru</span>
                         </a>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                        {{-- Tombol Unduh --}}
+                        <a href="#" id="btnDownloadDoc" class="btn btn-sm btn-outline-primary py-1 px-2.5 d-flex align-items-center gap-1" download title="Download Dokumen">
+                            <i class="mdi mdi-download"></i> <span class="d-none d-md-inline" style="font-size: 0.78rem;">Unduh</span>
+                        </a>
+
+                        <button type="button" class="btn-close ms-1" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                 </div>
 
-                <div class="modal-body p-0" style="background:#f8f9fa; min-height:65vh; position:relative;">
+                <div class="modal-body p-0 position-relative" style="background:#0f1117; min-height:65vh;">
                     {{-- Loading State --}}
-                    <div id="previewLoading" class="d-flex flex-column align-items-center justify-content-center gap-3" style="min-height:65vh;">
+                    <div id="previewLoading" class="d-flex flex-column align-items-center justify-content-center gap-3" style="min-height:65vh; background: #ffffff;">
                         <div class="spinner-border text-primary" style="width:2.5rem;height:2.5rem;"></div>
-                        <span class="text-muted small fw-semibold">Memuat dokumen...</span>
+                        <span class="text-muted small fw-semibold">Memuat dokumen, mohon tunggu...</span>
                     </div>
 
                     {{-- Error State --}}
-                    <div id="previewError" class="d-none flex-column align-items-center justify-content-center gap-3 text-center p-4" style="min-height:65vh;">
-                        <i class="mdi mdi-file-alert-outline text-danger" style="font-size:3.5rem; opacity:.7;"></i>
+                    <div id="previewError" class="d-none flex-column align-items-center justify-content-center gap-3 text-center p-4" style="min-height:65vh; background: #ffffff;">
+                        <i class="mdi mdi-file-alert-outline text-danger" style="font-size:4rem; opacity:.8;"></i>
                         <div>
-                            <div class="fw-bold text-danger fs-6">Dokumen tidak dapat dimuat</div>
-                            <small class="text-muted">File mungkin tidak tersedia atau format tidak didukung untuk pratinjau langsung.</small>
+                            <div class="fw-bold text-danger fs-5 mb-1">Dokumen Fisik Tidak Ditemukan di Server</div>
+                            <small class="text-muted d-block" style="max-width: 480px;">
+                                File mungkin belum terunggah ke penyimpanan server atau telah dipindahkan. Silakan unggah ulang file atau gunakan tombol unduh.
+                            </small>
                         </div>
-                        <a href="#" id="btnErrorDownload" class="btn btn-sm btn-primary mt-2" download>
-                            <i class="mdi mdi-download me-1"></i> Unduh Dokumen
-                        </a>
+                        <div class="d-flex gap-2 mt-2">
+                            <a href="#" id="btnErrorOpenTab" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="mdi mdi-open-in-new me-1"></i> Buka Link Langsung
+                            </a>
+                            <a href="#" id="btnErrorDownload" class="btn btn-sm btn-primary" download>
+                                <i class="mdi mdi-download me-1"></i> Coba Unduh File
+                            </a>
+                        </div>
                     </div>
 
-                    {{-- PDF via iframe blob --}}
-                    <iframe id="iframePreview" src="" class="d-none" style="width:100%; height:75vh; border:none; display:block;"></iframe>
+                    {{-- PDF Viewer via iframe --}}
+                    <iframe id="iframePreview" src="" class="d-none" style="width:100%; height:75vh; border:none; display:none; background:#ffffff;"></iframe>
 
-                    {{-- Gambar --}}
-                    <div id="divImagePreview" class="d-none align-items-center justify-content-center p-3" style="min-height:65vh; background:#1e1e2d;">
-                        <img id="imgPreview" src="" alt="Preview" style="max-width:100%; max-height:75vh; object-fit:contain; border-radius:6px; box-shadow:0 6px 25px rgba(0,0,0,.4);" />
+                    {{-- Image Viewer Container with Scrollbars & Drag-Zoom --}}
+                    <div id="divImagePreview" class="d-none justify-content-center align-items-center" style="width: 100%; height: 75vh; overflow: auto; background: #181924; position: relative; padding: 20px;">
+                        <div id="imgWrapper" style="display: inline-block; transform-origin: center center; transition: transform 0.12s ease-out; margin: auto;">
+                            <img id="imgPreview" src="" alt="Preview Dokumen" style="max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 6px; box-shadow: 0 10px 35px rgba(0,0,0,0.6); display: block;" />
+                        </div>
                     </div>
                 </div>
 
-                <div class="modal-footer bg-white border-top py-2 px-3">
-                    <small class="text-muted me-auto" id="previewFooterInfo"></small>
+                <div class="modal-footer bg-white border-top py-2 px-3 d-flex align-items-center justify-content-between">
+                    <small class="text-muted" id="previewFooterInfo">
+                        <i class="mdi mdi-information-outline me-1"></i>Gunakan toolbar di atas atau scroll mouse untuk memperbesar/memutar detail dokumen.
+                    </small>
                     <button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal">Tutup</button>
                 </div>
             </div>
@@ -2274,52 +2312,93 @@
 
     <script>
         // ===============================
-        // MODAL PREVIEW DOKUMEN
+        // MODAL PREVIEW DOKUMEN (ZOOM & PDF)
         // ===============================
         const PDF_EXTS = ['pdf'];
-        const IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'];
+        const IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg', 'bmp'];
         let activeBlobUrl = null;
+        let currentZoom = 1.0;
+        let currentRotate = 0;
 
         function resetPreviewState() {
-            $('#previewLoading').removeClass('d-none').css('display', 'flex');
-            $('#previewError').addClass('d-none').css('display', 'none');
-            $('#iframePreview').addClass('d-none').attr('src', '');
-            $('#divImagePreview').addClass('d-none').css('display', 'none');
+            currentZoom = 1.0;
+            currentRotate = 0;
+            applyImageTransform();
+
+            $('#previewLoading').removeClass('d-none').show();
+            $('#previewError').addClass('d-none').hide();
+            $('#iframePreview').addClass('d-none').hide().attr('src', '');
+            $('#divImagePreview').addClass('d-none').hide();
+            $('#imgZoomToolbar').addClass('d-none').removeClass('d-flex');
             $('#imgPreview').attr('src', '');
+
             if (activeBlobUrl) {
                 URL.revokeObjectURL(activeBlobUrl);
                 activeBlobUrl = null;
             }
         }
 
-        function showPreviewError(url) {
-            $('#previewLoading').addClass('d-none').css('display', 'none');
-            $('#previewError').removeClass('d-none').css('display', 'flex');
-            $('#btnErrorDownload').attr('href', url);
+        function applyImageTransform() {
+            $('#imgWrapper').css('transform', `scale(${currentZoom}) rotate(${currentRotate}deg)`);
+            $('#imgZoomLevelText').text(Math.round(currentZoom * 100) + '%');
         }
 
-        function previewPdf(blob) {
+        window.changeImageZoom = function(delta) {
+            currentZoom = Math.min(Math.max(0.25, currentZoom + delta), 4.0);
+            applyImageTransform();
+        };
+
+        window.resetImageTransform = function() {
+            currentZoom = 1.0;
+            currentRotate = 0;
+            applyImageTransform();
+        };
+
+        window.rotateImagePreview = function() {
+            currentRotate = (currentRotate + 90) % 360;
+            applyImageTransform();
+        };
+
+        function showPreviewError(url) {
+            $('#previewLoading').addClass('d-none').hide();
+            $('#iframePreview').addClass('d-none').hide();
+            $('#divImagePreview').addClass('d-none').hide();
+            $('#imgZoomToolbar').addClass('d-none').removeClass('d-flex');
+            $('#previewError').removeClass('d-none').show().css('display', 'flex');
+            $('#btnErrorDownload').attr('href', url);
+            $('#btnErrorOpenTab').attr('href', url);
+        }
+
+        function previewPdf(blob, directUrl) {
             activeBlobUrl = URL.createObjectURL(blob);
             const $iframe = $('#iframePreview');
-            $iframe.off('load').on('load', function() {
-                $('#previewLoading').addClass('d-none').css('display', 'none');
-                $iframe.removeClass('d-none');
+
+            $iframe.off('load error').on('load', function() {
+                $('#previewLoading').addClass('d-none').hide();
+                $iframe.removeClass('d-none').show();
+            }).on('error', function() {
+                showPreviewError(directUrl);
             });
-            $iframe.attr('src', activeBlobUrl);
+
+            // Gunakan blob url dengan viewer native browser
+            $iframe.attr('src', activeBlobUrl + '#toolbar=1&navpanes=1');
         }
 
-        function previewImage(blob) {
+        function previewImage(blob, directUrl) {
             activeBlobUrl = URL.createObjectURL(blob);
             const $img = $('#imgPreview');
+
             $img.off('load error')
                 .on('load', function() {
-                    $('#previewLoading').addClass('d-none').css('display', 'none');
-                    $('#divImagePreview').removeClass('d-none').css('display', 'flex');
-                    $('#previewFooterInfo').text(($img[0].naturalWidth || '') + ' × ' + ($img[0].naturalHeight || '') + ' px');
+                    $('#previewLoading').addClass('d-none').hide();
+                    $('#divImagePreview').removeClass('d-none').show().css('display', 'flex');
+                    $('#imgZoomToolbar').removeClass('d-none').addClass('d-flex');
+                    $('#previewFooterInfo').html(`<i class="mdi mdi-image-size-select-actual me-1"></i>Resolusi: <strong>${$img[0].naturalWidth} × ${$img[0].naturalHeight} px</strong> — Scroll atau gunakan zoom toolbar.`);
                 })
                 .on('error', function() {
-                    showPreviewError($('#btnDownloadDoc').attr('href'));
+                    showPreviewError(directUrl);
                 });
+
             $img.attr('src', activeBlobUrl);
         }
 
@@ -2329,23 +2408,24 @@
             const ext = ($(this).data('ext') || '').toString().toLowerCase();
             const label = $(this).data('label') || 'Preview Dokumen';
 
-            // Set info modal
+            // Set info modal & action links
             $('#modalDocLabel').text(label);
-            $('#modalDocExt').text(ext ? ext.toUpperCase() : '');
+            $('#modalDocExt').text(ext ? ext.toUpperCase() : 'FILE');
             $('#btnDownloadDoc').attr('href', url);
+            $('#btnOpenNewTab').attr('href', url);
             $('#btnErrorDownload').attr('href', url);
-            $('#previewFooterInfo').text(url.split('/').pop());
+            $('#btnErrorOpenTab').attr('href', url);
 
-            // Icon sesuai tipe
+            // Icon sesuai tipe dokumen
             if (PDF_EXTS.includes(ext)) {
-                $('#modalDocIcon').attr('class', 'mdi mdi-file-pdf-box text-danger');
+                $('#modalDocIcon').attr('class', 'mdi mdi-file-pdf-box text-danger fs-5');
             } else if (IMAGE_EXTS.includes(ext)) {
-                $('#modalDocIcon').attr('class', 'mdi mdi-image text-primary');
+                $('#modalDocIcon').attr('class', 'mdi mdi-image text-primary fs-5');
             } else {
-                $('#modalDocIcon').attr('class', 'mdi mdi-file-document-outline text-muted');
+                $('#modalDocIcon').attr('class', 'mdi mdi-file-document-outline text-muted fs-5');
             }
 
-            // Reset & buka modal
+            // Reset & Buka modal
             resetPreviewState();
             const modalEl = document.getElementById('modalPreviewDokumen');
             if (modalEl) {
@@ -2353,28 +2433,46 @@
                 modalObj.show();
             }
 
-            // Fetch file → blob
-            fetch(url)
+            // Fetch file blob
+            fetch(url, { cache: 'no-cache' })
                 .then(function(res) {
-                    if (!res.ok) throw new Error('Fetch failed: ' + res.status);
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
                     return res.blob();
                 })
                 .then(function(blob) {
-                    if (PDF_EXTS.includes(ext) || blob.type === 'application/pdf') {
+                    const mime = (blob.type || '').toLowerCase();
+                    if (PDF_EXTS.includes(ext) || mime === 'application/pdf') {
                         const pdfBlob = new Blob([blob], { type: 'application/pdf' });
-                        previewPdf(pdfBlob);
-                    } else if (IMAGE_EXTS.includes(ext) || blob.type.startsWith('image/')) {
-                        previewImage(blob);
+                        previewPdf(pdfBlob, url);
+                    } else if (IMAGE_EXTS.includes(ext) || mime.startsWith('image/')) {
+                        previewImage(blob, url);
                     } else {
-                        showPreviewError(url);
+                        // Default fallback try rendering via iframe
+                        previewPdf(blob, url);
                     }
                 })
-                .catch(function() {
+                .catch(function(err) {
+                    console.warn('Preview fetch error:', err);
                     showPreviewError(url);
                 });
         });
 
+        // Wheel Zoom Support on Image Container
         document.addEventListener('DOMContentLoaded', function() {
+            const imgBox = document.getElementById('divImagePreview');
+            if (imgBox) {
+                imgBox.addEventListener('wheel', function(e) {
+                    if (e.ctrlKey || e.altKey || $('#imgZoomToolbar').is(':visible')) {
+                        e.preventDefault();
+                        if (e.deltaY < 0) {
+                            changeImageZoom(0.15);
+                        } else {
+                            changeImageZoom(-0.15);
+                        }
+                    }
+                }, { passive: false });
+            }
+
             const previewModalEl = document.getElementById('modalPreviewDokumen');
             if (previewModalEl) {
                 previewModalEl.addEventListener('hidden.bs.modal', function() {
