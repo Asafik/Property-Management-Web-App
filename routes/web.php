@@ -613,14 +613,21 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
     Route::get('/storage/{path}', function ($path) {
         $path = urldecode($path);
         $cleanPath = ltrim($path, '/\\');
+        $strippedPath = ltrim(preg_replace('/^(storage[\/\\\\]|public[\/\\\\]|app[\/\\\\])+/', '', $cleanPath), '/\\');
 
         $candidates = [
             storage_path('app/public/' . $cleanPath),
+            storage_path('app/public/' . $strippedPath),
             storage_path('app/' . $cleanPath),
+            storage_path('app/' . $strippedPath),
             public_path('storage/' . $cleanPath),
+            public_path('storage/' . $strippedPath),
             public_path('uploads/' . $cleanPath),
+            public_path('uploads/' . $strippedPath),
             public_path($cleanPath),
+            public_path($strippedPath),
             base_path('storage/app/public/' . $cleanPath),
+            base_path('storage/app/public/' . $strippedPath),
         ];
 
         foreach ($candidates as $fullPath) {
