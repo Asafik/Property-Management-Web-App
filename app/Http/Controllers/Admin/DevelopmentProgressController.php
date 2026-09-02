@@ -64,12 +64,13 @@ class DevelopmentProgressController extends Controller
             $items = $request->input('items');
             foreach ($items as $k => $v) {
                 if (isset($v['harga_satuan'])) {
-                    $items[$k]['harga_satuan'] = is_numeric($v['harga_satuan'])
-                        ? $v['harga_satuan']
-                        : preg_replace('/[^0-9]/', '', $v['harga_satuan']);
+                    // Selalu buang titik dan pemisah ribuan rupiah (contoh: "90.000" -> 90000, "90.000.000" -> 90000000)
+                    $cleanPrice = preg_replace('/[^0-9]/', '', (string)$v['harga_satuan']);
+                    $items[$k]['harga_satuan'] = (float)($cleanPrice ?: 0);
                 }
                 if (isset($v['volume'])) {
-                    $items[$k]['volume'] = str_replace(',', '.', $v['volume']);
+                    $cleanVol = str_replace(',', '.', (string)$v['volume']);
+                    $items[$k]['volume'] = (float)($cleanVol ?: 0);
                 }
             }
             $request->merge(['items' => $items]);

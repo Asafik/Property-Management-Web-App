@@ -501,8 +501,9 @@ class LandBankInfrastructureController extends Controller
             foreach ($request->items as $idx => $row) {
                 if (empty($row['item_name']) || empty($row['quantity'])) continue;
 
-                $qty = (float)($row['quantity'] ?? 1);
-                $price = (float)($row['unit_price'] ?? 0);
+                $qty = (float)str_replace(',', '.', (string)($row['quantity'] ?? 1));
+                $rawPrice = isset($row['unit_price']) ? preg_replace('/[^0-9]/', '', (string)$row['unit_price']) : '0';
+                $price = (float)($rawPrice ?: 0);
                 $total = $qty * $price;
 
                 $itemData = array_merge($commonData, [
