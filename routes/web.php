@@ -570,17 +570,24 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
     Route::get('/serah-terima-cetak', fn() => view('cetak.serah_terima_cetak'));
 
     Route::get('/dokumen/preview/{path}', function ($path) {
-
-        // decode path (biar spasi balik normal)
         $path = urldecode($path);
 
-        $fullPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $path;
+        // Cari file di beberapa kemungkinan lokasi (public_path, storage, dll)
+        $candidates = [
+            public_path('uploads/' . $path),
+            public_path($path),
+            base_path('public/uploads/' . $path),
+            storage_path('app/public/' . $path),
+            storage_path('app/' . $path),
+        ];
 
-        if (!file_exists($fullPath)) {
-            abort(404);
+        foreach ($candidates as $fullPath) {
+            if (file_exists($fullPath) && is_file($fullPath)) {
+                return response()->file($fullPath);
+            }
         }
 
-        return response()->file($fullPath);
+        abort(404, 'Dokumen tidak ditemukan.');
     })->where('path', '.*')->name('dokumen.preview');
     // Master data laporan job staf marketing
     Route::get('/job-staff-marketing', [JobStaffMarketingController::class, 'index'])->name('master.data.tugas-staff-marketing');
