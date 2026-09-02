@@ -168,7 +168,14 @@ class LandBankInfrastructureController extends Controller
 
         $photoPath = null;
         if ($request->hasFile('photo_proof')) {
-            $photoPath = $request->file('photo_proof')->store("uploads/landbank/{$land->id}/infrastructure", 'public');
+            $file = $request->file('photo_proof');
+            $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $targetDir = public_path("uploads/landbank/{$land->id}/infrastructure");
+            if (!file_exists($targetDir)) {
+                @mkdir($targetDir, 0755, true);
+            }
+            $file->move($targetDir, $filename);
+            $photoPath = "uploads/landbank/{$land->id}/infrastructure/{$filename}";
         }
 
         $targetVolume = $request->filled('target_volume') ? (float)$request->target_volume : 100;
@@ -279,10 +286,17 @@ class LandBankInfrastructureController extends Controller
 
         $photoPath = null;
         if ($request->hasFile('photo_proof')) {
-            if ($item->photo_proof && Storage::disk('public')->exists($item->photo_proof)) {
-                Storage::disk('public')->delete($item->photo_proof);
+            if ($item->photo_proof && file_exists(public_path($item->photo_proof))) {
+                @unlink(public_path($item->photo_proof));
             }
-            $photoPath = $request->file('photo_proof')->store("uploads/landbank/{$land->id}/infrastructure", 'public');
+            $file = $request->file('photo_proof');
+            $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $targetDir = public_path("uploads/landbank/{$land->id}/infrastructure");
+            if (!file_exists($targetDir)) {
+                @mkdir($targetDir, 0755, true);
+            }
+            $file->move($targetDir, $filename);
+            $photoPath = "uploads/landbank/{$land->id}/infrastructure/{$filename}";
             $data['photo_proof'] = $photoPath;
         }
 
@@ -420,7 +434,12 @@ class LandBankInfrastructureController extends Controller
         if ($request->hasFile('receipt_proof')) {
             $file = $request->file('receipt_proof');
             $fileName = 'receipt_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $receiptPath = $file->storeAs('uploads/infrastructure_receipts', $fileName, 'public');
+            $targetDir = public_path("uploads/landbank/{$land->id}/infrastructure_receipts");
+            if (!file_exists($targetDir)) {
+                @mkdir($targetDir, 0755, true);
+            }
+            $file->move($targetDir, $fileName);
+            $receiptPath = "uploads/landbank/{$land->id}/infrastructure_receipts/{$fileName}";
         }
 
         $infraId = $request->filled('land_bank_infrastructure_id') ? $request->land_bank_infrastructure_id : null;
@@ -541,13 +560,17 @@ class LandBankInfrastructureController extends Controller
 
         // Handle receipt update
         if ($request->hasFile('receipt_proof')) {
-            if ($expense->receipt_proof && Storage::disk('public')->exists($expense->receipt_proof)) {
-                Storage::disk('public')->delete($expense->receipt_proof);
+            if ($expense->receipt_proof && file_exists(public_path($expense->receipt_proof))) {
+                @unlink(public_path($expense->receipt_proof));
             }
             $file = $request->file('receipt_proof');
             $fileName = 'receipt_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('uploads/infrastructure_receipts', $fileName, 'public');
-            $validated['receipt_proof'] = $path;
+            $targetDir = public_path("uploads/landbank/{$expense->land_bank_id}/infrastructure_receipts");
+            if (!file_exists($targetDir)) {
+                @mkdir($targetDir, 0755, true);
+            }
+            $file->move($targetDir, $fileName);
+            $validated['receipt_proof'] = "uploads/landbank/{$expense->land_bank_id}/infrastructure_receipts/{$fileName}";
         }
 
         $expense->update($validated);
