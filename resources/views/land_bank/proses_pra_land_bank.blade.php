@@ -2316,7 +2316,6 @@
         // ===============================
         const PDF_EXTS = ['pdf'];
         const IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg', 'bmp'];
-        let activeBlobUrl = null;
         let currentZoom = 1.0;
         let currentRotate = 0;
 
@@ -2325,16 +2324,17 @@
             currentRotate = 0;
             applyImageTransform();
 
-            $('#previewLoading').removeClass('d-none').show();
-            $('#previewError').addClass('d-none').hide();
-            $('#iframePreview').addClass('d-none').hide().attr('src', '');
-            $('#divImagePreview').addClass('d-none').hide();
-            $('#imgZoomToolbar').addClass('d-none').removeClass('d-flex');
-            $('#imgPreview').attr('src', '');
-
-            if (activeBlobUrl) {
-                URL.revokeObjectURL(activeBlobUrl);
-                activeBlobUrl = null;
+            $('#previewLoading').show();
+            $('#previewError').hide();
+            $('#iframePreview').hide().attr('src', '');
+            $('#divImagePreview').hide();
+            $('#imgZoomToolbar').hide().removeClass('d-flex');
+            
+            const img = document.getElementById('imgPreview');
+            if (img) {
+                img.onload = null;
+                img.onerror = null;
+                img.src = '';
             }
         }
 
@@ -2360,46 +2360,55 @@
         };
 
         function showPreviewError(url) {
-            $('#previewLoading').addClass('d-none').hide();
-            $('#iframePreview').addClass('d-none').hide();
-            $('#divImagePreview').addClass('d-none').hide();
-            $('#imgZoomToolbar').addClass('d-none').removeClass('d-flex');
-            $('#previewError').removeClass('d-none').show().css('display', 'flex');
+            $('#previewLoading').hide();
+            $('#iframePreview').hide().attr('src', '');
+            $('#divImagePreview').hide();
+            $('#imgZoomToolbar').hide().removeClass('d-flex');
+            $('#previewError').show().css('display', 'flex');
             $('#btnErrorDownload').attr('href', url);
             $('#btnErrorOpenTab').attr('href', url);
         }
 
-        function previewPdf(blob, directUrl) {
-            activeBlobUrl = URL.createObjectURL(blob);
-            const $iframe = $('#iframePreview');
-
-            $iframe.off('load error').on('load', function() {
-                $('#previewLoading').addClass('d-none').hide();
-                $iframe.removeClass('d-none').show();
-            }).on('error', function() {
-                showPreviewError(directUrl);
-            });
-
-            // Gunakan blob url dengan viewer native browser
-            $iframe.attr('src', activeBlobUrl + '#toolbar=1&navpanes=1');
+        function previewPdf(url) {
+            $('#previewLoading').show();
+            $('#previewError').hide();
+            $('#divImagePreview').hide();
+            $('#imgZoomToolbar').hide().removeClass('d-flex');
+            
+            const iframe = document.getElementById('iframePreview');
+            iframe.onload = function() {
+                $('#previewLoading').hide();
+                $('#previewError').hide();
+                $('#iframePreview').show().css('display', 'block');
+            };
+            iframe.onerror = function() {
+                showPreviewError(url);
+            };
+            iframe.src = url + '#toolbar=1&navpanes=1';
+            $('#iframePreview').show().css('display', 'block');
+            $('#previewLoading').hide();
+            $('#previewFooterInfo').html(`<i class="mdi mdi-file-pdf-box me-1 text-danger"></i>Format Dokumen PDF — Gunakan toolbar pembaca PDF untuk navigasi.`);
         }
 
-        function previewImage(blob, directUrl) {
-            activeBlobUrl = URL.createObjectURL(blob);
-            const $img = $('#imgPreview');
+        function previewImage(url) {
+            $('#previewLoading').show();
+            $('#previewError').hide();
+            $('#iframePreview').hide().attr('src', '');
+            $('#divImagePreview').hide();
+            $('#imgZoomToolbar').hide().removeClass('d-flex');
 
-            $img.off('load error')
-                .on('load', function() {
-                    $('#previewLoading').addClass('d-none').hide();
-                    $('#divImagePreview').removeClass('d-none').show().css('display', 'flex');
-                    $('#imgZoomToolbar').removeClass('d-none').addClass('d-flex');
-                    $('#previewFooterInfo').html(`<i class="mdi mdi-image-size-select-actual me-1"></i>Resolusi: <strong>${$img[0].naturalWidth} × ${$img[0].naturalHeight} px</strong> — Scroll atau gunakan zoom toolbar.`);
-                })
-                .on('error', function() {
-                    showPreviewError(directUrl);
-                });
-
-            $img.attr('src', activeBlobUrl);
+            const img = document.getElementById('imgPreview');
+            img.onload = function() {
+                $('#previewLoading').hide();
+                $('#previewError').hide();
+                $('#divImagePreview').show().css('display', 'flex');
+                $('#imgZoomToolbar').show().addClass('d-flex');
+                $('#previewFooterInfo').html(`<i class="mdi mdi-image-size-select-actual me-1 text-primary"></i>Resolusi: <strong>${img.naturalWidth} × ${img.naturalHeight} px</strong> — Scroll atau gunakan zoom toolbar.`);
+            };
+            img.onerror = function() {
+                showPreviewError(url);
+            };
+            img.src = url;
         }
 
         $(document).on('click', '.btn-preview-doc', function(e) {
@@ -2433,28 +2442,11 @@
                 modalObj.show();
             }
 
-            // Fetch file blob
-            fetch(url, { cache: 'no-cache' })
-                .then(function(res) {
-                    if (!res.ok) throw new Error('HTTP ' + res.status);
-                    return res.blob();
-                })
-                .then(function(blob) {
-                    const mime = (blob.type || '').toLowerCase();
-                    if (PDF_EXTS.includes(ext) || mime === 'application/pdf') {
-                        const pdfBlob = new Blob([blob], { type: 'application/pdf' });
-                        previewPdf(pdfBlob, url);
-                    } else if (IMAGE_EXTS.includes(ext) || mime.startsWith('image/')) {
-                        previewImage(blob, url);
-                    } else {
-                        // Default fallback try rendering via iframe
-                        previewPdf(blob, url);
-                    }
-                })
-                .catch(function(err) {
-                    console.warn('Preview fetch error:', err);
-                    showPreviewError(url);
-                });
+            if (PDF_EXTS.includes(ext)) {
+                previewPdf(url);
+            } else {
+                previewImage(url);
+            }
         });
 
         // Wheel Zoom Support on Image Container
