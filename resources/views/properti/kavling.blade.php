@@ -28,6 +28,12 @@
             border: 1px solid rgba(255, 193, 7, 0.25);
         }
 
+        .badge-status.processing {
+            background: rgba(255, 193, 7, 0.15);
+            color: #d97706;
+            border: 1px solid rgba(255, 193, 7, 0.35);
+        }
+
         .badge-status.sold {
             background: rgba(220, 53, 69, 0.12);
             color: #dc3545;
@@ -165,6 +171,7 @@
                                                 <option value="">Semua Status</option>
                                                 <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>Terjual</option>
                                                 <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
+                                                <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Dalam Pengolahan</option>
                                                 <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Tersedia</option>
                                             </select>
                                         </div>
@@ -225,6 +232,7 @@
                                             <option value="">Semua Status</option>
                                             <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>Terjual</option>
                                             <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
+                                            <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Dalam Pengolahan</option>
                                             <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Tersedia</option>
                                         </select>
                                     </div>
@@ -374,6 +382,10 @@
                                             @elseif($land->status == 'booking')
                                                 <span class="badge-status booking">
                                                     <i class="mdi mdi-calendar-clock me-1"></i>Booking
+                                                </span>
+                                            @elseif(!$canCreateKavling)
+                                                <span class="badge-status processing">
+                                                    <i class="mdi mdi-progress-wrench me-1"></i>Dalam Pengolahan
                                                 </span>
                                             @else
                                                 <span class="badge-status available">
