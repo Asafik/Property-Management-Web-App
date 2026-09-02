@@ -7,60 +7,124 @@
 <style>
     .form-section-card {
         background: #ffffff;
-        border-radius: 10px;
-        border: none;
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+        border-radius: 12px;
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         margin-bottom: 1.5rem;
+        overflow: hidden;
     }
 
     .form-section-header {
-        padding: 1rem 1.25rem;
-        background: #fbf9ff;
-        border-bottom: 1px solid #ebe5f5;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
+        padding: 1rem 1.4rem;
+        background: linear-gradient(135deg, #faf7ff, #f4edff);
+        border-bottom: 1px solid #ede4ff;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
     }
 
-    .form-section-header i {
-        font-size: 1.25rem;
+    .section-icon-box {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: #ffffff;
         color: #9a55ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        box-shadow: 0 2px 8px rgba(154, 85, 255, 0.15);
     }
 
     .form-section-title {
         font-weight: 700;
         color: #2c2e3f;
-        font-size: 1rem;
+        font-size: 1.02rem;
         margin: 0;
     }
 
     .form-section-body {
-        padding: 1.25rem;
+        padding: 1.4rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        font-size: 0.84rem;
+        color: #334155;
+        margin-bottom: 0.4rem;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 1.5px solid #e2e8f0;
+        font-size: 0.88rem;
+        padding: 0.55rem 0.85rem;
+        transition: all 0.2s ease;
+    }
+
+    textarea.form-control {
+        height: auto !important;
+        min-height: 100px !important;
+    }
+
+    #pasal_syarat_ketentuan {
+        min-height: 420px !important;
+        height: 420px !important;
+        line-height: 1.75 !important;
+        font-size: 0.9rem !important;
+        background-color: #fcfdfe !important;
+        border: 1.5px solid #cbd5e1 !important;
+        padding: 1rem !important;
+        resize: vertical !important;
+    }
+
+    #deskripsi_pekerjaan {
+        min-height: 90px !important;
+        height: 90px !important;
+    }
+
+    #keterangan {
+        min-height: 90px !important;
+        height: 90px !important;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #9a55ff;
+        box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12);
+    }
+
+    .input-group-text {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 8px;
+        background: #f8fafc;
+        font-weight: 600;
     }
 
     .termin-table th {
-        font-size: 0.75rem;
+        font-size: 0.78rem;
+        font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        color: #9a55ff;
+        color: #7c3aed;
         background: #fbf9ff;
+        padding: 0.75rem 0.6rem;
     }
 
     .termin-table td {
         vertical-align: middle;
-        padding: 0.5rem 0.5rem;
+        padding: 0.6rem 0.6rem;
     }
 
     .btn-gradient-purple {
         background: linear-gradient(135deg, #da8cff, #9a55ff);
         color: #fff;
         border: none;
+        box-shadow: 0 2px 6px rgba(154, 85, 255, 0.2);
     }
     .btn-gradient-purple:hover {
         color: #fff;
-        opacity: 0.9;
+        opacity: 0.92;
+        transform: translateY(-1px);
     }
 
     /* Animasi spin untuk tombol refresh nomor SPK */
@@ -75,35 +139,52 @@
 
     /* Style nomor SPK auto-generated */
     #no_spk[readonly] {
-        border-color: #0d6efd44;
+        border-color: #cbd5e1;
         letter-spacing: 0.5px;
+        background: #f8fafc;
+        color: #7c3aed;
+        font-weight: 700;
     }
     #no_spk[readonly]:focus {
-        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.12);
-        border-color: #0d6efd88;
+        box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12);
+        border-color: #9a55ff;
     }
 </style>
 
 <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
-    <!-- Breadcrumb & Title -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h4 class="fw-bold text-dark mb-1">Buat Surat Perintah Kerja (SPK)</h4>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0 small">
-                    <li class="breadcrumb-item"><a href="{{ route('spk.index') }}" class="text-decoration-none">SPK Kontraktor</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Buat SPK Baru</li>
-                </ol>
-            </nav>
+    <!-- Header Card Banner -->
+    <div class="row mb-3 mb-md-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 header-card" style="border-radius: 12px; background: #ffffff;">
+                <div class="card-body p-3 p-md-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="badge px-2.5 py-1" style="background: rgba(154, 85, 255, 0.1); color: #9a55ff; font-weight: 600; font-size: 0.78rem; border-radius: 6px;">
+                                <i class="mdi mdi-file-sign me-1"></i>Modul Kontrak Kerja
+                            </span>
+                            <span class="text-muted small">|</span>
+                            <span class="text-muted small">SPK Kontraktor</span>
+                        </div>
+                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                            Buat Surat Perintah Kerja (SPK)
+                        </h3>
+                        <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                            Penerbitan surat perintah kerja resmi antara developer dan mitra kontraktor/pemborong
+                        </p>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="{{ route('spk.index') }}" class="btn btn-outline-secondary btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5" style="border-radius: 8px; font-weight: 600;">
+                            <i class="mdi mdi-arrow-left fs-6"></i> Kembali
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <a href="{{ route('spk.index') }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center">
-            <i class="mdi mdi-arrow-left me-1"></i>Kembali
-        </a>
     </div>
 
     @if($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-3" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-3" role="alert" style="border-radius: 10px;">
             <i class="mdi mdi-alert-circle me-2 fs-5 align-middle"></i>
             <strong>Terdapat kesalahan input:</strong>
             <ul class="mb-0 mt-1 small">
@@ -123,7 +204,9 @@
         <!-- ========================================== -->
         <div class="card form-section-card">
             <div class="form-section-header">
-                <i class="mdi mdi-file-document-outline"></i>
+                <div class="section-icon-box">
+                    <i class="mdi mdi-file-document-outline"></i>
+                </div>
                 <h5 class="form-section-title">1. Informasi Pokok SPK & Proyek</h5>
             </div>
             <div class="form-section-body">
@@ -184,14 +267,14 @@
                     <div class="col-12">
                         <label class="form-label fw-semibold text-dark small">Nama / Judul Pekerjaan <span class="text-danger">*</span></label>
                         <input type="text" name="nama_pekerjaan" id="nama_pekerjaan" class="form-control" 
-                               placeholder="Contoh: Pembangunan 1 Unit Rumah Type 36/72 Blok A No. 05" 
+                               placeholder="Nama pekerjaan..." 
                                value="{{ old('nama_pekerjaan') }}" required>
                     </div>
 
                     <div class="col-12">
                         <label class="form-label fw-semibold text-dark small">Deskripsi & Lingkup Pekerjaan</label>
                         <textarea name="deskripsi_pekerjaan" id="deskripsi_pekerjaan" class="form-control" rows="2" 
-                                  placeholder="Rincian pekerjaan struktur, pondasi batu kali, dinding bata merah, atap baja ringan, dsb.">{{ old('deskripsi_pekerjaan') }}</textarea>
+                                  placeholder="Deskripsi lingkup pekerjaan...">{{ old('deskripsi_pekerjaan') }}</textarea>
                     </div>
                 </div>
             </div>
@@ -203,39 +286,41 @@
         <div class="row">
             <!-- Pihak Pertama (Developer) -->
             <div class="col-lg-6">
-                <div class="card form-section-card">
+                <div class="card form-section-card h-100">
                     <div class="form-section-header">
-                        <i class="mdi mdi-domain"></i>
-                        <h5 class="form-section-title">2A. Pihak Pertama (Pemberi Tugas / Developer)</h5>
+                        <div class="section-icon-box">
+                            <i class="mdi mdi-domain"></i>
+                        </div>
+                        <h5 class="form-section-title">2A. Pihak Pertama (Developer)</h5>
                     </div>
                     <div class="form-section-body">
                         <div class="row g-3">
                             <div class="col-12">
-                                <label class="form-label fw-semibold text-dark small">Nama Perusahaan Developer</label>
+                                <label class="form-label">Nama Perusahaan Developer</label>
                                 <input type="text" name="pihak_pertama_perusahaan" class="form-control" 
                                        value="{{ old('pihak_pertama_perusahaan', $companySetting->company_name ?? ($companyProfile->name ?? 'PT. PROPERTI MANAJEMEN INDONESIA')) }}">
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold text-dark small">Nama Pejabat / Perwakilan</label>
+                                <label class="form-label">Nama Pejabat / Perwakilan</label>
                                 <input type="text" name="pihak_pertama_nama" class="form-control" 
                                        value="{{ old('pihak_pertama_nama', auth()->user()->name ?? 'Direktur Utama') }}">
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold text-dark small">Jabatan</label>
+                                <label class="form-label">Jabatan</label>
                                 <input type="text" name="pihak_pertama_jabatan" class="form-control" 
                                        value="{{ old('pihak_pertama_jabatan', 'Direktur Utama / Project Manager') }}">
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold text-dark small">Telepon / WhatsApp</label>
+                                <label class="form-label">Telepon / WhatsApp</label>
                                 <input type="text" name="pihak_pertama_telepon" class="form-control" 
                                        value="{{ old('pihak_pertama_telepon', $companySetting->phone ?? ($companySetting->whatsapp ?? '-')) }}">
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold text-dark small">Alamat Kantor</label>
+                                <label class="form-label">Alamat Kantor</label>
                                 <input type="text" name="pihak_pertama_alamat" class="form-control" 
                                        value="{{ old('pihak_pertama_alamat', $companySetting->address ?? ($companyProfile->address ?? '-')) }}">
                             </div>
@@ -246,59 +331,61 @@
 
             <!-- Pihak Kedua (Kontraktor) -->
             <div class="col-lg-6">
-                <div class="card form-section-card">
+                <div class="card form-section-card h-100">
                     <div class="form-section-header">
-                        <i class="mdi mdi-account-hard-hat"></i>
-                        <h5 class="form-section-title">2B. Pihak Kedua (Kontraktor / Pemborong)</h5>
+                        <div class="section-icon-box">
+                            <i class="mdi mdi-account-hard-hat"></i>
+                        </div>
+                        <h5 class="form-section-title">2B. Pihak Kedua (Kontraktor)</h5>
                     </div>
                     <div class="form-section-body">
                         <div class="row g-3">
                             <div class="col-12">
-                                <label class="form-label fw-semibold text-dark small">Nama Kontraktor / Usaha <span class="text-danger">*</span></label>
+                                <label class="form-label">Nama Kontraktor / Usaha <span class="text-danger">*</span></label>
                                 <input type="text" name="kontraktor_nama" id="kontraktor_nama" class="form-control" 
-                                       placeholder="PT / CV / Bpk. Mandor..." value="{{ old('kontraktor_nama') }}" required>
+                                       placeholder="Nama kontraktor / pemborong..." value="{{ old('kontraktor_nama') }}" required>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold text-dark small">Nama Penanggung Jawab (PIC)</label>
+                                <label class="form-label">Nama Penanggung Jawab (PIC)</label>
                                 <input type="text" name="kontraktor_pic" id="kontraktor_pic" class="form-control" 
-                                       placeholder="Nama Mandor / Direktur..." value="{{ old('kontraktor_pic') }}">
+                                       placeholder="Nama PIC..." value="{{ old('kontraktor_pic') }}">
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold text-dark small">No. KTP PIC</label>
+                                <label class="form-label">No. KTP PIC</label>
                                 <input type="text" name="kontraktor_ktp" id="kontraktor_ktp" class="form-control" 
-                                       placeholder="16 digit NIK..." value="{{ old('kontraktor_ktp') }}">
+                                       placeholder="Nomor KTP..." value="{{ old('kontraktor_ktp') }}">
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold text-dark small">No. HP / WhatsApp Kontraktor</label>
+                                <label class="form-label">No. HP / WhatsApp Kontraktor</label>
                                 <input type="text" name="kontraktor_telepon" id="kontraktor_telepon" class="form-control" 
-                                       placeholder="Contoh: 08123456789" value="{{ old('kontraktor_telepon') }}">
+                                       placeholder="Nomor telepon..." value="{{ old('kontraktor_telepon') }}">
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold text-dark small">Alamat Kontraktor</label>
+                                <label class="form-label">Alamat Kontraktor</label>
                                 <input type="text" name="kontraktor_alamat" id="kontraktor_alamat" class="form-control" 
                                        placeholder="Alamat domisili..." value="{{ old('kontraktor_alamat') }}">
                             </div>
 
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold text-dark small">Nama Bank</label>
+                                <label class="form-label">Nama Bank</label>
                                 <input type="text" name="kontraktor_bank" id="kontraktor_bank" class="form-control" 
-                                       placeholder="BCA / Mandiri / BRI..." value="{{ old('kontraktor_bank') }}">
+                                       placeholder="Nama bank..." value="{{ old('kontraktor_bank') }}">
                             </div>
 
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold text-dark small">No. Rekening</label>
+                                <label class="form-label">No. Rekening</label>
                                 <input type="text" name="kontraktor_rekening" id="kontraktor_rekening" class="form-control" 
                                        placeholder="Nomor rekening..." value="{{ old('kontraktor_rekening') }}">
                             </div>
 
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold text-dark small">Atas Nama Rekening</label>
+                                <label class="form-label">Atas Nama Rekening</label>
                                 <input type="text" name="kontraktor_atas_nama" id="kontraktor_atas_nama" class="form-control" 
-                                       placeholder="Nama pemilik rek..." value="{{ old('kontraktor_atas_nama') }}">
+                                       placeholder="Atas nama rekening..." value="{{ old('kontraktor_atas_nama') }}">
                             </div>
                         </div>
                     </div>
@@ -311,15 +398,17 @@
         <!-- ========================================== -->
         <div class="card form-section-card">
             <div class="form-section-header">
-                <i class="mdi mdi-cash-multiple"></i>
+                <div class="section-icon-box">
+                    <i class="mdi mdi-cash-multiple"></i>
+                </div>
                 <h5 class="form-section-title">3. Nilai Kontrak & Waktu Pelaksanaan</h5>
             </div>
             <div class="form-section-body">
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label fw-semibold text-dark small">Nilai Total Kontrak (Rp) <span class="text-danger">*</span></label>
+                        <label class="form-label">Nilai Total Kontrak (Rp) <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light fw-bold">Rp</span>
+                            <span class="input-group-text">Rp</span>
                             <input type="text" name="nilai_kontrak" id="nilai_kontrak" class="form-control fw-bold text-primary" 
                                    placeholder="0" value="{{ old('nilai_kontrak') }}" required oninput="formatRupiahInput(this); calculateAllTermins(); updateTerbilang(this.value);">
                         </div>
@@ -327,27 +416,27 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="form-label fw-semibold text-dark small">Tanggal Mulai Kerja <span class="text-danger">*</span></label>
+                        <label class="form-label">Tanggal Mulai Kerja <span class="text-danger">*</span></label>
                         <input type="date" name="tanggal_mulai" id="tanggal_mulai" class="form-control" 
                                value="{{ old('tanggal_mulai', date('Y-m-d')) }}" required onchange="calculateDurasi()">
                     </div>
 
                     <div class="col-md-4">
-                        <label class="form-label fw-semibold text-dark small">Tanggal Target Selesai <span class="text-danger">*</span></label>
+                        <label class="form-label">Tanggal Target Selesai <span class="text-danger">*</span></label>
                         <input type="date" name="tanggal_selesai" id="tanggal_selesai" class="form-control" 
                                value="{{ old('tanggal_selesai', date('Y-m-d', strtotime('+90 days'))) }}" required onchange="calculateDurasi()">
                     </div>
 
                     <div class="col-md-3">
-                        <label class="form-label fw-semibold text-dark small">Durasi Pelaksanaan (Hari)</label>
+                        <label class="form-label">Durasi Pelaksanaan (Hari)</label>
                         <div class="input-group">
                             <input type="number" name="durasi_hari" id="durasi_hari" class="form-control bg-light" value="{{ old('durasi_hari', 90) }}" readonly>
-                            <span class="input-group-text bg-light">Hari Kalender</span>
+                            <span class="input-group-text">Hari</span>
                         </div>
                     </div>
 
                     <div class="col-md-3">
-                        <label class="form-label fw-semibold text-dark small">Sistem Pembayaran</label>
+                        <label class="form-label">Sistem Pembayaran</label>
                         <select name="sistem_pembayaran" id="sistem_pembayaran" class="form-select select2">
                             <option value="termin" {{ old('sistem_pembayaran') == 'termin' ? 'selected' : '' }}>Bertahap (Termin Prestasi Fisik)</option>
                             <option value="opname" {{ old('sistem_pembayaran') == 'opname' ? 'selected' : '' }}>Opname Bulanan / Progres</option>
@@ -356,7 +445,7 @@
                     </div>
 
                     <div class="col-md-3">
-                        <label class="form-label fw-semibold text-dark small">Status SPK</label>
+                        <label class="form-label">Status SPK</label>
                         <select name="status" id="status" class="form-select select2">
                             <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft (Konsep)</option>
                             <option value="berjalan" {{ old('status') == 'berjalan' ? 'selected' : 'selected' }}>Berjalan (Aktif)</option>
@@ -366,7 +455,7 @@
                     </div>
 
                     <div class="col-md-3">
-                        <label class="form-label fw-semibold text-dark small">Upload Berkas Fisik / Lampiran (Opsional)</label>
+                        <label class="form-label">Upload Berkas Fisik / Lampiran</label>
                         <input type="file" name="file_lampiran" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.docx">
                         <small class="text-muted">PDF / Gambar scan bermaterai (Maks 15MB)</small>
                     </div>
@@ -380,18 +469,20 @@
         <div class="card form-section-card">
             <div class="form-section-header justify-content-between flex-wrap gap-2">
                 <div class="d-flex align-items-center gap-2">
-                    <i class="mdi mdi-table-clock"></i>
+                    <div class="section-icon-box">
+                        <i class="mdi mdi-table-clock"></i>
+                    </div>
                     <h5 class="form-section-title">4. Skema & Jadwal Termin Pembayaran</h5>
                 </div>
-                <div class="d-flex align-items-center gap-2">
-                    <button type="button" class="btn btn-xs btn-outline-primary py-1 px-2" onclick="applyPresetTermin('standar')">
-                        <i class="mdi mdi-flash me-1"></i>Preset Standar Rumah (5 Tahap)
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <button type="button" class="btn btn-sm btn-outline-primary py-1.5 px-3 d-inline-flex align-items-center gap-1" style="border-radius: 8px; font-weight: 600;" onclick="applyPresetTermin('standar')">
+                        <i class="mdi mdi-flash"></i>Preset Standar Rumah (5 Tahap)
                     </button>
-                    <button type="button" class="btn btn-xs btn-outline-info py-1 px-2" onclick="applyPresetTermin('infra')">
-                        <i class="mdi mdi-flash me-1"></i>Preset Infrastruktur (4 Tahap)
+                    <button type="button" class="btn btn-sm btn-outline-info py-1.5 px-3 d-inline-flex align-items-center gap-1" style="border-radius: 8px; font-weight: 600;" onclick="applyPresetTermin('infra')">
+                        <i class="mdi mdi-flash"></i>Preset Infrastruktur (4 Tahap)
                     </button>
-                    <button type="button" class="btn btn-xs btn-gradient-purple py-1 px-2" onclick="addTerminRow()">
-                        <i class="mdi mdi-plus me-1"></i>+ Tambah Baris
+                    <button type="button" class="btn btn-sm btn-gradient-purple py-1.5 px-3 d-inline-flex align-items-center gap-1" style="border-radius: 8px; font-weight: 600;" onclick="addTerminRow()">
+                        <i class="mdi mdi-plus"></i>Tambah Baris
                     </button>
                 </div>
             </div>
@@ -438,30 +529,50 @@
         <!-- 5. KLAUSUL PASAL & PERJANJIAN SPK -->
         <!-- ========================================== -->
         <div class="card form-section-card">
-            <div class="form-section-header">
-                <i class="mdi mdi-gavel"></i>
-                <h5 class="form-section-title">5. Klausul Ketentuan & Pasal Perjanjian SPK</h5>
+            <div class="form-section-header justify-content-between flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="section-icon-box">
+                        <i class="mdi mdi-gavel"></i>
+                    </div>
+                    <h5 class="form-section-title">5. Klausul Ketentuan & Pasal Perjanjian SPK</h5>
+                </div>
+                <small class="text-muted"><i class="mdi mdi-shield-check-outline me-1"></i>Draft Klausul Standar Developer</small>
             </div>
             <div class="form-section-body">
                 <div class="mb-3">
-                    <label class="form-label fw-semibold text-dark small">Draft Pasal Perjanjian (Bisa diedit sesuai kebutuhan kontrak)</label>
-                    <textarea name="pasal_syarat_ketentuan" id="pasal_syarat_ketentuan" class="form-control" rows="8" style="font-family: inherit; font-size: 0.9rem;">{{ old('pasal_syarat_ketentuan', $defaultPasal) }}</textarea>
-                    <small class="text-muted">Klausul ini akan otomatis tercetak pada lembar resmi Surat Perintah Kerja (SPK).</small>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label mb-0">Isi Pasal & Ketentuan Kontrak (Dapat diedit sesuai kesepakatan)</label>
+                    </div>
+                    <textarea name="pasal_syarat_ketentuan" id="pasal_syarat_ketentuan" class="form-control" rows="12" 
+                              style="font-family: inherit; font-size: 0.88rem; line-height: 1.65; background-color: #fcfdfe; border-color: #cbd5e1;">{{ old('pasal_syarat_ketentuan', $defaultPasal) }}</textarea>
+                    <small class="text-muted d-block mt-1">
+                        <i class="mdi mdi-information-outline me-1"></i>Klausul pasal di atas akan tercetak otomatis pada lembar resmi Surat Perintah Kerja (SPK).
+                    </small>
                 </div>
 
                 <div>
-                    <label class="form-label fw-semibold text-dark small">Catatan Tambahan / Keterangan Khusus</label>
-                    <textarea name="keterangan" id="keterangan" class="form-control" rows="2" placeholder="Catatan khusus teknis atau kesepakatan tambahan...">{{ old('keterangan') }}</textarea>
+                    <label class="form-label">Catatan Tambahan / Keterangan Khusus</label>
+                    <textarea name="keterangan" id="keterangan" class="form-control" rows="3" placeholder="Catatan tambahan (opsional)...">{{ old('keterangan') }}</textarea>
                 </div>
             </div>
         </div>
 
-        <!-- Tombol Aksi Submit -->
-        <div class="d-flex justify-content-end align-items-center gap-2 mb-5">
-            <a href="{{ route('spk.index') }}" class="btn btn-secondary px-4 py-2">Batal</a>
-            <button type="submit" class="btn btn-gradient-primary px-5 py-2 fw-semibold text-white shadow-sm" style="background: linear-gradient(to right, #da8cff, #9a55ff); border: none;">
-                <i class="mdi mdi-content-save-check-outline me-1 fs-6 align-middle"></i>Simpan & Terbitkan SPK
-            </button>
+        <!-- Tombol Aksi Submit Footer Card -->
+        <div class="card shadow-sm border-0 mb-5" style="border-radius: 12px; background: #ffffff;">
+            <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <a href="{{ route('spk.index') }}" class="btn btn-outline-secondary px-3 py-2 d-inline-flex align-items-center gap-1.5" style="border-radius: 8px; font-weight: 600;">
+                    <i class="mdi mdi-arrow-left"></i> Kembali ke Daftar SPK
+                </a>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="{{ route('spk.index') }}" class="btn btn-light px-4 py-2" style="border-radius: 8px; font-weight: 600; color: #64748b; border: 1px solid #e2e8f0;">
+                        Batal
+                    </a>
+                    <button type="submit" class="btn btn-gradient-primary px-4 py-2.5 fw-bold text-white shadow-sm d-inline-flex align-items-center gap-2" style="background: linear-gradient(135deg, #da8cff, #9a55ff); border: none; border-radius: 8px;">
+                        <i class="mdi mdi-content-save-check-outline fs-5"></i>
+                        <span>Simpan & Terbitkan SPK</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
     </form>
@@ -689,7 +800,7 @@
             <td class="text-center fw-bold text-muted termin-no">${rowIdx + 1}</td>
             <td>
                 <input type="text" name="termins[${rowIdx}][nama_tahap]" class="form-control form-control-sm" 
-                       value="${defaultName}" placeholder="Nama tahap termin..." required>
+                       value="${defaultName}" placeholder="Nama tahap..." required>
             </td>
             <td>
                 <div class="input-group input-group-sm">
@@ -718,7 +829,7 @@
             </td>
             <td>
                 <input type="text" name="termins[${rowIdx}][keterangan]" class="form-control form-control-sm" 
-                       placeholder="Catatan...">
+                       placeholder="Keterangan...">
             </td>
             <td class="text-center">
                 <button type="button" class="btn btn-sm btn-outline-danger p-1" onclick="removeTerminRow(this)" title="Hapus Baris">

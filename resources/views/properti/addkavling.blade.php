@@ -1130,29 +1130,18 @@ body.modal-open .page-body-wrapper {
                                                 @endphp
 
                                                 @if ($spkRecord)
-                                                    <a href="{{ route('spk.cetak', $spkRecord->id) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2 d-inline-flex align-items-center gap-1 shadow-sm rounded-pill text-decoration-none" title="Cetak / Buka Surat Resmi SPK {{ $unit->no_spk }} (Kontraktor: {{ $unit->kontraktor ?? '-' }})">
-                                                        <i class="mdi mdi-printer text-success fs-6"></i>
-                                                        <span class="fw-bold">{{ $unit->no_spk }}</span>
-                                                        <i class="mdi mdi-open-in-new" style="font-size: 10px;"></i>
+                                                    <a href="{{ route('spk.cetak', $spkRecord->id) }}" target="_blank" class="text-primary text-decoration-none fw-bold" style="font-size: 0.85rem;" title="Cetak / Buka Surat Resmi SPK {{ $unit->no_spk }} (Kontraktor: {{ $unit->kontraktor ?? '-' }})">
+                                                        {{ $unit->no_spk }}
                                                     </a>
                                                 @elseif ($spkDocUrl)
-                                                    <a href="{{ $spkDocUrl }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2 d-inline-flex align-items-center gap-1 shadow-sm rounded-pill text-decoration-none" title="Buka berkas PDF SPK {{ $unit->no_spk }} (Kontraktor: {{ $unit->kontraktor ?? '-' }})">
-                                                        <i class="mdi mdi-file-pdf text-danger fs-6"></i>
-                                                        <span class="fw-bold">{{ $unit->no_spk }}</span>
-                                                        <i class="mdi mdi-open-in-new" style="font-size: 10px;"></i>
+                                                    <a href="{{ $spkDocUrl }}" target="_blank" class="text-primary text-decoration-none fw-bold" style="font-size: 0.85rem;" title="Buka berkas PDF SPK {{ $unit->no_spk }} (Kontraktor: {{ $unit->kontraktor ?? '-' }})">
+                                                        {{ $unit->no_spk }}
                                                     </a>
                                                 @else
-                                                    <span class="badge bg-light text-dark border py-1 px-2 d-inline-flex align-items-center gap-1" title="Kontraktor: {{ $unit->kontraktor ?? '-' }}">
-                                                        <i class="mdi mdi-file-document-outline text-primary"></i>
-                                                        <span>{{ $unit->no_spk }}</span>
-                                                    </span>
+                                                    <span class="text-dark fw-bold" style="font-size: 0.85rem;">{{ $unit->no_spk }}</span>
                                                 @endif
 
-                                                @if($unit->kontraktor)
-                                                    <small class="text-muted d-block mt-1 text-truncate" style="max-width: 130px; font-size: 10px; margin: 0 auto;" title="Kontraktor: {{ $unit->kontraktor }}">
-                                                        {{ $unit->kontraktor }}
-                                                    </small>
-                                                @endif
+
                                             @else
                                                 <span class="text-muted small">-</span>
                                             @endif
@@ -2063,62 +2052,52 @@ body.modal-open .page-body-wrapper {
 <div class="modal fade" id="modalSpkUnit" tabindex="-1" aria-labelledby="modalSpkUnitLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content rounded-4 border-0 shadow">
-            <div class="modal-header border-bottom py-3">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="d-inline-flex p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
-                        <i class="mdi mdi-file-document-edit-outline fs-4"></i>
+            <div class="modal-header border-bottom py-3 px-4">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 w-100 me-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="d-inline-flex p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
+                            <i class="mdi mdi-file-document-edit-outline fs-4"></i>
+                        </div>
+                        <h5 class="modal-title fw-bold text-dark mb-0" id="modalSpkUnitLabel">Atur SPK Unit Kavling</h5>
                     </div>
-                    <div>
-                        <h5 class="modal-title fw-bold text-dark mb-0" id="modalSpkUnitLabel">Atur & Terbitkan SPK Unit Kavling</h5>
-                        <small class="text-muted">Terapkan 1 nomor SPK kontraktor untuk beberapa unit kavling sekaligus</small>
-                    </div>
+                    <a href="{{ route('spk.create', ['land_bank_id' => $land->id]) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 shadow-sm" style="border-radius: 6px; font-weight: 600; font-size: 0.8rem;" title="Buka Form Pembuatan SPK Lengkap & Rincian Termin">
+                        <i class="mdi mdi-open-in-new"></i>
+                        <span>Buat Form SPK Lengkap</span>
+                    </a>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body p-3 p-md-4" style="max-height: 65vh; overflow-y: auto;">
-                <!-- Info Shortcut SPK Lengkap -->
-                <div class="alert alert-info py-2 px-3 small d-flex flex-wrap justify-content-between align-items-center mb-3 border-0 shadow-sm" style="border-radius: 8px;">
-                    <div>
-                        <i class="mdi mdi-information-outline me-1"></i>
-                        Ingin membuat SPK lengkap dengan jadwal termin & pasal resmi?
-                    </div>
-                    <a href="{{ route('spk.create', ['land_bank_id' => $land->id]) }}" target="_blank" class="btn btn-xs btn-primary text-white text-nowrap ms-auto mt-1 mt-sm-0" style="font-size: 11px;">
-                        <i class="mdi mdi-open-in-new me-1"></i>Buka Form SPK Lengkap & Rincian Termin
-                    </a>
-                </div>
                 <form id="formAssignSpkModal" action="{{ route('properti.kavling.assignSpk', $land->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row g-3 mb-3">
-                        <!-- Baris 1: 2 Kolom Sejajar -->
                         <div class="col-12 col-md-6">
                             <label class="form-label fw-bold small text-dark mb-1">Nomor SPK <span class="text-danger">*</span></label>
-                            <input type="text" name="no_spk" class="form-control" placeholder="Contoh: SPK/2026/KAV/001" required>
+                            <input type="text" name="no_spk" class="form-control" placeholder="Nomor SPK..." required>
                         </div>
                         <div class="col-12 col-md-6">
-                            <label class="form-label fw-bold small text-dark mb-1">Nama Kontraktor / Pelaksana <span class="text-danger">*</span></label>
-                            <input type="text" name="kontraktor" class="form-control" placeholder="Contoh: PT. Maju Konstruksi Nusantara" required>
+                            <label class="form-label fw-bold small text-dark mb-1">Nama Kontraktor <span class="text-danger">*</span></label>
+                            <input type="text" name="kontraktor" class="form-control" placeholder="Nama kontraktor..." required>
                         </div>
 
-                        <!-- Baris 2: Keterangan -->
                         <div class="col-12">
-                            <label class="form-label fw-bold small text-dark mb-1">Keterangan / Scope Pekerjaan</label>
-                            <input type="text" name="description" class="form-control" placeholder="Catatan lingkup pekerjaan (opsional)">
+                            <label class="form-label fw-bold small text-dark mb-1">Keterangan</label>
+                            <input type="text" name="description" class="form-control" placeholder="Keterangan (opsional)...">
                         </div>
 
-                        <!-- Baris 3: Styled Upload Box untuk Berkas SPK -->
                         <div class="col-12">
-                            <label class="form-label fw-bold small text-dark mb-1">Upload Berkas Dokumen SPK (PDF)</label>
-                            <div class="upload-dropzone-box py-3 px-3">
+                            <label class="form-label fw-bold small text-dark mb-1">Upload Berkas SPK (PDF)</label>
+                            <div class="upload-dropzone-box py-2.5 px-3">
                                 <input type="file" id="uploadDokumenSpkInput" name="dokumen_spk" accept=".pdf">
                                 <div class="d-flex align-items-center justify-content-center gap-3">
-                                    <div class="rounded-circle p-2 bg-danger bg-opacity-10 text-danger d-inline-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
-                                        <i class="mdi mdi-file-pdf-box" style="font-size: 1.6rem;"></i>
+                                    <div class="rounded-circle p-2 bg-danger bg-opacity-10 text-danger d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                                        <i class="mdi mdi-file-pdf-box" style="font-size: 1.4rem;"></i>
                                     </div>
                                     <div class="text-start">
-                                        <span class="fw-bold text-dark d-block" id="dokumenSpkFileName" style="font-size: 0.88rem;">Pilih berkas PDF atau seret ke sini</span>
-                                        <small class="text-muted" style="font-size: 0.76rem;">Format didukung: PDF (Maksimal 10MB)</small>
+                                        <span class="fw-bold text-dark d-block" id="dokumenSpkFileName" style="font-size: 0.85rem;">Pilih berkas PDF atau seret ke sini</span>
+                                        <small class="text-muted" style="font-size: 0.75rem;">Maksimal 10MB</small>
                                     </div>
                                 </div>
                             </div>
@@ -2127,39 +2106,39 @@ body.modal-open .page-body-wrapper {
 
                     <!-- Pilih Multi-Unit Kavling -->
                     <div class="border rounded-3 p-3 bg-light">
-                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 pb-2 border-bottom">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2 pb-2 border-bottom">
                             <div>
-                                <h6 class="fw-bold text-dark mb-0" style="font-size: 0.9rem;">Pilih Unit Kavling yang Termasuk SPK Ini <span class="text-danger">*</span></h6>
-                                <small class="text-muted" id="spkUnitCounter">0 unit kavling dipilih</small>
+                                <h6 class="fw-bold text-dark mb-0" style="font-size: 0.88rem;">Pilih Unit Kavling <span class="text-danger">*</span></h6>
+                                <small class="text-muted" id="spkUnitCounter">0 unit dipilih</small>
                             </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <button type="button" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 shadow-sm px-2.5 py-1" id="btnSelectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px;">
-                                    <i class="mdi mdi-checkbox-multiple-marked-outline"></i>
+                            <div class="d-flex align-items-center gap-1.5">
+                                <button type="button" class="btn btn-sm btn-light border text-primary fw-semibold px-2.5 py-1 d-inline-flex align-items-center gap-1" id="btnSelectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px; background: #ffffff; border-color: #cbd5e1 !important;">
+                                    <i class="mdi mdi-checkbox-multiple-marked-outline text-primary"></i>
                                     <span>Pilih Semua</span>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-gradient-secondary d-inline-flex align-items-center gap-1 shadow-sm px-2.5 py-1" id="btnUnselectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px;">
+                                <button type="button" class="btn btn-sm btn-light border text-muted fw-semibold px-2.5 py-1 d-inline-flex align-items-center gap-1" id="btnUnselectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px; background: #ffffff; border-color: #cbd5e1 !important;">
                                     <i class="mdi mdi-checkbox-multiple-blank-outline"></i>
-                                    <span>Hapus Pilihan</span>
+                                    <span>Hapus Semua</span>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Search Unit di Modal (Sama seperti search tabel) -->
-                        <div class="mb-3">
+                        <!-- Search Unit di Modal -->
+                        <div class="mb-2">
                             <div class="input-group">
                                 <input type="text" class="form-control" id="filterSpkUnitSearch"
-                                    placeholder="Cari kode unit / nama / tipe..."
-                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
+                                    placeholder="Cari unit..."
+                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 36px; font-size: 0.85rem;">
                                 <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
                                     type="button" id="btnSearchSpkUnit" title="Cari"
-                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
-                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 36px; box-shadow: none;">
+                                    <i class="mdi mdi-magnify" style="font-size: 1.1rem; color: #ffffff;"></i>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Daftar Unit Checkbox List -->
-                        <div class="spk-unit-selection-grid" style="max-height: 260px; overflow-y: auto; padding-right: 5px;">
+                        <div class="spk-unit-selection-grid" style="max-height: 240px; overflow-y: auto; padding-right: 5px;">
                             <div class="row g-2" id="spkUnitListContainer">
                                 @forelse ($land->units as $u)
                                     @php
@@ -2177,12 +2156,12 @@ body.modal-open .page-body-wrapper {
                                                 </div>
                                                 <div class="text-muted small text-truncate" style="max-width: 130px;">{{ $u->unit_name ?: 'Unit' }}</div>
                                                 @if($u->no_spk)
-                                                    <div class="text-primary mt-1" style="font-size: 10px;" title="SPK saat ini: {{ $u->no_spk }}">
-                                                        <i class="mdi mdi-file-document-outline me-1"></i>{{ $u->no_spk }}
+                                                    <div class="text-primary mt-1" style="font-size: 10px;" title="SPK: {{ $u->no_spk }}">
+                                                        SPK: {{ $u->no_spk }}
                                                     </div>
                                                 @else
                                                     <div class="text-muted mt-1" style="font-size: 10px;">
-                                                        <i class="mdi mdi-alert-circle-outline me-1 text-warning"></i>Belum ada SPK
+                                                        Belum ada SPK
                                                     </div>
                                                 @endif
                                             </div>
@@ -2191,7 +2170,7 @@ body.modal-open .page-body-wrapper {
                                 @empty
                                     <div class="col-12 text-center py-4 text-muted">
                                         <i class="mdi mdi-home-alert-outline fs-3 d-block mb-1"></i>
-                                        Belum ada unit kavling yang dibuat untuk lahan ini. Tambahkan unit kavling terlebih dahulu.
+                                        Belum ada unit kavling untuk lahan ini.
                                     </div>
                                 @endforelse
                             </div>
@@ -2200,12 +2179,12 @@ body.modal-open .page-body-wrapper {
                 </form>
             </div>
 
-            <div class="modal-footer border-top py-2 px-3">
-                <button type="button" class="btn btn-sm btn-gradient-secondary" data-bs-dismiss="modal">
-                    <i class="mdi mdi-close me-1"></i>Batal
+            <div class="modal-footer border-top py-2.5 px-4 d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-sm btn-light border px-3" data-bs-dismiss="modal">
+                    Batal
                 </button>
-                <button type="submit" form="formAssignSpkModal" class="btn btn-sm btn-gradient-primary">
-                    <i class="mdi mdi-check-all me-1"></i>Terapkan & Terbitkan SPK
+                <button type="submit" form="formAssignSpkModal" class="btn btn-sm btn-gradient-primary fw-bold text-white px-3 shadow-sm">
+                    <i class="mdi mdi-check-all me-1"></i>Simpan SPK
                 </button>
             </div>
         </div>

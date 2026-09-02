@@ -253,52 +253,54 @@
             transform: translateY(-2px);
         }
 
-        /* Checkboxes */
+        /* Checkboxes (Sama seperti Tambah Properti) */
         .pratanah-checkbox-group {
             display: flex;
             flex-wrap: wrap;
             gap: 0.75rem;
-            justify-content: flex-start;
             margin-top: 0.5rem;
         }
 
         .pratanah-checkbox-wrapper {
             position: relative;
-            min-width: 140px;
-            flex: 1 1 auto;
         }
 
         .pratanah-checkbox-input {
             position: absolute;
             opacity: 0;
-            width: 0;
+            cursor: pointer;
             height: 0;
+            width: 0;
         }
 
         .pratanah-checkbox-label {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 0.65rem 1.2rem;
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
+            padding: 0.5rem 1rem;
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            width: 100%;
+            user-select: none;
+            margin-bottom: 0 !important;
+        }
+
+        .pratanah-checkbox-label:hover {
+            border-color: #9a55ff;
+            background: rgba(154, 85, 255, 0.02);
         }
 
         .pratanah-checkbox-input:checked+.pratanah-checkbox-label {
             border-color: #9a55ff;
-            background: linear-gradient(135deg, #f1f0ff, #e8e0ff);
-            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+            background: rgba(154, 85, 255, 0.08);
+            box-shadow: 0 2px 8px rgba(154, 85, 255, 0.15);
         }
 
         .pratanah-check-icon {
-            font-size: 1.2rem;
             color: #d0d4db;
+            font-size: 1rem;
             transition: all 0.3s ease;
         }
 
@@ -310,6 +312,7 @@
             font-size: 0.85rem;
             color: #2c2e3f;
             font-weight: 500;
+            transition: all 0.3s ease;
         }
 
         .pratanah-checkbox-input:checked+.pratanah-checkbox-label .pratanah-check-text {
@@ -1248,36 +1251,42 @@
                                                 <div class="pratanah-checkbox-wrapper">
                                                     <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="sekolah" id="fase2_fac_sekolah" {{ $land && $land->facility_school ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_sekolah">
-                                                        <span class="pratanah-check-text">Sekolah</span>
+                                                        <i class="mdi mdi-checkbox-marked-circle pratanah-check-icon"></i>
+                                                        <span class="pratanah-check-text">Dekat Sekolah</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
                                                     <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="rumah_sakit" id="fase2_fac_rs" {{ $land && $land->facility_hospital ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_rs">
+                                                        <i class="mdi mdi-checkbox-marked-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Rumah Sakit</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
                                                     <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="pasar" id="fase2_fac_pasar" {{ $land && $land->facility_market ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_pasar">
+                                                        <i class="mdi mdi-checkbox-marked-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Pasar</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
                                                     <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="transportasi" id="fase2_fac_trans" {{ $land && $land->facility_transport ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_trans">
-                                                        <span class="pratanah-check-text">Transportasi</span>
+                                                        <i class="mdi mdi-checkbox-marked-circle pratanah-check-icon"></i>
+                                                        <span class="pratanah-check-text">Transportasi Umum</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
                                                     <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="mall" id="fase2_fac_mall" {{ $land && $land->facility_mall ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_mall">
-                                                        <span class="pratanah-check-text">Mall</span>
+                                                        <i class="mdi mdi-checkbox-marked-circle pratanah-check-icon"></i>
+                                                        <span class="pratanah-check-text">Mall / Swalayan</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
                                                     <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="bank" id="fase2_fac_bank" {{ $land && $land->facility_bank ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_bank">
+                                                        <i class="mdi mdi-checkbox-marked-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Bank / ATM</span>
                                                     </label>
                                                 </div>
