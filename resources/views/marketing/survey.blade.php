@@ -1140,7 +1140,7 @@
                                             @foreach ($surveyors as $surveyor)
                                                 <option value="{{ $surveyor->id }}"
                                                     {{ $application->surveyor_id == $surveyor->id ? 'selected' : '' }}>
-                                                    {{ $surveyor->name }}
+                                                    {{ $surveyor->name }} ({{ $surveyor->position->name ?? 'Petugas' }})
                                                 </option>
                                             @endforeach
                                         </select>
