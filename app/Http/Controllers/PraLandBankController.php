@@ -384,15 +384,30 @@ public function store(Request $request)
                     'account_name'    => $cashAccountName,
                 ]);
             } elseif ($data['payment_method'] === 'termin' && $request->has('installments')) {
-                // Delete previous installments to overwrite or rebuild nicely
+                // Get existing payments to preserve amounts if disabled on frontend
+                $existingPayments = $record->payments->keyBy('term_name');
+                $oldPaymentsList = $record->payments->values();
+                $totalDeal = (float)($data['deal_price'] ?? $record->deal_price ?? 0);
+                $instCount = is_array($request->installments) ? count($request->installments) : 1;
+
                 $record->payments()->delete();
 
                 foreach ($request->installments as $i => $inst) {
+                    $termName = $inst['term_name'] ?? ('Tahap ' . $i);
                     $amount = isset($inst['amount_temp']) ? $cleanNumber($inst['amount_temp']) : 0;
+
+                    // Jika amount bernilai 0 (misal terkirim kosong/disabled), ambil dari record lama atau bagi rata dari harga deal
+                    if ($amount == 0) {
+                        $matchPmt = $existingPayments->get($termName) ?? ($oldPaymentsList[$i - 1] ?? null);
+                        if ($matchPmt && $matchPmt->amount > 0) {
+                            $amount = (float)$matchPmt->amount;
+                        } elseif ($totalDeal > 0 && $instCount > 0) {
+                            $amount = round($totalDeal / $instCount);
+                        }
+                    }
+
                     $dueDate = $inst['due_date'] ?? null;
                     $status = $inst['status'] ?? 'belum';
-                    $termName = $inst['term_name'] ?? ('Tahap ' . $i);
-
                     $filePath = $inst['existing_file_path'] ?? null;
 
                     // Check if file upload exists for this installment row

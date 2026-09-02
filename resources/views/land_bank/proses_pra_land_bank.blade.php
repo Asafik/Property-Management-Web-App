@@ -2753,9 +2753,14 @@
             try {
                 showLoading('Menyimpan keputusan & progres pembayaran...');
                 let form = document.getElementById('formFase3');
-                let formData = new FormData(form);
 
-                // Explicitly append disabled inputs so they are never omitted by browser FormData
+                // Temporarily un-disable inputs to ensure FormData captures all amounts, fees, and installment rows
+                let disabledInputs = form.querySelectorAll(':disabled');
+                disabledInputs.forEach(el => el.disabled = false);
+                let formData = new FormData(form);
+                disabledInputs.forEach(el => el.disabled = true);
+
+                // Explicitly check key fields
                 const selectPayMethod = document.getElementById('temp_payment_method');
                 if (selectPayMethod && !formData.has('payment_method_temp')) {
                     formData.append('payment_method_temp', selectPayMethod.value);
