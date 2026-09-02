@@ -146,18 +146,24 @@
                     <div class="col-12 col-sm-6">
                         <label class="small text-muted mb-1 fw-bold">Foto Dokumentasi</label>
                         @if($item->photo_proof)
+                            @php
+                                $photoClean = ltrim(preg_replace('/^(storage\/)+/', '', $item->photo_proof), '/');
+                                $photoUrl = str_starts_with($item->photo_proof, 'http') 
+                                    ? $item->photo_proof 
+                                    : (file_exists(public_path($item->photo_proof)) ? asset($item->photo_proof) : (file_exists(public_path('uploads/' . $photoClean)) ? asset('uploads/' . $photoClean) : asset($photoClean)));
+                            @endphp
                             <!-- Existing Photo Thumbnail Box -->
                             <div class="d-flex align-items-center gap-2 p-1 px-2 bg-light rounded-3 border" id="previewContainer_{{ $item->id }}">
-                                <img src="{{ asset('storage/' . $item->photo_proof) }}" 
+                                <img src="{{ $photoUrl }}" 
                                      id="imgPreview_{{ $item->id }}" 
                                      alt="Foto" 
                                      class="rounded-2 border object-fit-cover shadow-sm" 
                                      style="width: 36px; height: 36px; cursor: pointer;"
-                                     onclick="window.open('{{ asset('storage/' . $item->photo_proof) }}', '_blank')"
+                                     onclick="window.open('{{ $photoUrl }}', '_blank')"
                                      title="Klik untuk melihat foto penuh">
                                 <div class="flex-grow-1 overflow-hidden">
                                     <span class="small text-dark fw-bold d-block text-truncate lh-sm" style="font-size: 0.78rem;" id="fileNamePreview_{{ $item->id }}">Foto Tersimpan</span>
-                                    <a href="{{ asset('storage/' . $item->photo_proof) }}" target="_blank" class="text-primary text-decoration-none small fw-semibold" style="font-size: 0.72rem;">
+                                    <a href="{{ $photoUrl }}" target="_blank" class="text-primary text-decoration-none small fw-semibold" style="font-size: 0.72rem;">
                                         Lihat
                                     </a>
                                 </div>

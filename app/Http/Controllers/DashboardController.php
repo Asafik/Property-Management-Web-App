@@ -137,8 +137,14 @@ class DashboardController extends Controller
         // Total Pendapatan dari seluruh transaksi pembayaran unit
         $totalPendapatan = (float) Payment::sum('amount');
 
-        // Total Piutang dari Transaksi Pembelian Pra Land Bank (ERP Pengadaan Lahan yang Belum Lunas)
-        $totalPiutang = (float) \App\Models\PraLandbankPayment::where('status', 'belum')->sum('amount');
+        // 1. Total Tagihan / Piutang dari Transaksi Pembelian Pra Land Bank yang Belum Lunas
+        $piutangPraLandbank = (float) \App\Models\PraLandbankPayment::where('status', 'belum')->sum('amount');
+
+        // 2. Total Tagihan / Piutang Belanja Bahan & Jasa Infrastruktur Pengolahan Lahan Pasca yang Belum Lunas
+        $piutangInfrastruktur = (float) \App\Models\LandBankInfrastructureExpense::where('payment_status', '!=', 'Lunas')->sum('total_amount');
+
+        // Akumulasi Total Piutang di Card Dashboard Admin
+        $totalPiutang = $piutangPraLandbank + $piutangInfrastruktur;
 
         $notifications = auth()->user()->unreadNotifications;
         $countNotif = $notifications->count();

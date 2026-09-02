@@ -570,18 +570,129 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
     Route::get('/serah-terima-cetak', fn() => view('cetak.serah_terima_cetak'));
 
     Route::get('/dokumen/preview/{path}', function ($path) {
-
-        // decode path (biar spasi balik normal)
         $path = urldecode($path);
+        $cleanPath = ltrim(preg_replace('/^uploads[\/\\\\]/', '', $path), '/\\');
 
-        $fullPath = $_SERVER['DOCUMENT_ROOT'] . '/uploads/' . $path;
+        // Cari file di beberapa kemungkinan lokasi (public_path, storage, dll)
+        $candidates = [
+            public_path('uploads/' . $cleanPath),
+            public_path($cleanPath),
+            public_path($path),
+            base_path('public/uploads/' . $cleanPath),
+            base_path('public/' . $path),
+            storage_path('app/public/' . $cleanPath),
+            storage_path('app/public/' . $path),
+            storage_path('app/' . $cleanPath),
+            storage_path('app/' . $path),
+        ];
 
-        if (!file_exists($fullPath)) {
-            abort(404);
+        foreach ($candidates as $fullPath) {
+            if (file_exists($fullPath) && is_file($fullPath)) {
+                $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+                $mimeType = match ($ext) {
+                    'pdf' => 'application/pdf',
+                    'jpg', 'jpeg' => 'image/jpeg',
+                    'png' => 'image/png',
+                    'webp' => 'image/webp',
+                    'gif' => 'image/gif',
+                    'svg' => 'image/svg+xml',
+                    default => mime_content_type($fullPath) ?: 'application/octet-stream'
+                };
+
+                return response()->file($fullPath, [
+                    'Content-Type' => $mimeType,
+                    'Content-Disposition' => 'inline; filename="' . basename($fullPath) . '"',
+                    'Cache-Control' => 'no-cache, private',
+                ]);
+            }
         }
 
-        return response()->file($fullPath);
+        abort(404, 'Dokumen fisik tidak ditemukan di server.');
     })->where('path', '.*')->name('dokumen.preview');
+
+    Route::get('/storage/{path}', function ($path) {
+        $path = urldecode($path);
+        $cleanPath = ltrim($path, '/\\');
+        $strippedPath = ltrim(preg_replace('/^(storage[\/\\\\]|public[\/\\\\]|app[\/\\\\])+/', '', $cleanPath), '/\\');
+
+        $candidates = [
+            storage_path('app/public/' . $cleanPath),
+            storage_path('app/public/' . $strippedPath),
+            storage_path('app/' . $cleanPath),
+            storage_path('app/' . $strippedPath),
+            public_path('storage/' . $cleanPath),
+            public_path('storage/' . $strippedPath),
+            public_path('uploads/' . $cleanPath),
+            public_path('uploads/' . $strippedPath),
+            public_path($cleanPath),
+            public_path($strippedPath),
+            base_path('storage/app/public/' . $cleanPath),
+            base_path('storage/app/public/' . $strippedPath),
+        ];
+
+        foreach ($candidates as $fullPath) {
+            if (file_exists($fullPath) && is_file($fullPath)) {
+                $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+                $mimeType = match ($ext) {
+                    'pdf' => 'application/pdf',
+                    'jpg', 'jpeg' => 'image/jpeg',
+                    'png' => 'image/png',
+                    'webp' => 'image/webp',
+                    'gif' => 'image/gif',
+                    'svg' => 'image/svg+xml',
+                    default => mime_content_type($fullPath) ?: 'application/octet-stream'
+                };
+
+                return response()->file($fullPath, [
+                    'Content-Type' => $mimeType,
+                    'Content-Disposition' => 'inline; filename="' . basename($fullPath) . '"',
+                    'Cache-Control' => 'public, max-age=86400',
+                ]);
+            }
+        }
+
+        abort(404, 'File storage tidak ditemukan di server.');
+    })->where('path', '.*')->name('storage.preview');
+
+    Route::get('/uploads/{path}', function ($path) {
+        $path = urldecode($path);
+        $cleanPath = ltrim(preg_replace('/^uploads[\/\\\\]/', '', $path), '/\\');
+
+        $candidates = [
+            public_path('uploads/' . $cleanPath),
+            base_path('public/uploads/' . $cleanPath),
+            base_path('uploads/' . $cleanPath),
+            public_path($cleanPath),
+            base_path('public/' . $cleanPath),
+            base_path($cleanPath),
+            storage_path('app/public/uploads/' . $cleanPath),
+            storage_path('app/public/' . $cleanPath),
+            storage_path('app/' . $cleanPath),
+        ];
+
+        foreach ($candidates as $fullPath) {
+            if (file_exists($fullPath) && is_file($fullPath)) {
+                $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+                $mimeType = match ($ext) {
+                    'pdf' => 'application/pdf',
+                    'jpg', 'jpeg' => 'image/jpeg',
+                    'png' => 'image/png',
+                    'webp' => 'image/webp',
+                    'gif' => 'image/gif',
+                    'svg' => 'image/svg+xml',
+                    default => mime_content_type($fullPath) ?: 'application/octet-stream'
+                };
+
+                return response()->file($fullPath, [
+                    'Content-Type' => $mimeType,
+                    'Content-Disposition' => 'inline; filename="' . basename($fullPath) . '"',
+                    'Cache-Control' => 'public, max-age=86400',
+                ]);
+            }
+        }
+
+        abort(404, 'File uploads tidak ditemukan di server.');
+    })->where('path', '.*')->name('uploads.preview');
     // Master data laporan job staf marketing
     Route::get('/job-staff-marketing', [JobStaffMarketingController::class, 'index'])->name('master.data.tugas-staff-marketing');
     Route::get('/job-staff-marketing/create', [JobStaffMarketingController::class, 'create'])->name('marketing.create');

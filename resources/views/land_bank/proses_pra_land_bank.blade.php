@@ -1444,9 +1444,13 @@
                                                                          <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($existingDoc->file_path) }}</small>
                                                                      </div>
                                                                  </div>
-                                                                 <a href="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" target="_blank" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm" style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
-                                                                     <i class="mdi mdi-eye me-1"></i>Lihat Berkas
-                                                                 </a>
+                                                                 <button type="button" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm btn-preview-doc"
+                                                                      data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}"
+                                                                      data-ext="{{ pathinfo($existingDoc->file_path, PATHINFO_EXTENSION) }}"
+                                                                      data-label="{{ $doc->name }}"
+                                                                      style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
+                                                                      <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                                                  </button>
                                                              </div>
 
                                                              <!-- Opsi Ganti / Upload Ulang Berkas (Hanya muncul saat status Ditolak/Revisi) -->
@@ -1838,9 +1842,13 @@
 
                                                     @if($hasExistingFile)
                                                         <div class="mt-auto pt-2 border-top d-flex align-items-center justify-content-between">
-                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" target="_blank" class="btn btn-sm btn-success text-white py-1 px-3 d-inline-flex align-items-center flex-shrink-0" style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
+                                                            <button type="button" class="btn btn-sm btn-success text-white py-1 px-3 d-inline-flex align-items-center flex-shrink-0 btn-preview-doc"
+                                                                data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}"
+                                                                data-ext="{{ pathinfo($existingDoc->file_path, PATHINFO_EXTENSION) }}"
+                                                                data-label="{{ $doc->name }}"
+                                                                style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
                                                                 <i class="mdi mdi-eye me-1"></i>Lihat Berkas
-                                                            </a>
+                                                            </button>
                                                             <small class="text-muted" style="font-size: 0.72rem;">
                                                                 {{ $existingDoc->updated_at ? $existingDoc->updated_at->format('d M Y') : '' }}
                                                             </small>
@@ -2059,9 +2067,13 @@
                                                     </label>
                                                     @if($cashPayment && $cashPayment->file_path)
                                                         @php $cleanCashPath = str_replace('uploads/', '', $cashPayment->file_path); @endphp
-                                                        <a href="{{ route('dokumen.preview', ['path' => $cleanCashPath]) }}" target="_blank" class="btn btn-xs btn-outline-primary ms-2 py-1 px-2" title="Lihat Berkas" style="font-size: 11px;">
+                                                        <button type="button" class="btn btn-xs btn-outline-primary ms-2 py-1 px-2 btn-preview-doc"
+                                                            data-url="{{ route('dokumen.preview', ['path' => $cleanCashPath]) }}"
+                                                            data-ext="{{ pathinfo($cashPayment->file_path, PATHINFO_EXTENSION) }}"
+                                                            data-label="Bukti Pelunasan Tunai"
+                                                            title="Lihat Berkas" style="font-size: 11px;">
                                                             <i class="mdi mdi-eye me-1"></i>Lihat Berkas
-                                                        </a>
+                                                        </button>
                                                     @endif
                                                 </div>
                                             </div>
@@ -2134,9 +2146,13 @@
                                                                             @php
                                                                                 $cleanPath = str_replace('uploads/', '', $payment->file_path);
                                                                             @endphp
-                                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" target="_blank" class="btn btn-xs btn-link p-0 ms-1 text-primary" title="Lihat Berkas">
+                                                                            <button type="button" class="btn btn-xs btn-link p-0 ms-1 text-primary btn-preview-doc"
+                                                                                data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}"
+                                                                                data-ext="{{ pathinfo($payment->file_path, PATHINFO_EXTENSION) }}"
+                                                                                data-label="Bukti Pembayaran {{ $payment->term_name }}"
+                                                                                title="Lihat Berkas">
                                                                                 <i class="mdi mdi-eye" style="font-size: 14px;"></i>
-                                                                            </a>
+                                                                            </button>
                                                                         @endif
                                                                     </div>
                                                                 </td>
@@ -2204,6 +2220,98 @@
 
     </div>
 
+    {{-- MODAL PREVIEW DOKUMEN (ZOOMABLE IMAGE + PDF READER + SCROLLABLE) --}}
+    <div class="modal fade" id="modalPreviewDokumen" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content shadow-lg" style="border-radius:14px; overflow:hidden; border:none;">
+                <div class="modal-header bg-white border-bottom py-2 px-3 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="mdi mdi-file-eye-outline fs-5 text-primary" id="modalDocIcon"></i>
+                        <h6 class="modal-title mb-0 fw-bold text-dark text-truncate" style="max-width: 280px;" id="modalDocLabel">Preview Dokumen</h6>
+                        <span class="badge bg-secondary ms-1" id="modalDocExt" style="font-size:0.68rem;"></span>
+                    </div>
+
+                    {{-- Toolbar Zoom & Aksi --}}
+                    <div class="d-flex align-items-center gap-2">
+                        {{-- Toolbar Image Zoom (Hanya aktif saat gambar) --}}
+                        <div id="imgZoomToolbar" class="d-none align-items-center bg-light border rounded-pill px-2 py-0.5 gap-1">
+                            <button type="button" class="btn btn-xs btn-link text-dark p-1" onclick="changeImageZoom(-0.25)" title="Zoom Out (-)">
+                                <i class="mdi mdi-magnify-minus-outline fs-6"></i>
+                            </button>
+                            <span id="imgZoomLevelText" class="fw-bold text-muted px-1" style="font-size: 0.75rem; min-width: 42px; text-align: center;">100%</span>
+                            <button type="button" class="btn btn-xs btn-link text-dark p-1" onclick="changeImageZoom(0.25)" title="Zoom In (+)">
+                                <i class="mdi mdi-magnify-plus-outline fs-6"></i>
+                            </button>
+                            <div class="vr my-1"></div>
+                            <button type="button" class="btn btn-xs btn-link text-dark p-1" onclick="resetImageTransform()" title="Reset Ukuran (100%)">
+                                <i class="mdi mdi-fit-to-screen-outline fs-6"></i>
+                            </button>
+                            <button type="button" class="btn btn-xs btn-link text-dark p-1" onclick="rotateImagePreview()" title="Putar 90°">
+                                <i class="mdi mdi-rotate-right fs-6"></i>
+                            </button>
+                        </div>
+
+                        {{-- Tombol Buka Tab Baru --}}
+                        <a href="#" id="btnOpenNewTab" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2 d-flex align-items-center gap-1" title="Buka di Tab Baru">
+                            <i class="mdi mdi-open-in-new"></i> <span class="d-none d-md-inline" style="font-size: 0.78rem;">Tab Baru</span>
+                        </a>
+
+                        {{-- Tombol Unduh --}}
+                        <a href="#" id="btnDownloadDoc" class="btn btn-sm btn-outline-primary py-1 px-2.5 d-flex align-items-center gap-1" download title="Download Dokumen">
+                            <i class="mdi mdi-download"></i> <span class="d-none d-md-inline" style="font-size: 0.78rem;">Unduh</span>
+                        </a>
+
+                        <button type="button" class="btn-close ms-1" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+
+                <div class="modal-body p-0 position-relative" style="background:#0f1117; min-height:65vh;">
+                    {{-- Loading State --}}
+                    <div id="previewLoading" class="flex-column align-items-center justify-content-center gap-3" style="min-height:65vh; background: #ffffff; display: flex;">
+                        <div class="spinner-border text-primary" style="width:2.5rem;height:2.5rem;"></div>
+                        <span class="text-muted small fw-semibold">Memuat dokumen, mohon tunggu...</span>
+                    </div>
+
+                    {{-- Error State --}}
+                    <div id="previewError" class="flex-column align-items-center justify-content-center gap-3 text-center p-4" style="min-height:65vh; background: #ffffff; display: none;">
+                        <i class="mdi mdi-file-alert-outline text-danger" style="font-size:4rem; opacity:.8;"></i>
+                        <div>
+                            <div class="fw-bold text-danger fs-5 mb-1">Dokumen Fisik Tidak Ditemukan di Server</div>
+                            <small class="text-muted d-block" style="max-width: 480px;">
+                                File mungkin belum terunggah ke penyimpanan server atau telah dipindahkan. Silakan unggah ulang file atau gunakan tombol unduh.
+                            </small>
+                        </div>
+                        <div class="d-flex gap-2 mt-2">
+                            <a href="#" id="btnErrorOpenTab" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="mdi mdi-open-in-new me-1"></i> Buka Link Langsung
+                            </a>
+                            <a href="#" id="btnErrorDownload" class="btn btn-sm btn-primary" download>
+                                <i class="mdi mdi-download me-1"></i> Coba Unduh File
+                            </a>
+                        </div>
+                    </div>
+
+                    {{-- PDF Viewer via iframe --}}
+                    <iframe id="iframePreview" src="" style="width:100%; height:75vh; border:none; display:none; background:#ffffff;"></iframe>
+
+                    {{-- Image Viewer Container with Scrollbars & Drag-Zoom --}}
+                    <div id="divImagePreview" class="justify-content-center align-items-center" style="width: 100%; height: 75vh; overflow: auto; background: #181924; position: relative; padding: 20px; display: none;">
+                        <div id="imgWrapper" style="display: inline-block; transform-origin: center center; transition: transform 0.12s ease-out; margin: auto;">
+                            <img id="imgPreview" src="" alt="Preview Dokumen" style="max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 6px; box-shadow: 0 10px 35px rgba(0,0,0,0.6); display: block;" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer bg-white border-top py-2 px-3 d-flex align-items-center justify-content-between">
+                    <small class="text-muted" id="previewFooterInfo">
+                        <i class="mdi mdi-information-outline me-1"></i>Gunakan toolbar di atas atau scroll mouse untuk memperbesar/memutar detail dokumen.
+                    </small>
+                    <button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @push('scripts')
@@ -2212,6 +2320,177 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
+        // ===============================
+        // MODAL PREVIEW DOKUMEN (ZOOM & PDF)
+        // ===============================
+        const PDF_EXTS = ['pdf'];
+        const IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg', 'bmp'];
+        let currentZoom = 1.0;
+        let currentRotate = 0;
+
+        function showPreviewSection(sectionId, displayStyle = 'flex') {
+            const sections = ['previewLoading', 'previewError', 'iframePreview', 'divImagePreview'];
+            sections.forEach(function(id) {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (id === sectionId) {
+                        el.style.setProperty('display', displayStyle, 'important');
+                        el.classList.remove('d-none');
+                    } else {
+                        el.style.setProperty('display', 'none', 'important');
+                        el.classList.add('d-none');
+                    }
+                }
+            });
+        }
+
+        function resetPreviewState() {
+            currentZoom = 1.0;
+            currentRotate = 0;
+            applyImageTransform();
+
+            showPreviewSection('previewLoading', 'flex');
+            $('#imgZoomToolbar').removeClass('d-flex').hide();
+            
+            const img = document.getElementById('imgPreview');
+            if (img) {
+                img.onload = null;
+                img.onerror = null;
+                img.src = '';
+            }
+            const iframe = document.getElementById('iframePreview');
+            if (iframe) {
+                iframe.src = '';
+            }
+        }
+
+        function applyImageTransform() {
+            $('#imgWrapper').css('transform', `scale(${currentZoom}) rotate(${currentRotate}deg)`);
+            $('#imgZoomLevelText').text(Math.round(currentZoom * 100) + '%');
+        }
+
+        window.changeImageZoom = function(delta) {
+            currentZoom = Math.min(Math.max(0.25, currentZoom + delta), 4.0);
+            applyImageTransform();
+        };
+
+        window.resetImageTransform = function() {
+            currentZoom = 1.0;
+            currentRotate = 0;
+            applyImageTransform();
+        };
+
+        window.rotateImagePreview = function() {
+            currentRotate = (currentRotate + 90) % 360;
+            applyImageTransform();
+        };
+
+        function showPreviewError(url) {
+            showPreviewSection('previewError', 'flex');
+            $('#imgZoomToolbar').removeClass('d-flex').hide();
+            $('#btnErrorDownload').attr('href', url);
+            $('#btnErrorOpenTab').attr('href', url);
+        }
+
+        function previewPdf(url) {
+            showPreviewSection('iframePreview', 'block');
+            $('#imgZoomToolbar').removeClass('d-flex').hide();
+            
+            const iframe = document.getElementById('iframePreview');
+            if (iframe) {
+                iframe.src = url + '#toolbar=1&navpanes=1';
+            }
+            $('#previewFooterInfo').html(`<i class="mdi mdi-file-pdf-box me-1 text-danger"></i>Format Dokumen PDF — Gunakan toolbar pembaca PDF untuk navigasi.`);
+        }
+
+        function previewImage(url) {
+            showPreviewSection('previewLoading', 'flex');
+            $('#imgZoomToolbar').removeClass('d-flex').hide();
+
+            const img = document.getElementById('imgPreview');
+            if (!img) return;
+
+            function onReady() {
+                showPreviewSection('divImagePreview', 'flex');
+                $('#imgZoomToolbar').addClass('d-flex').show();
+                $('#previewFooterInfo').html(`<i class="mdi mdi-image-size-select-actual me-1 text-primary"></i>Resolusi: <strong>${img.naturalWidth} × ${img.naturalHeight} px</strong> — Scroll atau gunakan zoom toolbar.`);
+            }
+
+            img.onload = function() {
+                onReady();
+            };
+            img.onerror = function() {
+                showPreviewError(url);
+            };
+
+            img.src = url;
+
+            if (img.complete && img.naturalWidth > 0) {
+                onReady();
+            }
+        }
+
+        $(document).on('click', '.btn-preview-doc', function(e) {
+            e.preventDefault();
+            const url = $(this).data('url');
+            const ext = ($(this).data('ext') || '').toString().toLowerCase();
+            const label = $(this).data('label') || 'Preview Dokumen';
+
+            // Set info modal & action links
+            $('#modalDocLabel').text(label);
+            $('#modalDocExt').text(ext ? ext.toUpperCase() : 'FILE');
+            $('#btnDownloadDoc').attr('href', url);
+            $('#btnOpenNewTab').attr('href', url);
+            $('#btnErrorDownload').attr('href', url);
+            $('#btnErrorOpenTab').attr('href', url);
+
+            // Icon sesuai tipe dokumen
+            if (PDF_EXTS.includes(ext)) {
+                $('#modalDocIcon').attr('class', 'mdi mdi-file-pdf-box text-danger fs-5');
+            } else if (IMAGE_EXTS.includes(ext)) {
+                $('#modalDocIcon').attr('class', 'mdi mdi-image text-primary fs-5');
+            } else {
+                $('#modalDocIcon').attr('class', 'mdi mdi-file-document-outline text-muted fs-5');
+            }
+
+            // Reset & Buka modal
+            resetPreviewState();
+            const modalEl = document.getElementById('modalPreviewDokumen');
+            if (modalEl) {
+                const modalObj = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modalObj.show();
+            }
+
+            if (PDF_EXTS.includes(ext)) {
+                previewPdf(url);
+            } else {
+                previewImage(url);
+            }
+        });
+
+        // Wheel Zoom Support on Image Container
+        document.addEventListener('DOMContentLoaded', function() {
+            const imgBox = document.getElementById('divImagePreview');
+            if (imgBox) {
+                imgBox.addEventListener('wheel', function(e) {
+                    if (e.ctrlKey || e.altKey || $('#imgZoomToolbar').is(':visible')) {
+                        e.preventDefault();
+                        if (e.deltaY < 0) {
+                            changeImageZoom(0.15);
+                        } else {
+                            changeImageZoom(-0.15);
+                        }
+                    }
+                }, { passive: false });
+            }
+
+            const previewModalEl = document.getElementById('modalPreviewDokumen');
+            if (previewModalEl) {
+                previewModalEl.addEventListener('hidden.bs.modal', function() {
+                    resetPreviewState();
+                });
+            }
+        });
         // State variables
         let activeStep = 1;
         const isEditMode = {{ $land ? 'true' : 'false' }};
@@ -2483,9 +2762,14 @@
             try {
                 showLoading('Menyimpan keputusan & progres pembayaran...');
                 let form = document.getElementById('formFase3');
-                let formData = new FormData(form);
 
-                // Explicitly append disabled inputs so they are never omitted by browser FormData
+                // Temporarily un-disable inputs to ensure FormData captures all amounts, fees, and installment rows
+                let disabledInputs = form.querySelectorAll(':disabled');
+                disabledInputs.forEach(el => el.disabled = false);
+                let formData = new FormData(form);
+                disabledInputs.forEach(el => el.disabled = true);
+
+                // Explicitly check key fields
                 const selectPayMethod = document.getElementById('temp_payment_method');
                 if (selectPayMethod && !formData.has('payment_method_temp')) {
                     formData.append('payment_method_temp', selectPayMethod.value);

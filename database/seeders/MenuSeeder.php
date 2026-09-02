@@ -194,18 +194,32 @@ class MenuSeeder extends Seeder
         ])->positions()->attach($penggunaRoles);
 
         // ================= 8. MASTER DATA =================
+        $kepalaLegalAndAdmin = array_values(array_filter([$admin?->id, $legal?->id]));
+
         $master = Menu::create([
             'name'  => 'Master Data',
             'icon'  => 'mdi-wrench',
             'order' => 8
         ]);
-        $master->positions()->attach($adminOnly);
+        $master->positions()->attach($kepalaLegalAndAdmin);
 
         Menu::create([
             'name'      => 'Role & Permission',
             'route'     => 'master.data.menu',
             'parent_id' => $master->id
         ])->positions()->attach($adminOnly);
+
+        Menu::create([
+            'name'      => 'Master Barang / Bahan',
+            'route'     => 'master.bahan.index',
+            'parent_id' => $master->id
+        ])->positions()->attach($kepalaLegalAndAdmin);
+
+        Menu::create([
+            'name'      => 'Master SPK',
+            'route'     => 'spk.index',
+            'parent_id' => $master->id
+        ])->positions()->attach($kepalaLegalAndAdmin);
 
         $masterMenus = [
             'promo.index'                => 'Promo',
@@ -226,12 +240,20 @@ class MenuSeeder extends Seeder
         }
 
         // ================= 9. KEUANGAN =================
+        $keuanganRoles = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $legal?->id]));
+
         $keuangan = Menu::create([
             'name'  => 'Keuangan',
             'icon'  => 'mdi-cash-register',
             'order' => 9
         ]);
-        $keuangan->positions()->attach($marketingRoles);
+        $keuangan->positions()->attach($keuanganRoles);
+
+        Menu::create([
+            'name'      => 'Master HPP & Project Accounting',
+            'route'     => 'keuangan.project-accounting.index',
+            'parent_id' => $keuangan->id
+        ])->positions()->attach($keuanganRoles);
 
         Menu::create([
             'name'      => 'Master Invoice',

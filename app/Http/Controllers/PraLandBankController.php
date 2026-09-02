@@ -258,21 +258,51 @@ public function store(Request $request)
             }
             
             // Map Fase 3 fields
-            $data['priority']             = $request->prioritas;
-            $data['notes']                = $request->catatan;
-            $data['cost_ijb']             = $request->biaya_ijb_temp ? $cleanNumber($request->biaya_ijb_temp) : 0;
-            $data['cost_tax']             = $request->biaya_pajak_temp ? $cleanNumber($request->biaya_pajak_temp) : 0;
-            $data['cost_broker']          = $request->fee_makelar_temp ? $cleanNumber($request->fee_makelar_temp) : 0;
+            if ($request->filled('prioritas')) {
+                $data['priority'] = $request->prioritas;
+            }
+            if ($request->has('catatan')) {
+                $data['notes'] = $request->catatan;
+            }
 
-            $otherCost = $request->biaya_lain_temp ? (float)$cleanNumber($request->biaya_lain_temp) : 0;
-            if ($request->has('custom_costs') && is_array($request->custom_costs)) {
-                foreach ($request->custom_costs as $cCost) {
-                    if (!empty($cCost['amount'])) {
-                        $otherCost += (float)$cleanNumber($cCost['amount']);
+            // Biaya-biaya lain / transaksi:
+            // JIKA ada input terisi yang dikirim form, perbarui nilainya.
+            // JIKA tidak dikirim (misal saat form disabled atau hanya update progres pembayaran termin),
+            // PERTAHANKAN NILAI YANG SUDAH ADA di $record (JANGAN fallback ke 0).
+            if ($request->has('biaya_ijb_temp') && $request->filled('biaya_ijb_temp')) {
+                $data['cost_ijb'] = $cleanNumber($request->biaya_ijb_temp);
+            } elseif (!$record->exists) {
+                $data['cost_ijb'] = 0;
+            }
+
+            if ($request->has('biaya_pajak_temp') && $request->filled('biaya_pajak_temp')) {
+                $data['cost_tax'] = $cleanNumber($request->biaya_pajak_temp);
+            } elseif (!$record->exists) {
+                $data['cost_tax'] = 0;
+            }
+
+            if ($request->has('fee_makelar_temp') && $request->filled('fee_makelar_temp')) {
+                $data['cost_broker'] = $cleanNumber($request->fee_makelar_temp);
+            } elseif (!$record->exists) {
+                $data['cost_broker'] = 0;
+            }
+
+            if ($request->has('biaya_lain_temp') || ($request->has('custom_costs') && is_array($request->custom_costs))) {
+                $otherCost = 0;
+                if ($request->filled('biaya_lain_temp')) {
+                    $otherCost += (float)$cleanNumber($request->biaya_lain_temp);
+                }
+                if ($request->has('custom_costs') && is_array($request->custom_costs)) {
+                    foreach ($request->custom_costs as $cCost) {
+                        if (!empty($cCost['amount'])) {
+                            $otherCost += (float)$cleanNumber($cCost['amount']);
+                        }
                     }
                 }
+                $data['cost_other'] = $otherCost;
+            } elseif (!$record->exists) {
+                $data['cost_other'] = 0;
             }
-            $data['cost_other']           = $otherCost;
 
             // Ensure payment_method is correctly detected
             if ($request->has('installments') && is_array($request->installments) && count($request->installments) > 1) {
@@ -294,12 +324,12 @@ public function store(Request $request)
                 $data['installment_count']    = $request->installment_count_temp ?? (is_array($request->installments) ? count($request->installments) : $record->installment_count);
             }
 
-            if ($request->has('deal_price')) {
-                $finalDealPrice = $request->deal_price ? $cleanNumber($request->deal_price) : null;
+            if ($request->has('deal_price') && $request->filled('deal_price')) {
+                $finalDealPrice = $cleanNumber($request->deal_price);
                 $data['deal_price'] = $finalDealPrice;
                 $data['estimated_price'] = $finalDealPrice;
-            } elseif ($request->has('estimated_price')) {
-                $finalDealPrice = $request->estimated_price ? $cleanNumber($request->estimated_price) : null;
+            } elseif ($request->has('estimated_price') && $request->filled('estimated_price')) {
+                $finalDealPrice = $cleanNumber($request->estimated_price);
                 $data['deal_price'] = $finalDealPrice;
                 $data['estimated_price'] = $finalDealPrice;
             }
@@ -354,15 +384,30 @@ public function store(Request $request)
                     'account_name'    => $cashAccountName,
                 ]);
             } elseif ($data['payment_method'] === 'termin' && $request->has('installments')) {
-                // Delete previous installments to overwrite or rebuild nicely
+                // Get existing payments to preserve amounts if disabled on frontend
+                $existingPayments = $record->payments->keyBy('term_name');
+                $oldPaymentsList = $record->payments->values();
+                $totalDeal = (float)($data['deal_price'] ?? $record->deal_price ?? 0);
+                $instCount = is_array($request->installments) ? count($request->installments) : 1;
+
                 $record->payments()->delete();
 
                 foreach ($request->installments as $i => $inst) {
+                    $termName = $inst['term_name'] ?? ('Tahap ' . $i);
                     $amount = isset($inst['amount_temp']) ? $cleanNumber($inst['amount_temp']) : 0;
+
+                    // Jika amount bernilai 0 (misal terkirim kosong/disabled), ambil dari record lama atau bagi rata dari harga deal
+                    if ($amount == 0) {
+                        $matchPmt = $existingPayments->get($termName) ?? ($oldPaymentsList[$i - 1] ?? null);
+                        if ($matchPmt && $matchPmt->amount > 0) {
+                            $amount = (float)$matchPmt->amount;
+                        } elseif ($totalDeal > 0 && $instCount > 0) {
+                            $amount = round($totalDeal / $instCount);
+                        }
+                    }
+
                     $dueDate = $inst['due_date'] ?? null;
                     $status = $inst['status'] ?? 'belum';
-                    $termName = $inst['term_name'] ?? ('Tahap ' . $i);
-
                     $filePath = $inst['existing_file_path'] ?? null;
 
                     // Check if file upload exists for this installment row
@@ -415,14 +460,19 @@ public function store(Request $request)
         // AUTO PINDAH KE LANDBANK (PASCA LAND BANK)
         // =========================
         if ($data['status'] === 'approved') {
-            $finalAcquisitionPrice = $data['deal_price'] ?? $data['estimated_price'] ?? $record->deal_price ?? $record->estimated_price;
+            $finalDealPrice = $data['deal_price'] ?? $data['estimated_price'] ?? $record->deal_price ?? $record->estimated_price;
+            $finalGrandTotal = (float)$finalDealPrice 
+                + (float)($data['cost_ijb'] ?? $record->cost_ijb ?? 0)
+                + (float)($data['cost_tax'] ?? $record->cost_tax ?? 0)
+                + (float)($data['cost_broker'] ?? $record->cost_broker ?? 0)
+                + (float)($data['cost_other'] ?? $record->cost_other ?? 0);
 
             $landBank = \App\Models\LandBank::firstOrNew(['name' => $record->land_name]);
             $landBank->fill([
                 'name'              => $record->land_name,
                 'area'              => $record->area,
                 'remaining_area'    => $landBank->exists ? $landBank->remaining_area : $record->area,
-                'acquisition_price' => $finalAcquisitionPrice,
+                'acquisition_price' => $finalGrandTotal > 0 ? $finalGrandTotal : $finalDealPrice,
                 'acquisition_date'  => $landBank->exists ? $landBank->acquisition_date : now()->toDateString(),
                 'address'           => $record->address,
                 'village'           => $record->village,

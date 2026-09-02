@@ -93,7 +93,23 @@ public function kavlingindex(Request $request)
         } elseif ($request->status == 'booking') {
             $query->where('status', 'booking');
         } elseif ($request->status == 'available') {
-            $query->whereNotIn('status', ['sold', 'booking']);
+            $query->whereNotIn('status', ['sold', 'booking'])
+                  ->where(function($sub) {
+                      $sub->where('development_status', 'Selesai')
+                          ->orWhere('overall_infrastructure_progress', '>=', 100);
+                  });
+        } elseif ($request->status == 'processing') {
+            $query->whereNotIn('status', ['sold', 'booking'])
+                  ->where(function($sub) {
+                      $sub->where(function($sq) {
+                          $sq->whereNull('development_status')
+                             ->orWhere('development_status', '!=', 'Selesai');
+                      })
+                      ->where(function($sq) {
+                          $sq->whereNull('overall_infrastructure_progress')
+                             ->orWhere('overall_infrastructure_progress', '<', 100);
+                      });
+                  });
         }
     }
 

@@ -82,7 +82,13 @@
                     </td>
                     <td>
                         @if($exp->receipt_proof)
-                            <a href="{{ asset('storage/' . $exp->receipt_proof) }}" target="_blank" class="btn-pill-xs">
+                            @php
+                                $rClean = ltrim(preg_replace('/^(storage\/)+/', '', $exp->receipt_proof), '/');
+                                $rUrl = str_starts_with($exp->receipt_proof, 'http') 
+                                    ? $exp->receipt_proof 
+                                    : (file_exists(public_path($exp->receipt_proof)) ? asset($exp->receipt_proof) : (file_exists(public_path('uploads/' . $rClean)) ? asset('uploads/' . $rClean) : asset($rClean)));
+                            @endphp
+                            <a href="{{ $rUrl }}" target="_blank" class="btn-pill-xs">
                                 Nota
                             </a>
                         @else

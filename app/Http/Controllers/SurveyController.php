@@ -26,6 +26,13 @@ class SurveyController extends Controller
         ->whereHas('unit', function ($q) {
             $q->where('jenis', 'subsidi');
         })
+        // HANYA tampilkan customer KPR yang SUDAH melalui tahap Survey Lapangan
+        ->where(function ($q) {
+            $q->where('kpr_applications.status', 'survey')
+              ->orWhereNotNull('kpr_applications.survey_date')
+              ->orWhereNotNull('kpr_applications.appraisal_value')
+              ->orWhereNotNull('kpr_applications.rekomendasi');
+        })
 
         ->when($request->filled('search'), function ($q) use ($request) {
             $q->whereHas('customer', function ($qc) use ($request) {

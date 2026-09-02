@@ -137,12 +137,15 @@ class ProjectAccountingController extends Controller
             $unitSpk = $spkList->firstWhere('land_bank_unit_id', $u->id);
             $biayaSpkKontrak = (float) ($unitSpk->nilai_kontrak ?? 0);
             $realisasiBayarSpk = 0;
-            if ($unitSpk && $unitSpk->termins) {
-                $realisasiBayarSpk = (float) $unitSpk->termins->where('status_bayar', 'lunas')->sum('nominal');
+            // C. Estimasi RAB / RPP Pembangunan Unit (Disendirikan sebagai komponen HPP)
+            $biayaRab = 0;
+            if ($u->progress && $u->progress->total_anggaran > 0) {
+                $biayaRab = (float) $u->progress->total_anggaran;
+            } elseif ($u->progress && $u->progress->items && $u->progress->items->count() > 0) {
+                $biayaRab = (float) $u->progress->items->sum('total');
+            } elseif ($u->rabs) {
+                $biayaRab = (float) $u->rabs->sum('total_biaya');
             }
-
-            // C. Estimasi RAB / Biaya Material Tambahan
-            $biayaRab = (float) ($u->rabs ? $u->rabs->sum('total_biaya') : 0);
 
             // D. Biaya Servis & Klaim Garansi
             $biayaServis = (float) ($u->complaints ? $u->complaints->sum('biaya_perbaikan') : 0);

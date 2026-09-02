@@ -205,4 +205,21 @@ public function getMissingProfileFields(): array
     if (empty($this->lat) || empty($this->lng)) $missing[] = 'Koordinat Peta';
     return $missing;
 }
+
+public function getGrandTotalAcquisitionPriceAttribute(): float
+{
+    $pra = \App\Models\PraLandbank::where('land_name', $this->name)->first();
+    if ($pra) {
+        if ($pra->invoice && $pra->invoice->total_amount > 0) {
+            return (float) $pra->invoice->total_amount;
+        }
+        $deal = (float) ($pra->deal_price ?: ($pra->estimated_price ?: ($this->acquisition_price ?: 0)));
+        $costs = (float) $pra->cost_ijb + (float) $pra->cost_tax + (float) $pra->cost_broker + (float) $pra->cost_other;
+        if ($deal + $costs > 0) {
+            return $deal + $costs;
+        }
+    }
+
+    return (float) ($this->acquisition_price ?? 0);
+}
 }
