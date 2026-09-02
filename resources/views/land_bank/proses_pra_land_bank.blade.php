@@ -2258,13 +2258,13 @@
 
                 <div class="modal-body p-0 position-relative" style="background:#0f1117; min-height:65vh;">
                     {{-- Loading State --}}
-                    <div id="previewLoading" class="d-flex flex-column align-items-center justify-content-center gap-3" style="min-height:65vh; background: #ffffff;">
+                    <div id="previewLoading" class="flex-column align-items-center justify-content-center gap-3" style="min-height:65vh; background: #ffffff; display: flex;">
                         <div class="spinner-border text-primary" style="width:2.5rem;height:2.5rem;"></div>
                         <span class="text-muted small fw-semibold">Memuat dokumen, mohon tunggu...</span>
                     </div>
 
                     {{-- Error State --}}
-                    <div id="previewError" class="d-none flex-column align-items-center justify-content-center gap-3 text-center p-4" style="min-height:65vh; background: #ffffff;">
+                    <div id="previewError" class="flex-column align-items-center justify-content-center gap-3 text-center p-4" style="min-height:65vh; background: #ffffff; display: none;">
                         <i class="mdi mdi-file-alert-outline text-danger" style="font-size:4rem; opacity:.8;"></i>
                         <div>
                             <div class="fw-bold text-danger fs-5 mb-1">Dokumen Fisik Tidak Ditemukan di Server</div>
@@ -2283,10 +2283,10 @@
                     </div>
 
                     {{-- PDF Viewer via iframe --}}
-                    <iframe id="iframePreview" src="" class="d-none" style="width:100%; height:75vh; border:none; display:none; background:#ffffff;"></iframe>
+                    <iframe id="iframePreview" src="" style="width:100%; height:75vh; border:none; display:none; background:#ffffff;"></iframe>
 
                     {{-- Image Viewer Container with Scrollbars & Drag-Zoom --}}
-                    <div id="divImagePreview" class="d-none justify-content-center align-items-center" style="width: 100%; height: 75vh; overflow: auto; background: #181924; position: relative; padding: 20px;">
+                    <div id="divImagePreview" class="justify-content-center align-items-center" style="width: 100%; height: 75vh; overflow: auto; background: #181924; position: relative; padding: 20px; display: none;">
                         <div id="imgWrapper" style="display: inline-block; transform-origin: center center; transition: transform 0.12s ease-out; margin: auto;">
                             <img id="imgPreview" src="" alt="Preview Dokumen" style="max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 6px; box-shadow: 0 10px 35px rgba(0,0,0,0.6); display: block;" />
                         </div>
@@ -2319,22 +2319,39 @@
         let currentZoom = 1.0;
         let currentRotate = 0;
 
+        function showPreviewSection(sectionId, displayStyle = 'flex') {
+            const sections = ['previewLoading', 'previewError', 'iframePreview', 'divImagePreview'];
+            sections.forEach(function(id) {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (id === sectionId) {
+                        el.style.setProperty('display', displayStyle, 'important');
+                        el.classList.remove('d-none');
+                    } else {
+                        el.style.setProperty('display', 'none', 'important');
+                        el.classList.add('d-none');
+                    }
+                }
+            });
+        }
+
         function resetPreviewState() {
             currentZoom = 1.0;
             currentRotate = 0;
             applyImageTransform();
 
-            $('#previewLoading').show();
-            $('#previewError').hide();
-            $('#iframePreview').hide().attr('src', '');
-            $('#divImagePreview').hide();
-            $('#imgZoomToolbar').hide().removeClass('d-flex');
+            showPreviewSection('previewLoading', 'flex');
+            $('#imgZoomToolbar').removeClass('d-flex').hide();
             
             const img = document.getElementById('imgPreview');
             if (img) {
                 img.onload = null;
                 img.onerror = null;
                 img.src = '';
+            }
+            const iframe = document.getElementById('iframePreview');
+            if (iframe) {
+                iframe.src = '';
             }
         }
 
@@ -2360,55 +2377,48 @@
         };
 
         function showPreviewError(url) {
-            $('#previewLoading').hide();
-            $('#iframePreview').hide().attr('src', '');
-            $('#divImagePreview').hide();
-            $('#imgZoomToolbar').hide().removeClass('d-flex');
-            $('#previewError').show().css('display', 'flex');
+            showPreviewSection('previewError', 'flex');
+            $('#imgZoomToolbar').removeClass('d-flex').hide();
             $('#btnErrorDownload').attr('href', url);
             $('#btnErrorOpenTab').attr('href', url);
         }
 
         function previewPdf(url) {
-            $('#previewLoading').show();
-            $('#previewError').hide();
-            $('#divImagePreview').hide();
-            $('#imgZoomToolbar').hide().removeClass('d-flex');
+            showPreviewSection('iframePreview', 'block');
+            $('#imgZoomToolbar').removeClass('d-flex').hide();
             
             const iframe = document.getElementById('iframePreview');
-            iframe.onload = function() {
-                $('#previewLoading').hide();
-                $('#previewError').hide();
-                $('#iframePreview').show().css('display', 'block');
-            };
-            iframe.onerror = function() {
-                showPreviewError(url);
-            };
-            iframe.src = url + '#toolbar=1&navpanes=1';
-            $('#iframePreview').show().css('display', 'block');
-            $('#previewLoading').hide();
+            if (iframe) {
+                iframe.src = url + '#toolbar=1&navpanes=1';
+            }
             $('#previewFooterInfo').html(`<i class="mdi mdi-file-pdf-box me-1 text-danger"></i>Format Dokumen PDF — Gunakan toolbar pembaca PDF untuk navigasi.`);
         }
 
         function previewImage(url) {
-            $('#previewLoading').show();
-            $('#previewError').hide();
-            $('#iframePreview').hide().attr('src', '');
-            $('#divImagePreview').hide();
-            $('#imgZoomToolbar').hide().removeClass('d-flex');
+            showPreviewSection('previewLoading', 'flex');
+            $('#imgZoomToolbar').removeClass('d-flex').hide();
 
             const img = document.getElementById('imgPreview');
-            img.onload = function() {
-                $('#previewLoading').hide();
-                $('#previewError').hide();
-                $('#divImagePreview').show().css('display', 'flex');
-                $('#imgZoomToolbar').show().addClass('d-flex');
+            if (!img) return;
+
+            function onReady() {
+                showPreviewSection('divImagePreview', 'flex');
+                $('#imgZoomToolbar').addClass('d-flex').show();
                 $('#previewFooterInfo').html(`<i class="mdi mdi-image-size-select-actual me-1 text-primary"></i>Resolusi: <strong>${img.naturalWidth} × ${img.naturalHeight} px</strong> — Scroll atau gunakan zoom toolbar.`);
+            }
+
+            img.onload = function() {
+                onReady();
             };
             img.onerror = function() {
                 showPreviewError(url);
             };
+
             img.src = url;
+
+            if (img.complete && img.naturalWidth > 0) {
+                onReady();
+            }
         }
 
         $(document).on('click', '.btn-preview-doc', function(e) {
