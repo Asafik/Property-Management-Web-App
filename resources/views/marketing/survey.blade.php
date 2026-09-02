@@ -184,16 +184,6 @@
     z-index: 1;
 }
 
-@media (max-width: 767px) {
-    .transaksi-steps {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 1.25rem 0.5rem;
-    }
-    .transaksi-steps::before {
-        display: none !important;
-    }
-}
-
 .transaksi-step {
     position: relative;
     display: flex;
@@ -673,9 +663,124 @@
     margin-top: 1px;
 }
 
+/* =========================================================
+   RESPONSIVE DESIGN ENHANCEMENTS
+   ========================================================= */
+
+@media (max-width: 991.98px) {
+    .transaksi-steps {
+        overflow-x: auto;
+        display: flex !important;
+        justify-content: flex-start;
+        gap: 1.25rem;
+        padding: 0.5rem 0.25rem 1rem 0.25rem;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .transaksi-steps::-webkit-scrollbar {
+        height: 5px;
+    }
+    .transaksi-steps::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 10px;
+    }
+    .transaksi-steps::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+
+    .transaksi-steps::before {
+        top: 24px;
+        left: 20px;
+        width: 650px;
+    }
+
+    .transaksi-step {
+        flex: 0 0 115px;
+        scroll-snap-align: start;
+    }
+
+    .transaksi-step-title {
+        white-space: normal !important;
+        font-size: 0.82rem;
+    }
+
+    .transaksi-sticky {
+        position: static !important;
+        top: 0;
+    }
+}
+
 @media (max-width: 767.98px) {
+    .card-body {
+        padding: 1.1rem !important;
+    }
+
+    .customer-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 1rem !important;
+    }
+
+    .customer-avatar {
+        width: 48px;
+        height: 48px;
+    }
+
+    .customer-avatar i {
+        font-size: 1.7rem !important;
+    }
+
+    .customer-name {
+        font-size: 1.1rem;
+    }
+
+    .customer-unit-info {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        padding: 0.65rem 0.85rem !important;
+        gap: 0.5rem !important;
+    }
+
+    .customer-unit-info .info-item small {
+        font-size: 0.68rem;
+    }
+
+    .customer-unit-info .info-item span {
+        font-size: 0.82rem;
+    }
+
     .survey-checklist-grid {
         grid-template-columns: 1fr;
+    }
+
+    .transaksi-summary-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .transaksi-btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .customer-unit-info {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        text-align: center;
+    }
+
+    .transaksi-summary-box .value {
+        font-size: 0.95rem;
+    }
+    
+    .transaksi-summary-box .label {
+        font-size: 0.7rem;
     }
 }
 </style>
@@ -690,7 +795,7 @@
                             class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="customer-avatar">
-                                    <i class="mdi mdi-account"></i>
+                                    <i class="mdi mdi-account text-white" style="font-size: 2.2rem;"></i>
                                 </div>
                                 <div>
                                     <h4 class="customer-name mb-1 d-flex align-items-center gap-2">
@@ -710,13 +815,13 @@
                                                         ? 'mdi-office-building'
                                                         : 'mdi-help-circle-outline');
                                         @endphp
-                                        <span class="badge {{ $badgeClass }}">
+                                        <span class="badge {{ $badgeClass }} ms-2">
                                             <i class="mdi {{ $icon }} me-1"></i>
                                             {{ strtoupper($application->unit->jenis ?? '-') }}
                                         </span>
                                     </h4>
                                     <p class="customer-booking mb-0">
-                                        Booking ID: {{ optional($application->unit->activeBooking)->booking_code ?? '-' }}
+                                        Booking ID: {{ optional($application->booking)->booking_code ?? (optional($application->unit->activeBooking)->booking_code ?? '-') }}
                                     </p>
                                 </div>
                             </div>
@@ -732,7 +837,7 @@
                                 </div>
                                 <div class="info-item">
                                     <small>Harga Unit</small>
-                                    <span class="highlight">
+                                    <span class="text-primary fw-bold">
                                         Rp {{ number_format($application->unit->price ?? 0, 0, ',', '.') }}
                                     </span>
                                 </div>
@@ -788,7 +893,7 @@
                         @endphp
 
                         <div class="transaksi-progress-top">
-                            <span class="transaksi-muted">Progress Survey</span>
+                            <span class="transaksi-muted">Progress Proses</span>
                             <span>Tahap {{ $completedCount }} dari {{ $totalSteps }}</span>
                         </div>
 
@@ -878,7 +983,7 @@
                             @endif
 
                             <div class="transaksi-step">
-                                <div class="transaksi-step-icon"><i class="mdi mdi-home-outline"></i></div>
+                                <div class="transaksi-step-icon"><i class="mdi mdi-cash-fast"></i></div>
                                 <span class="transaksi-step-title">Serah Terima</span>
                                 <small>Menunggu</small>
                             </div>
@@ -913,6 +1018,16 @@
                                 <span class="highlight">Rp
                                     {{ number_format($application->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
                             </div>
+
+                            <div class="transaksi-detail-item">
+                                <span>Promo</span>
+                                <span>{{ $application->promo_name ?? '-' }}</span>
+                            </div>
+
+                            <div class="transaksi-detail-item">
+                                <span>Nilai Promo</span>
+                                <span>Rp {{ number_format($application->promo_value ?? 0, 0, ',', '.') }}</span>
+                            </div>
                         </div>
 
                         <hr class="my-4">
@@ -923,7 +1038,7 @@
                                 <i class="mdi mdi-account-tie"></i>
                             </div>
                             <div>
-                                <div class="fw-bold">{{ $application->booking->sales->name ?? '-' }}</div>
+                                <div class="fw-bold">{{ $application->booking->sales->name ?? ($application->unit->activeBooking->sales->name ?? 'Staff Marketing') }}</div>
                             </div>
                         </div>
                     </div>
@@ -938,159 +1053,113 @@
                     <div class="card-body p-3 p-md-4">
                         {{-- Header Title --}}
                         <div class="d-flex flex-wrap align-items-center justify-content-between pb-3 mb-3 border-bottom gap-2">
-                            <div class="d-flex align-items-center gap-2.5">
-                                <div class="rounded-3 d-flex align-items-center justify-content-center" 
-                                     style="width: 38px; height: 38px; background: linear-gradient(135deg, #da8cff, #9a55ff); color: #fff; box-shadow: 0 4px 10px rgba(154, 85, 255, 0.25);">
-                                    <i class="mdi mdi-home-analytics fs-5"></i>
-                                </div>
-                                <div>
-                                    <h5 class="fw-bold text-dark mb-0" style="font-size: 1.05rem;">Rincian Informasi Unit Properti</h5>
-                                    <small class="text-muted" style="font-size: 0.8rem;">Spesifikasi fisik, lokasi kavling, dan nilai transaksi unit yang disurvey</small>
-                                </div>
+                            <div>
+                                <h5 class="fw-bold text-dark mb-0" style="font-size: 1.05rem;">Informasi Unit Properti</h5>
+                                <small class="text-muted" style="font-size: 0.8rem;">Spesifikasi fisik, lokasi kavling, dan nilai transaksi unit</small>
                             </div>
                             <div class="d-flex align-items-center gap-2">
                                 @if(($application->unit->jenis ?? '') == 'subsidi')
-                                    <span class="badge badge-gradient-success px-3 py-2" style="font-size: 0.78rem;">
-                                        <i class="mdi mdi-home-assistant me-1"></i>SUBSIDI - {{ $application->unit->type ?? 'Standar' }}
+                                    <span class="badge badge-gradient-success px-3 py-1.5" style="font-size: 0.78rem;">
+                                        SUBSIDI - {{ $application->unit->type ?? 'Standar' }}
                                     </span>
                                 @else
-                                    <span class="badge badge-gradient-primary px-3 py-2" style="font-size: 0.78rem;">
-                                        <i class="mdi mdi-office-building me-1"></i>KOMERSIL - {{ $application->unit->type ?? 'Standar' }}
+                                    <span class="badge badge-gradient-primary px-3 py-1.5" style="font-size: 0.78rem;">
+                                        KOMERSIL - {{ $application->unit->type ?? 'Standar' }}
                                     </span>
                                 @endif
-                                <span class="badge bg-light text-dark border px-3 py-2 fw-bold" style="font-size: 0.78rem;">
-                                    <i class="mdi mdi-cube-outline text-primary me-1"></i>{{ $application->unit->unit_code ?? '-' }}
+                                <span class="badge bg-light text-dark border px-3 py-1.5 fw-bold" style="font-size: 0.78rem;">
+                                    Kav. {{ $application->unit->unit_code ?? '-' }}
                                 </span>
                             </div>
                         </div>
 
-                        {{-- 4-Column Balanced Grid --}}
+                        {{-- 4-Column Clean Grid (Tanpa Ikon Berlebihan) --}}
                         <div class="row g-2.5 g-md-3">
                             {{-- 1. Unit & Blok --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="d-flex align-items-center p-3 rounded-3 border h-100" style="background: #fafbfe; border-color: #eef2f6 !important;">
-                                    <div class="rounded-2 p-2 me-2.5 d-flex align-items-center justify-content-center flex-shrink-0" style="background: #ede4ff; color: #9a55ff; width: 38px; height: 38px;">
-                                        <i class="mdi mdi-home-outline fs-5"></i>
-                                    </div>
-                                    <div class="overflow-hidden">
-                                        <small class="text-muted d-block fw-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Unit & Blok</small>
-                                        <span class="fw-bold text-dark d-block text-truncate" style="font-size: 0.95rem;">{{ $application->unit->unit_name ?? '-' }}</span>
-                                        <small class="text-primary font-monospace fw-bold" style="font-size: 0.75rem;">Blok {{ $application->unit->block ?? '-' }} No. {{ $application->unit->unit_number ?? '-' }}</small>
-                                    </div>
+                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                    <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Unit & Blok</small>
+                                    <span class="fw-bold text-dark d-block text-truncate" style="font-size: 0.95rem;">{{ $application->unit->unit_name ?? '-' }}</span>
+                                    <small class="text-primary font-monospace fw-semibold" style="font-size: 0.78rem;">Blok {{ $application->unit->block ?? '-' }} No. {{ $application->unit->unit_number ?? '-' }}</small>
                                 </div>
                             </div>
 
                             {{-- 2. Lokasi / Perumahan --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="d-flex align-items-center p-3 rounded-3 border h-100" style="background: #fafbfe; border-color: #eef2f6 !important;">
-                                    <div class="rounded-2 p-2 me-2.5 d-flex align-items-center justify-content-center flex-shrink-0" style="background: #e0f2fe; color: #0284c7; width: 38px; height: 38px;">
-                                        <i class="mdi mdi-map-marker-radius-outline fs-5"></i>
-                                    </div>
-                                    <div class="overflow-hidden">
-                                        <small class="text-muted d-block fw-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Lokasi / Proyek</small>
-                                        <span class="fw-bold text-dark d-block text-truncate" style="font-size: 0.95rem;" title="{{ $application->unit->landBank->name ?? '-' }}">{{ $application->unit->landBank->name ?? 'Proyek Utama' }}</span>
-                                        <small class="text-muted text-truncate d-block" style="font-size: 0.75rem;">{{ $application->unit->landBank->village ?? ($application->unit->landBank->address ?? 'Lokasi Proyek') }}</small>
-                                    </div>
+                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                    <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Lokasi / Proyek</small>
+                                    <span class="fw-bold text-dark d-block text-truncate" style="font-size: 0.95rem;" title="{{ $application->unit->landBank->name ?? '-' }}">{{ $application->unit->landBank->name ?? 'Proyek Utama' }}</span>
+                                    <small class="text-muted text-truncate d-block" style="font-size: 0.78rem;">{{ $application->unit->landBank->village ?? ($application->unit->landBank->address ?? 'Lokasi Proyek') }}</small>
                                 </div>
                             </div>
 
                             {{-- 3. Dimensi Lahan & Bangunan --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="d-flex align-items-center p-3 rounded-3 border h-100" style="background: #fafbfe; border-color: #eef2f6 !important;">
-                                    <div class="rounded-2 p-2 me-2.5 d-flex align-items-center justify-content-center flex-shrink-0" style="background: #fef3c7; color: #d97706; width: 38px; height: 38px;">
-                                        <i class="mdi mdi-ruler-square fs-5"></i>
+                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                    <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Dimensi Kavling</small>
+                                    <div class="d-flex align-items-center gap-1.5 my-1">
+                                        <span class="badge bg-white text-dark border fw-semibold" style="font-size: 0.75rem;">LT: {{ number_format($application->unit->area ?? 0, 0, ',', '.') }} m²</span>
+                                        <span class="badge bg-white text-primary border fw-semibold" style="font-size: 0.75rem;">LB: {{ number_format($application->unit->building_area ?? 0, 0, ',', '.') }} m²</span>
                                     </div>
-                                    <div class="overflow-hidden">
-                                        <small class="text-muted d-block fw-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Dimensi Kavling</small>
-                                        <div class="d-flex align-items-center gap-1.5 my-0.5">
-                                            <span class="badge bg-white text-dark border fw-bold" style="font-size: 0.72rem;">LT: {{ number_format($application->unit->area ?? 0, 0, ',', '.') }} m²</span>
-                                            <span class="badge bg-white text-primary border fw-bold" style="font-size: 0.72rem;">LB: {{ number_format($application->unit->building_area ?? 0, 0, ',', '.') }} m²</span>
-                                        </div>
-                                        <small class="text-muted d-block" style="font-size: 0.72rem;">Luas Tanah & Bangunan</small>
-                                    </div>
+                                    <small class="text-muted d-block" style="font-size: 0.75rem;">Luas Tanah & Bangunan</small>
                                 </div>
                             </div>
 
                             {{-- 4. Arah Hadap & Posisi --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="d-flex align-items-center p-3 rounded-3 border h-100" style="background: #fafbfe; border-color: #eef2f6 !important;">
-                                    <div class="rounded-2 p-2 me-2.5 d-flex align-items-center justify-content-center flex-shrink-0" style="background: #f1f5f9; color: #475569; width: 38px; height: 38px;">
-                                        <i class="mdi mdi-compass-outline fs-5"></i>
-                                    </div>
-                                    <div class="overflow-hidden">
-                                        <small class="text-muted d-block fw-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Arah & Posisi</small>
-                                        <span class="fw-bold text-dark d-block" style="font-size: 0.95rem;">Hadap {{ $application->unit->facing ?? 'Utara' }}</span>
-                                        <small class="text-muted d-block" style="font-size: 0.75rem;">Posisi: <span class="fw-semibold text-dark">{{ $application->unit->position ?? 'Badan' }}</span></small>
-                                    </div>
+                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                    <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Arah & Posisi</small>
+                                    <span class="fw-bold text-dark d-block" style="font-size: 0.95rem;">Hadap {{ $application->unit->facing ?? 'Utara' }}</span>
+                                    <small class="text-muted d-block" style="font-size: 0.78rem;">Posisi: <span class="fw-semibold text-dark">{{ $application->unit->position ?? 'Tengah' }}</span></small>
                                 </div>
                             </div>
 
                             {{-- 5. Harga Unit Properti --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="d-flex align-items-center p-3 rounded-3 border h-100" style="background: #fafbfe; border-color: #eef2f6 !important;">
-                                    <div class="rounded-2 p-2 me-2.5 d-flex align-items-center justify-content-center flex-shrink-0" style="background: #dcfce7; color: #16a34a; width: 38px; height: 38px;">
-                                        <i class="mdi mdi-cash-multiple fs-5"></i>
-                                    </div>
-                                    <div class="overflow-hidden">
-                                        <small class="text-muted d-block fw-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Harga Unit</small>
-                                        <span class="fw-bold text-success d-block" style="font-size: 0.98rem;">Rp {{ number_format($application->unit->price ?? $application->harga_unit ?? 0, 0, ',', '.') }}</span>
-                                        <small class="text-muted d-block" style="font-size: 0.75rem;">IJB: Rp {{ number_format($application->unit->ijb_price ?? 0, 0, ',', '.') }}</small>
-                                    </div>
+                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                    <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Harga Unit</small>
+                                    <span class="fw-bold text-success d-block" style="font-size: 0.98rem;">Rp {{ number_format($application->unit->price ?? $application->harga_unit ?? 0, 0, ',', '.') }}</span>
+                                    <small class="text-muted d-block" style="font-size: 0.78rem;">IJB: Rp {{ number_format($application->unit->ijb_price ?? 0, 0, ',', '.') }}</small>
                                 </div>
                             </div>
 
                             {{-- 6. Progress Konstruksi --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="d-flex align-items-center p-3 rounded-3 border h-100" style="background: #fafbfe; border-color: #eef2f6 !important;">
-                                    <div class="rounded-2 p-2 me-2.5 d-flex align-items-center justify-content-center flex-shrink-0" style="background: #fae8ff; color: #a855f7; width: 38px; height: 38px;">
-                                        <i class="mdi mdi-progress-wrench fs-5"></i>
-                                    </div>
-                                    <div class="overflow-hidden">
-                                        <small class="text-muted d-block fw-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Progress Pembangunan</small>
-                                        @php
-                                            $cProgress = strtolower($application->unit->construction_progress ?? 'belum_mulai');
-                                            $cBadge = match($cProgress) {
-                                                'selesai' => 'badge-gradient-success',
-                                                'finishing' => 'bg-info text-white',
-                                                'atap', 'dinding', 'pondasi' => 'bg-warning text-dark',
-                                                default => 'bg-secondary text-white'
-                                            };
-                                        @endphp
-                                        <span class="badge {{ $cBadge }} px-2.5 py-1 text-uppercase fw-bold my-0.5 d-inline-block" style="font-size: 0.72rem;">
-                                            {{ str_replace('_', ' ', $cProgress) }}
-                                        </span>
-                                        <small class="text-muted d-block" style="font-size: 0.72rem;">Tahap Pembangunan</small>
-                                    </div>
+                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                    <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Progress Pembangunan</small>
+                                    @php
+                                        $cProgress = strtolower($application->unit->construction_progress ?? 'belum_mulai');
+                                        $cBadge = match($cProgress) {
+                                            'selesai' => 'badge-gradient-success',
+                                            'finishing' => 'bg-info text-white',
+                                            'atap', 'dinding', 'pondasi' => 'bg-warning text-dark',
+                                            default => 'bg-secondary text-white'
+                                        };
+                                    @endphp
+                                    <span class="badge {{ $cBadge }} px-2.5 py-1 text-uppercase fw-bold my-1 d-inline-block" style="font-size: 0.75rem;">
+                                        {{ str_replace('_', ' ', $cProgress) }}
+                                    </span>
+                                    <small class="text-muted d-block" style="font-size: 0.75rem;">Tahap Pembangunan</small>
                                 </div>
                             </div>
 
                             {{-- 7. Kontraktor / SPK --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="d-flex align-items-center p-3 rounded-3 border h-100" style="background: #fafbfe; border-color: #eef2f6 !important;">
-                                    <div class="rounded-2 p-2 me-2.5 d-flex align-items-center justify-content-center flex-shrink-0" style="background: #e2e8f0; color: #334155; width: 38px; height: 38px;">
-                                        <i class="mdi mdi-hard-hat fs-5"></i>
-                                    </div>
-                                    <div class="overflow-hidden">
-                                        <small class="text-muted d-block fw-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Kontraktor / SPK</small>
-                                        <span class="fw-bold text-dark d-block text-truncate" style="font-size: 0.95rem;" title="{{ $application->unit->kontraktor ?? 'Pembangunan Mandiri' }}">{{ $application->unit->kontraktor ?? 'Pembangunan Mandiri' }}</span>
-                                        <small class="text-muted font-monospace text-truncate d-block" style="font-size: 0.75rem;">{{ $application->unit->no_spk ? 'No: ' . $application->unit->no_spk : 'SPK Standar' }}</small>
-                                    </div>
+                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                    <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Kontraktor / SPK</small>
+                                    <span class="fw-bold text-dark d-block text-truncate" style="font-size: 0.95rem;" title="{{ $application->unit->kontraktor ?? 'Pembangunan Mandiri' }}">{{ $application->unit->kontraktor ?? 'Pembangunan Mandiri' }}</span>
+                                    <small class="text-muted font-monospace text-truncate d-block" style="font-size: 0.78rem;">{{ $application->unit->no_spk ? 'No: ' . $application->unit->no_spk : 'SPK Standar' }}</small>
                                 </div>
                             </div>
 
                             {{-- 8. Status Unit --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="d-flex align-items-center p-3 rounded-3 border h-100" style="background: #fafbfe; border-color: #eef2f6 !important;">
-                                    <div class="rounded-2 p-2 me-2.5 d-flex align-items-center justify-content-center flex-shrink-0" style="background: #ede9fe; color: #7c3aed; width: 38px; height: 38px;">
-                                        <i class="mdi mdi-shield-check-outline fs-5"></i>
-                                    </div>
-                                    <div class="overflow-hidden">
-                                        <small class="text-muted d-block fw-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Status Unit</small>
-                                        <span class="badge badge-gradient-primary px-2.5 py-1 text-uppercase fw-bold my-0.5 d-inline-block" style="font-size: 0.72rem;">
-                                            {{ $application->unit->status ?? 'BOOKED' }}
-                                        </span>
-                                        <small class="text-muted d-block" style="font-size: 0.72rem;">Unit Terjadwal Survey</small>
-                                    </div>
+                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                    <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Status Unit</small>
+                                    <span class="badge badge-gradient-primary px-2.5 py-1 text-uppercase fw-bold my-1 d-inline-block" style="font-size: 0.75rem;">
+                                        {{ $application->unit->status ?? 'BOOKED' }}
+                                    </span>
+                                    <small class="text-muted d-block" style="font-size: 0.75rem;">Unit Terjadwal Survey</small>
                                 </div>
                             </div>
                         </div>
@@ -1099,180 +1168,182 @@
             </div>
         </div>
 
-        {{-- FORM SURVEY --}}
-        <div class="row mt-2">
-            <div class="col-12 col-lg-8">
+        {{-- FORM SURVEY & RINGKASAN --}}
+        <div class="row mt-2 align-items-stretch">
+            <div class="col-12 col-lg-8 mb-4 mb-lg-0">
                 <form id="formSurveyKpr" action="{{ route('kpr.survey.store', $application->id) }}" method="POST"
-                    enctype="multipart/form-data">
+                    enctype="multipart/form-data" class="h-100">
                     @csrf
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="transaksi-section-title">
-                                <i class="mdi mdi-home-map-marker"></i>
-                                <span>Form Survey Lapangan</span>
-                            </div>
-
-                            <div class="transaksi-inline-alert info">
-                                <i class="mdi mdi-information-outline"></i>
-                                <div>Isi hasil survey unit dengan lengkap untuk penilaian bank.</div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="transaksi-form-group">
-                                        <label class="transaksi-form-label">Tanggal Survey</label>
-                                        <input type="date" class="transaksi-form-control" name="survey_date"
-                                            value="{{ $application->survey_date ? \Carbon\Carbon::parse($application->survey_date)->format('Y-m-d') : '' }}">
-                                    </div>
+                    <div class="card h-100 shadow-sm border-0" style="border-radius: 14px;">
+                        <div class="card-body p-3 p-md-4 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="transaksi-section-title">
+                                    <i class="mdi mdi-home-map-marker"></i>
+                                    <span>Form Survey Lapangan</span>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="transaksi-form-group">
-                                        <label class="transaksi-form-label">Jam Survey</label>
-                                        <input type="time" class="transaksi-form-control" name="survey_time"
-                                            value="{{ $application->survey_time ? (is_string($application->survey_time) ? substr($application->survey_time, 0, 5) : \Carbon\Carbon::parse($application->survey_time)->format('H:i')) : '' }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="transaksi-form-group">
-                                        <label class="transaksi-form-label">Surveyor</label>
-                                        <select class="transaksi-form-control" name="surveyor_id">
-                                            <option value="">Pilih Surveyor</option>
-                                            @foreach ($surveyors as $surveyor)
-                                                <option value="{{ $surveyor->id }}"
-                                                    {{ $application->surveyor_id == $surveyor->id ? 'selected' : '' }}>
-                                                    {{ $surveyor->name }} ({{ $surveyor->position->name ?? 'Petugas' }})
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <hr class="my-4">
+                                <div class="transaksi-inline-alert info">
+                                    <i class="mdi mdi-information-outline"></i>
+                                    <div>Isi hasil survey unit dengan lengkap untuk penilaian bank.</div>
+                                </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="transaksi-form-group">
-                                        <label class="transaksi-form-label">Nilai Pasar Unit <span
-                                                class="text-danger">*</span></label>
-                                        <div class="survey-input-group">
-                                            <span class="survey-input-group-text">Rp</span>
-                                            <input type="text" class="transaksi-form-control" name="harga_unit"
-                                                value="{{ number_format($application->harga_unit ?? 0, 0, ',', '.') }}">
+                                <div class="row g-3">
+                                    <div class="col-12 col-sm-6 col-md-4">
+                                        <div class="transaksi-form-group mb-0">
+                                            <label class="transaksi-form-label">Tanggal Survey</label>
+                                            <input type="date" class="transaksi-form-control" name="survey_date"
+                                                value="{{ $application->survey_date ? \Carbon\Carbon::parse($application->survey_date)->format('Y-m-d') : '' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-6 col-md-4">
+                                        <div class="transaksi-form-group mb-0">
+                                            <label class="transaksi-form-label">Jam Survey</label>
+                                            <input type="time" class="transaksi-form-control" name="survey_time"
+                                                value="{{ $application->survey_time ? (is_string($application->survey_time) ? substr($application->survey_time, 0, 5) : \Carbon\Carbon::parse($application->survey_time)->format('H:i')) : '' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-md-4">
+                                        <div class="transaksi-form-group mb-0">
+                                            <label class="transaksi-form-label">Surveyor</label>
+                                            <select class="transaksi-form-control" name="surveyor_id">
+                                                <option value="">Pilih Surveyor</option>
+                                                @foreach ($surveyors as $surveyor)
+                                                    <option value="{{ $surveyor->id }}"
+                                                        {{ $application->surveyor_id == $surveyor->id ? 'selected' : '' }}>
+                                                        {{ $surveyor->name }} ({{ $surveyor->position->name ?? 'Petugas' }})
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="transaksi-form-group">
-                                        <label class="transaksi-form-label">Nilai Appraisal <span
-                                                class="text-danger">*</span></label>
-                                        <div class="survey-input-group">
-                                            <span class="survey-input-group-text">Rp</span>
-                                            <input type="text" class="transaksi-form-control rupiah-format" name="appraisal_value"
-                                                value="{{ number_format($application->appraisal_value ?? $application->jumlah_pinjaman ?? 0, 0, ',', '.') }}" required>
+
+                                <hr class="my-4">
+
+                                <div class="row g-3">
+                                    <div class="col-12 col-md-6">
+                                        <div class="transaksi-form-group mb-0">
+                                            <label class="transaksi-form-label">Nilai Pasar Unit <span
+                                                    class="text-danger">*</span></label>
+                                            <div class="survey-input-group">
+                                                <span class="survey-input-group-text">Rp</span>
+                                                <input type="text" class="transaksi-form-control" name="harga_unit"
+                                                    value="{{ number_format($application->harga_unit ?? 0, 0, ',', '.') }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <div class="transaksi-form-group mb-0">
+                                            <label class="transaksi-form-label">Nilai Appraisal <span
+                                                    class="text-danger">*</span></label>
+                                            <div class="survey-input-group">
+                                                <span class="survey-input-group-text">Rp</span>
+                                                <input type="text" class="transaksi-form-control rupiah-format" name="appraisal_value"
+                                                    value="{{ number_format($application->appraisal_value ?? $application->jumlah_pinjaman ?? 0, 0, ',', '.') }}" required>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <hr class="my-4">
+                                <hr class="my-4">
 
-                            <div class="transaksi-section-title mb-3">
-                                <i class="mdi mdi-checkbox-marked-outline"></i>
-                                <span>Checklist Kondisi Unit</span>
-                            </div>
+                                <div class="transaksi-section-title mb-3">
+                                    <i class="mdi mdi-checkbox-marked-outline"></i>
+                                    <span>Checklist Kondisi Unit</span>
+                                </div>
 
-                            <div class="survey-checklist-grid">
-                                @foreach (['listrik' => 'Instalasi Listrik', 'air' => 'PDAM / Air Bersih', 'akses' => 'Akses Jalan', 'sertifikat' => 'Sertifikat Sesuai', 'imb' => 'IMB'] as $field => $label)
-                                    <div class="survey-checkbox-wrapper">
-                                        <input type="checkbox" class="survey-checkbox-input" id="{{ $field }}"
-                                            name="{{ $field }}" {{ $application->$field ? 'checked' : '' }}>
-                                        <label class="survey-checkbox-label" for="{{ $field }}">
-                                            <i class="mdi mdi-check-circle survey-check-icon"></i>
-                                            <span class="survey-check-text">{{ $label }}</span>
-                                        </label>
-                                    </div>
-                                @endforeach
-                            </div>
+                                <div class="survey-checklist-grid">
+                                    @foreach (['listrik' => 'Instalasi Listrik', 'air' => 'PDAM / Air Bersih', 'akses' => 'Akses Jalan', 'sertifikat' => 'Sertifikat Sesuai', 'imb' => 'IMB'] as $field => $label)
+                                        <div class="survey-checkbox-wrapper">
+                                            <input type="checkbox" class="survey-checkbox-input" id="{{ $field }}"
+                                                name="{{ $field }}" {{ $application->$field ? 'checked' : '' }}>
+                                            <label class="survey-checkbox-label" for="{{ $field }}">
+                                                <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                                <span class="survey-check-text">{{ $label }}</span>
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
 
-                            <hr class="my-4">
+                                <hr class="my-4">
 
-                            <div class="transaksi-section-title mb-3">
-                                <i class="mdi mdi-camera-outline"></i>
-                                <span>Dokumentasi Survey</span>
-                            </div>
+                                <div class="transaksi-section-title mb-3">
+                                    <i class="mdi mdi-camera-outline"></i>
+                                    <span>Dokumentasi Survey</span>
+                                </div>
 
-                            <div class="row">
-                                @foreach (['foto_depan' => 'Foto Depan', 'foto_interior' => 'Foto Interior', 'foto_lingkungan' => 'Foto Lingkungan'] as $field => $label)
-                                    <div class="col-md-4">
+                                <div class="row g-3">
+                                    @foreach (['foto_depan' => 'Foto Depan', 'foto_interior' => 'Foto Interior', 'foto_lingkungan' => 'Foto Lingkungan'] as $field => $label)
+                                        <div class="col-12 col-sm-6 col-md-4">
+                                            <div class="transaksi-form-group mb-0">
+                                                <label class="transaksi-form-label">{{ $label }}</label>
+                                                @if ($application->$field)
+                                                    @php
+                                                        $photoUrl = file_exists(public_path('uploads/' . $application->$field))
+                                                            ? asset('uploads/' . $application->$field)
+                                                            : (file_exists(storage_path('app/public/' . $application->$field)) ? asset('storage/' . $application->$field) : asset($application->$field));
+                                                    @endphp
+                                                    <div class="p-2.5 px-3 bg-white rounded-3 border d-flex flex-column gap-2" style="border-color: #cbd5e1 !important;">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div class="rounded-2 bg-success bg-opacity-10 text-success p-1.5 d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+                                                                <i class="mdi mdi-image-check text-success fs-5"></i>
+                                                            </div>
+                                                            <div style="min-width: 0; flex: 1;">
+                                                                <span class="fw-bold text-dark d-block text-truncate survey-file-title" style="font-size: 0.82rem;">Foto Tersimpan</span>
+                                                                <small class="text-success fw-semibold d-block text-truncate survey-file-subtitle" style="font-size: 0.72rem;">
+                                                                    <i class="mdi mdi-check-circle me-1"></i>Sudah diunggah
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex align-items-center gap-2 pt-2 border-top" style="border-color: #f1f5f9 !important;">
+                                                            <a href="{{ $photoUrl }}" target="_blank" class="btn btn-sm btn-outline-primary flex-fill py-1 px-2 d-inline-flex align-items-center justify-content-center gap-1 text-decoration-none" style="font-size: 0.76rem; border-radius: 6px; font-weight: 600;">
+                                                                <i class="mdi mdi-eye-outline"></i>
+                                                                <span>Lihat Foto</span>
+                                                            </a>
+                                                            <label class="btn btn-sm btn-outline-secondary flex-fill py-1 px-2 d-inline-flex align-items-center justify-content-center gap-1 mb-0" style="font-size: 0.76rem; border-radius: 6px; font-weight: 600; cursor: pointer;">
+                                                                <i class="mdi mdi-camera-flip-outline"></i>
+                                                                <span>Ganti Foto</span>
+                                                                <input type="file" name="{{ $field }}" accept=".jpg,.jpeg,.png" style="display: none;" class="survey-file-input">
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <div class="transaksi-file-upload">
+                                                        <input type="file" name="{{ $field }}" accept=".jpg,.jpeg,.png" class="survey-file-input">
+                                                        <div class="transaksi-file-label">
+                                                            <i class="mdi mdi-camera"></i>
+                                                            <div class="transaksi-file-info">
+                                                                <span>Upload Foto</span>
+                                                                <small>Format: JPG, PNG</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <hr class="my-4">
+
+                                <div class="transaksi-form-group">
+                                    <label class="transaksi-form-label">Catatan Survey</label>
+                                    <textarea class="transaksi-form-control" name="catatan_survey" rows="3">{{ $application->catatan_survey ?? '' }}</textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
                                         <div class="transaksi-form-group">
-                                            <label class="transaksi-form-label">{{ $label }}</label>
-                                            @if ($application->$field)
-                                                @php
-                                                    $photoUrl = file_exists(public_path('uploads/' . $application->$field))
-                                                        ? asset('uploads/' . $application->$field)
-                                                        : (file_exists(storage_path('app/public/' . $application->$field)) ? asset('storage/' . $application->$field) : asset($application->$field));
-                                                @endphp
-                                                <div class="p-2.5 px-3 bg-white rounded-3 border d-flex flex-column gap-2" style="border-color: #cbd5e1 !important;">
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <div class="rounded-2 bg-success bg-opacity-10 text-success p-1.5 d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
-                                                            <i class="mdi mdi-image-check text-success fs-5"></i>
-                                                        </div>
-                                                        <div style="min-width: 0; flex: 1;">
-                                                            <span class="fw-bold text-dark d-block text-truncate survey-file-title" style="font-size: 0.82rem;">Foto Tersimpan</span>
-                                                            <small class="text-success fw-semibold d-block text-truncate survey-file-subtitle" style="font-size: 0.72rem;">
-                                                                <i class="mdi mdi-check-circle me-1"></i>Sudah diunggah
-                                                            </small>
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-flex align-items-center gap-2 pt-2 border-top" style="border-color: #f1f5f9 !important;">
-                                                        <a href="{{ $photoUrl }}" target="_blank" class="btn btn-sm btn-outline-primary flex-fill py-1 px-2 d-inline-flex align-items-center justify-content-center gap-1 text-decoration-none" style="font-size: 0.76rem; border-radius: 6px; font-weight: 600;">
-                                                            <i class="mdi mdi-eye-outline"></i>
-                                                            <span>Lihat Foto</span>
-                                                        </a>
-                                                        <label class="btn btn-sm btn-outline-secondary flex-fill py-1 px-2 d-inline-flex align-items-center justify-content-center gap-1 mb-0" style="font-size: 0.76rem; border-radius: 6px; font-weight: 600; cursor: pointer;">
-                                                            <i class="mdi mdi-camera-flip-outline"></i>
-                                                            <span>Ganti Foto</span>
-                                                            <input type="file" name="{{ $field }}" accept=".jpg,.jpeg,.png" style="display: none;" class="survey-file-input">
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            @else
-                                                <div class="transaksi-file-upload">
-                                                    <input type="file" name="{{ $field }}" accept=".jpg,.jpeg,.png" class="survey-file-input">
-                                                    <div class="transaksi-file-label">
-                                                        <i class="mdi mdi-camera"></i>
-                                                        <div class="transaksi-file-info">
-                                                            <span>Upload Foto</span>
-                                                            <small>Format: JPG, PNG</small>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endif
+                                            <label class="transaksi-form-label">Rekomendasi</label>
+                                            <select class="transaksi-form-control" name="rekomendasi">
+                                                <option value="">Pilih Kelayakan</option>
+                                                <option value="Layak"
+                                                    {{ $application->rekomendasi == 'Layak' ? 'selected' : '' }}>Layak</option>
+                                                <option value="Tidak Layak"
+                                                    {{ $application->rekomendasi == 'Tidak Layak' ? 'selected' : '' }}>Tidak
+                                                    Layak</option>
+                                            </select>
                                         </div>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            <hr class="my-4">
-
-                            <div class="transaksi-form-group">
-                                <label class="transaksi-form-label">Catatan Survey</label>
-                                <textarea class="transaksi-form-control" name="catatan_survey" rows="3">{{ $application->catatan_survey ?? '' }}</textarea>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="transaksi-form-group">
-                                        <label class="transaksi-form-label">Rekomendasi</label>
-                                        <select class="transaksi-form-control" name="rekomendasi">
-                                            <option value="">Pilih Kelayakan</option>
-                                            <option value="Layak"
-                                                {{ $application->rekomendasi == 'Layak' ? 'selected' : '' }}>Layak</option>
-                                            <option value="Tidak Layak"
-                                                {{ $application->rekomendasi == 'Tidak Layak' ? 'selected' : '' }}>Tidak
-                                                Layak</option>
-                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -1287,10 +1358,10 @@
             </div>
 
             {{-- SIDEBAR RINGKASAN --}}
-            <div class="col-12 col-lg-4">
-                <div class="transaksi-sticky">
-                    <div class="card">
-                        <div class="card-body">
+            <div class="col-12 col-lg-4 mb-4 mb-lg-0">
+                <div class="card h-100 shadow-sm border-0" style="border-radius: 14px;">
+                    <div class="card-body p-3 p-md-4 d-flex flex-column justify-content-between">
+                        <div>
                             <div class="transaksi-section-title">
                                 <i class="mdi mdi-clipboard-text-outline"></i>
                                 <span>Ringkasan Survey</span>
@@ -1331,17 +1402,17 @@
                                     <li><i class="mdi mdi-check-circle-outline"></i> Foto dokumentasi lengkap.</li>
                                 </ul>
                             </div>
-
-                            @if ($application->status === 'survey' && !$isSubsidi)
-                                <div class="mt-3">
-                                    <a href="{{ route('kpr.pecahlegal', $application->id) }}" class="btn btn-success w-100">
-                                        <i class="mdi mdi-arrow-right-bold-circle-outline me-1"></i>
-                                        Lanjut ke Pecah Legal Unit
-                                    </a>
-                                </div>
-                            @endif
-
                         </div>
+
+                        @if ($application->status === 'survey' && !$isSubsidi)
+                            <div class="mt-3">
+                                <a href="{{ route('kpr.pecahlegal', $application->id) }}" class="btn btn-success w-100">
+                                    <i class="mdi mdi-arrow-right-bold-circle-outline me-1"></i>
+                                    Lanjut ke Pecah Legal Unit
+                                </a>
+                            </div>
+                        @endif
+
                     </div>
                 </div>
             </div>

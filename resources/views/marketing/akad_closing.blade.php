@@ -1078,6 +1078,16 @@
                                 <span class="highlight">Rp
                                     {{ number_format($kpr->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
                             </div>
+
+                            <div class="transaksi-detail-item">
+                                <span>Promo</span>
+                                <span>{{ $kpr->promo_name ?? '-' }}</span>
+                            </div>
+
+                            <div class="transaksi-detail-item">
+                                <span>Nilai Promo</span>
+                                <span>Rp {{ number_format($kpr->promo_value ?? 0, 0, ',', '.') }}</span>
+                            </div>
                         </div>
 
                         <hr class="my-4">
@@ -1088,8 +1098,7 @@
                                 <i class="mdi mdi-account-tie"></i>
                             </div>
                             <div>
-                                <div class="fw-bold">{{ $kpr->booking->sales->name ?? '-' }}</div>
-                                {{-- <small class="transaksi-muted">{{ $kpr->booking->sales->role ?? '-' }}</small> --}}
+                                <div class="fw-bold">{{ $kpr->booking->sales->name ?? ($kpr->unit->activeBooking->sales->name ?? 'Staff Marketing') }}</div>
                             </div>
                         </div>
                     </div>

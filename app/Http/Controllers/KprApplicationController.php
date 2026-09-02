@@ -264,14 +264,27 @@ public function store(Request $request)
         //
     }
     public function serahTerima($id)
-{
-    $application = KprApplication::with(['customer','unit','bank'])->findOrFail($id);
+    {
+        $application = KprApplication::with([
+            'customer',
+            'unit.activeBooking.sales',
+            'bank',
+            'booking.sales'
+        ])->findOrFail($id);
 
-   return view('serah.serah-terima-kpr', [
-    'application' => $application,
-    'booking' => $application->booking
-]);
-}
+        $noBast = 'BAST/' . date('m/Y') . '/' . str_pad(
+            \App\Models\SerahTerima::count() + 1,
+            3,
+            '0',
+            STR_PAD_LEFT
+        );
+
+        return view('serah.serah-terima-kpr', [
+            'application' => $application,
+            'booking' => $application->booking,
+            'noBast' => $noBast
+        ]);
+    }
 public function pecahLegal($id)
 {
     $application = KprApplication::with([

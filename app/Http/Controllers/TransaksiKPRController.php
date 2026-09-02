@@ -248,7 +248,7 @@ class TransaksiKPRController extends Controller
 
     public function survey($id)
     {
-        $application = KprApplication::with(['customer', 'unit.landBank', 'unit.activeBooking', 'bank'])->findOrFail($id);
+        $application = KprApplication::with(['customer', 'unit.landBank', 'unit.activeBooking.sales', 'bank', 'booking.sales'])->findOrFail($id);
 
         // Surveyor bisa dilakukan oleh Staff Legal, Kepala Legal, Staff KPR, & Admin
         $surveyors = Employee::whereIn('position_id', [3, 4, 6, 5])

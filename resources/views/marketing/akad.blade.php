@@ -794,11 +794,12 @@
                                 <span class="highlight">Rp {{ number_format($application->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
                             </div>
                             <div class="transaksi-detail-item">
-                                <span>Metode Pembayaran</span>
-                                <span class="badge badge-gradient-primary">
-                                    <i class="mdi mdi-bank-transfer-in me-1"></i>
-                                    KPR
-                                </span>
+                                <span>Promo</span>
+                                <span>{{ $application->promo_name ?? '-' }}</span>
+                            </div>
+                            <div class="transaksi-detail-item">
+                                <span>Nilai Promo</span>
+                                <span>Rp {{ number_format($application->promo_value ?? 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
@@ -810,7 +811,7 @@
                                 <i class="mdi mdi-account-tie"></i>
                             </div>
                             <div>
-                                <div class="fw-bold">{{ optional(optional($application->unit)->activeBooking)->sales->name ?? '-' }}</div>
+                                <div class="fw-bold">{{ $application->booking->sales->name ?? (optional(optional($application->unit)->activeBooking)->sales->name ?? 'Staff Marketing') }}</div>
                             </div>
                         </div>
                     </div>

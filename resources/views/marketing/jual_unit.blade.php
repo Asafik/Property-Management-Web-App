@@ -3324,45 +3324,74 @@
                             strokeWidth = 3.5;
                         }
 
+                        const radius = (u.width || 80) / 2;
+
                         const circle = new fabric.Circle({
-                            left: u.pos_x,
-                            top: u.pos_y,
-                            radius: u.width / 2,
-                            angle: u.angle,
+                            radius: radius,
                             fill: fillColor,
-                            opacity: 0.75,
+                            opacity: 0.88,
                             stroke: strokeColor,
                             strokeWidth: strokeWidth,
                             strokeDashArray: strokeDash,
-                            hasControls: true,
-                            hasBorders: true,
-                            lockRotation: false
+                            originX: 'center',
+                            originY: 'center'
                         });
 
-                        circle.unitId = u.id;
-                        circle.unitCode = u.unitCode;
-                        circle.unitName = u.unitName;
-                        circle.unitNumber = u.unitNumber;
-                        circle.block = u.block;
-                        circle.jenis = u.jenis;
-                        circle.type = u.type;
-                        circle.address = u.address;
-                        circle.area = u.area;
-                        circle.building = u.building;
-                        circle.price = u.price;
-                        circle.direction = u.direction;
-                        circle.statusRaw = u.statusRaw;
-                        circle.statusText = u.statusText;
-                        circle.construction = u.construction;
-                        circle.hasBooking = u.hasBooking;
-                        circle.customer = u.customer;
-                        circle.sales = u.sales;
-                        circle.bookingDate = u.bookingDate;
-                        circle.bookingFee = u.bookingFee;
-                        circle.agentFee = u.agentFee;
-                        circle.bookingStatus = u.bookingStatus;
+                        const labelText = u.unitCode || (u.block && u.unitNumber ? `${u.block}.${u.unitNumber}` : (u.unitName || 'Unit'));
+                        const fontSize = Math.max(12, Math.min(20, Math.round(radius * 0.58)));
 
-                        canvas.add(circle);
+                        const text = new fabric.Text(labelText, {
+                            fontSize: fontSize,
+                            fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+                            fontWeight: 'bold',
+                            fill: '#1e293b',
+                            textAlign: 'center',
+                            originX: 'center',
+                            originY: 'center',
+                            shadow: new fabric.Shadow({
+                                color: 'rgba(255, 255, 255, 0.95)',
+                                blur: 3,
+                                offsetX: 0,
+                                offsetY: 0
+                            })
+                        });
+
+                        const markerGroup = new fabric.Group([circle, text], {
+                            left: u.pos_x,
+                            top: u.pos_y,
+                            angle: u.angle || 0,
+                            hasControls: true,
+                            hasBorders: true,
+                            lockRotation: false,
+                            cornerColor: '#9a55ff',
+                            cornerSize: 8,
+                            transparentCorners: false
+                        });
+
+                        markerGroup.unitId = u.id;
+                        markerGroup.unitCode = u.unitCode;
+                        markerGroup.unitName = u.unitName;
+                        markerGroup.unitNumber = u.unitNumber;
+                        markerGroup.block = u.block;
+                        markerGroup.jenis = u.jenis;
+                        markerGroup.type = u.type;
+                        markerGroup.address = u.address;
+                        markerGroup.area = u.area;
+                        markerGroup.building = u.building;
+                        markerGroup.price = u.price;
+                        markerGroup.direction = u.direction;
+                        markerGroup.statusRaw = u.statusRaw;
+                        markerGroup.statusText = u.statusText;
+                        markerGroup.construction = u.construction;
+                        markerGroup.hasBooking = u.hasBooking;
+                        markerGroup.customer = u.customer;
+                        markerGroup.sales = u.sales;
+                        markerGroup.bookingDate = u.bookingDate;
+                        markerGroup.bookingFee = u.bookingFee;
+                        markerGroup.agentFee = u.agentFee;
+                        markerGroup.bookingStatus = u.bookingStatus;
+
+                        canvas.add(markerGroup);
                     });
 
                     resetZoom();
