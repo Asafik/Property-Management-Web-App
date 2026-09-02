@@ -931,6 +931,116 @@
             </div>
         </div>
 
+        {{-- RINCIAN INFORMASI UNIT PROPERTI --}}
+        <div class="row mt-2 mb-3">
+            <div class="col-12">
+                <div class="card" style="border: 1px solid #ede4ff !important; background: #ffffff;">
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap align-items-center justify-content-between pb-3 mb-3 border-bottom gap-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="rounded-3 p-2 d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #da8cff, #9a55ff); color: #fff; width: 40px; height: 40px; box-shadow: 0 4px 10px rgba(154, 85, 255, 0.2);">
+                                    <i class="mdi mdi-home-analytics fs-4"></i>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold text-dark mb-0">Rincian Informasi Unit Properti</h5>
+                                    <small class="text-muted">Detail spesifikasi fisik, lokasi kavling, dan harga unit yang disurvey</small>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                @if(($application->unit->jenis ?? '') == 'subsidi')
+                                    <span class="badge badge-gradient-success px-3 py-2">
+                                        <i class="mdi mdi-home-assistant me-1"></i>SUBSIDI - {{ $application->unit->type ?? 'Standar' }}
+                                    </span>
+                                @else
+                                    <span class="badge badge-gradient-primary px-3 py-2">
+                                        <i class="mdi mdi-office-building me-1"></i>KOMERSIL - {{ $application->unit->type ?? 'Standar' }}
+                                    </span>
+                                @endif
+                                <span class="badge bg-light text-dark border px-3 py-2 fw-bold">
+                                    <i class="mdi mdi-cube-outline text-primary me-1"></i>Kode: {{ $application->unit->unit_code ?? '-' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-6 col-md-3">
+                                <div class="p-2.5 rounded-3 bg-light border h-100">
+                                    <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">NAMA UNIT & BLOK</small>
+                                    <span class="fw-bold text-dark d-block fs-6">{{ $application->unit->unit_name ?? '-' }}</span>
+                                    <small class="text-primary font-monospace fw-bold">Blok {{ $application->unit->block ?? '-' }} No. {{ $application->unit->unit_number ?? '-' }}</small>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="p-2.5 rounded-3 bg-light border h-100">
+                                    <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">LOKASI / PERUMAHAN</small>
+                                    <span class="fw-bold text-dark d-block fs-6">{{ $application->unit->landBank->name ?? 'Proyek Utama' }}</span>
+                                    <small class="text-muted text-truncate d-block">{{ $application->unit->landBank->village ?? ($application->unit->landBank->address ?? '-') }}</small>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="p-2.5 rounded-3 bg-light border h-100">
+                                    <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">DIMENSI LAHAN & BANGUNAN</small>
+                                    <div class="d-flex align-items-center gap-1 mt-1">
+                                        <span class="badge bg-white text-dark border fw-bold">LT: {{ number_format($application->unit->area ?? 0, 0, ',', '.') }} m²</span>
+                                        <span class="badge bg-white text-primary border fw-bold">LB: {{ number_format($application->unit->building_area ?? 0, 0, ',', '.') }} m²</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="p-2.5 rounded-3 bg-light border h-100">
+                                    <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">ARAH HADAP & POSISI</small>
+                                    <span class="fw-bold text-dark d-block">Hadap {{ $application->unit->facing ?? 'Utara' }}</span>
+                                    <small class="text-muted">Posisi: {{ $application->unit->position ?? 'Badan' }}</small>
+                                </div>
+                            </div>
+
+                            <div class="col-6 col-md-3">
+                                <div class="p-2.5 rounded-3 bg-light border h-100">
+                                    <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">HARGA UNIT PROPERTI</small>
+                                    <span class="fw-bold text-success d-block fs-6">Rp {{ number_format($application->unit->price ?? $application->harga_unit ?? 0, 0, ',', '.') }}</span>
+                                    <small class="text-muted">IJB: Rp {{ number_format($application->unit->ijb_price ?? 0, 0, ',', '.') }}</small>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="p-2.5 rounded-3 bg-light border h-100">
+                                    <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">PROGRESS KONSTRUKSI</small>
+                                    @php
+                                        $cProgress = strtolower($application->unit->construction_progress ?? 'belum_mulai');
+                                        $cBadge = match($cProgress) {
+                                            'selesai' => 'bg-success text-white',
+                                            'finishing' => 'bg-info text-white',
+                                            'atap', 'dinding', 'pondasi' => 'bg-warning text-dark',
+                                            default => 'bg-secondary text-white'
+                                        };
+                                    @endphp
+                                    <span class="badge {{ $cBadge }} px-2.5 py-1 text-uppercase fw-bold mt-1">
+                                        {{ str_replace('_', ' ', $cProgress) }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="p-2.5 rounded-3 bg-light border h-100">
+                                    <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">KONTRAKTOR / SPK</small>
+                                    <span class="fw-bold text-dark d-block text-truncate">{{ $application->unit->kontraktor ?? ($application->unit->no_spk ? 'SPK: ' . $application->unit->no_spk : 'Pembangunan Mandiri') }}</span>
+                                    @if($application->unit->no_spk)
+                                        <small class="text-muted font-monospace">No: {{ $application->unit->no_spk }}</small>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="p-2.5 rounded-3 bg-light border h-100">
+                                    <small class="text-muted d-block fw-semibold" style="font-size: 0.72rem;">STATUS UNIT</small>
+                                    <span class="badge bg-primary text-white px-2.5 py-1 text-uppercase fw-bold mt-1">
+                                        {{ $application->unit->status ?? 'Booking' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- FORM SURVEY --}}
         <div class="row mt-2">
             <div class="col-12 col-lg-8">

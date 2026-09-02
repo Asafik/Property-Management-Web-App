@@ -248,7 +248,7 @@ class TransaksiKPRController extends Controller
 
     public function survey($id)
     {
-        $application = KprApplication::with(['customer', 'unit', 'bank'])->findOrFail($id);
+        $application = KprApplication::with(['customer', 'unit.landBank', 'unit.activeBooking', 'bank'])->findOrFail($id);
 
         $surveyors = Employee::where('position_id', 3)->get();
 
