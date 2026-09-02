@@ -245,7 +245,8 @@ class DevelopmentProgressController extends Controller
                 $progress->save();
             }
 
-            $unit->price = $unit->price + $totalAnggaran;
+            // Harga jual unit tetap UTUH (tidak dijumlahkan dengan anggaran RPP/RAP).
+            // Anggaran RPP/RAP dicatat terpisah pada modul development_progresses / HPP.
 
             // Update progress unit
             $unit->construction_progress = 'selesai';
@@ -254,10 +255,10 @@ class DevelopmentProgressController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'RAP berhasil di-ACC dan harga unit diperbarui',
+                'message' => 'RAP berhasil di-ACC. Biaya RPP dicatat terpisah dan harga jual unit tetap utuh.',
                 'construction_progress' => $unit->construction_progress,
                 'total_anggaran' => $totalAnggaran,
-                'price_baru' => $unit->price,
+                'price_unit' => $unit->price,
             ]);
         } catch (\Exception $e) {
             return response()->json([
