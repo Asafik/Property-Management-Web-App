@@ -258,21 +258,51 @@ public function store(Request $request)
             }
             
             // Map Fase 3 fields
-            $data['priority']             = $request->prioritas;
-            $data['notes']                = $request->catatan;
-            $data['cost_ijb']             = $request->biaya_ijb_temp ? $cleanNumber($request->biaya_ijb_temp) : 0;
-            $data['cost_tax']             = $request->biaya_pajak_temp ? $cleanNumber($request->biaya_pajak_temp) : 0;
-            $data['cost_broker']          = $request->fee_makelar_temp ? $cleanNumber($request->fee_makelar_temp) : 0;
+            if ($request->filled('prioritas')) {
+                $data['priority'] = $request->prioritas;
+            }
+            if ($request->has('catatan')) {
+                $data['notes'] = $request->catatan;
+            }
 
-            $otherCost = $request->biaya_lain_temp ? (float)$cleanNumber($request->biaya_lain_temp) : 0;
-            if ($request->has('custom_costs') && is_array($request->custom_costs)) {
-                foreach ($request->custom_costs as $cCost) {
-                    if (!empty($cCost['amount'])) {
-                        $otherCost += (float)$cleanNumber($cCost['amount']);
+            // Biaya-biaya lain / transaksi:
+            // JIKA ada input terisi yang dikirim form, perbarui nilainya.
+            // JIKA tidak dikirim (misal saat form disabled atau hanya update progres pembayaran termin),
+            // PERTAHANKAN NILAI YANG SUDAH ADA di $record (JANGAN fallback ke 0).
+            if ($request->has('biaya_ijb_temp') && $request->filled('biaya_ijb_temp')) {
+                $data['cost_ijb'] = $cleanNumber($request->biaya_ijb_temp);
+            } elseif (!$record->exists) {
+                $data['cost_ijb'] = 0;
+            }
+
+            if ($request->has('biaya_pajak_temp') && $request->filled('biaya_pajak_temp')) {
+                $data['cost_tax'] = $cleanNumber($request->biaya_pajak_temp);
+            } elseif (!$record->exists) {
+                $data['cost_tax'] = 0;
+            }
+
+            if ($request->has('fee_makelar_temp') && $request->filled('fee_makelar_temp')) {
+                $data['cost_broker'] = $cleanNumber($request->fee_makelar_temp);
+            } elseif (!$record->exists) {
+                $data['cost_broker'] = 0;
+            }
+
+            if ($request->has('biaya_lain_temp') || ($request->has('custom_costs') && is_array($request->custom_costs))) {
+                $otherCost = 0;
+                if ($request->filled('biaya_lain_temp')) {
+                    $otherCost += (float)$cleanNumber($request->biaya_lain_temp);
+                }
+                if ($request->has('custom_costs') && is_array($request->custom_costs)) {
+                    foreach ($request->custom_costs as $cCost) {
+                        if (!empty($cCost['amount'])) {
+                            $otherCost += (float)$cleanNumber($cCost['amount']);
+                        }
                     }
                 }
+                $data['cost_other'] = $otherCost;
+            } elseif (!$record->exists) {
+                $data['cost_other'] = 0;
             }
-            $data['cost_other']           = $otherCost;
 
             // Ensure payment_method is correctly detected
             if ($request->has('installments') && is_array($request->installments) && count($request->installments) > 1) {
@@ -294,12 +324,12 @@ public function store(Request $request)
                 $data['installment_count']    = $request->installment_count_temp ?? (is_array($request->installments) ? count($request->installments) : $record->installment_count);
             }
 
-            if ($request->has('deal_price')) {
-                $finalDealPrice = $request->deal_price ? $cleanNumber($request->deal_price) : null;
+            if ($request->has('deal_price') && $request->filled('deal_price')) {
+                $finalDealPrice = $cleanNumber($request->deal_price);
                 $data['deal_price'] = $finalDealPrice;
                 $data['estimated_price'] = $finalDealPrice;
-            } elseif ($request->has('estimated_price')) {
-                $finalDealPrice = $request->estimated_price ? $cleanNumber($request->estimated_price) : null;
+            } elseif ($request->has('estimated_price') && $request->filled('estimated_price')) {
+                $finalDealPrice = $cleanNumber($request->estimated_price);
                 $data['deal_price'] = $finalDealPrice;
                 $data['estimated_price'] = $finalDealPrice;
             }
