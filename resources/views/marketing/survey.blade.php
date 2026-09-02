@@ -1046,7 +1046,7 @@
                                         <i class="mdi mdi-progress-wrench fs-5"></i>
                                     </div>
                                     <div class="overflow-hidden">
-                                        <small class="text-muted d-block fw-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Progress Fisik</small>
+                                        <small class="text-muted d-block fw-semibold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Progress Pembangunan</small>
                                         @php
                                             $cProgress = strtolower($application->unit->construction_progress ?? 'belum_mulai');
                                             $cBadge = match($cProgress) {
