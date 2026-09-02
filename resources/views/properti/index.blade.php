@@ -262,8 +262,8 @@
                                                     {{ Str::limit($item->address ?? '-', 22) }}
                                                 </span>
                                             </td>
-                                            <td class="fw-bold text-success-custom">
-                                                Rp {{ number_format($item->acquisition_price, 0, ',', '.') }}
+                                            <td class="fw-bold text-success">
+                                                Rp {{ number_format($item->grand_total_acquisition_price, 0, ',', '.') }}
                                             </td>
                                             <td>
                                                 @php

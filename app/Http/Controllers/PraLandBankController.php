@@ -460,14 +460,19 @@ public function store(Request $request)
         // AUTO PINDAH KE LANDBANK (PASCA LAND BANK)
         // =========================
         if ($data['status'] === 'approved') {
-            $finalAcquisitionPrice = $data['deal_price'] ?? $data['estimated_price'] ?? $record->deal_price ?? $record->estimated_price;
+            $finalDealPrice = $data['deal_price'] ?? $data['estimated_price'] ?? $record->deal_price ?? $record->estimated_price;
+            $finalGrandTotal = (float)$finalDealPrice 
+                + (float)($data['cost_ijb'] ?? $record->cost_ijb ?? 0)
+                + (float)($data['cost_tax'] ?? $record->cost_tax ?? 0)
+                + (float)($data['cost_broker'] ?? $record->cost_broker ?? 0)
+                + (float)($data['cost_other'] ?? $record->cost_other ?? 0);
 
             $landBank = \App\Models\LandBank::firstOrNew(['name' => $record->land_name]);
             $landBank->fill([
                 'name'              => $record->land_name,
                 'area'              => $record->area,
                 'remaining_area'    => $landBank->exists ? $landBank->remaining_area : $record->area,
-                'acquisition_price' => $finalAcquisitionPrice,
+                'acquisition_price' => $finalGrandTotal > 0 ? $finalGrandTotal : $finalDealPrice,
                 'acquisition_date'  => $landBank->exists ? $landBank->acquisition_date : now()->toDateString(),
                 'address'           => $record->address,
                 'village'           => $record->village,

@@ -356,7 +356,7 @@
                                         </td>
 
                                         <td class="fw-bold text-success">
-                                            Rp {{ number_format($land->acquisition_price ?? 0, 0, ',', '.') }}
+                                            Rp {{ number_format($land->grand_total_acquisition_price, 0, ',', '.') }}
                                         </td>
 
                                         <td>{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</td>
