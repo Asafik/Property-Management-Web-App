@@ -76,23 +76,23 @@ class DevelopmentProgressController extends Controller
         }
 
         $request->validate([
-            'land_bank_unit_id' => 'required|exists:land_bank_units,id',
-
-            'items' => 'nullable|array',
-            'items.*.id' => 'nullable|exists:development_progress_items,id',
-
-            'items.*.kategori' => 'nullable|string',
-            'items.*.kode' => 'nullable|string',
-            'items.*.uraian' => 'nullable|string',
-            'items.*.volume' => 'nullable|numeric',
-            'items.*.satuan' => 'nullable|string',
-            'items.*.harga_satuan' => 'nullable|numeric',
-
-            'items.*.keterangan' => 'nullable|string',
-            'items.*.dokumentasi' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-
-            'deadline' => 'nullable|array',
-            'deadline.*' => 'nullable|date',
+            'land_bank_unit_id'   => 'required|exists:land_bank_units,id',
+            'items'               => 'nullable|array',
+            'items.*.id'          => 'nullable|exists:development_progress_items,id',
+            'items.*.kategori'    => 'nullable|string',
+            'items.*.kode'        => 'nullable|string',
+            'items.*.uraian'      => 'nullable|string',
+            'items.*.volume'      => 'nullable|numeric',
+            'items.*.satuan'      => 'nullable|string',
+            'items.*.harga_satuan'=> 'nullable|numeric',
+            'items.*.keterangan'  => 'nullable|string',
+            'items.*.dokumentasi' => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf,doc,docx,heic,heif,bmp|max:10240',
+            'deadline'            => 'nullable|array',
+            'deadline.*'          => 'nullable|date',
+        ], [
+            'items.*.dokumentasi.mimes' => 'Format file dokumentasi tidak didukung. Harap gunakan file berformat: JPG, JPEG, PNG, WEBP, atau PDF.',
+            'items.*.dokumentasi.max'   => 'Ukuran file dokumentasi terlalu besar. Maksimal ukuran file adalah 10 MB.',
+            'items.*.dokumentasi.file'  => 'File dokumentasi harus berupa file yang valid.',
         ]);
 
         DB::beginTransaction();
@@ -135,11 +135,26 @@ class DevelopmentProgressController extends Controller
                     'deadline'     => $deadlineItem,
                 ]);
 
-                // Upload dokumentasi
+                // Upload dokumentasi (Direct Public Uploads Mirror)
                 if ($request->hasFile("items.$index.dokumentasi")) {
-
                     $file = $request->file("items.$index.dokumentasi");
-                    $filePath = $file->store('progress_dokumentasi', 'public');
+                    $fileName = 'doc_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $relDir = 'uploads/progress_dokumentasi';
+
+                    $dir1 = public_path($relDir);
+                    $dir2 = base_path($relDir);
+                    $dir3 = base_path('public/' . $relDir);
+
+                    foreach ([$dir1, $dir2, $dir3] as $d) {
+                        if (!file_exists($d)) @mkdir($d, 0755, true);
+                    }
+
+                    $file->move($dir1, $fileName);
+                    if ($dir2 !== $dir1 && file_exists($dir2) && file_exists($dir1 . '/' . $fileName)) {
+                        @copy($dir1 . '/' . $fileName, $dir2 . '/' . $fileName);
+                    }
+
+                    $filePath = "{$relDir}/{$fileName}";
 
                     $progressItem->documents()->create([
                         'file_path' => $filePath
@@ -255,18 +270,39 @@ class DevelopmentProgressController extends Controller
     public function uploadDocumentation(Request $request, $itemId)
     {
         $request->validate([
-            'dokumentasi' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
+            'dokumentasi' => 'required|file|mimes:jpg,jpeg,png,webp,pdf,doc,docx,heic,heif,bmp|max:10240'
+        ], [
+            'dokumentasi.required' => 'Silakan pilih file dokumentasi terlebih dahulu.',
+            'dokumentasi.mimes'    => 'Format file dokumentasi tidak didukung. Harap gunakan file berformat: JPG, JPEG, PNG, WEBP, atau PDF.',
+            'dokumentasi.max'      => 'Ukuran file dokumentasi terlalu besar. Maksimal ukuran file adalah 10 MB.',
         ]);
 
         $item = DevelopmentProgressItem::findOrFail($itemId);
 
         if ($request->file('dokumentasi')) {
-            $path = $request->file('dokumentasi')->store('dokumentasi', 'public');
+            $file = $request->file('dokumentasi');
+            $fileName = 'doc_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $relDir = 'uploads/progress_dokumentasi';
+
+            $dir1 = public_path($relDir);
+            $dir2 = base_path($relDir);
+            $dir3 = base_path('public/' . $relDir);
+
+            foreach ([$dir1, $dir2, $dir3] as $d) {
+                if (!file_exists($d)) @mkdir($d, 0755, true);
+            }
+
+            $file->move($dir1, $fileName);
+            if ($dir2 !== $dir1 && file_exists($dir2) && file_exists($dir1 . '/' . $fileName)) {
+                @copy($dir1 . '/' . $fileName, $dir2 . '/' . $fileName);
+            }
+
+            $path = "{$relDir}/{$fileName}";
             $item->dokumentasi = $path;
             $item->save();
         }
 
-        return back()->with('success', 'File berhasil diupload!');
+        return back()->with('success', 'File dokumentasi berhasil diupload!');
     }
     public function destroy($itemId)
     {

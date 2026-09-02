@@ -433,7 +433,14 @@
 
                                                             @if ($documents->count())
                                                                 @foreach ($documents as $doc)
-                                                                    <a href="{{ asset('storage/' . $doc->file_path) }}"
+                                                                    @php
+                                                                        $docRaw = $doc->file_path;
+                                                                        $docClean = ltrim(preg_replace('/^(storage\/)+/', '', $docRaw), '/');
+                                                                        $docUrl = str_starts_with($docRaw, 'http')
+                                                                            ? $docRaw
+                                                                            : (str_starts_with($docRaw, 'uploads/') ? asset($docRaw) : (file_exists(public_path($docRaw)) ? asset($docRaw) : asset('storage/' . $docClean)));
+                                                                    @endphp
+                                                                    <a href="{{ $docUrl }}"
                                                                         target="_blank" class="file-preview-btn">
                                                                         <i class="mdi mdi-eye"></i>
                                                                         <span>Lihat</span>
@@ -730,13 +737,13 @@
                                    name="items[${indexItem}][dokumentasi]"
                                    id="file-${indexItem}"
                                    class="file-upload-input"
-                                   accept="image/*,.pdf"
+                                   accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx"
                                    onchange="handleFileSelect(this, ${indexItem})">
                             <div class="file-upload-label" id="label-${indexItem}">
                                 <i class="mdi mdi-cloud-upload text-primary"></i>
                                 <div class="file-upload-info">
-                                    <span id="fileName-${indexItem}">Pilih file</span>
-                                    <small class="text-muted">Max 2MB</small>
+                                    <span id="fileName-${indexItem}">Pilih file dokumentasi</span>
+                                    <small class="text-muted" style="font-size: 0.68rem;">Format: JPG, PNG, WEBP, PDF (Maks 10MB)</small>
                                 </div>
                                 <span class="file-upload-size" id="fileSize-${indexItem}"></span>
                             </div>
@@ -786,6 +793,38 @@
             const fileSizeSpan = document.getElementById(`fileSize-${index}`);
 
             if (file) {
+                const allowedExts = ['jpg', 'jpeg', 'png', 'webp', 'pdf', 'doc', 'docx'];
+                const fileExt = file.name.split('.').pop().toLowerCase();
+                const maxSizeBytes = 10 * 1024 * 1024; // 10MB
+
+                if (!allowedExts.includes(fileExt)) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Format File Tidak Didukung',
+                        text: 'Format file "' + fileExt.toUpperCase() + '" tidak didukung. Harap pilih file dokumentasi dengan format: JPG, JPEG, PNG, WEBP, atau PDF.',
+                        confirmButtonColor: '#9a55ff'
+                    });
+                    input.value = '';
+                    fileNameSpan.textContent = 'Pilih file dokumentasi';
+                    fileSizeSpan.textContent = '';
+                    label.classList.remove('file-selected');
+                    return;
+                }
+
+                if (file.size > maxSizeBytes) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Ukuran File Terlalu Besar',
+                        text: 'Ukuran file (' + (file.size / (1024 * 1024)).toFixed(1) + ' MB) melebihi batas maksimal 10 MB.',
+                        confirmButtonColor: '#9a55ff'
+                    });
+                    input.value = '';
+                    fileNameSpan.textContent = 'Pilih file dokumentasi';
+                    fileSizeSpan.textContent = '';
+                    label.classList.remove('file-selected');
+                    return;
+                }
+
                 fileNameSpan.textContent = file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
 
                 if (file.size < 1024 * 1024) {
@@ -796,7 +835,7 @@
 
                 label.classList.add('file-selected');
             } else {
-                fileNameSpan.textContent = 'Pilih file';
+                fileNameSpan.textContent = 'Pilih file dokumentasi';
                 fileSizeSpan.textContent = '';
                 label.classList.remove('file-selected');
             }
