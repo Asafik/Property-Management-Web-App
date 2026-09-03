@@ -316,12 +316,51 @@ class ProjectAccountingController extends Controller
 
         // D. Entri Pembayaran Konsumen (Penerimaan Penjualan Unit)
         $bookings = Booking::with(['unit.landBank', 'customer', 'payments'])
-            ->whereIn('status', ['sold', 'booked', 'completed'])
+            ->whereIn('status', ['sold', 'booked', 'completed', 'active'])
             ->get();
 
         foreach ($bookings as $b) {
-            // UTJ Entry
-            if ($b->utj > 0) {
+            $hasBookingFeePayment = false;
+
+            if ($b->payments && $b->payments->count() > 0) {
+                foreach ($b->payments as $p) {
+                    $pType = strtolower($p->type ?? ($p->payment_type ?? ''));
+                    if ($pType === 'booking_fee' || $pType === 'utj') {
+                        $hasBookingFeePayment = true;
+                        $catName = 'Pendapatan Unit (UTJ)';
+                        $typeLabel = 'Penerimaan UTJ Booking';
+                    } elseif ($pType === 'dp') {
+                        $catName = 'Pendapatan Uang Muka (DP)';
+                        $typeLabel = 'Pembayaran DP';
+                    } elseif ($pType === 'pelunasan') {
+                        // Jika pencairan KPR sudah ditangani di KprDisbursement, lewati agar tidak ganda
+                        if (\App\Models\KprDisbursement::where('booking_id', $b->id)->exists()) {
+                            continue;
+                        }
+                        $catName = 'Pelunasan Unit Konsumen';
+                        $typeLabel = 'Pembayaran Pelunasan';
+                    } else {
+                        $catName = 'Pendapatan Angsuran Unit';
+                        $typeLabel = 'Pembayaran Angsuran';
+                    }
+
+                    $journalEntries->push((object)[
+                        'date'        => $p->payment_date ? Carbon::parse($p->payment_date) : ($p->created_at ? Carbon::parse($p->created_at) : now()),
+                        'ref_no'      => $b->booking_code . '-PAY-' . $p->id,
+                        'category'    => $catName,
+                        'description' => $typeLabel . ' Unit ' . ($b->unit?->unit_name ?? '') . ' dari ' . ($b->customer?->full_name ?? '-'),
+                        'project'     => $b->unit?->landBank?->name ?? 'Proyek Perumahan',
+                        'unit'        => 'Blok ' . ($b->unit?->unit_code ?? '-'),
+                        'type'        => 'KAS MASUK',
+                        'debit'       => (float) $p->amount,
+                        'kredit'      => 0,
+                        'status'      => 'DITERIMA',
+                    ]);
+                }
+            }
+
+            // Fallback UTJ jika belum ada di tabel payments
+            if (!$hasBookingFeePayment && (float) ($b->utj ?? 0) > 0) {
                 $journalEntries->push((object)[
                     'date'        => $b->created_at ? Carbon::parse($b->created_at) : now(),
                     'ref_no'      => $b->booking_code . '-UTJ',
@@ -334,24 +373,6 @@ class ProjectAccountingController extends Controller
                     'kredit'      => 0,
                     'status'      => 'DITERIMA',
                 ]);
-            }
-
-            // Payment / Angsuran Cash Tempo Entries
-            if ($b->payments) {
-                foreach ($b->payments as $p) {
-                    $journalEntries->push((object)[
-                        'date'        => $p->payment_date ? Carbon::parse($p->payment_date) : $p->created_at,
-                        'ref_no'      => $b->booking_code . '-PAY-' . $p->id,
-                        'category'    => 'Pendapatan Angsuran Unit',
-                        'description' => 'Pembayaran ' . ($p->payment_type ?? 'Angsuran') . ' Unit ' . ($b->unit?->unit_name ?? '') . ' dari ' . ($b->customer?->full_name ?? '-'),
-                        'project'     => $b->unit?->landBank?->name ?? 'Proyek Perumahan',
-                        'unit'        => 'Blok ' . ($b->unit?->unit_code ?? '-'),
-                        'type'        => 'KAS MASUK',
-                        'debit'       => (float) $p->amount,
-                        'kredit'      => 0,
-                        'status'      => 'DITERIMA',
-                    ]);
-                }
             }
         }
 
