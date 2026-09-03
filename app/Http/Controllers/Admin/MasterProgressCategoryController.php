@@ -22,7 +22,7 @@ class MasterProgressCategoryController extends Controller
             return $c->items->sum(fn($i) => $i->default_volume * $i->default_harga_satuan);
         });
 
-        return view('master.progress.index', compact('categories', 'totalCategories', 'totalItems', 'totalEstimasi'));
+        return view('master_data.progress_kategori.index', compact('categories', 'totalCategories', 'totalItems', 'totalEstimasi'));
     }
 
     public function storeCategory(Request $request)
