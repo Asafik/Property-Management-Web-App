@@ -11,12 +11,14 @@ class ListPengajuanController extends Controller
 {
     public function index(Request $request)
     {
-        // Query builder untuk bookings dengan relasi
+        // Query builder untuk bookings dengan relasi (Hanya yang sudah menentukan User/Customer)
         $query = Booking::with([
             'customer',
             'unit',
             'sales'
-        ]);
+        ])
+        ->whereNotNull('customer_id')
+        ->whereHas('customer');
 
         // Filter Pencarian (customer, booking code, unit)
         if ($request->filled('search')) {
@@ -73,7 +75,7 @@ class ListPengajuanController extends Controller
         } elseif (in_array($sortColumn, ['id', 'booking_code', 'status', 'purchase_type', 'created_at'])) {
             $query->orderBy($sortColumn, $sortDirection);
         } else {
-            $query->latest('bookings.created_at'); // Menggunakan nama tabel saat default untuk menghindari ambiguitas jika ada join nantinya
+            $query->latest('bookings.created_at');
         }
 
         // Jumlah tampil per halaman
@@ -82,16 +84,18 @@ class ListPengajuanController extends Controller
         // Ambil data dengan pagination
         $bookings = $query->paginate($perPage)->withQueryString();
 
-        // Total booking dengan status pengajuan (untuk statistik)
-        $totalPengajuan = Booking::where('status', 'active')->count();
+        // Statistik booking yang sudah memiliki customer
+        $baseStatsQuery = Booking::whereNotNull('customer_id')->whereHas('customer');
+        $totalPengajuan = (clone $baseStatsQuery)->where('status', 'active')->count();
+        if ($totalPengajuan === 0) {
+            $totalPengajuan = (clone $baseStatsQuery)->count();
+        }
 
-        // Total untuk statistik lainnya (opsional)
-        $totalKpr = Booking::where('purchase_type', 'kpr')->count();
-        $totalCash = Booking::where('purchase_type', 'cash')->count();
-        $totalLunas = Booking::whereIn('status', ['completed', 'cash_process'])->count();
+        $totalKpr = (clone $baseStatsQuery)->where('purchase_type', 'kpr')->count();
+        $totalCash = (clone $baseStatsQuery)->where('purchase_type', 'cash')->count();
+        $totalLunas = (clone $baseStatsQuery)->whereIn('status', ['completed', 'cash_process'])->count();
 
         $marketing = Employee::where('division_id', 1)->get();
-
 
         return view('marketing.list_pengajuan', compact(
             'totalPengajuan',

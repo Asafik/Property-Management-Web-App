@@ -285,6 +285,9 @@
                         </p>
                     </div>
                     <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <a href="{{ route('finance.kpr-disbursement.index') }}" class="btn btn-sm btn-gradient-primary shadow-sm" style="border-radius: 8px; font-weight: 700; padding: 0.5rem 1rem;">
+                            <i class="mdi mdi-bank-transfer me-1"></i><span>Pencairan Dana KPR</span>
+                        </a>
                         <a href="{{ route('keuangan.project-accounting.cetak', request()->all()) }}" target="_blank" class="btn btn-sm btn-cetak-laporan shadow-sm">
                             <span>Cetak Laporan ERP</span>
                         </a>

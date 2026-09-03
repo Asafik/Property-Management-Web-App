@@ -60,7 +60,8 @@ class ProjectAccountingController extends Controller
             'complaints',
             'activeBooking.customer',
             'activeBooking.payments',
-            'activeBooking.akad'
+            'activeBooking.akad',
+            'kprDisbursements',
         ]);
 
         if ($landBankId) {
@@ -105,21 +106,26 @@ class ProjectAccountingController extends Controller
             // Pendapatan / Harga Jual
             $hargaJual = (float) ($booking->harga_kesepakatan ?? $u->price ?? 0);
 
-            // Realisasi Uang Masuk dari Konsumen
+            // Realisasi Uang Masuk dari Konsumen & Bank
             $uangMasukKonsumen = 0;
             if ($booking) {
                 // UTJ
                 $uangMasukKonsumen += (float) ($booking->utj ?? 0);
-                // Payments (DP / Angsuran Cash Tempo)
+                // Payments (DP / Angsuran Cash)
                 if ($booking->payments) {
-                    $uangMasukKonsumen += (float) $booking->payments->sum('amount');
+                    $uangMasukKonsumen += (float) $booking->payments->where('payment_type', '!=', 'kpr_cair')->sum('amount');
                 }
-                // Jika Akad KPR Selesai
-                if ($booking->akad && $booking->akad->status === 'selesai' && $booking->payment_method === 'kpr') {
-                    $nilaiKpr = (float) ($booking->kprApplication->realisasi_nominal ?? ($hargaJual - ($booking->dp ?? 0)));
-                    if ($nilaiKpr > 0 && $uangMasukKonsumen < $hargaJual) {
-                        $uangMasukKonsumen += $nilaiKpr;
-                    }
+            }
+
+            // Realisasi Pencairan Dana KPR dari Bank
+            $totalCairKpr = (float) $u->kprDisbursements->sum('nominal_cair');
+            $uangMasukKonsumen += $totalCairKpr;
+
+            // Fallback legacy jika belum input di disbursement tapi akad sudah selesai
+            if ($totalCairKpr == 0 && $booking && $booking->akad && $booking->akad->status === 'selesai' && ($booking->purchase_type === 'kpr' || $booking->kprApplication)) {
+                $nilaiKpr = (float) ($booking->kprApplication->realisasi_nominal ?? ($hargaJual - ($booking->dp ?? 0)));
+                if ($nilaiKpr > 0 && $uangMasukKonsumen < $hargaJual) {
+                    $uangMasukKonsumen += $nilaiKpr;
                 }
             }
 

@@ -127,4 +127,9 @@ public function getAlokasiBiayaInfrastrukturAttribute(): float
     return round($totalExpenses / $totalUnits, 2);
 }
 
+public function kprDisbursements()
+{
+    return $this->hasMany(KprDisbursement::class, 'land_bank_unit_id')->orderBy('tanggal_cair', 'desc');
+}
+
 }

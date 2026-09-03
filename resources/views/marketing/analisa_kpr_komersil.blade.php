@@ -692,10 +692,19 @@
                                         <td class="text-center">
                                             <div class="d-flex align-items-center justify-content-center gap-1">
                                                 @if (isset($app->unit->land_bank_id, $app->unit->id))
-                                                    <a href="{{ route('properti.progress', ['land_bank_id' => $app->unit->land_bank_id, 'unit_id' => $app->unit->id]) }}"
-                                                        class="btn btn-gradient-info btn-action" title="Progress Pembangunan">
-                                                        <i class="mdi mdi-home-edit"></i>
-                                                    </a>
+                                                    @php
+                                                        $isUnitSoldOrDone = in_array(strtolower($app->unit->status ?? ''), ['sold', 'soldout']) || strtolower($app->unit->construction_progress ?? '') === 'selesai';
+                                                    @endphp
+                                                    @if($isUnitSoldOrDone)
+                                                        <button class="btn btn-secondary btn-action" disabled title="Pembangunan Selesai / Unit Sold Out" style="opacity: 0.55; cursor: not-allowed;">
+                                                            <i class="mdi mdi-home-lock"></i>
+                                                        </button>
+                                                    @else
+                                                        <a href="{{ route('properti.progress', ['land_bank_id' => $app->unit->land_bank_id, 'unit_id' => $app->unit->id]) }}"
+                                                            class="btn btn-gradient-info btn-action" title="Progress Pembangunan">
+                                                            <i class="mdi mdi-home-edit"></i>
+                                                        </a>
+                                                    @endif
                                                 @endif
 
                                                 @if (($app->unit->construction_progress ?? null) == 'selesai')

@@ -104,6 +104,11 @@ class DevelopmentProgressController extends Controller
             'items.*.dokumentasi.file'  => 'File dokumentasi harus berupa file yang valid.',
         ]);
 
+        $unit = LandBankUnit::findOrFail($request->land_bank_unit_id);
+        if (in_array(strtolower($unit->status ?? ''), ['sold', 'soldout']) || strtolower($unit->construction_progress ?? '') === 'selesai') {
+            return redirect()->back()->with('error', 'Unit telah selesai / sold out. Rincian progress pembangunan telah dikunci dan tidak dapat diubah.');
+        }
+
         DB::beginTransaction();
 
         try {
@@ -361,6 +366,10 @@ class DevelopmentProgressController extends Controller
     {
         try {
             $unit = LandBankUnit::findOrFail($unitId);
+            if (in_array(strtolower($unit->status ?? ''), ['sold', 'soldout']) || strtolower($unit->construction_progress ?? '') === 'selesai') {
+                return back()->with('error', 'Unit telah selesai / sold out. Template progress tidak dapat diterapkan.');
+            }
+
             $progress = DevelopmentProgress::firstOrCreate(
                 ['land_bank_unit_id' => $unit->id],
                 ['title' => 'Progress Pembangunan Unit ' . $unit->unit_code]

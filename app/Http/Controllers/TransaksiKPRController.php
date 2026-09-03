@@ -86,6 +86,11 @@ class TransaksiKPRController extends Controller
     {
         $booking = Booking::with(['customer', 'unit', 'sales', 'kprApplication.bank', 'kprApplication.documents'])->findOrFail($id);
 
+        if (in_array(strtolower($booking->status ?? ''), ['completed', 'sold', 'lunas', 'akad_selesai'])
+            || ($booking->kprApplication && in_array(strtolower($booking->kprApplication->status ?? ''), ['approved', 'survey', 'akad', 'completed', 'lunas', 'analisa']))) {
+            return redirect()->route('customer.kpr')->with('warning', 'Pengajuan KPR untuk unit ini sudah di-approve / diproses sebelumnya.');
+        }
+
         return view('marketing.vertifikasi_kpr', compact('booking'));
     }
 

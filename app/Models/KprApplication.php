@@ -82,4 +82,9 @@ class KprApplication extends Model
     {
         return $this->belongsTo(Booking::class);
     }
+
+    public function disbursements()
+    {
+        return $this->hasMany(KprDisbursement::class, 'kpr_application_id')->orderBy('tanggal_cair', 'asc');
+    }
 }

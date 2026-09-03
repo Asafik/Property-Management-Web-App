@@ -193,7 +193,7 @@
                         <div>
                             <span class="text-muted small fw-semibold d-block">Total Komisi / Fee Saya</span>
                             <h3 class="fw-bold text-purple mb-0 mt-1" style="color: #9a55ff;">Rp {{ number_format($myTotalFee, 0, ',', '.') }}</h3>
-                            <small class="text-muted mt-2 d-block" style="font-size: 0.75rem;">Dari total unit closing</small>
+                            <small class="text-muted mt-2 d-block" style="font-size: 0.75rem;">Dari total {{ $mySoldUnits }} unit closing (Sold Out)</small>
                         </div>
                         <div class="rounded-circle p-2.5 d-flex align-items-center justify-content-center" style="background: rgba(154, 85, 255, 0.12); color: #9a55ff; width: 44px; height: 44px;">
                             <i class="mdi mdi-cash-plus fs-4"></i>

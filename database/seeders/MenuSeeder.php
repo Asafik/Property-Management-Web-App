@@ -109,19 +109,19 @@ class MenuSeeder extends Seeder
             'icon'  => 'mdi-account-group',
             'order' => 4
         ]);
-        $userMenu->positions()->attach($adminOnly);
+        $userMenu->positions()->attach($marketingRoles);
 
         Menu::create([
             'name'      => 'Data User',
             'route'     => 'customer.data',
             'parent_id' => $userMenu->id
-        ])->positions()->attach($adminOnly);
+        ])->positions()->attach($marketingRoles);
 
         Menu::create([
             'name'      => 'Data User Proyeksi',
             'route'     => 'customer.tamu',
             'parent_id' => $userMenu->id
-        ])->positions()->attach($adminOnly);
+        ])->positions()->attach($marketingRoles);
 
         // ================= 5. TRANSAKSI =================
         $transaksi = Menu::create([
@@ -258,6 +258,12 @@ class MenuSeeder extends Seeder
         Menu::create([
             'name'      => 'Master HPP & Project Accounting',
             'route'     => 'keuangan.project-accounting.index',
+            'parent_id' => $keuangan->id
+        ])->positions()->attach($keuanganRoles);
+
+        Menu::create([
+            'name'      => 'Pencairan Dana KPR',
+            'route'     => 'finance.kpr-disbursement.index',
             'parent_id' => $keuangan->id
         ])->positions()->attach($keuanganRoles);
 
