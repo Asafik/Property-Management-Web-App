@@ -337,7 +337,11 @@
                     </div>
                 </div>
             </div>
-        </div>
+        @if(isset($selectedUnit))
+            <form id="formApplyTemplate" action="{{ route('properti.progress.applyTemplate', $selectedUnit->id) }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+        @endif
 
         <form action="{{ route('properti.progress.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -746,6 +750,12 @@
         let kategoriMap = @json($jsKategoriMap);
 
         function confirmApplyTemplate() {
+            let form = document.getElementById('formApplyTemplate');
+            if (!form) {
+                Swal.fire('Perhatian', 'Form penerapan template tidak ditemukan pada unit ini.', 'warning');
+                return;
+            }
+
             Swal.fire({
                 title: 'Terapkan Template Standar RAP?',
                 text: 'Sistem akan otomatis memasukkan rincian pekerjaan standar (I. Perizinan & Legalitas s/d VIII. Pekerjaan Lainnya) pada unit ini.',
@@ -765,7 +775,7 @@
                             Swal.showLoading();
                         }
                     });
-                    document.getElementById('formApplyTemplate').submit();
+                    form.submit();
                 }
             });
         }
