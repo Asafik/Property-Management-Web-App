@@ -993,8 +993,8 @@ h3.text-dark, h4.text-dark {
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center">
                                                 @php
-                                                    $isAlreadyApproved = in_array(strtolower($booking->status ?? ''), ['approved', 'completed', 'lanjut_kpr', 'sold', 'lunas', 'akad', 'survey', 'verifikasi', 'cash_process'])
-                                                        || ($booking->kprApplication && in_array(strtolower($booking->kprApplication->status ?? ''), ['approved', 'survey', 'akad', 'completed', 'lunas', 'analisa', 'dokumen']));
+                                                    $isAlreadyApproved = in_array(strtolower($booking->status ?? ''), ['completed', 'sold', 'lunas', 'akad_selesai'])
+                                                        || ($booking->kprApplication && in_array(strtolower($booking->kprApplication->status ?? ''), ['approved', 'survey', 'akad', 'completed', 'lunas', 'analisa']));
                                                 @endphp
 
                                                 @if($isAlreadyApproved)
@@ -1002,17 +1002,12 @@ h3.text-dark, h4.text-dark {
                                                             style="background: #ecfdf5; color: #059669; border: 1.5px solid #10b981; border-radius: 8px; min-height: 34px; font-weight: 700; cursor: not-allowed; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.12);">
                                                         <i class="mdi mdi-check-all me-1" style="font-size: 1.1rem; color: #10b981;"></i>Approved
                                                     </button>
-                                                @elseif($isComplete)
+                                                @else
                                                     <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
                                                        class="btn btn-gradient-success btn-sm btnApproveKpr d-inline-flex align-items-center justify-content-center px-3"
                                                        style="border-radius: 8px; min-height: 34px; font-weight: 700; border: 1.5px solid #059669; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);">
                                                         <i class="mdi mdi-check-circle-outline me-1"></i>Approved
                                                     </a>
-                                                @else
-                                                    <button class="btn btn-sm d-inline-flex align-items-center justify-content-center px-3" disabled title="Dokumen belum lengkap ({{ $uploadedCount }}/8)"
-                                                            style="background: #f8fafc; color: #94a3b8; border: 1.5px dashed #cbd5e1; border-radius: 8px; min-height: 34px; font-weight: 600; cursor: not-allowed;">
-                                                        <i class="mdi mdi-clock-outline me-1"></i>Approved
-                                                    </button>
                                                 @endif
                                             </div>
                                         </td>
