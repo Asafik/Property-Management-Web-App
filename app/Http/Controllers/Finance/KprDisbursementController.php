@@ -51,7 +51,7 @@ class KprDisbursementController extends Controller
         ])
         ->where(function ($q) {
             $q->whereHas('activeBooking', function ($bq) {
-                $bq->where('payment_method', 'kpr')
+                $bq->where('purchase_type', 'kpr')
                    ->orWhereHas('kprApplication');
             })
             ->orWhereHas('kprDisbursements');
@@ -219,16 +219,16 @@ class KprDisbursementController extends Controller
                 'created_by'         => Auth::id(),
             ]);
 
-            // Catat juga ke payment/kas masuk jika booking tersedia
+            // Catat juga ke payment jika booking tersedia
             if ($booking) {
                 Payment::create([
-                    'booking_id'     => $booking->id,
-                    'payment_type'   => 'kpr_cair',
-                    'amount'         => $request->nominal_cair,
-                    'payment_date'   => $request->tanggal_cair,
-                    'proof_document' => $buktiPath,
-                    'status'         => 'verified',
-                    'notes'          => 'Pencairan Dana KPR dari ' . ($request->bank_penyalur ?? 'Bank') . ' (' . $request->nama_termin . ')',
+                    'booking_id'       => $booking->id,
+                    'type'             => 'pelunasan',
+                    'amount'           => $request->nominal_cair,
+                    'payment_date'     => $request->tanggal_cair,
+                    'method'           => 'transfer',
+                    'reference_number' => $request->no_referensi_bank,
+                    'notes'            => 'Pencairan Dana KPR dari ' . ($request->bank_penyalur ?? 'Bank') . ' (' . $request->nama_termin . ')',
                 ]);
             }
 

@@ -107,6 +107,30 @@
         </div>
     </div>
 
+    <!-- Notifikasi Alert -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="mdi mdi-check-circle me-1"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="mdi mdi-alert-circle me-1"></i>{{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+    @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <ul class="mb-0">
+                @foreach($errors->all() as $err)
+                    <li>{{ $err }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
     <!-- Data Table Card -->
     <div class="card shadow-sm border-0 mb-4" style="border-radius: 12px; overflow: hidden;">
         <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center border-bottom">
@@ -189,7 +213,15 @@
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center align-items-center gap-1">
                                         @if($row->sisaCair > 0)
-                                            <button type="button" class="btn btn-sm btn-gradient-success d-inline-flex align-items-center px-2.5 py-1.5" onclick="openModalDisbursement({{ json_encode($row) }})" title="Input Pencairan Dana Bank" style="border-radius: 6px; font-size: 0.78rem; font-weight: 700;">
+                                            <button type="button" class="btn btn-sm btn-gradient-success btn-open-disburse d-inline-flex align-items-center px-2.5 py-1.5"
+                                                data-unit-id="{{ $row->unit->id }}"
+                                                data-unit-title="{{ ($row->unit->unit_name ?? $row->unit->unit_code) . ' - ' . ($row->customer->full_name ?? '-') }}"
+                                                data-plafon="{{ $row->plafonKpr }}"
+                                                data-total-cair="{{ $row->totalCair }}"
+                                                data-sisa-cair="{{ $row->sisaCair }}"
+                                                data-bank-name="{{ $row->bankName }}"
+                                                data-termin-count="{{ count($row->disbursements ?? []) + 1 }}"
+                                                title="Input Pencairan Dana Bank" style="border-radius: 6px; font-size: 0.78rem; font-weight: 700;">
                                                 <i class="mdi mdi-plus-circle me-1"></i>+ Cairkan
                                             </button>
                                         @else
@@ -198,7 +230,10 @@
                                             </button>
                                         @endif
 
-                                        <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center px-2 py-1.5" onclick="openModalHistory({{ json_encode($row) }})" title="Lihat Riwayat Pencairan" style="border-radius: 6px; font-size: 0.78rem;">
+                                        <button type="button" class="btn btn-sm btn-outline-primary btn-open-history d-inline-flex align-items-center px-2 py-1.5"
+                                            data-unit-title="{{ ($row->unit->unit_name ?? $row->unit->unit_code) . ' - ' . ($row->customer->full_name ?? '-') }}"
+                                            data-history="{{ base64_encode(json_encode($row->disbursements ?? [])) }}"
+                                            title="Lihat Riwayat Pencairan" style="border-radius: 6px; font-size: 0.78rem;">
                                             <i class="mdi mdi-history"></i>
                                         </button>
                                     </div>
@@ -302,7 +337,7 @@
 
                 <div class="modal-footer bg-white border-top py-2.5 px-4 d-flex justify-content-end">
                     <button type="button" class="btn btn-sm btn-light border px-3" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-sm btn-gradient-success px-4 fw-semibold">
+                    <button type="submit" class="btn btn-sm btn-gradient-success px-4 fw-semibold" id="btnSubmitDisburse">
                         <i class="mdi mdi-check-circle me-1"></i>Simpan Realisasi Pencairan
                     </button>
                 </div>
@@ -357,39 +392,58 @@
         return 'Rp ' + (num || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
-    function openModalDisbursement(data) {
-        document.getElementById('disburse_unit_id').value = data.unit.id;
-        document.getElementById('modalDisbursementSubtitle').innerText = (data.unit.unit_name || data.unit.unit_code) + ' - ' + (data.customer ? data.customer.full_name : '');
-        document.getElementById('info_plafon_kpr').innerText = formatRupiah(data.plafonKpr);
-        document.getElementById('info_total_cair').innerText = formatRupiah(data.totalCair);
-        document.getElementById('info_sisa_cair').innerText = formatRupiah(data.sisaCair);
+    $(document).on('click', '.btn-open-disburse', function() {
+        let el = $(this);
+        let unitId = el.data('unit-id');
+        let title = el.data('unit-title');
+        let plafon = parseFloat(el.data('plafon')) || 0;
+        let totalCair = parseFloat(el.data('total-cair')) || 0;
+        let sisaCair = parseFloat(el.data('sisa-cair')) || 0;
+        let bankName = el.data('bank-name');
+        let terminCount = parseInt(el.data('termin-count')) || 1;
 
-        document.getElementById('disburse_nominal').value = data.sisaCair;
-        document.getElementById('disburse_bank_penyalur').value = data.bankName;
+        $('#disburse_unit_id').val(unitId);
+        $('#modalDisbursementSubtitle').text(title);
+        $('#info_plafon_kpr').text(formatRupiah(plafon));
+        $('#info_total_cair').text(formatRupiah(totalCair));
+        $('#info_sisa_cair').text(formatRupiah(sisaCair));
+        $('#disburse_nominal').val(sisaCair);
+        $('#disburse_bank_penyalur').val(bankName);
 
-        let countTermin = (data.disbursements ? data.disbursements.length : 0) + 1;
-        if (data.totalCair == 0) {
-            document.getElementById('disburse_nama_termin').value = 'Pencairan Plafon KPR (100% Penuh)';
+        if (totalCair === 0) {
+            $('#disburse_nama_termin').val('Pencairan Plafon KPR (100% Penuh)');
         } else {
-            document.getElementById('disburse_nama_termin').value = 'Pencairan Termin Ke-' + countTermin;
+            $('#disburse_nama_termin').val('Pencairan Termin Ke-' + terminCount);
         }
 
+        let modalEl = document.getElementById('modalDisbursement');
         if (window.bootstrap && bootstrap.Modal) {
-            new bootstrap.Modal(document.getElementById('modalDisbursement')).show();
-        } else if (window.jQuery) {
+            let bsModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            bsModal.show();
+        } else {
             $('#modalDisbursement').modal('show');
         }
-    }
+    });
 
-    function openModalHistory(data) {
-        document.getElementById('modalHistorySubtitle').innerText = (data.unit.unit_name || data.unit.unit_code) + ' - ' + (data.customer ? data.customer.full_name : '');
+    $(document).on('click', '.btn-open-history', function() {
+        let el = $(this);
+        let title = el.data('unit-title');
+        let base64History = el.data('history');
+        let disbursements = [];
+        try {
+            disbursements = JSON.parse(atob(base64History)) || [];
+        } catch(e) {
+            disbursements = [];
+        }
+
+        $('#modalHistorySubtitle').text(title);
         let tbody = document.getElementById('historyTableBody');
         tbody.innerHTML = '';
 
-        if (!data.disbursements || data.disbursements.length === 0) {
+        if (!disbursements || disbursements.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Belum ada catatan pencairan dana KPR untuk unit ini.</td></tr>';
         } else {
-            data.disbursements.forEach(function(d) {
+            disbursements.forEach(function(d) {
                 let buktiHtml = d.bukti_transfer 
                     ? `<a href="/${d.bukti_transfer}" target="_blank" class="badge bg-primary text-white text-decoration-none"><i class="mdi mdi-file-document me-1"></i>Lihat Bukti</a>`
                     : '<span class="text-muted">-</span>';
@@ -406,8 +460,8 @@
                         <td>${buktiHtml}</td>
                         <td class="text-center">
                             <form action="/keuangan/pencairan-kpr/${d.id}" method="POST" class="d-inline form-delete-disburse">
-                                @csrf
-                                @method('DELETE')
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="_method" value="DELETE">
                                 <button type="button" class="btn btn-xs btn-link text-danger p-0 btn-delete-disburse" title="Hapus Catatan Ini">
                                     <i class="mdi mdi-trash-can-outline font-size-16"></i>
                                 </button>
@@ -419,12 +473,14 @@
             });
         }
 
+        let modalEl = document.getElementById('modalHistory');
         if (window.bootstrap && bootstrap.Modal) {
-            new bootstrap.Modal(document.getElementById('modalHistory')).show();
-        } else if (window.jQuery) {
+            let bsModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            bsModal.show();
+        } else {
             $('#modalHistory').modal('show');
         }
-    }
+    });
 
     $(document).on('click', '.btn-delete-disburse', function(e) {
         e.preventDefault();

@@ -122,7 +122,7 @@ class ProjectAccountingController extends Controller
             $uangMasukKonsumen += $totalCairKpr;
 
             // Fallback legacy jika belum input di disbursement tapi akad sudah selesai
-            if ($totalCairKpr == 0 && $booking && $booking->akad && $booking->akad->status === 'selesai' && $booking->payment_method === 'kpr') {
+            if ($totalCairKpr == 0 && $booking && $booking->akad && $booking->akad->status === 'selesai' && ($booking->purchase_type === 'kpr' || $booking->kprApplication)) {
                 $nilaiKpr = (float) ($booking->kprApplication->realisasi_nominal ?? ($hargaJual - ($booking->dp ?? 0)));
                 if ($nilaiKpr > 0 && $uangMasukKonsumen < $hargaJual) {
                     $uangMasukKonsumen += $nilaiKpr;
