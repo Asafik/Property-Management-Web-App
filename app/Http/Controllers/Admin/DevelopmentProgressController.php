@@ -7,6 +7,8 @@ use App\Models\LandBank;
 use App\Models\LandBankUnit;
 use App\Models\DevelopmentProgress;
 use App\Models\DevelopmentProgressItem;
+use App\Models\MasterProgressCategory;
+use App\Models\MasterProgressItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -52,7 +54,13 @@ class DevelopmentProgressController extends Controller
         // Ambil semua item dari progress unit
         $items = $selectedUnit->progress->items;
 
-        return view('properti.proses_pembangunan', compact('land', 'selectedUnit', 'items'));
+        // Ambil master kategori yang aktif
+        $masterCategories = MasterProgressCategory::with('items')
+            ->where('is_active', true)
+            ->orderBy('urutan', 'asc')
+            ->get();
+
+        return view('properti.proses_pembangunan', compact('land', 'selectedUnit', 'items', 'masterCategories'));
     }
 
     public function store(Request $request)
@@ -315,5 +323,73 @@ class DevelopmentProgressController extends Controller
             'success' => true,
             'message' => 'Item berhasil dihapus!'
         ]);
+    }
+
+    /**
+     * Menerapkan Template Standar RAP (I. Perizinan s/d VIII. Lainnya) secara dinamis dari Master Categories
+     */
+    public function applyTemplate($unitId)
+    {
+        try {
+            $unit = LandBankUnit::findOrFail($unitId);
+            $progress = DevelopmentProgress::firstOrCreate(
+                ['land_bank_unit_id' => $unit->id],
+                ['title' => 'Progress Pembangunan Unit ' . $unit->unit_code]
+            );
+
+            $masterCategories = MasterProgressCategory::with('items')
+                ->where('is_active', true)
+                ->orderBy('urutan', 'asc')
+                ->get();
+
+            $inserted = 0;
+
+            if ($masterCategories->count() > 0) {
+                foreach ($masterCategories as $masterCat) {
+                    foreach ($masterCat->items as $masterItem) {
+                        $exists = $progress->items()
+                            ->where('kategori', $masterCat->slug)
+                            ->where('uraian', $masterItem->uraian)
+                            ->exists();
+
+                        if (!$exists) {
+                            $progress->items()->create([
+                                'kategori'     => $masterCat->slug,
+                                'kode'         => $masterItem->kode,
+                                'uraian'       => $masterItem->uraian,
+                                'volume'       => $masterItem->default_volume,
+                                'satuan'       => $masterItem->satuan,
+                                'harga_satuan' => $masterItem->default_harga_satuan,
+                                'total'        => round($masterItem->default_volume * $masterItem->default_harga_satuan),
+                                'keterangan'   => $masterItem->keterangan,
+                            ]);
+                            $inserted++;
+                        }
+                    }
+                }
+            } else {
+                $templateItems = DevelopmentProgressItem::getDefaultTemplateItems();
+                foreach ($templateItems as $item) {
+                    $exists = $progress->items()
+                        ->where('kategori', $item['kategori'])
+                        ->where('uraian', $item['uraian'])
+                        ->exists();
+
+                    if (!$exists) {
+                        $progress->items()->create($item);
+                        $inserted++;
+                    }
+                }
+            }
+
+            $subtotal = $progress->items()->sum('total');
+            $ppn = round($subtotal * 0.1);
+            $progress->total_anggaran = $subtotal + $ppn;
+            $progress->save();
+
+            return back()->with('success', "Template Standar RAP berhasil diterapkan ({$inserted} item baru ditambahkan dari Master)! ");
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal menerapkan template RAP: ' . $e->getMessage());
+        }
     }
 }

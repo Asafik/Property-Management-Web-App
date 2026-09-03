@@ -216,6 +216,12 @@ class MenuSeeder extends Seeder
         ])->positions()->attach($kepalaLegalAndAdmin);
 
         Menu::create([
+            'name'      => 'Master Tahapan Progress Unit',
+            'route'     => 'master.progress.index',
+            'parent_id' => $master->id
+        ])->positions()->attach($kepalaLegalAndAdmin);
+
+        Menu::create([
             'name'      => 'Master SPK',
             'route'     => 'spk.index',
             'parent_id' => $master->id

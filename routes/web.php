@@ -280,6 +280,15 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
     Route::delete('/master-data-bahan-infrastruktur/{id}', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'destroy'])->name('master.bahan.destroy');
     Route::get('/api/master-bahan-infrastruktur/search', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'searchApi'])->name('master.bahan.search');
 
+    // Master Tahapan & Item Progress Pembangunan Unit
+    Route::get('/master-data/progress-kategori', [\App\Http\Controllers\Admin\MasterProgressCategoryController::class, 'index'])->name('master.progress.index');
+    Route::post('/master-data/progress-kategori/store', [\App\Http\Controllers\Admin\MasterProgressCategoryController::class, 'storeCategory'])->name('master.progress.category.store');
+    Route::put('/master-data/progress-kategori/{id}', [\App\Http\Controllers\Admin\MasterProgressCategoryController::class, 'updateCategory'])->name('master.progress.category.update');
+    Route::delete('/master-data/progress-kategori/{id}', [\App\Http\Controllers\Admin\MasterProgressCategoryController::class, 'destroyCategory'])->name('master.progress.category.destroy');
+    Route::post('/master-data/progress-kategori/{categoryId}/item', [\App\Http\Controllers\Admin\MasterProgressCategoryController::class, 'storeItem'])->name('master.progress.item.store');
+    Route::put('/master-data/progress-kategori/item/{itemId}', [\App\Http\Controllers\Admin\MasterProgressCategoryController::class, 'updateItem'])->name('master.progress.item.update');
+    Route::delete('/master-data/progress-kategori/item/{itemId}', [\App\Http\Controllers\Admin\MasterProgressCategoryController::class, 'destroyItem'])->name('master.progress.item.destroy');
+
     Route::get('properti/kavling/{unit}/update-progress', [LandBankUnitController::class, 'updateProgress'])->name('properti.kavling.updateProgress');
 
     Route::post('/properti/progress/acc-ajax/{unit}', [DevelopmentProgressController::class, 'accAjax'])->name('properti.progress.acc.ajax');
@@ -287,6 +296,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
 
     Route::get('/properti/progress/{land_bank_id}', [DevelopmentProgressController::class, 'index'])->name('properti.progress');
     Route::post('/properti/progress/store', [DevelopmentProgressController::class, 'store'])->name('properti.progress.store');
+    Route::post('/properti/progress/apply-template/{unit}', [DevelopmentProgressController::class, 'applyTemplate'])->name('properti.progress.applyTemplate');
     Route::delete('/properti/progress/item/{itemId}', [DevelopmentProgressController::class, 'destroy'])->name('properti.progress.item.destroy');
 
 

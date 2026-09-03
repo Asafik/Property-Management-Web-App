@@ -346,36 +346,87 @@
             <input type="hidden" name="title" value="Progress Pembangunan">
 
             @php
-                $kategoriList = [
-                    'perizinan' => 'I. PERIZINAN & LEGALITAS (PBG/IMB, SERTIFIKAT, DLL)',
-                    'persiapan' => 'II. PEKERJAAN PERSIAPAN',
-                    'pondasi'   => 'III. PEKERJAAN PONDASI',
-                    'struktur'  => 'IV. PEKERJAAN STRUKTUR',
-                    'dinding'   => 'V. PEKERJAAN DINDING',
-                    'atap'      => 'VI. PEKERJAAN ATAP',
-                    'finishing' => 'VII. PEKERJAAN FINISHING',
-                    'lainnya'   => 'VIII. PEKERJAAN LAINNYA',
+                $defaultKategoriConfig = [
+                    'perizinan' => ['title' => 'I. PERIZINAN & LEGALITAS (PBG/IMB, SERTIFIKAT, DLL)', 'icon' => 'file-certificate-outline', 'prefix' => 'P'],
+                    'persiapan' => ['title' => 'II. PEKERJAAN PERSIAPAN', 'icon' => 'tools', 'prefix' => '1'],
+                    'pondasi'   => ['title' => 'III. PEKERJAAN PONDASI', 'icon' => 'foundation', 'prefix' => '2'],
+                    'struktur'  => ['title' => 'IV. PEKERJAAN STRUKTUR', 'icon' => 'bridge', 'prefix' => '3'],
+                    'dinding'   => ['title' => 'V. PEKERJAAN DINDING', 'icon' => 'wall', 'prefix' => '4'],
+                    'atap'      => ['title' => 'VI. PEKERJAAN ATAP', 'icon' => 'roofing', 'prefix' => '5'],
+                    'finishing' => ['title' => 'VII. PEKERJAAN FINISHING', 'icon' => 'brush', 'prefix' => '6'],
+                    'lainnya'   => ['title' => 'VIII. PEKERJAAN LAINNYA', 'icon' => 'dots-horizontal', 'prefix' => '7'],
                 ];
-                $iconMap = [
-                    'perizinan' => 'file-certificate-outline',
-                    'persiapan' => 'tools',
-                    'pondasi'   => 'foundation',
-                    'struktur'  => 'bridge',
-                    'dinding'   => 'wall',
-                    'atap'      => 'roofing',
-                    'finishing' => 'brush',
-                    'lainnya'   => 'dots-horizontal',
-                ];
+
+                $kategoriConfig = [];
+                if (isset($masterCategories) && $masterCategories->count() > 0) {
+                    foreach ($masterCategories as $mc) {
+                        $kategoriConfig[$mc->slug] = [
+                            'title'  => $mc->nama_kategori,
+                            'icon'   => $mc->icon ?? 'folder-outline',
+                            'prefix' => $mc->prefix ?? '1',
+                        ];
+                    }
+                } else {
+                    $kategoriConfig = $defaultKategoriConfig;
+                }
+
+                // Ambil semua kategori yang ada di item unit ini secara dinamis jika ada custom
+                if ($selectedUnit->progress && $selectedUnit->progress->items) {
+                    $existingCats = $selectedUnit->progress->items->pluck('kategori')->filter()->unique();
+                    $counter = count($kategoriConfig);
+                    foreach ($existingCats as $cat) {
+                        $catKey = strtolower(trim($cat));
+                        if (!isset($kategoriConfig[$catKey])) {
+                            $counter++;
+                            $kategoriConfig[$catKey] = [
+                                'title'  => strtoupper($cat),
+                                'icon'   => 'folder-outline',
+                                'prefix' => (string)$counter,
+                            ];
+                        }
+                    }
+                }
+
+                $jsKategoriMap = [];
+                foreach ($kategoriConfig as $kKey => $cfg) {
+                    $jsKategoriMap[$kKey] = [
+                        'prefix'   => $cfg['prefix'],
+                        'body'     => 'body-' . $kKey,
+                        'subtotal' => 'subtotal-' . $kKey,
+                    ];
+                }
             @endphp
 
-            @foreach ($kategoriList as $key => $title)
-                <div class="row mb-4">
+            {{-- TOOLBAR DINAMIS: SEEDER TEMPLATE, TAMBAH KATEGORI & MENU MASTER --}}
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 p-3 bg-white rounded-3 border shadow-sm">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary px-3 py-2" style="font-size: 0.82rem;">
+                        <i class="mdi mdi-layers-outline me-1"></i>{{ count($kategoriConfig) }} Kategori Pekerjaan Terhubung Master
+                    </span>
+                    <span class="text-muted small d-none d-md-inline">Seluruh tahapan dari Perizinan sampai Pekerjaan Lainnya dikelola secara dinamis.</span>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{{ route('master.progress.index') }}" target="_blank" class="btn btn-sm btn-outline-secondary shadow-sm px-3" style="border-radius: 8px; font-weight: 600;" title="Kelola Master Kategori & Item Template">
+                        <i class="mdi mdi-cog-outline me-1"></i>Menu Master Tahapan
+                    </a>
+                    <button type="button" class="btn btn-sm btn-outline-primary shadow-sm px-3" onclick="confirmApplyTemplate()" style="border-radius: 8px; font-weight: 600;">
+                        <i class="mdi mdi-flash me-1"></i>⚡ Terapkan Template Standar RAP
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-success shadow-sm px-3" onclick="modalTambahKategoriBaru()" style="border-radius: 8px; font-weight: 600;">
+                        <i class="mdi mdi-plus-circle-outline me-1"></i>+ Tambah Kategori Baru
+                    </button>
+                </div>
+            </div>
+
+            <div id="dynamic-categories-container">
+            @foreach ($kategoriConfig as $key => $cfg)
+                <div class="row mb-4 category-section" id="section-{{ $key }}">
                     <div class="col-12">
                         <div class="card shadow-sm border-0 rab-card">
                             <div class="card-header rab-card-header d-flex justify-content-between align-items-center py-3">
                                 <h5 class="mb-0 fw-bold">
-                                    <i class="mdi mdi-{{ $iconMap[$key] ?? 'dots-horizontal' }} me-2" style="color: #9a55ff;"></i>
-                                    {{ $title }}
+                                    <i class="mdi mdi-{{ $cfg['icon'] ?? 'dots-horizontal' }} me-2" style="color: #9a55ff;"></i>
+                                    {{ $cfg['title'] }}
                                 </h5>
                                 <button type="button" class="rab-btn-add"
                                     onclick="tambahItem('{{ $key }}')">
@@ -487,6 +538,7 @@
                     </div>
                 </div>
             @endforeach
+            </div>
 
             {{-- Rincian RAP --}}
             @php
@@ -660,49 +712,152 @@
 
     <script>
         let indexItem = 0;
+        let kategoriMap = @json($jsKategoriMap);
 
-        const kategoriMap = {
-            perizinan: {
-                prefix: "P",
-                body: "body-perizinan",
-                subtotal: "subtotal-perizinan"
-            },
-            persiapan: {
-                prefix: "1",
-                body: "body-persiapan",
-                subtotal: "subtotal-persiapan"
-            },
-            pondasi: {
-                prefix: "2",
-                body: "body-pondasi",
-                subtotal: "subtotal-pondasi"
-            },
-            struktur: {
-                prefix: "3",
-                body: "body-struktur",
-                subtotal: "subtotal-struktur"
-            },
-            dinding: {
-                prefix: "4",
-                body: "body-dinding",
-                subtotal: "subtotal-dinding"
-            },
-            atap: {
-                prefix: "5",
-                body: "body-atap",
-                subtotal: "subtotal-atap"
-            },
-            finishing: {
-                prefix: "6",
-                body: "body-finishing",
-                subtotal: "subtotal-finishing"
-            },
-            lainnya: {
-                prefix: "7",
-                body: "body-lainnya",
-                subtotal: "subtotal-lainnya"
-            },
-        };
+        function confirmApplyTemplate() {
+            Swal.fire({
+                title: 'Terapkan Template Standar RAP?',
+                text: 'Sistem akan otomatis memasukkan rincian pekerjaan standar (I. Perizinan & Legalitas s/d VIII. Pekerjaan Lainnya) pada unit ini.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#9a55ff',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Terapkan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Memproses...',
+                        text: 'Sedang menerapkan template standar RAP...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    document.getElementById('formApplyTemplate').submit();
+                }
+            });
+        }
+
+        function modalTambahKategoriBaru() {
+            Swal.fire({
+                title: 'Tambah Kategori Pekerjaan Baru',
+                html: `
+                    <div class="text-start">
+                        <label class="form-label small fw-bold text-muted">Nama Kategori / Tahapan Pekerjaan</label>
+                        <input type="text" id="swal-cat-title" class="form-control" placeholder="Contoh: IX. PEKERJAAN INTERIOR & MEUBEL">
+                        <small class="text-muted d-block mt-1">Kategori baru akan otomatis ditambahkan ke form RAP dan terhubung ke kalkulasi HPP.</small>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Tambahkan Kategori',
+                cancelButtonText: 'Batal',
+                preConfirm: () => {
+                    const title = document.getElementById('swal-cat-title').value.trim();
+                    if (!title) {
+                        Swal.showValidationMessage('Nama kategori tidak boleh kosong!');
+                        return false;
+                    }
+                    return title;
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    tambahKategoriSection(result.value);
+                }
+            });
+        }
+
+        function tambahKategoriSection(title) {
+            // Buat key unik
+            let cleanKey = title.toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+            if (!cleanKey) cleanKey = 'kategori_' + Date.now();
+            if (kategoriMap[cleanKey]) {
+                cleanKey += '_' + Math.floor(Math.random() * 100);
+            }
+
+            let nextPrefix = Object.keys(kategoriMap).length + 1;
+            kategoriMap[cleanKey] = {
+                prefix: String(nextPrefix),
+                body: "body-" + cleanKey,
+                subtotal: "subtotal-" + cleanKey
+            };
+
+            let cardHtml = `
+                <div class="row mb-4 category-section animate__animated animate__fadeIn" id="section-${cleanKey}">
+                    <div class="col-12">
+                        <div class="card shadow-sm border-0 rab-card">
+                            <div class="card-header rab-card-header d-flex justify-content-between align-items-center py-3">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="mdi mdi-folder-plus-outline me-2" style="color: #10b981;"></i>
+                                    ${title}
+                                </h5>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="rab-btn-add" onclick="tambahItem('${cleanKey}')">
+                                        <i class="mdi mdi-plus me-1"></i>Tambah Item
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered align-middle mb-0 rab-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 50px;">NO</th>
+                                                <th>URAIAN</th>
+                                                <th style="width: 90px;">VOLUME</th>
+                                                <th style="width: 80px;">SATUAN</th>
+                                                <th style="width: 140px;">HARGA</th>
+                                                <th style="width: 150px;">TOTAL</th>
+                                                <th>KETERANGAN</th>
+                                                <th style="width: 130px;">DEADLINE</th>
+                                                <th style="width: 140px;">DOKUMENTASI</th>
+                                                <th style="width: 60px;">AKSI</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="body-${cleanKey}">
+                                            <tr>
+                                                <td colspan="10" class="text-center py-3 text-muted">
+                                                    Belum ada item pekerjaan. Klik <strong>+ Tambah Item</strong> di atas.
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="5" class="text-end fw-bold rab-subtotal-label">
+                                                    SUBTOTAL ${title}:
+                                                </td>
+                                                <td colspan="5">
+                                                    <input type="text" id="subtotal-${cleanKey}"
+                                                           class="form-control form-control-sm fw-bold rab-subtotal-input"
+                                                           value="Rp 0" readonly>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('dynamic-categories-container').insertAdjacentHTML('beforeend', cardHtml);
+            
+            // Scroll ke seksi baru dan tambahkan 1 item awal otomatis
+            document.getElementById(`section-${cleanKey}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+            tambahItem(cleanKey);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Kategori Ditambahkan!',
+                text: `Kategori "${title}" berhasil ditambahkan dan siap diisi.`,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
 
         function tambahItem(kategori) {
             let config = kategoriMap[kategori];
