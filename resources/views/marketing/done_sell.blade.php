@@ -985,62 +985,83 @@
 
         /* ===== COMPACT MODERN MODAL ===== */
         .modal-custom-compact {
-            max-width: 620px !important;
-            margin: 1.75rem auto;
+            max-width: 580px !important;
+            margin: 1.5rem auto;
         }
 
-        .modal-custom-compact .modal-content {
+        /* Cegah layar jumping/scroll ke atas saat modal dibuka */
+        body.modal-open {
+            overflow: hidden !important;
+            height: auto !important;
+            min-height: 100vh !important;
+            position: static !important;
+        }
+
+        body.modal-open .container-scroller,
+        body.modal-open .page-body-wrapper,
+        body.modal-open .content-wrapper,
+        body.modal-open .main-panel {
+            overflow: visible !important;
+            height: auto !important;
+        }
+
+        .modal-content {
             border: none !important;
             border-radius: 16px !important;
             overflow: hidden !important;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.16) !important;
         }
 
-        .modal-custom-compact .modal-header {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-            color: #ffffff !important;
-            border: none !important;
+        .modal-header {
+            background: #ffffff !important;
+            color: #2c2e3f !important;
+            border-bottom: 1px solid #f0edf7 !important;
             padding: 1.1rem 1.4rem !important;
         }
 
-        .modal-custom-compact .modal-header .modal-title {
+        .modal-header .modal-title {
             font-size: 1.05rem !important;
             font-weight: 700 !important;
-            color: #ffffff !important;
+            color: #2c2e3f !important;
             display: flex;
             align-items: center;
             gap: 0.45rem;
         }
 
-        .modal-custom-compact .modal-header .btn-close-custom {
+        .modal-header .btn-close-custom,
+        .modal-header .btn-close {
             background: transparent;
             border: none;
-            color: #ffffff;
+            color: #64748b;
             font-size: 1.5rem;
             line-height: 1;
-            opacity: 0.85;
+            opacity: 0.75;
             cursor: pointer;
-            transition: opacity 0.2s ease;
+            transition: all 0.2s ease;
             padding: 0;
         }
 
-        .modal-custom-compact .modal-header .btn-close-custom:hover {
+        .modal-header .btn-close-custom:hover,
+        .modal-header .btn-close:hover {
             opacity: 1;
+            color: #0f172a;
         }
 
-        .modal-custom-compact .modal-body {
-            padding: 1.35rem 1.5rem !important;
+        .modal-body {
+            padding: 1.25rem 1.4rem !important;
             background: #ffffff;
         }
 
-        .modal-custom-compact .modal-footer {
+        .modal-footer {
             background: #faf8ff !important;
             border-top: 1px solid #f0edf7 !important;
             padding: 0.85rem 1.4rem !important;
         }
 
         .modal-custom-compact .form-control,
-        .modal-custom-compact .form-select {
+        .modal-custom-compact .form-select,
+        #modalAddComplaint .form-control,
+        #modalAddComplaint .form-select {
             border: 1.5px solid #e2e8f0 !important;
             border-radius: 8px !important;
             padding: 0.55rem 0.85rem !important;
@@ -1051,16 +1072,94 @@
         }
 
         .modal-custom-compact .form-control:focus,
-        .modal-custom-compact .form-select:focus {
+        .modal-custom-compact .form-select:focus,
+        #modalAddComplaint .form-control:focus,
+        #modalAddComplaint .form-select:focus {
             border-color: #9a55ff !important;
             box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
             outline: none !important;
         }
 
-        .modal-custom-compact .form-label {
+        .custom-file-upload-modern {
+            position: relative;
+            width: 100%;
+        }
+
+        .custom-file-upload-modern input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .custom-file-label-modern {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.45rem 0.75rem;
+            background: #ffffff;
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .custom-file-upload-modern:hover .custom-file-label-modern {
+            border-color: #9a55ff;
+            background: #fbf9ff;
+        }
+
+        .custom-file-upload-modern.has-file .custom-file-label-modern {
+            border-color: #10b981;
+            border-style: solid;
+            background: #f0fdf4;
+        }
+
+        .custom-file-label-modern i {
+            font-size: 1.35rem;
+            color: #9a55ff;
+            flex-shrink: 0;
+            transition: color 0.2s;
+        }
+
+        .custom-file-upload-modern.has-file .custom-file-label-modern i {
+            color: #10b981 !important;
+        }
+
+        .custom-file-info-modern {
+            min-width: 0;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .custom-file-info-modern span {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #2c2e3f;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .custom-file-info-modern small {
+            display: block;
+            font-size: 0.72rem;
+            color: #8b8fa3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .modal-custom-compact .form-label,
+        #modalAddComplaint .form-label {
             font-size: 0.82rem !important;
             font-weight: 700 !important;
-            color: #566a7f !important;
+            color: #475569 !important;
             margin-bottom: 0.35rem !important;
         }
     </style>
@@ -1744,44 +1843,15 @@
         <div class="row mt-3">
             <div class="col-12">
                 <div class="card complaint-table-card border-0">
+                    @php
+                        $complaints = $booking->complaints ?? collect([]);
+                    @endphp
                     <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2 py-3">
-                        <div>
-                            <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
-                                <h5 class="card-title mb-0 fw-bold" style="color: #2c2e3f;">
-                                    KELUHAN & KLAIM GARANSI (COMPLAINT)
-                                </h5>
-                                @php
-                                    $complaints = $booking->complaints ?? collect([]);
-                                    $cntTotal = $complaints->count();
-                                    $cntDiajukan = $complaints->where('status', 'diajukan')->count();
-                                    $cntDiproses = $complaints->whereIn('status', ['diproses', 'pengecekan'])->count();
-                                    $cntSelesai = $complaints->where('status', 'selesai')->count();
-                                @endphp
-                                @if($cntTotal > 0)
-                                    <span class="badge-complaint-summary" style="background: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff;">
-                                        Total {{ $cntTotal }} Keluhan
-                                    </span>
-                                    @if($cntDiajukan > 0)
-                                        <span class="badge-complaint-summary" style="background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5;">
-                                            {{ $cntDiajukan }} Diajukan
-                                        </span>
-                                    @endif
-                                    @if($cntDiproses > 0)
-                                        <span class="badge-complaint-summary" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #dbeafe;">
-                                            {{ $cntDiproses }} Diproses
-                                        </span>
-                                    @endif
-                                    @if($cntSelesai > 0)
-                                        <span class="badge-complaint-summary" style="background: #f0fdf4; color: #15803d; border: 1px solid #dcfce7;">
-                                            {{ $cntSelesai }} Selesai
-                                        </span>
-                                    @endif
-                                @endif
-                            </div>
-                            <small class="text-muted">Pencatatan kendala pasca serah terima unit (1 rumah bisa memuat beberapa keluhan sekaligus) dan progress tindak lanjut perbaikan</small>
-                        </div>
-                        <button type="button" class="btn btn-gradient-primary btn-sm shadow-sm px-3 fw-bold d-flex align-items-center gap-1" onclick="openAddComplaintModal()">
-                            <i class="mdi mdi-plus-circle"></i> + Ajukan Keluhan Baru
+                        <h5 class="card-title mb-0 fw-bold" style="color: #2c2e3f;">
+                            KELUHAN & KLAIM GARANSI (COMPLAINT)
+                        </h5>
+                        <button type="button" class="btn btn-gradient-primary btn-sm shadow-sm px-3 fw-bold d-flex align-items-center gap-1" onclick="openAddComplaintModal(event)">
+                            <i class="mdi mdi-plus-circle me-1"></i> Ajukan Keluhan Baru
                         </button>
                     </div>
                     <div class="card-body p-0">
@@ -1861,7 +1931,7 @@
                                                     <div class="d-inline-flex align-items-center gap-1">
                                                         <button type="button" class="btn btn-sm btn-update-complaint"
                                                             data-complaint="{{ base64_encode(json_encode($c)) }}"
-                                                            onclick="handleUpdateComplaintClick(this)"
+                                                            onclick="handleUpdateComplaintClick(this, event)"
                                                             title="Update Progress Keluhan">
                                                             <i class="mdi mdi-wrench"></i> Update
                                                         </button>
@@ -1884,7 +1954,7 @@
                                 </div>
                                 <h6 class="fw-bold text-dark mb-1">Belum Ada Keluhan / Komplain</h6>
                                 <p class="text-muted small mb-3">Unit dalam kondisi baik dan masa garansi aktif berjalan.</p>
-                                <button type="button" class="btn btn-gradient-primary btn-sm px-3" onclick="openAddComplaintModal()">
+                                <button type="button" class="btn btn-gradient-primary btn-sm px-3" onclick="openAddComplaintModal(event)">
                                     <i class="mdi mdi-plus-circle"></i> Ajukan Keluhan Baru
                                 </button>
                             </div>
@@ -1922,28 +1992,25 @@
 
     <!-- MODAL: AJUKAN KELUHAN BARU (MULTI-KELUHAN PER RUMAH) -->
     <div class="modal fade" id="modalAddComplaint" tabindex="-1" role="dialog" aria-labelledby="modalAddComplaintLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-custom-compact" role="document">
             <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
-                <div class="modal-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="modal-title fw-bold text-dark mb-0" id="modalAddComplaintLabel">
-                            <i class="mdi mdi-alert-circle-outline text-primary me-1"></i> Form Pengajuan Keluhan / Garansi Unit
-                        </h5>
-                        <small class="text-muted">Anda dapat menambahkan satu atau beberapa keluhan sekaligus untuk rumah ini</small>
-                    </div>
-                    <button type="button" class="btn-close-custom" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                <div class="modal-header bg-white border-bottom py-2.5 px-3 px-md-4 d-flex justify-content-between align-items-center">
+                    <h5 class="modal-title fw-bold text-dark mb-0" id="modalAddComplaintLabel" style="font-size: 1rem;">
+                        <i class="mdi mdi-alert-circle-outline text-primary me-1"></i> Form Pengajuan Keluhan
+                    </h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{{ route('complaints.store') }}" method="POST" enctype="multipart/form-data" id="formAddComplaint">
                     @csrf
                     <input type="hidden" name="booking_id" value="{{ $booking->id }}">
                     <div class="modal-body p-3 p-md-4" style="background: #f8fafc; max-height: 75vh; overflow-y: auto;">
-                        <div class="alert alert-light border d-flex align-items-center gap-3 mb-3 p-3 rounded-3" style="background: #faf8ff; border-color: #eee6ff !important;">
-                            <div class="text-white p-2 rounded-circle shadow-sm" style="background: linear-gradient(135deg, #da8cff, #9a55ff); width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                <i class="mdi mdi-home fs-4"></i>
-                            </div>
+                        <div class="px-3 py-2 rounded-2 mb-3 border d-flex justify-content-between align-items-center flex-wrap gap-1" style="background: #faf8ff !important; border-color: #eee6ff !important;">
                             <div>
-                                <div class="fw-bold text-dark fs-6">{{ $unit->unit_name ?? '-' }} (Blok {{ $unit->unit_code ?? '-' }})</div>
-                                <small class="text-muted">Konsumen: <strong class="text-dark">{{ $booking->customer->full_name ?? '-' }}</strong> | Telp: {{ $booking->customer->phone ?? '-' }} | Booking: #{{ $booking->booking_code }}</small>
+                                <span class="fw-bold text-dark" style="font-size: 0.88rem;">{{ $unit->unit_name ?? '-' }}</span>
+                                <span class="badge bg-primary bg-opacity-10 text-primary font-monospace ms-1" style="font-size: 0.72rem;">Blok {{ $unit->unit_code ?? '-' }}</span>
+                            </div>
+                            <div class="small text-muted" style="font-size: 0.78rem;">
+                                Konsumen: <strong class="text-dark">{{ $booking->customer->full_name ?? '-' }}</strong>
                             </div>
                         </div>
 
@@ -1952,18 +2019,18 @@
                             <!-- Item #1 -->
                             <div class="complaint-item-card p-3 p-md-3 bg-white" data-index="0">
                                 <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
-                                    <span class="fw-bold text-dark item-number-label" style="font-size: 0.9rem;">
+                                    <span class="fw-bold text-dark item-number-label" style="font-size: 0.88rem;">
                                         <i class="mdi mdi-numeric-1-circle text-primary me-1 fs-5 align-middle"></i> Keluhan #1
                                     </span>
-                                    <button type="button" class="btn btn-sm btn-outline-danger btn-remove-item d-none" onclick="removeComplaintItem(this)" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">
-                                        <i class="mdi mdi-trash-can-outline"></i> Hapus Keluhan Ini
+                                    <button type="button" class="btn btn-sm btn-outline-danger btn-remove-item d-none" onclick="removeComplaintItem(this)" style="font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 6px;">
+                                        <i class="mdi mdi-trash-can-outline"></i> Hapus
                                     </button>
                                 </div>
                                 <div class="row g-2">
                                     <div class="col-md-6 mb-2">
                                         <label class="form-label small fw-bold text-dark mb-1">Kategori Keluhan <span class="text-danger">*</span></label>
                                         <select class="form-control form-select" name="items[0][kategori]" required>
-                                            <option value="">-- Pilih Kategori --</option>
+                                            <option value="">Pilih Kategori</option>
                                             <option value="kebocoran">Kebocoran Atap / Talang / Dinding</option>
                                             <option value="kelistrikan">Kelistrikan, Stopkontak & Lampu</option>
                                             <option value="sanitasi_pipa">Sanitasi, Saluran Air & Kran</option>
@@ -1976,24 +2043,32 @@
                                     <div class="col-md-6 mb-2">
                                         <label class="form-label small fw-bold text-dark mb-1">Tingkat Prioritas <span class="text-danger">*</span></label>
                                         <select class="form-control form-select" name="items[0][prioritas]" required>
-                                            <option value="rendah">Rendah (Penyelesaian santai)</option>
-                                            <option value="sedang" selected>Sedang (Standar perbaikan)</option>
-                                            <option value="tinggi">Tinggi (Perlu segera ditangani)</option>
-                                            <option value="darurat">Darurat / Emergency (Segera hari ini)</option>
+                                            <option value="rendah">Rendah</option>
+                                            <option value="sedang" selected>Sedang</option>
+                                            <option value="tinggi">Tinggi</option>
+                                            <option value="darurat">Darurat</option>
                                         </select>
                                     </div>
                                     <div class="col-12 mb-2">
-                                        <label class="form-label small fw-bold text-dark mb-1">Judul Ringkas Keluhan <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" name="items[0][judul_keluhan]" placeholder="Contoh: Kran kamar mandi bocor dan rembes" required>
+                                        <label class="form-label small fw-bold text-dark mb-1">Judul Keluhan <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="items[0][judul_keluhan]" placeholder="Judul keluhan..." required>
                                     </div>
                                     <div class="col-12 mb-2">
-                                        <label class="form-label small fw-bold text-dark mb-1">Detail Deskripsi Keluhan <span class="text-danger">*</span></label>
-                                        <textarea class="form-control" name="items[0][deskripsi]" rows="2" placeholder="Jelaskan titik kerusakan, kronologi kendala, dan bagian yang perlu diperbaiki..." required></textarea>
+                                        <label class="form-label small fw-bold text-dark mb-1">Deskripsi Keluhan <span class="text-danger">*</span></label>
+                                        <textarea class="form-control" name="items[0][deskripsi]" rows="2" placeholder="Detail rincian keluhan..." required></textarea>
                                     </div>
                                     <div class="col-12 mb-1">
-                                        <label class="form-label small fw-bold text-dark mb-1">Upload Foto / Bukti Kendala (Opsional)</label>
-                                        <input type="file" class="form-control" name="items[0][foto_keluhan]" accept="image/*,application/pdf">
-                                        <small class="text-muted d-block mt-1" style="font-size: 0.72rem;">Mendukung format JPG, PNG, WEBP, atau PDF (Maks. 5MB)</small>
+                                        <label class="form-label small fw-bold text-dark mb-1">Foto Bukti Keluhan (Opsional)</label>
+                                        <div class="custom-file-upload-modern" data-default-text="Pilih Foto Bukti">
+                                            <input type="file" name="items[0][foto_keluhan]" accept="image/*,application/pdf">
+                                            <div class="custom-file-label-modern">
+                                                <i class="mdi mdi-cloud-upload-outline"></i>
+                                                <div class="custom-file-info-modern">
+                                                    <span class="file-name-text">Pilih Foto Bukti</span>
+                                                    <small class="file-desc-text">Format: JPG, PNG, PDF (Maks. 5MB)</small>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2001,16 +2076,16 @@
 
                         <!-- Tombol Tambah Item Keluhan Baru -->
                         <div class="mt-3 text-center">
-                            <button type="button" class="btn btn-outline-primary btn-sm px-4 rounded-pill fw-bold shadow-sm" onclick="addComplaintItem()" style="border-width: 1.5px;">
-                                <i class="mdi mdi-plus-circle-outline me-1"></i> + Tambah Keluhan Lainnya Untuk Rumah Ini
+                            <button type="button" class="btn btn-sm btn-outline-primary px-3 py-1.5 rounded-2 fw-semibold shadow-sm" onclick="addComplaintItem()">
+                                <i class="mdi mdi-plus-circle-outline me-1"></i> + Tambah Keluhan
                             </button>
                         </div>
                     </div>
-                    <div class="modal-footer bg-white border-top py-3 px-4 d-flex justify-content-between align-items-center">
-                        <span class="small text-muted" id="lblItemCount">Total Keluhan: <strong>1 item</strong></span>
+                    <div class="modal-footer bg-white border-top py-2.5 px-3 px-md-4 d-flex justify-content-between align-items-center">
+                        <span class="small text-muted" id="lblItemCount">Total: <strong>1 keluhan</strong></span>
                         <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-dismiss="modal" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-gradient-primary btn-sm px-4 fw-bold shadow-sm" id="btnSubmitComplaints">
+                            <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-2 fw-semibold" data-dismiss="modal" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-gradient-primary btn-sm px-4 fw-semibold text-white shadow-sm rounded-2" id="btnSubmitComplaints">
                                 <i class="mdi mdi-send me-1"></i> Ajukan Keluhan
                             </button>
                         </div>
@@ -2023,62 +2098,70 @@
     <!-- MODAL: UPDATE PROGRESS KELUHAN -->
     <div class="modal fade" id="modalUpdateComplaint" tabindex="-1" role="dialog" aria-labelledby="modalUpdateComplaintLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-custom-compact" role="document">
-            <div class="modal-content">
-                <div class="modal-header d-flex justify-content-between align-items-center">
-                    <h5 class="modal-title mb-0" id="modalUpdateComplaintLabel">
-                        <i class="mdi mdi-progress-wrench"></i> Update Progress Keluhan
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+                <div class="modal-header bg-white border-bottom py-2.5 px-3 px-md-4 d-flex justify-content-between align-items-center">
+                    <h5 class="modal-title fw-bold text-dark mb-0" id="modalUpdateComplaintLabel" style="font-size: 1rem;">
+                        <i class="mdi mdi-progress-wrench text-primary me-1"></i> Update Progress Keluhan
                     </h5>
-                    <button type="button" class="btn-close-custom" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                    <button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="formUpdateComplaint" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-                    <div class="modal-body">
+                    <div class="modal-body p-3 p-md-4">
                         <div class="card bg-light border-0 mb-3 rounded-3" style="background: #faf8ff !important; border: 1px solid #efe6ff !important;">
-                            <div class="card-body p-3">
+                            <div class="card-body p-2.5 px-3">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
                                     <span class="badge-ticket" id="lblUpdateTicket">-</span>
                                     <span class="badge-priority sedang" id="lblUpdatePrioritas">-</span>
                                 </div>
-                                <h6 class="fw-bold text-dark mb-1 mt-2" id="lblUpdateJudul">-</h6>
+                                <h6 class="fw-bold text-dark mb-1 mt-1" id="lblUpdateJudul" style="font-size: 0.9rem;">-</h6>
                                 <p class="text-muted small mb-0" id="lblUpdateDeskripsi">-</p>
                             </div>
                         </div>
 
-                        <div class="row g-3">
+                        <div class="row g-2">
                             <div class="col-md-6 mb-2">
-                                <label class="form-label">Status Progress Penanganan <span class="text-danger">*</span></label>
+                                <label class="form-label">Status Penanganan <span class="text-danger">*</span></label>
                                 <select class="form-control form-select" name="status" id="selectUpdateStatus" required>
-                                    <option value="diajukan">Diajukan (Menunggu Respon)</option>
-                                    <option value="diproses">Diproses (Sedang Dikerjakan)</option>
-                                    <option value="pengecekan">Pengecekan Lapangan / Uji Coba</option>
-                                    <option value="selesai">Selesai (Perbaikan Tuntas)</option>
-                                    <option value="ditolak">Ditolak (Di luar cakupan garansi)</option>
+                                    <option value="diajukan">Diajukan</option>
+                                    <option value="diproses">Diproses</option>
+                                    <option value="pengecekan">Pengecekan</option>
+                                    <option value="selesai">Selesai</option>
+                                    <option value="ditolak">Ditolak</option>
                                 </select>
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label class="form-label">Petugas / Teknisi Penanggung Jawab</label>
-                                <input type="text" class="form-control" name="petugas_penanggung_jawab" id="inputUpdatePetugas" placeholder="Contoh: Pak Joko (Teknisi Bangunan)">
+                                <label class="form-label">Petugas / Teknisi</label>
+                                <input type="text" class="form-control" name="petugas_penanggung_jawab" id="inputUpdatePetugas" placeholder="Nama teknisi...">
                             </div>
                             <div class="col-12 mb-2">
-                                <label class="form-label">Catatan Tindak Lanjut & Perbaikan</label>
-                                <textarea class="form-control" name="catatan_perbaikan" id="inputUpdateCatatan" rows="3" placeholder="Tuliskan tindakan yang telah dilakukan, material yang diganti, atau hasil pengecekan lapangan..."></textarea>
+                                <label class="form-label">Catatan Perbaikan</label>
+                                <textarea class="form-control" name="catatan_perbaikan" id="inputUpdateCatatan" rows="2" placeholder="Catatan tindakan perbaikan..."></textarea>
                             </div>
                             <div class="col-md-6 mb-2">
                                 <label class="form-label">Biaya Perbaikan (Rp)</label>
-                                <input type="number" class="form-control" name="biaya_perbaikan" id="inputUpdateBiaya" placeholder="0 (Gratis garansi jika 0)">
-                                <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">Biaya diisi jika ada biaya material non-garansi</small>
+                                <input type="text" class="form-control text-start font-monospace" id="inputUpdateBiayaDisplay" placeholder="Rp 0" oninput="formatRupiahInput(this, 'inputUpdateBiaya')">
+                                <input type="hidden" name="biaya_perbaikan" id="inputUpdateBiaya" value="0">
                             </div>
                             <div class="col-md-6 mb-2">
-                                <label class="form-label">Upload Foto Hasil Perbaikan (Opsional)</label>
-                                <input type="file" class="form-control" name="foto_penyelesaian" accept="image/*,application/pdf">
-                                <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">Foto bukti setelah unit selesai diperbaiki</small>
+                                <label class="form-label">Foto Hasil Perbaikan</label>
+                                <div class="custom-file-upload-modern" data-default-text="Pilih Foto Penyelesaian">
+                                    <input type="file" name="foto_penyelesaian" accept="image/*,application/pdf">
+                                    <div class="custom-file-label-modern">
+                                        <i class="mdi mdi-cloud-upload-outline"></i>
+                                        <div class="custom-file-info-modern">
+                                            <span class="file-name-text">Pilih Foto Penyelesaian</span>
+                                            <small class="file-desc-text">Format: JPG, PNG, PDF (Maks. 5MB)</small>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-dismiss="modal" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-gradient-primary btn-sm px-4">
+                    <div class="modal-footer bg-white border-top py-2.5 px-3 px-md-4 d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-2 fw-semibold" data-dismiss="modal" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-gradient-primary btn-sm px-4 fw-semibold text-white shadow-sm rounded-2">
                             <i class="mdi mdi-content-save me-1"></i> Simpan Progress
                         </button>
                     </div>
@@ -2091,14 +2174,58 @@
 @push('scripts')
 <script>
     var itemCounter = 1;
+    var savedScrollPos = 0;
 
-    function openAddComplaintModal() {
-        if (window.jQuery && typeof $('#modalAddComplaint').modal === 'function') {
-            $('#modalAddComplaint').modal('show');
+    function formatRupiahInput(input, hiddenId) {
+        var value = input.value.replace(/[^0-9]/g, '');
+        var hiddenInput = document.getElementById(hiddenId);
+        if (hiddenInput) {
+            hiddenInput.value = value ? parseInt(value) : 0;
+        }
+        if (!value) {
+            input.value = '';
+            return;
+        }
+        input.value = 'Rp ' + parseInt(value, 10).toLocaleString('id-ID');
+    }
+
+    $(document).on('change', '.custom-file-upload-modern input[type="file"]', function(e) {
+        var wrapper = $(this).closest('.custom-file-upload-modern');
+        var nameText = wrapper.find('.file-name-text');
+        var descText = wrapper.find('.file-desc-text');
+        if (this.files && this.files.length > 0) {
+            var file = this.files[0];
+            var fileSize = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+            wrapper.addClass('has-file');
+            nameText.text(file.name);
+            descText.text('Ukuran: ' + fileSize);
+        } else {
+            wrapper.removeClass('has-file');
+            nameText.text(wrapper.data('default-text') || 'Pilih File');
+            descText.text('Format: JPG, PNG, PDF (Maks. 5MB)');
+        }
+    });
+
+    function openAddComplaintModal(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        savedScrollPos = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+
+        var modalEl = document.getElementById('modalAddComplaint');
+        if (!modalEl) return;
+
+        if (window.jQuery && typeof $(modalEl).modal === 'function') {
+            $(modalEl).modal('show');
         } else if (window.bootstrap && bootstrap.Modal) {
-            var modal = new bootstrap.Modal(document.getElementById('modalAddComplaint'));
+            var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
             modal.show();
         }
+
+        setTimeout(function() {
+            window.scrollTo({ top: savedScrollPos, behavior: 'instant' });
+        }, 10);
     }
 
     function addComplaintItem() {
@@ -2107,18 +2234,18 @@
         var html = `
             <div class="complaint-item-card p-3 p-md-3 bg-white" data-index="${index}">
                 <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
-                    <span class="fw-bold text-dark item-number-label" style="font-size: 0.9rem;">
+                    <span class="fw-bold text-dark item-number-label" style="font-size: 0.88rem;">
                         <i class="mdi mdi-numeric-${index + 1}-circle text-primary me-1 fs-5 align-middle"></i> Keluhan #${index + 1}
                     </span>
-                    <button type="button" class="btn btn-sm btn-outline-danger btn-remove-item" onclick="removeComplaintItem(this)" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">
-                        <i class="mdi mdi-trash-can-outline"></i> Hapus Keluhan Ini
+                    <button type="button" class="btn btn-sm btn-outline-danger btn-remove-item" onclick="removeComplaintItem(this)" style="font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 6px;">
+                        <i class="mdi mdi-trash-can-outline"></i> Hapus
                     </button>
                 </div>
                 <div class="row g-2">
                     <div class="col-md-6 mb-2">
                         <label class="form-label small fw-bold text-dark mb-1">Kategori Keluhan <span class="text-danger">*</span></label>
                         <select class="form-control form-select" name="items[${index}][kategori]" required>
-                            <option value="">-- Pilih Kategori --</option>
+                            <option value="">Pilih Kategori</option>
                             <option value="kebocoran">Kebocoran Atap / Talang / Dinding</option>
                             <option value="kelistrikan">Kelistrikan, Stopkontak & Lampu</option>
                             <option value="sanitasi_pipa">Sanitasi, Saluran Air & Kran</option>
@@ -2131,24 +2258,32 @@
                     <div class="col-md-6 mb-2">
                         <label class="form-label small fw-bold text-dark mb-1">Tingkat Prioritas <span class="text-danger">*</span></label>
                         <select class="form-control form-select" name="items[${index}][prioritas]" required>
-                            <option value="rendah">Rendah (Penyelesaian santai)</option>
-                            <option value="sedang" selected>Sedang (Standar perbaikan)</option>
-                            <option value="tinggi">Tinggi (Perlu segera ditangani)</option>
-                            <option value="darurat">Darurat / Emergency (Segera hari ini)</option>
+                            <option value="rendah">Rendah</option>
+                            <option value="sedang" selected>Sedang</option>
+                            <option value="tinggi">Tinggi</option>
+                            <option value="darurat">Darurat</option>
                         </select>
                     </div>
                     <div class="col-12 mb-2">
-                        <label class="form-label small fw-bold text-dark mb-1">Judul Ringkas Keluhan <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="items[${index}][judul_keluhan]" placeholder="Contoh: Lampu teras konslet / saklar mati" required>
+                        <label class="form-label small fw-bold text-dark mb-1">Judul Keluhan <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="items[${index}][judul_keluhan]" placeholder="Judul keluhan..." required>
                     </div>
                     <div class="col-12 mb-2">
-                        <label class="form-label small fw-bold text-dark mb-1">Detail Deskripsi Keluhan <span class="text-danger">*</span></label>
-                        <textarea class="form-control" name="items[${index}][deskripsi]" rows="2" placeholder="Jelaskan titik kerusakan, kronologi kendala, dan bagian yang perlu diperbaiki..." required></textarea>
+                        <label class="form-label small fw-bold text-dark mb-1">Deskripsi Keluhan <span class="text-danger">*</span></label>
+                        <textarea class="form-control" name="items[${index}][deskripsi]" rows="2" placeholder="Detail rincian keluhan..." required></textarea>
                     </div>
                     <div class="col-12 mb-1">
-                        <label class="form-label small fw-bold text-dark mb-1">Upload Foto / Bukti Kendala (Opsional)</label>
-                        <input type="file" class="form-control" name="items[${index}][foto_keluhan]" accept="image/*,application/pdf">
-                        <small class="text-muted d-block mt-1" style="font-size: 0.72rem;">Mendukung format JPG, PNG, WEBP, atau PDF (Maks. 5MB)</small>
+                        <label class="form-label small fw-bold text-dark mb-1">Foto Bukti Keluhan (Opsional)</label>
+                        <div class="custom-file-upload-modern" data-default-text="Pilih Foto Bukti">
+                            <input type="file" name="items[${index}][foto_keluhan]" accept="image/*,application/pdf">
+                            <div class="custom-file-label-modern">
+                                <i class="mdi mdi-cloud-upload-outline"></i>
+                                <div class="custom-file-info-modern">
+                                    <span class="file-name-text">Pilih Foto Bukti</span>
+                                    <small class="file-desc-text">Format: JPG, PNG, PDF (Maks. 5MB)</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2193,7 +2328,11 @@
         }
     }
 
-    function handleUpdateComplaintClick(btn) {
+    function handleUpdateComplaintClick(btn, event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
         try {
             var base64Data = btn.getAttribute('data-complaint');
             var jsonStr = decodeURIComponent(escape(window.atob(base64Data)));
@@ -2205,6 +2344,8 @@
     }
 
     function openUpdateProgressModal(complaint) {
+        savedScrollPos = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+
         var form = document.getElementById('formUpdateComplaint');
         if (form) {
             form.action = '{{ url('/complaints') }}/' + complaint.id + '/update';
@@ -2218,14 +2359,33 @@
         if (document.getElementById('selectUpdateStatus')) document.getElementById('selectUpdateStatus').value = complaint.status || 'diajukan';
         if (document.getElementById('inputUpdatePetugas')) document.getElementById('inputUpdatePetugas').value = complaint.petugas_penanggung_jawab || '';
         if (document.getElementById('inputUpdateCatatan')) document.getElementById('inputUpdateCatatan').value = complaint.catatan_perbaikan || '';
-        if (document.getElementById('inputUpdateBiaya')) document.getElementById('inputUpdateBiaya').value = complaint.biaya_perbaikan || 0;
+        
+        var rawBiaya = parseInt(complaint.biaya_perbaikan) || 0;
+        if (document.getElementById('inputUpdateBiaya')) document.getElementById('inputUpdateBiaya').value = rawBiaya;
+        if (document.getElementById('inputUpdateBiayaDisplay')) {
+            document.getElementById('inputUpdateBiayaDisplay').value = rawBiaya > 0 ? 'Rp ' + rawBiaya.toLocaleString('id-ID') : 'Rp 0';
+        }
 
-        if (window.jQuery && typeof $('#modalUpdateComplaint').modal === 'function') {
-            $('#modalUpdateComplaint').modal('show');
+        // Reset file upload state in modal
+        var updateFileWrap = $('#modalUpdateComplaint .custom-file-upload-modern');
+        updateFileWrap.removeClass('has-file');
+        updateFileWrap.find('input[type="file"]').val('');
+        updateFileWrap.find('.file-name-text').text('Pilih Foto Penyelesaian');
+        updateFileWrap.find('.file-desc-text').text('Format: JPG, PNG, PDF (Maks. 5MB)');
+
+        var modalEl = document.getElementById('modalUpdateComplaint');
+        if (!modalEl) return;
+
+        if (window.jQuery && typeof $(modalEl).modal === 'function') {
+            $(modalEl).modal('show');
         } else if (window.bootstrap && bootstrap.Modal) {
-            var modal = new bootstrap.Modal(document.getElementById('modalUpdateComplaint'));
+            var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
             modal.show();
         }
+
+        setTimeout(function() {
+            window.scrollTo({ top: savedScrollPos, behavior: 'instant' });
+        }, 10);
     }
 
     function confirmDeleteComplaint(id, ticket) {
@@ -2263,6 +2423,22 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        // Prevent scroll jump on Bootstrap modal events
+        ['modalAddComplaint', 'modalUpdateComplaint'].forEach(function(modalId) {
+            var el = document.getElementById(modalId);
+            if (el) {
+                el.addEventListener('show.bs.modal', function() {
+                    savedScrollPos = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+                });
+                el.addEventListener('shown.bs.modal', function() {
+                    window.scrollTo({ top: savedScrollPos, behavior: 'instant' });
+                });
+                el.addEventListener('hidden.bs.modal', function() {
+                    window.scrollTo({ top: savedScrollPos, behavior: 'instant' });
+                });
+            }
+        });
+
         @if(session('success'))
             Swal.fire({
                 icon: 'success',

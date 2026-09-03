@@ -68,6 +68,7 @@
             // Master Data
             'master.data.menu' => 'mdi-shield-account-outline',
             'master.bahan.index' => 'mdi-package-variant-closed',
+            'master.progress.index' => 'mdi-progress-check',
             'promo.index' => 'mdi-tag-outline',
             'company-profile.index' => 'mdi-city-variant-outline',
             'servis' => 'mdi-face-agent',
@@ -109,6 +110,7 @@
             'agency.index' => ['agency.index*', 'agency.edit*'],
             'master.data.menu' => ['master.data.menu*'],
             'master.bahan.index' => ['master.bahan.index*', 'master.data.bahan*'],
+            'master.progress.index' => ['master.progress.*', 'master-progress-kategori*'],
             'promo.index' => ['promo.index*', 'promo.*'],
             'company-profile.index' => ['company-profile.index*', 'company-profile.*'],
             'servis' => ['servis*'],

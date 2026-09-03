@@ -120,13 +120,42 @@ class DevelopmentProgressController extends Controller
                 $deadlineItem = $item['deadline']
                     ?? ($itemId ? ($request->deadline[$itemId] ?? null) : null);
 
-                // UPDATE deadline item lama
+                // UPDATE deadline & dokumentasi item lama
                 if ($itemId && empty($item['kategori'])) {
 
                     DevelopmentProgressItem::where('id', $itemId)
                         ->update([
                             'deadline' => $deadlineItem
                         ]);
+
+                    // Upload dokumentasi untuk item lama jika ada file yang diunggah
+                    if ($request->hasFile("items.$index.dokumentasi") || $request->hasFile("items.$itemId.dokumentasi")) {
+                        $file = $request->file("items.$index.dokumentasi") ?? $request->file("items.$itemId.dokumentasi");
+                        $fileName = 'doc_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                        $relDir = 'uploads/progress_dokumentasi';
+
+                        $dir1 = public_path($relDir);
+                        $dir2 = base_path($relDir);
+                        $dir3 = base_path('public/' . $relDir);
+
+                        foreach ([$dir1, $dir2, $dir3] as $d) {
+                            if (!file_exists($d)) @mkdir($d, 0755, true);
+                        }
+
+                        $file->move($dir1, $fileName);
+                        if ($dir2 !== $dir1 && file_exists($dir2) && file_exists($dir1 . '/' . $fileName)) {
+                            @copy($dir1 . '/' . $fileName, $dir2 . '/' . $fileName);
+                        }
+
+                        $filePath = "{$relDir}/{$fileName}";
+
+                        $existingProgressItem = DevelopmentProgressItem::find($itemId);
+                        if ($existingProgressItem) {
+                            $existingProgressItem->documents()->create([
+                                'file_path' => $filePath
+                            ]);
+                        }
+                    }
 
                     continue;
                 }

@@ -140,19 +140,25 @@
         .file-upload-label {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 0.35rem 0.6rem;
+            justify-content: center;
+            gap: 4px;
+            padding: 0.35rem 0.5rem;
             background: #f8fafc;
             border: 1px dashed #cbd5e1;
             border-radius: 6px;
-            font-size: 0.75rem;
+            font-size: 0.78rem;
+            color: #475569;
             cursor: pointer;
             transition: all 0.2s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .file-upload-label:hover, .file-upload-label.file-selected {
             border-color: #9a55ff;
             background: #f3e8ff;
+            color: #9a55ff;
         }
 
         .file-preview-btn {
@@ -237,24 +243,50 @@
         .rab-btn-warning {
             background: linear-gradient(135deg, #da8cff, #9a55ff);
         }
+
+        .btn-action {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            text-decoration: none;
+            vertical-align: middle;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-action.delete {
+            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+            color: #ffffff !important;
+        }
     </style>
 
-    <div class="container-fluid p-4">
+    <div class="container-fluid px-2 px-sm-3 px-md-4 py-3">
         <!-- Header Card Banner -->
         <div class="row mb-3 mb-md-4">
             <div class="col-12">
-                <div class="card shadow-sm border-0 header-card">
-                    <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
+                <div class="card shadow-sm border-0 header-card" style="border-radius: 12px;">
+                    <div class="card-body p-3 p-md-4 d-flex justify-content-between align-items-center" style="min-height: 90px;">
                         <div>
-                            <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                            <h3 class="text-dark mb-1 fw-bold" style="font-size: clamp(1.1rem, 2.5vw, 1.35rem);">
                                 Rencana Anggaran Pekerjaan (RAP) Pembangunan
                             </h3>
-                            <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                            <p class="text-muted mb-0" style="font-size: clamp(0.78rem, 1.8vw, 0.9rem);">
                                 Rincian anggaran pekerjaan pembangunan unit dari awal hingga selesai
                             </p>
                         </div>
                         <div class="d-none d-sm-block pe-2">
-                            <i class="mdi mdi-calculator" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
+                            <i class="mdi mdi-calculator" style="font-size: 2.8rem; color: #9a55ff; opacity: 0.25;"></i>
                         </div>
                     </div>
                 </div>
@@ -282,12 +314,12 @@
         @endif
 
         <!-- Info Unit -->
-        <div class="row mb-4">
+        <div class="row mb-3 mb-md-4">
             <div class="col-12">
-                <div class="card shadow-sm border-0 rab-info-card">
-                    <div class="row g-3 align-items-center">
+                <div class="card shadow-sm border-0 rab-info-card" style="border-radius: 12px;">
+                    <div class="row g-2 g-md-3 align-items-center">
                         {{-- UNIT --}}
-                        <div class="col-12 col-sm-6 col-md-2">
+                        <div class="col-12 col-sm-6 col-lg-2">
                             <span class="rab-label">
                                 <i class="mdi mdi-home text-primary me-1"></i>Unit
                             </span>
@@ -304,7 +336,7 @@
                         </div>
 
                         {{-- TIPE / NAMA --}}
-                        <div class="col-12 col-sm-6 col-md-3">
+                        <div class="col-12 col-sm-6 col-lg-3">
                             <span class="rab-label">
                                 <i class="mdi mdi-shape-outline text-info me-1"></i>Tipe / Nama
                             </span>
@@ -312,7 +344,7 @@
                         </div>
 
                         {{-- LUAS TANAH --}}
-                        <div class="col-6 col-sm-4 col-md-2">
+                        <div class="col-6 col-sm-6 col-lg-2">
                             <span class="rab-label">
                                 <i class="mdi mdi-ruler-square text-warning me-1"></i>Luas Tanah
                             </span>
@@ -320,7 +352,7 @@
                         </div>
 
                         {{-- LUAS BANGUNAN --}}
-                        <div class="col-6 col-sm-4 col-md-2">
+                        <div class="col-6 col-sm-6 col-lg-2">
                             <span class="rab-label">
                                 <i class="mdi mdi-office-building-marker text-success me-1"></i>Luas Bangunan
                             </span>
@@ -328,7 +360,7 @@
                         </div>
 
                         {{-- HARGA --}}
-                        <div class="col-12 col-sm-4 col-md-3">
+                        <div class="col-12 col-sm-12 col-lg-3">
                             <span class="rab-label">
                                 <i class="mdi mdi-currency-usd text-danger me-1"></i>Harga Jual Unit
                             </span>
@@ -398,39 +430,45 @@
             @endphp
 
             {{-- TOOLBAR DINAMIS: SEEDER TEMPLATE, TAMBAH KATEGORI & MENU MASTER --}}
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 p-3 bg-white rounded-3 border shadow-sm">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="badge bg-primary px-3 py-2" style="font-size: 0.82rem;">
-                        <i class="mdi mdi-layers-outline me-1"></i>{{ count($kategoriConfig) }} Kategori Pekerjaan Terhubung Master
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3 mb-md-4 p-3 bg-white rounded-3 border shadow-sm">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <h5 class="fw-bold text-dark mb-0" style="font-size: 1.05rem;">
+                        Tahapan Pekerjaan Unit
+                    </h5>
+                    <span class="badge bg-primary bg-opacity-10 text-primary font-monospace px-2.5 py-1 rounded-2 fw-bold" style="font-size: 0.82rem;">
+                        {{ count($kategoriConfig) }} Kategori
                     </span>
-                    <span class="text-muted small d-none d-md-inline">Seluruh tahapan dari Perizinan sampai Pekerjaan Lainnya dikelola secara dinamis.</span>
                 </div>
-                <div class="d-flex flex-wrap gap-2">
-                    <a href="{{ route('master.progress.index') }}" target="_blank" class="btn btn-sm btn-outline-secondary shadow-sm px-3" style="border-radius: 8px; font-weight: 600;" title="Kelola Master Kategori & Item Template">
-                        <i class="mdi mdi-cog-outline me-1"></i>Menu Master Tahapan
+                <div class="d-flex flex-wrap gap-2 w-100 w-md-auto justify-content-start justify-content-md-end">
+                    <a href="{{ route('master.progress.index') }}" target="_blank" class="btn btn-sm btn-secondary text-white px-3 py-1.5 rounded-2 fw-semibold shadow-sm" style="font-size: 0.82rem;" title="Kelola Master Kategori & Item Template">
+                        <i class="mdi mdi-cog-outline me-1"></i>Master Template
                     </a>
-                    <button type="button" class="btn btn-sm btn-outline-primary shadow-sm px-3" onclick="confirmApplyTemplate()" style="border-radius: 8px; font-weight: 600;">
-                        <i class="mdi mdi-flash me-1"></i>⚡ Terapkan Template Standar RAP
+                    <button type="button" class="btn btn-sm btn-info text-white px-3 py-1.5 rounded-2 fw-semibold shadow-sm" style="font-size: 0.82rem;" onclick="confirmApplyTemplate()">
+                        <i class="mdi mdi-flash me-1"></i>Terapkan Template
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-success shadow-sm px-3" onclick="modalTambahKategoriBaru()" style="border-radius: 8px; font-weight: 600;">
-                        <i class="mdi mdi-plus-circle-outline me-1"></i>+ Tambah Kategori Baru
+                    <button type="button" class="btn btn-sm btn-gradient-primary px-3 py-1.5 rounded-2 fw-semibold text-white shadow-sm" style="font-size: 0.82rem;" onclick="modalTambahKategoriBaru()">
+                        <i class="mdi mdi-plus-circle-outline me-1"></i>Tambah Kategori
                     </button>
                 </div>
             </div>
 
             <div id="dynamic-categories-container">
             @foreach ($kategoriConfig as $key => $cfg)
-                <div class="row mb-4 category-section" id="section-{{ $key }}">
+                <div class="row mb-3 mb-md-4 category-section" id="section-{{ $key }}">
                     <div class="col-12">
-                        <div class="card shadow-sm border-0 rab-card">
-                            <div class="card-header rab-card-header d-flex justify-content-between align-items-center py-3">
-                                <h5 class="mb-0 fw-bold">
-                                    <i class="mdi mdi-{{ $cfg['icon'] ?? 'dots-horizontal' }} me-2" style="color: #9a55ff;"></i>
-                                    {{ $cfg['title'] }}
-                                </h5>
-                                <button type="button" class="rab-btn-add"
-                                    onclick="tambahItem('{{ $key }}')">
-                                    <i class="mdi mdi-plus me-1"></i>Tambah Item
+                        <div class="card shadow-sm border-0 rab-card" style="border-radius: 12px; overflow: hidden;">
+                            <div class="card-header bg-light bg-opacity-75 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 py-2.5 px-3 px-md-4 border-bottom">
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary font-monospace px-2.5 py-1 rounded-2 fw-bold" style="font-size: 0.82rem;">
+                                        Prefix: {{ $cfg['prefix'] }}
+                                    </span>
+                                    <h6 class="mb-0 fw-bold text-dark d-flex align-items-center" style="font-size: 0.98rem;">
+                                        <i class="mdi mdi-{{ $cfg['icon'] ?? 'folder-outline' }} me-2" style="color: #9a55ff; font-size: 1.15rem;"></i>
+                                        {{ $cfg['title'] }}
+                                    </h6>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-success text-white px-3 py-1 rounded-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-1" style="height: 32px; font-size: 0.8rem;" onclick="tambahItem('{{ $key }}')">
+                                    + Tambah Item
                                 </button>
                             </div>
 
@@ -485,27 +523,41 @@
                                                             @php $documents = $item->documents; @endphp
 
                                                             @if ($documents->count())
-                                                                @foreach ($documents as $doc)
-                                                                    @php
-                                                                        $docRaw = $doc->file_path;
-                                                                        $docClean = ltrim(preg_replace('/^(storage\/)+/', '', $docRaw), '/');
-                                                                        $docUrl = str_starts_with($docRaw, 'http')
-                                                                            ? $docRaw
-                                                                            : (str_starts_with($docRaw, 'uploads/') ? asset($docRaw) : (file_exists(public_path($docRaw)) ? asset($docRaw) : asset('storage/' . $docClean)));
-                                                                    @endphp
-                                                                    <a href="{{ $docUrl }}"
-                                                                        target="_blank" class="file-preview-btn">
-                                                                        <i class="mdi mdi-eye"></i>
-                                                                        <span>Lihat</span>
-                                                                    </a>
-                                                                @endforeach
-                                                            @else
-                                                                <span class="text-muted">-</span>
+                                                                <div class="d-flex flex-wrap gap-1 mb-1">
+                                                                    @foreach ($documents as $doc)
+                                                                        @php
+                                                                            $docRaw = $doc->file_path;
+                                                                            $docClean = ltrim(preg_replace('/^(storage\/)+/', '', $docRaw), '/');
+                                                                            $docUrl = str_starts_with($docRaw, 'http')
+                                                                                ? $docRaw
+                                                                                : (str_starts_with($docRaw, 'uploads/') ? asset($docRaw) : (file_exists(public_path($docRaw)) ? asset($docRaw) : asset('storage/' . $docClean)));
+                                                                        @endphp
+                                                                        <a href="{{ $docUrl }}"
+                                                                            target="_blank" class="file-preview-btn">
+                                                                            <i class="mdi mdi-eye"></i>
+                                                                            <span>Lihat ({{ $loop->iteration }})</span>
+                                                                        </a>
+                                                                    @endforeach
+                                                                </div>
                                                             @endif
+
+                                                            <div class="file-upload-modern">
+                                                                <input type="file"
+                                                                       name="items[{{ $item->id }}][dokumentasi]"
+                                                                       id="file-existing-{{ $item->id }}"
+                                                                       class="file-upload-input"
+                                                                       accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx"
+                                                                       onchange="handleFileSelect(this, 'existing-{{ $item->id }}')">
+                                                                <div class="file-upload-label" id="label-existing-{{ $item->id }}">
+                                                                    <i class="mdi mdi-cloud-upload text-primary me-1"></i>
+                                                                    <span id="fileName-existing-{{ $item->id }}">{{ $documents->count() ? 'Tambah file' : 'Pilih file' }}</span>
+                                                                    <span class="file-upload-size" id="fileSize-existing-{{ $item->id }}"></span>
+                                                                </div>
+                                                            </div>
                                                         </td>
 
                                                         <td class="text-center">
-                                                            <button type="button" class="btn btn-outline-danger btn-sm" style="border-radius: 6px; padding: 4px 8px;"
+                                                            <button type="button" class="btn-action delete"
                                                                 onclick="hapusItem(this, '{{ $key }}', {{ $item->id }})" title="Hapus Item">
                                                                 <i class="mdi mdi-trash-can-outline"></i>
                                                             </button>
@@ -516,19 +568,22 @@
                                             @else
                                                 <tr>
                                                     <td colspan="10" class="text-center text-muted py-3">
-                                                        <i class="mdi mdi-information-outline me-1"></i>Belum ada progress untuk kategori ini
+                                                        Belum ada progress untuk kategori ini
                                                     </td>
                                                 </tr>
                                             @endif
                                         </tbody>
                                         <tfoot>
-                                            <tr>
-                                                <th colspan="6" class="text-end fw-bold text-dark">SUB TOTAL {{ strtoupper($key) }}</th>
-                                                <th colspan="4">
-                                                    <input type="text" id="subtotal-{{ $key }}"
-                                                        class="rab-form-control text-end fw-bold text-primary"
-                                                        style="font-size: 0.95rem;" readonly>
-                                                </th>
+                                            <tr class="bg-light bg-opacity-75" style="border-top: 1px solid #e2e8f0;">
+                                                <td colspan="5" class="text-start ps-3 ps-md-4 fw-bold text-dark small py-2.5">
+                                                    Subtotal {{ $cfg['title'] }}
+                                                </td>
+                                                <td colspan="5" class="text-end pe-3 pe-md-4 py-2.5">
+                                                    <span id="subtotal-display-{{ $key }}" class="font-monospace fw-bold text-success" style="font-size: 1rem;">
+                                                        Rp 0
+                                                    </span>
+                                                    <input type="hidden" id="subtotal-{{ $key }}" value="0">
+                                                </td>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -683,6 +738,11 @@
                 </div>
             </div>
         </form>
+
+        <!-- Form Hidden untuk Apply Template Standar RAP -->
+        <form id="formApplyTemplate" action="{{ route('properti.progress.applyTemplate', $selectedUnit->id) }}" method="POST" style="display: none;">
+            @csrf
+        </form>
     </div>
 @endsection
 
@@ -787,17 +847,20 @@
             let cardHtml = `
                 <div class="row mb-4 category-section animate__animated animate__fadeIn" id="section-${cleanKey}">
                     <div class="col-12">
-                        <div class="card shadow-sm border-0 rab-card">
-                            <div class="card-header rab-card-header d-flex justify-content-between align-items-center py-3">
-                                <h5 class="mb-0 fw-bold">
-                                    <i class="mdi mdi-folder-plus-outline me-2" style="color: #10b981;"></i>
-                                    ${title}
-                                </h5>
-                                <div class="d-flex gap-2">
-                                    <button type="button" class="rab-btn-add" onclick="tambahItem('${cleanKey}')">
-                                        <i class="mdi mdi-plus me-1"></i>Tambah Item
-                                    </button>
+                        <div class="card shadow-sm border-0 rab-card" style="border-radius: 12px; overflow: hidden;">
+                            <div class="card-header bg-light bg-opacity-75 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 py-2.5 px-3 px-md-4 border-bottom">
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary font-monospace px-2.5 py-1 rounded-2 fw-bold" style="font-size: 0.82rem;">
+                                        Prefix: ${nextPrefix}
+                                    </span>
+                                    <h6 class="mb-0 fw-bold text-dark d-flex align-items-center" style="font-size: 0.98rem;">
+                                        <i class="mdi mdi-folder-outline me-2" style="color: #9a55ff; font-size: 1.15rem;"></i>
+                                        ${title}
+                                    </h6>
                                 </div>
+                                <button type="button" class="btn btn-sm btn-success text-white px-3 py-1 rounded-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-1" style="height: 32px; font-size: 0.8rem;" onclick="tambahItem('${cleanKey}')">
+                                    + Tambah Item
+                                </button>
                             </div>
 
                             <div class="card-body p-0">
@@ -825,14 +888,15 @@
                                             </tr>
                                         </tbody>
                                         <tfoot>
-                                            <tr>
-                                                <td colspan="5" class="text-end fw-bold rab-subtotal-label">
-                                                    SUBTOTAL ${title}:
+                                            <tr class="bg-light bg-opacity-75" style="border-top: 1px solid #e2e8f0;">
+                                                <td colspan="5" class="text-start ps-3 ps-md-4 fw-bold text-dark small py-2.5">
+                                                    Subtotal ${title}
                                                 </td>
-                                                <td colspan="5">
-                                                    <input type="text" id="subtotal-${cleanKey}"
-                                                           class="form-control form-control-sm fw-bold rab-subtotal-input"
-                                                           value="Rp 0" readonly>
+                                                <td colspan="5" class="text-end pe-3 pe-md-4 py-2.5">
+                                                    <span id="subtotal-display-${cleanKey}" class="font-monospace fw-bold text-success" style="font-size: 1rem;">
+                                                        Rp 0
+                                                    </span>
+                                                    <input type="hidden" id="subtotal-${cleanKey}" value="0">
                                                 </td>
                                             </tr>
                                         </tfoot>
@@ -920,18 +984,15 @@
                                    accept=".jpg,.jpeg,.png,.webp,.pdf,.doc,.docx"
                                    onchange="handleFileSelect(this, ${indexItem})">
                             <div class="file-upload-label" id="label-${indexItem}">
-                                <i class="mdi mdi-cloud-upload text-primary"></i>
-                                <div class="file-upload-info">
-                                    <span id="fileName-${indexItem}">Pilih file dokumentasi</span>
-                                    <small class="text-muted" style="font-size: 0.68rem;">Format: JPG, PNG, WEBP, PDF (Maks 10MB)</small>
-                                </div>
+                                <i class="mdi mdi-cloud-upload text-primary me-1"></i>
+                                <span id="fileName-${indexItem}">Pilih file</span>
                                 <span class="file-upload-size" id="fileSize-${indexItem}"></span>
                             </div>
                         </div>
                     </td>
                     <td class="text-center">
                         <button type="button"
-                                class="btn btn-outline-danger btn-sm" style="border-radius: 6px; padding: 4px 8px;"
+                                class="btn-action delete"
                                 onclick="hapusItem(this, '${kategori}')" title="Hapus Item">
                             <i class="mdi mdi-trash-can-outline"></i>
                         </button>
@@ -956,14 +1017,18 @@
 
         function parseVolumeVal(val) {
             if (!val) return 0;
-            let str = val.toString().replace(/,/g, '.');
-            return parseFloat(str) || 0;
+            if (typeof val === 'number') return val;
+            let str = String(val).trim().replace(',', '.');
+            let num = parseFloat(str);
+            return isNaN(num) ? 0 : num;
         }
 
         function parseRupiahVal(val) {
             if (!val) return 0;
-            let clean = val.toString().replace(/[^0-9]/g, '');
-            return parseInt(clean, 10) || 0;
+            if (typeof val === 'number') return val;
+            let clean = String(val).replace(/[^0-9]/g, '');
+            let num = parseInt(clean, 10);
+            return isNaN(num) ? 0 : num;
         }
 
         function handleFileSelect(input, index) {
@@ -985,8 +1050,8 @@
                         confirmButtonColor: '#9a55ff'
                     });
                     input.value = '';
-                    fileNameSpan.textContent = 'Pilih file dokumentasi';
-                    fileSizeSpan.textContent = '';
+                    fileNameSpan.textContent = 'Pilih file';
+                    if (fileSizeSpan) fileSizeSpan.textContent = '';
                     label.classList.remove('file-selected');
                     return;
                 }
@@ -999,24 +1064,26 @@
                         confirmButtonColor: '#9a55ff'
                     });
                     input.value = '';
-                    fileNameSpan.textContent = 'Pilih file dokumentasi';
-                    fileSizeSpan.textContent = '';
+                    fileNameSpan.textContent = 'Pilih file';
+                    if (fileSizeSpan) fileSizeSpan.textContent = '';
                     label.classList.remove('file-selected');
                     return;
                 }
 
-                fileNameSpan.textContent = file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
+                fileNameSpan.textContent = file.name.length > 15 ? file.name.substring(0, 12) + '...' : file.name;
 
-                if (file.size < 1024 * 1024) {
-                    fileSizeSpan.textContent = (file.size / 1024).toFixed(1) + ' KB';
-                } else {
-                    fileSizeSpan.textContent = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
+                if (fileSizeSpan) {
+                    if (file.size < 1024 * 1024) {
+                        fileSizeSpan.textContent = ' (' + (file.size / 1024).toFixed(0) + 'KB)';
+                    } else {
+                        fileSizeSpan.textContent = ' (' + (file.size / (1024 * 1024)).toFixed(1) + 'MB)';
+                    }
                 }
 
                 label.classList.add('file-selected');
             } else {
-                fileNameSpan.textContent = 'Pilih file dokumentasi';
-                fileSizeSpan.textContent = '';
+                fileNameSpan.textContent = 'Pilih file';
+                if (fileSizeSpan) fileSizeSpan.textContent = '';
                 label.classList.remove('file-selected');
             }
         }
@@ -1110,6 +1177,10 @@
                 let subtotalInput = document.getElementById(config.subtotal);
                 if (subtotalInput) {
                     subtotalInput.value = 'Rp ' + subtotal.toLocaleString('id-ID');
+                }
+                let subtotalDisplay = document.getElementById('subtotal-display-' + kategori);
+                if (subtotalDisplay) {
+                    subtotalDisplay.innerText = 'Rp ' + subtotal.toLocaleString('id-ID');
                 }
 
                 if (kategori === 'perizinan') {

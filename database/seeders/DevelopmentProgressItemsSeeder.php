@@ -173,7 +173,7 @@ class DevelopmentProgressItemsSeeder extends Seeder
                 'price'                 => 200000000,
                 'facing'                => 'Utara',
                 'position'              => 'Hook',
-                'status'                => 'available',
+                'status'                => 'ready',
                 'construction_progress' => 'pondasi',
             ]);
         } else {
