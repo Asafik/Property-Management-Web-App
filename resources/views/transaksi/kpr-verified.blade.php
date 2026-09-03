@@ -607,17 +607,20 @@
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            @if ($status === 'approved' || $status === 'dokumen')
+                                            @php
+                                                $isUnitSoldOut = in_array(strtolower($application->unit->status ?? ''), ['sold', 'soldout']) || in_array(strtolower($status ?? ''), ['akad', 'completed', 'sold', 'done']);
+                                            @endphp
+                                            @if ($isUnitSoldOut)
+                                                <span class="badge-status badge-akad" style="background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff;">
+                                                    <i class="mdi mdi-home-lock me-1"></i>Sold Out
+                                                </span>
+                                            @elseif ($status === 'approved' || $status === 'dokumen')
                                                 <span class="badge-status badge-verified">
                                                     <i class="mdi mdi-check-circle-outline me-1"></i>Terverifikasi
                                                 </span>
                                             @elseif ($status === 'survey')
                                                 <span class="badge-status badge-survey">
                                                     <i class="mdi mdi-map-marker-check-outline me-1"></i>Survey
-                                                </span>
-                                            @elseif ($status === 'akad')
-                                                <span class="badge-status badge-akad">
-                                                    <i class="mdi mdi-handshake-outline me-1"></i>Akad
                                                 </span>
                                             @else
                                                 <span class="badge-status badge-default">
@@ -633,7 +636,11 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center">
-                                                @if(strtolower($application->unit->jenis ?? '') === 'komersil')
+                                                @if($isUnitSoldOut)
+                                                    <button type="button" class="btn btn-secondary btn-sm d-inline-flex align-items-center justify-content-center px-3 py-1.5" disabled title="Unit telah Akad / Sold Out" style="font-weight: 700; border-radius: 8px; opacity: 0.65; cursor: not-allowed;">
+                                                        <i class="mdi mdi-check-all me-1"></i>Sold Out
+                                                    </button>
+                                                @elseif(strtolower($application->unit->jenis ?? '') === 'komersil')
                                                     @if($status === 'survey')
                                                         <a href="{{ route('kpr.survey', $application->id) }}" class="btn-action survey" onclick="showProcessLoading(event)">
                                                             <i class="mdi mdi-home-search-outline"></i> Lanjut Survey

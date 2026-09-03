@@ -521,17 +521,20 @@
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            @if ($application->status === 'approved' || $application->status === 'dokumen')
+                                            @php
+                                                $isUnitSoldOut = in_array(strtolower($application->unit->status ?? ''), ['sold', 'soldout']) || in_array(strtolower($application->status ?? ''), ['akad', 'completed', 'sold', 'done']);
+                                            @endphp
+                                            @if ($isUnitSoldOut)
+                                                <span class="badge-status badge-akad" style="background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff;">
+                                                    <i class="mdi mdi-home-lock me-1"></i>Sold Out
+                                                </span>
+                                            @elseif ($application->status === 'approved' || $application->status === 'dokumen')
                                                 <span class="badge-status badge-verified">
                                                     <i class="mdi mdi-check-circle-outline me-1"></i>Terverifikasi
                                                 </span>
                                             @elseif ($application->status === 'survey')
                                                 <span class="badge-status badge-survey">
                                                     <i class="mdi mdi-map-marker-check-outline me-1"></i>Survey
-                                                </span>
-                                            @elseif ($application->status === 'akad')
-                                                <span class="badge-status badge-akad">
-                                                    <i class="mdi mdi-handshake-outline me-1"></i>Akad
                                                 </span>
                                             @else
                                                 <span class="badge-status badge-default">
@@ -547,9 +550,15 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center">
-                                                <a href="{{ route('kpr.pecahlegal', $application->id) }}" class="btn btn-gradient-warning btn-sm d-inline-flex align-items-center justify-content-center px-3 py-1.5" title="Proses Legalitas Unit" onclick="showProcessLoading(event)" style="font-weight: 700; border-radius: 8px;">
-                                                    <i class="mdi mdi-file-certificate-outline me-1.5" style="font-size: 1.05rem;"></i>Proses Legalitas
-                                                </a>
+                                                @if ($isUnitSoldOut)
+                                                    <button type="button" class="btn btn-secondary btn-sm d-inline-flex align-items-center justify-content-center px-3 py-1.5" disabled title="Unit telah Akad / Sold Out" style="font-weight: 700; border-radius: 8px; opacity: 0.65; cursor: not-allowed;">
+                                                        <i class="mdi mdi-check-all me-1.5" style="font-size: 1.05rem;"></i>Sold Out
+                                                    </button>
+                                                @else
+                                                    <a href="{{ route('kpr.pecahlegal', $application->id) }}" class="btn btn-gradient-warning btn-sm d-inline-flex align-items-center justify-content-center px-3 py-1.5" title="Proses Legalitas Unit" onclick="showProcessLoading(event)" style="font-weight: 700; border-radius: 8px;">
+                                                        <i class="mdi mdi-file-certificate-outline me-1.5" style="font-size: 1.05rem;"></i>Proses Legalitas
+                                                    </a>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
