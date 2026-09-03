@@ -637,8 +637,8 @@
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center">
                                                 @if($isUnitSoldOut)
-                                                    <button type="button" class="btn btn-secondary btn-sm d-inline-flex align-items-center justify-content-center px-3 py-1.5" disabled title="Unit telah Akad / Sold Out" style="font-weight: 700; border-radius: 8px; opacity: 0.65; cursor: not-allowed;">
-                                                        <i class="mdi mdi-check-all me-1"></i>Sold Out
+                                                    <button type="button" class="btn btn-sm d-inline-flex align-items-center justify-content-center px-3 py-1.5" disabled title="Unit telah Akad / Sold Out" style="background: #f5f3ff; color: #7c3aed; border: 1.5px solid #8b5cf6; font-weight: 700; border-radius: 8px; min-height: 34px; cursor: not-allowed; box-shadow: 0 2px 6px rgba(139, 92, 246, 0.12);">
+                                                        <i class="mdi mdi-home-lock me-1"></i>Sold Out
                                                     </button>
                                                 @elseif(strtolower($application->unit->jenis ?? '') === 'komersil')
                                                     @if($status === 'survey')
