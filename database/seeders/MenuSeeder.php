@@ -262,6 +262,12 @@ class MenuSeeder extends Seeder
         ])->positions()->attach($keuanganRoles);
 
         Menu::create([
+            'name'      => 'Pencairan Dana KPR',
+            'route'     => 'finance.kpr-disbursement.index',
+            'parent_id' => $keuangan->id
+        ])->positions()->attach($keuanganRoles);
+
+        Menu::create([
             'name'      => 'Master Invoice',
             'route'     => 'keuangan.master-invoice.index',
             'parent_id' => $keuangan->id

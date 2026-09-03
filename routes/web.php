@@ -376,6 +376,11 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
     Route::post('/keuangan/master-invoice/sync', [InvoiceMasterController::class, 'syncPraLandbanks'])->name('keuangan.master-invoice.sync');
     Route::get('/keuangan/master-invoice/{id}', [InvoiceMasterController::class, 'show'])->name('keuangan.master-invoice.show');
 
+    // Pencairan Dana KPR Bank (KPR Disbursement)
+    Route::get('/keuangan/pencairan-kpr', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'index'])->name('finance.kpr-disbursement.index');
+    Route::post('/keuangan/pencairan-kpr/store', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'store'])->name('finance.kpr-disbursement.store');
+    Route::delete('/keuangan/pencairan-kpr/{id}', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'destroy'])->name('finance.kpr-disbursement.destroy');
+
 
     Route::resource('dokument', LandBankDocumentController::class);
     Route::get('/dokument-persiapan-pecah-unit', [DokumentLegalPersiapanController::class, 'index'])->name('dokument.persiapan');
