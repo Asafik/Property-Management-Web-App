@@ -356,21 +356,43 @@
             </div>
 
             @php
-                $categories = $progressItems->groupBy('kategori'); // pastikan kolom kategori ada di tabel rabs
+                $categoryTitles = [
+                    'perizinan' => 'I. PERIZINAN & LEGALITAS (PBG/IMB, SERTIFIKAT, DLL)',
+                    'persiapan' => 'II. PEKERJAAN PERSIAPAN',
+                    'pondasi'   => 'III. PEKERJAAN PONDASI',
+                    'struktur'  => 'IV. PEKERJAAN STRUKTUR',
+                    'dinding'   => 'V. PEKERJAAN DINDING',
+                    'atap'      => 'VI. PEKERJAAN ATAP',
+                    'finishing' => 'VII. PEKERJAAN FINISHING',
+                    'lainnya'   => 'VIII. PEKERJAAN LAINNYA',
+                ];
+
+                // Urutkan kategori sesuai urutan standar
+                $categoryOrder = array_keys($categoryTitles);
+                $categories = $progressItems->groupBy('kategori')->sortBy(function ($items, $key) use ($categoryOrder) {
+                    $index = array_search(strtolower($key), $categoryOrder);
+                    return $index !== false ? $index : 99;
+                });
+
                 $grandTotal = 0;
+                $totalPerizinan = 0;
+                $totalRumah = 0;
             @endphp
 
             @foreach($categories as $kategori => $items)
-                <div class="section-title">{{ $kategori }}</div>
+                @php
+                    $displayTitle = $categoryTitles[strtolower($kategori)] ?? strtoupper($kategori);
+                @endphp
+                <div class="section-title">{{ $displayTitle }}</div>
                 <table class="rab-table" border="1" cellspacing="0" cellpadding="5">
                     <thead>
                         <tr>
-                            <th>No</th>
+                            <th style="width: 50px;">No</th>
                             <th>Uraian Pekerjaan</th>
-                            <th>Volume</th>
-                            <th>Satuan</th>
-                            <th>Harga Satuan (Rp)</th>
-                            <th>Total (Rp)</th>
+                            <th style="width: 80px;">Volume</th>
+                            <th style="width: 70px;">Satuan</th>
+                            <th style="width: 130px;">Harga Satuan (Rp)</th>
+                            <th style="width: 140px;">Total (Rp)</th>
                             <th>Keterangan</th>
                         </tr>
                     </thead>
@@ -378,33 +400,65 @@
                         @php $subtotal = 0; @endphp
                         @foreach($items as $item)
                             <tr>
-                                <td>{{ $item->kode }}</td>
+                                <td style="text-align: center;">{{ $item->kode }}</td>
                                 <td>{{ $item->uraian }}</td>
                                 <td class="text-end">{{ $item->volume }}</td>
-                                <td>{{ $item->satuan }}</td>
+                                <td style="text-align: center;">{{ $item->satuan }}</td>
                                 <td class="text-end">{{ number_format($item->harga_satuan,0,",",".") }}</td>
                                 <td class="text-end">{{ number_format($item->total,0,",",".") }}</td>
-                                <td>{{ $item->keterangan }}</td>
+                                <td>{{ $item->keterangan ?? '-' }}</td>
                             </tr>
                             @php $subtotal += $item->total; @endphp
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr class="subtotal-row">
-                            <td colspan="5" class="text-end">SUB TOTAL {{ $kategori }}</td>
+                            <td colspan="5" class="text-end">SUB TOTAL {{ $displayTitle }}</td>
                             <td class="text-end">{{ number_format($subtotal,0,",",".") }}</td>
                             <td></td>
                         </tr>
                     </tfoot>
                 </table>
-                @php $grandTotal += $subtotal; @endphp
+                @php 
+                    $grandTotal += $subtotal; 
+                    if (strtolower($kategori) === 'perizinan') {
+                        $totalPerizinan += $subtotal;
+                    } else {
+                        $totalRumah += $subtotal;
+                    }
+                @endphp
             @endforeach
 
-            {{-- GRAND TOTAL --}}
-            <table class="rab-table grand-total" border="1" cellspacing="0" cellpadding="5">
-                <tr>
-                    <td colspan="5" class="text-end">GRAND TOTAL</td>
-                    <td class="text-end">{{ number_format($grandTotal,0,",",".") }}</td>
+            @php
+                $ppn = round($grandTotal * 0.1);
+                $finalGrandTotal = $grandTotal + $ppn;
+            @endphp
+
+            {{-- REKAPITULASI & GRAND TOTAL --}}
+            <table class="rab-table" border="1" cellspacing="0" cellpadding="5" style="margin-top: 20px;">
+                <tr style="background-color: #f8f9fc; font-weight: bold;">
+                    <td colspan="5" class="text-end">Total Biaya Perizinan & Legalitas</td>
+                    <td class="text-end" style="width: 140px;">Rp {{ number_format($totalPerizinan, 0, ',', '.') }}</td>
+                    <td style="width: 100px;"></td>
+                </tr>
+                <tr style="background-color: #f8f9fc; font-weight: bold;">
+                    <td colspan="5" class="text-end">Total Biaya Konstruksi Fisik Rumah</td>
+                    <td class="text-end">Rp {{ number_format($totalRumah, 0, ',', '.') }}</td>
+                    <td></td>
+                </tr>
+                <tr style="background-color: #e9ecef; font-weight: bold;">
+                    <td colspan="5" class="text-end">Subtotal Semua Pekerjaan</td>
+                    <td class="text-end">Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
+                    <td></td>
+                </tr>
+                <tr style="background-color: #f8f9fc; font-weight: bold;">
+                    <td colspan="5" class="text-end">PPN (10%)</td>
+                    <td class="text-end">Rp {{ number_format($ppn, 0, ',', '.') }}</td>
+                    <td></td>
+                </tr>
+                <tr class="grand-total">
+                    <td colspan="5" class="text-end" style="font-size: 13px;">GRAND TOTAL ANGGARAN RAP (HPP UNIT)</td>
+                    <td class="text-end" style="font-size: 13px;">Rp {{ number_format($finalGrandTotal, 0, ',', '.') }}</td>
                     <td></td>
                 </tr>
             </table>

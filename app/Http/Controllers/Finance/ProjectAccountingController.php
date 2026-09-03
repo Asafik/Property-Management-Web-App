@@ -53,7 +53,9 @@ class ProjectAccountingController extends Controller
 
         // 2. Query Units with Financial Relations
         $unitsQuery = LandBankUnit::with([
-            'landBank',
+            'landBank.infrastructures',
+            'landBank.expenses',
+            'progress.items',
             'rabs',
             'complaints',
             'activeBooking.customer',
@@ -121,38 +123,61 @@ class ProjectAccountingController extends Controller
                 }
             }
 
-            // A. Alokasi Biaya Tanah (Land Cost Allocation)
+            // A. Alokasi Biaya Pengadaan Tanah (Land Cost Allocation)
             $totalLuasLahan = (float) ($u->landBank->area ?? 0);
             $hargaBeliLahan = (float) ($u->landBank->acquisition_price ?? 0);
             $luasUnit = (float) ($u->area ?? $u->land_area ?? 60);
+            $unitCount = max(1, $u->landBank?->units_count ?? $u->landBank?->units()->count() ?: 1);
             
             $biayaTanahUnit = 0;
             if ($totalLuasLahan > 0 && $hargaBeliLahan > 0) {
                 $biayaTanahUnit = ($luasUnit / $totalLuasLahan) * $hargaBeliLahan;
-            } elseif ($u->landBank && $u->landBank->units_count > 0 && $hargaBeliLahan > 0) {
-                $biayaTanahUnit = $hargaBeliLahan / $u->landBank->units_count;
+            } elseif ($hargaBeliLahan > 0) {
+                $biayaTanahUnit = $hargaBeliLahan / $unitCount;
             }
 
-            // B. Biaya Konstruksi SPK (SPK Kontraktor)
+            // B. Alokasi Biaya Pembangunan Jalan & Infrastruktur Kawasan (Infrastructure & Site Development)
+            $totalInfraExpense = 0;
+            if ($u->landBank) {
+                $expenseSum = (float) $u->landBank->expenses->sum('total_amount');
+                if ($expenseSum > 0) {
+                    $totalInfraExpense = $expenseSum;
+                } else {
+                    $totalInfraExpense = (float) $u->landBank->infrastructures->sum('cost_estimate');
+                }
+            }
+            $biayaInfraUnit = round($totalInfraExpense / $unitCount, 2);
+
+            // C. Rincian & Total Biaya Perizinan (Permits & Legalities)
+            $biayaPerizinan = 0;
+            if ($u->progress && $u->progress->items && $u->progress->items->count() > 0) {
+                $biayaPerizinan = (float) $u->progress->items->where('kategori', 'perizinan')->sum('total');
+            }
+
+            // D. Biaya Konstruksi Bangunan Rumah (Building Construction)
             $unitSpk = $spkList->firstWhere('land_bank_unit_id', $u->id);
             $biayaSpkKontrak = (float) ($unitSpk->nilai_kontrak ?? 0);
-            $realisasiBayarSpk = 0;
-            // C. Estimasi RAB / RPP Pembangunan Unit (Disendirikan sebagai komponen HPP)
-            $biayaRab = 0;
-            if ($u->progress && $u->progress->total_anggaran > 0) {
-                $biayaRab = (float) $u->progress->total_anggaran;
-            } elseif ($u->progress && $u->progress->items && $u->progress->items->count() > 0) {
-                $biayaRab = (float) $u->progress->items->sum('total');
+            $realisasiBayarSpk = $unitSpk && $unitSpk->termins ? (float) $unitSpk->termins->where('status_bayar', 'lunas')->sum('nominal') : 0;
+            
+            $biayaRumahRab = 0;
+            if ($u->progress && $u->progress->items && $u->progress->items->count() > 0) {
+                $biayaRumahRab = (float) $u->progress->items->where('kategori', '!=', 'perizinan')->sum('total');
+            } elseif ($u->progress && $u->progress->total_anggaran > 0) {
+                $biayaRumahRab = max(0, (float) $u->progress->total_anggaran - $biayaPerizinan);
             } elseif ($u->rabs) {
-                $biayaRab = (float) $u->rabs->sum('total_biaya');
+                $biayaRumahRab = (float) $u->rabs->sum('total_biaya');
             }
 
-            // D. Biaya Servis & Klaim Garansi
+            $biayaRumah = $biayaSpkKontrak > 0 ? $biayaSpkKontrak : $biayaRumahRab;
+
+            // E. Biaya Servis & Klaim Garansi
             $biayaServis = (float) ($u->complaints ? $u->complaints->sum('biaya_perbaikan') : 0);
 
-            // Total HPP Realisasi vs Komitmen
-            $totalHppKomitmen = $biayaTanahUnit + ($biayaSpkKontrak > 0 ? $biayaSpkKontrak : $biayaRab) + $biayaServis;
-            $totalHppRealisasi = $biayaTanahUnit + $realisasiBayarSpk + $biayaServis;
+            // Total HPP Komitmen & Realisasi (Gabungan Komprehensif)
+            $totalHppKomitmen = $biayaTanahUnit + $biayaInfraUnit + $biayaPerizinan + $biayaRumah + $biayaServis;
+            
+            $realisasiRumah = $realisasiBayarSpk > 0 ? $realisasiBayarSpk : ($u->construction_progress === 'selesai' ? $biayaRumah : 0);
+            $totalHppRealisasi = $biayaTanahUnit + $biayaInfraUnit + $biayaPerizinan + $realisasiRumah + $biayaServis;
 
             // Gross Profit & Margin
             $grossProfit = $hargaJual > 0 ? ($hargaJual - $totalHppKomitmen) : 0;
@@ -175,11 +200,14 @@ class ProjectAccountingController extends Controller
                 'uang_masuk_konsumen'  => $uangMasukKonsumen,
                 'piutang_konsumen'     => max(0, $hargaJual - $uangMasukKonsumen),
                 'biaya_tanah'          => $biayaTanahUnit,
+                'biaya_infrastruktur'  => $biayaInfraUnit,
+                'biaya_perizinan'      => $biayaPerizinan,
+                'biaya_rumah'          => $biayaRumah,
                 'spk'                  => $unitSpk,
                 'biaya_spk_kontrak'    => $biayaSpkKontrak,
                 'realisasi_bayar_spk'  => $realisasiBayarSpk,
                 'utang_spk_kontraktor' => max(0, $biayaSpkKontrak - $realisasiBayarSpk),
-                'biaya_rab'            => $biayaRab,
+                'biaya_rab'            => $biayaRumahRab + $biayaPerizinan,
                 'biaya_servis'         => $biayaServis,
                 'total_hpp_komitmen'   => $totalHppKomitmen,
                 'total_hpp_realisasi'  => $totalHppRealisasi,
@@ -195,6 +223,10 @@ class ProjectAccountingController extends Controller
             'total_units_sold'        => $unitFinancials->whereIn('status', ['sold', 'booked'])->count(),
             'total_revenue_potential' => $unitFinancials->whereIn('status', ['sold', 'booked'])->sum('harga_jual'),
             'total_cash_inflow'       => $unitFinancials->sum('uang_masuk_konsumen'),
+            'total_biaya_tanah'       => $unitFinancials->sum('biaya_tanah'),
+            'total_biaya_infrastruktur'=> $unitFinancials->sum('biaya_infrastruktur'),
+            'total_biaya_perizinan'   => $unitFinancials->sum('biaya_perizinan'),
+            'total_biaya_rumah'       => $unitFinancials->sum('biaya_rumah'),
             'total_hpp_project'       => $unitFinancials->sum('total_hpp_komitmen'),
             'total_cash_outflow'      => $unitFinancials->sum('total_hpp_realisasi'),
             'total_gross_profit'      => $unitFinancials->whereIn('status', ['sold', 'booked'])->sum('gross_profit'),
@@ -232,7 +264,29 @@ class ProjectAccountingController extends Controller
             ]);
         }
 
-        // B. Entri SPK Termin Pembayaran (Biaya Konstruksi Pemborong)
+        // B. Entri Belanja Infrastruktur & Pengolahan Lahan Kawasan
+        $infraExpenses = \App\Models\LandBankInfrastructureExpense::with('landBank')
+            ->when($landBankId, fn($q) => $q->where('land_bank_id', $landBankId))
+            ->when($startDate, fn($q) => $q->whereDate('expense_date', '>=', $startDate))
+            ->when($endDate, fn($q) => $q->whereDate('expense_date', '<=', $endDate))
+            ->get();
+
+        foreach ($infraExpenses as $ie) {
+            $journalEntries->push((object)[
+                'date'        => $ie->expense_date ? Carbon::parse($ie->expense_date) : $ie->created_at,
+                'ref_no'      => $ie->expense_code,
+                'category'    => 'Infrastruktur & Jalan Kawasan',
+                'description' => 'Pengeluaran Infrastruktur: ' . ($ie->item_name ?? 'Belanja Bahan') . ' (Vendor: ' . ($ie->vendor_name ?? '-') . ')',
+                'project'     => $ie->landBank?->name ?? 'Kawasan',
+                'unit'        => 'Infrastruktur / Fasum',
+                'type'        => 'KAS KELUAR',
+                'debit'       => 0,
+                'kredit'      => (float) $ie->total_amount,
+                'status'      => strtoupper($ie->payment_status ?? 'LUNAS'),
+            ]);
+        }
+
+        // C. Entri SPK Termin Pembayaran (Biaya Konstruksi Pemborong)
         $termins = SpkTermin::with(['spk.landBank', 'spk.unit'])
             ->where('status_bayar', 'lunas')
             ->when($startDate, fn($q) => $q->whereDate('tanggal_bayar', '>=', $startDate))
@@ -254,7 +308,7 @@ class ProjectAccountingController extends Controller
             ]);
         }
 
-        // C. Entri Pembayaran Konsumen (Penerimaan Penjualan Unit)
+        // D. Entri Pembayaran Konsumen (Penerimaan Penjualan Unit)
         $bookings = Booking::with(['unit.landBank', 'customer', 'payments'])
             ->whereIn('status', ['sold', 'booked', 'completed'])
             ->get();

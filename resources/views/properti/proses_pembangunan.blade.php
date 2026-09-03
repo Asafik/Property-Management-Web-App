@@ -347,22 +347,24 @@
 
             @php
                 $kategoriList = [
-                    'persiapan' => 'I. PEKERJAAN PERSIAPAN',
-                    'pondasi' => 'II. PEKERJAAN PONDASI',
-                    'struktur' => 'III. PEKERJAAN STRUKTUR',
-                    'dinding' => 'IV. PEKERJAAN DINDING',
-                    'atap' => 'V. PEKERJAAN ATAP',
-                    'finishing' => 'VI. PEKERJAAN FINISHING',
-                    'lainnya' => 'VII. PEKERJAAN LAINNYA',
+                    'perizinan' => 'I. PERIZINAN & LEGALITAS (PBG/IMB, SERTIFIKAT, DLL)',
+                    'persiapan' => 'II. PEKERJAAN PERSIAPAN',
+                    'pondasi'   => 'III. PEKERJAAN PONDASI',
+                    'struktur'  => 'IV. PEKERJAAN STRUKTUR',
+                    'dinding'   => 'V. PEKERJAAN DINDING',
+                    'atap'      => 'VI. PEKERJAAN ATAP',
+                    'finishing' => 'VII. PEKERJAAN FINISHING',
+                    'lainnya'   => 'VIII. PEKERJAAN LAINNYA',
                 ];
                 $iconMap = [
+                    'perizinan' => 'file-certificate-outline',
                     'persiapan' => 'tools',
-                    'pondasi' => 'foundation',
-                    'struktur' => 'bridge',
-                    'dinding' => 'wall',
-                    'atap' => 'roofing',
+                    'pondasi'   => 'foundation',
+                    'struktur'  => 'bridge',
+                    'dinding'   => 'wall',
+                    'atap'      => 'roofing',
                     'finishing' => 'brush',
-                    'lainnya' => 'dots-horizontal',
+                    'lainnya'   => 'dots-horizontal',
                 ];
             @endphp
 
@@ -404,7 +406,7 @@
                                                 @foreach ($selectedUnit->progress->items->where('kategori', $key)->values() as $item)
                                                     <tr>
                                                         <td style="display:none;">
-                                                            <input type="hidden" name="items[{{ $item->id }}][id]"
+                                                             <input type="hidden" name="items[{{ $item->id }}][id]"
                                                                 value="{{ $item->id }}">
                                                         </td>
 
@@ -489,6 +491,8 @@
             {{-- Rincian RAP --}}
             @php
                 $isAccCompleted = ($selectedUnit->progress && $selectedUnit->progress->status === 'completed') || $selectedUnit->construction_progress === 'selesai';
+                $subtotalPerizinan = $items->where('kategori', 'perizinan')->sum(fn($item) => $item->total);
+                $subtotalRumah = $items->where('kategori', '!=', 'perizinan')->sum(fn($item) => $item->total);
                 $subtotal = $items->sum(fn($item) => $item->total);
                 $ppn = round($subtotal * 0.1);
                 $totalRAB = $subtotal + $ppn;
@@ -509,11 +513,27 @@
                     <div class="card shadow-sm border-0 mb-3" style="border-radius: 12px;">
                         <div class="card-body">
                             <h6 class="card-title fw-bold text-dark mb-3">
-                                <i class="mdi mdi-chart-pie me-2" style="color: #9a55ff;"></i>Ringkasan RAP
+                                <i class="mdi mdi-chart-pie me-2" style="color: #9a55ff;"></i>Ringkasan RAP Terpadu
                             </h6>
 
                             <div class="ringkasan-row">
-                                <span class="ringkasan-label">Subtotal</span>
+                                <span class="ringkasan-label">Biaya Perizinan & Legalitas</span>
+                                <div class="ringkasan-input">
+                                    <input type="text" id="summary-perizinan" class="rab-form-control text-end fw-bold text-info"
+                                        value="Rp {{ number_format($subtotalPerizinan, 0, ',', '.') }}" readonly>
+                                </div>
+                            </div>
+
+                            <div class="ringkasan-row">
+                                <span class="ringkasan-label">Biaya Konstruksi Fisik Rumah</span>
+                                <div class="ringkasan-input">
+                                    <input type="text" id="summary-rumah" class="rab-form-control text-end fw-bold text-dark"
+                                        value="Rp {{ number_format($subtotalRumah, 0, ',', '.') }}" readonly>
+                                </div>
+                            </div>
+
+                            <div class="ringkasan-row">
+                                <span class="ringkasan-label">Subtotal Semua Pekerjaan</span>
                                 <div class="ringkasan-input">
                                     <input type="text" id="summary-subtotal" class="rab-form-control text-end fw-bold"
                                         value="Rp {{ number_format($subtotal, 0, ',', '.') }}" readonly>
@@ -531,7 +551,7 @@
                             <div class="ringkasan-divider"></div>
 
                             <div class="ringkasan-row">
-                                <span class="ringkasan-label fw-bold">Total RAP</span>
+                                <span class="ringkasan-label fw-bold">Total RAP (Masuk HPP)</span>
                                 <div class="ringkasan-input">
                                     <input type="text" id="summary-total-rab" class="rab-form-control text-end fw-bold text-primary"
                                         value="Rp {{ number_format($totalRAB, 0, ',', '.') }}" readonly>
@@ -642,6 +662,11 @@
         let indexItem = 0;
 
         const kategoriMap = {
+            perizinan: {
+                prefix: "P",
+                body: "body-perizinan",
+                subtotal: "subtotal-perizinan"
+            },
             persiapan: {
                 prefix: "1",
                 body: "body-persiapan",
@@ -901,6 +926,8 @@
 
         function hitungSemua() {
             let grandTotal = 0;
+            let totalPerizinan = 0;
+            let totalRumah = 0;
 
             Object.keys(kategoriMap).forEach(function(kategori) {
                 let config = kategoriMap[kategori];
@@ -930,12 +957,24 @@
                     subtotalInput.value = 'Rp ' + subtotal.toLocaleString('id-ID');
                 }
 
+                if (kategori === 'perizinan') {
+                    totalPerizinan += subtotal;
+                } else {
+                    totalRumah += subtotal;
+                }
+
                 grandTotal += subtotal;
             });
 
             // Live Update Ringkasan RAP & Harga Jual Final
             let ppn = Math.round(grandTotal * 0.1);
             let totalRAB = grandTotal + ppn;
+
+            let perizinanEl = document.getElementById('summary-perizinan');
+            if (perizinanEl) perizinanEl.value = 'Rp ' + totalPerizinan.toLocaleString('id-ID');
+
+            let rumahEl = document.getElementById('summary-rumah');
+            if (rumahEl) rumahEl.value = 'Rp ' + totalRumah.toLocaleString('id-ID');
 
             let subtotalEl = document.getElementById('summary-subtotal');
             if (subtotalEl) subtotalEl.value = 'Rp ' + grandTotal.toLocaleString('id-ID');

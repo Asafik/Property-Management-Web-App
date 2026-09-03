@@ -89,4 +89,42 @@ public function complaints()
     return $this->hasMany(Complaint::class, 'unit_id');
 }
 
+/**
+ * Total Biaya Perizinan dari RAB Unit
+ */
+public function getBiayaRabPerizinanAttribute(): float
+{
+    if ($this->progress && $this->progress->items) {
+        return (float) $this->progress->items->where('kategori', 'perizinan')->sum('total');
+    }
+    return 0.0;
+}
+
+/**
+ * Total Biaya Pembangunan Rumah Fisik dari RAB Unit (Non-Perizinan)
+ */
+public function getBiayaRabRumahAttribute(): float
+{
+    if ($this->progress && $this->progress->items) {
+        return (float) $this->progress->items->where('kategori', '!=', 'perizinan')->sum('total');
+    }
+    return 0.0;
+}
+
+/**
+ * Alokasi Biaya Infrastruktur Kawasan / Jalan untuk Unit ini
+ */
+public function getAlokasiBiayaInfrastrukturAttribute(): float
+{
+    if (!$this->landBank) return 0.0;
+    
+    $totalExpenses = (float) $this->landBank->expenses()->sum('total_amount');
+    if ($totalExpenses <= 0) {
+        $totalExpenses = (float) $this->landBank->infrastructures()->sum('cost_estimate');
+    }
+    
+    $totalUnits = $this->landBank->units()->count() ?: 1;
+    return round($totalExpenses / $totalUnits, 2);
+}
+
 }

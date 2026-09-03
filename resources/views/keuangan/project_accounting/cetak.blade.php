@@ -308,19 +308,20 @@
         <table class="table-report">
             <thead>
                 <tr>
-                    <th style="width: 2.5%;">NO</th>
-                    <th style="width: 11%;">PROJECT</th>
-                    <th style="width: 10%;">BLOK & KAVLING</th>
-                    <th style="width: 11%;">KONSUMEN</th>
-                    <th style="width: 6%;">STATUS</th>
-                    <th class="text-end" style="width: 9%;">HARGA JUAL</th>
-                    <th class="text-end" style="width: 8%;">BIAYA TANAH</th>
-                    <th class="text-end" style="width: 8%;">BIAYA SPK</th>
-                    <th class="text-end" style="width: 7%;">RAB / SERVIS</th>
-                    <th class="text-end" style="width: 9%; background:#cbd5e1;">TOTAL HPP</th>
-                    <th class="text-end" style="width: 9%;">GROSS PROFIT</th>
-                    <th class="text-center" style="width: 5%;">MARGIN</th>
-                    <th class="text-end" style="width: 8.5%;">KAS MASUK</th>
+                    <th style="width: 2%;">NO</th>
+                    <th style="width: 10%;">PROJECT</th>
+                    <th style="width: 9%;">BLOK & KAVLING</th>
+                    <th style="width: 10%;">KONSUMEN</th>
+                    <th style="width: 5%;">STATUS</th>
+                    <th class="text-end" style="width: 8.5%;">HARGA JUAL</th>
+                    <th class="text-end" style="width: 7.5%;">BIAYA TANAH</th>
+                    <th class="text-end" style="width: 7.5%;">JALAN & INFRA</th>
+                    <th class="text-end" style="width: 7.5%;">PERIZINAN</th>
+                    <th class="text-end" style="width: 8.5%;">RUMAH (SPK/RAP)</th>
+                    <th class="text-end" style="width: 9%; background:#cbd5e1; color:#0f172a;">TOTAL HPP</th>
+                    <th class="text-end" style="width: 8.5%;">GROSS PROFIT</th>
+                    <th class="text-center" style="width: 4.5%;">MARGIN</th>
+                    <th class="text-end" style="width: 8%;">KAS MASUK</th>
                 </tr>
             </thead>
             <tbody>
@@ -349,8 +350,9 @@
                         </td>
                         <td class="text-end nowrap">Rp {{ number_format($uf->harga_jual, 0, ',', '.') }}</td>
                         <td class="text-end nowrap" style="color:#64748b;">Rp {{ number_format($uf->biaya_tanah, 0, ',', '.') }}</td>
-                        <td class="text-end nowrap" style="color:#64748b;">Rp {{ number_format($uf->biaya_spk_kontrak, 0, ',', '.') }}</td>
-                        <td class="text-end nowrap" style="color:#64748b;">Rp {{ number_format($uf->biaya_rab + $uf->biaya_servis, 0, ',', '.') }}</td>
+                        <td class="text-end nowrap" style="color:#64748b;">Rp {{ number_format($uf->biaya_infrastruktur, 0, ',', '.') }}</td>
+                        <td class="text-end nowrap" style="color:#0284c7; font-weight:600;">Rp {{ number_format($uf->biaya_perizinan, 0, ',', '.') }}</td>
+                        <td class="text-end nowrap" style="color:#334155; font-weight:600;">Rp {{ number_format($uf->biaya_rumah, 0, ',', '.') }}</td>
                         <td class="text-end nowrap fw-bold" style="color: #b91c1c; background:#fef2f2;">
                             Rp {{ number_format($uf->total_hpp_komitmen, 0, ',', '.') }}
                         </td>
@@ -364,19 +366,20 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="13" class="text-center" style="padding: 12px; color:#64748b;">
+                        <td colspan="14" class="text-center" style="padding: 12px; color:#64748b;">
                             Tidak ada data unit kavling untuk dicetak.
                         </td>
                     </tr>
                 @endforelse
                 <!-- Total Keseluruhan Row -->
                 <tr style="background:#e2e8f0; font-weight:bold;">
-                    <td colspan="5" class="text-center">TOTAL KESELURUHAN</td>
+                    <td colspan="5" class="text-center">TOTAL KESELURUHAN PROYEK</td>
                     <td class="text-end nowrap">Rp {{ number_format($summary['total_revenue_potential'], 0, ',', '.') }}</td>
-                    <td class="text-end nowrap">-</td>
-                    <td class="text-end nowrap">-</td>
-                    <td class="text-end nowrap">-</td>
-                    <td class="text-end nowrap" style="color:#b91c1c;">Rp {{ number_format($summary['total_hpp_project'], 0, ',', '.') }}</td>
+                    <td class="text-end nowrap" style="color:#64748b;">Rp {{ number_format($summary['total_biaya_tanah'] ?? 0, 0, ',', '.') }}</td>
+                    <td class="text-end nowrap" style="color:#64748b;">Rp {{ number_format($summary['total_biaya_infrastruktur'] ?? 0, 0, ',', '.') }}</td>
+                    <td class="text-end nowrap" style="color:#0284c7;">Rp {{ number_format($summary['total_biaya_perizinan'] ?? 0, 0, ',', '.') }}</td>
+                    <td class="text-end nowrap" style="color:#334155;">Rp {{ number_format($summary['total_biaya_rumah'] ?? 0, 0, ',', '.') }}</td>
+                    <td class="text-end nowrap" style="color:#b91c1c; background:#fecaca;">Rp {{ number_format($summary['total_hpp_project'], 0, ',', '.') }}</td>
                     <td class="text-end nowrap" style="color: {{ $summary['total_gross_profit'] >= 0 ? '#15803d' : '#b91c1c' }};">
                         Rp {{ number_format($summary['total_gross_profit'], 0, ',', '.') }}
                     </td>

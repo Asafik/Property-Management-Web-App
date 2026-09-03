@@ -559,6 +559,12 @@
 
                     <!-- TAB 1: MATRIKS HPP & LABA RUGI PER KAVLING -->
                     <div class="tab-pane fade show active p-0" id="hppTabPane" role="tabpanel">
+                        <div class="p-3 bg-light border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <small class="text-muted">
+                                <strong>Struktur HPP Terpadu:</strong> Total HPP menggabungkan <span class="badge bg-white text-dark border">1. Biaya Tanah</span> + <span class="badge bg-white text-dark border">2. Jalan & Infrastruktur</span> + <span class="badge bg-white text-dark border">3. Perizinan & Legalitas</span> + <span class="badge bg-white text-dark border">4. Konstruksi Bangunan Rumah</span> + <span class="badge bg-white text-dark border">5. Servis Garansi</span>.
+                            </small>
+                            <span class="badge bg-primary text-white">{{ $unitFinancials->count() }} Kavling Terdata</span>
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-hover table-erp align-middle mb-0">
                                 <thead>
@@ -568,9 +574,10 @@
                                         <th class="text-center">STATUS</th>
                                         <th class="text-end">HARGA JUAL (REVENUE)</th>
                                         <th class="text-end">BIAYA TANAH</th>
-                                        <th class="text-end">BIAYA SPK / KONSTRUKSI</th>
-                                        <th class="text-end">RAB / SERVIS</th>
-                                        <th class="text-end" style="background:#f1f5f9;">TOTAL HPP</th>
+                                        <th class="text-end">INFRASTRUKTUR / JALAN</th>
+                                        <th class="text-end">BIAYA PERIZINAN</th>
+                                        <th class="text-end">KONSTRUKSI RUMAH</th>
+                                        <th class="text-end" style="background:#fef2f2; color:#dc2626;">TOTAL HPP GABUNGAN</th>
                                         <th class="text-end" style="background:#f8fafc;">GROSS PROFIT</th>
                                         <th class="text-center">MARGIN</th>
                                         <th class="text-end">KAS MASUK KONSUMEN</th>
@@ -606,14 +613,18 @@
                                             <td class="text-end font-monospace text-muted">
                                                 Rp {{ number_format($uf->biaya_tanah, 0, ',', '.') }}
                                             </td>
+                                            <td class="text-end font-monospace text-muted">
+                                                <span>Rp {{ number_format($uf->biaya_infrastruktur, 0, ',', '.') }}</span>
+                                                <small class="d-block text-muted" style="font-size: 0.68rem;">Alokasi Jalan</small>
+                                            </td>
+                                            <td class="text-end font-monospace text-info fw-semibold">
+                                                Rp {{ number_format($uf->biaya_perizinan, 0, ',', '.') }}
+                                            </td>
                                             <td class="text-end font-monospace">
-                                                <span class="text-dark">Rp {{ number_format($uf->biaya_spk_kontrak, 0, ',', '.') }}</span>
+                                                <span class="text-dark fw-semibold">Rp {{ number_format($uf->biaya_rumah, 0, ',', '.') }}</span>
                                                 @if($uf->spk)
                                                     <small class="d-block text-muted" style="font-size: 0.7rem;">SPK: {{ $uf->spk->no_spk }}</small>
                                                 @endif
-                                            </td>
-                                            <td class="text-end font-monospace text-muted">
-                                                Rp {{ number_format($uf->biaya_rab + $uf->biaya_servis, 0, ',', '.') }}
                                             </td>
                                             <td class="text-end fw-bold font-monospace text-danger" style="background:#fef2f2;">
                                                 Rp {{ number_format($uf->total_hpp_komitmen, 0, ',', '.') }}
@@ -641,7 +652,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="12" class="text-center py-4 text-muted">
+                                            <td colspan="13" class="text-center py-4 text-muted">
                                                 Tidak ada data kavling / unit yang sesuai dengan filter pencarian.
                                             </td>
                                         </tr>
@@ -840,47 +851,53 @@
                     </div>
                 </div>
 
-                <h6 class="fw-bold text-dark mb-2" style="font-size: 0.92rem;">Rincian Komponen HPP Kavling:</h6>
+                <h6 class="fw-bold text-dark mb-2" style="font-size: 0.92rem;">Rincian 5 Komponen HPP Kavling:</h6>
                 <div class="table-responsive mb-3 bg-white rounded-3 border shadow-sm">
                     <table class="table table-bordered table-sm mb-0">
                         <thead class="table-light">
                             <tr style="background: #f8fafc;">
                                 <th>Komponen Biaya</th>
-                                <th class="text-end">Estimasi / Kontrak</th>
+                                <th class="text-end">Estimasi / Anggaran</th>
                                 <th class="text-end">Realisasi Bayar</th>
-                                <th>Status / Keterangan</th>
+                                <th>Keterangan Alokasi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Alokasi Pengadaan Lahan (Tanah Dasar)</td>
+                                <td><span class="badge bg-light text-dark border me-1">1</span> Alokasi Pengadaan Lahan (Tanah Dasar)</td>
                                 <td class="text-end font-monospace" id="mBiayaTanah">-</td>
                                 <td class="text-end font-monospace" id="mBiayaTanahReal">-</td>
-                                <td class="text-success small">Pro-rata Luas Lahan</td>
+                                <td class="text-success small">Pro-rata Luas / Unit</td>
                             </tr>
                             <tr>
-                                <td>Biaya Kontrak Konstruksi SPK Pemborong</td>
-                                <td class="text-end font-monospace" id="mBiayaSpk">-</td>
-                                <td class="text-end font-monospace text-danger fw-bold" id="mBiayaSpkReal">-</td>
-                                <td class="small" id="mSpkKet">-</td>
+                                <td><span class="badge bg-light text-dark border me-1">2</span> Alokasi Jalan & Infrastruktur Kawasan</td>
+                                <td class="text-end font-monospace" id="mBiayaInfra">-</td>
+                                <td class="text-end font-monospace" id="mBiayaInfraReal">-</td>
+                                <td class="text-muted small">Cut & Fill, Paving, Drainase</td>
                             </tr>
                             <tr>
-                                <td>Biaya Anggaran Material & RAB Tambahan</td>
-                                <td class="text-end font-monospace" id="mBiayaRab">-</td>
-                                <td class="text-end font-monospace" id="mBiayaRabReal">-</td>
-                                <td class="small text-muted">Rencana RAB</td>
+                                <td><span class="badge bg-light text-dark border me-1">3</span> Rincian Biaya Perizinan & Legalitas</td>
+                                <td class="text-end font-monospace text-info fw-bold" id="mBiayaPerizinan">-</td>
+                                <td class="text-end font-monospace text-info fw-bold" id="mBiayaPerizinanReal">-</td>
+                                <td class="text-info small">PBG, Sertifikat, Notaris</td>
                             </tr>
                             <tr>
-                                <td>Biaya Servis & Klaim Garansi Pasca Serah Terima</td>
+                                <td><span class="badge bg-light text-dark border me-1">4</span> Biaya Konstruksi Bangunan Rumah (Fisik)</td>
+                                <td class="text-end font-monospace text-dark fw-semibold" id="mBiayaRumah">-</td>
+                                <td class="text-end font-monospace text-danger fw-bold" id="mBiayaRumahReal">-</td>
+                                <td class="small" id="mRumahKet">SPK / RAP Unit</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-light text-dark border me-1">5</span> Biaya Servis & Garansi Pasca Serah Terima</td>
                                 <td class="text-end font-monospace" id="mBiayaServis">-</td>
                                 <td class="text-end font-monospace text-danger" id="mBiayaServisReal">-</td>
                                 <td class="small text-muted">Pemeliharaan</td>
                             </tr>
                             <tr class="table-light fw-bold">
-                                <td>TOTAL HPP UNIT KAVLING</td>
-                                <td class="text-end font-monospace text-danger" id="mTotalHppKomitmen">-</td>
-                                <td class="text-end font-monospace text-danger" id="mTotalHppReal">-</td>
-                                <td>-</td>
+                                <td class="text-danger">TOTAL HPP UNIT KAVLING (GABUNGAN)</td>
+                                <td class="text-end font-monospace text-danger fs-6" id="mTotalHppKomitmen">-</td>
+                                <td class="text-end font-monospace text-danger fs-6" id="mTotalHppReal">-</td>
+                                <td class="text-danger small">Akumulasi 1 s/d 5</td>
                             </tr>
                         </tbody>
                     </table>
@@ -952,12 +969,15 @@
         document.getElementById('mBiayaTanah').innerText = formatRupiah(uf.biaya_tanah);
         document.getElementById('mBiayaTanahReal').innerText = formatRupiah(uf.biaya_tanah);
 
-        document.getElementById('mBiayaSpk').innerText = formatRupiah(uf.biaya_spk_kontrak);
-        document.getElementById('mBiayaSpkReal').innerText = formatRupiah(uf.realisasi_bayar_spk);
-        document.getElementById('mSpkKet').innerText = uf.spk ? ('No: ' + uf.spk.no_spk) : 'Belum Ada SPK';
+        document.getElementById('mBiayaInfra').innerText = formatRupiah(uf.biaya_infrastruktur);
+        document.getElementById('mBiayaInfraReal').innerText = formatRupiah(uf.biaya_infrastruktur);
 
-        document.getElementById('mBiayaRab').innerText = formatRupiah(uf.biaya_rab);
-        document.getElementById('mBiayaRabReal').innerText = formatRupiah(uf.biaya_rab);
+        document.getElementById('mBiayaPerizinan').innerText = formatRupiah(uf.biaya_perizinan);
+        document.getElementById('mBiayaPerizinanReal').innerText = formatRupiah(uf.biaya_perizinan);
+
+        document.getElementById('mBiayaRumah').innerText = formatRupiah(uf.biaya_rumah);
+        document.getElementById('mBiayaRumahReal').innerText = formatRupiah(uf.realisasi_bayar_spk > 0 ? uf.realisasi_bayar_spk : (uf.status === 'ready' || uf.unit?.construction_progress === 'selesai' ? uf.biaya_rumah : 0));
+        document.getElementById('mRumahKet').innerText = uf.spk ? ('SPK: ' + uf.spk.no_spk) : 'RAP Bangunan Unit';
 
         document.getElementById('mBiayaServis').innerText = formatRupiah(uf.biaya_servis);
         document.getElementById('mBiayaServisReal').innerText = formatRupiah(uf.biaya_servis);
