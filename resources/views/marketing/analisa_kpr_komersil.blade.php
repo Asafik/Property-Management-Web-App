@@ -606,23 +606,32 @@
                                                     : ''),
                                         );
                                         $bankName = $app->bank->bank_name ?? '-';
-                                        $unitPrice = $app->unit->price ?? 0;
-                                        $appraisal = $app->appraisal_value ?? 0;
-                                        $percentage = isset($app->persentase_kelayakan)
-                                            ? rtrim(
-                                                    rtrim(
-                                                        number_format(
-                                                            (float) $app->persentase_kelayakan,
-                                                            2,
-                                                            '.',
-                                                            '',
-                                                        ),
-                                                        '0',
-                                                    ),
-                                                    '.',
-                                                ) . '%'
+                                        $unitPrice = (float) ($app->unit->price ?? ($app->harga_unit ?? 0));
+                                        $appraisal = (float) ($app->appraisal_value > 0 ? $app->appraisal_value : ($app->jumlah_pinjaman > 0 ? $app->jumlah_pinjaman : $unitPrice));
+
+                                        $persentaseRaw = $app->persentase_kelayakan;
+                                        if (($persentaseRaw === null || (float)$persentaseRaw <= 0) && $unitPrice > 0 && $appraisal > 0) {
+                                            $persentaseRaw = round(($appraisal / $unitPrice) * 100, 1);
+                                        }
+
+                                        $percentage = ($persentaseRaw !== null && (float)$persentaseRaw > 0)
+                                            ? number_format((float)$persentaseRaw, 1, ',', '.') . '%'
                                             : '-';
-                                        $recommendation = $app->rekomendasi ?? '-';
+
+                                        $recommendation = $app->rekomendasi ?? null;
+                                        if (empty($recommendation) || $recommendation === '-') {
+                                            if ($persentaseRaw !== null && (float)$persentaseRaw > 0) {
+                                                if ((float)$persentaseRaw >= 90) {
+                                                    $recommendation = 'Layak';
+                                                } elseif ((float)$persentaseRaw >= 70) {
+                                                    $recommendation = 'Dipertimbangkan';
+                                                } else {
+                                                    $recommendation = 'Tidak Layak';
+                                                }
+                                            } else {
+                                                $recommendation = 'Review';
+                                            }
+                                        }
 
                                         $recommendationClass = 'badge-review';
                                         if ($recommendation === 'Layak') {

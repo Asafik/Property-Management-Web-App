@@ -355,8 +355,31 @@ class ProjectAccountingController extends Controller
             }
         }
 
-        // Sort journal entries descending
-        $journalEntries = $journalEntries->sortByDesc('date')->values();
+        // E. Entri Pencairan Dana KPR dari Bank Penyalur
+        $kprDisbursements = \App\Models\KprDisbursement::with(['unit.landBank', 'booking.customer'])
+            ->when($startDate, fn($q) => $q->whereDate('tanggal_cair', '>=', $startDate))
+            ->when($endDate, fn($q) => $q->whereDate('tanggal_cair', '<=', $endDate))
+            ->get();
+
+        foreach ($kprDisbursements as $kd) {
+            $journalEntries->push((object)[
+                'date'        => $kd->tanggal_cair ? Carbon::parse($kd->tanggal_cair) : $kd->created_at,
+                'ref_no'      => $kd->no_referensi_bank ?? ('KPR-CAIR-' . $kd->id),
+                'category'    => 'Pencairan Dana KPR Bank',
+                'description' => 'Pencairan KPR ' . ($kd->nama_termin ?? 'Termin ' . $kd->termin_ke) . ' Unit ' . ($kd->unit?->unit_name ?? '') . ' via ' . ($kd->bank_penyalur ?? 'Bank') . ' (Konsumen: ' . ($kd->booking?->customer?->full_name ?? '-') . ')',
+                'project'     => $kd->unit?->landBank?->name ?? 'Proyek Perumahan',
+                'unit'        => 'Blok ' . ($kd->unit?->unit_code ?? '-'),
+                'type'        => 'KAS MASUK',
+                'debit'       => (float) $kd->nominal_cair,
+                'kredit'      => 0,
+                'status'      => 'DICAIRKAN',
+            ]);
+        }
+
+        // Sort journal entries descending berdasarkan entrian masuk terbaru (timestamp terbaru di atas)
+        $journalEntries = $journalEntries->sortByDesc(function ($je) {
+            return $je->date ? Carbon::parse($je->date)->timestamp : 0;
+        })->values();
 
         return view('keuangan.project_accounting.index', compact(
             'projects',

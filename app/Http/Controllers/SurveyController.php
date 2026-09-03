@@ -129,12 +129,30 @@ class SurveyController extends Controller
             if ($request->filled('catatan_survey')) {
                 $kpr->catatan_survey = $request->catatan_survey;
             }
-            if ($request->filled('rekomendasi')) {
-                $kpr->rekomendasi = $request->rekomendasi;
+
+            if ($persentaseKelayakan === null && $appraisalValue !== null) {
+                $unitPrice = (float) ($kpr->unit->price ?? ($kpr->harga_unit ?? 0));
+                if ($unitPrice > 0) {
+                    $persentaseKelayakan = round(($appraisalValue / $unitPrice) * 100, 2);
+                }
             }
+
             if ($persentaseKelayakan !== null) {
                 $kpr->persentase_kelayakan = $persentaseKelayakan;
             }
+
+            if ($request->filled('rekomendasi')) {
+                $kpr->rekomendasi = $request->rekomendasi;
+            } elseif ($persentaseKelayakan !== null) {
+                if ($persentaseKelayakan >= 90) {
+                    $kpr->rekomendasi = 'Layak';
+                } elseif ($persentaseKelayakan >= 70) {
+                    $kpr->rekomendasi = 'Dipertimbangkan';
+                } else {
+                    $kpr->rekomendasi = 'Tidak Layak';
+                }
+            }
+
             if ($request->filled('survey_date')) {
                 $kpr->survey_date = $request->survey_date;
             }
