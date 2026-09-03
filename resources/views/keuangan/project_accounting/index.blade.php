@@ -552,7 +552,7 @@
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link erp-tab-btn" id="journal-tab" data-toggle="pill" data-bs-toggle="pill" data-target="#journalTabPane" data-bs-target="#journalTabPane" type="button" role="tab">
-                                3. Buku Jurnal Transaksi ERP
+                                3. Jurnal Transaksi
                             </button>
                         </li>
                     </ul>
@@ -747,11 +747,11 @@
                         </div>
                     </div>
 
-                    <!-- TAB 3: BUKU JURNAL TRANSAKSI ERP (AUDIT TRAIL) -->
+                    <!-- TAB 3: JURNAL TRANSAKSI (AUDIT TRAIL & MUTASI KAS) -->
                     <div class="tab-pane fade p-0" id="journalTabPane" role="tabpanel">
                         <div class="d-flex justify-content-between align-items-center p-3 bg-light border-bottom">
                             <h6 class="fw-bold text-dark mb-0" style="font-size: 0.92rem;">
-                                Kronologi Arus Kas & Jurnal Mutasi Proyek
+                                Kronologi Arus Kas & Jurnal Transaksi Proyek (Urutan Entri Terbaru)
                             </h6>
                             <span class="badge bg-white text-dark border">{{ $journalEntries->count() }} Entri Transaksi Terdaftar</span>
                         </div>
