@@ -950,7 +950,7 @@
             `;
 
             document.getElementById('dynamic-categories-container').insertAdjacentHTML('beforeend', cardHtml);
-            
+
             // Scroll ke seksi baru dan tambahkan 1 item awal otomatis
             document.getElementById(`section-${cleanKey}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
             tambahItem(cleanKey);
