@@ -992,16 +992,26 @@ h3.text-dark, h4.text-dark {
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center">
-                                                @if($isComplete)
+                                                @php
+                                                    $isAlreadyApproved = in_array(strtolower($booking->status ?? ''), ['approved', 'completed', 'lanjut_kpr', 'sold', 'lunas', 'akad', 'survey', 'verifikasi', 'cash_process'])
+                                                        || ($booking->kprApplication && in_array(strtolower($booking->kprApplication->status ?? ''), ['approved', 'survey', 'akad', 'completed', 'lunas', 'analisa', 'dokumen']));
+                                                @endphp
+
+                                                @if($isAlreadyApproved)
+                                                    <button type="button" class="btn btn-secondary btn-sm d-inline-flex align-items-center justify-content-center px-3" disabled title="Pengajuan KPR ini sudah di-approve / selesai (Status: {{ strtoupper($booking->status) }})"
+                                                            style="border-radius: 8px; min-height: 34px; font-weight: 700; opacity: 0.65; cursor: not-allowed;">
+                                                        <i class="mdi mdi-check-all me-1"></i>Approved
+                                                    </button>
+                                                @elseif($isComplete)
                                                     <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
                                                        class="btn btn-gradient-success btn-sm btnApproveKpr d-inline-flex align-items-center justify-content-center px-3"
                                                        style="border-radius: 8px; min-height: 34px; font-weight: 700;">
                                                         <i class="mdi mdi-check-circle-outline me-1"></i>Approved
                                                     </a>
                                                 @else
-                                                    <button class="btn btn-secondary btn-sm d-inline-flex align-items-center justify-content-center px-3" disabled title="Dokumen belum lengkap"
+                                                    <button class="btn btn-secondary btn-sm d-inline-flex align-items-center justify-content-center px-3" disabled title="Dokumen belum lengkap ({{ $uploadedCount }}/8)"
                                                             style="border-radius: 8px; min-height: 34px; font-weight: 700;">
-                                                        <i class="mdi mdi-check-circle-outline me-1"></i>Approved
+                                                        <i class="mdi mdi-clock-outline me-1"></i>Approved
                                                     </button>
                                                 @endif
                                             </div>
