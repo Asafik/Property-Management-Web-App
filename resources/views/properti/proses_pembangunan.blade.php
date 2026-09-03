@@ -397,6 +397,20 @@
                 }
             @endphp
 
+            @php
+                $isUnitSoldOut = in_array(strtolower($selectedUnit->status ?? ''), ['sold', 'soldout']) || strtolower($selectedUnit->construction_progress ?? '') === 'selesai' || ($selectedUnit->progress && $selectedUnit->progress->status === 'completed');
+            @endphp
+
+            @if($isUnitSoldOut)
+                <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center gap-3 mb-4 p-3" style="border-radius: 10px; background: #fff8e6; color: #92400e; border-left: 4px solid #f59e0b !important;">
+                    <i class="mdi mdi-lock-check fs-2 text-warning"></i>
+                    <div>
+                        <h6 class="mb-0 fw-bold">Unit Telah Selesai / Sold Out (Mode Read-Only)</h6>
+                        <small class="text-muted">Rincian RAP dan seluruh tahapan progress pembangunan pada unit ini telah dikunci dan tidak dapat diubah lagi.</small>
+                    </div>
+                </div>
+            @endif
+
             {{-- TOOLBAR DINAMIS: SEEDER TEMPLATE, TAMBAH KATEGORI & MENU MASTER --}}
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 p-3 bg-white rounded-3 border shadow-sm">
                 <div class="d-flex align-items-center gap-2">
@@ -409,12 +423,21 @@
                     <a href="{{ route('master.progress.index') }}" target="_blank" class="btn btn-sm btn-outline-secondary shadow-sm px-3" style="border-radius: 8px; font-weight: 600;" title="Kelola Master Kategori & Item Template">
                         <i class="mdi mdi-cog-outline me-1"></i>Menu Master Tahapan
                     </a>
-                    <button type="button" class="btn btn-sm btn-outline-primary shadow-sm px-3" onclick="confirmApplyTemplate()" style="border-radius: 8px; font-weight: 600;">
-                        <i class="mdi mdi-flash me-1"></i>⚡ Terapkan Template Standar RAP
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-success shadow-sm px-3" onclick="modalTambahKategoriBaru()" style="border-radius: 8px; font-weight: 600;">
-                        <i class="mdi mdi-plus-circle-outline me-1"></i>+ Tambah Kategori Baru
-                    </button>
+                    @if($isUnitSoldOut)
+                        <button type="button" class="btn btn-sm btn-outline-secondary shadow-sm px-3" disabled style="border-radius: 8px; font-weight: 600; opacity: 0.6; cursor: not-allowed;" title="Unit Selesai / Sold Out">
+                            <i class="mdi mdi-lock-outline me-1"></i>⚡ Terapkan Template (Terkunci)
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary shadow-sm px-3" disabled style="border-radius: 8px; font-weight: 600; opacity: 0.6; cursor: not-allowed;" title="Unit Selesai / Sold Out">
+                            <i class="mdi mdi-lock-outline me-1"></i>+ Tambah Kategori (Terkunci)
+                        </button>
+                    @else
+                        <button type="button" class="btn btn-sm btn-outline-primary shadow-sm px-3" onclick="confirmApplyTemplate()" style="border-radius: 8px; font-weight: 600;">
+                            <i class="mdi mdi-flash me-1"></i>⚡ Terapkan Template Standar RAP
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-success shadow-sm px-3" onclick="modalTambahKategoriBaru()" style="border-radius: 8px; font-weight: 600;">
+                            <i class="mdi mdi-plus-circle-outline me-1"></i>+ Tambah Kategori Baru
+                        </button>
+                    @endif
                 </div>
             </div>
 
@@ -428,10 +451,12 @@
                                     <i class="mdi mdi-{{ $cfg['icon'] ?? 'dots-horizontal' }} me-2" style="color: #9a55ff;"></i>
                                     {{ $cfg['title'] }}
                                 </h5>
-                                <button type="button" class="rab-btn-add"
-                                    onclick="tambahItem('{{ $key }}')">
-                                    <i class="mdi mdi-plus me-1"></i>Tambah Item
-                                </button>
+                                @if(!$isUnitSoldOut)
+                                    <button type="button" class="rab-btn-add"
+                                        onclick="tambahItem('{{ $key }}')">
+                                        <i class="mdi mdi-plus me-1"></i>Tambah Item
+                                    </button>
+                                @endif
                             </div>
 
                             <div class="card-body p-0">
@@ -658,17 +683,23 @@
 
                             <!-- Tombol aksi - TETAP DI DALAM CARD Harga Jual Final -->
                             <div class="aksi-buttons">
-                                <button type="submit" class="aksi-btn rab-btn-success">
-                                    <i class="mdi mdi-content-save me-1"></i>Simpan
-                                </button>
+                                @if($isUnitSoldOut)
+                                    <button type="button" class="aksi-btn" style="background: #6c757d; cursor: not-allowed; opacity: 0.85;" disabled title="Unit ini telah selesai / sold out (Read Only)">
+                                        <i class="mdi mdi-lock-check me-1"></i>Terkunci (Sold Out)
+                                    </button>
+                                @else
+                                    <button type="submit" class="aksi-btn rab-btn-success">
+                                        <i class="mdi mdi-content-save me-1"></i>Simpan
+                                    </button>
+                                @endif
 
                                 <a href="{{ route('cetak.rab', $selectedUnit->id) }}" target="_blank"
                                     class="aksi-btn rab-btn-primary">
                                     <i class="mdi mdi-printer me-1"></i>Cetak RAP
                                 </a>
 
-                                @if ($isAccCompleted)
-                                    <button type="button" class="aksi-btn" style="background: #6c757d; cursor: not-allowed; opacity: 0.85;" disabled title="RAP untuk unit ini sudah di-ACC">
+                                @if ($isAccCompleted || $isUnitSoldOut)
+                                    <button type="button" class="aksi-btn" style="background: #6c757d; cursor: not-allowed; opacity: 0.85;" disabled title="RAP untuk unit ini sudah di-ACC / Selesai">
                                         <i class="mdi mdi-check-all me-1"></i>Sudah di-ACC
                                     </button>
                                 @else

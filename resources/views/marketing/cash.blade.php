@@ -1278,6 +1278,7 @@
                                 @php
                                     $isLegalDone = strtolower($booking->status_legal) == 'done';
                                     $isBuildDone = strtolower($booking->unit->construction_progress) == 'selesai';
+                                    $isUnitSold = in_array(strtolower($booking->unit->status ?? ''), ['sold', 'soldout']);
                                     $isAkadDone = $booking->status_akad == 'done';
                                 @endphp
 
@@ -1289,6 +1290,10 @@
                                     <a href="{{ route('akad.cash', $booking->id) }}" class="cash-btn cash-btn-outline-primary w-100">
                                         <i class="mdi mdi-cash"></i> Proses Akad
                                     </a>
+                                @elseif ($isBuildDone || $isUnitSold)
+                                    <button class="cash-btn cash-btn-outline-secondary w-100" disabled title="Pembangunan Telah Selesai / Unit Sold Out">
+                                        <i class="mdi mdi-check-circle-outline"></i> Pembangunan Selesai (Sold Out)
+                                    </button>
                                 @elseif ($isLegalDone && !$isBuildDone)
                                     <a href="{{ route('properti.progress', $booking->unit->land_bank_id) }}?unit_id={{ $booking->unit->id }}"
                                         class="cash-btn cash-btn-outline-warning w-100">

@@ -1302,9 +1302,18 @@ body.modal-open .page-body-wrapper {
                                                     <i class="mdi mdi-pencil"></i>
                                                 </button>
 
-                                                <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id, 'unit_id' => $unit->id]) }}" class="btn-action btn-action-view" title="Progress Unit">
-                                                    <i class="mdi mdi-progress-check"></i>
-                                                </a>
+                                                @php
+                                                    $isUnitSoldOrDone = in_array(strtolower($unit->status ?? ''), ['sold', 'soldout']) || strtolower($unit->construction_progress ?? '') === 'selesai';
+                                                @endphp
+                                                @if($isUnitSoldOrDone)
+                                                    <button type="button" class="btn-action btn-action-view" disabled title="Pembangunan Selesai / Unit Sold Out" style="opacity: 0.45; cursor: not-allowed;">
+                                                        <i class="mdi mdi-progress-check"></i>
+                                                    </button>
+                                                @else
+                                                    <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id, 'unit_id' => $unit->id]) }}" class="btn-action btn-action-view" title="Progress Unit">
+                                                        <i class="mdi mdi-progress-check"></i>
+                                                    </a>
+                                                @endif
 
                                                 <form action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}" method="POST" class="d-inline delete-form">
                                                     @csrf
