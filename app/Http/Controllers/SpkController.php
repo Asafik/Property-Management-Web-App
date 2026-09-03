@@ -453,36 +453,15 @@ class SpkController extends Controller
      */
     private function getDefaultPasalText()
     {
-        return <<<HTML
-<p><strong>PASAL 1: LINGKUP PEKERJAAN</strong></p>
-<ol>
-    <li>PIHAK PERTAMA memberikan tugas kepada PIHAK KEDUA dan PIHAK KEDUA menerima tugas tersebut untuk melaksanakan pekerjaan sesuai dengan Rencana Kerja dan Syarat-syarat (RKS), Gambar Kerja, dan Rencana Anggaran Biaya (RAB) yang telah disepakati bersama.</li>
-    <li>PIHAK KEDUA wajib menyediakan tenaga kerja ahli, bahan material berkualitas sesuai spesifikasi teknis, serta peralatan kerja yang memadai untuk kelancaran pelaksanaan pekerjaan.</li>
-</ol>
-
-<p><strong>PASAL 2: JANGKA WAKTU PELAKSANAAN</strong></p>
-<ol>
-    <li>Pekerjaan harus dimulai selambat-lambatnya 3 (tiga) hari kalender sejak SPK ini ditandatangani.</li>
-    <li>Jangka waktu penyelesaian pekerjaan disepakati dan tidak dapat diubah kecuali ada kesepakatan tertulis dari PIHAK PERTAMA karena faktor keadaan kahar (force majeure).</li>
-</ol>
-
-<p><strong>PASAL 3: SISTEM PEMBAYARAN & TERMIN</strong></p>
-<ol>
-    <li>Pembayaran dilakukan secara bertahap (termin) sesuai dengan pencapaian prestasi fisik pekerjaan di lapangan yang telah diverifikasi dan disetujui oleh Tim Pengawas Lapangan PIHAK PERTAMA (Berita Acara Opname Fisik).</li>
-    <li>PIHAK PERTAMA berhak menahan pembayaran apabila kualitas pekerjaan di lapangan belum memenuhi standar spesifikasi teknis yang telah ditentukan.</li>
-</ol>
-
-<p><strong>PASAL 4: MASA PEMELIHARAAN (RETENSI)</strong></p>
-<ol>
-    <li>Masa pemeliharaan ditetapkan selama 90 (sembilan puluh) hari kalender terhitung sejak tanggal Berita Acara Serah Terima Pertama (BAST-1).</li>
-    <li>Selama masa pemeliharaan, PIHAK KEDUA wajib memperbaiki setiap kerusakan, kebocoran, atau cacat struktur tanpa membebankan biaya tambahan kepada PIHAK PERTAMA.</li>
-    <li>Uang retensi sebesar 5% (lima persen) akan dicairkan setelah berakhirnya masa pemeliharaan dan ditandatanganinya Berita Acara Serah Terima Kedua (BAST-2).</li>
-</ol>
-
-<p><strong>PASAL 5: SANKSI & DENDA KETERLAMBATAN</strong></p>
-<ol>
-    <li>Apabila PIHAK KEDUA mengalami keterlambatan dalam penyelesaian pekerjaan tanpa alasan yang dapat dibenarkan, maka dikenakan denda keterlambatan sebesar 1‰ (satu per mil) per hari dari nilai sisa pekerjaan, maksimal 5% dari total nilai kontrak.</li>
-</ol>
-HTML;
+        return "PASAL 5: MASA PEMELIHARAAN (RETENSI & GARANSI)\n"
+            . "1. Masa pemeliharaan ditetapkan selama 90 (sembilan puluh) hari kalender terhitung sejak tanggal Berita Acara Serah Terima Pertama (BAST-1).\n"
+            . "2. Selama masa pemeliharaan, PIHAK KEDUA wajib memperbaiki setiap kerusakan, kebocoran, atau cacat struktur tanpa membebankan biaya tambahan kepada PIHAK PERTAMA.\n"
+            . "3. Uang retensi pemeliharaan sebesar 5% (lima persen) akan dicairkan setelah berakhirnya masa pemeliharaan dan ditandatanganinya Berita Acara Serah Terima Kedua (BAST-2).\n\n"
+            . "PASAL 6: SANKSI & DENDA KETERLAMBATAN\n"
+            . "1. Apabila PIHAK KEDUA mengalami keterlambatan dalam penyelesaian pekerjaan tanpa alasan kahar (force majeure) yang disetujui, maka PIHAK KEDUA dikenakan denda keterlambatan sebesar 1‰ (satu per mil) per hari dari nilai sisa pekerjaan, maksimal 5% dari total nilai kontrak.\n"
+            . "2. Apabila keterlambatan pekerjaan melebihi 14 (empat belas) hari kalender, PIHAK PERTAMA berhak memutus SPK ini secara sepihak dan mengalihkan sisa pekerjaan kepada pihak lain.\n\n"
+            . "PASAL 7: KEADAAN KAHAR (FORCE MAJEURE) & PENYELESAIAN PERSELISIHAN\n"
+            . "1. Yang dimaksud keadaan kahar adalah bencana alam, huru-hara, kebijakan moneter/pemerintah, atau peristiwa luar biasa di luar kendali wajar para pihak.\n"
+            . "2. Apabila timbul perselisihan dalam pelaksanaan SPK ini, kedua belah pihak sepakat untuk menyelesaikannya secara musyawarah untuk mufakat.";
     }
 }

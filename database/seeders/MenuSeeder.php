@@ -151,15 +151,16 @@ class MenuSeeder extends Seeder
         // ================= 6. DOCUMENT =================
         $document = Menu::create([
             'name'  => 'Document',
-            'icon'  => 'mdi-account-cog',
+            'icon'  => 'mdi-file-document-box-multiple-outline',
             'order' => 6
         ]);
-        $document->positions()->attach($adminOnly);
+        $document->positions()->attach($legalRoles);
 
         $docMenus = [
-            'dokument.index'               => 'Tanah Induk (LandBank)',
-            'dokument.persiapan'           => 'Pecah Tanah Induk Unit',
-            'document.user.persiapan-legal' => 'Data User Persiapan Pecah Legal'
+            'dokument.index'                => 'Tanah Induk (LandBank)',
+            'dokument.persiapan'            => 'Pecah Tanah Induk Unit',
+            'document.user.persiapan-legal' => 'Data User Persiapan Pecah Legal',
+            'spk.index'                     => 'SPK Kontraktor'
         ];
 
         foreach ($docMenus as $route => $name) {
@@ -167,7 +168,7 @@ class MenuSeeder extends Seeder
                 'name'      => $name,
                 'route'     => $route,
                 'parent_id' => $document->id
-            ])->positions()->attach($adminOnly);
+            ])->positions()->attach($legalRoles);
         }
 
         // ================= 7. PENGGUNA =================

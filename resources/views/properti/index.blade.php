@@ -16,7 +16,36 @@
         }
     @endphp
 
-
+    <style>
+        .btn-modal-continue-dev {
+            background: #fff8eb !important;
+            color: #b45309 !important;
+            border: 1.5px solid #fde68a !important;
+            box-shadow: 0 2px 6px rgba(245, 158, 11, 0.12) !important;
+            transition: all 0.2s ease !important;
+            font-weight: 700 !important;
+            text-decoration: none !important;
+        }
+        .btn-modal-continue-dev:hover {
+            background: #fef3c7 !important;
+            color: #92400e !important;
+            border-color: #f59e0b !important;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.22) !important;
+            transform: translateY(-1px);
+        }
+        .btn-modal-cancel {
+            background: #f8fafc !important;
+            color: #475569 !important;
+            border: 1.5px solid #cbd5e1 !important;
+            transition: all 0.2s ease !important;
+            font-weight: 600 !important;
+        }
+        .btn-modal-cancel:hover {
+            background: #e2e8f0 !important;
+            color: #1e293b !important;
+            border-color: #94a3b8 !important;
+        }
+    </style>
 
     <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
         <!-- Header Card Banner -->
@@ -703,16 +732,16 @@
                         Silakan lengkapi data profil tanah terlebih dahulu atau tetap lanjut ke proses pengolahan lahan fisik.
                     </p>
 
-                    <!-- Tombol Aksi Rapi & Bersih -->
+                    <!-- Tombol Aksi Rapi, Jelas & Berkontras Tinggi -->
                     <div class="d-grid gap-2">
-                        <a href="#" id="btnModalEditProfile" class="btn btn-gradient-primary py-2 fw-semibold d-flex align-items-center justify-content-center shadow-sm" style="border-radius: 8px;">
-                            <i class="mdi mdi-pencil me-1 fs-5"></i> Lengkapi Profil Tanah Sekarang
+                        <a href="#" id="btnModalEditProfile" class="btn btn-gradient-primary py-2.5 fw-bold d-flex align-items-center justify-content-center shadow-sm" style="border-radius: 10px; font-size: 0.9rem; text-decoration: none;">
+                            <i class="mdi mdi-pencil me-1.5 fs-5"></i> Lengkapi Profil Tanah Sekarang
                         </a>
-                        <a href="#" id="btnModalContinueDev" class="btn btn-outline-secondary py-2 fw-semibold d-flex align-items-center justify-content-center" style="border-radius: 8px;">
-                            <i class="mdi mdi-wrench me-1"></i> Tetap Lanjut Pengolahan Lahan
+                        <a href="#" id="btnModalContinueDev" class="btn btn-modal-continue-dev py-2.5 d-flex align-items-center justify-content-center" style="border-radius: 10px; font-size: 0.9rem;">
+                            <i class="mdi mdi-tools me-1.5 fs-5"></i> Tetap Lanjut Pengolahan Lahan
                         </a>
-                        <button type="button" class="btn btn-light py-2 text-muted fw-semibold" data-bs-dismiss="modal" style="border-radius: 8px;">
-                            Batal
+                        <button type="button" class="btn btn-modal-cancel py-2.5 d-flex align-items-center justify-content-center gap-1" data-bs-dismiss="modal" style="border-radius: 10px; font-size: 0.85rem;">
+                            <i class="mdi mdi-close-circle-outline"></i> Batal
                         </button>
                     </div>
                 </div>

@@ -342,7 +342,7 @@
                             <i class="mdi mdi-bank me-2" style="color: #9a55ff;"></i>Daftar User KPR Terverifikasi
                         </h4>
                         <p class="text-muted mb-0">
-                            Persiapan Pecah Legal Unit
+                            Persiapan & Pemrosesan Legalitas Unit Konsumen
                         </p>
                     </div>
                     <div class="d-none d-sm-block">
@@ -547,8 +547,8 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center">
-                                                <a href="{{ route('kpr.pecahlegal', $application->id) }}" class="btn btn-gradient-warning btn-sm d-inline-flex align-items-center justify-content-center" title="Persiapan Pecah Legal Unit" onclick="showProcessLoading(event)">
-                                                    <i class="mdi mdi-file-document-edit-outline me-1"></i>Persiapan Pecah
+                                                <a href="{{ route('kpr.pecahlegal', $application->id) }}" class="btn btn-gradient-warning btn-sm d-inline-flex align-items-center justify-content-center px-3 py-1.5" title="Proses Legalitas Unit" onclick="showProcessLoading(event)" style="font-weight: 700; border-radius: 8px;">
+                                                    <i class="mdi mdi-file-certificate-outline me-1.5" style="font-size: 1.05rem;"></i>Proses Legalitas
                                                 </a>
                                             </div>
                                         </td>
@@ -638,4 +638,27 @@ function showFilterLoading() { Swal.fire({ title: 'Memuat...', html: 'Sedang mem
 function showResetLoading(event) { event.preventDefault(); Swal.fire({ title: 'Memuat...', html: 'Sedang mereset filter', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } }); window.location.href = event.currentTarget.href; }
 function showProcessLoading(event) { event.preventDefault(); Swal.fire({ title: 'Memuat...', html: 'Sedang memproses...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } }); window.location.href = event.currentTarget.href; }
 </script>
+
+@if (session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: "{{ session('success') }}",
+        timer: 2500,
+        showConfirmButton: false
+    });
+</script>
+@endif
+
+@if (session('error'))
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        text: "{{ session('error') }}",
+        confirmButtonColor: '#9a55ff'
+    });
+</script>
+@endif
 @endpush

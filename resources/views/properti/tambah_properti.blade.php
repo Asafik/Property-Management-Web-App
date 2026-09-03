@@ -795,30 +795,34 @@
                             <div class="properti-row">
                                 <div class="properti-col-sm-6 properti-col-md-3">
                                     <div class="properti-form-group">
-                                        <label class="properti-form-label">Kelurahan/Desa</label>
-                                        <input type="text" name="kelurahan" class="properti-form-control"
-                                            value="{{ old('kelurahan') }}" placeholder="Nama Kelurahan">
-                                    </div>
-                                </div>
-                                <div class="properti-col-sm-6 properti-col-md-3">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Kecamatan</label>
-                                        <input type="text" name="kecamatan" class="properti-form-control"
-                                            value="{{ old('kecamatan') }}" placeholder="Nama Kecamatan">
+                                        <label class="properti-form-label">Provinsi</label>
+                                        <select name="provinsi" id="provinsiProperti" class="form-control select2 properti-form-control">
+                                            <option value="">-- Pilih Provinsi --</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="properti-col-sm-6 properti-col-md-3">
                                     <div class="properti-form-group">
                                         <label class="properti-form-label">Kota/Kabupaten</label>
-                                        <input type="text" name="kota" class="properti-form-control"
-                                            value="{{ old('kota') }}" placeholder="Nama Kota/Kabupaten">
+                                        <select name="kota" id="kotaProperti" class="form-control select2 properti-form-control">
+                                            <option value="">-- Pilih Kota/Kabupaten --</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="properti-col-sm-6 properti-col-md-3">
                                     <div class="properti-form-group">
-                                        <label class="properti-form-label">Provinsi</label>
-                                        <input type="text" name="provinsi" class="properti-form-control"
-                                            value="{{ old('provinsi') }}" placeholder="Nama Provinsi">
+                                        <label class="properti-form-label">Kecamatan</label>
+                                        <select name="kecamatan" id="kecamatanProperti" class="form-control select2 properti-form-control">
+                                            <option value="">-- Pilih Kecamatan --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="properti-col-sm-6 properti-col-md-3">
+                                    <div class="properti-form-group">
+                                        <label class="properti-form-label">Kelurahan/Desa</label>
+                                        <select name="kelurahan" id="kelurahanProperti" class="form-control select2 properti-form-control">
+                                            <option value="">-- Pilih Kelurahan/Desa --</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -1263,7 +1267,7 @@
             });
         });
 
-        // SELECT2 INITIALIZATION
+        // SELECT2 & API WILAYAH INDONESIA INITIALIZATION
         $(document).ready(function() {
             $('#companySelect').select2({
                 theme: 'bootstrap-5',
@@ -1280,6 +1284,134 @@
                     }
                 }
             });
+
+            // --- API WILAYAH INDONESIA ---
+            const API_BASE_WILAYAH = 'https://www.emsifa.com/api-wilayah-indonesia/api';
+
+            const wilayahSelectIds = [
+                '#provinsiProperti', '#kotaProperti', '#kecamatanProperti', '#kelurahanProperti'
+            ];
+
+            wilayahSelectIds.forEach(id => {
+                $(id).select2({
+                    theme: 'bootstrap-5',
+                    width: '100%',
+                    dropdownParent: $(id).parent()
+                });
+            });
+
+            async function loadWilayahProperti(type, targetSelect, parentId = null, selectedValue = '') {
+                let url = '';
+                if (type === 'provinces') {
+                    url = `${API_BASE_WILAYAH}/provinces.json`;
+                } else if (type === 'regencies' && parentId) {
+                    url = `${API_BASE_WILAYAH}/regencies/${parentId}.json`;
+                } else if (type === 'districts' && parentId) {
+                    url = `${API_BASE_WILAYAH}/districts/${parentId}.json`;
+                } else if (type === 'villages' && parentId) {
+                    url = `${API_BASE_WILAYAH}/villages/${parentId}.json`;
+                }
+
+                if (!url || !targetSelect) return null;
+
+                try {
+                    const res = await fetch(url);
+                    const data = await res.json();
+
+                    let placeholder = '-- Pilih --';
+                    if (type === 'provinces') placeholder = '-- Pilih Provinsi --';
+                    else if (type === 'regencies') placeholder = '-- Pilih Kota/Kabupaten --';
+                    else if (type === 'districts') placeholder = '-- Pilih Kecamatan --';
+                    else if (type === 'villages') placeholder = '-- Pilih Kelurahan/Desa --';
+
+                    let optionsHtml = `<option value="">${placeholder}</option>`;
+                    let matchedId = null;
+
+                    data.forEach(item => {
+                        const name = item.name.trim();
+                        const isSelected = selectedValue && (name.toLowerCase() === selectedValue.trim().toLowerCase());
+                        if (isSelected) matchedId = item.id;
+                        optionsHtml += `<option value="${name}" data-id="${item.id}" ${isSelected ? 'selected' : ''}>${name}</option>`;
+                    });
+
+                    targetSelect.innerHTML = optionsHtml;
+                    $(targetSelect).trigger('change.select2');
+                    return matchedId;
+                } catch (e) {
+                    console.error(`Error loading wilayah ${type}:`, e);
+                    return null;
+                }
+            }
+
+            async function setupWilayahPropertiCascade(initialVals = {}) {
+                const provSelect = document.getElementById('provinsiProperti');
+                const kotaSelect = document.getElementById('kotaProperti');
+                const kecSelect = document.getElementById('kecamatanProperti');
+                const kelSelect = document.getElementById('kelurahanProperti');
+
+                if (!provSelect) return;
+
+                // 1. Load Provinces
+                const provId = await loadWilayahProperti('provinces', provSelect, null, initialVals.province);
+
+                if (provId) {
+                    const kotaId = await loadWilayahProperti('regencies', kotaSelect, provId, initialVals.city);
+                    if (kotaId) {
+                        const kecId = await loadWilayahProperti('districts', kecSelect, kotaId, initialVals.district);
+                        if (kecId) {
+                            await loadWilayahProperti('villages', kelSelect, kecId, initialVals.village);
+                        }
+                    }
+                }
+
+                // On Province Change
+                $('#provinsiProperti').on('change', async function() {
+                    const selectedOpt = this.options[this.selectedIndex];
+                    const pId = selectedOpt ? selectedOpt.getAttribute('data-id') : null;
+                    kotaSelect.innerHTML = '<option value="">-- Pilih Kota/Kabupaten --</option>';
+                    kecSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+                    kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+                    $('#kotaProperti, #kecamatanProperti, #kelurahanProperti').trigger('change.select2');
+
+                    if (pId) {
+                        await loadWilayahProperti('regencies', kotaSelect, pId);
+                    }
+                });
+
+                // On City Change
+                $('#kotaProperti').on('change', async function() {
+                    const selectedOpt = this.options[this.selectedIndex];
+                    const cId = selectedOpt ? selectedOpt.getAttribute('data-id') : null;
+                    kecSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+                    kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+                    $('#kecamatanProperti, #kelurahanProperti').trigger('change.select2');
+
+                    if (cId) {
+                        await loadWilayahProperti('districts', kecSelect, cId);
+                    }
+                });
+
+                // On District Change
+                $('#kecamatanProperti').on('change', async function() {
+                    const selectedOpt = this.options[this.selectedIndex];
+                    const dId = selectedOpt ? selectedOpt.getAttribute('data-id') : null;
+                    kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+                    $('#kelurahanProperti').trigger('change.select2');
+
+                    if (dId) {
+                        await loadWilayahProperti('villages', kelSelect, dId);
+                    }
+                });
+            }
+
+            // Inisialisasi Wilayah
+            const initialWilayah = {
+                province: "{{ old('provinsi') }}",
+                city: "{{ old('kota') }}",
+                district: "{{ old('kecamatan') }}",
+                village: "{{ old('kelurahan') }}"
+            };
+            setupWilayahPropertiCascade(initialWilayah);
         });
 
         // Leaflet Map with Google Maps Tile Layers

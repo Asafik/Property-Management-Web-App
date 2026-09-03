@@ -581,12 +581,45 @@ body.modal-open .page-body-wrapper {
 .siteplan-toolbar {
     background: #ffffff;
     border-bottom: 1px solid #eef2f6;
-    padding: 0.5rem 0.75rem;
+    padding: 0.65rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     flex-wrap: wrap;
+}
+.siteplan-toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #475569;
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none !important;
+}
+.siteplan-toolbar-btn:hover {
+    background: #f8fafc;
+    color: #9a55ff;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+.siteplan-toolbar-btn.btn-download {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(154, 85, 255, 0.25);
+}
+.siteplan-toolbar-btn.btn-download:hover {
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(154, 85, 255, 0.4);
+    transform: translateY(-1px);
 }
 .siteplan-viewport {
     height: 420px;
@@ -795,59 +828,145 @@ body.modal-open .page-body-wrapper {
         </div>
     @endif
 
-    <!-- Card 1: Informasi Tanah Induk -->
+    <!-- Card 1: Header Informasi Tanah Induk -->
+    @php
+        $totalUnits = $land->units->count();
+        $totalArea = $land->units->sum('area');
+        $sisaLuas = max(0, $land->remaining_area ?? ($land->area - $totalArea));
+        $totalNilai = $land->units->sum('price');
+
+        $mapProgress = [
+            'belum_mulai' => 0,
+            'pondasi' => 20,
+            'dinding' => 40,
+            'atap' => 60,
+            'finishing' => 80,
+            'selesai' => 100,
+        ];
+
+        $unitProgress = $land->units->map(function ($u) use ($mapProgress) {
+            $st = strtolower($u->construction_progress ?? 'belum_mulai');
+            return $mapProgress[$st] ?? 0;
+        });
+
+        $progressPercent = $unitProgress->count() > 0 ? $unitProgress->avg() : 0;
+    @endphp
+
+    <!-- 1. Statistic Cards (Cards Sendiri-Sendiri seperti di Dashboard - Paling Atas) -->
+    <div class="row g-3 mb-3 mb-md-4">
+        <!-- 1. Total Unit -->
+        <div class="col-12 col-sm-6 col-md-4 col-xl">
+            <div class="card shadow-sm border-0 h-100 mb-0" style="border-radius: 12px;">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h4 class="text-dark mb-1 fw-bold">{{ $totalUnits }} <span style="font-size: 0.85rem; font-weight: 500;" class="text-muted">Unit</span></h4>
+                        <p class="text-muted mb-0" style="font-size: 0.82rem;">Total Unit Kavling</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-home-city" style="font-size: 2.2rem; color: #9a55ff; opacity: 0.25;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Luas Total Tanah -->
+        <div class="col-12 col-sm-6 col-md-4 col-xl">
+            <div class="card shadow-sm border-0 h-100 mb-0" style="border-radius: 12px;">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h4 class="text-dark mb-1 fw-bold">{{ number_format($land->area ?? 0, 0, ',', '.') }} <span style="font-size: 0.85rem; font-weight: 500;" class="text-muted">m²</span></h4>
+                        <p class="text-muted mb-0" style="font-size: 0.82rem;">Luas Total Tanah</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-texture-box" style="font-size: 2.2rem; color: #36d1dc; opacity: 0.35;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Sisa Luas Tanah -->
+        <div class="col-12 col-sm-6 col-md-4 col-xl">
+            <div class="card shadow-sm border-0 h-100 mb-0" style="border-radius: 12px;">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h4 class="text-warning mb-1 fw-bold">{{ number_format($sisaLuas, 0, ',', '.') }} <span style="font-size: 0.85rem; font-weight: 500;" class="text-muted">m²</span></h4>
+                        <p class="text-muted mb-0" style="font-size: 0.82rem;">Sisa Luas Tanah</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-chart-arc" style="font-size: 2.2rem; color: #ffb800; opacity: 0.35;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Total Luas Unit -->
+        <div class="col-12 col-sm-6 col-md-6 col-xl">
+            <div class="card shadow-sm border-0 h-100 mb-0" style="border-radius: 12px;">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h4 class="text-info mb-1 fw-bold">{{ number_format($totalArea, 0, ',', '.') }} <span style="font-size: 0.85rem; font-weight: 500;" class="text-muted">m²</span></h4>
+                        <p class="text-muted mb-0" style="font-size: 0.82rem;">Total Luas Terpakai</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-ruler-square" style="font-size: 2.2rem; color: #0d6efd; opacity: 0.25;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Nilai Total Unit -->
+        <div class="col-12 col-sm-6 col-md-6 col-xl">
+            <div class="card shadow-sm border-0 h-100 mb-0" style="border-radius: 12px;">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h4 class="text-success mb-1 fw-bold" style="font-size: 1.05rem;">Rp {{ number_format($totalNilai, 0, ',', '.') }}</h4>
+                        <p class="text-muted mb-0" style="font-size: 0.82rem;">Nilai Total Kavling</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-cash-multiple" style="font-size: 2.2rem; color: #28a745; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Informasi Tanah Induk & Progress Pembangunan (Satu Card Terpadu di Bawah Stat Cards) -->
     <div class="row mb-3 mb-md-4">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white py-3 border-bottom">
-                    <h5 class="card-title mb-0 fw-bold text-dark" style="font-size: 1.05rem;">Informasi Tanah Induk</h5>
-                </div>
+            <div class="card shadow-sm border-0 header-card" style="background: #ffffff; border-radius: 12px;">
                 <div class="card-body p-3 p-md-4">
-                    <div class="row g-3">
-                        <div class="col-sm-6 col-md-3">
-                            <small class="text-muted d-block mb-1">Nama Tanah</small>
-                            <h6 class="fw-bold text-dark mb-0">{{ $land->name ?? '-' }}</h6>
-                        </div>
-
-                        <div class="col-sm-6 col-md-3">
-                            <small class="text-muted d-block mb-1">Luas Total</small>
-                            <h6 class="fw-bold text-dark mb-0">{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</h6>
-                        </div>
-
-                        <div class="col-sm-6 col-md-3">
-                            <small class="text-muted d-block mb-1">Sisa Luas</small>
-                            <h6 class="fw-bold text-primary mb-0">
-                                {{ number_format($land->remaining_area ?? ($land->area ?? 0), 0, ',', '.') }} m²
-                            </h6>
-                        </div>
-
-                        <div class="col-sm-6 col-md-3">
-                            <small class="text-muted d-block mb-1">Status Legalitas</small>
-                            @if ($land->legal_status == 'verified')
-                                <span class="badge badge-success px-2.5 py-1">
-                                    Terverifikasi
-                                </span>
-                            @else
-                                <span class="badge badge-warning px-2.5 py-1">
-                                    {{ ucfirst($land->legal_status ?? 'Pending') }}
-                                </span>
-                            @endif
-                        </div>
+                    <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                        <h4 class="text-dark mb-0 fw-bold" style="font-size: 1.25rem;">
+                            {{ $land->name ?? 'Proyek Tanah Induk' }}
+                        </h4>
+                        @if ($land->legal_status == 'verified')
+                            <span class="badge badge-success px-2.5 py-1">
+                                <i class="mdi mdi-check-decagram me-1"></i>Legalitas Terverifikasi
+                            </span>
+                        @else
+                            <span class="badge badge-warning px-2.5 py-1">
+                                {{ ucfirst($land->legal_status ?? 'Pending') }}
+                            </span>
+                        @endif
                     </div>
+                    <p class="text-muted mb-3" style="font-size: 0.88rem;">
+                        <i class="mdi mdi-map-marker-outline text-danger me-1"></i>
+                        {{ $land->address ?? '-' }},
+                        Kel. {{ $land->village ?? '-' }},
+                        Kec. {{ $land->district ?? '-' }},
+                        {{ $land->city ?? '-' }},
+                        {{ $land->province ?? '-' }}
+                        {{ $land->postal_code ? '(' . $land->postal_code . ')' : '' }}
+                    </p>
 
-                    <hr class="my-3" style="border-top: 1px dashed #e9ecef;">
-
-                    <div class="row">
-                        <div class="col-12">
-                            <small class="text-muted d-block mb-1">Lokasi</small>
-                            <p class="text-dark mb-0 fw-semibold" style="font-size: 0.88rem;">
-                                {{ $land->address ?? '-' }},
-                                Kel. {{ $land->village ?? '-' }},
-                                Kec. {{ $land->district ?? '-' }},
-                                {{ $land->city ?? '-' }},
-                                {{ $land->province ?? '-' }}
-                                {{ $land->postal_code ? '(' . $land->postal_code . ')' : '' }}
-                            </p>
+                    <!-- Progress Pembangunan Full Width Kanan-Kiri di Bawah Alamat -->
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <small class="fw-bold text-dark" style="font-size: 0.82rem;"><i class="mdi mdi-progress-clock me-1 text-primary"></i>Progress Pembangunan</small>
+                            <small class="fw-bold text-primary">{{ number_format($progressPercent, 0) }}% Rata-rata</small>
+                        </div>
+                        <div class="progress" style="height: 7px; border-radius: 6px;">
+                            <div class="progress-bar bg-gradient-primary" role="progressbar" style="width: {{ $progressPercent }}%;"></div>
                         </div>
                     </div>
                 </div>
@@ -1130,29 +1249,18 @@ body.modal-open .page-body-wrapper {
                                                 @endphp
 
                                                 @if ($spkRecord)
-                                                    <a href="{{ route('spk.cetak', $spkRecord->id) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2 d-inline-flex align-items-center gap-1 shadow-sm rounded-pill text-decoration-none" title="Cetak / Buka Surat Resmi SPK {{ $unit->no_spk }} (Kontraktor: {{ $unit->kontraktor ?? '-' }})">
-                                                        <i class="mdi mdi-printer text-success fs-6"></i>
-                                                        <span class="fw-bold">{{ $unit->no_spk }}</span>
-                                                        <i class="mdi mdi-open-in-new" style="font-size: 10px;"></i>
+                                                    <a href="{{ route('spk.cetak', $spkRecord->id) }}" target="_blank" class="text-primary text-decoration-none fw-bold" style="font-size: 0.85rem;" title="Cetak / Buka Surat Resmi SPK {{ $unit->no_spk }} (Kontraktor: {{ $unit->kontraktor ?? '-' }})">
+                                                        {{ $unit->no_spk }}
                                                     </a>
                                                 @elseif ($spkDocUrl)
-                                                    <a href="{{ $spkDocUrl }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2 d-inline-flex align-items-center gap-1 shadow-sm rounded-pill text-decoration-none" title="Buka berkas PDF SPK {{ $unit->no_spk }} (Kontraktor: {{ $unit->kontraktor ?? '-' }})">
-                                                        <i class="mdi mdi-file-pdf text-danger fs-6"></i>
-                                                        <span class="fw-bold">{{ $unit->no_spk }}</span>
-                                                        <i class="mdi mdi-open-in-new" style="font-size: 10px;"></i>
+                                                    <a href="{{ $spkDocUrl }}" target="_blank" class="text-primary text-decoration-none fw-bold" style="font-size: 0.85rem;" title="Buka berkas PDF SPK {{ $unit->no_spk }} (Kontraktor: {{ $unit->kontraktor ?? '-' }})">
+                                                        {{ $unit->no_spk }}
                                                     </a>
                                                 @else
-                                                    <span class="badge bg-light text-dark border py-1 px-2 d-inline-flex align-items-center gap-1" title="Kontraktor: {{ $unit->kontraktor ?? '-' }}">
-                                                        <i class="mdi mdi-file-document-outline text-primary"></i>
-                                                        <span>{{ $unit->no_spk }}</span>
-                                                    </span>
+                                                    <span class="text-dark fw-bold" style="font-size: 0.85rem;">{{ $unit->no_spk }}</span>
                                                 @endif
 
-                                                @if($unit->kontraktor)
-                                                    <small class="text-muted d-block mt-1 text-truncate" style="max-width: 130px; font-size: 10px; margin: 0 auto;" title="Kontraktor: {{ $unit->kontraktor }}">
-                                                        {{ $unit->kontraktor }}
-                                                    </small>
-                                                @endif
+
                                             @else
                                                 <span class="text-muted small">-</span>
                                             @endif
@@ -1345,80 +1453,7 @@ body.modal-open .page-body-wrapper {
         </div>
     </div>
 
-    <!-- Card 3: Ringkasan Kavling (Full Width 4 Kolom) -->
-    <div class="row mb-3 mb-md-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex align-items-center gap-2 py-3">
-                    <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3">
-                        <i class="mdi mdi-chart-pie" style="font-size: 1.1rem;"></i>
-                    </span>
-                    <h5 class="card-title mb-0 fw-bold text-dark">Ringkasan Kavling & Pembangunan</h5>
-                </div>
-                <div class="card-body p-3 p-md-4">
-                    @php
-                        $totalUnits = $land->units->count();
-                        $totalArea = $land->units->sum('area');
-                        $sisaLuas = max(0, $land->remaining_area ?? ($land->area - $totalArea));
-                        $totalNilai = $land->units->sum('price');
 
-                        $mapProgress = [
-                            'belum_mulai' => 0,
-                            'pondasi' => 20,
-                            'dinding' => 40,
-                            'atap' => 60,
-                            'finishing' => 80,
-                            'selesai' => 100,
-                        ];
-
-                        $unitProgress = $land->units->map(function ($u) use ($mapProgress) {
-                            $st = strtolower($u->construction_progress ?? 'belum_mulai');
-                            return $mapProgress[$st] ?? 0;
-                        });
-
-                        $progressPercent = $unitProgress->count() > 0 ? $unitProgress->avg() : 0;
-                    @endphp
-
-                    <div class="row g-3">
-                        <div class="col-6 col-md-3">
-                            <div class="p-3 bg-light rounded-3 h-100 border-start border-primary border-3">
-                                <small class="text-muted d-block mb-1"><i class="mdi mdi-counter me-1 text-primary"></i>Total Unit</small>
-                                <h4 class="fw-bold text-dark mb-0">{{ $totalUnits }} Unit</h4>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="p-3 bg-light rounded-3 h-100 border-start border-info border-3">
-                                <small class="text-muted d-block mb-1"><i class="mdi mdi-ruler-square me-1 text-info"></i>Total Luas Unit</small>
-                                <h4 class="fw-bold text-dark mb-0">{{ number_format($totalArea, 0, ',', '.') }} m²</h4>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="p-3 bg-light rounded-3 h-100 border-start border-warning border-3">
-                                <small class="text-muted d-block mb-1"><i class="mdi mdi-chart-arc me-1 text-warning"></i>Sisa Luas Tanah</small>
-                                <h4 class="fw-bold text-warning mb-0">{{ number_format($sisaLuas, 0, ',', '.') }} m²</h4>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="p-3 bg-light rounded-3 h-100 border-start border-success border-3">
-                                <small class="text-muted d-block mb-1"><i class="mdi mdi-currency-usd me-1 text-success"></i>Nilai Total Unit</small>
-                                <h4 class="fw-bold text-success mb-0" style="font-size: 1.05rem;">Rp {{ number_format($totalNilai, 0, ',', '.') }}</h4>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-3">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <small class="fw-bold text-dark"><i class="mdi mdi-progress-clock me-1 text-primary"></i>Progress Pembangunan Keseluruhan</small>
-                            <small class="fw-bold text-primary">{{ number_format($progressPercent, 0) }}% Rata-rata</small>
-                        </div>
-                        <div class="progress" style="height: 8px; border-radius: 6px;">
-                            <div class="progress-bar bg-gradient-primary" role="progressbar" style="width: {{ $progressPercent }}%;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Card 4: Denah Kavling Interaktif (Full Width Luas & Besar) -->
     <div class="row mb-3 mb-md-4">
@@ -1484,20 +1519,20 @@ body.modal-open .page-body-wrapper {
                                     </div>
                                     <div class="d-flex align-items-center gap-1">
                                         @if(!$isPdf)
-                                            <button type="button" class="btn btn-sm btn-outline-secondary p-1 px-2 rounded-2" onclick="zoomSiteplan(0.2)" title="Perbesar (Zoom In)">
+                                            <button type="button" class="siteplan-toolbar-btn" onclick="zoomSiteplan(0.2)" title="Perbesar (Zoom In)">
                                                 <i class="mdi mdi-magnify-plus-outline"></i>
                                             </button>
-                                            <button type="button" class="btn btn-sm btn-outline-secondary p-1 px-2 rounded-2" onclick="zoomSiteplan(-0.2)" title="Perkecil (Zoom Out)">
+                                            <button type="button" class="siteplan-toolbar-btn" onclick="zoomSiteplan(-0.2)" title="Perkecil (Zoom Out)">
                                                 <i class="mdi mdi-magnify-minus-outline"></i>
                                             </button>
-                                            <button type="button" class="btn btn-sm btn-outline-secondary p-1 px-2 rounded-2" onclick="resetSiteplanZoom()" title="Reset Ukuran">
+                                            <button type="button" class="siteplan-toolbar-btn" onclick="resetSiteplanZoom()" title="Reset Ukuran">
                                                 <i class="mdi mdi-restore"></i>
                                             </button>
-                                            <button type="button" class="btn btn-sm btn-outline-primary p-1 px-2 rounded-2" onclick="openSiteplanLightbox()" title="Lihat Layar Penuh">
+                                            <button type="button" class="siteplan-toolbar-btn" onclick="openSiteplanLightbox()" title="Lihat Layar Penuh">
                                                 <i class="mdi mdi-fullscreen"></i>
                                             </button>
                                         @endif
-                                        <a href="{{ $denahUrl }}" target="_blank" download class="btn btn-sm btn-gradient-primary p-1 px-2 rounded-2" title="Unduh Berkas Asli">
+                                        <a href="{{ $denahUrl }}" target="_blank" download class="siteplan-toolbar-btn btn-download" title="Unduh Berkas Asli">
                                             <i class="mdi mdi-download"></i>
                                         </a>
                                     </div>
@@ -1547,14 +1582,17 @@ body.modal-open .page-body-wrapper {
                                         </div>
                                     </div>
 
-                                    <div class="p-2 px-3 bg-light border-top d-flex flex-wrap justify-content-between align-items-center gap-2 small text-muted">
-                                        <span><i class="mdi mdi-cursor-move me-1"></i>Geser buletan unit untuk memposisikan kavling di siteplan</span>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <button type="button" class="btn btn-xs btn-primary px-2 py-1 shadow-sm" onclick="savePositionLegal()">
-                                                <i class="mdi mdi-content-save me-1"></i>Simpan Posisi Unit
+                                    <div class="p-3 bg-white border-top rounded-bottom-3 d-flex flex-wrap justify-content-between align-items-center gap-3">
+                                        <span class="text-muted d-flex align-items-center gap-1" style="font-size: 0.85rem;">
+                                            <i class="mdi mdi-cursor-move text-primary fs-5"></i>
+                                            Geser bulatan untuk atur posisi, atau <strong>klik 2x</strong> untuk lihat detail unit
+                                        </span>
+                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                            <button type="button" class="btn btn-sm btn-gradient-primary px-3 py-2 d-inline-flex align-items-center gap-1.5 shadow-sm text-white rounded-3 fw-bold" onclick="savePositionLegal()">
+                                                <i class="mdi mdi-content-save fs-6"></i>Simpan Posisi Unit
                                             </button>
-                                            <a href="{{ route('properti.edit', $land->id) }}" class="text-primary text-decoration-none fw-bold small">
-                                                <i class="mdi mdi-pencil-box-outline me-1"></i>Ganti Siteplan
+                                            <a href="{{ route('properti.edit', $land->id) }}" class="btn btn-sm btn-outline-primary px-3 py-2 d-inline-flex align-items-center gap-1.5 rounded-3 fw-bold" style="border-width: 1.5px; border-color: #9a55ff; color: #9a55ff; background: rgba(154, 85, 255, 0.08);">
+                                                <i class="mdi mdi-pencil-box-outline fs-6"></i>Ganti Siteplan
                                             </a>
                                         </div>
                                     </div>
@@ -2063,62 +2101,52 @@ body.modal-open .page-body-wrapper {
 <div class="modal fade" id="modalSpkUnit" tabindex="-1" aria-labelledby="modalSpkUnitLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content rounded-4 border-0 shadow">
-            <div class="modal-header border-bottom py-3">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="d-inline-flex p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
-                        <i class="mdi mdi-file-document-edit-outline fs-4"></i>
+            <div class="modal-header border-bottom py-3 px-4">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 w-100 me-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="d-inline-flex p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
+                            <i class="mdi mdi-file-document-edit-outline fs-4"></i>
+                        </div>
+                        <h5 class="modal-title fw-bold text-dark mb-0" id="modalSpkUnitLabel">Atur SPK Unit Kavling</h5>
                     </div>
-                    <div>
-                        <h5 class="modal-title fw-bold text-dark mb-0" id="modalSpkUnitLabel">Atur & Terbitkan SPK Unit Kavling</h5>
-                        <small class="text-muted">Terapkan 1 nomor SPK kontraktor untuk beberapa unit kavling sekaligus</small>
-                    </div>
+                    <a href="{{ route('spk.create', ['land_bank_id' => $land->id]) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 shadow-sm" style="border-radius: 6px; font-weight: 600; font-size: 0.8rem;" title="Buka Form Pembuatan SPK Lengkap & Rincian Termin">
+                        <i class="mdi mdi-open-in-new"></i>
+                        <span>Buat Form SPK Lengkap</span>
+                    </a>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body p-3 p-md-4" style="max-height: 65vh; overflow-y: auto;">
-                <!-- Info Shortcut SPK Lengkap -->
-                <div class="alert alert-info py-2 px-3 small d-flex flex-wrap justify-content-between align-items-center mb-3 border-0 shadow-sm" style="border-radius: 8px;">
-                    <div>
-                        <i class="mdi mdi-information-outline me-1"></i>
-                        Ingin membuat SPK lengkap dengan jadwal termin & pasal resmi?
-                    </div>
-                    <a href="{{ route('spk.create', ['land_bank_id' => $land->id]) }}" target="_blank" class="btn btn-xs btn-primary text-white text-nowrap ms-auto mt-1 mt-sm-0" style="font-size: 11px;">
-                        <i class="mdi mdi-open-in-new me-1"></i>Buka Form SPK Lengkap & Rincian Termin
-                    </a>
-                </div>
                 <form id="formAssignSpkModal" action="{{ route('properti.kavling.assignSpk', $land->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="row g-3 mb-3">
-                        <!-- Baris 1: 2 Kolom Sejajar -->
                         <div class="col-12 col-md-6">
                             <label class="form-label fw-bold small text-dark mb-1">Nomor SPK <span class="text-danger">*</span></label>
-                            <input type="text" name="no_spk" class="form-control" placeholder="Contoh: SPK/2026/KAV/001" required>
+                            <input type="text" name="no_spk" class="form-control" placeholder="Nomor SPK..." required>
                         </div>
                         <div class="col-12 col-md-6">
-                            <label class="form-label fw-bold small text-dark mb-1">Nama Kontraktor / Pelaksana <span class="text-danger">*</span></label>
-                            <input type="text" name="kontraktor" class="form-control" placeholder="Contoh: PT. Maju Konstruksi Nusantara" required>
+                            <label class="form-label fw-bold small text-dark mb-1">Nama Kontraktor <span class="text-danger">*</span></label>
+                            <input type="text" name="kontraktor" class="form-control" placeholder="Nama kontraktor..." required>
                         </div>
 
-                        <!-- Baris 2: Keterangan -->
                         <div class="col-12">
-                            <label class="form-label fw-bold small text-dark mb-1">Keterangan / Scope Pekerjaan</label>
-                            <input type="text" name="description" class="form-control" placeholder="Catatan lingkup pekerjaan (opsional)">
+                            <label class="form-label fw-bold small text-dark mb-1">Keterangan</label>
+                            <input type="text" name="description" class="form-control" placeholder="Keterangan (opsional)...">
                         </div>
 
-                        <!-- Baris 3: Styled Upload Box untuk Berkas SPK -->
                         <div class="col-12">
-                            <label class="form-label fw-bold small text-dark mb-1">Upload Berkas Dokumen SPK (PDF)</label>
-                            <div class="upload-dropzone-box py-3 px-3">
+                            <label class="form-label fw-bold small text-dark mb-1">Upload Berkas SPK (PDF)</label>
+                            <div class="upload-dropzone-box py-2.5 px-3">
                                 <input type="file" id="uploadDokumenSpkInput" name="dokumen_spk" accept=".pdf">
                                 <div class="d-flex align-items-center justify-content-center gap-3">
-                                    <div class="rounded-circle p-2 bg-danger bg-opacity-10 text-danger d-inline-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
-                                        <i class="mdi mdi-file-pdf-box" style="font-size: 1.6rem;"></i>
+                                    <div class="rounded-circle p-2 bg-danger bg-opacity-10 text-danger d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                                        <i class="mdi mdi-file-pdf-box" style="font-size: 1.4rem;"></i>
                                     </div>
                                     <div class="text-start">
-                                        <span class="fw-bold text-dark d-block" id="dokumenSpkFileName" style="font-size: 0.88rem;">Pilih berkas PDF atau seret ke sini</span>
-                                        <small class="text-muted" style="font-size: 0.76rem;">Format didukung: PDF (Maksimal 10MB)</small>
+                                        <span class="fw-bold text-dark d-block" id="dokumenSpkFileName" style="font-size: 0.85rem;">Pilih berkas PDF atau seret ke sini</span>
+                                        <small class="text-muted" style="font-size: 0.75rem;">Maksimal 10MB</small>
                                     </div>
                                 </div>
                             </div>
@@ -2127,39 +2155,39 @@ body.modal-open .page-body-wrapper {
 
                     <!-- Pilih Multi-Unit Kavling -->
                     <div class="border rounded-3 p-3 bg-light">
-                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 pb-2 border-bottom">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2 pb-2 border-bottom">
                             <div>
-                                <h6 class="fw-bold text-dark mb-0" style="font-size: 0.9rem;">Pilih Unit Kavling yang Termasuk SPK Ini <span class="text-danger">*</span></h6>
-                                <small class="text-muted" id="spkUnitCounter">0 unit kavling dipilih</small>
+                                <h6 class="fw-bold text-dark mb-0" style="font-size: 0.88rem;">Pilih Unit Kavling <span class="text-danger">*</span></h6>
+                                <small class="text-muted" id="spkUnitCounter">0 unit dipilih</small>
                             </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <button type="button" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 shadow-sm px-2.5 py-1" id="btnSelectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px;">
-                                    <i class="mdi mdi-checkbox-multiple-marked-outline"></i>
+                            <div class="d-flex align-items-center gap-1.5">
+                                <button type="button" class="btn btn-sm btn-light border text-primary fw-semibold px-2.5 py-1 d-inline-flex align-items-center gap-1" id="btnSelectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px; background: #ffffff; border-color: #cbd5e1 !important;">
+                                    <i class="mdi mdi-checkbox-multiple-marked-outline text-primary"></i>
                                     <span>Pilih Semua</span>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-gradient-secondary d-inline-flex align-items-center gap-1 shadow-sm px-2.5 py-1" id="btnUnselectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px;">
+                                <button type="button" class="btn btn-sm btn-light border text-muted fw-semibold px-2.5 py-1 d-inline-flex align-items-center gap-1" id="btnUnselectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px; background: #ffffff; border-color: #cbd5e1 !important;">
                                     <i class="mdi mdi-checkbox-multiple-blank-outline"></i>
-                                    <span>Hapus Pilihan</span>
+                                    <span>Hapus Semua</span>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Search Unit di Modal (Sama seperti search tabel) -->
-                        <div class="mb-3">
+                        <!-- Search Unit di Modal -->
+                        <div class="mb-2">
                             <div class="input-group">
                                 <input type="text" class="form-control" id="filterSpkUnitSearch"
-                                    placeholder="Cari kode unit / nama / tipe..."
-                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
+                                    placeholder="Cari unit..."
+                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 36px; font-size: 0.85rem;">
                                 <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
                                     type="button" id="btnSearchSpkUnit" title="Cari"
-                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
-                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 36px; box-shadow: none;">
+                                    <i class="mdi mdi-magnify" style="font-size: 1.1rem; color: #ffffff;"></i>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Daftar Unit Checkbox List -->
-                        <div class="spk-unit-selection-grid" style="max-height: 260px; overflow-y: auto; padding-right: 5px;">
+                        <div class="spk-unit-selection-grid" style="max-height: 240px; overflow-y: auto; padding-right: 5px;">
                             <div class="row g-2" id="spkUnitListContainer">
                                 @forelse ($land->units as $u)
                                     @php
@@ -2177,12 +2205,12 @@ body.modal-open .page-body-wrapper {
                                                 </div>
                                                 <div class="text-muted small text-truncate" style="max-width: 130px;">{{ $u->unit_name ?: 'Unit' }}</div>
                                                 @if($u->no_spk)
-                                                    <div class="text-primary mt-1" style="font-size: 10px;" title="SPK saat ini: {{ $u->no_spk }}">
-                                                        <i class="mdi mdi-file-document-outline me-1"></i>{{ $u->no_spk }}
+                                                    <div class="text-primary mt-1" style="font-size: 10px;" title="SPK: {{ $u->no_spk }}">
+                                                        SPK: {{ $u->no_spk }}
                                                     </div>
                                                 @else
                                                     <div class="text-muted mt-1" style="font-size: 10px;">
-                                                        <i class="mdi mdi-alert-circle-outline me-1 text-warning"></i>Belum ada SPK
+                                                        Belum ada SPK
                                                     </div>
                                                 @endif
                                             </div>
@@ -2191,7 +2219,7 @@ body.modal-open .page-body-wrapper {
                                 @empty
                                     <div class="col-12 text-center py-4 text-muted">
                                         <i class="mdi mdi-home-alert-outline fs-3 d-block mb-1"></i>
-                                        Belum ada unit kavling yang dibuat untuk lahan ini. Tambahkan unit kavling terlebih dahulu.
+                                        Belum ada unit kavling untuk lahan ini.
                                     </div>
                                 @endforelse
                             </div>
@@ -2200,12 +2228,12 @@ body.modal-open .page-body-wrapper {
                 </form>
             </div>
 
-            <div class="modal-footer border-top py-2 px-3">
-                <button type="button" class="btn btn-sm btn-gradient-secondary" data-bs-dismiss="modal">
-                    <i class="mdi mdi-close me-1"></i>Batal
+            <div class="modal-footer border-top py-2.5 px-4 d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-sm btn-light border px-3" data-bs-dismiss="modal">
+                    Batal
                 </button>
-                <button type="submit" form="formAssignSpkModal" class="btn btn-sm btn-gradient-primary">
-                    <i class="mdi mdi-check-all me-1"></i>Terapkan & Terbitkan SPK
+                <button type="submit" form="formAssignSpkModal" class="btn btn-sm btn-gradient-primary fw-bold text-white px-3 shadow-sm">
+                    <i class="mdi mdi-check-all me-1"></i>Simpan SPK
                 </button>
             </div>
         </div>
@@ -2635,17 +2663,9 @@ function initLegalSiteplanCanvas() {
             isDraggingLegal = false;
             canvasLegal.selection = true;
             canvasLegal.setCursor('grab');
-
-            // Buka Modal Detail Unit saat bulatan di-KLIK (tanpa drag)
-            if (opt.target && opt.target.unitId && opt.e) {
-                const dist = Math.hypot(opt.e.clientX - clickStartPosLegal.x, opt.e.clientY - clickStartPosLegal.y);
-                if (dist < 6) {
-                    openUnitDetailModalLegal(opt.target);
-                }
-            }
         });
 
-        // Buka Modal Detail Unit saat bulatan di-DOUBLE CLICK
+        // Buka Modal Detail Unit HANYA saat bulatan di-DOUBLE CLICK (klik 2x)
         canvasLegal.on('mouse:dblclick', function(opt) {
             if (opt.target && opt.target.unitId) {
                 openUnitDetailModalLegal(opt.target);
@@ -2730,47 +2750,76 @@ function initLegalSiteplanCanvas() {
                     strokeWidth = 3.5;
                 }
 
+                const radius = ((u.width || 70) * scaleFactor) / 2;
+
                 const circle = new fabric.Circle({
-                    left: (u.pos_x || 100) * scaleFactor,
-                    top: (u.pos_y || 100) * scaleFactor,
-                    radius: ((u.width || 70) * scaleFactor) / 2,
-                    angle: u.angle || 0,
+                    radius: radius,
                     fill: fillColor,
-                    opacity: 0.75,
+                    opacity: 0.88,
                     stroke: strokeColor,
                     strokeWidth: strokeWidth,
                     strokeDashArray: strokeDash,
+                    originX: 'center',
+                    originY: 'center'
+                });
+
+                const labelText = u.unitCode || (u.block && u.unitNumber ? `${u.block}.${u.unitNumber}` : (u.unitName || 'Unit'));
+                const fontSize = Math.max(12, Math.min(20, Math.round(radius * 0.58)));
+
+                const text = new fabric.Text(labelText, {
+                    fontSize: fontSize,
+                    fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+                    fontWeight: 'bold',
+                    fill: '#1e293b',
+                    textAlign: 'center',
+                    originX: 'center',
+                    originY: 'center',
+                    shadow: new fabric.Shadow({
+                        color: 'rgba(255, 255, 255, 0.95)',
+                        blur: 3,
+                        offsetX: 0,
+                        offsetY: 0
+                    })
+                });
+
+                const markerGroup = new fabric.Group([circle, text], {
+                    left: (u.pos_x || 100) * scaleFactor,
+                    top: (u.pos_y || 100) * scaleFactor,
+                    angle: u.angle || 0,
                     hasControls: true,
                     hasBorders: true,
-                    lockRotation: false
+                    lockRotation: false,
+                    cornerColor: '#9a55ff',
+                    cornerSize: 8,
+                    transparentCorners: false
                 });
 
                 // Attach all rich attributes
-                circle.unitId = u.id;
-                circle.unitCode = u.unitCode;
-                circle.unitName = u.unitName;
-                circle.unitNumber = u.unitNumber;
-                circle.block = u.block;
-                circle.jenis = u.jenis;
-                circle.type = u.type;
-                circle.address = u.address;
-                circle.area = u.area;
-                circle.building = u.building;
-                circle.price = u.price;
-                circle.direction = u.direction;
-                circle.statusRaw = u.statusRaw;
-                circle.statusText = u.statusText;
-                circle.construction = u.construction;
-                circle.hasBooking = u.hasBooking;
-                circle.customer = u.customer;
-                circle.sales = u.sales;
-                circle.bookingDate = u.bookingDate;
-                circle.bookingFee = u.bookingFee;
-                circle.agentFee = u.agentFee;
-                circle.bookingStatus = u.bookingStatus;
-                circle.scaleFactor = scaleFactor;
+                markerGroup.unitId = u.id;
+                markerGroup.unitCode = u.unitCode;
+                markerGroup.unitName = u.unitName;
+                markerGroup.unitNumber = u.unitNumber;
+                markerGroup.block = u.block;
+                markerGroup.jenis = u.jenis;
+                markerGroup.type = u.type;
+                markerGroup.address = u.address;
+                markerGroup.area = u.area;
+                markerGroup.building = u.building;
+                markerGroup.price = u.price;
+                markerGroup.direction = u.direction;
+                markerGroup.statusRaw = u.statusRaw;
+                markerGroup.statusText = u.statusText;
+                markerGroup.construction = u.construction;
+                markerGroup.hasBooking = u.hasBooking;
+                markerGroup.customer = u.customer;
+                markerGroup.sales = u.sales;
+                markerGroup.bookingDate = u.bookingDate;
+                markerGroup.bookingFee = u.bookingFee;
+                markerGroup.agentFee = u.agentFee;
+                markerGroup.bookingStatus = u.bookingStatus;
+                markerGroup.scaleFactor = scaleFactor;
 
-                canvasLegal.add(circle);
+                canvasLegal.add(markerGroup);
             });
 
             canvasLegal.renderAll();

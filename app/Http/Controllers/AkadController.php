@@ -159,7 +159,7 @@ class AkadController extends Controller
 
     public function akadKPR($id)
     {
-        $kpr = KprApplication::with(['customer', 'unit', 'bank', 'sales', 'documents'])
+        $kpr = KprApplication::with(['customer', 'unit.activeBooking.sales', 'bank', 'sales', 'documents', 'booking.sales'])
             ->where('booking_id', $id)
             ->firstOrFail();
 

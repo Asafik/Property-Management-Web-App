@@ -180,16 +180,6 @@
     z-index: 1;
 }
 
-@media (max-width: 767px) {
-    .transaksi-steps {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 1.25rem 0.5rem;
-    }
-    .transaksi-steps::before {
-        display: none !important;
-    }
-}
-
 .transaksi-step {
     position: relative;
     display: flex;
@@ -469,31 +459,25 @@ select.serah-form-control {
     padding-right: 2.5rem;
 }
 
-.serah-checklist-wrapper {
+/* SURVEY STYLE CHECKBOX GRID */
+.survey-checklist-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
 }
 
-.serah-checklist-item {
+.survey-checkbox-wrapper {
     position: relative;
 }
 
-.serah-checklist-item .form-check,
-.serah-doc-item .form-check {
-    margin: 0;
-    padding: 0;
-}
-
-.serah-checklist-item input[type="checkbox"],
-.serah-doc-item input[type="checkbox"] {
+.survey-checkbox-input {
     position: absolute;
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-.serah-checklist-item .check-label {
+.survey-checkbox-label {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -503,105 +487,30 @@ select.serah-form-control {
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.25s ease;
-    min-height: 70px;
+    margin-bottom: 0;
+    min-height: 56px;
 }
 
-.serah-checklist-item .check-label:hover {
-    border-color: #9a55ff;
-    background: #f5eeff;
-    transform: translateY(-2px);
+.survey-check-icon {
+    font-size: 1.35rem;
+    color: #cbd5e1;
+    transition: all 0.25s ease;
 }
 
-.serah-checklist-item input[type="checkbox"]:checked + .check-label {
+.survey-check-text {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #2c2e3f;
+}
+
+.survey-checkbox-input:checked + .survey-checkbox-label {
     border-color: #9a55ff;
     background: #f5eeff;
     box-shadow: 0 4px 12px rgba(154, 85, 255, 0.15);
 }
 
-.check-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    background: #f4ecff;
+.survey-checkbox-input:checked + .survey-checkbox-label .survey-check-icon {
     color: #9a55ff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: all 0.25s ease;
-}
-
-.check-icon i {
-    font-size: 1.25rem;
-}
-
-.serah-checklist-item input[type="checkbox"]:checked + .check-label .check-icon {
-    color: #ffffff;
-    background: #9a55ff;
-}
-
-.check-text {
-    flex: 1;
-    font-size: 0.88rem;
-    font-weight: 700;
-    color: #2c2e3f;
-    line-height: 1.45;
-}
-
-.serah-doc-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.serah-doc-item {
-    position: relative;
-}
-
-.serah-doc-item .doc-label {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 0.85rem 1rem;
-    background: #fbf9ff;
-    border: 1.5px solid #ede4ff;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-}
-
-.serah-doc-item .doc-label:hover {
-    border-color: #9a55ff;
-    background: #f5eeff;
-    transform: translateX(4px);
-}
-
-.serah-doc-item input[type="checkbox"]:checked + .doc-label {
-    border-color: #9a55ff;
-    background: #f5eeff;
-}
-
-.doc-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: #f4ecff;
-    color: #9a55ff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.doc-icon i {
-    font-size: 1.15rem;
-}
-
-.doc-text {
-    flex: 1;
-    font-weight: 700;
-    color: #2c2e3f;
-    font-size: 0.88rem;
 }
 
 .doc-badge {
@@ -612,11 +521,54 @@ select.serah-form-control {
     font-size: 0.7rem;
     font-weight: 700;
     white-space: nowrap;
+    transition: all 0.25s ease;
 }
 
-.serah-doc-item input[type="checkbox"]:checked + .doc-label .doc-badge {
+.survey-checkbox-input:checked + .survey-checkbox-label .doc-badge {
     background: linear-gradient(135deg, #9a55ff, #da8cff);
-    color: #fff;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(154, 85, 255, 0.25);
+}
+
+/* AGREEMENT GREEN CHECKBOX (ON / OFF) */
+.agreement-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.85rem 1rem;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    margin-bottom: 0;
+}
+
+.agreement-checkbox-label .agreement-icon {
+    font-size: 1.35rem;
+    color: #cbd5e1;
+    transition: all 0.25s ease;
+}
+
+.agreement-checkbox-label .agreement-text {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #64748b;
+    transition: all 0.25s ease;
+}
+
+.survey-checkbox-input:checked + .agreement-checkbox-label {
+    background: #f0fdf4;
+    border-color: #22c55e;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.18);
+}
+
+.survey-checkbox-input:checked + .agreement-checkbox-label .agreement-icon {
+    color: #16a34a;
+}
+
+.survey-checkbox-input:checked + .agreement-checkbox-label .agreement-text {
+    color: #15803d;
 }
 
 .serah-file-upload-modern {
@@ -737,6 +689,95 @@ select.serah-form-control {
 
 .approval-check-green input[type="checkbox"]:checked + .check-label .check-text {
     color: #15803d;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN ENHANCEMENTS
+   ========================================================= */
+
+@media (max-width: 991.98px) {
+    .transaksi-steps {
+        overflow-x: auto;
+        display: flex !important;
+        justify-content: flex-start;
+        gap: 1.25rem;
+        padding: 0.5rem 0.25rem 1rem 0.25rem;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .transaksi-steps::-webkit-scrollbar {
+        height: 5px;
+    }
+    .transaksi-steps::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 10px;
+    }
+    .transaksi-steps::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+
+    .transaksi-steps::before {
+        display: none !important;
+    }
+
+    .transaksi-step {
+        flex: 0 0 115px;
+        scroll-snap-align: start;
+    }
+
+    .transaksi-step-title {
+        white-space: normal !important;
+        font-size: 0.82rem;
+    }
+
+    .transaksi-sticky {
+        position: static !important;
+        top: 0;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .card-body {
+        padding: 1.1rem !important;
+    }
+
+    .customer-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 1rem !important;
+    }
+
+    .customer-avatar {
+        width: 48px;
+        height: 48px;
+    }
+
+    .customer-avatar i {
+        font-size: 1.7rem !important;
+    }
+
+    .customer-name {
+        font-size: 1.1rem;
+    }
+
+    .customer-unit-info {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        padding: 0.65rem 0.85rem !important;
+        gap: 0.5rem !important;
+    }
+
+    .customer-unit-info .info-item small {
+        font-size: 0.68rem;
+    }
+
+    .customer-unit-info .info-item span {
+        font-size: 0.82rem;
+    }
 }
 </style>
 
@@ -974,16 +1015,16 @@ select.serah-form-control {
                         <div class="transaksi-detail-list">
                             <div class="transaksi-detail-item">
                                 <span>Harga Unit</span>
-                                <span>Rp {{ number_format($application->unit->price, 0, ',', '.') }}</span>
+                                <span>Rp {{ number_format($application->unit->price ?? 0, 0, ',', '.') }}</span>
                             </div>
                             <div class="transaksi-detail-item">
                                 <span>Uang Muka (DP)</span>
                                 <span class="highlight">Rp
-                                    {{ number_format($application->booking->booking_fee, 0, ',', '.') }}</span>
+                                    {{ number_format($application->booking->booking_fee ?? 0, 0, ',', '.') }}</span>
                             </div>
                             <div class="transaksi-detail-item">
                                 <span>Bank</span>
-                                <span>{{ $application->bank->bank_name }}</span>
+                                <span>{{ $application->bank->bank_name ?? '-' }}</span>
                             </div>
                             <div class="transaksi-detail-item">
                                 <span>Status KPR</span>
@@ -993,11 +1034,13 @@ select.serah-form-control {
                                     </span>
                                 </span>
                             </div>
-                            <div class="transaksi-detail-item mt-2">
-                                <span>Metode Pembayaran</span>
-                                <span class="payment-method-badge badge-gradient-success text-white">
-                                    <i class="mdi mdi-bank"></i>KPR
-                                </span>
+                            <div class="transaksi-detail-item">
+                                <span>Promo</span>
+                                <span>{{ $application->promo_name ?? '-' }}</span>
+                            </div>
+                            <div class="transaksi-detail-item">
+                                <span>Nilai Promo</span>
+                                <span>Rp {{ number_format($application->promo_value ?? 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
@@ -1009,8 +1052,7 @@ select.serah-form-control {
                                 <i class="mdi mdi-account-tie"></i>
                             </div>
                             <div>
-                                <div class="fw-bold">{{ $application->booking->sales->name ?? '-' }}</div>
-                                {{-- <small class="transaksi-muted">{{ $application->booking->sales->phone ?? '-' }}</small> --}}
+                                <div class="fw-bold">{{ $application->booking->sales->name ?? ($booking->sales->name ?? ($application->unit->activeBooking->sales->name ?? 'Staff Marketing')) }}</div>
                             </div>
                         </div>
                     </div>
@@ -1021,10 +1063,10 @@ select.serah-form-control {
         <form action="{{ route('serah-terima.store', $booking->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            <div class="row mt-4">
+            <div class="row mt-4 align-items-start">
                 <div class="col-12 col-lg-8 mb-4 mb-lg-0">
-                    <div class="card">
-                        <div class="card-body">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body p-3 p-md-4">
                             <div class="transaksi-section-title">
                                 <i class="mdi mdi-key"></i>
                                 <span>Form Serah Terima Unit</span>
@@ -1036,8 +1078,8 @@ select.serah-form-control {
                                     dokumentasi pendukung tanpa mengubah isi proses yang sudah berjalan.</div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
                                     <div class="serah-form-group">
                                         <label class="serah-form-label">Tanggal Serah Terima</label>
                                         <input type="date" name="tanggal_serah_terima" class="serah-form-control"
@@ -1045,16 +1087,16 @@ select.serah-form-control {
                                     </div>
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col-12 col-md-6">
                                     <div class="serah-form-group">
                                         <label class="serah-form-label">No. BAST</label>
                                         <input type="text" name="no_bast" class="serah-form-control"
-                                            value="{{ $noBast ?? 'Auto Generate' }}" readonly>
+                                            placeholder="BAST-2026/09/001" value="{{ $noBast ?? '' }}">
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="serah-form-group">
+                            <div class="serah-form-group mt-3">
                                 <label class="serah-form-label">Lokasi Serah Terima</label>
                                 <select name="lokasi_serah_terima" class="serah-form-control">
                                     <option value="site">Di Site / Proyek</option>
@@ -1063,93 +1105,80 @@ select.serah-form-control {
                                 </select>
                             </div>
 
-                            <hr>
+                            <hr class="my-4">
 
                             <div class="transaksi-section-title mb-3">
-                                <i class="mdi mdi-home-check-outline"></i>
+                                <i class="mdi mdi-checkbox-marked-outline"></i>
                                 <span>Checklist Kondisi Unit</span>
                             </div>
 
-                            @php
-                                $items = [
-                                    'Listrik berfungsi normal',
-                                    'Air mengalir lancar',
-                                    'Pintu & jendela berfungsi baik',
-                                    'Kunci lengkap (pintu utama, pagar)',
-                                    'Dinding & plafon baik',
-                                    'Lantai keramik baik',
-                                    'Kloset & sanitasi berfungsi',
-                                    'Meteran listrik & air terpasang',
-                                ];
-                            @endphp
-
-                            <div class="serah-checklist-wrapper">
-                                @foreach ($items as $index => $item)
-                                    <div class="serah-checklist-item">
-                                        <div class="form-check">
-                                            <input type="hidden" name="items[{{ $index }}][name]"
-                                                value="{{ $item }}">
-                                            <input type="checkbox" name="items[{{ $index }}][checked]"
-                                                value="1" id="item_{{ $index }}" class="form-check-input">
-                                            <label for="item_{{ $index }}" class="check-label">
-                                                <span class="check-icon">
-                                                    <i class="mdi mdi-check-circle"></i>
-                                                </span>
-                                                <span class="check-text">{{ $item }}</span>
-                                            </label>
-                                        </div>
+                            <div class="survey-checklist-grid">
+                                @php
+                                    $kondisiItems = [
+                                        'listrik' => 'Listrik berfungsi normal',
+                                        'air' => 'Air mengalir lancar',
+                                        'pintu_jendela' => 'Pintu & jendela berfungsi baik',
+                                        'kunci_lengkap' => 'Kunci lengkap (pintu utama, pagar)',
+                                        'dinding_plafon' => 'Dinding & plafon baik',
+                                        'lantai' => 'Lantai keramik baik',
+                                        'sanitasi' => 'Kloset & sanitasi berfungsi',
+                                        'meteran' => 'Meteran listrik & air terpasang',
+                                    ];
+                                @endphp
+                                @foreach ($kondisiItems as $field => $label)
+                                    <div class="survey-checkbox-wrapper">
+                                        <input type="checkbox" class="survey-checkbox-input" id="{{ $field }}"
+                                            name="{{ $field }}" value="1" checked>
+                                        <label class="survey-checkbox-label" for="{{ $field }}">
+                                            <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                            <span class="survey-check-text">{{ $label }}</span>
+                                        </label>
                                     </div>
                                 @endforeach
                             </div>
 
-                            <hr>
+                            <hr class="my-4">
 
                             <div class="transaksi-section-title mb-3">
-                                <i class="mdi mdi-file-document-multiple-outline"></i>
+                                <i class="mdi mdi-file-document-check-outline"></i>
                                 <span>Dokumen yang Diserahkan</span>
                             </div>
 
-                            @php
-                                $documents = [
-                                    ['name' => 'Kunci Unit (3 buah)', 'icon' => 'key'],
-                                    ['name' => 'Akta Jual Beli (AJB)', 'icon' => 'file-document-outline'],
-                                    ['name' => 'Sertifikat Hak Milik (SHM)', 'icon' => 'file-certificate'],
-                                    ['name' => 'IMB / PBG', 'icon' => 'file-document'],
-                                    ['name' => 'Buku Panduan & Garansi', 'icon' => 'book-open'],
-                                ];
-                            @endphp
-
-                            <div class="serah-doc-wrapper">
-                                @foreach ($documents as $index => $doc)
-                                    <div class="serah-doc-item">
-                                        <div class="form-check">
-                                            <input type="hidden" name="documents[{{ $index }}][name]"
-                                                value="{{ $doc['name'] }}">
-                                            <input type="checkbox" name="documents[{{ $index }}][submitted]"
-                                                value="1" id="doc_{{ $index }}" class="form-check-input">
-                                            <label for="doc_{{ $index }}" class="doc-label">
-                                                <span class="doc-icon">
-                                                    <i class="mdi mdi-{{ $doc['icon'] }}"></i>
-                                                </span>
-                                                <span class="doc-text">{{ $doc['name'] }}</span>
-                                                <span class="doc-badge">Wajib</span>
-                                            </label>
-                                        </div>
+                            <div class="survey-checklist-grid">
+                                @php
+                                    $dokumenItems = [
+                                        'doc_kunci' => 'Kunci Unit (3 buah)',
+                                        'doc_ajb' => 'Akta Jual Beli (AJB)',
+                                        'doc_shm' => 'Sertifikat Hak Milik (SHM)',
+                                        'doc_imb' => 'IMB / PBG',
+                                    ];
+                                @endphp
+                                @foreach ($dokumenItems as $field => $label)
+                                    <div class="survey-checkbox-wrapper">
+                                        <input type="checkbox" class="survey-checkbox-input" id="{{ $field }}"
+                                            name="{{ $field }}" value="1" checked>
+                                        <label class="survey-checkbox-label d-flex justify-content-between align-items-center" for="{{ $field }}">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                                <span class="survey-check-text">{{ $label }}</span>
+                                            </div>
+                                            <span class="doc-badge">Wajib</span>
+                                        </label>
                                     </div>
                                 @endforeach
                             </div>
 
-                            <hr>
+                            <hr class="my-4">
 
                             <div class="transaksi-section-title mb-3">
                                 <i class="mdi mdi-camera-outline"></i>
                                 <span>Dokumentasi Serah Terima</span>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="serah-form-group">
-                                        <label class="serah-form-label">Foto Serah Terima Kunci</label>
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <div class="serah-form-group mb-0">
+                                        <label class="serah-form-label">Foto Penyerahan Kunci</label>
                                         <div class="serah-file-upload-modern">
                                             <input type="file" name="foto_serah_kunci" accept=".jpg,.jpeg,.png">
                                             <div class="serah-file-label-modern">
@@ -1158,124 +1187,115 @@ select.serah-form-control {
                                                     <span>Upload Foto Kunci</span>
                                                     <small>Format: JPG, PNG (Max 5MB)</small>
                                                 </div>
-                                                <span class="serah-file-size"></span>
+                                                <span class="serah-file-size" style="display:none;"></span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-md-6">
-                                    <div class="serah-form-group">
-                                        <label class="serah-form-label">Foto Kondisi Unit</label>
+                                <div class="col-12 col-md-6">
+                                    <div class="serah-form-group mb-0">
+                                        <label class="serah-form-label">Foto Bersama Unit</label>
                                         <div class="serah-file-upload-modern">
-                                            <input type="file" name="foto_kondisi_unit" accept=".jpg,.jpeg,.png">
+                                            <input type="file" name="foto_unit" accept=".jpg,.jpeg,.png">
                                             <div class="serah-file-label-modern">
                                                 <i class="mdi mdi-cloud-upload"></i>
                                                 <div class="serah-file-info-modern">
                                                     <span>Upload Foto Unit</span>
                                                     <small>Format: JPG, PNG (Max 5MB)</small>
                                                 </div>
-                                                <span class="serah-file-size"></span>
+                                                <span class="serah-file-size" style="display:none;"></span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
+                            <hr class="my-4">
+
                             <div class="serah-form-group mb-0">
-                                <label class="serah-form-label">Catatan</label>
-                                <textarea name="catatan" class="serah-form-control" rows="3" placeholder="Tambahkan catatan jika ada..."></textarea>
+                                <label class="serah-form-label">Catatan Tambahan</label>
+                                <textarea name="catatan" rows="3" class="serah-form-control"
+                                    placeholder="Tambahkan catatan serah terima bila diperlukan..."></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-12 col-lg-4">
-                    <div class="transaksi-sticky">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="transaksi-section-title">
-                                    <i class="mdi mdi-clipboard-check-outline"></i>
-                                    <span>Informasi Serah Terima</span>
+                <div class="col-12 col-lg-4 mb-4 mb-lg-0">
+                    <div class="card shadow-sm border-0 sticky-top" style="top: 20px; z-index: 5;">
+                        <div class="card-body p-3 p-md-4">
+                            <div class="transaksi-section-title">
+                                <i class="mdi mdi-clipboard-text-outline"></i>
+                                <span>Informasi Serah Terima</span>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2 mb-3 text-dark fw-bold" style="font-size: 0.92rem;">
+                                <i class="mdi mdi-key text-primary" style="font-size: 1.25rem;"></i>
+                                <span>Tahap Final Transaksi</span>
+                            </div>
+
+                            <div class="mb-3 text-muted" style="font-size: 0.88rem; line-height: 1.6;">
+                                <div><span class="text-secondary">Status Unit:</span> <span class="fw-bold text-dark d-block">Siap</span></div>
+                                <div class="mt-1"><span class="text-secondary">Tahap:</span> <span class="fw-bold text-dark d-block">Serah Terima</span></div>
+                            </div>
+
+                            <hr class="my-3">
+
+                            <div class="transaksi-sidebar-section mb-3">
+                                <div class="transaksi-sidebar-title fw-bold text-dark mb-2" style="font-size: 0.92rem;">Persetujuan</div>
+
+                                <div class="serah-form-group mb-3">
+                                    <label class="serah-form-label fw-bold" style="font-size: 0.84rem;">Saksi (Opsional)</label>
+                                    <input type="text" name="saksi" class="serah-form-control"
+                                        placeholder="Nama saksi">
                                 </div>
 
-                                <div class="mb-3">
-                                    <div class="transaksi-status-banner success">
-                                        <i class="mdi mdi-key-variant"></i>
-                                        Tahap Final Transaksi
+                                <div class="serah-form-group mb-0">
+                                    <div class="survey-checkbox-wrapper" style="width: 100%;">
+                                        <input type="checkbox" name="persetujuan" value="1"
+                                            id="persetujuan" class="survey-checkbox-input" required checked>
+                                        <label for="persetujuan" class="agreement-checkbox-label">
+                                            <i class="mdi mdi-check-circle agreement-icon"></i>
+                                            <span class="agreement-text">Saya menyatakan unit diterima dalam kondisi baik.</span>
+                                        </label>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="transaksi-summary-grid">
-                                    <div class="transaksi-summary-box success">
-                                        <div class="label">Status Unit</div>
-                                        <div class="value">Siap</div>
-                                    </div>
-                                    <div class="transaksi-summary-box warning">
-                                        <div class="label">Tahap</div>
-                                        <div class="value">Serah Terima</div>
-                                    </div>
-                                </div>
+                            <hr class="my-3">
 
-                                <div class="transaksi-sidebar-section">
-                                    <div class="transaksi-sidebar-title">Persetujuan</div>
+                            <div class="transaksi-sidebar-section mb-3">
+                                <div class="transaksi-sidebar-title fw-bold text-dark mb-2" style="font-size: 0.92rem;">Panduan Proses</div>
+                                <ul class="transaksi-mini-list mb-0" style="padding-left: 0; list-style: none;">
+                                    <li class="d-flex align-items-start gap-2 mb-2 text-muted" style="font-size: 0.82rem;">
+                                        <i class="mdi mdi-arrow-right-circle-outline text-primary mt-0.5"></i>
+                                        <span>Pastikan checklist kondisi unit telah dicek sebelum proses disimpan.</span>
+                                    </li>
+                                    <li class="d-flex align-items-start gap-2 mb-2 text-muted" style="font-size: 0.82rem;">
+                                        <i class="mdi mdi-arrow-right-circle-outline text-primary mt-0.5"></i>
+                                        <span>Pastikan dokumen wajib yang diserahkan sudah ditandai dengan benar.</span>
+                                    </li>
+                                    <li class="d-flex align-items-start gap-2 text-muted" style="font-size: 0.82rem;">
+                                        <i class="mdi mdi-arrow-right-circle-outline text-primary mt-0.5"></i>
+                                        <span>Upload dokumentasi pendukung untuk mempermudah arsip serah terima.</span>
+                                    </li>
+                                </ul>
+                            </div>
 
-                                    <div class="serah-form-group">
-                                        <label class="serah-form-label">Saksi (Opsional)</label>
-                                        <input type="text" name="saksi" class="serah-form-control"
-                                            placeholder="Nama saksi">
-                                    </div>
-
-                                    <div class="serah-form-group mb-0">
-                                        <div class="serah-checklist-item approval-check-green" style="width: 100%;">
-                                            <div class="form-check">
-                                                <input type="checkbox" name="persetujuan" value="1"
-                                                    id="persetujuan" class="form-check-input" required>
-                                                <label for="persetujuan" class="check-label">
-                                                    <span class="check-icon">
-                                                        <i class="mdi mdi-check-circle"></i>
-                                                    </span>
-                                                    <span class="check-text">Saya menyatakan unit diterima dalam kondisi
-                                                        baik.</span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="transaksi-sidebar-section">
-                                    <div class="transaksi-sidebar-title">Panduan Proses</div>
-                                    <ul class="transaksi-mini-list mb-0">
-                                        <li>
-                                            <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                            <span>Pastikan checklist kondisi unit telah dicek sebelum proses
-                                                disimpan.</span>
-                                        </li>
-                                        <li>
-                                            <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                            <span>Pastikan dokumen wajib yang diserahkan sudah ditandai dengan benar.</span>
-                                        </li>
-                                        <li>
-                                            <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                            <span>Upload dokumentasi pendukung untuk mempermudah arsip serah terima.</span>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <div class="mt-4">
-                                    <button type="submit" class="serah-btn serah-btn-success">
-                                        <i class="mdi mdi-check-decagram"></i>
-                                        Proses Serah Terima
-                                    </button>
-                                </div>
-
-                                <div class="text-center mt-3">
-                                    <small class="transaksi-muted">
+                            <div class="mt-4">
+                                <button type="submit" class="serah-btn serah-btn-success">
+                                    <i class="mdi mdi-check-circle-outline"></i>
+                                    Proses Serah Terima
+                                </button>
+                                <div class="text-center mt-2.5">
+                                    <small class="transaksi-muted" style="font-size: 0.78rem;">
                                         <i class="mdi mdi-information-outline me-1"></i>
                                         Pastikan semua checklist terisi
                                     </small>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

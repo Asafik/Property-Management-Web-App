@@ -28,49 +28,45 @@
             font-size: 1.5rem;
         }
 
-        .btn-fase-action {
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
-            padding: 0.32rem 0.65rem;
-            font-size: 0.78rem;
-            font-weight: 600;
-            border-radius: 6px;
             border: none;
             color: #ffffff !important;
             transition: all 0.2s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.08);
             text-decoration: none;
-            line-height: 1.2;
             cursor: pointer;
         }
 
-        .btn-fase-action i {
+        .btn-action i {
             font-size: 0.95rem;
         }
 
-        .btn-fase-action:hover {
+        .btn-action:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
             color: #ffffff !important;
         }
 
-        .btn-spk-view {
+        .btn-action.view {
             background: linear-gradient(135deg, #da8cff, #9a55ff);
         }
 
-        .btn-spk-print {
+        .btn-action.print {
             background: linear-gradient(135deg, #11998e, #38ef7d);
         }
 
-        .btn-spk-edit {
+        .btn-action.edit {
             background: linear-gradient(135deg, #36d1dc, #5b86e5);
         }
 
-        .btn-spk-delete {
+        .btn-action.delete {
             background: linear-gradient(135deg, #ff416c, #ff4b2b);
-            padding: 0.32rem 0.55rem;
         }
 
         .btn-icon-only {
@@ -91,20 +87,6 @@
             margin-bottom: 0;
         }
 
-        .card-header-compact {
-            padding: 0.85rem 1.25rem !important;
-            border-bottom: 1px solid #ebedf2 !important;
-        }
-
-        .card-body-compact {
-            padding: 0.85rem 1.25rem 1rem 1.25rem !important;
-        }
-
-        .filter-card-compact {
-            margin-bottom: 0.75rem !important;
-            padding: 0 !important;
-        }
-
         .table thead th {
             color: #9a55ff;
             font-weight: 700;
@@ -113,19 +95,19 @@
             letter-spacing: 0.5px;
             background: #fbf9ff;
             border-bottom: 1px solid #ebe5f5;
-            padding: 0.6rem 0.75rem !important;
+            padding: 0.75rem 0.75rem !important;
         }
 
         .table tbody td {
-            padding: 0.6rem 0.75rem !important;
+            padding: 0.75rem 0.75rem !important;
             vertical-align: middle;
             border-bottom: 1px solid #f2eff8;
             font-size: 0.88rem;
         }
 
-        /* Badge Status Custom */
-        .badge-status-spk {
-            font-size: 0.72rem;
+        /* Status Badge Styling */
+        .status-badge-spk {
+            font-size: 0.75rem;
             font-weight: 600;
             padding: 0.28rem 0.65rem;
             border-radius: 30px;
@@ -134,67 +116,32 @@
             gap: 4px;
         }
 
-        .badge-status-draft {
+        .status-badge-spk.draft {
             background: rgba(108, 117, 125, 0.12);
             color: #6c757d;
             border: 1px solid rgba(108, 117, 125, 0.25);
         }
 
-        .badge-status-berjalan {
+        .status-badge-spk.berjalan {
             background: rgba(23, 162, 184, 0.12);
             color: #0d8a9e;
             border: 1px solid rgba(23, 162, 184, 0.25);
         }
 
-        .badge-status-selesai {
+        .status-badge-spk.selesai {
             background: rgba(40, 167, 69, 0.12);
             color: #1e7e34;
             border: 1px solid rgba(40, 167, 69, 0.25);
         }
 
-        .badge-status-dibatalkan {
+        .status-badge-spk.dibatalkan {
             background: rgba(220, 53, 69, 0.12);
             color: #bd2130;
             border: 1px solid rgba(220, 53, 69, 0.25);
         }
-
-        /* Select2 Theme Alignment */
-        .select2-container--bootstrap-5 .select2-selection {
-            min-height: 38px !important;
-            height: 38px !important;
-            padding: 0.375rem 0.75rem !important;
-            display: flex !important;
-            align-items: center !important;
-            border-color: #e0e4e9 !important;
-            border-radius: 4px !important;
-            font-size: 0.875rem !important;
-            background-color: #ffffff !important;
-        }
-        .select2-container--bootstrap-5.select2-container--focus .select2-selection,
-        .select2-container--bootstrap-5.select2-container--open .select2-selection {
-            border-color: #bfa5fa !important;
-            box-shadow: 0 0 0 0.2rem rgba(154, 85, 255, 0.12) !important;
-        }
     </style>
 
     <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
-
-        <!-- Alert Notification -->
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-3" role="alert" style="border-radius: 8px;">
-                <i class="mdi mdi-check-circle me-2 fs-5 align-middle"></i>
-                <strong>Sukses!</strong> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-3" role="alert" style="border-radius: 8px;">
-                <i class="mdi mdi-alert-circle me-2 fs-5 align-middle"></i>
-                <strong>Error!</strong> {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
 
         <!-- Header Card Banner -->
         <div class="row mb-3 mb-md-4">
@@ -276,100 +223,174 @@
             </div>
         </div>
 
+        <!-- Tabel & Filter Card (Mirroring Halaman Bank) -->
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
-                <div class="card shadow-sm border-0" style="border-radius: 8px;">
-                    <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 card-header-compact">
-                        <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
-                            <i class="mdi mdi-format-list-bulleted me-2" style="color: #9a55ff;"></i>Daftar SPK Kontraktor
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                        <h5 class="card-title mb-0">
+                            <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar SPK Kontraktor
                         </h5>
-                        <a href="{{ route('spk.create') }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center" style="gap: 5px; text-decoration: none;">
-                            <i class="mdi mdi-plus me-1"></i>Buat SPK Baru
+                        <a href="{{ route('spk.create') }}" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm">
+                            <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
+                            <span>Buat SPK Baru</span>
                         </a>
                     </div>
 
-                    <div class="card-body card-body-compact">
-                        <!-- Filter Section Form -->
-                        <form method="GET" action="{{ route('spk.index') }}" class="filter-card filter-card-compact mb-3">
-                            <div class="row g-2 align-items-center">
-                                <div class="col-12 col-md-3">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" name="search" value="{{ request('search') }}"
-                                            placeholder="Cari no SPK / kontraktor / pekerjaan..."
-                                            style="height: 38px;">
-                                        <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
-                                            type="submit" title="Cari" style="box-shadow: none;">
-                                            <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
-                                        </button>
+                    <div class="card-body">
+                        <!-- Filter Section -->
+                        <div class="filter-card mb-3">
+                            <!-- Desktop Version -->
+                            <div class="filter-row-desktop d-none d-md-block">
+                                <form id="filterForm" method="GET" action="{{ route('spk.index') }}" onsubmit="return showFilterLoading()">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                        <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                            <!-- Search Input -->
+                                            <div style="min-width: 260px; max-width: 360px; flex: 1;">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" name="search" id="searchInput"
+                                                        placeholder="Cari no SPK / kontraktor / pekerjaan..."
+                                                        value="{{ request('search') }}"
+                                                        style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                    <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                        type="submit" title="Cari"
+                                                        style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                        <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Proyek / Land Bank Filter -->
+                                            <div style="min-width: 200px;">
+                                                <select class="form-control" name="land_bank_id" id="landBankSelect">
+                                                    <option value="">Semua Proyek / Land Bank</option>
+                                                    @foreach($landBanks as $lb)
+                                                        <option value="{{ $lb->id }}" {{ request('land_bank_id') == $lb->id ? 'selected' : '' }}>
+                                                            {{ $lb->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <!-- Status Filter -->
+                                            <div style="width: 155px;">
+                                                <select class="form-control" name="status" id="statusSelect">
+                                                    <option value="">Semua Status</option>
+                                                    <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                                    <option value="berjalan" {{ request('status') == 'berjalan' ? 'selected' : '' }}>Berjalan</option>
+                                                    <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                                                    <option value="dibatalkan" {{ request('status') == 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Right Limit & Buttons -->
+                                        <div class="d-flex align-items-center gap-2 ms-auto">
+                                            <div style="width: 110px;">
+                                                <select class="form-control" name="per_page" id="perPageSelect">
+                                                    <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 data</option>
+                                                    <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15 data</option>
+                                                    <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 data</option>
+                                                    <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 data</option>
+                                                </select>
+                                            </div>
+
+                                            <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Filter">
+                                                <i class="mdi mdi-filter"></i>
+                                            </button>
+                                            <a href="{{ route('spk.index') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset" onclick="showResetLoading(event)">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-
-                                <div class="col-6 col-md-3">
-                                    <select class="form-control select2" name="land_bank_id" onchange="this.form.submit()" style="width: 100%;">
-                                        <option value="">Semua Proyek / Land Bank</option>
-                                        @foreach($landBanks as $lb)
-                                            <option value="{{ $lb->id }}" {{ request('land_bank_id') == $lb->id ? 'selected' : '' }}>
-                                                {{ $lb->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div class="col-6 col-md-2">
-                                    <select class="form-control select2" name="status" onchange="this.form.submit()" style="width: 100%;">
-                                        <option value="">Semua Status</option>
-                                        <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                                        <option value="berjalan" {{ request('status') == 'berjalan' ? 'selected' : '' }}>Berjalan</option>
-                                        <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
-                                        <option value="dibatalkan" {{ request('status') == 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-6 col-md-2">
-                                    <select class="form-control select2" name="per_page" onchange="this.form.submit()" style="width: 100%;">
-                                        <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5 Data</option>
-                                        <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10 Data</option>
-                                        <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25 Data</option>
-                                        <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 Data</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-6 col-md-2 d-flex gap-2">
-                                    <button type="submit" class="btn btn-gradient-primary flex-fill d-flex align-items-center justify-content-center" style="height: 38px;" title="Terapkan Filter">
-                                        <i class="mdi mdi-filter me-1"></i> Filter
-                                    </button>
-                                    <a href="{{ route('spk.index') }}" class="btn btn-gradient-secondary btn-icon-only flex-shrink-0" style="height: 38px;" title="Reset Filter">
-                                        <i class="mdi mdi-refresh"></i>
-                                    </a>
-                                </div>
+                                </form>
                             </div>
-                        </form>
 
-                        <!-- Table Wrapper -->
+                            <!-- Mobile Version -->
+                            <div class="filter-row-mobile d-block d-md-none">
+                                <form method="GET" action="{{ route('spk.index') }}" onsubmit="return showFilterLoading()">
+                                    <div class="row g-2">
+                                        <div class="col-12 mb-2">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="search" id="searchInputMobile"
+                                                    placeholder="Cari no SPK / kontraktor / pekerjaan..."
+                                                    value="{{ request('search') }}"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                    type="submit" title="Cari"
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 mb-2">
+                                            <select class="form-control" name="land_bank_id">
+                                                <option value="">Semua Proyek / Land Bank</option>
+                                                @foreach($landBanks as $lb)
+                                                    <option value="{{ $lb->id }}" {{ request('land_bank_id') == $lb->id ? 'selected' : '' }}>
+                                                        {{ $lb->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="col-12 mb-2">
+                                            <select class="form-control" name="status">
+                                                <option value="">Semua Status</option>
+                                                <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                                <option value="berjalan" {{ request('status') == 'berjalan' ? 'selected' : '' }}>Berjalan</option>
+                                                <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                                                <option value="dibatalkan" {{ request('status') == 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-12 mb-2">
+                                            <select class="form-control" name="per_page">
+                                                <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 data</option>
+                                                <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15 data</option>
+                                                <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 data</option>
+                                                <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50 data</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center gap-1">
+                                                <i class="mdi mdi-filter"></i> Filter
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="{{ route('spk.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center gap-1" onclick="showResetLoading(event)">
+                                                <i class="mdi mdi-refresh"></i> Reset
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Tabel Data SPK -->
                         <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0">
+                            <table class="table table-hover align-middle">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" style="width: 50px;">NO</th>
-                                        <th style="width: 200px;">NOMOR SPK & TANGGAL</th>
-                                        <th style="width: 220px;">PROYEK & PEKERJAAN</th>
-                                        <th style="width: 180px;">KONTRAKTOR / MANDOR</th>
-                                        <th class="text-end" style="width: 150px;">NILAI KONTRAK</th>
-                                        <th class="text-center" style="width: 120px;">PROGRESS</th>
-                                        <th class="text-center" style="width: 110px;">STATUS</th>
-                                        <th class="text-center" style="width: 160px;">AKSI</th>
+                                        <th class="text-center" style="width: 50px;">No</th>
+                                        <th>Nomor SPK & Tanggal</th>
+                                        <th>Proyek & Pekerjaan</th>
+                                        <th>Kontraktor / Mandor</th>
+                                        <th class="text-end">Nilai Kontrak</th>
+                                        <th class="text-center">Progress</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center" style="width: 150px;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($spks as $index => $spk)
                                         <tr>
-                                            <td class="text-center fw-bold text-muted">
-                                                {{ $spks->firstItem() + $index }}
-                                            </td>
+                                            <td class="text-center fw-bold">{{ $spks->firstItem() + $index }}</td>
                                             <td>
                                                 <div class="fw-bold text-dark mb-1">
-                                                    <i class="mdi mdi-file-document-outline text-primary me-1"></i>
-                                                    {{ $spk->no_spk }}
+                                                    <i class="mdi mdi-file-document-outline text-primary me-1"></i>{{ $spk->no_spk }}
                                                 </div>
                                                 <small class="text-muted">
                                                     <i class="mdi mdi-calendar-blank-outline me-1"></i>{{ $spk->tanggal_spk ? date('d/m/Y', strtotime($spk->tanggal_spk)) : '-' }}
@@ -380,10 +401,10 @@
                                                     {{ $spk->nama_pekerjaan }}
                                                 </div>
                                                 <div class="small text-muted d-flex align-items-center gap-1">
-                                                    <i class="mdi mdi-domain text-purple"></i>
+                                                    <i class="mdi mdi-domain" style="color: #9a55ff;"></i>
                                                     <span>{{ $spk->landBank->name ?? '-' }}</span>
                                                     @if($spk->unit)
-                                                        <span class="badge bg-light text-dark border ms-1">
+                                                        <span class="badge bg-light text-dark border ms-1 font-monospace" style="font-size: 0.75rem;">
                                                             Kav. {{ $spk->unit->unit_code }} ({{ $spk->unit->type }})
                                                         </span>
                                                     @endif
@@ -391,8 +412,7 @@
                                             </td>
                                             <td>
                                                 <div class="fw-semibold text-dark mb-1">
-                                                    <i class="mdi mdi-account-tie me-1 text-muted"></i>
-                                                    {{ $spk->kontraktor_nama }}
+                                                    <i class="mdi mdi-account-hard-hat me-1 text-muted"></i>{{ $spk->kontraktor_nama }}
                                                 </div>
                                                 @if($spk->kontraktor_pic)
                                                     <small class="text-muted d-block">
@@ -406,16 +426,16 @@
                                                 @endif
                                             </td>
                                             <td class="text-end">
-                                                <span class="fw-bold text-primary">
+                                                <span class="badge bg-light text-dark fw-bold px-2 py-1 border font-monospace" style="font-size: 0.85rem; letter-spacing: 0.5px;">
                                                     {{ $spk->formatted_nilai_kontrak }}
                                                 </span>
-                                                <small class="text-muted d-block">
+                                                <small class="text-muted d-block mt-1">
                                                     {{ $spk->termins->count() }} Termin
                                                 </small>
                                             </td>
                                             <td class="text-center">
                                                 <div class="d-flex align-items-center justify-content-center gap-2">
-                                                    <div class="progress flex-grow-1" style="height: 6px; width: 60px;">
+                                                    <div class="progress flex-grow-1" style="height: 6px; width: 55px; background: #e9ecef; border-radius: 4px;">
                                                         <div class="progress-bar bg-gradient-primary" role="progressbar" 
                                                              style="width: {{ $spk->progress }}%;" 
                                                              aria-valuenow="{{ $spk->progress }}" aria-valuemin="0" aria-valuemax="100"></div>
@@ -425,52 +445,35 @@
                                             </td>
                                             <td class="text-center">
                                                 @if($spk->status == 'berjalan')
-                                                    <span class="badge-status-spk badge-status-berjalan">
+                                                    <span class="status-badge-spk berjalan">
                                                         <i class="mdi mdi-play-circle-outline"></i> Berjalan
                                                     </span>
                                                 @elseif($spk->status == 'selesai')
-                                                    <span class="badge-status-spk badge-status-selesai">
-                                                        <i class="mdi mdi-check-circle-outline"></i> Selesai
+                                                    <span class="status-badge-spk selesai">
+                                                        <i class="mdi mdi-check-circle"></i> Selesai
                                                     </span>
                                                 @elseif($spk->status == 'dibatalkan')
-                                                    <span class="badge-status-spk badge-status-dibatalkan">
-                                                        <i class="mdi mdi-close-circle-outline"></i> Batal
+                                                    <span class="status-badge-spk dibatalkan">
+                                                        <i class="mdi mdi-close-circle"></i> Batal
                                                     </span>
                                                 @else
-                                                    <span class="badge-status-spk badge-status-draft">
+                                                    <span class="status-badge-spk draft">
                                                         <i class="mdi mdi-file-clock-outline"></i> Draft
                                                     </span>
                                                 @endif
                                             </td>
-                                            <td class="text-center text-nowrap">
+                                            <td class="text-center">
                                                 <div class="d-inline-flex align-items-center gap-1">
-                                                    <!-- Detail SPK -->
-                                                    <a href="{{ route('spk.show', $spk->id) }}" 
-                                                       class="btn-fase-action btn-spk-view" 
-                                                       title="Lihat Detail SPK">
+                                                    <a href="{{ route('spk.show', $spk->id) }}" class="btn-action view" title="Lihat Detail SPK">
                                                         <i class="mdi mdi-eye"></i>
                                                     </a>
-
-                                                    <!-- Cetak Surat SPK -->
-                                                    <a href="{{ route('spk.cetak', $spk->id) }}" 
-                                                       target="_blank"
-                                                       class="btn-fase-action btn-spk-print" 
-                                                       title="Cetak Surat SPK">
+                                                    <a href="{{ route('spk.cetak', $spk->id) }}" target="_blank" class="btn-action print" title="Cetak SPK">
                                                         <i class="mdi mdi-printer"></i>
                                                     </a>
-
-                                                    <!-- Edit SPK -->
-                                                    <a href="{{ route('spk.edit', $spk->id) }}" 
-                                                       class="btn-fase-action btn-spk-edit" 
-                                                       title="Edit SPK">
+                                                    <a href="{{ route('spk.edit', $spk->id) }}" class="btn-action edit" title="Edit SPK">
                                                         <i class="mdi mdi-pencil"></i>
                                                     </a>
-
-                                                    <!-- Hapus SPK -->
-                                                    <button type="button" 
-                                                            class="btn-fase-action btn-spk-delete" 
-                                                            title="Hapus SPK" 
-                                                            onclick="deleteSpk('{{ $spk->id }}', '{{ $spk->no_spk }}')">
+                                                    <button type="button" class="btn-action delete" title="Hapus SPK" onclick="confirmDeleteSpk('{{ $spk->id }}', '{{ $spk->no_spk }}')">
                                                         <i class="mdi mdi-trash-can-outline"></i>
                                                     </button>
                                                 </div>
@@ -478,15 +481,9 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="8" class="text-center py-5 text-muted">
-                                                <div class="py-4">
-                                                    <i class="mdi mdi-file-document-outline" style="font-size: 3rem; opacity: 0.3;"></i>
-                                                    <h6 class="mt-2 fw-semibold text-dark">Belum Ada Data SPK Kontraktor</h6>
-                                                    <p class="small text-muted mb-3">Klik tombol di bawah untuk membuat Surat Perintah Kerja pertama</p>
-                                                    <a href="{{ route('spk.create') }}" class="btn btn-sm btn-gradient-primary">
-                                                        <i class="mdi mdi-plus me-1"></i>Buat SPK Baru
-                                                    </a>
-                                                </div>
+                                            <td colspan="8" class="text-center text-muted py-4">
+                                                <i class="mdi mdi-file-document-outline me-2" style="font-size: 1.5rem;"></i>
+                                                Belum ada data SPK Kontraktor yang tersimpan.
                                             </td>
                                         </tr>
                                     @endforelse
@@ -494,15 +491,39 @@
                             </table>
                         </div>
 
-                        <!-- Pagination Footer -->
-                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                            <div class="pagination-info mb-2 mb-sm-0 text-muted small">
-                                Menampilkan {{ $spks->firstItem() ?? 0 }} - {{ $spks->lastItem() ?? 0 }} dari {{ $spks->total() }} data
+                        <!-- Pagination -->
+                        @if ($spks instanceof \Illuminate\Pagination\LengthAwarePaginator && $spks->total() > 0)
+                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
+                                <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.82rem;">
+                                    Menampilkan {{ $spks->firstItem() }} - {{ $spks->lastItem() }} dari {{ $spks->total() }} data
+                                </div>
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                        <li class="page-item {{ $spks->onFirstPage() ? 'disabled' : '' }}">
+                                            <a class="page-link" href="{{ $spks->previousPageUrl() }}" {{ !$spks->onFirstPage() ? 'onclick=showPaginationLoading(event)' : '' }}>
+                                                <i class="mdi mdi-chevron-left"></i>
+                                            </a>
+                                        </li>
+
+                                        @for($page = 1; $page <= $spks->lastPage(); $page++)
+                                            <li class="page-item {{ $page == $spks->currentPage() ? 'active' : '' }}">
+                                                @if($page == $spks->currentPage())
+                                                    <span class="page-link">{{ $page }}</span>
+                                                @else
+                                                    <a class="page-link" href="{{ $spks->appends(request()->query())->url($page) }}" onclick="showPaginationLoading(event)">{{ $page }}</a>
+                                                @endif
+                                            </li>
+                                        @endfor
+
+                                        <li class="page-item {{ $spks->hasMorePages() ? '' : 'disabled' }}">
+                                            <a class="page-link" href="{{ $spks->nextPageUrl() }}" {{ $spks->hasMorePages() ? 'onclick=showPaginationLoading(event)' : '' }}>
+                                                <i class="mdi mdi-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
                             </div>
-                            <div>
-                                {{ $spks->links('pagination::bootstrap-5') }}
-                            </div>
-                        </div>
+                        @endif
 
                     </div>
                 </div>
@@ -514,21 +535,74 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
-        if ($('.select2').length) {
-            $('.select2').select2({
-                theme: 'bootstrap-5',
-                width: '100%'
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                timer: 2500,
+                showConfirmButton: true,
+                confirmButtonColor: '#9a55ff',
+                timerProgressBar: true
             });
-        }
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#dc3545'
+            });
+        @endif
     });
 
-    // Delete SPK Action
-    function deleteSpk(id, noSpk) {
+    function showFilterLoading() {
         Swal.fire({
-            title: 'Hapus SPK ini?',
-            text: `Apakah Anda yakin ingin menghapus data SPK ${noSpk}? Semua jadwal termin yang terkait juga akan dihapus.`,
+            title: 'Memuat...',
+            html: 'Sedang memfilter data',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        return true;
+    }
+
+    function showResetLoading(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Memuat...',
+            html: 'Sedang mereset filter',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        window.location.href = event.currentTarget.href;
+    }
+
+    function showPaginationLoading(event) {
+        if (event.currentTarget.parentElement.classList.contains('disabled')) return;
+        event.preventDefault();
+        Swal.fire({
+            title: 'Memuat...',
+            html: 'Sedang memuat halaman',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        window.location.href = event.currentTarget.href;
+    }
+
+    function confirmDeleteSpk(id, noSpk) {
+        Swal.fire({
+            title: 'Yakin ingin menghapus?',
+            text: `Data SPK ${noSpk} beserta seluruh jadwal terminnya akan dihapus permanen!`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc3545',
@@ -538,9 +612,12 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 Swal.fire({
-                    title: 'Menghapus data...',
+                    title: 'Menghapus...',
+                    html: 'Sedang menghapus data SPK',
                     allowOutsideClick: false,
-                    didOpen: () => Swal.showLoading()
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
                 });
 
                 $.ajax({
@@ -555,7 +632,7 @@
                                 icon: 'success',
                                 title: 'Terhapus!',
                                 text: res.message,
-                                timer: 1500,
+                                timer: 1800,
                                 showConfirmButton: false
                             }).then(() => {
                                 window.location.reload();
