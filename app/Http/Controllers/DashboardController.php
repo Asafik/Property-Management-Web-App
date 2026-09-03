@@ -350,7 +350,10 @@ class DashboardController extends Controller
         })->count();
 
         $totalBookingFee = (float) Booking::sum('booking_fee');
-        $totalAgentFee = (float) Booking::sum('agent_fee');
+        $totalAgentFee = (float) Booking::where(function($q) {
+            $q->whereHas('unit', fn($uq) => $uq->whereIn('status', ['sold', 'soldout']))
+              ->orWhereIn('status', ['completed', 'sold', 'lunas']);
+        })->sum('agent_fee');
         $totalSalesVolume = (float) Booking::with('unit')->get()->sum(function($b) {
             return $b->unit->price ?? 0;
         });
@@ -398,9 +401,19 @@ class DashboardController extends Controller
 
         if ($isKepalaMarketing) {
             $salesLeaderboard = Employee::where('division_id', 1)
-                ->withCount(['bookings as total_bookings'])
-                ->withSum('bookings as total_fee', 'agent_fee')
-                ->orderByDesc('total_bookings')
+                ->withCount(['bookings as total_bookings' => function($q) {
+                    $q->where(function($bq) {
+                        $bq->whereHas('unit', fn($uq) => $uq->whereIn('status', ['sold', 'soldout']))
+                           ->orWhereIn('status', ['completed', 'sold', 'lunas']);
+                    });
+                }])
+                ->withSum(['bookings as total_fee' => function($q) {
+                    $q->where(function($bq) {
+                        $bq->whereHas('unit', fn($uq) => $uq->whereIn('status', ['sold', 'soldout']))
+                           ->orWhereIn('status', ['completed', 'sold', 'lunas']);
+                    });
+                }], 'agent_fee')
+                ->orderByDesc('total_fee')
                 ->take(5)
                 ->get();
 
@@ -426,9 +439,15 @@ class DashboardController extends Controller
         if (!$isKepalaMarketing) {
             $myBookingsQuery = Booking::where('sales_id', $user->id);
             $myTotalBookings = (clone $myBookingsQuery)->count();
-            $mySoldUnits = (clone $myBookingsQuery)->whereHas('unit', fn($q) => $q->where('status', 'sold'))->count();
+            $mySoldUnits = (clone $myBookingsQuery)->where(function($q) {
+                $q->whereHas('unit', fn($uq) => $uq->whereIn('status', ['sold', 'soldout']))
+                  ->orWhereIn('status', ['completed', 'sold', 'lunas']);
+            })->count();
             $myActiveBookings = (clone $myBookingsQuery)->whereIn('status', ['pending', 'proses', 'aktif', 'approved'])->count();
-            $myTotalFee = (float) (clone $myBookingsQuery)->sum('agent_fee');
+            $myTotalFee = (float) (clone $myBookingsQuery)->where(function($q) {
+                $q->whereHas('unit', fn($uq) => $uq->whereIn('status', ['sold', 'soldout']))
+                  ->orWhereIn('status', ['completed', 'sold', 'lunas']);
+            })->sum('agent_fee');
             $myTotalCustomers = (clone $myBookingsQuery)->distinct('customer_id')->count('customer_id');
 
             $myTasks = MarketingTask::where('employee_id', $user->id)->latest()->take(10)->get();
