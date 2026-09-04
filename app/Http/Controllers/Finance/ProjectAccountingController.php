@@ -94,11 +94,10 @@ class ProjectAccountingController extends Controller
         // Ambil data SPK yang berelasi
         $spkList = Spk::with(['termins', 'landBank', 'unit'])
             ->when($landBankId, fn($q) => $q->where('land_bank_id', $landBankId))
-            ->when($unitId, fn($q) => $q->where('land_bank_unit_id', $unitId))
             ->get();
 
         // 3. Kalkulasi HPP & Keuangan per Unit
-        $unitFinancials = $units->map(function ($u) use ($spkList) {
+        $unitFinancials = $units->map(function ($u) use ($spkList, $units) {
             $booking = $u->activeBooking;
             $customerName = $booking?->customer?->full_name ?? '-';
             $bookingCode = $booking?->booking_code ?? '-';
@@ -161,9 +160,29 @@ class ProjectAccountingController extends Controller
             }
 
             // D. Biaya Konstruksi Bangunan Rumah (Building Construction)
-            $unitSpk = $spkList->firstWhere('land_bank_unit_id', $u->id);
-            $biayaSpkKontrak = (float) ($unitSpk->nilai_kontrak ?? 0);
-            $realisasiBayarSpk = $unitSpk && $unitSpk->termins ? (float) $unitSpk->termins->where('status_bayar', 'lunas')->sum('nominal') : 0;
+            $unitSpk = null;
+            if (!empty($u->no_spk)) {
+                $unitSpk = $spkList->firstWhere('no_spk', $u->no_spk);
+            }
+            if (!$unitSpk) {
+                $unitSpk = $spkList->firstWhere('land_bank_unit_id', $u->id);
+            }
+
+            $biayaSpkKontrak = 0;
+            $realisasiBayarSpk = 0;
+
+            if ($unitSpk) {
+                // Periksa jumlah unit yang memakai SPK ini di proyek ini
+                $unitsInSpkCount = $units->where('no_spk', $unitSpk->no_spk)->count();
+                if ($unitsInSpkCount > 1) {
+                    $biayaSpkKontrak = round((float) ($unitSpk->nilai_kontrak ?? 0) / $unitsInSpkCount, 2);
+                    $totalLunas = $unitSpk->termins ? (float) $unitSpk->termins->where('status_bayar', 'lunas')->sum('nominal') : 0;
+                    $realisasiBayarSpk = $totalLunas > 0 ? round($totalLunas / $unitsInSpkCount, 2) : 0;
+                } else {
+                    $biayaSpkKontrak = (float) ($unitSpk->nilai_kontrak ?? 0);
+                    $realisasiBayarSpk = $unitSpk->termins ? (float) $unitSpk->termins->where('status_bayar', 'lunas')->sum('nominal') : 0;
+                }
+            }
             
             $biayaRumahRab = 0;
             if ($u->progress && $u->progress->items && $u->progress->items->count() > 0) {
@@ -316,12 +335,51 @@ class ProjectAccountingController extends Controller
 
         // D. Entri Pembayaran Konsumen (Penerimaan Penjualan Unit)
         $bookings = Booking::with(['unit.landBank', 'customer', 'payments'])
-            ->whereIn('status', ['sold', 'booked', 'completed'])
+            ->whereIn('status', ['sold', 'booked', 'completed', 'active'])
             ->get();
 
         foreach ($bookings as $b) {
-            // UTJ Entry
-            if ($b->utj > 0) {
+            $hasBookingFeePayment = false;
+
+            if ($b->payments && $b->payments->count() > 0) {
+                foreach ($b->payments as $p) {
+                    $pType = strtolower($p->type ?? ($p->payment_type ?? ''));
+                    if ($pType === 'booking_fee' || $pType === 'utj') {
+                        $hasBookingFeePayment = true;
+                        $catName = 'Pendapatan Unit (UTJ)';
+                        $typeLabel = 'Penerimaan UTJ Booking';
+                    } elseif ($pType === 'dp') {
+                        $catName = 'Pendapatan Uang Muka (DP)';
+                        $typeLabel = 'Pembayaran DP';
+                    } elseif ($pType === 'pelunasan') {
+                        // Jika pencairan KPR sudah ditangani di KprDisbursement, lewati agar tidak ganda
+                        if (\App\Models\KprDisbursement::where('booking_id', $b->id)->exists()) {
+                            continue;
+                        }
+                        $catName = 'Pelunasan Unit Konsumen';
+                        $typeLabel = 'Pembayaran Pelunasan';
+                    } else {
+                        $catName = 'Pendapatan Angsuran Unit';
+                        $typeLabel = 'Pembayaran Angsuran';
+                    }
+
+                    $journalEntries->push((object)[
+                        'date'        => $p->payment_date ? Carbon::parse($p->payment_date) : ($p->created_at ? Carbon::parse($p->created_at) : now()),
+                        'ref_no'      => $b->booking_code . '-PAY-' . $p->id,
+                        'category'    => $catName,
+                        'description' => $typeLabel . ' Unit ' . ($b->unit?->unit_name ?? '') . ' dari ' . ($b->customer?->full_name ?? '-'),
+                        'project'     => $b->unit?->landBank?->name ?? 'Proyek Perumahan',
+                        'unit'        => 'Blok ' . ($b->unit?->unit_code ?? '-'),
+                        'type'        => 'KAS MASUK',
+                        'debit'       => (float) $p->amount,
+                        'kredit'      => 0,
+                        'status'      => 'DITERIMA',
+                    ]);
+                }
+            }
+
+            // Fallback UTJ jika belum ada di tabel payments
+            if (!$hasBookingFeePayment && (float) ($b->utj ?? 0) > 0) {
                 $journalEntries->push((object)[
                     'date'        => $b->created_at ? Carbon::parse($b->created_at) : now(),
                     'ref_no'      => $b->booking_code . '-UTJ',
@@ -335,28 +393,33 @@ class ProjectAccountingController extends Controller
                     'status'      => 'DITERIMA',
                 ]);
             }
-
-            // Payment / Angsuran Cash Tempo Entries
-            if ($b->payments) {
-                foreach ($b->payments as $p) {
-                    $journalEntries->push((object)[
-                        'date'        => $p->payment_date ? Carbon::parse($p->payment_date) : $p->created_at,
-                        'ref_no'      => $b->booking_code . '-PAY-' . $p->id,
-                        'category'    => 'Pendapatan Angsuran Unit',
-                        'description' => 'Pembayaran ' . ($p->payment_type ?? 'Angsuran') . ' Unit ' . ($b->unit?->unit_name ?? '') . ' dari ' . ($b->customer?->full_name ?? '-'),
-                        'project'     => $b->unit?->landBank?->name ?? 'Proyek Perumahan',
-                        'unit'        => 'Blok ' . ($b->unit?->unit_code ?? '-'),
-                        'type'        => 'KAS MASUK',
-                        'debit'       => (float) $p->amount,
-                        'kredit'      => 0,
-                        'status'      => 'DITERIMA',
-                    ]);
-                }
-            }
         }
 
-        // Sort journal entries descending
-        $journalEntries = $journalEntries->sortByDesc('date')->values();
+        // E. Entri Pencairan Dana KPR dari Bank Penyalur
+        $kprDisbursements = \App\Models\KprDisbursement::with(['unit.landBank', 'booking.customer'])
+            ->when($startDate, fn($q) => $q->whereDate('tanggal_cair', '>=', $startDate))
+            ->when($endDate, fn($q) => $q->whereDate('tanggal_cair', '<=', $endDate))
+            ->get();
+
+        foreach ($kprDisbursements as $kd) {
+            $journalEntries->push((object)[
+                'date'        => $kd->tanggal_cair ? Carbon::parse($kd->tanggal_cair) : $kd->created_at,
+                'ref_no'      => $kd->no_referensi_bank ?? ('KPR-CAIR-' . $kd->id),
+                'category'    => 'Pencairan Dana KPR Bank',
+                'description' => 'Pencairan KPR ' . ($kd->nama_termin ?? 'Termin ' . $kd->termin_ke) . ' Unit ' . ($kd->unit?->unit_name ?? '') . ' via ' . ($kd->bank_penyalur ?? 'Bank') . ' (Konsumen: ' . ($kd->booking?->customer?->full_name ?? '-') . ')',
+                'project'     => $kd->unit?->landBank?->name ?? 'Proyek Perumahan',
+                'unit'        => 'Blok ' . ($kd->unit?->unit_code ?? '-'),
+                'type'        => 'KAS MASUK',
+                'debit'       => (float) $kd->nominal_cair,
+                'kredit'      => 0,
+                'status'      => 'DICAIRKAN',
+            ]);
+        }
+
+        // Sort journal entries descending berdasarkan entrian masuk terbaru (timestamp terbaru di atas)
+        $journalEntries = $journalEntries->sortByDesc(function ($je) {
+            return $je->date ? Carbon::parse($je->date)->timestamp : 0;
+        })->values();
 
         return view('keuangan.project_accounting.index', compact(
             'projects',

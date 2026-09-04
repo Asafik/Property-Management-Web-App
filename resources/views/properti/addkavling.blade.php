@@ -2133,20 +2133,39 @@ body.modal-open .page-body-wrapper {
                     <div class="row g-3 mb-3">
                         <div class="col-12 col-md-6">
                             <label class="form-label fw-bold small text-dark mb-1">Nomor SPK <span class="text-danger">*</span></label>
-                            <input type="text" name="no_spk" class="form-control" placeholder="Nomor SPK..." required>
+                            <input type="text" name="no_spk" class="form-control" placeholder="Contoh: SPK/2026/IX/001" required>
                         </div>
                         <div class="col-12 col-md-6">
                             <label class="form-label fw-bold small text-dark mb-1">Nama Kontraktor <span class="text-danger">*</span></label>
-                            <input type="text" name="kontraktor" class="form-control" placeholder="Nama kontraktor..." required>
+                            <input type="text" name="kontraktor" class="form-control" placeholder="Nama kontraktor/pemborong..." required>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold small text-dark mb-1">
+                                Nilai SPK per Unit (Rp) <span class="text-danger">*</span>
+                                <i class="mdi mdi-information-outline text-primary" title="Nilai borongan/kontrak ini otomatis masuk ke perhitungan HPP Bangunan Unit di Modul Keuangan & Project Accounting."></i>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light fw-bold text-muted" style="font-size: 0.85rem;">Rp</span>
+                                <input type="text" name="nilai_kontrak" id="modalSpkNilaiKontrak" class="form-control rupiah-spk-input" placeholder="0" required>
+                            </div>
+                            <small class="text-primary fw-semibold mt-1 d-block" id="modalSpkTotalCalculation">
+                                Total SPK: Rp 0 (0 unit dipilih)
+                            </small>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="form-label fw-bold small text-dark mb-1">Tanggal SPK</label>
+                            <input type="date" name="tanggal_spk" class="form-control" value="{{ date('Y-m-d') }}">
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label fw-bold small text-dark mb-1">Keterangan</label>
-                            <input type="text" name="description" class="form-control" placeholder="Keterangan (opsional)...">
+                            <label class="form-label fw-bold small text-dark mb-1">Keterangan / Ruang Lingkup</label>
+                            <input type="text" name="description" class="form-control" placeholder="Contoh: Pembangunan unit rumah standar tipe 36...">
                         </div>
 
                         <div class="col-12">
-                            <label class="form-label fw-bold small text-dark mb-1">Upload Berkas SPK (PDF)</label>
+                            <label class="form-label fw-bold small text-dark mb-1">Upload Berkas Dokumen SPK (PDF)</label>
                             <div class="upload-dropzone-box py-2.5 px-3">
                                 <input type="file" id="uploadDokumenSpkInput" name="dokumen_spk" accept=".pdf">
                                 <div class="d-flex align-items-center justify-content-center gap-3">
@@ -2155,7 +2174,7 @@ body.modal-open .page-body-wrapper {
                                     </div>
                                     <div class="text-start">
                                         <span class="fw-bold text-dark d-block" id="dokumenSpkFileName" style="font-size: 0.85rem;">Pilih berkas PDF atau seret ke sini</span>
-                                        <small class="text-muted" style="font-size: 0.75rem;">Maksimal 10MB</small>
+                                        <small class="text-muted" style="font-size: 0.75rem;">Maksimal 15MB</small>
                                     </div>
                                 </div>
                             </div>
@@ -3080,14 +3099,42 @@ $(document).ready(function() {
         this.submit();
     });
 
-    // SPK Unit Multi-Select Controls
-    function updateSpkUnitCounter() {
-        const count = $('.spk-unit-checkbox:checked').length;
-        $('#spkUnitCounter').text(count + ' unit kavling dipilih');
+    // SPK Unit Multi-Select Controls & Live Calculation
+    function formatRupiahSpk(angka) {
+        var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        return split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
     }
 
+    function updateSpkCalculation() {
+        const count = $('.spk-unit-checkbox:checked').length;
+        $('#spkUnitCounter').text(count + ' unit kavling dipilih');
+
+        const rawVal = $('#modalSpkNilaiKontrak').val() || '0';
+        const numVal = parseInt(rawVal.replace(/[^0-9]/g, ''), 10) || 0;
+        const totalVal = numVal * count;
+
+        $('#modalSpkTotalCalculation').text(
+            'Total SPK: Rp ' + totalVal.toLocaleString('id-ID') + ' (' + count + ' unit kavling dipilih)'
+        );
+    }
+
+    $(document).on('keyup', '#modalSpkNilaiKontrak', function() {
+        $(this).val(formatRupiahSpk($(this).val()));
+        updateSpkCalculation();
+    });
+
     $(document).on('change', '.spk-unit-checkbox', function() {
-        updateSpkUnitCounter();
+        updateSpkCalculation();
         if ($(this).is(':checked')) {
             $(this).closest('.spk-unit-card').addClass('border-primary bg-primary bg-opacity-10');
         } else {
@@ -3126,9 +3173,16 @@ $(document).ready(function() {
             return false;
         }
 
+        const rawVal = $('#modalSpkNilaiKontrak').val() || '';
+        if (!rawVal || rawVal === '0') {
+            e.preventDefault();
+            Swal.fire('Peringatan', 'Silakan masukkan Nilai SPK per Unit kavling agar masuk ke perhitungan HPP!', 'warning');
+            return false;
+        }
+
         Swal.fire({
             title: 'Menerbitkan SPK...',
-            text: 'Menghubungkan nomor SPK ke unit-unit terpilih',
+            text: 'Menghubungkan nomor SPK dan menghitung HPP unit-unit terpilih',
             allowOutsideClick: false,
             didOpen: () => Swal.showLoading()
         });

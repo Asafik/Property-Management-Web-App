@@ -71,6 +71,11 @@ class Spk extends Model
         return $this->hasMany(SpkTermin::class, 'spk_id')->orderBy('termin_ke', 'asc');
     }
 
+    public function units()
+    {
+        return $this->hasMany(LandBankUnit::class, 'no_spk', 'no_spk');
+    }
+
     /**
      * Format Rupiah helper
      */
