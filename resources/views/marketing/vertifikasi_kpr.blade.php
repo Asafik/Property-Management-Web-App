@@ -888,6 +888,35 @@
 .transaksi-error-box {
     display: none;
 }
+
+.btn-cetak-ba-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: linear-gradient(135deg, #da8cff 0%, #9a55ff 100%);
+    color: #ffffff !important;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.83rem;
+    font-weight: 700;
+    text-decoration: none !important;
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.28);
+    border: none;
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.btn-cetak-ba-action:hover {
+    background: linear-gradient(135deg, #c96eff 0%, #8b3ffc 100%);
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(154, 85, 255, 0.42);
+}
+
+.btn-cetak-ba-action i {
+    font-size: 1.1rem;
+    line-height: 1;
+}
 </style>
     <div class="transaksi-page">
         <div class="row">
@@ -1384,9 +1413,16 @@
                                             tersedia sudah ditinjau.</span></li>
                                     <li><i class="mdi mdi-check-circle-outline"></i><span>Isi catatan verifikasi agar
                                             keputusan mudah dilacak tim berikutnya.</span></li>
-                                    <li><i class="mdi mdi-check-circle-outline"></i><span>Unggah berita acara bila
-                                            dibutuhkan untuk arsip proses.</span></li>
+                                    <li><i class="mdi mdi-check-circle-outline"></i><span>Unggah Berita Acara persetujuan
+                                            verifikasi.</span></li>
                                 </ul>
+                            </div>
+
+                            <div class="mt-3 pt-2 border-top">
+                                <a href="{{ route('kpr.verifikasi.cetak-ba', $booking->id) }}" target="_blank" class="btn btn-outline-primary w-100 d-inline-flex align-items-center justify-content-center gap-2 py-2 font-weight-bold" style="border-radius: 10px; text-decoration: none;">
+                                    <i class="mdi mdi-printer" style="font-size: 1.15rem;"></i>
+                                    <span>Cetak Berita Acara (BA)</span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -1468,9 +1504,15 @@
                                         placeholder="Contoh: Semua dokumen lengkap, valid, dan layak dilanjutkan ke tahap survey."></textarea>
                                 </div>
                                 <div class="transaksi-form-group mb-0">
-                                    <label class="transaksi-form-label">Upload Berita Acara (Opsional)</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                                        <label class="transaksi-form-label mb-0">Upload Berita Acara <span class="text-danger">*</span></label>
+                                        <a href="{{ route('kpr.verifikasi.cetak-ba', $booking->id) }}" target="_blank" class="btn-cetak-ba-action" title="Cetak atau Unduh Dokumen Berita Acara Resmi">
+                                            <i class="mdi mdi-printer"></i>
+                                            <span>Cetak / Unduh Format BA</span>
+                                        </a>
+                                    </div>
                                     <div class="transaksi-file-upload">
-                                        <input type="file" name="berita_acara" accept=".jpg,.jpeg,.png,.pdf">
+                                        <input type="file" name="berita_acara" id="inputBeritaAcara" accept=".jpg,.jpeg,.png,.pdf" required>
                                         <div class="transaksi-file-label">
                                             <i class="mdi mdi-cloud-upload"></i>
                                             <div class="transaksi-file-info">
@@ -1495,7 +1537,7 @@
                                         placeholder="Contoh: NPWP belum tersedia dan rekening koran belum sesuai periode yang diminta."></textarea>
                                 </div>
                                 <div class="transaksi-form-group">
-                                    <label class="transaksi-form-label">Upload Berita Acara (Opsional)</label>
+                                    <label class="transaksi-form-label">Upload Berita Acara</label>
                                     <div class="transaksi-file-upload">
                                         <input type="file" name="berita_acara_tolak" accept=".jpg,.jpeg,.png,.pdf">
                                         <div class="transaksi-file-label">
@@ -1751,7 +1793,7 @@
                     $decisionSummaryList.html(`
                         <li><i class="mdi mdi-check-circle-outline"></i><span>Status booking akan diarahkan ke tahap <strong>Survey</strong>.</span></li>
                         <li><i class="mdi mdi-note-text-outline"></i><span>Isi catatan singkat sebagai referensi untuk tim berikutnya.</span></li>
-                        <li><i class="mdi mdi-paperclip"></i><span>Berita acara bisa ditambahkan bila diperlukan untuk arsip.</span></li>
+                        <li><i class="mdi mdi-paperclip"></i><span>Unggah dokumen <strong>Berita Acara Verifikasi</strong>.</span></li>
                     `);
                 } else if (type === 'rejected') {
                     $decisionSummary.addClass('reject');
@@ -1771,11 +1813,15 @@
                     $statusInput.val('survey');
                     $formSetuju.stop(true, true).slideDown(180);
                     $formTolak.stop(true, true).slideUp(180);
+                    $('input[name="berita_acara"]').prop('required', true);
+                    $('input[name="berita_acara_tolak"]').prop('required', false);
                     renderSummary('survey');
                 } else if (type === 'rejected') {
                     $statusInput.val('rejected');
                     $formTolak.stop(true, true).slideDown(180);
                     $formSetuju.stop(true, true).slideUp(180);
+                    $('input[name="berita_acara"]').prop('required', false);
+                    $('input[name="berita_acara_tolak"]').prop('required', false);
                     renderSummary('rejected');
                 }
             }

@@ -437,6 +437,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
     Route::get('/customer-kpr', [TransaksiKPRController::class, 'index'])->name('customer.kpr');
 
     Route::get('/transaksi/kpr/{booking}/approve', [TransaksiKPRController::class, 'approve'])->name('transaksi.kpr.approve');
+    Route::get('/transaksi/kpr/{booking}/cetak-ba', [TransaksiKPRController::class, 'cetakBA'])->name('kpr.verifikasi.cetak-ba');
 
     Route::post('/transaksi/kpr/{booking}/verifikasi', [TransaksiKPRController::class, 'storeVerifikasi'])->name('kpr.verifikasi.store');
 

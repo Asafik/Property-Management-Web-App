@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Banks;
 use App\Models\KprApplication;
 use App\Models\Employee;
+use App\Models\CompanyProfile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
@@ -17,7 +18,17 @@ class TransaksiKPRController extends Controller
     public function index(Request $request)
     {
         $query = Booking::with(['customer', 'unit', 'sales', 'kprApplication'])
-            ->where('purchase_type', 'kpr');
+            ->where('purchase_type', 'kpr')
+            ->where(function ($q) {
+                // Hanya tampilkan data KPR yang belum diverifikasi / belum selesai verifikasi
+                $q->whereDoesntHave('kprApplication', function ($sub) {
+                    $sub->whereIn('status', ['approved', 'analisa', 'rejected', 'survey', 'akad', 'completed']);
+                })
+                ->where(function ($sub2) {
+                    $sub2->whereNull('status_cash')
+                         ->orWhere('status_cash', '!=', 'done');
+                });
+            });
 
         // search by customer name only
         if ($request->filled('search')) {
@@ -107,16 +118,22 @@ class TransaksiKPRController extends Controller
         }
 
         // VALIDASI
+        $isSurvey = $request->status === 'survey';
+
         $request->validate([
-            'catatan' => 'nullable|string',
-            'status' => 'required|string',
-            'jumlah_pinjaman' => 'nullable|numeric',
+            'catatan'           => 'nullable|string',
+            'status'            => 'required|string',
+            'jumlah_pinjaman'   => 'nullable|numeric',
             'estimasi_angsuran' => 'nullable|numeric',
-            'tenor' => 'nullable|numeric',
-            'bunga' => 'nullable|numeric',
-            'no_sp3k' => 'nullable|string',
-            'akad_at' => 'nullable|date',
-            'berita_acara' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'tenor'             => 'nullable|numeric',
+            'bunga'             => 'nullable|numeric',
+            'no_sp3k'           => 'nullable|string',
+            'akad_at'           => 'nullable|date',
+            'berita_acara'      => ($isSurvey ? 'required' : 'nullable') . '|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ], [
+            'berita_acara.required' => 'Dokumen Berita Acara wajib diunggah saat menyetujui verifikasi KPR.',
+            'berita_acara.mimes'    => 'Format file Berita Acara harus berupa JPG, JPEG, PNG, atau PDF.',
+            'berita_acara.max'      => 'Ukuran file Berita Acara maksimal 5MB.',
         ]);
 
         // =========================
@@ -350,4 +367,23 @@ public function analisaKPRKomersil(Request $request)
         'perPage'
     ));
 }
+
+    /**
+     * Cetak Berita Acara (BA) Verifikasi KPR
+     */
+    public function cetakBA($bookingId)
+    {
+        $booking = Booking::with([
+            'customer',
+            'unit.landBank',
+            'kprApplication.bank',
+            'kprApplication.documents',
+            'sales'
+        ])->findOrFail($bookingId);
+
+        $kpr = $booking->kprApplication;
+        $companyProfile = CompanyProfile::first();
+
+        return view('cetak.berita_acara_kpr', compact('booking', 'kpr', 'companyProfile'));
+    }
 }

@@ -132,7 +132,7 @@ class MenuSeeder extends Seeder
         $transaksi->positions()->attach($kprTransaksiRoles);
 
         $transaksiMenus = [
-            'customer.kpr'          => ['name' => 'Cicilan / KPR', 'roles' => $kprTransaksiRoles],
+            'customer.kpr'          => ['name' => 'KPR', 'roles' => $kprTransaksiRoles],
             'kpr.customer-verified' => ['name' => 'User verifikasi dokumen kpr', 'roles' => $kprTransaksiRoles],
             'customer.kpr.survey'   => ['name' => 'User Acc kpr', 'roles' => $kprTransaksiRoles],
             'customer.kpr.rijected' => ['name' => 'User Rijected kpr', 'roles' => $marketingRoles],
@@ -218,12 +218,6 @@ class MenuSeeder extends Seeder
         Menu::create([
             'name'      => 'Master Tahapan Progress Unit',
             'route'     => 'master.progress.index',
-            'parent_id' => $master->id
-        ])->positions()->attach($kepalaLegalAndAdmin);
-
-        Menu::create([
-            'name'      => 'Master SPK',
-            'route'     => 'spk.index',
             'parent_id' => $master->id
         ])->positions()->attach($kepalaLegalAndAdmin);
 
