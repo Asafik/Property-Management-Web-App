@@ -723,10 +723,10 @@
                                                     </a>
 
                                                     @if ($app->status === 'survey')
-                                                        <a href="{{ route('kpr.pecahlegal', $app->id) }}"
+                                                        <a href="{{ route('kpr.approve', $app->booking_id ?? $app->id) }}"
                                                             class="btn btn-gradient-warning btn-action"
-                                                            title="Dokumen Persiapan">
-                                                            <i class="mdi mdi-folder-file-outline"></i>
+                                                            title="Proses Akad KPR">
+                                                            <i class="mdi mdi-handshake-outline"></i>
                                                         </a>
                                                     @endif
                                                 @endif

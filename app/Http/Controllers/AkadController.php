@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Akad;
 use App\Models\KprApplication;
+use App\Models\CompanyProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
@@ -161,14 +162,44 @@ class AkadController extends Controller
     {
         $kpr = KprApplication::with(['customer', 'unit.activeBooking.sales', 'bank', 'sales', 'documents', 'booking.sales'])
             ->where('booking_id', $id)
+            ->orWhere('id', $id)
             ->firstOrFail();
 
-        $existingAkad = Akad::where('booking_id', $id)->first();
+        $bookingId = $kpr->booking_id ?? $id;
+
+        $existingAkad = Akad::where('booking_id', $bookingId)->first();
         $noAkadDraf = $existingAkad && !empty($existingAkad->no_akad) 
             ? $existingAkad->no_akad 
-            : $this->generateNoAkadKPR($id);
+            : $this->generateNoAkadKPR($bookingId);
 
         return view('marketing.akad_closing', compact('kpr', 'noAkadDraf', 'existingAkad'));
+    }
+
+    public function cetakAkad($id)
+    {
+        $kpr = KprApplication::with([
+            'customer', 
+            'unit.landBank',
+            'bank', 
+            'sales', 
+            'documents', 
+            'booking.sales', 
+            'booking.customer', 
+            'booking.unit.landBank'
+        ])
+        ->where('booking_id', $id)
+        ->orWhere('id', $id)
+        ->firstOrFail();
+
+        $booking = $kpr->booking;
+        $existingAkad = Akad::where('booking_id', $booking->id ?? $id)->first();
+        $noAkad = $existingAkad && !empty($existingAkad->no_akad) 
+            ? $existingAkad->no_akad 
+            : $this->generateNoAkadKPR($booking->id ?? $id);
+
+        $companyProfile = CompanyProfile::first();
+
+        return view('cetak.dokumen_akad_kpr', compact('kpr', 'booking', 'existingAkad', 'noAkad', 'companyProfile'));
     }
 
     public function storeKPR(Request $request, Booking $booking)

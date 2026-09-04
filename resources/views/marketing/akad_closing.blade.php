@@ -851,6 +851,33 @@
     color: #334155;
     transform: translateY(-2px);
 }
+
+/* CETAK DOKUMEN AKAD BUTTON */
+.btn-cetak-akad-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 1rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+    text-decoration: none !important;
+    transition: all 0.25s ease;
+    border: none;
+}
+
+.btn-cetak-akad-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(154, 85, 255, 0.4);
+    color: #ffffff !important;
+}
+
+.btn-cetak-akad-action i {
+    font-size: 1.05rem;
+}
 </style>
 
     @php
@@ -930,9 +957,12 @@
             </div>
         </div>
 
-        <div class="row mt-4">
-            <div class="col-12 col-lg-8 mb-4 mb-lg-0">
-                <div class="card h-100">
+        <div class="row mt-4 g-4">
+            <!-- LEFT COLUMN: FLOW & ACTIONS -->
+            <div class="col-12 col-lg-8 d-flex flex-column gap-4">
+                
+                <!-- CARD 1: TAHAPAN KPR -->
+                <div class="card">
                     <div class="card-body">
                         <div class="transaksi-section-title">
                             <i class="mdi mdi-timeline-text"></i>
@@ -998,47 +1028,26 @@
                                 <span class="transaksi-step-title">Pembangunan</span>
                                 <small>{{ $statusText[$status] ?? 'Belum mulai pembangunan' }}</small>
                             </div>
-                            @if ($isSubsidi)
-                                <div class="transaksi-step {{ $surveyDone ? 'completed' : '' }}">
-                                    @if ($surveyDone)
-                                        <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
-                                    @else
-                                        <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
-                                    @endif
-                                    <span class="transaksi-step-title">Survey</span>
-                                    <small>{{ $surveyDone ? 'Selesai' : 'Menunggu' }}</small>
-                                </div>
 
-                                <div class="transaksi-step {{ $akadSelesai ? 'completed' : '' }}">
-                                    @if ($akadSelesai)
-                                        <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
-                                    @else
-                                        <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
-                                    @endif
-                                    <span class="transaksi-step-title">Akad</span>
-                                    <small>{{ $akadSelesai ? 'Selesai' : 'Menunggu' }}</small>
-                                </div>
-                            @else
-                                <div class="transaksi-step {{ $surveyDone ? 'completed' : '' }}">
-                                    @if ($surveyDone)
-                                        <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
-                                    @else
-                                        <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
-                                    @endif
-                                    <span class="transaksi-step-title">Survey</span>
-                                    <small>{{ $surveyDone ? 'Selesai' : 'Menunggu' }}</small>
-                                </div>
+                            <div class="transaksi-step {{ $surveyDone ? 'completed' : '' }}">
+                                @if ($surveyDone)
+                                    <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
+                                @else
+                                    <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
+                                @endif
+                                <span class="transaksi-step-title">Survey</span>
+                                <small>{{ $surveyDone ? 'Selesai' : 'Menunggu' }}</small>
+                            </div>
 
-                                <div class="transaksi-step {{ $akadSelesai ? 'completed' : '' }}">
-                                    @if ($akadSelesai)
-                                        <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
-                                    @else
-                                        <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
-                                    @endif
-                                    <span class="transaksi-step-title">Akad</span>
-                                    <small>{{ $akadSelesai ? 'Selesai' : 'Menunggu' }}</small>
-                                </div>
-                            @endif
+                            <div class="transaksi-step {{ $akadSelesai ? 'completed' : '' }}">
+                                @if ($akadSelesai)
+                                    <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
+                                @else
+                                    <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
+                                @endif
+                                <span class="transaksi-step-title">Akad</span>
+                                <small>{{ $akadSelesai ? 'Selesai' : 'Menunggu' }}</small>
+                            </div>
 
                             <div class="transaksi-step">
                                 <div class="transaksi-step-icon">
@@ -1050,84 +1059,24 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-12 col-lg-4">
-                <div class="card h-100">
+                <!-- CARD 2: DOKUMEN BERITA ACARA (BA) VERIFIKASI -->
+                <div class="card">
                     <div class="card-body">
                         <div class="transaksi-section-title">
-                            <i class="mdi mdi-bank-outline"></i>
-                            <span>Detail KPR</span>
+                            <i class="mdi mdi-file-certificate-outline"></i>
+                            <span>Dokumen Berita Acara (BA) Verifikasi</span>
                         </div>
 
-                        <div class="transaksi-detail-list">
-                            <div class="transaksi-detail-item">
-                                <span>Bank Tujuan</span>
-                                <span>{{ $kpr->bank->bank_name ?? '-' }}</span>
-                            </div>
-                            <div class="transaksi-detail-item">
-                                <span>Jumlah Pinjaman</span>
-                                <span>Rp {{ number_format($kpr->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span>
-                            </div>
-                            <div class="transaksi-detail-item">
-                                <span>Tenor</span>
-                                <span>{{ $kpr->tenor ?? '-' }} Tahun</span>
-                            </div>
-                            <div class="transaksi-detail-item">
-                                <span>Angsuran / bln</span>
-                                <span class="highlight">Rp
-                                    {{ number_format($kpr->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
-                            </div>
-
-                            <div class="transaksi-detail-item">
-                                <span>Promo</span>
-                                <span>{{ $kpr->promo_name ?? '-' }}</span>
-                            </div>
-
-                            <div class="transaksi-detail-item">
-                                <span>Nilai Promo</span>
-                                <span>Rp {{ number_format($kpr->promo_value ?? 0, 0, ',', '.') }}</span>
-                            </div>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <small class="transaksi-muted d-block mb-2">Ditangani oleh</small>
-                        <div class="transaksi-handler">
-                            <div class="transaksi-handler-icon">
-                                <i class="mdi mdi-account-tie"></i>
-                            </div>
-                            <div>
-                                <div class="fw-bold">{{ $kpr->booking->sales->name ?? ($kpr->unit->activeBooking->sales->name ?? 'Staff Marketing') }}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-12 col-lg-8 mb-4 mb-lg-0">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <div class="transaksi-section-title">
-                            <i class="mdi mdi-file-document-multiple-outline"></i>
-                            <span>Kelengkapan Dokumen</span>
-                        </div>
-
-                        @if ($documentsCount < 8)
-                            <div class="transaksi-inline-alert warning">
-                                <i class="mdi mdi-alert-circle-outline"></i>
-                                <div>
-                                    Masih ada
-                                    <strong>{{ $missingDocuments }} dokumen</strong>
-                                    yang perlu dilengkapi sebelum proses akad final berjalan optimal.
-                                </div>
-                            </div>
-                        @else
+                        @if ($kpr->berita_acara)
                             <div class="transaksi-inline-alert success">
                                 <i class="mdi mdi-check-circle-outline"></i>
-                                <div>Semua dokumen utama telah tersedia dan siap untuk ditinjau pada tahap akad.</div>
+                                <div>Dokumen Berita Acara Verifikasi KPR telah tersedia dan terverifikasi. Pengajuan siap diproses untuk tahap akad.</div>
+                            </div>
+                        @else
+                            <div class="transaksi-inline-alert warning">
+                                <i class="mdi mdi-alert-circle-outline"></i>
+                                <div>Dokumen Berita Acara Verifikasi KPR belum diunggah.</div>
                             </div>
                         @endif
 
@@ -1135,184 +1084,61 @@
                             <table class="table transaksi-doc-table align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th style="width: 40%;">Nama Dokumen</th>
+                                        <th style="width: 45%;">Nama Dokumen</th>
                                         <th style="width: 20%;">Status</th>
-                                        <th style="width: 20%;">Tanggal Upload</th>
-                                        <th style="width: 20%;">Aksi</th>
+                                        <th style="width: 20%;">Tanggal Verifikasi</th>
+                                        <th style="width: 15%; text-align: center;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($kpr->documents as $doc)
-                                        <tr>
-                                            <td>
-                                                <div class="transaksi-doc-name">
-                                                    <div class="transaksi-doc-icon">
-                                                        <i class="mdi mdi-file-document-outline"></i>
-                                                    </div>
-                                                    <div>
-                                                        <div>{{ strtoupper(str_replace('_', ' ', $doc->type ?? '-')) }}
-                                                        </div>
-                                                        <small
-                                                            class="transaksi-muted">{{ $doc->path ? 'Siap direview' : 'Perlu dilengkapi' }}</small>
-                                                    </div>
+                                    <tr>
+                                        <td>
+                                            <div class="transaksi-doc-name">
+                                                <div class="transaksi-doc-icon" style="background: rgba(154, 85, 255, 0.12); color: #9a55ff;">
+                                                    <i class="mdi mdi-file-certificate-outline"></i>
                                                 </div>
-                                            </td>
+                                                <div>
+                                                    <div class="fw-bold">Berita Acara Verifikasi KPR</div>
+                                                    <small class="transaksi-muted">Dokumen resmi hasil verifikasi berkas & kelayakan KPR</small>
+                                                </div>
+                                            </div>
+                                        </td>
 
-                                            <td>
-                                                @if ($doc->path)
-                                                    <span class="badge bg-success">Lengkap</span>
-                                                @else
-                                                    <span class="badge bg-danger">Kurang</span>
-                                                @endif
-                                            </td>
+                                        <td>
+                                            @if ($kpr->berita_acara)
+                                                <span class="badge bg-success px-2.5 py-1.5" style="border-radius: 6px;">Lengkap</span>
+                                            @else
+                                                <span class="badge bg-warning text-dark px-2.5 py-1.5" style="border-radius: 6px;">Menunggu</span>
+                                            @endif
+                                        </td>
 
-                                            <td>
-                                                <span class="transaksi-muted">
-                                                    {{ $doc->created_at ? \Carbon\Carbon::parse($doc->created_at)->translatedFormat('d M Y') : '-' }}
-                                                </span>
-                                            </td>
+                                        <td>
+                                            <span class="transaksi-muted">
+                                                {{ $kpr->updated_at ? \Carbon\Carbon::parse($kpr->updated_at)->translatedFormat('d M Y') : '-' }}
+                                            </span>
+                                        </td>
 
-                                            <td>
-                                                @if ($doc->path)
-                                                    <a href="{{ asset('uploads/' . $doc->path) }}" target="_blank"
-                                                        class="transaksi-doc-action" title="Lihat dokumen">
-                                                        <i class="mdi mdi-eye-outline"></i>
-                                                    </a>
-                                                @else
-                                                    <button type="button" class="transaksi-doc-action disabled"
-                                                        title="Dokumen belum tersedia" disabled>
-                                                        <i class="mdi mdi-eye-off-outline"></i>
-                                                    </button>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="text-center text-muted">Belum ada data dokumen</td>
-                                        </tr>
-                                    @endforelse
+                                        <td class="text-center">
+                                            @if ($kpr->berita_acara)
+                                                <a href="{{ asset('uploads/' . $kpr->berita_acara) }}" target="_blank"
+                                                    class="transaksi-doc-action" title="Lihat Berita Acara">
+                                                    <i class="mdi mdi-eye-outline"></i>
+                                                </a>
+                                            @else
+                                                <button type="button" class="transaksi-doc-action disabled"
+                                                    title="Dokumen belum tersedia" disabled>
+                                                    <i class="mdi mdi-eye-off-outline"></i>
+                                                </button>
+                                            @endif
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-
-                        <div class="text-muted small mt-3 d-block d-sm-none">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Geser tabel untuk melihat kolom lainnya
-                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-12 col-lg-4">
-                <div class="transaksi-sticky">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="transaksi-section-title">
-                                <i class="mdi mdi-clipboard-text-outline"></i>
-                                <span>Informasi Akad</span>
-                            </div>
-
-                            <div class="mb-3">
-                                @if ($akadSelesai)
-                                    <div class="transaksi-status-banner success">
-                                        <i class="mdi mdi-check-circle-outline"></i>
-                                        Akad Sudah Selesai
-                                    </div>
-                                @else
-                                    <div class="transaksi-status-banner warning">
-                                        <i class="mdi mdi-handshake-outline"></i>
-                                        Menunggu Proses Akad
-                                    </div>
-                                @endif
-                            </div>
-
-                            <div class="transaksi-summary-grid">
-                                <div class="transaksi-summary-box success">
-                                    <div class="label">Dokumen Lengkap</div>
-                                    <div class="value">{{ $documentsCount }}</div>
-                                </div>
-                                <div class="transaksi-summary-box danger">
-                                    <div class="label">Dokumen Kurang</div>
-                                    <div class="value">{{ $missingDocuments }}</div>
-                                </div>
-                            </div>
-
-                            <div class="transaksi-sidebar-section">
-                                <div class="transaksi-sidebar-title">Rekomendasi Sistem</div>
-                                @if ($documentsCount >= 8)
-                                    <div class="transaksi-inline-alert success mb-0">
-                                        <i class="mdi mdi-check-decagram-outline"></i>
-                                        <div>Dokumen sudah lengkap. Proses akad dapat dilanjutkan ke tahap berikutnya.</div>
-                                    </div>
-                                @else
-                                    <div class="transaksi-inline-alert warning mb-0">
-                                        <i class="mdi mdi-file-alert-outline"></i>
-                                        <div>Masih ada dokumen yang perlu dilengkapi agar proses akad berjalan lebih aman
-                                            dan jelas.</div>
-                                    </div>
-                                @endif
-                            </div>
-
-                            <div class="transaksi-sidebar-section">
-                                <div class="transaksi-sidebar-title">Rencana Akad</div>
-                                <ul class="transaksi-mini-list mb-0">
-                                    <li>
-                                        <i class="mdi mdi-calendar-outline"></i>
-                                        <span>Rencana akad:
-                                            {{ optional($kpr->booking->akad)->tanggal_akad
-                                                ? \Carbon\Carbon::parse($kpr->booking->akad->tanggal_akad)->translatedFormat('d F Y')
-                                                : '20 Maret 2025' }}
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <i class="mdi mdi-map-marker-outline"></i>
-                                        <span>Lokasi:
-                                            {{ optional($kpr->booking->akad)->lokasi_akad ?? 'Kantor Notaris Siti, SH' }}
-                                        </span>
-                                    </li>
-                                    <li>
-                                        <i class="mdi mdi-account-tie-outline"></i>
-                                        <span>Notaris:
-                                            {{ optional($kpr->booking->akad)->nama_notaris ?? 'Siti Nurhaliza, SH' }}
-                                        </span>
-                                    </li>
-
-                                    {{-- Tambahan Dokumen Akad --}}
-                                    <li>
-                                        <i class="mdi mdi-file-document-outline"></i>
-                                        <span>
-                                            Dokumen:
-                                            @if (optional($kpr->booking->akad)->dokumen)
-                                                <a href="{{ asset('uploads/' . $kpr->booking->akad->dokumen) }}"
-                                                    target="_blank" class="btn btn-sm btn-primary ms-2">
-                                                    Lihat
-                                                </a>
-                                            @else
-                                                <span class="text-muted">Belum tersedia</span>
-                                            @endif
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            @if ($akadSelesai)
-                                <div class="transaksi-sidebar-section">
-                                    <div class="transaksi-sidebar-title">Langkah Berikutnya</div>
-                                    <a href="{{ route('kpr.serahterima', $kpr->id) }}"
-                                        class="transaksi-btn transaksi-btn-primary w-100 justify-content-center">
-                                        <i class="mdi mdi-home-check-outline"></i>
-                                        Proses Serah Terima
-                                    </a>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-12 col-lg-8 mb-4 mb-lg-0">
+                <!-- CARD 3: PROSES AKAD FORM -->
                 <div class="card">
                     <div class="card-body">
                         <div class="transaksi-section-title">
@@ -1322,8 +1148,7 @@
 
                         <div class="transaksi-inline-alert info mb-4" id="akadHint">
                             <i class="mdi mdi-information-outline"></i>
-                            <div>Pilih salah satu status di bawah ini. Form akan menyesuaikan secara otomatis sesuai hasil
-                                proses akad.</div>
+                            <div>Pilih salah satu status di bawah ini. Form akan menyesuaikan secara otomatis sesuai hasil proses akad.</div>
                         </div>
 
                         <form action="{{ route('akad.kpr.store', $kpr->booking_id) }}" method="POST"
@@ -1342,8 +1167,7 @@
                                             <div class="akad-choice-content">
                                                 <div class="akad-choice-title">Selesai Akad</div>
                                                 <p class="akad-choice-desc mb-0">
-                                                    Dokumen dan proses closing telah selesai dan siap lanjut ke tahap
-                                                    berikutnya.
+                                                    Dokumen dan proses closing telah selesai dan siap lanjut ke tahap berikutnya.
                                                 </p>
                                             </div>
                                             <div class="akad-choice-check">
@@ -1379,8 +1203,7 @@
 
                                 <div class="transaksi-inline-alert success">
                                     <i class="mdi mdi-check-circle-outline"></i>
-                                    <div><strong>Akad selesai.</strong> Pengajuan dapat diarahkan ke proses <strong>Serah
-                                            Terima</strong>.</div>
+                                    <div><strong>Akad selesai.</strong> Pengajuan dapat diarahkan ke proses <strong>Serah Terima</strong>.</div>
                                 </div>
 
                                 <div class="row">
@@ -1420,7 +1243,13 @@
                                 </div>
 
                                 <div class="akad-form-group">
-                                    <label class="akad-form-label">Upload Dokumen Akad</label>
+                                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                                        <label class="akad-form-label mb-0">Upload Dokumen Hasil Akad (Scan TTD Para Pihak) <span class="text-danger">*</span></label>
+                                        <a href="{{ route('akad.kpr.cetak', $kpr->booking_id ?? $kpr->id) }}" target="_blank" class="btn-cetak-akad-action" title="Cetak Format Dokumen Akad Resmi">
+                                            <i class="mdi mdi-printer"></i>
+                                            <span>Cetak / Unduh Format Dokumen Akad</span>
+                                        </a>
+                                    </div>
                                     <div class="verifikasi-file-upload">
                                         <input type="file" name="dokumen_akad" accept=".jpg,.jpeg,.png,.pdf">
                                         <div class="verifikasi-file-label">
@@ -1445,8 +1274,7 @@
 
                                 <div class="transaksi-inline-alert danger">
                                     <i class="mdi mdi-alert-circle-outline"></i>
-                                    <div><strong>Akad ditunda atau bermasalah.</strong> Pilih alasan dan tindakan lanjutan
-                                        agar proses tetap jelas untuk tim dan customer.</div>
+                                    <div><strong>Akad ditunda atau bermasalah.</strong> Pilih alasan dan tindakan lanjutan agar proses tetap jelas untuk tim dan customer.</div>
                                 </div>
 
                                 <div class="row">
@@ -1510,8 +1338,7 @@
                                                 </div>
                                                 <div class="akad-next-content">
                                                     <span class="akad-next-title">Jadwal Ulang</span>
-                                                    <span class="akad-next-desc">Atur ulang jadwal akad dengan pihak
-                                                        customer, bank, dan notaris.</span>
+                                                    <span class="akad-next-desc">Atur ulang jadwal akad dengan pihak customer, bank, dan notaris.</span>
                                                 </div>
                                                 <div class="akad-next-check">
                                                     <i class="mdi mdi-check-circle"></i>
@@ -1528,8 +1355,7 @@
                                                 </div>
                                                 <div class="akad-next-content">
                                                     <span class="akad-next-title">Lengkapi Dokumen</span>
-                                                    <span class="akad-next-desc">Dokumen perlu dilengkapi sebelum akad
-                                                        dilanjutkan kembali.</span>
+                                                    <span class="akad-next-desc">Dokumen perlu dilengkapi sebelum akad dilanjutkan kembali.</span>
                                                 </div>
                                                 <div class="akad-next-check">
                                                     <i class="mdi mdi-check-circle"></i>
@@ -1546,8 +1372,7 @@
                                                 </div>
                                                 <div class="akad-next-content">
                                                     <span class="akad-next-title">Koordinasi Ulang Bank</span>
-                                                    <span class="akad-next-desc">Lakukan follow up ulang ke pihak bank
-                                                        untuk kendala administrasi/SP3K.</span>
+                                                    <span class="akad-next-desc">Lakukan follow up ulang ke pihak bank untuk kendala administrasi/SP3K.</span>
                                                 </div>
                                                 <div class="akad-next-check">
                                                     <i class="mdi mdi-check-circle"></i>
@@ -1564,8 +1389,7 @@
                                                 </div>
                                                 <div class="akad-next-content">
                                                     <span class="akad-next-title">Review Internal</span>
-                                                    <span class="akad-next-desc">Perlu review tambahan dari tim internal
-                                                        sebelum menentukan jadwal berikutnya.</span>
+                                                    <span class="akad-next-desc">Perlu review tambahan dari tim internal sebelum menentukan jadwal berikutnya.</span>
                                                 </div>
                                                 <div class="akad-next-check">
                                                     <i class="mdi mdi-check-circle"></i>
@@ -1588,65 +1412,205 @@
                                 </button>
                             </div>
                         </form>
-
-                        <div class="text-muted small mt-3 d-block d-sm-none">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Scroll untuk melihat seluruh isi form
-                        </div>
                     </div>
                 </div>
+
             </div>
 
-            <div class="col-12 col-lg-4">
-                <div class="transaksi-sticky">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="transaksi-section-title">
-                                <i class="mdi mdi-lightbulb-on-outline"></i>
-                                <span>Panduan Proses</span>
+            <!-- RIGHT COLUMN: SIDEBAR DETAILS & SUMMARY -->
+            <div class="col-12 col-lg-4 d-flex flex-column gap-4">
+                
+                <!-- SIDEBAR CARD 1: DETAIL KPR -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="transaksi-section-title">
+                            <i class="mdi mdi-bank-outline"></i>
+                            <span>Detail KPR</span>
+                        </div>
+
+                        <div class="transaksi-detail-list">
+                            <div class="transaksi-detail-item">
+                                <span>Bank Tujuan</span>
+                                <span>{{ $kpr->bank->bank_name ?? '-' }}</span>
+                            </div>
+                            <div class="transaksi-detail-item">
+                                <span>Jumlah Pinjaman</span>
+                                <span>Rp {{ number_format($kpr->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="transaksi-detail-item">
+                                <span>Tenor</span>
+                                <span>{{ $kpr->tenor ?? '-' }} Tahun</span>
+                            </div>
+                            <div class="transaksi-detail-item">
+                                <span>Angsuran / bln</span>
+                                <span class="highlight">Rp {{ number_format($kpr->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
                             </div>
 
-                            <div class="transaksi-sidebar-section">
-                                <div class="transaksi-sidebar-title">Saat Akad Selesai</div>
-                                <ul class="transaksi-mini-list mb-0">
-                                    <li>
-                                        <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                        <span>Gunakan jika seluruh proses penandatanganan dan closing telah selesai tanpa
-                                            kendala material.</span>
-                                    </li>
-                                    <li>
-                                        <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                        <span>Isi tanggal, lokasi, notaris, dan nomor akad agar arsip proses lengkap.</span>
-                                    </li>
-                                    <li>
-                                        <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                        <span>Upload dokumen akad bila sudah tersedia sebagai bukti administrasi.</span>
-                                    </li>
-                                </ul>
+                            <div class="transaksi-detail-item">
+                                <span>Promo</span>
+                                <span>{{ $kpr->promo_name ?? '-' }}</span>
                             </div>
 
-                            <div class="transaksi-sidebar-section">
-                                <div class="transaksi-sidebar-title">Saat Ditunda / Bermasalah</div>
-                                <ul class="transaksi-mini-list mb-0">
-                                    <li>
-                                        <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                        <span>Gunakan jika ada hambatan jadwal, dokumen, kesiapan customer, atau proses dari
-                                            bank/notaris.</span>
-                                    </li>
-                                    <li>
-                                        <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                        <span>Jelaskan alasan kendala secara spesifik dan mudah ditindaklanjuti.</span>
-                                    </li>
-                                    <li>
-                                        <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                        <span>Pilih tindakan lanjutan yang paling relevan agar proses berikutnya tidak
-                                            ambigu.</span>
-                                    </li>
-                                </ul>
+                            <div class="transaksi-detail-item">
+                                <span>Nilai Promo</span>
+                                <span>Rp {{ number_format($kpr->promo_value ?? 0, 0, ',', '.') }}</span>
+                            </div>
+                        </div>
+
+                        <hr class="my-3">
+
+                        <small class="transaksi-muted d-block mb-2">Ditangani oleh</small>
+                        <div class="transaksi-handler">
+                            <div class="transaksi-handler-icon">
+                                <i class="mdi mdi-account-tie"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">{{ $kpr->booking->sales->name ?? ($kpr->unit->activeBooking->sales->name ?? 'Staff Marketing') }}</div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- SIDEBAR CARD 2: INFORMASI AKAD -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="transaksi-section-title">
+                            <i class="mdi mdi-clipboard-text-outline"></i>
+                            <span>Informasi Akad</span>
+                        </div>
+
+                        <div class="mb-3">
+                            @if ($akadSelesai)
+                                <div class="transaksi-status-banner success">
+                                    <i class="mdi mdi-check-circle-outline"></i>
+                                    Akad Sudah Selesai
+                                </div>
+                            @else
+                                <div class="transaksi-status-banner warning">
+                                    <i class="mdi mdi-handshake-outline"></i>
+                                    Menunggu Proses Akad
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="transaksi-summary-grid">
+                            <div class="transaksi-summary-box success">
+                                <div class="label">Berita Acara (BA)</div>
+                                <div class="value" style="font-size: 1rem; font-weight: 700;">{{ $kpr->berita_acara ? 'Tersedia' : 'Belum Ada' }}</div>
+                            </div>
+                            <div class="transaksi-summary-box primary">
+                                <div class="label">Skema Unit</div>
+                                <div class="value" style="font-size: 1rem; font-weight: 700;">{{ strtoupper($kpr->unit->jenis ?? 'KPR') }}</div>
+                            </div>
+                        </div>
+
+                        <div class="transaksi-sidebar-section">
+                            <div class="transaksi-sidebar-title">Rekomendasi Sistem</div>
+                            @if ($kpr->berita_acara || in_array(strtolower($kpr->status ?? ''), ['approved', 'survey', 'analisa']))
+                                <div class="transaksi-inline-alert success mb-0">
+                                    <i class="mdi mdi-check-decagram-outline"></i>
+                                    <div>Berita Acara KPR telah terverifikasi. Proses penandatanganan akad dapat dilanjutkan.</div>
+                                </div>
+                            @else
+                                <div class="transaksi-inline-alert warning mb-0">
+                                    <i class="mdi mdi-file-alert-outline"></i>
+                                    <div>Menunggu kelengkapan verifikasi Berita Acara KPR.</div>
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="transaksi-sidebar-section">
+                            <div class="transaksi-sidebar-title">Rencana Akad</div>
+                            <ul class="transaksi-mini-list mb-0">
+                                <li>
+                                    <i class="mdi mdi-calendar-outline"></i>
+                                    <span>Rencana akad:
+                                        {{ optional($kpr->booking->akad)->tanggal_akad
+                                            ? \Carbon\Carbon::parse($kpr->booking->akad->tanggal_akad)->translatedFormat('d F Y')
+                                            : '20 Maret 2025' }}
+                                    </span>
+                                </li>
+                                <li>
+                                    <i class="mdi mdi-map-marker-outline"></i>
+                                    <span>Lokasi:
+                                        {{ optional($kpr->booking->akad)->lokasi_akad ?? 'Kantor Notaris Siti, SH' }}
+                                    </span>
+                                </li>
+                                <li>
+                                    <i class="mdi mdi-account-tie-outline"></i>
+                                    <span>Notaris:
+                                        {{ optional($kpr->booking->akad)->nama_notaris ?? 'Siti Nurhaliza, SH' }}
+                                    </span>
+                                </li>
+
+                                <li>
+                                    <i class="mdi mdi-file-document-outline"></i>
+                                    <span>
+                                        Dokumen:
+                                        @if (optional($kpr->booking->akad)->dokumen)
+                                            <a href="{{ asset('uploads/' . $kpr->booking->akad->dokumen) }}"
+                                                target="_blank" class="btn btn-sm btn-primary ms-2">
+                                                Lihat
+                                            </a>
+                                        @else
+                                            <span class="text-muted">Belum tersedia</span>
+                                        @endif
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        @if ($akadSelesai)
+                            <div class="transaksi-sidebar-section">
+                                <div class="transaksi-sidebar-title">Langkah Berikutnya</div>
+                                <a href="{{ route('kpr.serahterima', $kpr->id) }}"
+                                    class="transaksi-btn transaksi-btn-primary w-100 justify-content-center">
+                                    <i class="mdi mdi-home-check-outline"></i>
+                                    Proses Serah Terima
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- SIDEBAR CARD 3: PANDUAN PROSES -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="transaksi-section-title">
+                            <i class="mdi mdi-lightbulb-on-outline"></i>
+                            <span>Panduan Proses</span>
+                        </div>
+
+                        <div class="transaksi-sidebar-section pt-0 mt-0 border-0">
+                            <div class="transaksi-sidebar-title">Saat Akad Selesai</div>
+                            <ul class="transaksi-mini-list mb-0">
+                                <li>
+                                    <i class="mdi mdi-arrow-right-circle-outline"></i>
+                                    <span>Gunakan jika penandatanganan akad telah selesai tanpa kendala.</span>
+                                </li>
+                                <li>
+                                    <i class="mdi mdi-arrow-right-circle-outline"></i>
+                                    <span>Isi tanggal, lokasi, notaris, dan upload dokumen akad.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="transaksi-sidebar-section">
+                            <div class="transaksi-sidebar-title">Saat Ditunda / Bermasalah</div>
+                            <ul class="transaksi-mini-list mb-0">
+                                <li>
+                                    <i class="mdi mdi-arrow-right-circle-outline"></i>
+                                    <span>Gunakan jika ada kendala jadwal, dokumen, atau SP3K bank.</span>
+                                </li>
+                                <li>
+                                    <i class="mdi mdi-arrow-right-circle-outline"></i>
+                                    <span>Pilih tindakan lanjutan yang relevan untuk follow-up tim.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

@@ -447,6 +447,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
 
     Route::get('/transaksi/kpr/{id}/akad', [TransaksiKPRController::class, 'akad'])->name('kpr.akad');
     Route::get('/transaksi/kpr/akad-kpr/{id}', [AkadController::class, 'akadkpr'])->name('kpr.approve');
+    Route::get('/transaksi/kpr/akad-kpr/{id}/cetak', [AkadController::class, 'cetakAkad'])->name('akad.kpr.cetak');
     Route::post('/transaksi/kpr/akad-kpr/store/{booking}', [AkadController::class, 'storeKPR'])->name('akad.kpr.store');
 
     // Route untuk Customer KPR ACC (Survey)

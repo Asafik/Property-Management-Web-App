@@ -1406,9 +1406,9 @@
 
                         @if ($application->status === 'survey' && !$isSubsidi)
                             <div class="mt-3">
-                                <a href="{{ route('kpr.pecahlegal', $application->id) }}" class="btn btn-success w-100">
+                                <a href="{{ route('kpr.approve', $application->booking_id ?? $application->id) }}" class="btn btn-success w-100">
                                     <i class="mdi mdi-arrow-right-bold-circle-outline me-1"></i>
-                                    Lanjut ke Pecah Legal Unit
+                                    Lanjut ke Akad KPR
                                 </a>
                             </div>
                         @endif

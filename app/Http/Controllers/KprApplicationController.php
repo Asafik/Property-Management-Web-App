@@ -287,13 +287,7 @@ public function store(Request $request)
     }
 public function pecahLegal($id)
 {
-    $application = KprApplication::with([
-        'customer',
-        'unit',
-        'bank',
-        'documents'
-    ])->findOrFail($id);
-
-    return view('pecah_legal.pecah_legal_kpr', compact('application'));
+    $application = KprApplication::findOrFail($id);
+    return redirect()->route('kpr.approve', $application->booking_id ?? $application->id);
 }
 }

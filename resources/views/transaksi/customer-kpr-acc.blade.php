@@ -342,7 +342,7 @@
                             <i class="mdi mdi-bank me-2" style="color: #9a55ff;"></i>Daftar User KPR Terverifikasi
                         </h4>
                         <p class="text-muted mb-0">
-                            Persiapan & Pemrosesan Legalitas Unit Konsumen
+                            Persiapan & Pemrosesan Akad KPR Konsumen
                         </p>
                     </div>
                     <div class="d-none d-sm-block">
@@ -555,8 +555,8 @@
                                                         <i class="mdi mdi-home-lock me-1.5" style="font-size: 1.05rem; color: #7c3aed;"></i>Sold Out
                                                     </button>
                                                 @else
-                                                    <a href="{{ route('kpr.pecahlegal', $application->id) }}" class="btn btn-gradient-warning btn-sm d-inline-flex align-items-center justify-content-center px-3 py-1.5" title="Proses Legalitas Unit" onclick="showProcessLoading(event)" style="font-weight: 700; border-radius: 8px; border: 1.5px solid #d97706; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);">
-                                                        <i class="mdi mdi-file-certificate-outline me-1.5" style="font-size: 1.05rem;"></i>Proses Legalitas
+                                                    <a href="{{ route('kpr.approve', $application->booking_id ?? $application->id) }}" class="btn btn-gradient-warning btn-sm d-inline-flex align-items-center justify-content-center px-3 py-1.5" title="Proses Akad KPR" onclick="showProcessLoading(event)" style="font-weight: 700; border-radius: 8px; border: 1.5px solid #d97706; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);">
+                                                        <i class="mdi mdi-handshake-outline me-1.5" style="font-size: 1.05rem;"></i>Proses Akad
                                                     </a>
                                                 @endif
                                             </div>
