@@ -84,10 +84,15 @@ public function activeBooking()
         ->latestOfMany();
 }
 
-public function complaints()
-{
-    return $this->hasMany(Complaint::class, 'unit_id');
-}
+    public function complaints()
+    {
+        return $this->hasMany(Complaint::class, 'unit_id');
+    }
+
+    public function spk()
+    {
+        return $this->belongsTo(Spk::class, 'no_spk', 'no_spk');
+    }
 
 /**
  * Total Biaya Perizinan dari RAB Unit

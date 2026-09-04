@@ -696,13 +696,37 @@
                                         @endphp
                                         <tr>
                                             <td>
-                                                <span class="badge bg-light text-dark border font-monospace mb-1">{{ $spk->no_spk }}</span>
+                                                <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                                    <span class="badge bg-light text-dark border font-monospace mb-1">{{ $spk->no_spk }}</span>
+                                                    @if($spk->file_lampiran)
+                                                        @php
+                                                            $cleanLampiran = ltrim($spk->file_lampiran, '/');
+                                                            $lampiranUrl = asset(str_starts_with($cleanLampiran, 'uploads/') ? $cleanLampiran : 'uploads/' . $cleanLampiran);
+                                                        @endphp
+                                                        <a href="{{ $lampiranUrl }}" target="_blank" class="badge bg-danger bg-opacity-10 text-danger border border-danger text-decoration-none mb-1 d-inline-flex align-items-center gap-1" title="Buka Berkas PDF SPK">
+                                                            <i class="mdi mdi-file-pdf-box"></i> PDF
+                                                        </a>
+                                                    @endif
+                                                </div>
                                                 <div class="fw-bold text-dark">{{ $spk->nama_pekerjaan }}</div>
                                                 <small class="text-muted">{{ $spk->jenis_spk ?? 'Konstruksi Bangunan' }}</small>
                                             </td>
                                             <td>
                                                 <div class="fw-semibold text-dark">{{ $spk->landBank->name ?? '-' }}</div>
-                                                <small class="text-primary font-monospace">{{ $spk->unit ? 'Blok ' . $spk->unit->unit_code : 'Fasilitas Umum' }}</small>
+                                                @php
+                                                    $assignedUnits = $spk->units;
+                                                @endphp
+                                                @if($assignedUnits && $assignedUnits->count() > 1)
+                                                    <small class="text-primary font-monospace d-block" title="{{ $assignedUnits->pluck('unit_code')->implode(', ') }}">
+                                                        {{ $assignedUnits->take(3)->pluck('unit_code')->map(fn($c) => 'Blok ' . $c)->implode(', ') }}{{ $assignedUnits->count() > 3 ? ' +' . ($assignedUnits->count() - 3) . ' lainnya' : '' }} ({{ $assignedUnits->count() }} Unit)
+                                                    </small>
+                                                @elseif($assignedUnits && $assignedUnits->count() == 1)
+                                                    <small class="text-primary font-monospace d-block">Blok {{ $assignedUnits->first()->unit_code }}</small>
+                                                @elseif($spk->unit)
+                                                    <small class="text-primary font-monospace d-block">Blok {{ $spk->unit->unit_code }}</small>
+                                                @else
+                                                    <small class="text-muted font-monospace d-block">Fasilitas Umum / Proyek</small>
+                                                @endif
                                             </td>
                                             <td>
                                                 <div class="fw-semibold text-dark">{{ $spk->kontraktor_nama }}</div>
