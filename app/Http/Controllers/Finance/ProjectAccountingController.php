@@ -94,11 +94,10 @@ class ProjectAccountingController extends Controller
         // Ambil data SPK yang berelasi
         $spkList = Spk::with(['termins', 'landBank', 'unit'])
             ->when($landBankId, fn($q) => $q->where('land_bank_id', $landBankId))
-            ->when($unitId, fn($q) => $q->where('land_bank_unit_id', $unitId))
             ->get();
 
         // 3. Kalkulasi HPP & Keuangan per Unit
-        $unitFinancials = $units->map(function ($u) use ($spkList) {
+        $unitFinancials = $units->map(function ($u) use ($spkList, $units) {
             $booking = $u->activeBooking;
             $customerName = $booking?->customer?->full_name ?? '-';
             $bookingCode = $booking?->booking_code ?? '-';
@@ -161,9 +160,29 @@ class ProjectAccountingController extends Controller
             }
 
             // D. Biaya Konstruksi Bangunan Rumah (Building Construction)
-            $unitSpk = $spkList->firstWhere('land_bank_unit_id', $u->id);
-            $biayaSpkKontrak = (float) ($unitSpk->nilai_kontrak ?? 0);
-            $realisasiBayarSpk = $unitSpk && $unitSpk->termins ? (float) $unitSpk->termins->where('status_bayar', 'lunas')->sum('nominal') : 0;
+            $unitSpk = null;
+            if (!empty($u->no_spk)) {
+                $unitSpk = $spkList->firstWhere('no_spk', $u->no_spk);
+            }
+            if (!$unitSpk) {
+                $unitSpk = $spkList->firstWhere('land_bank_unit_id', $u->id);
+            }
+
+            $biayaSpkKontrak = 0;
+            $realisasiBayarSpk = 0;
+
+            if ($unitSpk) {
+                // Periksa jumlah unit yang memakai SPK ini di proyek ini
+                $unitsInSpkCount = $units->where('no_spk', $unitSpk->no_spk)->count();
+                if ($unitsInSpkCount > 1) {
+                    $biayaSpkKontrak = round((float) ($unitSpk->nilai_kontrak ?? 0) / $unitsInSpkCount, 2);
+                    $totalLunas = $unitSpk->termins ? (float) $unitSpk->termins->where('status_bayar', 'lunas')->sum('nominal') : 0;
+                    $realisasiBayarSpk = $totalLunas > 0 ? round($totalLunas / $unitsInSpkCount, 2) : 0;
+                } else {
+                    $biayaSpkKontrak = (float) ($unitSpk->nilai_kontrak ?? 0);
+                    $realisasiBayarSpk = $unitSpk->termins ? (float) $unitSpk->termins->where('status_bayar', 'lunas')->sum('nominal') : 0;
+                }
+            }
             
             $biayaRumahRab = 0;
             if ($u->progress && $u->progress->items && $u->progress->items->count() > 0) {

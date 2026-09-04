@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\LandBank;
 use App\Models\LandBankUnit;
 use App\Models\Spk;
+use App\Models\SpkTermin;
 use App\Imports\LandBankUnitImport;
 use Maatwebsite\Excel\Facades\Excel;
 class LandBankUnitController extends Controller
@@ -422,9 +423,11 @@ class LandBankUnitController extends Controller
         $request->validate([
             'no_spk'        => 'required|string|max:255',
             'kontraktor'    => 'required|string|max:255',
+            'nilai_kontrak' => 'nullable|string|max:255',
+            'tanggal_spk'   => 'nullable|date',
             'unit_ids'      => 'required|array|min:1',
             'unit_ids.*'    => 'exists:land_bank_units,id',
-            'dokumen_spk'   => 'nullable|file|mimes:pdf|max:5120',
+            'dokumen_spk'   => 'nullable|file|mimes:pdf|max:15360',
             'description'   => 'nullable|string|max:500',
         ], [
             'unit_ids.required'   => 'Pilih minimal satu unit kavling untuk SPK ini.',
@@ -432,6 +435,10 @@ class LandBankUnitController extends Controller
             'no_spk.required'     => 'Nomor SPK wajib diisi.',
             'kontraktor.required' => 'Nama Kontraktor wajib diisi.'
         ]);
+
+        $unitCount = count($request->unit_ids);
+        $nilaiPerUnit = $request->nilai_kontrak ? (float) str_replace(['.', ',', 'Rp', ' '], '', $request->nilai_kontrak) : 0;
+        $totalNilaiKontrak = $nilaiPerUnit * $unitCount;
 
         $spkPath = null;
         if ($request->hasFile('dokumen_spk')) {
@@ -459,29 +466,70 @@ class LandBankUnitController extends Controller
             ->where('land_bank_id', $land->id)
             ->update($updateData);
 
-        // Sync / Create record di tabel spks
-        Spk::firstOrCreate(
+        // Sync / Create / Update record di tabel spks
+        $spkData = [
+            'land_bank_id'        => $land->id,
+            'land_bank_unit_id'   => $unitCount == 1 ? $request->unit_ids[0] : null,
+            'jenis_spk'           => 'Pembangunan Unit',
+            'nama_pekerjaan'      => 'Pembangunan Unit Kavling Proyek ' . $land->name . ($unitCount > 1 ? " ({$unitCount} Unit)" : ''),
+            'kontraktor_nama'     => $request->kontraktor,
+            'tanggal_spk'         => $request->tanggal_spk ?: date('Y-m-d'),
+            'tanggal_mulai'       => $request->tanggal_mulai ?: ($request->tanggal_spk ?: date('Y-m-d')),
+            'tanggal_selesai'     => $request->tanggal_selesai ?: date('Y-m-d', strtotime(($request->tanggal_spk ?: date('Y-m-d')) . ' +90 days')),
+            'durasi_hari'         => 90,
+            'nilai_kontrak'       => $totalNilaiKontrak,
+            'sistem_pembayaran'   => 'termin',
+            'status'              => 'berjalan',
+            'progress'            => 0,
+            'keterangan'          => $request->description,
+        ];
+
+        if ($spkPath) {
+            $spkData['file_lampiran'] = $spkPath;
+        }
+
+        $spk = Spk::updateOrCreate(
             ['no_spk' => $request->no_spk],
-            [
-                'land_bank_id'        => $land->id,
-                'land_bank_unit_id'   => count($request->unit_ids) == 1 ? $request->unit_ids[0] : null,
-                'jenis_spk'           => 'Pembangunan Unit',
-                'nama_pekerjaan'      => 'Pembangunan Unit Kavling Proyek ' . $land->name,
-                'kontraktor_nama'     => $request->kontraktor,
-                'tanggal_spk'         => date('Y-m-d'),
-                'tanggal_mulai'       => date('Y-m-d'),
-                'tanggal_selesai'     => date('Y-m-d', strtotime('+90 days')),
-                'durasi_hari'         => 90,
-                'nilai_kontrak'       => 0,
-                'sistem_pembayaran'   => 'termin',
-                'status'              => 'berjalan',
-                'progress'            => 0,
-                'file_lampiran'       => $spkPath,
-                'keterangan'          => $request->description,
-            ]
+            $spkData
         );
 
+        // Jika SPK belum memiliki termin dan nilai kontrak > 0, generate termin standar otomatis
+        if ($spk->termins()->count() == 0 && $totalNilaiKontrak > 0) {
+            $defaultTermins = [
+                ['termin_ke' => 1, 'nama_tahap' => 'Termin 1 (Pondasi & Struktur Bawah)', 'persentase' => 25, 'syarat_progress' => 25],
+                ['termin_ke' => 2, 'nama_tahap' => 'Termin 2 (Dinding & Struktur Atas)', 'persentase' => 35, 'syarat_progress' => 60],
+                ['termin_ke' => 3, 'nama_tahap' => 'Termin 3 (Atap & Finishing)', 'persentase' => 35, 'syarat_progress' => 95],
+                ['termin_ke' => 4, 'nama_tahap' => 'Termin 4 / Retensi (Pemeliharaan)', 'persentase' => 5, 'syarat_progress' => 100],
+            ];
+
+            foreach ($defaultTermins as $t) {
+                SpkTermin::create([
+                    'spk_id'              => $spk->id,
+                    'termin_ke'           => $t['termin_ke'],
+                    'nama_tahap'          => $t['nama_tahap'],
+                    'persentase'          => $t['persentase'],
+                    'nominal'             => round(($t['persentase'] / 100) * $totalNilaiKontrak, 2),
+                    'syarat_progress'     => $t['syarat_progress'],
+                    'status_bayar'        => 'belum_dibayar',
+                    'tanggal_jatuh_tempo' => null,
+                ]);
+            }
+        } elseif ($spk->termins()->count() > 0 && $totalNilaiKontrak > 0) {
+            // Update termin jika sebelumnya nominalnya masih 0
+            $sumTermin = $spk->termins()->sum('nominal');
+            if ($sumTermin == 0) {
+                foreach ($spk->termins as $termin) {
+                    if ($termin->persentase > 0) {
+                        $termin->update([
+                            'nominal' => round(($termin->persentase / 100) * $totalNilaiKontrak, 2)
+                        ]);
+                    }
+                }
+            }
+        }
+
+        $formattedNilai = number_format($totalNilaiKontrak, 0, ',', '.');
         return redirect()->route('properti.buatKavling', $land->id)
-            ->with('success', "SPK '{$request->no_spk}' berhasil diterbitkan dan dihubungkan ke {$affectedCount} unit kavling!");
+            ->with('success', "SPK '{$request->no_spk}' (Total Rp {$formattedNilai}) berhasil diterbitkan dan terhubung ke {$affectedCount} unit kavling!");
     }
 }
