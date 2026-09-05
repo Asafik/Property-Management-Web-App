@@ -95,6 +95,7 @@ class DevelopmentProgressController extends Controller
             'items.*.satuan'      => 'nullable|string',
             'items.*.harga_satuan'=> 'nullable|numeric',
             'items.*.keterangan'  => 'nullable|string',
+            'items.*.progress_persen' => 'nullable|numeric|min:0|max:100',
             'items.*.dokumentasi' => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf,doc,docx,heic,heif,bmp|max:10240',
             'deadline'            => 'nullable|array',
             'deadline.*'          => 'nullable|date',
@@ -125,13 +126,19 @@ class DevelopmentProgressController extends Controller
                 $deadlineItem = $item['deadline']
                     ?? ($itemId ? ($request->deadline[$itemId] ?? null) : null);
 
-                // UPDATE deadline & dokumentasi item lama
+                $progressPersen = isset($item['progress_persen']) ? max(0, min(100, (int)$item['progress_persen'])) : 0;
+
+                // UPDATE deadline, progress_persen & dokumentasi item lama
                 if ($itemId && empty($item['kategori'])) {
 
-                    DevelopmentProgressItem::where('id', $itemId)
-                        ->update([
-                            'deadline' => $deadlineItem
-                        ]);
+                    $updateFields = [
+                        'deadline' => $deadlineItem,
+                    ];
+                    if (isset($item['progress_persen'])) {
+                        $updateFields['progress_persen'] = $progressPersen;
+                    }
+
+                    DevelopmentProgressItem::where('id', $itemId)->update($updateFields);
 
                     // Upload dokumentasi untuk item lama jika ada file yang diunggah
                     if ($request->hasFile("items.$index.dokumentasi") || $request->hasFile("items.$itemId.dokumentasi")) {
@@ -167,15 +174,16 @@ class DevelopmentProgressController extends Controller
 
                 // CREATE item baru
                 $progressItem = $progress->items()->create([
-                    'kategori'     => $item['kategori'],
-                    'kode'         => $item['kode'],
-                    'uraian'       => $item['uraian'],
-                    'volume'       => $item['volume'],
-                    'satuan'       => $item['satuan'],
-                    'harga_satuan' => $item['harga_satuan'],
-                    'total'        => $item['volume'] * $item['harga_satuan'],
-                    'keterangan'   => $item['keterangan'] ?? null,
-                    'deadline'     => $deadlineItem,
+                    'kategori'        => $item['kategori'],
+                    'kode'            => $item['kode'],
+                    'uraian'          => $item['uraian'],
+                    'volume'          => $item['volume'],
+                    'satuan'          => $item['satuan'],
+                    'harga_satuan'    => $item['harga_satuan'],
+                    'total'           => $item['volume'] * $item['harga_satuan'],
+                    'keterangan'      => $item['keterangan'] ?? null,
+                    'progress_persen' => $progressPersen,
+                    'deadline'        => $deadlineItem,
                 ]);
 
                 // Upload dokumentasi (Direct Public Uploads Mirror)

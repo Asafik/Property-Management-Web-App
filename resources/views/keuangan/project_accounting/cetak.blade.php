@@ -3,7 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Project Accounting & HPP - PT Properti Management</title>
+    <title>Laporan Project Accounting & HPP - PT. Graha Cipta Sejahtera</title>
+    <!-- Google Fonts untuk Kop Surat Resmi -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -55,32 +60,81 @@
             color: #0f172a;
         }
         .btn-print {
-            background: #7c3aed;
+            background: linear-gradient(135deg, #004b93, #0284c7);
             color: #ffffff;
-            border: 1px solid #6d28d9;
+            border: 1px solid #004b93;
         }
         .btn-print:hover {
-            background: #6d28d9;
+            opacity: 0.9;
         }
 
-        /* Kop Surat Resmi */
-        .kop-surat {
+        /* ===== KOP SURAT RESMI PT. GRAHA CIPTA SEJAHTERA (PERSIS SEPERTI BA) ===== */
+        .document-header {
+            margin-bottom: 14px;
+            border-bottom: 3.5px double #004b93;
+            padding-bottom: 10px;
+            position: relative;
+        }
+
+        .document-header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 70px;
+        }
+
+        .header-logo-left {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+        }
+
+        .document-header-logo {
+            height: 65px;
+            max-width: 120px;
+            object-fit: contain;
+        }
+
+        .document-header-text {
             text-align: center;
-            border-bottom: 2.5px double #1e293b;
-            padding-bottom: 8px;
-            margin-bottom: 10px;
+            width: 100%;
+            padding: 0 65px;
         }
-        .kop-surat h2 {
-            font-size: 15px;
-            font-weight: 800;
+
+        .company-main-title {
+            color: #004b93 !important;
+            font-size: 24px !important;
+            font-weight: 900 !important;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #0f172a;
-            margin-bottom: 2px;
+            letter-spacing: 0.8px;
+            margin: 0 0 2px 0;
+            font-family: 'Montserrat', 'Arial Black', sans-serif !important;
+            -webkit-font-smoothing: antialiased;
+            text-align: center;
         }
-        .kop-surat p {
-            font-size: 9.5px;
-            color: #475569;
+
+        .company-sub-title {
+            color: #002d62 !important;
+            font-size: 15px !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.3px;
+            margin: 0 0 3px 0;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif !important;
+            text-align: center;
+        }
+
+        .company-address {
+            color: #000000 !important;
+            margin: 0;
+            font-size: 11.5px !important;
+            font-weight: 600;
+            line-height: 1.35;
+            font-family: Arial, Helvetica, sans-serif !important;
+            text-align: center;
         }
 
         /* Sub Header Laporan */
@@ -261,10 +315,18 @@
             </button>
         </div>
 
-        <!-- Kop Surat -->
-        <div class="kop-surat">
-            <h2>PT PROPERTI MANAGEMENT</h2>
-            <p>Jl. Sudirman No. 123, Jakarta Selatan 12190 &bull; Telp: (021) 1234567 &bull; Email: finance@propertimanagement.com</p>
+        <!-- KOP SURAT DENGAN LOGO RESMI PT. GRAHA CIPTA SEJAHTERA (PERSIS SEPERTI BA) -->
+        <div class="document-header">
+            <div class="document-header-inner">
+                <div class="header-logo-left">
+                    <img src="{{ asset('images/logo1.png') }}" alt="Logo PT. Graha Cipta Sejahtera" class="document-header-logo">
+                </div>
+                <div class="document-header-text">
+                    <h2 class="company-main-title">PT. GRAHA CIPTA SEJAHTERA</h2>
+                    <div class="company-sub-title">Developer &amp; General Contractor</div>
+                    <p class="company-address">Kantor : Jl. Letjen Sutoyo No. 99 A Jember &nbsp;&nbsp; Telp. : 0331 - 331447, 0331 - 321533</p>
+                </div>
+            </div>
         </div>
 
         <!-- Judul Laporan -->

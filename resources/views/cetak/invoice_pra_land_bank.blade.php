@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice Pengadaan Lahan - {{ $land->land_name ?? 'Pra Land Bank' }}</title>
 
+    <!-- Google Fonts untuk Kop Surat Resmi -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.9.55/css/materialdesignicons.min.css">
 
     <style>
@@ -27,7 +32,7 @@
 
         body, .card, table, td, th, p, h1, h2, h3, h4, h5,
         .btn, .badge-status, .info-section, .footer-note, small, strong, span, div {
-            font-family: 'Times New Roman', Times, serif !important;
+            font-family: 'Times New Roman', Times, serif;
         }
 
         .invoice-container {
@@ -58,6 +63,7 @@
             text-decoration: none;
             font-weight: bold;
             transition: all 0.2s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
         }
 
         .btn-secondary {
@@ -70,7 +76,7 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #7e22ce, #9a55ff);
+            background: linear-gradient(135deg, #004b93, #0284c7);
             color: #ffffff;
         }
 
@@ -84,54 +90,100 @@
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             border: 1px solid #e2e8f0;
-            padding: 35px 40px;
+            padding: 30px 35px;
         }
 
-        /* ===== KOP SURAT / HEADER PERUSAHAAN ===== */
-        .company-header {
-            border-bottom: 2px solid #1e293b;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+        /* ===== KOP SURAT RESMI PT. GRAHA CIPTA SEJAHTERA (PERSIS SEPERTI BA) ===== */
+        .document-header {
+            margin-bottom: 16px;
+            border-bottom: 3.5px double #004b93;
+            padding-bottom: 12px;
+            position: relative;
+        }
+
+        .document-header-inner {
             display: flex;
-            justify-content: space-between;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 75px;
+        }
+
+        .header-logo-left {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
             align-items: center;
         }
 
-        .company-info h2 {
-            font-size: 20px;
-            font-weight: bold;
-            color: #0f172a;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
+        .document-header-logo {
+            height: 72px;
+            max-width: 130px;
+            object-fit: contain;
+        }
+
+        .document-header-text {
+            text-align: center;
+            width: 100%;
+            padding: 0 65px;
+        }
+
+        .company-main-title {
+            color: #004b93 !important;
+            font-size: 26px !important;
+            font-weight: 900 !important;
             text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin: 0 0 2px 0;
+            font-family: 'Montserrat', 'Arial Black', sans-serif !important;
+            -webkit-font-smoothing: antialiased;
+            text-align: center;
         }
 
-        .company-info p {
-            font-size: 12px;
-            color: #475569;
-            line-height: 1.4;
+        .company-sub-title {
+            color: #002d62 !important;
+            font-size: 16.5px !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.3px;
+            margin: 0 0 4px 0;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif !important;
+            text-align: center;
         }
 
-        .invoice-badge-title {
-            text-align: right;
+        .company-address {
+            color: #000000 !important;
+            margin: 0;
+            font-size: 12.5px !important;
+            font-weight: 600;
+            line-height: 1.35;
+            font-family: Arial, Helvetica, sans-serif !important;
+            text-align: center;
         }
 
-        .invoice-badge-title h1 {
-            font-size: 24px;
-            font-weight: 900;
-            color: #7e22ce;
-            letter-spacing: 1.5px;
-            margin-bottom: 4px;
+        /* DOCUMENT TITLE */
+        .doc-title-block {
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        .invoice-badge-title span {
-            font-size: 13px;
+        .doc-main-title {
+            font-size: 14pt;
             font-weight: bold;
+            text-decoration: underline;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #0f172a;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .doc-number {
+            font-size: 10.5pt;
+            font-weight: 600;
             color: #334155;
-            background: #f1f5f9;
-            padding: 3px 8px;
-            border-radius: 4px;
-            border: 1px solid #cbd5e1;
+            margin-top: 3px;
+            font-family: 'Times New Roman', Times, serif;
         }
 
         /* ===== INFO INVOICE & PIHAK TERKAIT ===== */
@@ -455,18 +507,24 @@
         <!-- CARD INVOICE UTAMA -->
         <div class="card">
 
-            <!-- KOP PERUSAHAAN (DINAMIS DARI COMPANY SETTINGS) -->
-            <div class="company-header">
-                <div class="company-info">
-                    <h2>{{ $companyName }}</h2>
-                    <p>Divisi Land Banking & Akuisisi Lahan Properti</p>
-                    <p>{{ $companyAddress }}</p>
-                    <p>Telp: {{ $companyPhone }} | Email: {{ $companyEmail }} | NPWP: {{ $companyNpwp }}</p>
+            <!-- KOP SURAT DENGAN LOGO RESMI PT. GRAHA CIPTA SEJAHTERA (PERSIS SEPERTI BA) -->
+            <div class="document-header">
+                <div class="document-header-inner">
+                    <div class="header-logo-left">
+                        <img src="{{ asset('images/logo1.png') }}" alt="Logo PT. Graha Cipta Sejahtera" class="document-header-logo">
+                    </div>
+                    <div class="document-header-text">
+                        <h2 class="company-main-title">PT. GRAHA CIPTA SEJAHTERA</h2>
+                        <div class="company-sub-title">Developer &amp; General Contractor</div>
+                        <p class="company-address">Kantor : Jl. Letjen Sutoyo No. 99 A Jember &nbsp;&nbsp; Telp. : 0331 - 331447, 0331 - 321533</p>
+                    </div>
                 </div>
-                <div class="invoice-badge-title">
-                    <h1>INVOICE</h1>
-                    <span>{{ $invoiceNumber }}</span>
-                </div>
+            </div>
+
+            <!-- TITLE DOKUMEN INVOICE -->
+            <div class="doc-title-block">
+                <div class="doc-main-title">INVOICE PENGADAAN LAHAN (PRA LAND BANK)</div>
+                <div class="doc-number">Nomor: {{ $invoiceNumber }}</div>
             </div>
 
             <!-- GRID INFO TRANSAKSI & OBJEK LAHAN -->
