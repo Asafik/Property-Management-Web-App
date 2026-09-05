@@ -25,15 +25,13 @@
 
         @if(isset($pdf) && $pdf)
         @page {
-            size: A4 portrait;
-            margin: 10mm 15mm 10mm 15mm;
+            margin: 0px;
         }
 
         html, body {
             background-color: #ffffff !important;
             padding: 0 !important;
-            margin: 0 !important;
-            width: 100% !important;
+            margin: 10mm 12mm 10mm 12mm !important;
             font-family: 'Times New Roman', Times, serif !important;
             color: #111827;
         }
@@ -41,7 +39,7 @@
         .kuitansi-container {
             width: 100% !important;
             max-width: 100% !important;
-            margin: 0 auto !important;
+            margin: 0 !important;
             padding: 0 !important;
             border: none !important;
             box-shadow: none !important;
@@ -185,7 +183,7 @@
             width: 100%;
             border-collapse: collapse;
             border-bottom: 3.5px double #004b93;
-            padding-bottom: 8px;
+            padding-bottom: 6px;
             margin-bottom: 12px;
             table-layout: fixed;
         }
@@ -198,30 +196,31 @@
 
         .company-main-title {
             color: #004b93 !important;
-            font-size: 18pt !important;
+            font-size: 15.5pt !important;
             font-weight: 900 !important;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin: 0 0 2px 0;
-            font-family: 'Montserrat', Arial, sans-serif !important;
+            font-family: 'Montserrat', Arial, Helvetica, sans-serif !important;
             text-align: center;
             line-height: 1.15;
+            white-space: nowrap !important;
         }
 
         .company-sub-title {
             color: #002d62 !important;
-            font-size: 11pt !important;
+            font-size: 10.5pt !important;
             font-weight: 800 !important;
             letter-spacing: 0.3px;
             margin: 0 0 2px 0;
-            font-family: 'Plus Jakarta Sans', Arial, sans-serif !important;
+            font-family: 'Plus Jakarta Sans', Arial, Helvetica, sans-serif !important;
             text-align: center;
         }
 
         .company-address {
             color: #000000 !important;
             margin: 0;
-            font-size: 8.5pt !important;
+            font-size: 8pt !important;
             font-weight: 600;
             font-family: Arial, Helvetica, sans-serif !important;
             text-align: center;
@@ -353,8 +352,8 @@
         /* ===== PRINT STYLES ===== */
         @media print {
             @page {
-                size: 215mm 330mm portrait;
-                margin: 1.2cm 1.5cm;
+                size: A4 portrait;
+                margin: 10mm 12mm;
             }
 
             body {
@@ -418,15 +417,15 @@
             <!-- KOP SURAT RESMI PT. GRAHA CIPTA SEJAHTERA (3-COLUMN BALANCED TABLE) -->
             <table class="kop-table">
                 <tr>
-                    <td style="width: 15%; text-align: left; vertical-align: middle;">
-                        <img src="{{ $logoBase64 }}" alt="Logo" style="height: 55px; max-width: 90px; display: block;">
+                    <td style="width: 12%; text-align: left; vertical-align: middle;">
+                        <img src="{{ $logoBase64 }}" alt="Logo" style="height: 52px; max-width: 85px; display: block;">
                     </td>
-                    <td style="width: 70%; text-align: center; vertical-align: middle;">
+                    <td style="width: 76%; text-align: center; vertical-align: middle;">
                         <div class="company-main-title">PT. GRAHA CIPTA SEJAHTERA</div>
                         <div class="company-sub-title">Developer &amp; General Contractor</div>
                         <div class="company-address">Kantor : Jl. Letjen Sutoyo No. 99 A Jember &nbsp;&nbsp; Telp. : 0331 - 331447, 0331 - 321533</div>
                     </td>
-                    <td style="width: 15%;"></td>
+                    <td style="width: 12%;"></td>
                 </tr>
             </table>
 
