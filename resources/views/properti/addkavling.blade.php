@@ -783,6 +783,145 @@ body.modal-open .page-body-wrapper {
     color: #111827;
     white-space: nowrap;
 }
+
+/* ===== MODAL ATUR SPK UNIT KAVLING STYLES ===== */
+#modalSpkUnit .modal-dialog {
+    max-width: 800px !important;
+    width: 95% !important;
+    margin: 1.5rem auto !important;
+}
+
+#modalSpkUnit .modal-content {
+    border-radius: 16px !important;
+    border: none !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden;
+}
+
+#modalSpkUnit .modal-header {
+    background: #ffffff;
+    border-bottom: 1px solid #f1f5f9;
+    padding: 1rem 1.4rem;
+}
+
+#modalSpkUnit .form-control {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    height: 40px !important;
+    font-size: 0.88rem !important;
+    padding: 6px 12px !important;
+    color: #1e293b !important;
+    background-color: #ffffff !important;
+    transition: all 0.2s ease !important;
+}
+
+#modalSpkUnit .form-control:focus {
+    border-color: #9a55ff !important;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
+}
+
+/* SPK Rupiah Input Group */
+.spk-rupiah-box {
+    display: flex !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+    height: 40px !important;
+    transition: all 0.2s ease !important;
+}
+
+.spk-rupiah-box:focus-within {
+    border-color: #9a55ff !important;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
+}
+
+.spk-rupiah-box .spk-prefix {
+    background: #f8fafc !important;
+    color: #475569 !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    padding: 0 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-right: 1px solid #cbd5e1 !important;
+    user-select: none !important;
+}
+
+.spk-rupiah-box input.rupiah-spk-input {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 12px !important;
+    font-size: 0.92rem !important;
+    font-weight: 600 !important;
+    color: #1e293b !important;
+    flex: 1 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: transparent !important;
+}
+
+.spk-total-summary-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 5px;
+    padding: 3px 10px;
+    background: rgba(154, 85, 255, 0.08);
+    border-radius: 6px;
+    border: 1px solid rgba(154, 85, 255, 0.18);
+    font-size: 0.78rem;
+    color: #7c3aed;
+    font-weight: 600;
+}
+
+/* Upload Dropzone Box */
+.spk-upload-box {
+    position: relative;
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
+    background: #f8fafc;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.spk-upload-box:hover {
+    border-color: #9a55ff;
+    background: #faf5ff;
+}
+
+.spk-upload-box input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Unit Selection Grid */
+.spk-unit-card {
+    transition: all 0.2s ease;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.spk-unit-card:hover {
+    border-color: #c084fc !important;
+    background: #faf5ff !important;
+    transform: translateY(-1px);
+}
+
+.spk-unit-card.is-selected {
+    border-color: #9a55ff !important;
+    background: rgba(154, 85, 255, 0.08) !important;
+    box-shadow: 0 2px 6px rgba(154, 85, 255, 0.15) !important;
+}
 </style>
 @endpush
 
@@ -2108,25 +2247,28 @@ body.modal-open .page-body-wrapper {
 
 <!-- MODAL: ATUR / TERBITKAN SPK KE MULTI-UNIT KAVLING -->
 <div class="modal fade" id="modalSpkUnit" tabindex="-1" aria-labelledby="modalSpkUnitLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content rounded-4 border-0 shadow">
-            <div class="modal-header border-bottom py-3 px-4">
-                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 w-100 me-2">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="d-inline-flex p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
-                            <i class="mdi mdi-file-document-edit-outline fs-4"></i>
-                        </div>
-                        <h5 class="modal-title fw-bold text-dark mb-0" id="modalSpkUnitLabel">Atur SPK Unit Kavling</h5>
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="d-inline-flex p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
+                        <i class="mdi mdi-file-document-edit-outline fs-4"></i>
                     </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark mb-0" id="modalSpkUnitLabel" style="font-size: 1.1rem;">Atur SPK Unit Kavling</h5>
+                        <small class="text-muted" style="font-size: 0.78rem;">Terbitkan kontrak SPK borongan ke multi-unit kavling terpilih</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
                     <a href="{{ route('spk.create', ['land_bank_id' => $land->id]) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 shadow-sm" style="border-radius: 6px; font-weight: 600; font-size: 0.8rem;" title="Buka Form Pembuatan SPK Lengkap & Rincian Termin">
                         <i class="mdi mdi-open-in-new"></i>
                         <span>Buat Form SPK Lengkap</span>
                     </a>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body p-3 p-md-4" style="max-height: 65vh; overflow-y: auto;">
+            <div class="modal-body p-3 p-md-4" style="max-height: 70vh; overflow-y: auto;">
                 <form id="formAssignSpkModal" action="{{ route('properti.kavling.assignSpk', $land->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
@@ -2141,17 +2283,18 @@ body.modal-open .page-body-wrapper {
                         </div>
 
                         <div class="col-12 col-md-6">
-                            <label class="form-label fw-bold small text-dark mb-1">
-                                Nilai SPK per Unit (Rp) <span class="text-danger">*</span>
-                                <i class="mdi mdi-information-outline text-primary" title="Nilai borongan/kontrak ini otomatis masuk ke perhitungan HPP Bangunan Unit di Modul Keuangan & Project Accounting."></i>
+                            <label class="form-label fw-bold small text-dark mb-1 d-flex align-items-center justify-content-between">
+                                <span>Nilai SPK per Unit (Rp) <span class="text-danger">*</span></span>
+                                <i class="mdi mdi-information-outline text-primary fs-6" title="Nilai borongan ini otomatis masuk ke perhitungan HPP Bangunan Unit di Modul Keuangan & Project Accounting."></i>
                             </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light fw-bold text-muted" style="font-size: 0.85rem;">Rp</span>
-                                <input type="text" name="nilai_kontrak" id="modalSpkNilaiKontrak" class="form-control rupiah-spk-input" placeholder="0" required>
+                            <div class="spk-rupiah-box">
+                                <span class="spk-prefix">Rp</span>
+                                <input type="text" name="nilai_kontrak" id="modalSpkNilaiKontrak" class="rupiah-spk-input" placeholder="0" required autocomplete="off">
                             </div>
-                            <small class="text-primary fw-semibold mt-1 d-block" id="modalSpkTotalCalculation">
-                                Total SPK: Rp 0 (0 unit dipilih)
-                            </small>
+                            <div class="spk-total-summary-box" id="modalSpkTotalCalculation">
+                                <i class="mdi mdi-calculator"></i>
+                                <span>Total SPK: <strong>Rp 0</strong> (0 unit dipilih)</span>
+                            </div>
                         </div>
 
                         <div class="col-12 col-md-6">
@@ -2166,15 +2309,15 @@ body.modal-open .page-body-wrapper {
 
                         <div class="col-12">
                             <label class="form-label fw-bold small text-dark mb-1">Upload Berkas Dokumen SPK (PDF)</label>
-                            <div class="upload-dropzone-box py-2.5 px-3">
+                            <div class="spk-upload-box">
                                 <input type="file" id="uploadDokumenSpkInput" name="dokumen_spk" accept=".pdf">
                                 <div class="d-flex align-items-center justify-content-center gap-3">
-                                    <div class="rounded-circle p-2 bg-danger bg-opacity-10 text-danger d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
-                                        <i class="mdi mdi-file-pdf-box" style="font-size: 1.4rem;"></i>
+                                    <div class="rounded-circle p-2 bg-danger bg-opacity-10 text-danger d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
+                                        <i class="mdi mdi-file-pdf-box fs-4"></i>
                                     </div>
                                     <div class="text-start">
                                         <span class="fw-bold text-dark d-block" id="dokumenSpkFileName" style="font-size: 0.85rem;">Pilih berkas PDF atau seret ke sini</span>
-                                        <small class="text-muted" style="font-size: 0.75rem;">Maksimal 15MB</small>
+                                        <small class="text-muted" style="font-size: 0.75rem;">Format PDF maksimal 15MB</small>
                                     </div>
                                 </div>
                             </div>
@@ -2189,11 +2332,11 @@ body.modal-open .page-body-wrapper {
                                 <small class="text-muted" id="spkUnitCounter">0 unit dipilih</small>
                             </div>
                             <div class="d-flex align-items-center gap-1.5">
-                                <button type="button" class="btn btn-sm btn-light border text-primary fw-semibold px-2.5 py-1 d-inline-flex align-items-center gap-1" id="btnSelectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px; background: #ffffff; border-color: #cbd5e1 !important;">
+                                <button type="button" class="btn btn-sm btn-light border text-primary fw-semibold px-2.5 py-1 d-inline-flex align-items-center gap-1 shadow-sm" id="btnSelectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px; background: #ffffff; border-color: #cbd5e1 !important;">
                                     <i class="mdi mdi-checkbox-multiple-marked-outline text-primary"></i>
                                     <span>Pilih Semua</span>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-light border text-muted fw-semibold px-2.5 py-1 d-inline-flex align-items-center gap-1" id="btnUnselectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px; background: #ffffff; border-color: #cbd5e1 !important;">
+                                <button type="button" class="btn btn-sm btn-light border text-muted fw-semibold px-2.5 py-1 d-inline-flex align-items-center gap-1 shadow-sm" id="btnUnselectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px; background: #ffffff; border-color: #cbd5e1 !important;">
                                     <i class="mdi mdi-checkbox-multiple-blank-outline"></i>
                                     <span>Hapus Semua</span>
                                 </button>
@@ -2202,20 +2345,18 @@ body.modal-open .page-body-wrapper {
 
                         <!-- Search Unit di Modal -->
                         <div class="mb-2">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="filterSpkUnitSearch"
-                                    placeholder="Cari unit..."
-                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 36px; font-size: 0.85rem;">
-                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
-                                    type="button" id="btnSearchSpkUnit" title="Cari"
-                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 36px; box-shadow: none;">
-                                    <i class="mdi mdi-magnify" style="font-size: 1.1rem; color: #ffffff;"></i>
-                                </button>
+                            <div class="d-flex align-items-stretch" style="border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden; background: #ffffff;">
+                                <input type="text" class="form-control border-0 shadow-none px-3" id="filterSpkUnitSearch"
+                                    placeholder="Cari nomor unit / blok / tipe..."
+                                    style="height: 38px; font-size: 0.85rem; border-radius: 0 !important;">
+                                <div class="px-3 d-flex align-items-center justify-content-center bg-light text-muted border-start">
+                                    <i class="mdi mdi-magnify fs-5"></i>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Daftar Unit Checkbox List -->
-                        <div class="spk-unit-selection-grid" style="max-height: 240px; overflow-y: auto; padding-right: 5px;">
+                        <div class="spk-unit-selection-grid" style="max-height: 230px; overflow-y: auto; padding-right: 5px;">
                             <div class="row g-2" id="spkUnitListContainer">
                                 @forelse ($land->units as $u)
                                     @php
@@ -2256,7 +2397,7 @@ body.modal-open .page-body-wrapper {
                 </form>
             </div>
 
-            <div class="modal-footer border-top py-2.5 px-4 d-flex justify-content-end gap-2">
+            <div class="modal-footer border-top py-2.5 px-4 d-flex justify-content-end gap-2 bg-white">
                 <button type="button" class="btn btn-sm btn-light border px-3" data-bs-dismiss="modal">
                     Batal
                 </button>
@@ -3117,14 +3258,14 @@ $(document).ready(function() {
 
     function updateSpkCalculation() {
         const count = $('.spk-unit-checkbox:checked').length;
-        $('#spkUnitCounter').text(count + ' unit kavling dipilih');
+        $('#spkUnitCounter').text(count + ' unit dipilih');
 
         const rawVal = $('#modalSpkNilaiKontrak').val() || '0';
         const numVal = parseInt(rawVal.replace(/[^0-9]/g, ''), 10) || 0;
         const totalVal = numVal * count;
 
-        $('#modalSpkTotalCalculation').text(
-            'Total SPK: Rp ' + totalVal.toLocaleString('id-ID') + ' (' + count + ' unit kavling dipilih)'
+        $('#modalSpkTotalCalculation').html(
+            '<i class="mdi mdi-calculator me-1"></i>Total SPK: <strong class="ms-1">Rp ' + totalVal.toLocaleString('id-ID') + '</strong> <span class="text-muted ms-1">(' + count + ' unit dipilih)</span>'
         );
     }
 
@@ -3136,9 +3277,9 @@ $(document).ready(function() {
     $(document).on('change', '.spk-unit-checkbox', function() {
         updateSpkCalculation();
         if ($(this).is(':checked')) {
-            $(this).closest('.spk-unit-card').addClass('border-primary bg-primary bg-opacity-10');
+            $(this).closest('.spk-unit-card').addClass('is-selected border-primary');
         } else {
-            $(this).closest('.spk-unit-card').removeClass('border-primary bg-primary bg-opacity-10');
+            $(this).closest('.spk-unit-card').removeClass('is-selected border-primary');
         }
     });
 

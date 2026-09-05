@@ -773,6 +773,48 @@
             background-color: #faf7ff !important;
         }
 
+        /* ===== PAYMENT MODULE STYLING ===== */
+        .payment-stat-box {
+            background: #ffffff;
+            border: 1.5px solid #ede8fc;
+            border-radius: 12px;
+            padding: 1rem 1.15rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            box-shadow: 0 2px 8px rgba(154, 85, 255, 0.04);
+            height: 100%;
+        }
+
+        .payment-stat-box.success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .payment-stat-box.warning {
+            background: #fffbeb;
+            border-color: #fde68a;
+        }
+
+        .payment-stat-box.primary {
+            background: #faf8ff;
+            border-color: #e9d5ff;
+        }
+
+        .payment-stat-label {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .payment-stat-val {
+            font-size: 1.28rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
         .badge-ticket {
             background: #f3e8ff;
             color: #7e22ce;
@@ -1390,6 +1432,45 @@
                     </div>
                     <div class="card-body">
                         <div class="document-list">
+                            {{-- Dokumen Berita Acara Verifikasi KPR --}}
+                            @if(!empty($kpr?->berita_acara))
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <div class="document-icon-wrapper">
+                                            <i class="mdi mdi-file-certificate-outline text-success"></i>
+                                        </div>
+                                        <div style="min-width: 0; flex: 1;">
+                                            <span class="document-name" title="Dokumen Berita Acara Verifikasi KPR">Berita Acara Verifikasi</span>
+                                            <small class="document-sub">Hasil Verifikasi KPR</small>
+                                        </div>
+                                    </div>
+                                    <a href="{{ resolveFileUrl($kpr->berita_acara) }}" target="_blank" class="btn-eye" title="Lihat Berita Acara">
+                                        <i class="mdi mdi-eye"></i>
+                                    </a>
+                                </div>
+                            @endif
+
+                            {{-- Dokumen Laporan Hasil Survey KPR --}}
+                            @php
+                                $surveyCompleted = !empty($kpr?->rekomendasi) || !empty($kpr?->survey_date) || !empty($kpr?->appraisal_value);
+                            @endphp
+                            @if($surveyCompleted && !empty($kpr?->id))
+                                <div class="document-item">
+                                    <div class="document-info">
+                                        <div class="document-icon-wrapper">
+                                            <i class="mdi mdi-home-search-outline text-primary"></i>
+                                        </div>
+                                        <div style="min-width: 0; flex: 1;">
+                                            <span class="document-name" title="Laporan Hasil Survey Lapangan KPR">Laporan Survey KPR</span>
+                                            <small class="document-sub">Hasil Survey & Appraisal</small>
+                                        </div>
+                                    </div>
+                                    <a href="{{ route('kpr.survey.cetak', $kpr->id) }}" target="_blank" class="btn-eye" title="Lihat / Cetak Laporan Survey">
+                                        <i class="mdi mdi-printer"></i>
+                                    </a>
+                                </div>
+                            @endif
+
                             {{-- Dokumen Akad --}}
                             @if(!empty($akad?->dokumen))
                                 <div class="document-item">
@@ -1575,11 +1656,14 @@
         <div class="row mt-3">
             <div class="col-md-6 mb-3 mb-md-0">
                 <div class="card h-100">
-                    <div class="card-header bg-white">
-                        <h5 class="card-title">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <h5 class="card-title mb-0">
                             <i class="mdi mdi-cash-multiple"></i>
                             RINCIAN HARGA & PEMBAYARAN
                         </h5>
+                        <a href="{{ route('unit.terjual.cetak-rincian', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
+                            <i class="mdi mdi-printer"></i> Cetak Rincian & Notaris
+                        </a>
                     </div>
                     <div class="card-body">
                         <div class="price-summary">
@@ -1775,6 +1859,223 @@
                                 <i class="mdi mdi-check-circle"></i>
                                 STATUS: {{ strtoupper($booking->status ?? 'SELESAI') }}
                             </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row: Modul Riwayat Pembayaran & Invoice -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="card border-0">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2 py-3">
+                        <div>
+                            <h5 class="card-title mb-0 fw-bold" style="color: #2c2e3f;">
+                                <i class="mdi mdi-receipt-text-outline text-primary me-1"></i>
+                                RINCIAN RIWAYAT PEMBAYARAN & INVOICE
+                            </h5>
+                            <small class="text-muted">Daftar transaksi pembayaran, uang masuk, dan kwitansi resmi unit</small>
+                        </div>
+                        @if($purchaseType !== 'kpr')
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="{{ route('cetak.invoice_cash', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-primary fw-bold px-3 py-1.5 d-inline-flex align-items-center gap-1.5 shadow-sm" style="border-radius: 8px; font-size: 0.82rem;">
+                                <i class="mdi mdi-printer"></i>
+                                <span>Cetak Invoice Lengkap</span>
+                            </a>
+                        </div>
+                        @endif
+                    </div>
+                    <div class="card-body p-3">
+                        <!-- Summary Cards -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <div class="payment-stat-box">
+                                    <span class="payment-stat-label">Total Nilai Unit</span>
+                                    <span class="payment-stat-val text-dark">Rp {{ number_format($purchaseType == 'kpr' && ($kpr->harga_unit ?? false) ? $kpr->harga_unit : $totalPrice, 0, ',', '.') }}</span>
+                                    <small class="text-muted">Nilai kesepakatan transaksi unit</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="payment-stat-box success">
+                                    <span class="payment-stat-label">Total Uang Masuk (Terbayar)</span>
+                                    <span class="payment-stat-val text-success">
+                                        @php
+                                            $calculatedPaid = $totalPaid > 0 ? $totalPaid : ($utjAmount + ($purchaseType == 'kpr' ? ($kpr->dp ?? 0) : 0));
+                                        @endphp
+                                        Rp {{ number_format($calculatedPaid, 0, ',', '.') }}
+                                    </span>
+                                    <small class="text-success fw-semibold"><i class="mdi mdi-check-circle-outline"></i> UTJ + Uang Muka Masuk</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="payment-stat-box {{ $remaining > 0 && $purchaseType != 'kpr' ? 'warning' : 'primary' }}">
+                                    <span class="payment-stat-label">{{ $purchaseType == 'kpr' ? 'Plafon KPR Disetujui' : 'Sisa Tagihan' }}</span>
+                                    <span class="payment-stat-val {{ $purchaseType == 'kpr' ? 'text-primary' : ($remaining > 0 ? 'text-danger' : 'text-success') }}">
+                                        Rp {{ number_format($purchaseType == 'kpr' ? ($kpr->jumlah_pinjaman ?? 0) : $remaining, 0, ',', '.') }}
+                                    </span>
+                                    <small class="text-muted">{{ $purchaseType == 'kpr' ? 'Dicairkan Bank Penyalur' : ($remaining > 0 ? 'Menunggu Pelunasan' : 'Lunas') }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+                        <div class="table-responsive">
+                            <table class="table complaint-table table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px;">#</th>
+                                        <th style="width: 170px;">No. Kwitansi / Ref</th>
+                                        <th>Kategori Pembayaran</th>
+                                        <th style="width: 130px;">Tgl Bayar</th>
+                                        <th style="width: 140px;">Metode Bayar</th>
+                                        <th class="text-end" style="width: 170px;">Nominal (Rp)</th>
+                                        <th class="text-center" style="width: 130px;">Status</th>
+                                        <th class="text-center" style="width: 150px;">Kwitansi / Invoice</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $paymentsList = $booking->payments ?? collect([]);
+                                    @endphp
+
+                                    @if($paymentsList->count() > 0)
+                                        @foreach($paymentsList as $idx => $pay)
+                                            @php
+                                                $refNum = $pay->reference_number;
+                                                $isUtj = in_array(strtolower($pay->type ?? ''), ['booking_fee', 'utj', 'uang_tanda_jadi', 'tanda_jadi']) || ($idx === 0 && str_contains(strtolower($pay->type ?? ''), 'booking'));
+                                                $isPath = empty($refNum) || \Illuminate\Support\Str::contains($refNum, ['payments/', 'booking_fee/', '.jpg', '.jpeg', '.png', '.pdf', '/var/', 'storage/']);
+                                                if ($isPath) {
+                                                    $refNum = $booking->booking_code ?? ($isUtj ? 'UTJ-' . str_pad($booking->id, 4, '0', STR_PAD_LEFT) : 'PAY/' . date('Ym') . '/' . str_pad($pay->id, 3, '0', STR_PAD_LEFT));
+                                                }
+                                            @endphp
+                                            <tr>
+                                                <td>{{ $idx + 1 }}</td>
+                                                <td>
+                                                    <span class="badge-ticket">{{ $refNum }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge-category mb-1">{{ strtoupper(str_replace('_', ' ', $pay->type ?? 'Uang Muka')) }}</span>
+                                                    @if($pay->notes)
+                                                        <small class="text-muted d-block">{{ $pay->notes }}</small>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <small class="text-dark fw-semibold">{{ $pay->payment_date ? \Carbon\Carbon::parse($pay->payment_date)->translatedFormat('d M Y') : ($pay->created_at ? $pay->created_at->translatedFormat('d M Y') : '-') }}</small>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-light text-dark border">{{ strtoupper($pay->method ?? 'Transfer Bank') }}</span>
+                                                </td>
+                                                <td class="text-end fw-bold text-success">
+                                                    Rp {{ number_format($pay->amount, 0, ',', '.') }}
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge-status-pills selesai">
+                                                        <i class="mdi mdi-check"></i> LUNAS
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">
+                                                    @if($isUtj)
+                                                        <div class="d-inline-flex align-items-center gap-1">
+                                                            <a href="{{ route('cetak.kuitansi_utj', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
+                                                                <i class="mdi mdi-printer"></i> Cetak Kwitansi
+                                                            </a>
+                                                            <a href="{{ route('cetak.kuitansi_utj.wa', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 px-2 py-1" title="Kirim Kuitansi ke WhatsApp" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
+                                                                <i class="mdi mdi-whatsapp"></i> WA
+                                                            </a>
+                                                        </div>
+                                                    @elseif($purchaseType !== 'kpr')
+                                                        <div class="d-inline-flex align-items-center gap-1">
+                                                            <a href="{{ route('cetak.invoice_cash', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
+                                                                <i class="mdi mdi-printer"></i> Cetak Kwitansi
+                                                            </a>
+                                                            <a href="{{ route('cetak.invoice_wa', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 px-2 py-1" title="Kirim Invoice ke WhatsApp" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
+                                                                <i class="mdi mdi-whatsapp"></i> WA
+                                                            </a>
+                                                        </div>
+                                                    @else
+                                                        <span class="text-muted small">-</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        {{-- Default UTJ & DP fallback --}}
+                                        @if($utjAmount > 0)
+                                            <tr>
+                                                <td>1</td>
+                                                <td>
+                                                    <span class="badge-ticket">{{ $booking->booking_code ?? ('UTJ-' . str_pad($booking->id, 4, '0', STR_PAD_LEFT)) }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge-category mb-1">Uang Tanda Jadi (UTJ)</span>
+                                                    <small class="text-muted d-block">Booking Fee Awal Pembelian Unit</small>
+                                                </td>
+                                                <td>
+                                                    <small class="text-dark fw-semibold">{{ $booking->created_at ? $booking->created_at->translatedFormat('d M Y') : date('d M Y') }}</small>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-light text-dark border">Transfer Bank</span>
+                                                </td>
+                                                <td class="text-end fw-bold text-success">
+                                                    Rp {{ number_format($utjAmount, 0, ',', '.') }}
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge-status-pills selesai">
+                                                        <i class="mdi mdi-check"></i> TERVERIFIKASI
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="d-inline-flex align-items-center gap-1">
+                                                        <a href="{{ route('cetak.kuitansi_utj', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
+                                                            <i class="mdi mdi-printer"></i> Cetak Kwitansi
+                                                        </a>
+                                                        <a href="{{ route('cetak.kuitansi_utj.wa', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 px-2 py-1" title="Kirim Kuitansi ke WhatsApp" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
+                                                            <i class="mdi mdi-whatsapp"></i> WA
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endif
+
+                                        @if($purchaseType == 'kpr' && ($kpr->dp ?? 0) > 0)
+                                            <tr>
+                                                <td>2</td>
+                                                <td>
+                                                    <span class="badge-ticket">{{ 'DP/' . ($booking->booking_code ?? 'DP-001') }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="badge-category mb-1">Uang Muka / DP</span>
+                                                    <small class="text-muted d-block">Pembayaran Uang Muka KPR</small>
+                                                </td>
+                                                <td>
+                                                    <small class="text-dark fw-semibold">{{ $kpr->approved_at ? \Carbon\Carbon::parse($kpr->approved_at)->translatedFormat('d M Y') : date('d M Y') }}</small>
+                                                </td>
+                                                <td>
+                                                    <span class="badge bg-light text-dark border">Transfer Bank</span>
+                                                </td>
+                                                <td class="text-end fw-bold text-success">
+                                                    Rp {{ number_format($kpr->dp, 0, ',', '.') }}
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge-status-pills selesai">
+                                                        <i class="mdi mdi-check"></i> LUNAS
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">
+                                                    @if($purchaseType !== 'kpr')
+                                                        <a href="{{ route('cetak.invoice_cash', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
+                                                            <i class="mdi mdi-printer"></i> Cetak Kwitansi
+                                                        </a>
+                                                    @else
+                                                        <span class="text-muted small">-</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endif
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -1979,6 +2280,9 @@
                                 </a>
                             </div>
                             <div class="action-right">
+                                <a href="{{ route('unit.terjual.cetak-rincian', $booking->id) }}" target="_blank" class="btn btn-primary d-inline-flex align-items-center gap-1 shadow-sm">
+                                    <i class="mdi mdi-printer"></i> Cetak Rincian Transaksi & Notaris
+                                </a>
                                 <a href="{{ route('serah-terima.cetak', $booking->id) }}" target="_blank" class="btn btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm">
                                     <i class="mdi mdi-printer"></i> Cetak Lembar BAST Resmi
                                 </a>

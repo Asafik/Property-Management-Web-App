@@ -178,10 +178,9 @@ class TransaksiKPRController extends Controller
         // =========================
         // CATATAN + FILE
         // =========================
-        $kpr->catatan = $request->catatan;
+        $kpr->catatan = $request->catatan ?? ($request->catatan_setuju ?? $request->catatan_tolak);
 
         if ($request->hasFile('berita_acara')) {
-
             $file = $request->file('berita_acara');
 
             $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -189,18 +188,30 @@ class TransaksiKPRController extends Controller
             $extension = $file->getClientOriginalExtension();
 
             $filename = time() . '_' . $cleanName . '.' . $extension;
-
-            $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/kpr/verifikasi';
+            $destination = public_path('uploads/kpr/verifikasi');
 
             if (!file_exists($destination)) {
                 mkdir($destination, 0755, true);
             }
 
             $file->move($destination, $filename);
+            $kpr->berita_acara = 'kpr/verifikasi/' . $filename;
+        } elseif ($request->hasFile('berita_acara_tolak')) {
+            $file = $request->file('berita_acara_tolak');
 
-            $path = 'kpr/verifikasi/' . $filename;
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $cleanName = preg_replace('/[^A-Za-z0-9\-]/', '_', $originalName);
+            $extension = $file->getClientOriginalExtension();
 
-            $kpr->berita_acara = $path;
+            $filename = time() . '_' . $cleanName . '.' . $extension;
+            $destination = public_path('uploads/kpr/verifikasi');
+
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+
+            $file->move($destination, $filename);
+            $kpr->berita_acara = 'kpr/verifikasi/' . $filename;
         }
 
         // =========================
@@ -216,7 +227,11 @@ class TransaksiKPRController extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect()->back()->with('success', 'Verifikasi berhasil disimpan!');
+        if ($request->status === 'survey') {
+            return redirect()->route('customer.kpr.survey')->with('success', 'Verifikasi KPR berhasil disetujui! Data telah diteruskan ke daftar User Acc KPR.');
+        } else {
+            return redirect()->route('customer.kpr.rijected')->with('success', 'Verifikasi KPR berhasil ditolak.');
+        }
     } catch (\Throwable $e) {
 
         DB::rollBack();
@@ -225,7 +240,7 @@ class TransaksiKPRController extends Controller
 
         return redirect()->back()
             ->withInput()
-            ->with('error', 'Terjadi kesalahan.');
+            ->with('error', 'Gagal menyimpan verifikasi: ' . $e->getMessage());
     }
 }
     public function verified(Request $request)

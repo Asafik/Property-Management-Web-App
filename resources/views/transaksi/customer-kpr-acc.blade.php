@@ -555,7 +555,7 @@
                                                         <i class="mdi mdi-home-lock me-1.5" style="font-size: 1.05rem; color: #7c3aed;"></i>Sold Out
                                                     </button>
                                                 @else
-                                                    <a href="{{ route('kpr.approve', $application->booking_id ?? $application->id) }}" class="btn btn-gradient-warning btn-sm d-inline-flex align-items-center justify-content-center px-3 py-1.5" title="Proses Akad KPR" onclick="showProcessLoading(event)" style="font-weight: 700; border-radius: 8px; border: 1.5px solid #d97706; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);">
+                                                    <a href="{{ route('kpr.approve', $application->booking_id ?? $application->id) }}" class="btn btn-gradient-warning btn-sm d-inline-flex align-items-center justify-content-center px-3 py-1.5" title="Proses Akad KPR" onclick="showProcessLoading(event)" style="font-weight: 700; border-radius: 8px; border: 1.5px solid #d97706; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25); min-height: 34px; text-decoration: none;">
                                                         <i class="mdi mdi-handshake-outline me-1.5" style="font-size: 1.05rem;"></i>Proses Akad
                                                     </a>
                                                 @endif

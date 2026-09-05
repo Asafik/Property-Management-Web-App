@@ -294,26 +294,55 @@
     font-size: 0.98rem;
 }
 
+.transaksi-handler-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
 .transaksi-handler {
     display: flex;
     align-items: center;
     gap: 0.85rem;
     background: #f8fafc;
     border: 1px solid #edf0f5;
-    padding: 0.75rem 1rem;
-    border-radius: 12px;
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+}
+
+.transaksi-handler.verifier {
+    background: #f0fdf4;
+    border-color: #dcfce7;
 }
 
 .transaksi-handler-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
     background: linear-gradient(135deg, #667eea, #764ba2);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.transaksi-handler.verifier .transaksi-handler-icon {
+    background: linear-gradient(135deg, #0ba360, #3cba92);
+}
+
+.transaksi-handler-role {
+    font-size: 0.72rem;
+    color: #64748b;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.transaksi-handler-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #1e293b;
 }
 
 /* INLINE ALERTS */
@@ -1193,9 +1222,40 @@
                                 <span>{{ $booking->kprApplication->bank->bank_name ?? '-' }}</span>
                             </div>
                             <div class="transaksi-detail-item">
-                                <span>Jumlah Pinjaman</span>
-                                <span>Rp
-                                    {{ number_format($booking->kprApplication->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span>
+                                <span>Harga Unit</span>
+                                <span>Rp {{ number_format($booking->kprApplication->harga_unit ?? ($booking->unit->price ?? 0), 0, ',', '.') }}</span>
+                            </div>
+                            <div class="transaksi-detail-item">
+                                <span>Uang Muka (DP) Awal</span>
+                                <span>Rp {{ number_format($booking->kprApplication->dp ?? 0, 0, ',', '.') }}</span>
+                            </div>
+
+                            @if(($booking->kprApplication->promo_value ?? 0) > 0 || !empty($booking->kprApplication->promo_name))
+                            <div class="transaksi-detail-item">
+                                <span>Promo</span>
+                                <span class="text-primary fw-bold">{{ $booking->kprApplication->promo_name ?? 'Promo Spesial' }}</span>
+                            </div>
+                            <div class="transaksi-detail-item">
+                                <span>Potongan DP (Promo)</span>
+                                <span class="text-danger fw-bold">- Rp {{ number_format($booking->kprApplication->promo_value ?? 0, 0, ',', '.') }}</span>
+                            </div>
+                            @endif
+
+                            @php
+                                $dpAwal = (float)($booking->kprApplication->dp ?? 0);
+                                $nilaiPromo = (float)($booking->kprApplication->promo_value ?? 0);
+                                $dpBersih = max(0, $dpAwal - $nilaiPromo);
+                            @endphp
+                            <div class="transaksi-detail-item">
+                                <span>Total DP yang Dibayar</span>
+                                <span style="color: #2563eb; font-weight: 700;">
+                                    Rp {{ number_format($dpBersih, 0, ',', '.') }}
+                                </span>
+                            </div>
+
+                            <div class="transaksi-detail-item">
+                                <span>Jumlah Pinjaman (Plafond)</span>
+                                <span>Rp {{ number_format($booking->kprApplication->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span>
                             </div>
                             <div class="transaksi-detail-item">
                                 <span>Tenor</span>
@@ -1203,32 +1263,37 @@
                             </div>
                             <div class="transaksi-detail-item">
                                 <span>Angsuran / bln</span>
-                                <span class="highlight">Rp
-                                    {{ number_format($booking->kprApplication->estimasi_angsuran ?? 0, 0, ',', '.') }}
-                                </span>
-                            </div>
-
-
-                            <div class="transaksi-detail-item">
-                                <span>Promo</span>
-                                <span>
-                                    {{ $booking->kprApplication->promo_name ?? '-' }}
-                                </span>
-                            </div>
-
-                            <div class="transaksi-detail-item">
-                                <span>Nilai Promo</span>
-                                <span>
-                                    Rp {{ number_format($booking->kprApplication->promo_value ?? 0, 0, ',', '.') }}
-                                </span>
+                                <span class="highlight">Rp {{ number_format($booking->kprApplication->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
                         <hr class="my-4">
-                        <small class="transaksi-muted d-block mb-2">Ditangani oleh</small>
-                        <div class="transaksi-handler">
-                            <div class="transaksi-handler-icon"><i class="mdi mdi-account-tie"></i></div>
-                            <div>
-                                <div class="fw-bold">{{ $booking->sales->name ?? '-' }}</div>
+                        <small class="transaksi-muted d-block mb-2 fw-semibold">Pihak yang Menangani</small>
+                        <div class="transaksi-handler-group">
+                            <!-- MARKETING (PENGAJU) -->
+                            <div class="transaksi-handler">
+                                <div class="transaksi-handler-icon">
+                                    <i class="mdi mdi-account-tie"></i>
+                                </div>
+                                <div>
+                                    <div class="transaksi-handler-role">Marketing / Sales (Pengaju)</div>
+                                    <div class="transaksi-handler-name">{{ $booking->sales->name ?? 'Staff Marketing' }}</div>
+                                </div>
+                            </div>
+
+                            @php
+                                $currentUserRole = auth()->user()->position->name ?? (auth()->user()->role ?? 'Petugas');
+                            @endphp
+                            <!-- USER LOGIN YANG MENANGANI -->
+                            <div class="transaksi-handler verifier">
+                                <div class="transaksi-handler-icon">
+                                    <i class="mdi mdi-shield-account-variant-outline"></i>
+                                </div>
+                                <div>
+                                    <div class="transaksi-handler-role">{{ $currentUserRole }}</div>
+                                    <div class="transaksi-handler-name">
+                                        {{ auth()->user()->name ?? 'Petugas' }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1453,13 +1518,13 @@
                         <form action="{{ route('kpr.verifikasi.store', $booking->id) }}" method="POST"
                             enctype="multipart/form-data" id="formVerifikasiKpr">
                             @csrf
-                            <input type="hidden" name="status" id="statusVerifikasiInput" value="">
+                            <input type="hidden" name="status" id="statusVerifikasiInput" value="survey">
 
                             <div class="row g-3 mb-3">
                                 <div class="col-12 col-md-6">
                                     <div class="transaksi-decision-card approve">
                                         <input type="radio" name="decision_choice" id="decisionApprove"
-                                            value="survey">
+                                            value="survey" checked>
                                         <label for="decisionApprove" class="transaksi-decision-label">
                                             <div class="transaksi-decision-icon"><i class="mdi mdi-check-bold"></i></div>
                                             <div class="transaksi-decision-content">
@@ -1848,14 +1913,71 @@
                 }
             });
 
+            // Initialize default on page load
+            switchDecision('survey');
+
+            // Allow clicking entire decision card
+            $('.transaksi-decision-card').on('click', function() {
+                const $radio = $(this).find('input[type="radio"]');
+                if (!$radio.is(':checked')) {
+                    $radio.prop('checked', true).trigger('change');
+                }
+            });
+
             $('#formVerifikasiKpr').on('submit', function(e) {
-                if (!$statusInput.val()) {
-                    e.preventDefault();
+                e.preventDefault();
+                const form = this;
+                const status = $statusInput.val();
+
+                if (!status) {
                     $decisionErrorBox.stop(true, true).slideDown(160);
                     $('html, body').animate({
                         scrollTop: $decisionErrorBox.offset().top - 120
                     }, 300);
+                    return false;
                 }
+
+                if (status === 'survey') {
+                    const fileInput = document.getElementById('inputBeritaAcara');
+                    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Dokumen BA Wajib Diunggah',
+                            text: 'Harap lampirkan file Berita Acara Verifikasi terlebih dahulu sebelum menyimpan.',
+                            confirmButtonColor: '#6777ef',
+                            confirmButtonText: 'OK, Saya Mengerti'
+                        });
+                        return false;
+                    }
+                }
+
+                const isApprove = status === 'survey';
+                Swal.fire({
+                    title: isApprove ? 'Konfirmasi Persetujuan KPR' : 'Konfirmasi Penolakan KPR',
+                    text: isApprove 
+                        ? 'Apakah Anda yakin ingin menyetujui verifikasi KPR ini dan meneruskannya ke tahap berikutnya?' 
+                        : 'Apakah Anda yakin ingin menolak pengajuan verifikasi KPR ini?',
+                    icon: isApprove ? 'question' : 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: isApprove ? '#28a745' : '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: isApprove ? 'Ya, Setujui & Simpan' : 'Ya, Tolak Pengajuan',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Menyimpan Data...',
+                            html: 'Mohon tunggu sebentar, sedang memproses verifikasi dan upload dokumen.',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        form.submit();
+                    }
+                });
             });
 
         }); // end document.ready

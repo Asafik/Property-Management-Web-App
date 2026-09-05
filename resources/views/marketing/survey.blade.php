@@ -282,26 +282,55 @@
     font-size: 0.98rem;
 }
 
+.transaksi-handler-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
 .transaksi-handler {
     display: flex;
     align-items: center;
     gap: 0.85rem;
     background: #f8fafc;
     border: 1px solid #edf0f5;
-    padding: 0.75rem 1rem;
-    border-radius: 12px;
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+}
+
+.transaksi-handler.verifier {
+    background: #f0fdf4;
+    border-color: #dcfce7;
 }
 
 .transaksi-handler-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
     background: linear-gradient(135deg, #667eea, #764ba2);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.transaksi-handler.verifier .transaksi-handler-icon {
+    background: linear-gradient(135deg, #0ba360, #3cba92);
+}
+
+.transaksi-handler-role {
+    font-size: 0.72rem;
+    color: #64748b;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.transaksi-handler-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #1e293b;
 }
 
 /* INLINE ALERTS */
@@ -425,6 +454,45 @@
 
 .survey-checkbox-input:checked + .survey-checkbox-label .survey-check-icon {
     color: #9a55ff;
+}
+
+/* CHECKLIST BADGE PILL */
+.survey-badge-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    transition: all 0.25s ease;
+    color: #ffffff !important;
+}
+
+.survey-badge-pill * {
+    color: #ffffff !important;
+}
+
+.survey-badge-pill.success {
+    background: #10b981 !important;
+    color: #ffffff !important;
+    border: 1.5px solid #059669;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
+}
+
+.survey-badge-pill.warning {
+    background: #f59e0b !important;
+    color: #ffffff !important;
+    border: 1.5px solid #d97706;
+    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25);
+}
+
+.survey-badge-pill.danger {
+    background: #ef4444 !important;
+    color: #ffffff !important;
+    border: 1.5px solid #dc2626;
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.25);
 }
 
 .survey-input-group {
@@ -1006,7 +1074,39 @@
                                 <span>{{ $application->bank->bank_name ?? '-' }}</span>
                             </div>
                             <div class="transaksi-detail-item">
-                                <span>Jumlah Pinjaman</span>
+                                <span>Harga Unit</span>
+                                <span>Rp {{ number_format($application->harga_unit ?? ($application->unit->price ?? 0), 0, ',', '.') }}</span>
+                            </div>
+                            <div class="transaksi-detail-item">
+                                <span>Uang Muka (DP) Awal</span>
+                                <span>Rp {{ number_format($application->dp ?? 0, 0, ',', '.') }}</span>
+                            </div>
+
+                            @if(($application->promo_value ?? 0) > 0 || !empty($application->promo_name))
+                            <div class="transaksi-detail-item">
+                                <span>Promo</span>
+                                <span class="text-primary fw-bold">{{ $application->promo_name ?? 'Promo Spesial' }}</span>
+                            </div>
+                            <div class="transaksi-detail-item">
+                                <span>Potongan DP (Promo)</span>
+                                <span class="text-danger fw-bold">- Rp {{ number_format($application->promo_value ?? 0, 0, ',', '.') }}</span>
+                            </div>
+                            @endif
+
+                            @php
+                                $dpAwal = (float)($application->dp ?? 0);
+                                $nilaiPromo = (float)($application->promo_value ?? 0);
+                                $dpBersih = max(0, $dpAwal - $nilaiPromo);
+                            @endphp
+                            <div class="transaksi-detail-item">
+                                <span>Total DP yang Dibayar</span>
+                                <span style="color: #2563eb; font-weight: 700;">
+                                    Rp {{ number_format($dpBersih, 0, ',', '.') }}
+                                </span>
+                            </div>
+
+                            <div class="transaksi-detail-item">
+                                <span>Jumlah Pinjaman (Plafond)</span>
                                 <span>Rp {{ number_format($application->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span>
                             </div>
                             <div class="transaksi-detail-item">
@@ -1015,30 +1115,39 @@
                             </div>
                             <div class="transaksi-detail-item">
                                 <span>Angsuran / bln</span>
-                                <span class="highlight">Rp
-                                    {{ number_format($application->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
-                            </div>
-
-                            <div class="transaksi-detail-item">
-                                <span>Promo</span>
-                                <span>{{ $application->promo_name ?? '-' }}</span>
-                            </div>
-
-                            <div class="transaksi-detail-item">
-                                <span>Nilai Promo</span>
-                                <span>Rp {{ number_format($application->promo_value ?? 0, 0, ',', '.') }}</span>
+                                <span class="highlight">Rp {{ number_format($application->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
 
                         <hr class="my-4">
 
-                        <small class="transaksi-muted d-block mb-2">Ditangani oleh</small>
-                        <div class="transaksi-handler">
-                            <div class="transaksi-handler-icon">
-                                <i class="mdi mdi-account-tie"></i>
+                        <small class="transaksi-muted d-block mb-2 fw-semibold">Pihak yang Menangani</small>
+                        <div class="transaksi-handler-group">
+                            <!-- MARKETING (PENGAJU) -->
+                            <div class="transaksi-handler">
+                                <div class="transaksi-handler-icon">
+                                    <i class="mdi mdi-account-tie"></i>
+                                </div>
+                                <div>
+                                    <div class="transaksi-handler-role">Marketing / Sales (Pengaju)</div>
+                                    <div class="transaksi-handler-name">{{ $application->booking->sales->name ?? ($application->unit->activeBooking->sales->name ?? 'Staff Marketing') }}</div>
+                                </div>
                             </div>
-                            <div>
-                                <div class="fw-bold">{{ $application->booking->sales->name ?? ($application->unit->activeBooking->sales->name ?? 'Staff Marketing') }}</div>
+
+                            @php
+                                $currentUserRole = auth()->user()->position->name ?? (auth()->user()->role ?? 'Petugas');
+                            @endphp
+                            <!-- USER LOGIN YANG MENANGANI -->
+                            <div class="transaksi-handler verifier">
+                                <div class="transaksi-handler-icon">
+                                    <i class="mdi mdi-shield-account-variant-outline"></i>
+                                </div>
+                                <div>
+                                    <div class="transaksi-handler-role">{{ $currentUserRole }}</div>
+                                    <div class="transaksi-handler-name">
+                                        {{ auth()->user()->name ?? 'Petugas' }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1247,8 +1356,8 @@
 
                                 <hr class="my-4">
 
-                                <div class="transaksi-section-title mb-3">
-                                    <i class="mdi mdi-checkbox-marked-outline"></i>
+                                <div class="transaksi-section-title mb-3 d-flex align-items-center">
+                                    <i class="mdi mdi-checkbox-marked-outline me-2"></i>
                                     <span>Checklist Kondisi Unit</span>
                                 </div>
 
@@ -1332,17 +1441,17 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-12 col-md-6">
-                                        <div class="transaksi-form-group">
-                                            <label class="transaksi-form-label">Rekomendasi</label>
-                                            <select class="transaksi-form-control" name="rekomendasi">
-                                                <option value="">Pilih Kelayakan</option>
+                                    <div class="col-12 col-md-7">
+                                        <div class="transaksi-form-group mb-0">
+                                            <label class="transaksi-form-label">Rekomendasi Kelayakan <span class="text-danger">*</span></label>
+                                            <select class="transaksi-form-control" name="rekomendasi" id="selectRekomendasi">
                                                 <option value="Layak"
                                                     {{ $application->rekomendasi == 'Layak' ? 'selected' : '' }}>Layak</option>
                                                 <option value="Tidak Layak"
-                                                    {{ $application->rekomendasi == 'Tidak Layak' ? 'selected' : '' }}>Tidak
+                                                    {{ ($application->rekomendasi == 'Tidak Layak' || !$application->rekomendasi) ? 'selected' : '' }}>Tidak
                                                     Layak</option>
                                             </select>
+                                            <div id="rekomendasiStatusHelp" class="mt-2"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -1388,8 +1497,8 @@
                                 </div>
                                 <div class="transaksi-summary-box">
                                     <div class="label">Kelayakan</div>
-                                    <div class="value" style="font-size: 0.95rem; font-weight: 700;">
-                                        {{ $application->rekomendasi ? $application->rekomendasi : 'Belum ditentukan' }}
+                                    <div id="summaryKelayakan" class="value {{ ($application->rekomendasi == 'Layak') ? 'text-success' : 'text-danger' }}" style="font-size: 0.95rem; font-weight: 700;">
+                                        {{ $application->rekomendasi ? $application->rekomendasi : 'Tidak Layak' }}
                                     </div>
                                 </div>
                             </div>
@@ -1399,6 +1508,7 @@
                                 <ul class="transaksi-mini-list">
                                     <li><i class="mdi mdi-check-circle-outline"></i> Jadwal & Surveyor terisi.</li>
                                     <li><i class="mdi mdi-check-circle-outline"></i> Nilai Pasar & Appraisal.</li>
+                                    <li><i class="mdi mdi-check-circle-outline"></i> 5 Checklist unit wajib dicentang untuk "Layak".</li>
                                     <li><i class="mdi mdi-check-circle-outline"></i> Foto dokumentasi lengkap.</li>
                                 </ul>
                             </div>
@@ -1423,6 +1533,44 @@
 
         <script>
             $(document).ready(function() {
+                function updateKelayakanStatus() {
+                    const total = $('.survey-checkbox-input').length;
+                    const checked = $('.survey-checkbox-input:checked').length;
+                    const isAllChecked = (total > 0 && checked === total);
+                    
+                    const $select = $('#selectRekomendasi');
+                    const $help = $('#rekomendasiStatusHelp');
+                    const $badge = $('#checklistBadge');
+                    const $summary = $('#summaryKelayakan');
+                    
+                    if (isAllChecked) {
+                        $badge.attr('class', 'survey-badge-pill success')
+                              .html('<i class="mdi mdi-check-circle"></i> <span>' + checked + '/' + total + ' Terpenuhi</span>');
+                        $select.val('Layak');
+                        $help.html('<div class="p-2 rounded-2 bg-success bg-opacity-10 text-success border border-success d-flex align-items-center gap-2" style="font-size: 0.8rem;"><i class="mdi mdi-check-decagram fs-5"></i> <div><strong>Semua Checklist Terpenuhi (' + checked + '/' + total + ')</strong>: Unit dinyatakan <strong>LAYAK</strong>.</div></div>');
+                        $summary.text('Layak').removeClass('text-danger text-warning').addClass('text-success');
+                    } else if (checked > 0) {
+                        $badge.attr('class', 'survey-badge-pill warning')
+                              .html('<i class="mdi mdi-clock-outline"></i> <span>' + checked + '/' + total + ' Terpenuhi</span>');
+                        $select.val('Tidak Layak');
+                        $help.html('<div class="p-2 rounded-2 bg-danger bg-opacity-10 text-danger border border-danger d-flex align-items-center gap-2" style="font-size: 0.8rem;"><i class="mdi mdi-alert-circle-outline fs-5"></i> <div><strong>Checklist Belum Lengkap (' + checked + '/' + total + ')</strong>: Rekomendasi otomatis <strong>TIDAK LAYAK</strong> sampai semua item checklist dicentang.</div></div>');
+                        $summary.text('Tidak Layak').removeClass('text-success text-warning').addClass('text-danger');
+                    } else {
+                        $badge.attr('class', 'survey-badge-pill danger')
+                              .html('<i class="mdi mdi-alert-circle-outline"></i> <span>0/' + total + ' Terpenuhi</span>');
+                        $select.val('Tidak Layak');
+                        $help.html('<div class="p-2 rounded-2 bg-danger bg-opacity-10 text-danger border border-danger d-flex align-items-center gap-2" style="font-size: 0.8rem;"><i class="mdi mdi-alert-circle-outline fs-5"></i> <div><strong>Checklist Belum Lengkap (0/' + total + ')</strong>: Rekomendasi otomatis <strong>TIDAK LAYAK</strong> sampai semua item checklist dicentang.</div></div>');
+                        $summary.text('Tidak Layak').removeClass('text-success text-warning').addClass('text-danger');
+                    }
+                }
+
+                $('.survey-checkbox-input').on('change', function() {
+                    updateKelayakanStatus();
+                });
+
+                // Trigger on initial page load
+                updateKelayakanStatus();
+
                 function truncateFileName(name, maxLength = 28) {
                     if (!name) return '';
                     if (name.length <= maxLength) return name;

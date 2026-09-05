@@ -1,399 +1,430 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="utf-8">
-    <title>Berita Acara Serah Terima Unit - Properti Management</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berita Acara Serah Terima (BAST) Unit - {{ $booking->customer->full_name ?? ($booking->booking_code ?? 'BAST') }}</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo.jpeg') }}">
+    <link rel="shortcut icon" href="{{ asset('images/logo.jpeg') }}">
 
-    @if(!isset($pdf) || !$pdf)
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.9.55/css/materialdesignicons.min.css">
-    @endif
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Material Design Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css">
 
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Times New Roman', Times, serif !important;
-            background-color: {{ isset($pdf) && $pdf ? 'white' : '#f5f7fa' }};
-            padding: {{ isset($pdf) && $pdf ? '0' : '30px 20px' }};
-            margin: {{ isset($pdf) && $pdf ? '2cm' : '0' }};
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
+            background-color: #f1f5f9;
+            font-family: 'Times New Roman', Times, Georgia, serif;
+            color: #111827;
+            font-size: 10.5pt;
+            line-height: 1.45;
+            padding: 20px 0;
         }
 
-        body, .card, .card-body, table, td, th, p, h1, h2, h3, h4, h5,
-        .btn, .badge-status, .info-section, .footer-note,
-        .alert, small, strong, span, div, li {
-            font-family: 'Times New Roman', Times, serif !important;
-        }
-
-        .document-container {
-            max-width: 210mm;
-            width: 100%;
-            margin: 0 auto;
-            position: relative;
-            box-shadow: {{ isset($pdf) && $pdf ? 'none' : '0 8px 20px rgba(0,0,0,0.1)' }};
-        }
-
-        /* WATERMARK */
-        .watermark-text {
-            user-select: none;
-            font-size: 56px;
-            color: rgba(75, 73, 172, 0.12);
+        /* Floating Top Action Bar */
+        .no-print-bar {
             position: fixed;
-            top: 50%;
+            top: 15px;
             left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            white-space: nowrap;
-            z-index: 999;
-            pointer-events: none;
-            font-weight: bold;
-            border: 4px double rgba(75, 73, 172, 0.08);
-            padding: 18px 42px;
-            border-radius: 10px;
-            letter-spacing: 4px;
-            text-align: center;
-        }
-
-        @if(!isset($pdf) || !$pdf)
-        .watermark-pattern {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
-            z-index: 998;
-            opacity: 0.08;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            align-items: center;
-            transform: rotate(-20deg);
-        }
-
-        .watermark-pattern span {
-            font-size: 42px;
-            font-weight: bold;
-            color: #4b49ac;
-            margin: 40px;
-            white-space: nowrap;
-        }
-        @endif
-
-        /* BUTTON */
-        @if(!isset($pdf) || !$pdf)
-        .btn-container {
-            margin-bottom: 20px;
-        }
-
-        .btn {
+            transform: translateX(-50%);
+            z-index: 9999;
+            background: rgba(15, 23, 42, 0.92);
+            backdrop-filter: blur(8px);
             padding: 8px 18px;
-            border-radius: 6px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .no-print-bar .btn-action-print {
+            background: linear-gradient(135deg, #004b93, #0284c7);
+            color: #ffffff;
             border: none;
-            cursor: pointer;
-            font-size: 14px;
+            padding: 7px 18px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 30px;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: 0.2s;
+            cursor: pointer;
+            transition: all 0.2s ease;
             text-decoration: none;
         }
 
-        .btn-primary {
-            background: linear-gradient(45deg, #4b49ac, #7a78c5);
-            color: white;
+        .no-print-bar .btn-action-print:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+            color: #ffffff;
         }
 
-        .btn-success {
-            background: linear-gradient(45deg, #00d25b, #028a44);
-            color: white;
+        .no-print-bar .btn-action-close {
+            background: rgba(255, 255, 255, 0.15);
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 7px 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
         }
 
-        .btn-outline-secondary {
-            border: 1px solid #6c757d;
-            color: #6c757d;
-            background: white;
+        .no-print-bar .btn-action-close:hover {
+            background: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
         }
 
-        .btn:hover {
-            opacity: 0.92;
+        /* Printable Sheet Container (F4 Size) */
+        .print-container {
+            width: 215mm;
+            min-height: 330mm;
+            padding: 16mm 20mm 20mm 20mm;
+            margin: 50px auto 30px auto;
+            background: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
         }
-        @endif
 
-        /* CARD */
-        .card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: {{ isset($pdf) && $pdf ? 'none' : '0 2px 15px rgba(0, 0, 0, 0.1)' }};
-            margin-bottom: {{ isset($pdf) && $pdf ? '0' : '25px' }};
+        /* Watermark */
+        .watermark-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 55pt;
+            font-weight: bold;
+            color: rgba(0, 75, 147, 0.035);
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .content-wrap {
             position: relative;
             z-index: 1;
-            border: {{ isset($pdf) && $pdf ? 'none' : '1px solid #e0e5ec' }};
         }
 
-        .card-body {
-            padding: 36px 42px;
-        }
-
-        /* HEADER */
+        /* KOP SURAT RESMI PT. GRAHA CIPTA SEJAHTERA (PATEN) */
         .document-header {
+            margin-bottom: 16px;
+            border-bottom: 3.5px double #004b93;
+            padding-bottom: 12px;
+            position: relative;
+        }
+
+        .document-header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 75px;
+        }
+
+        .header-logo-left {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+        }
+
+        .document-header-logo {
+            height: 72px;
+            max-width: 130px;
+            object-fit: contain;
+        }
+
+        .document-header-text {
             text-align: center;
-            margin-bottom: 22px;
-            border-bottom: 2px solid #4b49ac;
-            padding-bottom: 18px;
-        }
-
-        .document-header h2 {
-            color: #4b49ac;
-            font-size: 28px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-
-        .document-header p {
-            color: #6c757d;
-            margin: 2px 0;
-            font-size: 14px;
-        }
-
-        .document-title {
-            text-align: center;
-            margin: 18px 0 26px;
-        }
-
-        .document-title h3 {
-            font-size: 22px;
-            font-weight: bold;
-            color: #333;
-            border-bottom: 2px dashed #4b49ac;
-            padding-bottom: 8px;
-            display: inline-block;
-            text-transform: uppercase;
-        }
-
-        .document-subtitle {
-            margin-top: 8px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        /* TABLE */
-        .info-table {
             width: 100%;
-            border-collapse: collapse;
-            font-size: 15px;
-            line-height: 1.6;
-            table-layout: fixed;
+            padding: 0 65px;
         }
 
-        .info-table td {
-            padding: 6px 5px;
-            border: none;
-            vertical-align: top;
-            word-break: break-word;
-            overflow-wrap: anywhere;
-        }
-
-        .info-table td:first-child {
-            width: 190px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .info-table td:nth-child(2) {
-            width: 15px;
+        .company-main-title {
+            color: #004b93 !important;
+            font-size: 25px !important;
+            font-weight: 900 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin: 0 0 2px 0;
+            font-family: 'Montserrat', 'Arial Black', sans-serif !important;
+            -webkit-font-smoothing: antialiased;
             text-align: center;
         }
 
-        .info-table td:last-child {
-            width: auto;
+        .company-sub-title {
+            color: #002d62 !important;
+            font-size: 16px !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.3px;
+            margin: 0 0 4px 0;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif !important;
+            text-align: center;
         }
 
-        /* SECTION */
-        .info-section {
-            margin-bottom: 24px;
-            padding: 18px 22px;
-            background-color: #f8f9fc;
-            border-left: 6px solid #4b49ac;
-            border-radius: 0 8px 8px 0;
+        .company-address {
+            color: #000000 !important;
+            margin: 0;
+            font-size: 12px !important;
+            font-weight: 600;
+            line-height: 1.35;
+            font-family: Arial, Helvetica, sans-serif !important;
+            text-align: center;
         }
 
-        .info-section h5,
-        h5 {
-            font-size: 18px;
+        /* DOCUMENT TITLE */
+        .doc-title-block {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .doc-main-title {
+            font-size: 13pt;
             font-weight: bold;
-            margin-bottom: 14px;
-            color: #4b49ac;
             text-decoration: underline;
-            text-underline-offset: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #0f172a;
+        }
+
+        .doc-number {
+            font-size: 10pt;
+            margin-top: 3px;
+            color: #334155;
+            font-weight: 600;
         }
 
         .paragraph {
-            font-size: 15px;
-            line-height: 1.8;
+            font-size: 10.5pt;
+            line-height: 1.5;
             text-align: justify;
-            margin-bottom: 18px;
+            margin-bottom: 14px;
         }
 
-        .check-table {
+        /* SECTION STYLING */
+        .doc-section-title {
+            font-size: 10.5pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: #f1f5f9;
+            padding: 5px 10px;
+            border-left: 4px solid #004b93;
+            margin: 14px 0 8px 0;
+            color: #1e293b;
+        }
+
+        /* DATA TABLE */
+        .table-data {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 12px;
-            font-size: 15px;
+            font-size: 10pt;
+            margin-bottom: 8px;
         }
 
-        .check-table th,
-        .check-table td {
-            border: 1px solid #d9dee7;
-            padding: 10px 12px;
+        .table-data td {
+            padding: 3.5px 6px;
             vertical-align: top;
         }
 
-        .check-table th {
-            background: #eef1f7;
+        .table-data td.td-label {
+            width: 30%;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .table-data td.td-colon {
+            width: 3%;
             text-align: center;
-            font-weight: bold;
         }
 
-        .checkmark {
-            font-weight: bold;
-            color: #00a651;
-            font-size: 16px;
+        .table-data td.td-value {
+            width: 67%;
+            color: #0f172a;
         }
 
-        .xmark {
-            font-weight: bold;
-            color: #dc3545;
-            font-size: 16px;
-        }
-
-        .doc-list {
+        /* CHECKLIST & DOCS TABLE */
+        .table-checklist {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 12px;
-            font-size: 15px;
+            font-size: 9.5pt;
+            margin: 8px 0 12px 0;
         }
 
-        .doc-list th,
-        .doc-list td {
-            border: 1px solid #d9dee7;
-            padding: 10px 12px;
-            vertical-align: top;
+        .table-checklist th,
+        .table-checklist td {
+            border: 1px solid #94a3b8;
+            padding: 6px 9px;
         }
 
-        .doc-list th {
-            background: #eef1f7;
+        .table-checklist th {
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 9pt;
+        }
+
+        .table-checklist td.text-center {
             text-align: center;
         }
 
-        .badge-status {
-            display: inline-block;
-            padding: 5px 16px;
-            border-radius: 30px;
-            font-size: 13px;
+        .badge-status-pills {
             font-weight: 700;
-            letter-spacing: 0.3px;
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 8.5pt;
         }
 
-        .badge-success {
-            background-color: #00d25b;
-            color: white;
+        .badge-status-pills.baik {
+            background-color: #dcfce7;
+            color: #15803d;
+            border: 1px solid #86efac;
         }
 
-        .badge-warning {
-            background-color: #ffab2e;
-            color: white;
+        .badge-status-pills.perbaikan {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+        }
+
+        .badge-status-pills.diserahkan {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #7dd3fc;
+        }
+
+        .badge-status-pills.proses {
+            background-color: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
         }
 
         .notes-box {
-            margin-top: 10px;
-            padding: 14px 16px;
-            background: #fafafa;
-            border: 1px solid #dfe4ea;
-            border-radius: 8px;
-            min-height: 80px;
-            font-size: 15px;
-            line-height: 1.7;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 9.5pt;
+            line-height: 1.5;
+            margin-top: 4px;
+            color: #1e293b;
         }
 
-        .photo-box {
-            margin-top: 10px;
-            padding: 14px 16px;
-            background: #fafafa;
-            border: 1px dashed #b8c2d1;
-            border-radius: 8px;
-            min-height: 52px;
-            font-size: 14px;
-            color: #666;
+        .photo-card {
+            flex: 1;
+            border: 1px solid #cbd5e1;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            background: #f8fafc;
+        }
+
+        .photo-card img {
+            max-width: 100%;
+            max-height: 160px;
+            object-fit: contain;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+        }
+
+        /* SIGNATURE SECTION */
+        .signature-grid {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+            page-break-inside: avoid;
+        }
+
+        .signature-grid td {
+            width: 32%;
+            text-align: center;
+            vertical-align: top;
+            font-size: 10pt;
+            padding: 0 10px;
+        }
+
+        .sig-role {
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 60px;
+        }
+
+        .sig-name {
+            font-weight: bold;
+            text-decoration: underline;
+            color: #0f172a;
+        }
+
+        .sig-title {
+            font-size: 8.5pt;
+            color: #64748b;
+            margin-top: 2px;
         }
 
         .footer-note {
-            margin-top: 35px;
+            margin-top: 26px;
             text-align: center;
-            font-size: 12px;
-            color: #6c757d;
-            border-top: 1px dashed #acb8c5;
-            padding-top: 18px;
+            font-size: 8pt;
+            color: #64748b;
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 10px;
+            page-break-inside: avoid;
         }
 
-        .text-center {
-            text-align: center;
-        }
-
-        .mb-15 { margin-bottom: 15px; }
-        .mt-20 { margin-top: 20px; }
-
-        /* PRINT */
+        /* PRINT STYLES */
         @media print {
-            @page {
-                size: A4;
-                margin: 1.8cm;
-            }
-
             body {
-                background: white;
-                padding: 0;
-                margin: 0;
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
             }
 
-            .document-container {
-                max-width: 100%;
-                box-shadow: none;
-            }
-
-            .btn-container,
-            .d-print-none,
-            .watermark-pattern {
+            .no-print-bar {
                 display: none !important;
             }
 
-            .card {
-                border: none;
-                box-shadow: none;
+            .print-container {
+                width: 100% !important;
+                min-height: auto !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
             }
 
-            .card-body {
-                padding: 0;
-            }
-
-            .watermark-text {
-                opacity: 0.15;
+            .watermark-bg {
+                opacity: 0.1 !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
 
-            .badge-success,
-            .badge-warning {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+            @page {
+                size: 215mm 330mm portrait; /* Kertas F4 / Folio Indonesia */
+                margin: 14mm 15mm;
             }
         }
     </style>
@@ -455,298 +486,259 @@
         }
     @endphp
 
-    <div class="watermark-text">BAST SERAH TERIMA UNIT</div>
-
-    @if(!isset($pdf) || !$pdf)
-    <div class="watermark-pattern">
-        <span>PT PROPERTI MANAGEMENT</span><span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span><span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span><span>PT PROPERTI MANAGEMENT</span>
+    <!-- Floating Top Action Bar -->
+    <div class="no-print-bar">
+        <button class="btn-action-close" onclick="window.close(); if(!window.closed){ history.back(); }">
+            <i class="mdi mdi-arrow-left"></i> Tutup / Kembali
+        </button>
+        <button class="btn-action-print" onclick="window.print()">
+            <i class="mdi mdi-printer"></i> Cetak / Simpan PDF
+        </button>
     </div>
-    @endif
 
-    <div class="document-container">
-        @if(!isset($pdf) || !$pdf)
-        <div class="btn-container d-print-none">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                <div>
-                    <button class="btn btn-outline-secondary" onclick="window.close(); if(!window.closed){ history.back(); }">
-                        <i class="mdi mdi-arrow-left"></i> Tutup / Kembali
-                    </button>
-                </div>
-                <div style="display:flex; gap:10px;">
-                    <button class="btn btn-primary" onclick="window.print()">
-                        <i class="mdi mdi-printer"></i> Cetak / Simpan PDF
-                    </button>
+    <!-- Printable Container -->
+    <div class="print-container">
+        <!-- Subtle Watermark -->
+        <div class="watermark-bg">BAST SERAH TERIMA</div>
+
+        <div class="content-wrap">
+            <!-- Kop Surat Resmi -->
+            <div class="document-header">
+                <div class="document-header-inner">
+                    <div class="header-logo-left">
+                        <img src="{{ asset('images/logo1.png') }}" alt="Logo PT. Graha Cipta Sejahtera" class="document-header-logo">
+                    </div>
+                    <div class="document-header-text">
+                        <h2 class="company-main-title">PT. GRAHA CIPTA SEJAHTERA</h2>
+                        <div class="company-sub-title">Developer &amp; General Contractor</div>
+                        <p class="company-address">Kantor : Jl. Letjen Sutoyo No. 99 A Jember &nbsp;&nbsp; Telp. : 0331 - 331447, 0331 - 321533</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        @endif
 
-        <div class="card">
-            <div class="card-body">
-
-                <div class="document-header">
-                    <h2>PT PROPERTI MANAGEMENT</h2>
-                    <p>Jl. Sudirman No. 123, Jakarta Selatan 12190</p>
-                    <p>Telp: (021) 1234567 | Email: info@propertimanagement.com</p>
-                    <p>NPWP: 01.234.567.8-123.000</p>
+            <!-- Document Title Block -->
+            <div class="doc-title-block">
+                <div class="doc-main-title">BERITA ACARA SERAH TERIMA (BAST) UNIT</div>
+                <div class="doc-number">
+                    Nomor: <strong>{{ $serahTerima->no_bast ?? ($serahTerima->nomor_bast ?? 'BAST/' . date('m/Y') . '/' . str_pad($booking->id ?? 1, 3, '0', STR_PAD_LEFT)) }}</strong>
                 </div>
+            </div>
 
-                <div class="document-title">
-                    <h3>BERITA ACARA SERAH TERIMA (BAST) UNIT</h3>
-                    <div class="document-subtitle">
-                        Nomor: <strong>{{ $serahTerima->no_bast ?? ($serahTerima->nomor_bast ?? 'BAST/' . date('m/Y') . '/' . str_pad($booking->id ?? 1, 3, '0', STR_PAD_LEFT)) }}</strong>
-                    </div>
-                </div>
+            <!-- Opening Paragraph -->
+            <div class="paragraph">
+                Pada hari ini,
+                <strong>{{ \Carbon\Carbon::parse($serahTerima->tanggal_serah_terima ?? ($booking->serah_terima_date ?? now()))->translatedFormat('l, d F Y') }}</strong>,
+                bertempat di
+                <strong>{{ $serahTerima->lokasi_serah_terima ?? 'Lokasi Proyek Perumahan' }}</strong>,
+                telah dilakukan serah terima fisik bangunan dan kelengkapan dokumen unit properti dari pihak pengembang kepada pihak pembeli/konsumen dengan rincian data sebagai berikut:
+            </div>
 
-                <div class="paragraph">
-                    Pada hari ini,
-                    <strong>{{ \Carbon\Carbon::parse($serahTerima->tanggal_serah_terima ?? ($booking->serah_terima_date ?? now()))->translatedFormat('l, d F Y') }}</strong>,
-                    bertempat di
-                    <strong>{{ $serahTerima->lokasi_serah_terima ?? 'Lokasi Proyek Perumahan' }}</strong>,
-                    telah dilakukan serah terima fisik bangunan dan dokumen unit properti dari pihak
-                    <strong>PT Properti Management</strong>
-                    kepada pihak pembeli/konsumen dengan rincian data sebagai berikut:
-                </div>
+            <!-- I. DATA KONSUMEN / PEMBELI -->
+            <div class="doc-section-title">I. DATA KONSUMEN / PEMBELI</div>
+            <table class="table-data">
+                <tr>
+                    <td class="td-label">Nama Lengkap Konsumen</td>
+                    <td class="td-colon">:</td>
+                    <td class="td-value"><strong>{{ $booking->customer->full_name ?? '-' }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="td-label">NIK (Nomor Induk Kependudukan)</td>
+                    <td class="td-colon">:</td>
+                    <td class="td-value">{{ $booking->customer->nik ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <td class="td-label">Nomor Telepon / WhatsApp</td>
+                    <td class="td-colon">:</td>
+                    <td class="td-value">{{ $booking->customer->phone ?? '-' }}</td>
+                </tr>
+                <tr>
+                    <td class="td-label">Kode Booking Transaksi</td>
+                    <td class="td-colon">:</td>
+                    <td class="td-value"><strong style="font-family: monospace;">{{ $booking->booking_code ?? '-' }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="td-label">Skema Pembelian</td>
+                    <td class="td-colon">:</td>
+                    <td class="td-value"><strong>{{ strtoupper($booking->payment_method ?? 'KPR / CASH') }}</strong></td>
+                </tr>
+            </table>
 
-                <!-- DATA CUSTOMER -->
-                <div class="info-section">
-                    <h5>DATA KONSUMEN / PEMBELI</h5>
-                    <table class="info-table">
-                        <tr>
-                            <td>Nama Lengkap</td>
-                            <td>:</td>
-                            <td><strong>{{ $booking->customer->full_name ?? '-' }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td>NIK</td>
-                            <td>:</td>
-                            <td>{{ $booking->customer->nik ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Nomor Telepon / WA</td>
-                            <td>:</td>
-                            <td>{{ $booking->customer->phone ?? '-' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Kode Booking</td>
-                            <td>:</td>
-                            <td><strong style="font-family: monospace;">{{ $booking->booking_code ?? '-' }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Skema Pembayaran</td>
-                            <td>:</td>
-                            <td><strong>{{ strtoupper($booking->payment_method ?? 'KPR / CASH') }}</strong></td>
-                        </tr>
-                    </table>
-                </div>
+            <!-- II. RINCIAN UNIT PROPERTI -->
+            <div class="doc-section-title">II. RINCIAN UNIT PROPERTI</div>
+            <table class="table-data">
+                <tr>
+                    <td class="td-label">Nama Proyek / Perumahan</td>
+                    <td class="td-colon">:</td>
+                    <td class="td-value"><strong>{{ $unit->unit_name ?? ($booking->unit->unit_name ?? '-') }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="td-label">Blok &amp; Nomor Unit</td>
+                    <td class="td-colon">:</td>
+                    <td class="td-value"><strong>Blok {{ $unit->unit_code ?? ($booking->unit->unit_code ?? '-') }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="td-label">Tipe / Luas Tanah &amp; Bangunan</td>
+                    <td class="td-colon">:</td>
+                    <td class="td-value">{{ $unit->type ?? ($booking->unit->type ?? 'Standar') }} (LT: {{ $unit->land_area ?? '-' }} m² / LB: {{ $unit->building_area ?? '-' }} m²)</td>
+                </tr>
+                <tr>
+                    <td class="td-label">Harga Jual Unit</td>
+                    <td class="td-colon">:</td>
+                    <td class="td-value"><strong>Rp {{ number_format($unit->price ?? ($booking->unit->price ?? 0), 0, ',', '.') }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="td-label">Status Serah Terima</td>
+                    <td class="td-colon">:</td>
+                    <td class="td-value">
+                        <span class="badge-status-pills baik">
+                            SELESAI (Unit Diserahterimakan)
+                        </span>
+                    </td>
+                </tr>
+            </table>
 
-                <!-- DATA UNIT -->
-                <div class="info-section">
-                    <h5>RINCIAN UNIT PROPERTI</h5>
-                    <table class="info-table">
-                        <tr>
-                            <td>Nama Unit / Proyek</td>
-                            <td>:</td>
-                            <td><strong>{{ $unit->unit_name ?? ($booking->unit->unit_name ?? '-') }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Blok & Nomor</td>
-                            <td>:</td>
-                            <td><strong>Blok {{ $unit->unit_code ?? ($booking->unit->unit_code ?? '-') }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Tipe / Luas Bangunan</td>
-                            <td>:</td>
-                            <td>{{ $unit->type ?? ($booking->unit->type ?? 'Standar') }} (LT: {{ $unit->land_area ?? '-' }} m² / LB: {{ $unit->building_area ?? '-' }} m²)</td>
-                        </tr>
-                        <tr>
-                            <td>Harga Jual Unit</td>
-                            <td>:</td>
-                            <td><strong>Rp {{ number_format($unit->price ?? ($booking->unit->price ?? 0), 0, ',', '.') }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Status Unit</td>
-                            <td>:</td>
-                            <td>
-                                <span class="badge-status badge-success">
-                                    {{ strtoupper($statusSerahTerima) }} (Unit Diserahterimakan)
-                                </span>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+            <!-- III. PIHAK PENYERAH & PENERIMA -->
+            <div class="doc-section-title">III. PIHAK PENYERAH &amp; PENERIMA</div>
+            <table class="table-data">
+                <tr>
+                    <td class="td-label">Diserahkan Oleh</td>
+                    <td class="td-colon">:</td>
+                    <td class="td-value"><strong>{{ $serahTerima->handled_by_name ?? ($booking->sales->name ?? 'Tim Marketing & Legal') }}</strong></td>
+                </tr>
+                <tr>
+                    <td class="td-label">Jabatan / Peran</td>
+                    <td class="td-colon">:</td>
+                    <td class="td-value">{{ $serahTerima->handled_by_role ?? 'Pengelola / Marketing Resmi' }}</td>
+                </tr>
+                <tr>
+                    <td class="td-label">Diterima Oleh</td>
+                    <td class="td-colon">:</td>
+                    <td class="td-value"><strong>{{ $booking->customer->full_name ?? '-' }}</strong> (Konsumen)</td>
+                </tr>
+                <tr>
+                    <td class="td-label">Saksi Serah Terima</td>
+                    <td class="td-colon">:</td>
+                    <td class="td-value">{{ $serahTerima->saksi ?? '-' }}</td>
+                </tr>
+            </table>
 
-                <!-- PIHAK -->
-                <div class="info-section">
-                    <h5>PIHAK PENYERAH & PENERIMA</h5>
-                    <table class="info-table">
-                        <tr>
-                            <td>Diserahkan Oleh</td>
-                            <td>:</td>
-                            <td><strong>{{ $serahTerima->handled_by_name ?? ($booking->sales->name ?? 'Tim Marketing & Legal') }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Jabatan / Peran</td>
-                            <td>:</td>
-                            <td>{{ $serahTerima->handled_by_role ?? 'Pengelola / Marketing Resmi' }}</td>
-                        </tr>
-                        <tr>
-                            <td>Diterima Oleh</td>
-                            <td>:</td>
-                            <td><strong>{{ $booking->customer->full_name ?? '-' }}</strong> (Konsumen)</td>
-                        </tr>
-                        <tr>
-                            <td>Saksi Serah Terima</td>
-                            <td>:</td>
-                            <td>{{ $serahTerima->saksi ?? '-' }}</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <h5>CHECKLIST HASIL PEMERIKSAAN FISIK UNIT</h5>
-                <table class="check-table">
-                    <thead>
-                        <tr>
-                            <th width="7%">No</th>
-                            <th>Item Pemeriksaan</th>
-                            <th width="20%">Kondisi</th>
-                            <th width="28%">Keterangan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($checklists as $i => $item)
-                        <tr>
-                            <td class="text-center">{{ $i + 1 }}</td>
-                            <td>{{ is_array($item) ? $item['nama'] : $item->nama }}</td>
-                            <td class="text-center">
-                                @if(is_array($item) ? $item['status'] : $item->status)
-                                    <span class="checkmark">Baik / Sesuai</span>
-                                @else
-                                    <span class="xmark">Perlu Perbaikan</span>
-                                @endif
-                            </td>
-                            <td>{{ is_array($item) ? ($item['keterangan'] ?? '-') : ($item->keterangan ?? '-') }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-
-                <div class="mt-20">
-                    <h5>DOKUMEN & KELENGKAPAN YANG DISERAHKAN</h5>
-                    <table class="doc-list">
-                        <thead>
-                            <tr>
-                                <th width="7%">No</th>
-                                <th>Nama Dokumen / Item</th>
-                                <th width="20%">Status</th>
-                                <th width="28%">Keterangan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($dokumenDiserahkan as $i => $doc)
-                            <tr>
-                                <td class="text-center">{{ $i + 1 }}</td>
-                                <td>{{ is_array($doc) ? $doc['nama'] : $doc->nama }}</td>
-                                <td class="text-center">
-                                    {{ (is_array($doc) ? $doc['status'] : $doc->status) ? 'Diserahkan' : 'Belum' }}
-                                </td>
-                                <td>{{ is_array($doc) ? ($doc['keterangan'] ?? '-') : ($doc->keterangan ?? '-') }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="mt-20">
-                    <h5>DOKUMENTASI FOTO SERAH TERIMA</h5>
-                    <div style="display: flex; gap: 20px; margin-top: 10px; page-break-inside: avoid;">
-                        @if($serahTerima && $serahTerima->foto_serah_kunci)
-                            <div style="flex: 1; border: 1px solid #ccc; padding: 10px; border-radius: 6px; text-align: center; background: #fafafa;">
-                                <strong style="font-size: 13px; display: block; margin-bottom: 8px;">Foto Serah Terima Kunci</strong>
-                                <img src="{{ resolveFileUrl($serahTerima->foto_serah_kunci) }}" alt="Foto Kunci" style="max-width: 100%; max-height: 180px; object-fit: contain; border-radius: 4px; border: 1px solid #e0e0e0;">
-                            </div>
-                        @endif
-                        @if($serahTerima && $serahTerima->foto_kondisi_unit)
-                            <div style="flex: 1; border: 1px solid #ccc; padding: 10px; border-radius: 6px; text-align: center; background: #fafafa;">
-                                <strong style="font-size: 13px; display: block; margin-bottom: 8px;">Foto Kondisi Fisik Unit</strong>
-                                <img src="{{ resolveFileUrl($serahTerima->foto_kondisi_unit) }}" alt="Foto Unit" style="max-width: 100%; max-height: 180px; object-fit: contain; border-radius: 4px; border: 1px solid #e0e0e0;">
-                            </div>
-                        @endif
-                        @if(!$serahTerima || (!$serahTerima->foto_serah_kunci && !$serahTerima->foto_kondisi_unit))
-                            <div style="flex: 1; border: 1px dashed #bbb; padding: 15px; border-radius: 6px; text-align: center; color: #666; font-size: 13px;">
-                                Dokumentasi foto fisik tersimpan dalam arsip berkas digital sistem.
-                            </div>
-                        @endif
-                    </div>
-                </div>
-
-                <div class="mt-20">
-                    <h5>CATATAN KHUSUS</h5>
-                    <div class="notes-box">
-                        {{ $serahTerima->catatan ?? 'Tidak ada catatan tambahan. Unit diserahterimakan dalam keadaan baik dan siap dihuni.' }}
-                    </div>
-                </div>
-
-                <div class="info-section mt-20">
-                    <h5>PERNYATAAN</h5>
-                    <div class="paragraph" style="margin-bottom:0;">
-                        Dengan ditandatanganinya Berita Acara Serah Terima Unit ini, maka pihak pembeli menyatakan bahwa unit telah diterima
-                        dalam kondisi baik, layak huni, dan sesuai dengan hasil pemeriksaan/checklist yang telah dilakukan bersama.
-                        Segala dokumen dan perlengkapan yang tercantum juga dinyatakan telah diterima sebagaimana mestinya.
-                    </div>
-                </div>
-
-                <table style="width:100%; margin-top:55px; border-collapse:collapse; page-break-inside:avoid;">
+            <!-- IV. CHECKLIST HASIL PEMERIKSAAN FISIK UNIT -->
+            <div class="doc-section-title">IV. CHECKLIST HASIL PEMERIKSAAN FISIK UNIT</div>
+            <table class="table-checklist">
+                <thead>
                     <tr>
-                        <td style="width:30%; text-align:center; vertical-align:top; padding:0;">
-                            <p style="margin:0 0 5px 0; font-weight:500; font-size:14px;">Yang Menyerahkan,</p>
-                            <div style="margin-top:60px; border-top:2px solid #000; padding-top:10px; font-weight:600; font-size:16px;">
-                                {{ $serahTerima->handled_by_name ?? ($booking->sales->name ?? '_________________') }}
-                            </div>
-                            <p style="color:#6c757d; font-size:12px; margin-top:5px;">
-                                {{ $serahTerima->handled_by_role ?? 'Marketing KPR' }}
-                            </p>
-                        </td>
-
-                        <td style="width:5%;"></td>
-
-                        <td style="width:30%; text-align:center; vertical-align:top; padding:0;">
-                            <p style="margin:0 0 5px 0; font-weight:500; font-size:14px;">Yang Menerima,</p>
-                            <div style="margin-top:60px; border-top:2px solid #000; padding-top:10px; font-weight:600; font-size:16px;">
-                                {{ $booking->customer->full_name ?? '_________________' }}
-                            </div>
-                            <p style="color:#6c757d; font-size:12px; margin-top:5px;">Customer / Pembeli</p>
-                        </td>
-
-                        <td style="width:5%;"></td>
-
-                        <td style="width:30%; text-align:center; vertical-align:top; padding:0;">
-                            <p style="margin:0 0 5px 0; font-weight:500; font-size:14px;">Saksi,</p>
-                            <div style="margin-top:60px; border-top:2px solid #000; padding-top:10px; font-weight:600; font-size:16px;">
-                                {{ $serahTerima->saksi ?? '_________________' }}
-                            </div>
-                            <p style="color:#6c757d; font-size:12px; margin-top:5px;">Saksi Serah Terima</p>
-                        </td>
+                        <th style="width: 7%;">No</th>
+                        <th>Item Pemeriksaan Fisik Bangunan</th>
+                        <th style="width: 24%;">Kondisi</th>
+                        <th style="width: 30%;">Keterangan</th>
                     </tr>
-                </table>
+                </thead>
+                <tbody>
+                    @foreach($checklists as $i => $item)
+                    <tr>
+                        <td class="text-center">{{ $i + 1 }}</td>
+                        <td><strong>{{ is_array($item) ? $item['nama'] : $item->nama }}</strong></td>
+                        <td class="text-center">
+                            @if(is_array($item) ? $item['status'] : $item->status)
+                                <span class="badge-status-pills baik">Baik / Sesuai</span>
+                            @else
+                                <span class="badge-status-pills perbaikan">Perlu Perbaikan</span>
+                            @endif
+                        </td>
+                        <td>{{ is_array($item) ? ($item['keterangan'] ?? '-') : ($item->keterangan ?? '-') }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
 
-                <div class="footer-note">
-                    <p>Dokumen ini sah dan dicetak secara elektronik</p>
-                    <p>Berita Acara Serah Terima Unit ini digunakan sebagai bukti penyerahan unit kepada customer</p>
-                    <p>Dicetak pada: {{ date('d/m/Y H:i:s') }}</p>
-                </div>
+            <!-- V. DOKUMEN & KELENGKAPAN YANG DISERAHKAN -->
+            <div class="doc-section-title">V. DOKUMEN &amp; KELENGKAPAN YANG DISERAHKAN</div>
+            <table class="table-checklist">
+                <thead>
+                    <tr>
+                        <th style="width: 7%;">No</th>
+                        <th>Nama Dokumen / Item Perlengkapan</th>
+                        <th style="width: 24%;">Status Penyerahan</th>
+                        <th style="width: 30%;">Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($dokumenDiserahkan as $i => $doc)
+                    <tr>
+                        <td class="text-center">{{ $i + 1 }}</td>
+                        <td><strong>{{ is_array($doc) ? $doc['nama'] : $doc->nama }}</strong></td>
+                        <td class="text-center">
+                            @if((is_array($doc) ? $doc['status'] : $doc->status))
+                                <span class="badge-status-pills diserahkan">Diserahkan</span>
+                            @else
+                                <span class="badge-status-pills proses">Dalam Proses</span>
+                            @endif
+                        </td>
+                        <td>{{ is_array($doc) ? ($doc['keterangan'] ?? '-') : ($doc->keterangan ?? '-') }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
 
+            <!-- VI. DOKUMENTASI FOTO SERAH TERIMA -->
+            @if($serahTerima && ($serahTerima->foto_serah_kunci || $serahTerima->foto_kondisi_unit))
+            <div class="doc-section-title">VI. DOKUMENTASI FOTO SERAH TERIMA</div>
+            <div style="display: flex; gap: 16px; margin-top: 8px; page-break-inside: avoid;">
+                @if($serahTerima->foto_serah_kunci)
+                    <div class="photo-card">
+                        <strong style="font-size: 9pt; display: block; margin-bottom: 6px; color: #1e293b;">Foto Serah Terima Kunci</strong>
+                        <img src="{{ resolveFileUrl($serahTerima->foto_serah_kunci) }}" alt="Foto Kunci">
+                    </div>
+                @endif
+                @if($serahTerima->foto_kondisi_unit)
+                    <div class="photo-card">
+                        <strong style="font-size: 9pt; display: block; margin-bottom: 6px; color: #1e293b;">Foto Kondisi Fisik Unit</strong>
+                        <img src="{{ resolveFileUrl($serahTerima->foto_kondisi_unit) }}" alt="Foto Kondisi Unit">
+                    </div>
+                @endif
+            </div>
+            @endif
+
+            <!-- VII. CATATAN & PERNYATAAN BERSAMA -->
+            <div class="doc-section-title">{{ ($serahTerima && ($serahTerima->foto_serah_kunci || $serahTerima->foto_kondisi_unit)) ? 'VII' : 'VI' }}. CATATAN &amp; PERNYATAAN BERSAMA</div>
+            <div class="notes-box">
+                <strong>Catatan Khusus:</strong><br>
+                {{ $serahTerima->catatan ?? 'Tidak ada catatan tambahan. Unit properti diserahterimakan dalam keadaan baik, bersih, dan siap untuk dihuni.' }}
+            </div>
+            <div class="paragraph" style="margin-top: 10px; margin-bottom: 0; font-size: 10pt;">
+                Dengan ditandatanganinya Berita Acara Serah Terima (BAST) Unit ini, maka pihak pembeli menyatakan bahwa fisik bangunan dan dokumen unit telah diterima dalam kondisi baik, layak huni, dan sesuai dengan spesifikasi checklist pemeriksaan. Segala hak pemanfaatan unit beralih kepada pembeli sejak tanggal serah terima ini.
+            </div>
+
+            <!-- LEMBAR TANDA TANGAN -->
+            <table class="signature-grid">
+                <tr>
+                    <td>
+                        <div class="sig-role">Pihak Pengembang (Menyerahkan),</div>
+                        <div class="sig-name">{{ $serahTerima->handled_by_name ?? ($booking->sales->name ?? 'Tim Marketing & Legal') }}</div>
+                        <div class="sig-title">{{ $serahTerima->handled_by_role ?? 'Pengelola / Marketing Resmi' }}</div>
+                    </td>
+
+                    <td>
+                        <div class="sig-role">Konsumen / Pembeli (Menerima),</div>
+                        <div class="sig-name">{{ $booking->customer->full_name ?? '________________________' }}</div>
+                        <div class="sig-title">Customer / Pemilik Unit</div>
+                    </td>
+
+                    <td>
+                        <div class="sig-role">Saksi Pihak Terkait,</div>
+                        <div class="sig-name">{{ $serahTerima->saksi ?? '________________________' }}</div>
+                        <div class="sig-title">Saksi Serah Terima</div>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- FOOTER -->
+            <div class="footer-note">
+                <p>Dokumen ini sah dan diterbitkan secara resmi oleh Sistem Manajemen Properti PT. Graha Cipta Sejahtera</p>
+                <p>Waktu Cetak Dokumen: {{ date('d/m/Y H:i:s') }} WIB &bull; Kode Transaksi: {{ $booking->booking_code ?? '-' }}</p>
             </div>
         </div>
-
-        @if(!isset($pdf) || !$pdf)
-        <div class="d-print-none" style="background:#e8ecf5;padding:12px;border-radius:8px;margin-top:10px;">
-            <i class="mdi mdi-information-outline"></i>
-            Dokumen ini dilengkapi watermark untuk keamanan.
-        </div>
-        @endif
     </div>
+
 </body>
 </html>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\KprApplication;
+use App\Models\CompanyProfile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -196,5 +197,24 @@ class SurveyController extends Controller
                 ->withInput()
                 ->with('error', 'Gagal menyimpan survey: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Cetak Berita Acara / Laporan Hasil Survey Lapangan KPR
+     */
+    public function cetakSurvey($id)
+    {
+        $application = KprApplication::with([
+            'customer',
+            'unit.landBank',
+            'unit.activeBooking.sales',
+            'bank',
+            'booking.sales',
+            'surveyor.position'
+        ])->findOrFail($id);
+
+        $companyProfile = CompanyProfile::first();
+
+        return view('cetak.hasil_survey_kpr', compact('application', 'companyProfile'));
     }
 }

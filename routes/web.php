@@ -180,6 +180,14 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
     Route::get('/dashboard-cetak-invoice-konversi/{booking}/pdf', [InvoiceController::class, 'cetakPdfKonversi'])
         ->name('dashboard.cetak.invoice.konversi.pdf');
 
+    // Route Kuitansi UTJ (Uang Tanda Jadi)
+    Route::get('/dashboard-cetak-kuitansi-utj/{booking}', [InvoiceController::class, 'cetakKuitansiUtj'])
+        ->name('cetak.kuitansi_utj');
+    Route::get('/dashboard-cetak-kuitansi-utj/{booking}/pdf', [InvoiceController::class, 'cetakKuitansiUtjPdf'])
+        ->name('dashboard.cetak.kuitansi.utj.pdf');
+    Route::get('/dashboard-cetak-kuitansi-utj/{booking}/wa', [InvoiceController::class, 'sendUtjToWa'])
+        ->name('cetak.kuitansi_utj.wa');
+
     Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
     // Route::get('/dashboard-cetak-rab', fn() => view('cetak.rab'));
     Route::get('/dashboard-cetak-rab/{unit_id}', [RABController::class, 'index'])->name('cetak.rab');
@@ -454,6 +462,7 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
     Route::get('/customer-kpr-acc', [SurveyController::class, 'index'])->name('customer.kpr.survey');
     Route::get('/customer-kpr-rijected', [CustomerKPRRijectedController::class, 'index'])->name('customer.kpr.rijected');
     Route::post('/kpr/survey/{kprId}/store', [SurveyController::class, 'store'])->name('kpr.survey.store');
+    Route::get('/transaksi/kpr/{id}/cetak-survey', [SurveyController::class, 'cetakSurvey'])->name('kpr.survey.cetak');
 
 
     Route::get('/customer-kpr-komersil/', [TransaksiKPRController::class, 'analisaKPRKomersil'])->name('analisa.kpr.komersil');
@@ -566,6 +575,8 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
     // });
     Route::get('customer/unit/booking/done/{bookingId}', [SerahTerimaController::class, 'SellDone'])
         ->name('unit.selesai');
+    Route::get('customer/unit/booking/done/{bookingId}/cetak-rincian', [SerahTerimaController::class, 'cetakRincianTransaksi'])
+        ->name('unit.terjual.cetak-rincian');
 
     // Route halaman pengaturan
     Route::get('/pengaturan', [CompanySettingController::class, 'index'])->name('setting.index');

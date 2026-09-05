@@ -344,7 +344,7 @@ class SellUnitController extends Controller
 
         // Bersihkan format rupiah
         $bookingFee = str_replace(['.', ',', ' '], '', $request->booking_fee);
-        $agentFee = $request->filled('agent_fee') ? str_replace(['.', ',', ' '], '', $request->agent_fee) : null;
+        $agentFee = $request->filled('agent_fee') ? (float) str_replace(['.', ',', ' '], '', $request->agent_fee) : 0;
 
         // Upload file
         $filePath = null;
@@ -361,29 +361,45 @@ class SellUnitController extends Controller
             $filePath = 'payments/booking_fee/' . $filename;
         }
 
-        DB::transaction(function () use ($request, $unit, $bookingFee, $agentFee, $filePath) {
+        $user = Auth::user();
+        $isStaffMarketing = false;
+        if ($user) {
+            $posName = strtolower($user->position->name ?? '');
+            if ($user->position_id == 2 || (strpos($posName, 'marketing') !== false && strpos($posName, 'kepala') === false)) {
+                $isStaffMarketing = true;
+            }
+        }
+
+        DB::transaction(function () use ($request, $unit, $bookingFee, $agentFee, $filePath, $user, $isStaffMarketing) {
             $booking = Booking::where('unit_id', $unit->id)
                 ->where('status', 'active')
                 ->first();
 
+            $targetSalesId = $request->sales_id;
+            if ($isStaffMarketing && $user) {
+                $targetSalesId = $user->id;
+            }
+
             if ($booking) {
+                $finalSalesId = $targetSalesId ?? ($booking->sales_id ?: ($user ? $user->id : null));
                 $booking->update([
                     'customer_id'   => $request->customer_id,
                     'booking_date'  => now(),
                     'purchase_type' => $request->purchase_type,
                     'booking_fee'   => $bookingFee,
                     'utj'           => $bookingFee,
-                    'sales_id'      => $request->sales_id ?? $booking->sales_id,
-                    'agent_fee'     => $agentFee ?? $booking->agent_fee,
+                    'sales_id'      => $finalSalesId,
+                    'agent_fee'     => $agentFee ?: ($booking->agent_fee ?? 0),
                     'status'        => 'active',
                 ]);
             } else {
+                $finalSalesId = $targetSalesId ?? ($user ? $user->id : null);
                 $booking = Booking::create([
                     'booking_code'  => 'BOOK-' . date('Ymd') . '-' . strtoupper(Str::random(4)),
                     'unit_id'       => $unit->id,
                     'customer_id'   => $request->customer_id,
-                    'sales_id'      => $request->sales_id ?? null,
-                    'agent_fee'     => $agentFee ?? null,
+                    'sales_id'      => $finalSalesId,
+                    'agent_fee'     => $agentFee ?: 0,
                     'booking_date'  => now(),
                     'purchase_type' => $request->purchase_type,
                     'booking_fee'   => $bookingFee,
@@ -450,7 +466,7 @@ class SellUnitController extends Controller
             $unit = LandBankUnit::findOrFail($unitId);
 
             // Bersihkan format rupiah (hapus titik dan koma)
-            $agentFee = str_replace(['.', ',', ' '], '', $request->agent_fee);
+            $agentFee = $request->filled('agent_fee') ? (float) str_replace(['.', ',', ' '], '', $request->agent_fee) : 0;
 
             $booking = Booking::where('unit_id', $unit->id)
                 ->where('status', 'active')

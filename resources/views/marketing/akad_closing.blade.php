@@ -283,26 +283,55 @@
     font-size: 0.98rem;
 }
 
+.transaksi-handler-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
 .transaksi-handler {
     display: flex;
     align-items: center;
     gap: 0.85rem;
     background: #f8fafc;
     border: 1px solid #edf0f5;
-    padding: 0.75rem 1rem;
-    border-radius: 12px;
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+}
+
+.transaksi-handler.verifier {
+    background: #f0fdf4;
+    border-color: #dcfce7;
 }
 
 .transaksi-handler-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
     background: linear-gradient(135deg, #667eea, #764ba2);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.transaksi-handler.verifier .transaksi-handler-icon {
+    background: linear-gradient(135deg, #0ba360, #3cba92);
+}
+
+.transaksi-handler-role {
+    font-size: 0.72rem;
+    color: #64748b;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.transaksi-handler-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #1e293b;
 }
 
 /* INLINE ALERTS */
@@ -1060,23 +1089,33 @@
                     </div>
                 </div>
 
-                <!-- CARD 2: DOKUMEN BERITA ACARA (BA) VERIFIKASI -->
+                <!-- CARD 2: DOKUMEN PENDUKUNG & HASIL SURVEY KPR -->
                 <div class="card">
                     <div class="card-body">
                         <div class="transaksi-section-title">
                             <i class="mdi mdi-file-certificate-outline"></i>
-                            <span>Dokumen Berita Acara (BA) Verifikasi</span>
+                            <span>Dokumen Pendukung & Hasil Survey KPR</span>
                         </div>
 
-                        @if ($kpr->berita_acara)
+                        @php
+                            $surveyDone = !empty($kpr->rekomendasi) || !empty($kpr->survey_date) || !empty($kpr->appraisal_value);
+                            $allDocsReady = !empty($kpr->berita_acara) && $surveyDone;
+                        @endphp
+
+                        @if ($allDocsReady)
                             <div class="transaksi-inline-alert success">
                                 <i class="mdi mdi-check-circle-outline"></i>
-                                <div>Dokumen Berita Acara Verifikasi KPR telah tersedia dan terverifikasi. Pengajuan siap diproses untuk tahap akad.</div>
+                                <div>Dokumen Berita Acara Verifikasi dan Laporan Hasil Survey Lapangan telah lengkap. Pengajuan siap diproses untuk tahap akad.</div>
+                            </div>
+                        @elseif ($kpr->berita_acara || $surveyDone)
+                            <div class="transaksi-inline-alert info">
+                                <i class="mdi mdi-information-outline"></i>
+                                <div>Sebagian dokumen pendukung telah tersedia. Periksa kelengkapan berkas sebelum melanjutkan ke akad.</div>
                             </div>
                         @else
                             <div class="transaksi-inline-alert warning">
                                 <i class="mdi mdi-alert-circle-outline"></i>
-                                <div>Dokumen Berita Acara Verifikasi KPR belum diunggah.</div>
+                                <div>Dokumen pendukung KPR belum lengkap.</div>
                             </div>
                         @endif
 
@@ -1086,11 +1125,12 @@
                                     <tr>
                                         <th style="width: 45%;">Nama Dokumen</th>
                                         <th style="width: 20%;">Status</th>
-                                        <th style="width: 20%;">Tanggal Verifikasi</th>
+                                        <th style="width: 20%;">Tanggal Dokumen</th>
                                         <th style="width: 15%; text-align: center;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {{-- 1. Berita Acara Verifikasi KPR --}}
                                     <tr>
                                         <td>
                                             <div class="transaksi-doc-name">
@@ -1127,6 +1167,51 @@
                                             @else
                                                 <button type="button" class="transaksi-doc-action disabled"
                                                     title="Dokumen belum tersedia" disabled>
+                                                    <i class="mdi mdi-eye-off-outline"></i>
+                                                </button>
+                                            @endif
+                                        </td>
+                                    </tr>
+
+                                    {{-- 2. Laporan Hasil Survey Lapangan KPR --}}
+                                    <tr>
+                                        <td>
+                                            <div class="transaksi-doc-name">
+                                                <div class="transaksi-doc-icon" style="background: rgba(37, 99, 235, 0.12); color: #2563eb;">
+                                                    <i class="mdi mdi-home-search-outline"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold">Laporan Hasil Survey Lapangan KPR</div>
+                                                    <small class="transaksi-muted">Hasil penilaian appraisal, kelayakan fisik & legalitas kavling</small>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            @if ($surveyDone)
+                                                <span class="badge bg-success px-2.5 py-1.5" style="border-radius: 6px;">
+                                                    Selesai ({{ $kpr->rekomendasi ?? 'Layak' }})
+                                                </span>
+                                            @else
+                                                <span class="badge bg-warning text-dark px-2.5 py-1.5" style="border-radius: 6px;">Menunggu Survey</span>
+                                            @endif
+                                        </td>
+
+                                        <td>
+                                            <span class="transaksi-muted">
+                                                {{ $kpr->survey_date ? \Carbon\Carbon::parse($kpr->survey_date)->translatedFormat('d M Y') : '-' }}
+                                            </span>
+                                        </td>
+
+                                        <td class="text-center">
+                                            @if ($surveyDone)
+                                                <a href="{{ route('kpr.survey.cetak', $kpr->id) }}" target="_blank"
+                                                    class="transaksi-doc-action" title="Lihat & Cetak Laporan Hasil Survey" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;">
+                                                    <i class="mdi mdi-printer"></i>
+                                                </a>
+                                            @else
+                                                <button type="button" class="transaksi-doc-action disabled"
+                                                    title="Hasil survey belum tersedia" disabled>
                                                     <i class="mdi mdi-eye-off-outline"></i>
                                                 </button>
                                             @endif
@@ -1434,7 +1519,39 @@
                                 <span>{{ $kpr->bank->bank_name ?? '-' }}</span>
                             </div>
                             <div class="transaksi-detail-item">
-                                <span>Jumlah Pinjaman</span>
+                                <span>Harga Unit</span>
+                                <span>Rp {{ number_format($kpr->harga_unit ?? ($kpr->unit->price ?? 0), 0, ',', '.') }}</span>
+                            </div>
+                            <div class="transaksi-detail-item">
+                                <span>Uang Muka (DP) Awal</span>
+                                <span>Rp {{ number_format($kpr->dp ?? 0, 0, ',', '.') }}</span>
+                            </div>
+
+                            @if(($kpr->promo_value ?? 0) > 0 || !empty($kpr->promo_name))
+                            <div class="transaksi-detail-item">
+                                <span>Promo</span>
+                                <span class="text-primary fw-bold">{{ $kpr->promo_name ?? 'Promo Spesial' }}</span>
+                            </div>
+                            <div class="transaksi-detail-item">
+                                <span>Potongan DP (Promo)</span>
+                                <span class="text-danger fw-bold">- Rp {{ number_format($kpr->promo_value ?? 0, 0, ',', '.') }}</span>
+                            </div>
+                            @endif
+
+                            @php
+                                $dpAwal = (float)($kpr->dp ?? 0);
+                                $nilaiPromo = (float)($kpr->promo_value ?? 0);
+                                $dpBersih = max(0, $dpAwal - $nilaiPromo);
+                            @endphp
+                            <div class="transaksi-detail-item">
+                                <span>Total DP yang Dibayar</span>
+                                <span style="color: #2563eb; font-weight: 700;">
+                                    Rp {{ number_format($dpBersih, 0, ',', '.') }}
+                                </span>
+                            </div>
+
+                            <div class="transaksi-detail-item">
+                                <span>Jumlah Pinjaman (Plafond)</span>
                                 <span>Rp {{ number_format($kpr->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span>
                             </div>
                             <div class="transaksi-detail-item">
@@ -1445,27 +1562,37 @@
                                 <span>Angsuran / bln</span>
                                 <span class="highlight">Rp {{ number_format($kpr->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
                             </div>
-
-                            <div class="transaksi-detail-item">
-                                <span>Promo</span>
-                                <span>{{ $kpr->promo_name ?? '-' }}</span>
-                            </div>
-
-                            <div class="transaksi-detail-item">
-                                <span>Nilai Promo</span>
-                                <span>Rp {{ number_format($kpr->promo_value ?? 0, 0, ',', '.') }}</span>
-                            </div>
                         </div>
 
                         <hr class="my-3">
 
-                        <small class="transaksi-muted d-block mb-2">Ditangani oleh</small>
-                        <div class="transaksi-handler">
-                            <div class="transaksi-handler-icon">
-                                <i class="mdi mdi-account-tie"></i>
+                        <small class="transaksi-muted d-block mb-2 fw-semibold">Pihak yang Menangani</small>
+                        <div class="transaksi-handler-group">
+                            <!-- MARKETING (PENGAJU) -->
+                            <div class="transaksi-handler">
+                                <div class="transaksi-handler-icon">
+                                    <i class="mdi mdi-account-tie"></i>
+                                </div>
+                                <div>
+                                    <div class="transaksi-handler-role">Marketing / Sales (Pengaju)</div>
+                                    <div class="transaksi-handler-name">{{ $kpr->booking->sales->name ?? ($kpr->unit->activeBooking->sales->name ?? 'Staff Marketing') }}</div>
+                                </div>
                             </div>
-                            <div>
-                                <div class="fw-bold">{{ $kpr->booking->sales->name ?? ($kpr->unit->activeBooking->sales->name ?? 'Staff Marketing') }}</div>
+
+                            @php
+                                $currentUserRole = auth()->user()->position->name ?? (auth()->user()->role ?? 'Petugas');
+                            @endphp
+                            <!-- USER LOGIN YANG MENANGANI -->
+                            <div class="transaksi-handler verifier">
+                                <div class="transaksi-handler-icon">
+                                    <i class="mdi mdi-shield-account-variant-outline"></i>
+                                </div>
+                                <div>
+                                    <div class="transaksi-handler-role">{{ $currentUserRole }}</div>
+                                    <div class="transaksi-handler-name">
+                                        {{ auth()->user()->name ?? 'Petugas' }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

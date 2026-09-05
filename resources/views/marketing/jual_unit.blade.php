@@ -1864,6 +1864,7 @@
                                                             data-status_text="{{ $statusText }}"
                                                             data-construction="{{ $unit->construction_progress ?? 'belum_mulai' }}"
                                                             data-has_booking="{{ $unit->activeBooking ? '1' : '0' }}"
+                                                            data-booking_id="{{ $unit->activeBooking->id ?? '' }}"
                                                             data-customer="{{ $unit->activeBooking->customer->full_name ?? '-' }}"
                                                             data-sales="{{ $unit->activeBooking->sales->name ?? '-' }}"
                                                             data-booking_date="{{ $unit->activeBooking ? \Carbon\Carbon::parse($unit->activeBooking->booking_date)->format('d F Y') : '-' }}"
@@ -2575,6 +2576,16 @@
                                                         <div class="timeline-detail-value" id="m_booking_status">-</div>
                                                     </div>
                                                 </div>
+                                                <div class="col-12 mt-3 pt-2 border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
+                                                    <div class="text-muted small">
+                                                        <i class="mdi mdi-receipt-text-check-outline text-success me-1"></i> Bukti Pembayaran Resmi Uang Tanda Jadi (UTJ)
+                                                    </div>
+                                                    <div>
+                                                        <a href="#" id="m_btn_cetak_kuitansi" target="_blank" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 shadow-sm px-3 py-2" style="border-radius: 6px; font-weight: 600; text-decoration: none;">
+                                                            <i class="mdi mdi-printer me-1" style="font-size: 1.1rem;"></i> Cetak Kuitansi UTJ
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -2614,7 +2625,7 @@
 
         <!-- MODAL CUSTOMER & BOOKING UNIT -->
         <div class="modal fade" id="modalCustomer" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
                 <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
                     <div class="modal-header bg-light border-bottom" style="padding: 1.1rem 1.4rem;">
                         <div>
@@ -2622,7 +2633,7 @@
                                 <i class="mdi mdi-account-plus text-primary me-2" style="font-size: 1.35rem;"></i>
                                 Formulir Booking Unit
                             </h5>
-                            <small class="text-muted" style="font-size: 0.78rem;">Pilih Agency/Sales dan Customer pembeli unit</small>
+                            <small class="text-muted" style="font-size: 0.78rem;">Pilih Customer pembeli unit dan rincian transaksi booking</small>
                         </div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -2631,62 +2642,11 @@
                             @csrf
                             <input type="hidden" id="customer_unit_id" name="unit_id">
 
-                            <!-- Section 1: Agency & Komisi (Step 1) -->
-                            <!-- Box 1A: Jika agency SUDAH ADA / TERPASANG -> Tampilkan Ringkasan & Kunci (Tanpa Dropdown) -->
-                            <div class="p-3 rounded-3 mb-3" id="box_agency_existing" style="display: none; background: #f0fdf4; border: 1.5px solid #86efac;">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <span class="text-success fw-bold small"><i class="mdi mdi-check-decagram me-1"></i>Agency / Sales Pembawa (Sudah Terpasang)</span>
-                                    <span class="badge bg-success text-white" style="font-size: 0.7rem; border-radius: 4px; padding: 3px 6px;">Sudah Ada</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                                    <div>
-                                        <h6 class="fw-bold text-dark mb-0" id="existing_sales_name">-</h6>
-                                        <small class="text-muted" id="existing_sales_phone"></small>
-                                    </div>
-                                    <div class="text-end">
-                                        <small class="text-muted d-block" style="font-size: 0.72rem;">Komisi Agency</small>
-                                        <span class="fw-bold text-success" id="existing_agent_fee" style="font-size: 0.95rem;">Rp 0</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Box 1B: Jika agency KOSONG -> Tampilkan Pilihan Dropdown Agency -->
-                            <div class="p-3 rounded-3 mb-3" id="box_agency_selector" style="background: #faf5ff; border: 1.5px solid #e9d5ff;">
-                                <div class="d-flex justify-content-between align-items-center mb-1.5">
-                                    <label class="form-label fw-bold text-dark mb-0" style="font-size: 0.88rem;">
-                                        <i class="mdi mdi-account-tie text-primary me-1"></i>Pilih Agency / Sales Agent
-                                    </label>
-                                    <span class="badge text-white" style="font-size: 0.7rem; background: #9a55ff; border-radius: 4px; padding: 3px 6px;">Tahap 1</span>
-                                </div>
-                                <select class="form-control select2-customer-agency-modal" id="customer_select_sales_id" name="sales_id" style="width: 100%;">
-                                    <option value="">-- Pilih Agency / Agent Yang Membawa --</option>
-                                    @foreach ($agencies as $a)
-                                        <option value="{{ $a->id }}" data-name="{{ $a->name }}" data-phone="{{ $a->phone ?? '' }}" data-address="{{ $a->address ?? '' }}">
-                                            {{ $a->name }} @if(!empty($a->phone)) ({{ $a->phone }}) @endif
-                                        </option>
-                                    @endforeach
-                                </select>
-                                
-                                <div class="mt-2 pt-2 border-top">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <label class="form-label fw-bold mb-0 text-dark" style="font-size: 0.78rem;">Nominal Fee Agent (Otomatis)</label>
-                                        <small class="text-primary fw-bold" id="customer_auto_calc_label" style="font-size: 0.72rem;"></small>
-                                    </div>
-                                    <div class="input-group input-group-sm rupiah-input-group">
-                                        <span class="input-group-text">Rp</span>
-                                        <input type="text" class="form-control rupiah-format" id="customer_modal_agent_fee" name="agent_fee" placeholder="0" autocomplete="off">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Section 2: Pilih Customer (Step 2) -->
+                            <!-- Section: Pilih Customer -->
                             <div class="mb-3">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
-                                        <i class="mdi mdi-account-search text-primary me-1"></i>Pilih Customer <span class="text-danger">*</span>
-                                    </label>
-                                    <span class="badge bg-primary text-white" style="font-size: 0.7rem; border-radius: 4px; padding: 3px 6px;">Tahap 2</span>
-                                </div>
+                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
+                                    <i class="mdi mdi-account-search text-primary me-1"></i>Pilih Customer <span class="text-danger">*</span>
+                                </label>
                                 <select class="form-control select2-customer-modal" id="select_customer_id" name="customer_id" style="width: 100%;" required>
                                     <option value="">-- Cari & Pilih Customer (ID / Nama) --</option>
                                     @foreach ($customers as $c)
@@ -2759,7 +2719,7 @@
 
         <!-- MODAL AGENCY DENGAN OTOMATISASI KOMISI -->
         <div class="modal fade" id="modalAgency" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
                 <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
                     <div class="modal-header bg-light border-bottom" style="padding: 1.1rem 1.4rem;">
                         <div>
@@ -2767,7 +2727,7 @@
                                 <i class="mdi mdi-office-building text-primary me-2" style="font-size: 1.35rem;"></i>
                                 Pasang Agency & Komisi
                             </h5>
-                            <small class="text-muted" style="font-size: 0.78rem;">Pilih Agency terlebih dahulu, lalu simpan atau lanjut pilih customer</small>
+                            <small class="text-muted" style="font-size: 0.78rem;">Pilih Agency / Sales Agent dan tetapkan komisi fee untuk unit terpilih</small>
                         </div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -2835,15 +2795,12 @@
                             </div>
                         </form>
                     </div>
-                    <div class="modal-footer bg-white border-top px-3 py-2.5 d-flex flex-wrap justify-content-end gap-2">
+                    <div class="modal-footer bg-white border-top px-3 py-2.5 d-flex justify-content-end gap-2">
                         <button type="button" class="btn btn-sm btn-light border px-3" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 600;">
                             Batal
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-primary px-3" id="btnSimpanAgencyOnly" style="border-radius: 8px; font-weight: 600;">
+                        <button type="button" class="btn btn-sm btn-gradient-primary px-4 fw-bold shadow-sm" id="btnSimpanAgencyOnly" style="border-radius: 8px;">
                             <i class="mdi mdi-content-save me-1"></i>Simpan Agency
-                        </button>
-                        <button type="button" class="btn btn-sm btn-gradient-primary px-3" id="btnSimpanAgencyAndNext" style="border-radius: 8px; font-weight: 600;">
-                            <i class="mdi mdi-account-arrow-right me-1"></i>Lanjut Pilih Customer
                         </button>
                     </div>
                 </div>
@@ -3177,6 +3134,18 @@
                             `<span class="badge-soft badge-draft"><i class="mdi mdi-clock-outline"></i>${bLabel}</span>`;
                     }
                     document.getElementById('m_booking_status').innerHTML = bookingBadgeHtml;
+
+                    // Tombol Cetak Kuitansi UTJ
+                    const bookingId = button.getAttribute('data-booking_id');
+                    const btnKuitansi = document.getElementById('m_btn_cetak_kuitansi');
+                    if (btnKuitansi) {
+                        if (bookingId) {
+                            btnKuitansi.href = "{{ url('dashboard-cetak-kuitansi-utj') }}/" + bookingId;
+                            btnKuitansi.style.display = 'inline-flex';
+                        } else {
+                            btnKuitansi.style.display = 'none';
+                        }
+                    }
                 }
             });
         }
@@ -3210,6 +3179,7 @@
                 statusText: "{{ $unit->status == 'ready' || $unit->status == 'tersedia' ? 'Tersedia' : ($unit->status == 'sold' ? 'Terjual' : 'Booking') }}",
                 construction: "{{ $unit->construction_progress ?? 'belum_mulai' }}",
                 hasBooking: {{ $unit->activeBooking ? 1 : 0 }},
+                bookingId: "{{ $unit->activeBooking->id ?? '' }}",
                 customer: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->customer->full_name ?? '-')) }}",
                 sales: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->sales->name ?? '-')) }}",
                 sales_id: "{{ $unit->activeBooking->sales_id ?? '' }}",
@@ -3384,6 +3354,7 @@
                         markerGroup.statusText = u.statusText;
                         markerGroup.construction = u.construction;
                         markerGroup.hasBooking = u.hasBooking;
+                        markerGroup.bookingId = u.bookingId;
                         markerGroup.customer = u.customer;
                         markerGroup.sales = u.sales;
                         markerGroup.bookingDate = u.bookingDate;
@@ -3734,6 +3705,17 @@
                     bBadge = `<span class="badge-soft badge-draft">${bStatus}</span>`;
                 }
                 document.getElementById('m_booking_status').innerHTML = bBadge;
+
+                // Tombol Cetak Kuitansi UTJ
+                const btnKuitansi = document.getElementById('m_btn_cetak_kuitansi');
+                if (btnKuitansi) {
+                    if (data.bookingId) {
+                        btnKuitansi.href = "{{ url('dashboard-cetak-kuitansi-utj') }}/" + data.bookingId;
+                        btnKuitansi.style.display = 'inline-flex';
+                    } else {
+                        btnKuitansi.style.display = 'none';
+                    }
+                }
             }
         };
 
@@ -3755,6 +3737,7 @@
                 statusText: target.statusText,
                 construction: target.construction,
                 hasBooking: target.hasBooking,
+                bookingId: target.bookingId,
                 customer: target.customer,
                 sales: target.sales,
                 bookingDate: target.bookingDate,
@@ -3867,7 +3850,7 @@
         }
 
         // ========== OPEN CUSTOMER MODAL (BOOKING) ==========
-        window.openCustomerModal = function(unitId, prefillSalesId = null, prefillAgentFee = null, prefillSalesName = null, prefillSalesPhone = null) {
+        window.openCustomerModal = function(unitId) {
             if (!unitId) {
                 Swal.fire({
                     icon: 'error',
@@ -3879,49 +3862,12 @@
             $('#modalCustomer').attr('data-unit-id', unitId);
             $('#customer_unit_id').val(unitId);
             $('#select_customer_id').val('').trigger('change');
-            $('#select_purchase_type').val('kpr');
+            $('#select_purchase_type').val('kpr').trigger('change');
             $('#booking_fee').val('');
             $('#bukti_transfer').val('');
-            $('#buktiFileName').text('Upload Bukti Transfer');
+            $('#buktiFileName').text('Upload Bukti Transfer UTJ');
             $('#buktiFileSize').text('');
             $('#buktiLabel').removeClass('file-selected');
-
-            // Ambil data unit dari allUnitsData
-            const unit = (typeof allUnitsData !== 'undefined' && allUnitsData.length > 0)
-                ? (allUnitsData.find(u => u.id == unitId) || {})
-                : {};
-
-            const unitPrice = unit.price || 0;
-            const unitJenis = unit.jenis || unit.type || 'komersil';
-            const landBankId = unit.land_bank_id || null;
-
-            // Cek apakah Agency sudah ada / dipilih
-            const existingSalesId = prefillSalesId || unit.sales_id || (unit.activeBooking ? unit.activeBooking.sales_id : null);
-            const existingSalesName = prefillSalesName || unit.sales_name || (unit.sales && unit.sales !== '-' ? unit.sales : '');
-            const existingSalesPhone = prefillSalesPhone || unit.sales_phone || '';
-            const existingAgentFee = (prefillAgentFee !== null && prefillAgentFee !== undefined && prefillAgentFee !== '') ? prefillAgentFee : (unit.agentFee || (unit.activeBooking ? unit.activeBooking.agent_fee : 0));
-
-            if (existingSalesId && existingSalesName && existingSalesName !== '-') {
-                // Agency SUDAH ADA -> Sembunyikan dropdown pemilihan agar tidak double update
-                $('#box_agency_existing').show();
-                $('#existing_sales_name').text(existingSalesName);
-                $('#existing_sales_phone').text(existingSalesPhone ? '(' + existingSalesPhone + ')' : '');
-                $('#existing_agent_fee').text('Rp ' + new Intl.NumberFormat('id-ID').format(String(existingAgentFee).replace(/\./g, '').replace(/,/g, '') || 0));
-
-                $('#box_agency_selector').hide();
-                $('#customer_select_sales_id').val(existingSalesId).trigger('change');
-                $('#customer_modal_agent_fee').val(new Intl.NumberFormat('id-ID').format(String(existingAgentFee).replace(/\./g, '').replace(/,/g, '') || 0));
-            } else {
-                // Agency KOSONG -> Tampilkan dropdown pemilihan agency
-                $('#box_agency_existing').hide();
-                $('#box_agency_selector').show();
-
-                $('#customer_select_sales_id').val('').trigger('change');
-                // Hitung default estimasi komisi sesuai aturan master
-                const calc = window.calculateAgentFee(unitPrice, unitJenis, landBankId);
-                $('#customer_modal_agent_fee').val(new Intl.NumberFormat('id-ID').format(calc.fee));
-                $('#customer_auto_calc_label').text('(' + calc.ruleName + ')');
-            }
 
             $('#modalCustomer').modal('show');
         };
@@ -3983,13 +3929,6 @@
                     width: '100%'
                 });
 
-                $('#customer_select_sales_id').select2({
-                    dropdownParent: $('#modalCustomer'),
-                    placeholder: '-- Pilih Agency / Agent Yang Membawa --',
-                    allowClear: true,
-                    width: '100%'
-                });
-
                 $('#select_purchase_type').select2({
                     dropdownParent: $('#modalCustomer'),
                     minimumResultsForSearch: Infinity,
@@ -4014,13 +3953,6 @@
                 width: '100%'
             });
 
-            $('#customer_select_sales_id').select2({
-                dropdownParent: $('#modalCustomer'),
-                placeholder: '-- Pilih Agency / Agent Yang Membawa --',
-                allowClear: true,
-                width: '100%'
-            });
-
             $('#select_purchase_type').select2({
                 dropdownParent: $('#modalCustomer'),
                 minimumResultsForSearch: Infinity,
@@ -4034,25 +3966,8 @@
                 width: '100%'
             });
 
-            // Saat Agency dipilih di modal Customer, otomatis hitung komisi jika belum diisi
-            $('#customer_select_sales_id').on('change', function() {
-                let unitId = $('#customer_unit_id').val();
-                let unit = (window.catalogUnitsMap && window.catalogUnitsMap[unitId]) ? window.catalogUnitsMap[unitId] : {};
-                let unitPrice = unit.price || 0;
-                let unitJenis = unit.jenis || unit.type || 'komersil';
-                let landBankId = unit.land_bank_id || null;
-
-                if ($(this).val()) {
-                    const calc = window.calculateAgentFee(unitPrice, unitJenis, landBankId);
-                    if (!$('#customer_modal_agent_fee').val()) {
-                        $('#customer_modal_agent_fee').val(new Intl.NumberFormat('id-ID').format(calc.fee));
-                    }
-                    $('#customer_auto_calc_label').text('(' + calc.ruleName + ')');
-                }
-            });
-
             // Format Rupiah
-            $('#booking_fee, #agent_fee_modal, #customer_modal_agent_fee').on('input', function() {
+            $('#booking_fee, #agent_fee_modal').on('input', function() {
                 let value = $(this).val().replace(/[^0-9]/g, '');
                 if (value) $(this).val(new Intl.NumberFormat('id-ID').format(value));
                 else $(this).val('');
@@ -4070,7 +3985,7 @@
                     else $fileSize.text((file.size / (1024 * 1024)).toFixed(1) + ' MB');
                     $label.addClass('file-selected');
                 } else {
-                    $fileName.text('Upload Bukti Transfer');
+                    $fileName.text('Upload Bukti Transfer UTJ');
                     $fileSize.text('');
                     $label.removeClass('file-selected');
                 }
@@ -4080,8 +3995,6 @@
             $('#btnSimpanCustomer').on('click', function(e) {
                 e.preventDefault();
                 let customerId = $('#select_customer_id').val();
-                let salesId = $('#customer_select_sales_id').val();
-                let agentFee = $('#customer_modal_agent_fee').val().replace(/\./g, '').replace(/,/g, '').trim();
                 let purchaseType = $('#select_purchase_type').val();
                 let unitId = $('#modalCustomer').attr('data-unit-id') || $('#customer_unit_id').val();
                 let bookingFee = $('#booking_fee').val().replace(/\./g, '').replace(/,/g, '').trim();
@@ -4151,8 +4064,6 @@
                 formData.append('purchase_type', purchaseType);
                 formData.append('booking_fee', bookingFee);
                 formData.append('bukti_transfer', buktiTransfer);
-                if (salesId) formData.append('sales_id', salesId);
-                if (agentFee) formData.append('agent_fee', agentFee);
 
                 let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(':unitId', unitId);
 
@@ -4198,10 +4109,9 @@
             });
 
             // Eksekusi AJAX Simpan Agency
-            function submitAgencyAjax(andProceedToCustomer = false) {
+            function submitAgencyAjax() {
                 let salesId = $('#select_sales_id').val();
                 let agentFeeRaw = $('#agent_fee_modal').val().replace(/\./g, '').replace(/,/g, '').trim();
-                let agentFeeFormatted = $('#agent_fee_modal').val();
                 let unitId = $('#modalAgency').data('unit') || $('#agency_unit_id').val();
 
                 if (!unitId) {
@@ -4250,37 +4160,13 @@
                     },
                     success: function(response) {
                         $('#modalAgency').modal('hide');
-
-                        if (andProceedToCustomer) {
-                            Swal.close();
-                            const selectedAgencyOption = $('#select_sales_id option:selected');
-                            const salesName = selectedAgencyOption.data('name') || selectedAgencyOption.text().split('(')[0].trim();
-                            const salesPhone = selectedAgencyOption.data('phone') || '';
-
-                            // Update allUnitsData di memori juga agar sinkron seketika
-                            if (typeof allUnitsData !== 'undefined') {
-                                const u = allUnitsData.find(item => item.id == unitId);
-                                if (u) {
-                                    u.sales_id = salesId;
-                                    u.sales_name = salesName;
-                                    u.sales_phone = salesPhone;
-                                    u.sales = salesName;
-                                    u.agentFee = agentFeeRaw;
-                                }
-                            }
-
-                            setTimeout(function() {
-                                openCustomerModal(unitId, salesId, agentFeeRaw, salesName, salesPhone);
-                            }, 300);
-                        } else {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil!',
-                                text: response.message || 'Agency berhasil dipasang ke unit',
-                                showConfirmButton: false,
-                                timer: 1500
-                            }).then(() => location.reload());
-                        }
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message || 'Agency berhasil dipasang ke unit',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => location.reload());
                     },
                     error: function(xhr) {
                         let errMsg = 'Terjadi kesalahan saat menyimpan';
@@ -4301,13 +4187,7 @@
             // Tombol Simpan Agency Saja
             $('#btnSimpanAgencyOnly, #btnSimpanAgency').on('click', function(e) {
                 e.preventDefault();
-                submitAgencyAjax(false);
-            });
-
-            // Tombol Simpan Agency & Lanjut Pilih Customer
-            $('#btnSimpanAgencyAndNext').on('click', function(e) {
-                e.preventDefault();
-                submitAgencyAjax(true);
+                submitAgencyAjax();
             });
 
             // Search dan Filter Customer Table

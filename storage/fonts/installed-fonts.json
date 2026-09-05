@@ -1,0 +1,12 @@
+{
+    "montserrat": {
+        "800": "F:\\Property-Management-Web-App\\storage\\fonts\/montserrat_800_31c76b37778ac09639512894e95dee8a",
+        "900": "montserrat_900_5aa72c700a9156b5f6ef5ef0d10a5fbb"
+    },
+    "plus jakarta sans": {
+        "500": "F:\\Property-Management-Web-App\\storage\\fonts\/plus_jakarta_sans_500_d11c7c2b6ee08331c5d1a7984d0927bb",
+        "600": "F:\\Property-Management-Web-App\\storage\\fonts\/plus_jakarta_sans_600_9f311d0ee9acf3e7bf95a4348b029c33",
+        "bold": "F:\\Property-Management-Web-App\\storage\\fonts\/plus_jakarta_sans_bold_78a6995f90ba527650463aab62b3a3b3",
+        "800": "plus_jakarta_sans_800_2eb7c869ec83f0492f5164518a4ccaff"
+    }
+}

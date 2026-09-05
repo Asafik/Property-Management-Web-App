@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Berita Acara Verifikasi KPR - {{ $booking->booking_code ?? 'BA-KPR' }}</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo.jpeg') }}">
+    <link rel="shortcut icon" href="{{ asset('images/logo.jpeg') }}">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Material Design Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css">
@@ -48,7 +50,7 @@
         }
 
         .no-print-bar .btn-action-print {
-            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            background: linear-gradient(135deg, #004b93, #0284c7);
             color: #ffffff;
             border: none;
             padding: 7px 18px;
@@ -65,7 +67,7 @@
 
         .no-print-bar .btn-action-print:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
             color: #ffffff;
         }
 
@@ -90,10 +92,10 @@
             color: #ffffff;
         }
 
-        /* Printable Sheet Container */
+        /* Printable Sheet Container (F4 Size) */
         .print-container {
-            width: 210mm;
-            min-height: 297mm;
+            width: 215mm;
+            min-height: 330mm;
             padding: 16mm 20mm 20mm 20mm;
             margin: 50px auto 30px auto;
             background: #ffffff;
@@ -107,9 +109,9 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 68pt;
+            font-size: 60pt;
             font-weight: bold;
-            color: rgba(139, 92, 246, 0.04);
+            color: rgba(0, 75, 147, 0.04);
             white-space: nowrap;
             pointer-events: none;
             z-index: 0;
@@ -123,53 +125,73 @@
             z-index: 1;
         }
 
-        /* KOP SURAT */
-        .kop-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: 12px;
-            border-bottom: 3px double #1e293b;
+        /* KOP SURAT RESMI PT. GRAHA CIPTA SEJAHTERA (PATEN) */
+        .document-header {
             margin-bottom: 16px;
+            border-bottom: 3.5px double #004b93;
+            padding-bottom: 12px;
+            position: relative;
         }
 
-        .kop-logo-area {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .kop-logo-icon {
-            width: 52px;
-            height: 52px;
-            background: linear-gradient(135deg, #8b5cf6, #6366f1);
-            border-radius: 10px;
+        .document-header-inner {
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
-            font-size: 28px;
+            position: relative;
+            min-height: 75px;
         }
 
-        .kop-company-title {
-            font-size: 14pt;
-            font-weight: bold;
+        .header-logo-left {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+        }
+
+        .document-header-logo {
+            height: 72px;
+            max-width: 130px;
+            object-fit: contain;
+        }
+
+        .document-header-text {
+            text-align: center;
+            width: 100%;
+            padding: 0 65px;
+        }
+
+        .company-main-title {
+            color: #004b93 !important;
+            font-size: 26px !important;
+            font-weight: 900 !important;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #0f172a;
+            letter-spacing: 0.8px;
+            margin: 0 0 2px 0;
+            font-family: 'Montserrat', 'Arial Black', sans-serif !important;
+            -webkit-font-smoothing: antialiased;
+            text-align: center;
         }
 
-        .kop-company-sub {
-            font-size: 9.5pt;
-            color: #475569;
-            margin-top: 2px;
+        .company-sub-title {
+            color: #002d62 !important;
+            font-size: 16.5px !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.3px;
+            margin: 0 0 4px 0;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif !important;
+            text-align: center;
         }
 
-        .kop-company-meta {
-            text-align: right;
-            font-size: 8.5pt;
-            color: #64748b;
+        .company-address {
+            color: #000000 !important;
+            margin: 0;
+            font-size: 12.5px !important;
+            font-weight: 600;
             line-height: 1.35;
+            font-family: Arial, Helvetica, sans-serif !important;
+            text-align: center;
         }
 
         /* DOCUMENT TITLE */
@@ -356,8 +378,8 @@
             }
 
             @page {
-                size: A4 portrait;
-                margin: 12mm 15mm 12mm 15mm;
+                size: 215mm 330mm portrait; /* F4 / Folio */
+                margin: 1.5cm 1.8cm;
             }
         }
     </style>
@@ -376,23 +398,22 @@
         </a>
     </div>
 
-    <!-- Printable Paper Sheet -->
+    <!-- Printable Paper Sheet (F4) -->
     <div class="print-container">
         <div class="watermark-bg">VERIFIKASI KPR</div>
 
         <div class="content-wrap">
-            <!-- KOP SURAT -->
-            <div class="kop-header">
-                <div class="kop-logo-area">
-                    <div>
-                        <div class="kop-company-title">{{ $companyProfile->name ?? 'PT PROPERTY MANAGEMENT INDONESIA' }}</div>
-                        <div class="kop-company-sub">Divisi Legal & Layanan Transaksi Kredit Pemilikan Rumah (KPR)</div>
+            <!-- KOP SURAT DENGAN LOGO RESMI PT. GRAHA CIPTA SEJAHTERA -->
+            <div class="document-header">
+                <div class="document-header-inner">
+                    <div class="header-logo-left">
+                        <img src="{{ asset('images/logo1.png') }}" alt="Logo PT. Graha Cipta Sejahtera" class="document-header-logo">
                     </div>
-                </div>
-                <div class="kop-company-meta">
-                    <div>{{ $companyProfile->address ?? 'Jl. Properti Raya No. 88, Jawa Barat' }}</div>
-                    <div>Telp: {{ $companyProfile->phone ?? '(021) 8899-7766' }}</div>
-                    <div>Website: www.propertymanagement.co.id</div>
+                    <div class="document-header-text">
+                        <h2 class="company-main-title">PT. GRAHA CIPTA SEJAHTERA</h2>
+                        <div class="company-sub-title">Developer &amp; General Contractor</div>
+                        <p class="company-address">Kantor : Jl. Letjen Sutoyo No. 99 A Jember &nbsp;&nbsp; Telp. : 0331 - 331447, 0331 - 321533</p>
+                    </div>
                 </div>
             </div>
 
