@@ -440,6 +440,9 @@ Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
     Route::get('/transaksi/kpr/{booking}/cetak-ba', [TransaksiKPRController::class, 'cetakBA'])->name('kpr.verifikasi.cetak-ba');
 
     Route::post('/transaksi/kpr/{booking}/verifikasi', [TransaksiKPRController::class, 'storeVerifikasi'])->name('kpr.verifikasi.store');
+    Route::post('/transaksi/kpr/document/{document}/validate', [TransaksiKPRController::class, 'validateDocument'])->name('kpr.document.validate');
+    Route::post('/transaksi/kpr/document/{document}/reupload', [TransaksiKPRController::class, 'reuploadDocument'])->name('kpr.document.reupload');
+    Route::post('/transaksi/kpr/{kprApplication}/upload-doc', [TransaksiKPRController::class, 'uploadNewDocument'])->name('kpr.document.upload-new');
 
     Route::get('/transaksi/kpr/verified', [TransaksiKPRController::class, 'verified'])->name('kpr.customer-verified');
 

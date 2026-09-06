@@ -81,7 +81,19 @@ class SurveyController extends Controller
         DB::beginTransaction();
 
         try {
-            $kpr = KprApplication::findOrFail($kprId);
+            $kpr = KprApplication::with('unit')->findOrFail($kprId);
+
+            // Validasi Aturan Survey: Unit Subsidi WAJIB bangunan 100% selesai
+            $unit = $kpr->unit;
+            $isSubsidi = strtolower($unit->jenis ?? '') === 'subsidi';
+            $isBuildingFinished = strtolower($unit->construction_progress ?? '') === 'selesai' || ($unit->construction_progress_percentage ?? 0) === 100;
+
+            if ($isSubsidi && !$isBuildingFinished) {
+                $statusProg = ucwords(str_replace('_', ' ', $unit->construction_progress ?? 'belum selesai'));
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', "Aturan KPR: Unit Subsidi tidak dapat disurvey karena bangunan belum selesai (Status Pembangunan: {$statusProg}). Survey baru dapat dilakukan setelah fisik bangunan 100% selesai / siap survey.");
+            }
 
             // Bersihkan input angka rupiah/format
             $cleanNumeric = function ($val) {

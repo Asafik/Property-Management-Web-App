@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Berita Acara Verifikasi KPR - {{ $booking->booking_code ?? 'BA-KPR' }}</title>
+    <title>{{ $generatedFileName ?? ('BA_Verifikasi_KPR_' . ($booking->booking_code ?? ('BK-' . $booking->id))) }}</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -366,10 +366,14 @@
 
     <!-- Floating Top Action Bar -->
     <div class="no-print-bar">
-        <button type="button" class="btn-action-print" onclick="window.print()">
+        <button type="button" class="btn-action-print" onclick="triggerPrint()">
             <i class="mdi mdi-printer"></i>
-            <span>Cetak / Simpan PDF</span>
+            <span>Cetak Dokumen</span>
         </button>
+        <a href="{{ route('kpr.verifikasi.cetak-ba', ['booking' => $booking->id, 'download' => 'pdf']) }}" class="btn-action-print" style="background: linear-gradient(135deg, #10b981, #059669); text-decoration: none;" title="Download file PDF langsung">
+            <i class="mdi mdi-file-pdf-box"></i>
+            <span>Download PDF</span>
+        </a>
         <a href="{{ route('transaksi.kpr.approve', $booking->id) }}" class="btn-action-close">
             <i class="mdi mdi-arrow-left"></i>
             <span>Kembali</span>
@@ -566,5 +570,16 @@
         </div>
     </div>
 
+    <script>
+        function triggerPrint() {
+            const fileName = "{{ $generatedFileName ?? ('BA_Verifikasi_KPR_' . ($booking->booking_code ?? ('BK-' . $booking->id))) }}";
+            const originalTitle = document.title;
+            document.title = fileName;
+            window.print();
+            setTimeout(() => {
+                document.title = originalTitle;
+            }, 1500);
+        }
+    </script>
 </body>
 </html>

@@ -756,13 +756,15 @@ h3.text-dark, h4.text-dark {
                                         </div>
 
                                         <!-- Filter Status Dropdown -->
-                                        <div style="width: 170px;">
+                                        <div style="width: 190px;">
                                             <select name="status" class="form-control select2" id="statusSelect" style="width: 100%;">
                                                 <option value="">Semua Status</option>
                                                 <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
-                                                <option value="proses" {{ request('status') == 'proses' ? 'selected' : '' }}>Proses</option>
+                                                <option value="proses" {{ in_array(request('status'), ['proses', 'menunggu']) ? 'selected' : '' }}>Menunggu Verifikasi</option>
+                                                <option value="revisi" {{ request('status') == 'revisi' ? 'selected' : '' }}>Perlu Revisi</option>
+                                                <option value="survey" {{ request('status') == 'survey' ? 'selected' : '' }}>Survey</option>
                                                 <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
-                                                <option value="lanjut_kpr" {{ request('status') == 'lanjut_kpr' ? 'selected' : '' }}>Lanjut KPR</option>
+                                                <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Ditolak</option>
                                             </select>
                                         </div>
                                     </div>
@@ -808,9 +810,11 @@ h3.text-dark, h4.text-dark {
                                         <select name="status_mobile" class="form-control select2-mobile" id="statusSelectMobile" style="width: 100%;">
                                             <option value="">Semua Status</option>
                                             <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
-                                            <option value="proses" {{ request('status') == 'proses' ? 'selected' : '' }}>Proses</option>
+                                            <option value="proses" {{ in_array(request('status'), ['proses', 'menunggu']) ? 'selected' : '' }}>Menunggu Verifikasi</option>
+                                            <option value="revisi" {{ request('status') == 'revisi' ? 'selected' : '' }}>Perlu Revisi</option>
+                                            <option value="survey" {{ request('status') == 'survey' ? 'selected' : '' }}>Survey</option>
                                             <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
-                                            <option value="lanjut_kpr" {{ request('status') == 'lanjut_kpr' ? 'selected' : '' }}>Lanjut KPR</option>
+                                            <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Ditolak</option>
                                         </select>
                                     </div>
                                     <div class="col-6 mb-2">
@@ -865,33 +869,19 @@ h3.text-dark, h4.text-dark {
                             <tbody>
                                 @forelse($bookings ?? [] as $booking)
                                     @php
-                                        $documents = json_decode($booking->kprApplication?->documents, true) ?: [];
+                                        $uploadedDocs = $booking->kprApplication?->documents ?? collect();
+                                        $totalUploaded = $uploadedDocs->count();
+                                        $approvedDocsCount = $uploadedDocs->where('status', 'disetujui')->count();
+                                        $revisiDocsCount   = $uploadedDocs->where('status', 'revisi')->count();
+                                        $rejectedDocsCount = $uploadedDocs->where('status', 'ditolak')->count();
+                                        $pendingDocsCount  = $uploadedDocs->where('status', 'pending')->count();
 
                                         $requiredTypes = [
                                             'ktp', 'kk', 'slip_gaji', 'rekening_koran',
                                             'npwp', 'sku', 'surat_nikah', 'ktp_pasangan'
                                         ];
 
-                                        $uploadedCount = 0;
-                                        $hasMissingValues = false;
-
-                                        foreach ($requiredTypes as $reqType) {
-                                            $foundPath = '';
-                                            foreach ($documents as $doc) {
-                                                if (isset($doc['type']) && $doc['type'] === $reqType && !empty($doc['path'])) {
-                                                    $foundPath = $doc['path'];
-                                                    break;
-                                                }
-                                            }
-
-                                            if (empty($foundPath)) {
-                                                $hasMissingValues = true;
-                                            } else {
-                                                $uploadedCount++;
-                                            }
-                                        }
-
-                                        $isComplete = !$hasMissingValues;
+                                        $uploadedStandardCount = $uploadedDocs->whereIn('type', $requiredTypes)->count();
 
                                         $customerName = $booking->customer->full_name ?? '-';
                                         $words = collect(explode(' ', trim($customerName)))->filter();
@@ -899,9 +889,7 @@ h3.text-dark, h4.text-dark {
                                             ? strtoupper(substr($words->first(), 0, 1) . substr($words->last(), 0, 1))
                                             : strtoupper(substr($customerName, 0, 2));
 
-                                        $statusClass = in_array($booking->status, ['booking', 'proses', 'approved', 'lanjut_kpr'])
-                                            ? $booking->status
-                                            : 'default';
+                                        $kprStatus = strtolower($booking->kprApplication?->status ?? '');
                                     @endphp
                                     <tr>
                                         <td class="text-center fw-bold">
@@ -914,8 +902,30 @@ h3.text-dark, h4.text-dark {
                                             </div>
                                         </td>
                                         <td>
-                                            <i class="mdi mdi-home-city-outline text-primary me-2"></i>
-                                            <span class="fw-bold">{{ $booking->unit->unit_name ?? '-' }} - {{ $booking->unit->unit_code ?? '-' }}</span>
+                                            <div class="d-flex flex-column">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="mdi mdi-home-city-outline text-primary me-1.5"></i>
+                                                    <span class="fw-bold text-dark">{{ $booking->unit->unit_name ?? '-' }} - {{ $booking->unit->unit_code ?? '-' }}</span>
+                                                </div>
+                                                @php
+                                                    $bProg = strtolower($booking->unit->construction_progress ?? 'belum_mulai');
+                                                    $bPercent = $booking->unit->construction_progress_percentage ?? 0;
+                                                    $bLabelMap = [
+                                                        'belum_mulai' => 'Belum Mulai',
+                                                        'pondasi'     => 'Pondasi',
+                                                        'dinding'     => 'Dinding',
+                                                        'atap'        => 'Atap',
+                                                        'finishing'   => 'Finishing',
+                                                        'selesai'     => 'Selesai 100%',
+                                                    ];
+                                                    $bLabel = $bLabelMap[$bProg] ?? ucfirst($bProg);
+                                                @endphp
+                                                <div class="mt-1">
+                                                    <span class="badge {{ $bProg === 'selesai' ? 'bg-success text-white' : 'bg-light text-secondary border' }}" style="font-size: 0.68rem; padding: 2px 6px;">
+                                                        <i class="mdi {{ $bProg === 'selesai' ? 'mdi-check-decagram' : 'mdi-home-city-outline' }} me-0.5"></i>Fisik: {{ $bLabel }} ({{ $bPercent }}%)
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </td>
                                         <td>
                                             @php
@@ -963,51 +973,129 @@ h3.text-dark, h4.text-dark {
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge-status {{ $statusClass }}">
-                                                {{ strtoupper(str_replace('_', ' ', $booking->status ?? '-')) }}
-                                            </span>
+                                            @if ($kprStatus === 'approved')
+                                                <span class="badge badge-gradient-success">
+                                                    <i class="mdi mdi-check-decagram me-1"></i>Approved
+                                                </span>
+                                            @elseif ($kprStatus === 'survey')
+                                                <span class="badge badge-gradient-primary">
+                                                    <i class="mdi mdi-account-search me-1"></i>Survey
+                                                </span>
+                                            @elseif ($kprStatus === 'rejected')
+                                                <span class="badge bg-danger text-white">
+                                                    <i class="mdi mdi-close-octagon me-1"></i>Ditolak
+                                                </span>
+                                            @elseif ($revisiDocsCount > 0)
+                                                <span class="badge bg-warning text-dark">
+                                                    <i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi ({{ $revisiDocsCount }})
+                                                </span>
+                                            @elseif ($rejectedDocsCount > 0)
+                                                <span class="badge bg-danger text-white">
+                                                    <i class="mdi mdi-close-circle me-1"></i>Dokumen Ditolak
+                                                </span>
+                                            @elseif ($totalUploaded > 0 && $approvedDocsCount === $totalUploaded)
+                                                <span class="badge bg-success text-white">
+                                                    <i class="mdi mdi-check-circle me-1"></i>Dokumen Disetujui
+                                                </span>
+                                            @elseif ($booking->kprApplication)
+                                                <span class="badge bg-info text-white">
+                                                    <i class="mdi mdi-clock-outline me-1"></i>Menunggu Verifikasi
+                                                </span>
+                                            @else
+                                                <span class="badge badge-gradient-secondary">
+                                                    Belum Pengajuan
+                                                </span>
+                                            @endif
                                         </td>
                                         <td class="text-center">
                                             <i class="mdi mdi-calendar-month-outline text-primary me-1"></i>
                                             {{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}
                                         </td>
                                         <td class="text-center">
-                                            <div class="d-flex justify-content-center align-items-center">
+                                            @php
+                                                $totalDocTarget = max(8, $totalUploaded);
+                                                $verifyPercent = $totalDocTarget > 0 ? min(100, round(($approvedDocsCount / $totalDocTarget) * 100)) : 0;
+                                                $docBadgeClass = 'badge-doc';
+                                                if ($revisiDocsCount > 0) {
+                                                    $docBadgeClass .= ' bg-warning text-dark border-warning';
+                                                } elseif ($rejectedDocsCount > 0) {
+                                                    $docBadgeClass .= ' bg-danger text-white border-danger';
+                                                } elseif ($verifyPercent === 100) {
+                                                    $docBadgeClass .= ' bg-success text-white border-success';
+                                                }
+                                            @endphp
+                                            <div class="d-flex flex-column align-items-center justify-content-center gap-1" style="min-width: 105px;">
                                                 <button
                                                     type="button"
-                                                    class="badge-doc btnOpenDocumentModal"
+                                                    class="{{ $docBadgeClass }} btnOpenDocumentModal d-inline-flex align-items-center justify-content-center gap-1 w-100"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#documentModal"
                                                     data-customer="{{ $customerName }}"
                                                     data-unit="{{ $booking->unit->unit_code ?? '-' }}"
-                                                    data-status="{{ strtoupper(str_replace('_', ' ', $booking->status ?? '-')) }}"
+                                                    data-status="{{ $booking->kprApplication ? strtoupper($booking->kprApplication->status) : 'DRAFT' }}"
                                                     data-harga="Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}"
                                                     data-sales="{{ $booking->sales->name ?? '-' }}"
                                                     data-booking="{{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}"
-                                                    data-documents='@json($documents)'>
-                                                    <i class="mdi mdi-file-document-multiple-outline"></i>
-                                                    {{ $uploadedCount }}/8
+                                                    data-documents='@json($uploadedDocs)'
+                                                    data-percent="{{ $verifyPercent }}"
+                                                    data-uploaded-count="{{ $uploadedStandardCount }}"
+                                                    data-approved-count="{{ $approvedDocsCount }}"
+                                                    data-total-count="{{ $totalDocTarget }}"
+                                                    title="{{ $approvedDocsCount }}/{{ $totalDocTarget }} Dokumen Disetujui ({{ $verifyPercent }}%)">
+                                                    <i class="mdi mdi-shield-check-outline"></i>
+                                                    <span>{{ $approvedDocsCount }}/{{ $totalDocTarget }}</span>
+                                                    <span class="ms-1 fw-bold" style="font-size: 0.73rem;">({{ $verifyPercent }}%)</span>
                                                 </button>
+                                                <div class="progress w-100" style="height: 6px; border-radius: 10px; background: #e2e8f0; overflow: hidden;">
+                                                    <div class="progress-bar {{ $verifyPercent === 100 ? 'bg-success' : ($verifyPercent > 0 ? 'bg-primary' : 'bg-secondary') }}"
+                                                         role="progressbar"
+                                                         style="width: {{ $verifyPercent }}%; transition: width 0.4s ease;"
+                                                         aria-valuenow="{{ $verifyPercent }}"
+                                                         aria-valuemin="0"
+                                                         aria-valuemax="100"></div>
+                                                </div>
                                             </div>
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center">
                                                 @php
+                                                    $currentUser = auth()->user();
+                                                    $posName = strtolower($currentUser->position->name ?? '');
+                                                    $isKepalaMarketing = str_contains($posName, 'kepala') || ($currentUser->position_id ?? null) == 1 || str_contains($posName, 'admin') || str_contains($posName, 'direktur');
+
                                                     $isAlreadyApproved = in_array(strtolower($booking->status ?? ''), ['completed', 'sold', 'lunas', 'akad_selesai'])
                                                         || ($booking->kprApplication && in_array(strtolower($booking->kprApplication->status ?? ''), ['approved', 'survey', 'akad', 'completed', 'lunas', 'analisa']));
                                                 @endphp
 
                                                 @if($isAlreadyApproved)
-                                                    <button type="button" class="btn btn-sm d-inline-flex align-items-center justify-content-center px-3" disabled title="Pengajuan KPR ini sudah di-approve / selesai (Status: {{ strtoupper($booking->status) }})"
-                                                            style="background: #ecfdf5; color: #059669; border: 1.5px solid #10b981; border-radius: 8px; min-height: 34px; font-weight: 700; cursor: not-allowed; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.12);">
-                                                        <i class="mdi mdi-check-all me-1" style="font-size: 1.1rem; color: #10b981;"></i>Approved
-                                                    </button>
-                                                @else
-                                                    <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
-                                                       class="btn btn-gradient-success btn-sm btnApproveKpr d-inline-flex align-items-center justify-content-center px-3"
-                                                       style="border-radius: 8px; min-height: 34px; font-weight: 700; border: 1.5px solid #059669; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);">
-                                                        <i class="mdi mdi-check-circle-outline me-1"></i>Approved
+                                                    <a href="{{ route('transaksi.kpr.approve', $booking->id) }}" class="btn btn-sm d-inline-flex align-items-center justify-content-center px-3" title="Pengajuan KPR ini sudah disetujui / diproses. Klik untuk melihat detail verifikasi & cetak Berita Acara"
+                                                            style="background: #ecfdf5; color: #059669; border: 1.5px solid #10b981; border-radius: 8px; min-height: 34px; font-weight: 700; text-decoration: none; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.12);">
+                                                        <i class="mdi mdi-check-all me-1" style="font-size: 1.1rem; color: #10b981;"></i>Detail Selesai
                                                     </a>
+                                                @elseif($isKepalaMarketing)
+                                                    <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
+                                                       class="btn btn-gradient-primary btn-sm btnApproveKpr d-inline-flex align-items-center justify-content-center px-3"
+                                                       style="border-radius: 8px; min-height: 34px; font-weight: 700; box-shadow: 0 2px 8px rgba(154, 85, 255, 0.25);"
+                                                       title="Verifikasi Dokumen & Pengajuan KPR">
+                                                        <i class="mdi mdi-clipboard-check-outline me-1"></i>Verifikasi
+                                                    </a>
+                                                @else
+                                                    {{-- Staff Marketing Role --}}
+                                                    @if($revisiDocsCount > 0 || $rejectedDocsCount > 0)
+                                                        <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
+                                                           class="btn btn-sm {{ $revisiDocsCount > 0 ? 'btn-warning text-dark' : 'btn-danger text-white' }} d-inline-flex align-items-center justify-content-center px-3 font-weight-bold"
+                                                           style="border-radius: 8px; min-height: 34px; font-weight: 700; box-shadow: 0 2px 8px rgba(255, 193, 7, 0.35);"
+                                                           title="{{ ($revisiDocsCount + $rejectedDocsCount) }} dokumen perlu diperbaiki / diunggah ulang. Klik untuk upload berkas perbaikan">
+                                                            <i class="mdi mdi-pencil-box-multiple me-1"></i>Perbaiki Dokumen ({{ $revisiDocsCount + $rejectedDocsCount }})
+                                                        </a>
+                                                    @else
+                                                        <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
+                                                           class="btn btn-sm d-inline-flex align-items-center justify-content-center px-3"
+                                                           style="border-radius: 8px; min-height: 34px; font-weight: 700; background: #f3e8ff; color: #9a55ff; border: 1.5px solid #d8b4fe;"
+                                                           title="Lihat Progress & Detail Validasi KPR">
+                                                            <i class="mdi mdi-eye-outline me-1"></i>Lihat Progress
+                                                        </a>
+                                                    @endif
                                                 @endif
                                             </div>
                                         </td>
@@ -1122,6 +1210,20 @@ h3.text-dark, h4.text-dark {
                             </div>
                         </div>
                     </div>
+
+                    <!-- PROGRESS VERIFIKASI MODAL -->
+                    <div class="mt-3 pt-3 border-top">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="small fw-bold text-dark d-flex align-items-center">
+                                <i class="mdi mdi-shield-check-outline text-primary me-1" style="font-size:1.1rem;"></i>
+                                Progress Verifikasi Dokumen (Kepala Marketing):
+                            </span>
+                            <span class="fw-bold" id="detailDocPercentText" style="color: #9a55ff; font-size: 0.88rem;">0%</span>
+                        </div>
+                        <div class="progress" style="height: 7px; border-radius: 10px; background: #e2e8f0; overflow: hidden;">
+                            <div class="progress-bar bg-primary" id="detailDocProgressBar" role="progressbar" style="width: 0%; transition: width 0.4s ease;"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="table-responsive" style="max-height: 400px;">
@@ -1130,7 +1232,8 @@ h3.text-dark, h4.text-dark {
                             <tr>
                                 <th class="col-no-small">No</th>
                                 <th>Nama Dokumen</th>
-                                <th class="text-end">Aksi</th>
+                                <th style="width: 28%;">Status Validasi</th>
+                                <th class="text-end" style="width: 22%;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="documentTableBody"></tbody>
@@ -1247,6 +1350,9 @@ $(document).ready(function() {
         let sales = $(this).data('sales') || '-';
         let bookingDate = $(this).data('booking') || '-';
         let documents = $(this).data('documents') || [];
+        let percent = $(this).data('percent') || 0;
+        let approvedCount = $(this).data('approved-count') || 0;
+        let totalCount = $(this).data('total-count') || 8;
 
         $('#detailCustomerName').text(customer);
         $('#detailCustomerUnit').text(unit);
@@ -1255,33 +1361,83 @@ $(document).ready(function() {
         $('#detailCustomerStatus').text(status);
         $('#detailCustomerBooking').text(bookingDate);
 
+        $('#detailDocPercentText').text(`${approvedCount}/${totalCount} Dokumen Disetujui (${percent}%)`);
+        $('#detailDocProgressBar').css('width', `${percent}%`);
+        if (percent === 100) {
+            $('#detailDocProgressBar').removeClass('bg-primary bg-warning bg-secondary').addClass('bg-success');
+        } else if (percent > 0) {
+            $('#detailDocProgressBar').removeClass('bg-success bg-warning bg-secondary').addClass('bg-primary');
+        } else {
+            $('#detailDocProgressBar').removeClass('bg-success bg-primary bg-warning').addClass('bg-secondary');
+        }
+
         let tbody = $('#documentTableBody');
         tbody.html('');
 
-        const requiredDocsList = [
-            { type: 'ktp', label: 'KTP' },
-            { type: 'kk', label: 'KK' },
-            { type: 'slip_gaji', label: 'Slip Gaji' },
+        const standardDocsList = [
+            { type: 'ktp', label: 'KTP Pemohon' },
+            { type: 'kk', label: 'Kartu Keluarga (KK)' },
+            { type: 'npwp', label: 'NPWP Pemohon' },
+            { type: 'slip_gaji', label: 'Slip Gaji 3 Bulan' },
             { type: 'rekening_koran', label: 'Rekening Koran' },
-            { type: 'npwp', label: 'NPWP' },
-            { type: 'sku', label: 'SKU' },
-            { type: 'surat_nikah', label: 'Surat Nikah' },
+            { type: 'sku', label: 'SKU / Keterangan Kerja' },
+            { type: 'surat_nikah', label: 'Buku / Surat Nikah' },
             { type: 'ktp_pasangan', label: 'KTP Pasangan' }
         ];
 
-        requiredDocsList.forEach(function(reqDoc, index) {
-            let docName = reqDoc.label;
+        let allModalDocs = [];
 
-            // Find in given documents
+        // 1. Standard docs
+        standardDocsList.forEach(function(sDoc) {
             let docInfo = false;
             if (Array.isArray(documents)) {
-                docInfo = documents.find(d => d.type === reqDoc.type);
+                docInfo = documents.find(d => d.type === sDoc.type);
             }
+            allModalDocs.push({
+                name: sDoc.label,
+                is_custom: false,
+                doc: docInfo
+            });
+        });
 
+        // 2. Dynamic / custom docs
+        if (Array.isArray(documents)) {
+            documents.forEach(function(d) {
+                const isStandard = standardDocsList.some(s => s.type === d.type);
+                if (!isStandard) {
+                    allModalDocs.push({
+                        name: d.document_name || d.type,
+                        is_custom: true,
+                        doc: d
+                    });
+                }
+            });
+        }
+
+        allModalDocs.forEach(function(item, index) {
+            let docInfo = item.doc;
             let docUrl = (docInfo && docInfo.path) ? formatStorageUrl(docInfo.path) : null;
 
-            let actionHtml = '';
+            let statusHtml = '';
+            if (!docInfo) {
+                statusHtml = '<span class="badge bg-secondary opacity-75"><i class="mdi mdi-minus-circle-outline me-1"></i>Belum Di-upload</span>';
+            } else if (docInfo.status === 'disetujui') {
+                statusHtml = '<span class="badge bg-success text-white"><i class="mdi mdi-check-circle me-1"></i>Disetujui</span>';
+            } else if (docInfo.status === 'revisi') {
+                statusHtml = `<span class="badge bg-warning text-dark"><i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi</span>`;
+                if (docInfo.catatan) {
+                    statusHtml += `<div class="text-danger small mt-1" style="font-size:0.75rem;"><strong>Catatan:</strong> ${docInfo.catatan}</div>`;
+                }
+            } else if (docInfo.status === 'ditolak') {
+                statusHtml = `<span class="badge bg-danger text-white"><i class="mdi mdi-close-circle me-1"></i>Ditolak</span>`;
+                if (docInfo.catatan) {
+                    statusHtml += `<div class="text-danger small mt-1" style="font-size:0.75rem;"><strong>Alasan:</strong> ${docInfo.catatan}</div>`;
+                }
+            } else {
+                statusHtml = '<span class="badge bg-info text-white"><i class="mdi mdi-clock-outline me-1"></i>Menunggu</span>';
+            }
 
+            let actionHtml = '';
             if (docUrl) {
                 actionHtml = `
                     <div class="d-flex justify-content-end gap-2">
@@ -1293,11 +1449,7 @@ $(document).ready(function() {
                         </a>
                     </div>`;
             } else {
-                actionHtml = `
-                    <span class="text-danger small fw-bold" style="font-size: 0.82rem;">
-                        <i class="mdi mdi-alert-circle-outline"></i> Belum Di-upload
-                    </span>
-                `;
+                actionHtml = `<span class="text-muted small">-</span>`;
             }
 
             tbody.append(`
@@ -1308,8 +1460,14 @@ $(document).ready(function() {
                             <span class="doc-file-icon">
                                 <i class="mdi mdi-file-document-outline"></i>
                             </span>
-                            <span>${docName}</span>
+                            <span>
+                                ${item.name}
+                                ${item.is_custom ? '<span class="badge bg-light text-primary border ms-1" style="font-size:0.65rem;">Dinamis</span>' : ''}
+                            </span>
                         </div>
+                    </td>
+                    <td>
+                        ${statusHtml}
                     </td>
                     <td class="text-end">
                         ${actionHtml}

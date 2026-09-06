@@ -741,6 +741,27 @@
                         @endforeach
                     </div>
 
+                    <!-- SUBSECTION: DOKUMEN TAMBAHAN DINAMIS -->
+                    <div class="mt-4 pt-3 border-top">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+                            <div>
+                                <h6 class="fw-bold text-dark mb-1 d-flex align-items-center">
+                                    <i class="mdi mdi-folder-plus-outline text-primary me-2" style="font-size: 1.15rem;"></i>
+                                    Dokumen Pendukung Lainnya (Opsional / Dinamis)
+                                </h6>
+                                <small class="text-muted">Tambahkan berkas pendukung tambahan sesuai permintaan bank (misal: SPT Tahunan, Rekening Listrik, Surat Domisili, dll)</small>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary fw-bold px-3 py-2" id="btnAddDynamicDoc" style="border-radius: 8px;">
+                                <i class="fas fa-plus me-1"></i> Tambah Dokumen
+                            </button>
+                        </div>
+
+                        <!-- Container Dynamic Rows -->
+                        <div id="dynamicDocContainer" class="d-flex flex-column gap-3">
+                            <!-- Dynamic rows will be inserted here -->
+                        </div>
+                    </div>
+
                     <!-- Tombol Action -->
                     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mt-4 pt-3 border-top">
                         <a href="{{ url('/marketing/jual-unit') }}" class="btn btn-light px-4 py-2 fw-bold text-muted border" style="border-radius: 8px;">
@@ -790,6 +811,45 @@
                     width: '100%'
                 });
             });
+
+            // Dynamic Additional Documents
+            let dynamicDocIndex = 0;
+            const btnAddDynamicDoc = document.getElementById('btnAddDynamicDoc');
+            const dynamicDocContainer = document.getElementById('dynamicDocContainer');
+
+            if (btnAddDynamicDoc && dynamicDocContainer) {
+                btnAddDynamicDoc.addEventListener('click', function() {
+                    const rowId = `dynamic_doc_${dynamicDocIndex}`;
+                    const rowHtml = `
+                        <div class="card p-3 border shadow-none bg-light dynamic-doc-row" id="${rowId}" style="border-radius: 10px; border: 1px dashed #cbd5e1 !important;">
+                            <div class="row g-2 align-items-center">
+                                <div class="col-12 col-md-5">
+                                    <label class="form-label-kpr small mb-1">Nama / Jenis Dokumen <span class="req">*</span></label>
+                                    <input type="text" name="additional_documents[${dynamicDocIndex}][name]" class="form-control-kpr" placeholder="Contoh: SPT Tahunan / Rekening Listrik" required>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label-kpr small mb-1">Pilih File Berkas <span class="req">*</span></label>
+                                    <input type="file" name="additional_documents[${dynamicDocIndex}][file]" class="form-control-kpr" accept=".jpg,.jpeg,.png,.pdf" required>
+                                </div>
+                                <div class="col-12 col-md-1 d-flex align-items-end justify-content-end">
+                                    <button type="button" class="btn btn-outline-danger btn-sm p-2 w-100" onclick="removeDynamicDoc('${rowId}')" title="Hapus Dokumen" style="border-radius: 8px; height: 42px;">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    dynamicDocContainer.insertAdjacentHTML('beforeend', rowHtml);
+                    dynamicDocIndex++;
+                });
+            }
+
+            function removeDynamicDoc(rowId) {
+                const row = document.getElementById(rowId);
+                if (row) {
+                    row.remove();
+                }
+            }
 
             // File Upload Preview & Counter
             document.addEventListener('DOMContentLoaded', function() {

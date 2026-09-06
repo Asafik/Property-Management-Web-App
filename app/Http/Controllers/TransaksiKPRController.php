@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\Banks;
 use App\Models\KprApplication;
+use App\Models\KprDocument;
 use App\Models\Employee;
 use App\Models\CompanyProfile;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
@@ -17,31 +20,57 @@ class TransaksiKPRController extends Controller
 
     public function index(Request $request)
     {
-        $query = Booking::with(['customer', 'unit', 'sales', 'kprApplication'])
-            ->where('purchase_type', 'kpr')
-            ->where(function ($q) {
-                // Hanya tampilkan data KPR yang belum diverifikasi / belum selesai verifikasi
-                $q->whereDoesntHave('kprApplication', function ($sub) {
-                    $sub->whereIn('status', ['approved', 'analisa', 'rejected', 'survey', 'akad', 'completed']);
-                })
-                ->where(function ($sub2) {
-                    $sub2->whereNull('status_cash')
-                         ->orWhere('status_cash', '!=', 'done');
-                });
+        $query = Booking::with(['customer', 'unit', 'sales', 'kprApplication.documents'])
+            ->where(function($q) {
+                $q->where('purchase_type', 'kpr')
+                  ->orWhere('purchase_type', 'KPR');
             });
 
-        // search by customer name only
+        // search by customer name or unit
         if ($request->filled('search')) {
             $search = trim($request->search);
 
-            $query->whereHas('customer', function ($q) use ($search) {
-                $q->where('full_name', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('customer', function ($sub) use ($search) {
+                    $sub->where('full_name', 'like', "%{$search}%");
+                })->orWhereHas('unit', function ($sub) use ($search) {
+                    $sub->where('unit_name', 'like', "%{$search}%")
+                        ->orWhere('unit_code', 'like', "%{$search}%");
+                });
             });
         }
 
         // filter status
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $status = strtolower($request->status);
+            if ($status === 'approved') {
+                $query->whereHas('kprApplication', function ($q) {
+                    $q->whereIn('status', ['approved', 'analisa']);
+                });
+            } elseif ($status === 'survey') {
+                $query->whereHas('kprApplication', function ($q) {
+                    $q->where('status', 'survey');
+                });
+            } elseif ($status === 'rejected') {
+                $query->whereHas('kprApplication', function ($q) {
+                    $q->where('status', 'rejected');
+                });
+            } elseif ($status === 'revisi') {
+                $query->whereHas('kprApplication.documents', function ($q) {
+                    $q->where('status', 'revisi');
+                });
+            } elseif ($status === 'proses' || $status === 'menunggu') {
+                $query->where(function ($q) {
+                    $q->whereDoesntHave('kprApplication')
+                      ->orWhereHas('kprApplication', function ($sub) {
+                          $sub->whereNotIn('status', ['approved', 'rejected', 'survey', 'akad', 'completed']);
+                      });
+                });
+            } elseif ($status === 'booking') {
+                $query->where('status', 'booking');
+            } else {
+                $query->where('status', $request->status);
+            }
         }
 
         // sort
@@ -95,14 +124,19 @@ class TransaksiKPRController extends Controller
 
     public function approve($id)
     {
-        $booking = Booking::with(['customer', 'unit', 'sales', 'kprApplication.bank', 'kprApplication.documents'])->findOrFail($id);
+        $booking = Booking::with([
+            'customer',
+            'unit',
+            'sales',
+            'kprApplication.bank',
+            'kprApplication.documents.validator'
+        ])->findOrFail($id);
 
-        if (in_array(strtolower($booking->status ?? ''), ['completed', 'sold', 'lunas', 'akad_selesai'])
-            || ($booking->kprApplication && in_array(strtolower($booking->kprApplication->status ?? ''), ['approved', 'survey', 'akad', 'completed', 'lunas', 'analisa']))) {
-            return redirect()->route('customer.kpr')->with('warning', 'Pengajuan KPR untuk unit ini sudah di-approve / diproses sebelumnya.');
-        }
+        $user = Auth::user();
+        $posName = strtolower($user->position->name ?? '');
+        $isKepalaMarketing = str_contains($posName, 'kepala') || ($user->position_id ?? null) == 1 || str_contains($posName, 'admin') || str_contains($posName, 'direktur');
 
-        return view('marketing.vertifikasi_kpr', compact('booking'));
+        return view('marketing.vertifikasi_kpr', compact('booking', 'isKepalaMarketing'));
     }
 
  public function storeVerifikasi(Request $request, $bookingId)
@@ -371,7 +405,7 @@ public function analisaKPRKomersil(Request $request)
     /**
      * Cetak Berita Acara (BA) Verifikasi KPR
      */
-    public function cetakBA($bookingId)
+    public function cetakBA(Request $request, $bookingId)
     {
         $booking = Booking::with([
             'customer',
@@ -384,6 +418,176 @@ public function analisaKPRKomersil(Request $request)
         $kpr = $booking->kprApplication;
         $companyProfile = CompanyProfile::first();
 
-        return view('cetak.berita_acara_kpr', compact('booking', 'kpr', 'companyProfile'));
+        // Auto generate nama file yang rapi & terstruktur
+        $cleanBookingCode = preg_replace('/[^A-Za-z0-9\-_]/', '-', $booking->booking_code ?? ('BK-' . $booking->id));
+        $cleanCustomerName = preg_replace('/[^A-Za-z0-9\-_]/', '_', $booking->customer->full_name ?? 'Customer');
+        $unitName = $booking->unit ? ($booking->unit->name ?? $booking->unit->unit_number ?? 'Unit') : 'Unit';
+        $cleanUnitName = preg_replace('/[^A-Za-z0-9\-_]/', '_', $unitName);
+
+        $generatedFileName = "BA_Verifikasi_KPR_{$cleanBookingCode}_{$cleanCustomerName}_{$cleanUnitName}";
+        $pdfFileName = "{$generatedFileName}.pdf";
+
+        if ($request->get('download') === 'pdf') {
+            $pdf = Pdf::loadView('cetak.berita_acara_kpr', [
+                'booking' => $booking,
+                'kpr' => $kpr,
+                'companyProfile' => $companyProfile,
+                'generatedFileName' => $generatedFileName,
+                'pdfFileName' => $pdfFileName,
+                'isPdf' => true,
+            ])->setPaper('A4', 'portrait');
+
+            return $pdf->download($pdfFileName);
+        }
+
+        return view('cetak.berita_acara_kpr', compact('booking', 'kpr', 'companyProfile', 'generatedFileName', 'pdfFileName'));
+    }
+
+    /**
+     * Validasi Dokumen KPR oleh Kepala Marketing
+     */
+    public function validateDocument(Request $request, $documentId)
+    {
+        $request->validate([
+            'status'  => 'required|in:disetujui,revisi,ditolak',
+            'catatan' => 'nullable|string',
+        ]);
+
+        if (in_array($request->status, ['revisi', 'ditolak']) && empty(trim($request->catatan ?? ''))) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Alasan / Catatan wajib diisi untuk status ' . ucfirst($request->status) . '.',
+                ], 422);
+            }
+            return redirect()->back()->with('error', 'Alasan / Catatan wajib diisi untuk status ' . ucfirst($request->status) . '.');
+        }
+
+        $user = Auth::user();
+        $document = KprDocument::with('kprApplication')->findOrFail($documentId);
+
+        $document->update([
+            'status'       => $request->status,
+            'catatan'      => $request->status === 'disetujui' ? ($request->catatan ?? null) : $request->catatan,
+            'validated_by' => $user?->id,
+            'validated_at' => now(),
+        ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Dokumen ' . ($document->document_name ?? $document->type) . ' berhasil di-' . $request->status . '.',
+                'data'    => [
+                    'id'               => $document->id,
+                    'status'           => $document->status,
+                    'status_formatted' => $document->formatted_status,
+                    'badge_class'      => $document->status_badge_class,
+                    'catatan'          => $document->catatan,
+                    'validator_name'   => $user?->name ?? 'Kepala Marketing',
+                    'validated_at'     => $document->validated_at ? $document->validated_at->format('d/m/Y H:i') : '-',
+                ],
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Status dokumen berhasil diperbarui menjadi ' . ucfirst($request->status) . '.');
+    }
+
+    /**
+     * Upload Revisi Dokumen KPR oleh Staff Marketing / Sales
+     */
+    public function reuploadDocument(Request $request, $documentId)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ], [
+            'file.required' => 'File dokumen revisi wajib diunggah.',
+            'file.mimes'    => 'Format file harus berupa JPG, JPEG, PNG, atau PDF.',
+            'file.max'      => 'Ukuran file maksimal 5MB.',
+        ]);
+
+        $document = KprDocument::with('kprApplication')->findOrFail($documentId);
+
+        if ($request->hasFile('file')) {
+            $destination = public_path('uploads/kpr');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0777, true);
+            }
+
+            $file = $request->file('file');
+            $filename = time() . '_' . $document->type . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move($destination, $filename);
+
+            $previousCatatan = $document->catatan ? ' (Catatan revisi sebelumnya: ' . $document->catatan . ')' : '';
+
+            $document->update([
+                'path'         => 'kpr/' . $filename,
+                'status'       => 'pending',
+                'catatan'      => 'Revisi diunggah oleh ' . (Auth::user()->name ?? 'Staff Marketing') . ' pada ' . now()->format('d/m/Y H:i') . $previousCatatan,
+                'validated_by' => null,
+                'validated_at' => null,
+            ]);
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Dokumen ' . ($document->document_name ?? $document->type) . ' berhasil diunggah ulang dan dikirim kembali untuk verifikasi Kepala Marketing.',
+                'data'    => [
+                    'id'               => $document->id,
+                    'status'           => $document->status,
+                    'status_formatted' => $document->formatted_status,
+                    'badge_class'      => $document->status_badge_class,
+                    'catatan'          => $document->catatan,
+                ],
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Dokumen ' . ($document->document_name ?? $document->type) . ' berhasil diunggah ulang dan dikirim kembali untuk verifikasi Kepala Marketing.');
+    }
+
+    /**
+     * Upload Dokumen Baru yang belum pernah diunggah
+     */
+    public function uploadNewDocument(Request $request, $kprId)
+    {
+        $request->validate([
+            'type'          => 'required|string',
+            'document_name' => 'required|string',
+            'file'          => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ], [
+            'file.required' => 'File dokumen wajib diunggah.',
+            'file.mimes'    => 'Format file harus berupa JPG, JPEG, PNG, atau PDF.',
+            'file.max'      => 'Ukuran file maksimal 5MB.',
+        ]);
+
+        $kprApplication = KprApplication::findOrFail($kprId);
+
+        $destination = public_path('uploads/kpr');
+        if (!file_exists($destination)) {
+            mkdir($destination, 0777, true);
+        }
+
+        $file = $request->file('file');
+        $filename = time() . '_' . $request->type . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $file->move($destination, $filename);
+
+        $doc = KprDocument::create([
+            'kpr_application_id' => $kprApplication->id,
+            'type'               => $request->type,
+            'document_name'      => $request->document_name,
+            'path'               => 'kpr/' . $filename,
+            'status'             => 'pending',
+            'catatan'            => 'Diunggah oleh ' . (Auth::user()->name ?? 'Staff Marketing') . ' pada ' . now()->format('d/m/Y H:i'),
+        ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Dokumen ' . $request->document_name . ' berhasil diunggah dan siap diverifikasi.',
+                'data'    => $doc
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Dokumen ' . $request->document_name . ' berhasil diunggah dan siap diverifikasi.');
     }
 }

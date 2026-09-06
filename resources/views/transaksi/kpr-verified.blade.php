@@ -559,7 +559,8 @@
                                     <th>Nama - Unit</th>
                                     <th>Jenis & Tipe</th>
                                     <th>Bank</th>
-                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Status Bangunan</th>
+                                    <th class="text-center">Status KPR</th>
                                     <th class="text-center">Tanggal Verifikasi</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
@@ -572,6 +573,26 @@
                                         $initials = (count($nameParts) > 0) ? strtoupper(substr($nameParts[0], 0, 1)) . (isset($nameParts[1]) ? strtoupper(substr($nameParts[1], 0, 1)) : '') : '--';
                                         $unitType = strtolower($application->unit->type ?? '');
                                         $status = strtolower($application->status ?? '');
+
+                                        $progStatus = strtolower($application->unit->construction_progress ?? 'belum_mulai');
+                                        $progPercent = $application->unit->construction_progress_percentage ?? 0;
+                                        $statusTextMap = [
+                                            'belum_mulai' => 'Belum Mulai',
+                                            'pondasi'     => 'Pondasi',
+                                            'dinding'     => 'Dinding',
+                                            'atap'        => 'Atap',
+                                            'finishing'   => 'Finishing',
+                                            'selesai'     => 'Selesai 100%',
+                                        ];
+                                        $statusLabel = $statusTextMap[$progStatus] ?? ucfirst($progStatus);
+                                        
+                                        $badgeProgColor = match($progStatus) {
+                                            'selesai' => 'background:#dcfce7; color:#15803d; border:1px solid #86efac;',
+                                            'finishing' => 'background:#e0e7ff; color:#4338ca; border:1px solid #c7d2fe;',
+                                            'atap', 'dinding' => 'background:#fef3c7; color:#b45309; border:1px solid #fde68a;',
+                                            'pondasi' => 'background:#ffedd5; color:#c2410c; border:1px solid #fed7aa;',
+                                            default => 'background:#f1f5f9; color:#64748b; border:1px solid #e2e8f0;',
+                                        };
                                     @endphp
                                     <tr>
                                         <td class="text-center fw-bold">{{ $kprApplications->firstItem() + $index }}</td>
@@ -607,6 +628,21 @@
                                             </div>
                                         </td>
                                         <td class="text-center">
+                                            <div class="d-flex flex-column align-items-center justify-content-center gap-1" style="min-width: 120px;">
+                                                <span class="badge px-2.5 py-1 fw-bold rounded-pill" style="{{ $badgeProgColor }} font-size: 0.76rem;">
+                                                    <i class="mdi {{ $progStatus === 'selesai' ? 'mdi-check-decagram' : 'mdi-home-city-outline' }} me-1"></i>{{ $statusLabel }} ({{ $progPercent }}%)
+                                                </span>
+                                                <div class="progress w-100" style="height: 5px; border-radius: 10px; background: #e2e8f0; overflow: hidden; max-width: 110px;">
+                                                    <div class="progress-bar {{ $progPercent === 100 ? 'bg-success' : ($progPercent >= 50 ? 'bg-primary' : 'bg-warning') }}"
+                                                         role="progressbar"
+                                                         style="width: {{ $progPercent }}%;"
+                                                         aria-valuenow="{{ $progPercent }}"
+                                                         aria-valuemin="0"
+                                                         aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
                                             @php
                                                 $isUnitSoldOut = in_array(strtolower($application->unit->status ?? ''), ['sold', 'soldout']) || in_array(strtolower($status ?? ''), ['akad', 'completed', 'sold', 'done']);
                                             @endphp
@@ -635,7 +671,12 @@
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            <div class="d-flex justify-content-center align-items-center">
+                                                @php
+                                                    $isSubsidi = strtolower($application->unit->jenis ?? '') === 'subsidi';
+                                                    $isDevDone = $progStatus === 'selesai' || $progPercent === 100;
+                                                    $canSurveySubsidi = !$isSubsidi || $isDevDone;
+                                                @endphp
+
                                                 @if($isUnitSoldOut)
                                                     <button type="button" class="btn btn-sm d-inline-flex align-items-center justify-content-center px-3 py-1.5" disabled title="Unit telah Akad / Sold Out" style="background: #f5f3ff; color: #7c3aed; border: 1.5px solid #8b5cf6; font-weight: 700; border-radius: 8px; min-height: 34px; cursor: not-allowed; box-shadow: 0 2px 6px rgba(139, 92, 246, 0.12);">
                                                         <i class="mdi mdi-home-lock me-1"></i>Sold Out
@@ -655,13 +696,16 @@
                                                         <a href="{{ route('kpr.akad', $application->id) }}" class="btn-action akad" onclick="showProcessLoading(event)">
                                                             <i class="mdi mdi-handshake-outline"></i> Lanjut ke Akad
                                                         </a>
+                                                    @elseif(!$canSurveySubsidi)
+                                                        <button type="button" class="btn btn-sm d-inline-flex align-items-center justify-content-center px-2 py-1.5" disabled title="Unit Subsidi: Survey baru dapat dilakukan setelah pembangunan fisik unit selesai 100% (Status: {{ $statusLabel }})." style="background: #fffbeb; color: #b45309; border: 1.5px solid #fde68a; font-weight: 700; border-radius: 8px; min-height: 34px; cursor: not-allowed;">
+                                                            <i class="mdi mdi-lock-outline me-1"></i>Fisik Belum 100%
+                                                        </button>
                                                     @else
                                                         <a href="{{ route('kpr.survey', $application->id) }}" class="btn-action survey" onclick="showProcessLoading(event)">
                                                             <i class="mdi mdi-home-search-outline"></i> Lanjut Survey
                                                         </a>
                                                     @endif
                                                 @endif
-                                            </div>
                                         </td>
                                     </tr>
                                 @empty

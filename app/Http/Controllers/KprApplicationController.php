@@ -159,59 +159,82 @@ public function store(Request $request)
         $booking->save();
 
         // =============================
-        // UPLOAD FILE (ROOT - SESUAI PUNYAMU)
+        // UPLOAD FILE (STANDAR & DINAMIS)
         // =============================
         $fileFields = [
-            'slip_gaji',
-            'rekening_koran',
-            'npwp',
-            'sku',
-            'surat_nikah',
-            'ktp_pasangan',
-            'kk',
-            'ktp'
+            'ktp'            => 'KTP Pemohon',
+            'kk'             => 'Kartu Keluarga (KK)',
+            'npwp'           => 'NPWP Pemohon',
+            'slip_gaji'      => 'Slip Gaji 3 Bulan',
+            'rekening_koran' => 'Rekening Koran',
+            'sku'            => 'SKU / Surat Keterangan Kerja',
+            'surat_nikah'    => 'Buku / Surat Nikah',
+            'ktp_pasangan'   => 'KTP Pasangan',
         ];
 
         $docMap = [
-            'ktp' => 'KTP',
-            'kk' => 'Kartu Keluarga',
-            'npwp' => 'NPWP',
+            'ktp'          => 'KTP',
+            'kk'           => 'Kartu Keluarga',
+            'npwp'         => 'NPWP',
             'ktp_pasangan' => 'KTP Pasangan'
         ];
 
-        foreach ($fileFields as $field) {
+        $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/kpr';
+        if (!file_exists($destination)) {
+            mkdir($destination, 0755, true);
+        }
 
+        // 1. Dokumen Standar
+        foreach ($fileFields as $field => $label) {
             if ($request->hasFile($field)) {
-
                 $file = $request->file($field);
                 $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-
-                $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/kpr';
-
-                if (!file_exists($destination)) {
-                    mkdir($destination, 0755, true);
-                }
-
                 $file->move($destination, $filename);
-
                 $path = 'kpr/' . $filename;
 
                 KprDocument::create([
                     'kpr_application_id' => $kprApplication->id,
                     'type'               => $field,
+                    'document_name'      => $label,
                     'path'               => $path,
+                    'status'             => 'pending',
                 ]);
             } elseif (isset($docMap[$field])) {
                 // If not uploaded but exists in customer documents, copy/reference the existing customer document path!
                 $customerDoc = \App\Models\CustomerDocument::where('customer_id', $request->customer_id)
                     ->where('document_name', $docMap[$field])
                     ->first();
-                
+
                 if ($customerDoc && $customerDoc->file) {
                     KprDocument::create([
                         'kpr_application_id' => $kprApplication->id,
                         'type'               => $field,
+                        'document_name'      => $label,
                         'path'               => $customerDoc->file,
+                        'status'             => 'pending',
+                    ]);
+                }
+            }
+        }
+
+        // 2. Dokumen Tambahan Dinamis
+        if ($request->has('additional_documents') && is_array($request->additional_documents)) {
+            foreach ($request->additional_documents as $idx => $docData) {
+                if (isset($docData['file']) && $request->hasFile("additional_documents.{$idx}.file")) {
+                    $docFile = $request->file("additional_documents.{$idx}.file");
+                    $docName = !empty($docData['name']) ? trim($docData['name']) : 'Dokumen Pendukung ' . ($idx + 1);
+                    $docSlug = \Illuminate\Support\Str::slug($docName, '_');
+                    $filename = uniqid() . '_' . $docSlug . '.' . $docFile->getClientOriginalExtension();
+
+                    $docFile->move($destination, $filename);
+                    $path = 'kpr/' . $filename;
+
+                    KprDocument::create([
+                        'kpr_application_id' => $kprApplication->id,
+                        'type'               => 'custom_' . $docSlug,
+                        'document_name'      => $docName,
+                        'path'               => $path,
+                        'status'             => 'pending',
                     ]);
                 }
             }

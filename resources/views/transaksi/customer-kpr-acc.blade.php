@@ -475,7 +475,8 @@
                                     </th>
                                     <th>Jenis & Tipe</th>
                                     <th>Bank</th>
-                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Status Bangunan</th>
+                                    <th class="text-center">Status KPR</th>
                                     <th class="text-center">Tanggal Verifikasi</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
@@ -486,6 +487,26 @@
                                         $fullName = trim($application->customer->full_name ?? '-');
                                         $nameParts = array_values(array_filter(explode(' ', $fullName)));
                                         $initials = (count($nameParts) > 0) ? strtoupper(substr($nameParts[0], 0, 1)) . (isset($nameParts[1]) ? strtoupper(substr($nameParts[1], 0, 1)) : '') : '--';
+
+                                        $progStatus = strtolower($application->unit->construction_progress ?? 'belum_mulai');
+                                        $progPercent = $application->unit->construction_progress_percentage ?? 0;
+                                        $statusTextMap = [
+                                            'belum_mulai' => 'Belum Mulai',
+                                            'pondasi'     => 'Pondasi',
+                                            'dinding'     => 'Dinding',
+                                            'atap'        => 'Atap',
+                                            'finishing'   => 'Finishing',
+                                            'selesai'     => 'Selesai 100%',
+                                        ];
+                                        $statusLabel = $statusTextMap[$progStatus] ?? ucfirst($progStatus);
+                                        
+                                        $badgeProgColor = match($progStatus) {
+                                            'selesai' => 'background:#dcfce7; color:#15803d; border:1px solid #86efac;',
+                                            'finishing' => 'background:#e0e7ff; color:#4338ca; border:1px solid #c7d2fe;',
+                                            'atap', 'dinding' => 'background:#fef3c7; color:#b45309; border:1px solid #fde68a;',
+                                            'pondasi' => 'background:#ffedd5; color:#c2410c; border:1px solid #fed7aa;',
+                                            default => 'background:#f1f5f9; color:#64748b; border:1px solid #e2e8f0;',
+                                        };
                                     @endphp
                                     <tr>
                                         <td class="text-center fw-bold">{{ $kprApplications->firstItem() + $index }}</td>
@@ -518,6 +539,21 @@
                                             <div class="d-flex align-items-center">
                                                 <i class="mdi mdi-bank-outline text-primary me-2" style="font-size: 1.1rem;"></i>
                                                 <span class="fw-bold">{{ $application->bank->bank_name ?? '-' }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex flex-column align-items-center justify-content-center gap-1" style="min-width: 120px;">
+                                                <span class="badge px-2.5 py-1 fw-bold rounded-pill" style="{{ $badgeProgColor }} font-size: 0.76rem;">
+                                                    <i class="mdi {{ $progStatus === 'selesai' ? 'mdi-check-decagram' : 'mdi-home-city-outline' }} me-1"></i>{{ $statusLabel }} ({{ $progPercent }}%)
+                                                </span>
+                                                <div class="progress w-100" style="height: 5px; border-radius: 10px; background: #e2e8f0; overflow: hidden; max-width: 110px;">
+                                                    <div class="progress-bar {{ $progPercent === 100 ? 'bg-success' : ($progPercent >= 50 ? 'bg-primary' : 'bg-warning') }}"
+                                                         role="progressbar"
+                                                         style="width: {{ $progPercent }}%;"
+                                                         aria-valuenow="{{ $progPercent }}"
+                                                         aria-valuemin="0"
+                                                         aria-valuemax="100"></div>
+                                                </div>
                                             </div>
                                         </td>
                                         <td class="text-center">

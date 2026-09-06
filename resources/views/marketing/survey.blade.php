@@ -1182,10 +1182,22 @@
                                     <span>Form Survey Lapangan</span>
                                 </div>
 
-                                <div class="transaksi-inline-alert info">
-                                    <i class="mdi mdi-information-outline"></i>
-                                    <div>Isi hasil survey unit dengan lengkap untuk penilaian bank.</div>
-                                </div>
+                                @if($isSubsidi && !$devDone)
+                                    <div class="transaksi-inline-alert warning mb-3" style="background:#fffbeb; border: 1.5px solid #fde68a;">
+                                        <i class="mdi mdi-lock-alert text-warning" style="font-size: 1.8rem;"></i>
+                                        <div>
+                                            <strong class="text-dark">Survey Terkunci — Aturan Unit Subsidi:</strong>
+                                            <div class="small text-muted mt-1">
+                                                Sesuai ketentuan regulasi, <strong>Unit Subsidi tidak dapat disurvey sebelum fisik bangunan selesai 100%</strong>. Status pembangunan unit saat ini: <span class="badge bg-warning text-dark fw-bold">{{ $statusText[$status] ?? ucfirst($status ?: 'Belum Mulai') }}</span>. Form survey akan dapat disimpan setelah pembangunan unit diselesaikan.
+                                            </div>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="transaksi-inline-alert info">
+                                        <i class="mdi mdi-information-outline"></i>
+                                        <div>Isi hasil survey unit dengan lengkap untuk penilaian bank.</div>
+                                    </div>
+                                @endif
 
                                 <div class="row g-3">
                                     <div class="col-12 col-sm-6 col-md-4">
@@ -1348,10 +1360,17 @@
                                 </div>
                             </div>
 
-                            <button type="submit"
-                                class="transaksi-btn transaksi-btn-primary w-100 justify-content-center mt-3">
-                                <i class="mdi mdi-content-save-outline"></i> Simpan Hasil Survey
-                            </button>
+                            @if($isSubsidi && !$devDone)
+                                <button type="button" class="btn btn-secondary w-100 justify-content-center mt-3 py-2 fw-bold d-inline-flex align-items-center gap-2" disabled style="cursor: not-allowed; opacity: 0.8; border-radius: 10px;">
+                                    <i class="mdi mdi-lock-outline"></i>
+                                    <span>Survey Terkunci — Pembangunan Unit Belum Selesai ({{ $statusText[$status] ?? ucfirst($status ?: 'Belum Selesai') }})</span>
+                                </button>
+                            @else
+                                <button type="submit"
+                                    class="transaksi-btn transaksi-btn-primary w-100 justify-content-center mt-3">
+                                    <i class="mdi mdi-content-save-outline"></i> Simpan Hasil Survey
+                                </button>
+                            @endif
                         </div>
                     </div>
                 </form>
