@@ -87,4 +87,9 @@ class KprApplication extends Model
     {
         return $this->hasMany(KprDisbursement::class, 'kpr_application_id')->orderBy('tanggal_cair', 'asc');
     }
+
+    public function surveyor()
+    {
+        return $this->belongsTo(Employee::class, 'surveyor_id');
+    }
 }

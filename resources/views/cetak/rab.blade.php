@@ -1,9 +1,13 @@
 {{-- resources/views/cetak/rab.blade.php --}}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="utf-8">
-    <title>RAP Pembangunan - Properti Management</title>
+    <title>RAP Pembangunan - PT. Graha Cipta Sejahtera</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('admin/assets/vendors/mdi/css/materialdesignicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('admin/assets/vendors/ti-icons/css/themify-icons.css') }}">
@@ -32,11 +36,11 @@
             position: relative;
         }
 
-        /* Watermark PT PROPERTI MANAGEMENT */
+        /* Watermark PT GRAHA CIPTA SEJAHTERA */
         .watermark-text {
             user-select: none;
-            font-size: 80px;
-            color: rgba(75, 73, 172, 0.15);
+            font-size: 70px;
+            color: rgba(0, 75, 147, 0.08);
             position: fixed;
             top: 50%;
             left: 50%;
@@ -45,11 +49,11 @@
             z-index: 999;
             pointer-events: none;
             font-weight: bold;
-            border: 3px solid rgba(75, 73, 172, 0.1);
+            border: 3px solid rgba(0, 75, 147, 0.06);
             padding: 20px 40px;
             border-radius: 15px;
             letter-spacing: 5px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
         }
 
         .watermark-pattern {
@@ -60,7 +64,7 @@
             bottom: 0;
             pointer-events: none;
             z-index: 998;
-            opacity: 0.08;
+            opacity: 0.05;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-around;
@@ -69,16 +73,16 @@
         }
 
         .watermark-pattern span {
-            font-size: 60px;
+            font-size: 55px;
             font-weight: bold;
-            color: #4b49ac;
+            color: #004b93;
             margin: 50px;
             white-space: nowrap;
         }
 
         .btn-container { margin-bottom: 20px; }
         .btn { padding: 8px 16px; border-radius: 4px; border: none; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; }
-        .btn-primary { background: linear-gradient(45deg, #4b49ac, #7a78c5); color: white; }
+        .btn-primary { background: linear-gradient(45deg, #004b93, #0070ba); color: white; }
         .btn-success { background: linear-gradient(45deg, #00d25b, #028a44); color: white; }
         .btn-outline-secondary { border: 1px solid #6c757d; color: #6c757d; background: white; }
 
@@ -90,29 +94,97 @@
             z-index: 1;
         }
 
-        .header-title {
+        /* KOP SURAT RESMI PT. GRAHA CIPTA SEJAHTERA (PATEN) */
+        .document-header {
+            margin-bottom: 14px;
+            border-bottom: 3.5px double #004b93;
+            padding-bottom: 12px;
+            position: relative;
+        }
+
+        .document-header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 75px;
+        }
+
+        .header-logo-left {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+        }
+
+        .document-header-logo {
+            height: 72px;
+            max-width: 130px;
+            object-fit: contain;
+        }
+
+        .document-header-text {
             text-align: center;
-            margin-bottom: 30px;
+            width: 100%;
+            padding: 0 70px;
         }
 
-        .header-title h2 {
-            color: #4b49ac;
-            margin-bottom: 5px;
-            font-weight: bold;
+        .company-main-title {
+            color: #004b93 !important;
+            font-size: 24px !important;
+            font-weight: 900 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin: 0 0 2px 0;
+            font-family: 'Montserrat', 'Arial Black', sans-serif !important;
+            -webkit-font-smoothing: antialiased;
+            text-align: center;
         }
 
-        .header-title h4 {
-            color: #333;
+        .company-sub-title {
+            color: #002d62 !important;
+            font-size: 15px !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.3px;
+            margin: 0 0 4px 0;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif !important;
+            text-align: center;
+        }
+
+        .company-address {
+            color: #000000 !important;
+            margin: 0;
+            font-size: 11.5px !important;
+            font-weight: 600;
+            line-height: 1.35;
+            font-family: Arial, Helvetica, sans-serif !important;
+            text-align: center;
+        }
+
+        /* DOCUMENT TITLE */
+        .doc-title-block {
+            text-align: center;
+            margin-bottom: 18px;
+            margin-top: 6px;
+        }
+
+        .doc-main-title {
+            font-size: 13.5pt;
             font-weight: bold;
-            margin-top: 10px;
             text-decoration: underline;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #0f172a;
         }
 
         .info-box {
-            border: 1px solid #ddd;
-            padding: 15px;
+            border: 1px solid #dee2e6;
+            padding: 12px 16px;
             margin-bottom: 20px;
             background-color: #f8f9fc;
+            border-radius: 4px;
         }
 
         .info-table {
@@ -120,8 +192,9 @@
         }
 
         .info-table td {
-            padding: 5px;
+            padding: 4px 8px;
             border: none;
+            font-size: 13px;
         }
 
         .info-table td:first-child {
@@ -130,12 +203,13 @@
         }
 
         .section-title {
-            background-color: #4b49ac;
+            background-color: #004b93;
             color: white;
             padding: 8px 12px;
             margin: 20px 0 10px 0;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 15px;
+            border-radius: 2px;
         }
 
         .rab-table {
@@ -173,7 +247,7 @@
         }
 
         .grand-total {
-            background-color: #4b49ac;
+            background-color: #004b93;
             color: white;
             font-weight: bold;
         }
@@ -185,7 +259,7 @@
             color: #6c757d;
         }
 
-        /* ===== MODE CETAK - A4 LANDSCAPE + TIMES NEW ROMAN ===== */
+        /* ===== MODE CETAK - A4 LANDSCAPE ===== */
         @media print {
             @page {
                 size: A4 landscape;
@@ -196,12 +270,6 @@
                 background: white;
                 padding: 0;
                 margin: 0;
-                font-family: 'Times New Roman', Times, serif !important;
-            }
-
-            /* PAKSA SEMUA PAKAI TIMES NEW ROMAN SAAT PRINT */
-            body, .rab-content, table, td, th, p, h1, h2, h3, h4, h5, div, span, small, strong, .section-title, .info-box, .footer-note {
-                font-family: 'Times New Roman', Times, serif !important;
             }
 
             .btn-container,
@@ -216,40 +284,53 @@
                 background: white;
             }
 
+            .document-header {
+                border-bottom: 3.5px double #004b93 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .company-main-title {
+                color: #004b93 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .company-sub-title {
+                color: #002d62 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .document-header-logo {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
             .section-title {
-                background-color: #4b49ac !important;
+                background-color: #004b93 !important;
                 color: white !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-                font-family: 'Times New Roman', Times, serif !important;
             }
 
             .grand-total {
-                background-color: #4b49ac !important;
+                background-color: #004b93 !important;
                 color: white !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            .rab-table th {
-                background-color: #e9ecef !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
 
             .watermark-text {
-                opacity: 0.15;
+                opacity: 0.08;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-                color: #4b49ac;
-                font-family: 'Times New Roman', Times, serif !important;
             }
 
             .watermark-pattern span {
-                opacity: 0.1;
+                opacity: 0.05;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-                font-family: 'Times New Roman', Times, serif !important;
             }
 
             .info-box {
@@ -266,7 +347,7 @@
 
             /* Atur lebar tabel lebih proporsional */
             .rab-table th, .rab-table td {
-                font-size: 11pt;
+                font-size: 10.5pt;
                 padding: 6px 4px;
             }
         }
@@ -282,23 +363,29 @@
                 font-size: 30px;
                 margin: 20px;
             }
+
+            .document-header-logo {
+                height: 50px;
+            }
+
+            .company-main-title {
+                font-size: 18px !important;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Watermark PT PROPERTI MANAGEMENT (besar di tengah) -->
-    <div class="watermark-text">PT PROPERTI MANAGEMENT</div>
+    <!-- Watermark PT GRAHA CIPTA SEJAHTERA (besar di tengah) -->
+    <div class="watermark-text">PT GRAHA CIPTA SEJAHTERA</div>
 
     <!-- Watermark pattern berulang -->
     <div class="watermark-pattern">
-        <span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span>
-        <span>PT PROPERTI MANAGEMENT</span>
+        <span>PT GRAHA CIPTA SEJAHTERA</span>
+        <span>PT GRAHA CIPTA SEJAHTERA</span>
+        <span>PT GRAHA CIPTA SEJAHTERA</span>
+        <span>PT GRAHA CIPTA SEJAHTERA</span>
+        <span>PT GRAHA CIPTA SEJAHTERA</span>
+        <span>PT GRAHA CIPTA SEJAHTERA</span>
     </div>
 
     <div class="rab-container">
@@ -323,12 +410,23 @@
         </div>
 
         <div class="rab-content">
-            <!-- Header -->
-            <div class="header-title">
-                <h2>PT PROPERTI MANAGEMENT</h2>
-                <p>Jl. Sudirman No. 123, Jakarta Selatan 12190</p>
-                <p>Telp: (021) 1234567 | Email: info@propertimanagement.com</p>
-                <h4>RENCANA ANGGARAN PELAKSANAAN (RAP) PEMBANGUNAN</h4>
+            <!-- KOP SURAT RESMI PT. GRAHA CIPTA SEJAHTERA (PATEN) -->
+            <div class="document-header">
+                <div class="document-header-inner">
+                    <div class="header-logo-left">
+                        <img src="{{ asset('images/logo1.png') }}" alt="Logo PT. Graha Cipta Sejahtera" class="document-header-logo">
+                    </div>
+                    <div class="document-header-text">
+                        <h2 class="company-main-title">PT. GRAHA CIPTA SEJAHTERA</h2>
+                        <div class="company-sub-title">Developer &amp; General Contractor</div>
+                        <p class="company-address">Kantor : Jl. Letjen Sutoyo No. 99 A Jember &nbsp;&nbsp; Telp. : 0331 - 331447, 0331 - 321533</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JUDUL DOKUMEN -->
+            <div class="doc-title-block">
+                <div class="doc-main-title">RENCANA ANGGARAN PELAKSANAAN (RAP) PEMBANGUNAN</div>
             </div>
 
             <!-- Info Proyek -->
@@ -414,8 +512,7 @@
                     <tfoot>
                         <tr class="subtotal-row">
                             <td colspan="5" class="text-end">SUB TOTAL {{ $displayTitle }}</td>
-                            <td class="text-end">{{ number_format($subtotal,0,",",".") }}</td>
-                            <td></td>
+                            <td colspan="2" class="text-end">Rp {{ number_format($subtotal,0,",",".") }}</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -437,36 +534,31 @@
             {{-- REKAPITULASI & GRAND TOTAL --}}
             <table class="rab-table" border="1" cellspacing="0" cellpadding="5" style="margin-top: 20px;">
                 <tr style="background-color: #f8f9fc; font-weight: bold;">
-                    <td colspan="5" class="text-end">Total Biaya Perizinan & Legalitas</td>
-                    <td class="text-end" style="width: 140px;">Rp {{ number_format($totalPerizinan, 0, ',', '.') }}</td>
-                    <td style="width: 100px;"></td>
+                    <td colspan="5" class="text-end">Total Biaya Perizinan &amp; Legalitas</td>
+                    <td colspan="2" class="text-end" style="width: 240px;">Rp {{ number_format($totalPerizinan, 0, ',', '.') }}</td>
                 </tr>
                 <tr style="background-color: #f8f9fc; font-weight: bold;">
                     <td colspan="5" class="text-end">Total Biaya Konstruksi Fisik Rumah</td>
-                    <td class="text-end">Rp {{ number_format($totalRumah, 0, ',', '.') }}</td>
-                    <td></td>
+                    <td colspan="2" class="text-end">Rp {{ number_format($totalRumah, 0, ',', '.') }}</td>
                 </tr>
                 <tr style="background-color: #e9ecef; font-weight: bold;">
                     <td colspan="5" class="text-end">Subtotal Semua Pekerjaan</td>
-                    <td class="text-end">Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
-                    <td></td>
+                    <td colspan="2" class="text-end">Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
                 </tr>
                 <tr style="background-color: #f8f9fc; font-weight: bold;">
                     <td colspan="5" class="text-end">PPN (10%)</td>
-                    <td class="text-end">Rp {{ number_format($ppn, 0, ',', '.') }}</td>
-                    <td></td>
+                    <td colspan="2" class="text-end">Rp {{ number_format($ppn, 0, ',', '.') }}</td>
                 </tr>
                 <tr class="grand-total">
                     <td colspan="5" class="text-end" style="font-size: 13px;">GRAND TOTAL ANGGARAN RAP (HPP UNIT)</td>
-                    <td class="text-end" style="font-size: 13px;">Rp {{ number_format($finalGrandTotal, 0, ',', '.') }}</td>
-                    <td></td>
+                    <td colspan="2" class="text-end" style="font-size: 13px;">Rp {{ number_format($finalGrandTotal, 0, ',', '.') }}</td>
                 </tr>
             </table>
 
             <div class="footer-note">
-                Dokumen ini dicetak dari sistem Properti Management. Semua harga dalam Rupiah (Rp).
+                Dokumen ini dicetak dari sistem PT. Graha Cipta Sejahtera. Semua harga dalam Rupiah (Rp).
                 <br>
-                <small class="text-muted">Dokumen dilengkapi watermark untuk keamanan</small>
+                <small class="text-muted">Dokumen resmi terverifikasi &amp; dilengkapi watermark keamanan</small>
             </div>
         </div>
     </div>

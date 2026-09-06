@@ -269,6 +269,33 @@
             background: linear-gradient(135deg, #dc3545, #e4606d) !important;
             color: #ffffff !important;
         }
+
+        /* Badge Status Capaian Progress RAP */
+        .badge-status-pill {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            display: inline-flex;
+            align-items: center;
+        }
+        .badge-status-lunas {
+            background: #dcfce7 !important;
+            color: #15803d !important;
+            border: 1px solid #bbf7d0 !important;
+        }
+        .badge-status-partial {
+            background: #fef9c3 !important;
+            color: #a16207 !important;
+            border: 1px solid #fef08a !important;
+        }
+        .badge-status-pending {
+            background: #fee2e2 !important;
+            color: #b91c1c !important;
+            border: 1px solid #fecaca !important;
+        }
     </style>
 
     <div class="container-fluid px-2 px-sm-3 px-md-4 py-3">
@@ -481,10 +508,29 @@
 
             <div id="dynamic-categories-container">
             @foreach ($kategoriConfig as $key => $cfg)
+                @php
+                    $catItems = $selectedUnit->progress ? $selectedUnit->progress->items->where('kategori', $key)->values() : collect();
+                    $catItemCount = $catItems->count();
+                    $catProgress = $catItemCount > 0 ? round($catItems->avg('progress_persen')) : 0;
+                    
+                    if ($catProgress == 100) {
+                        $badgeClass = 'badge-status-lunas';
+                        $badgeIcon = 'mdi-check-circle';
+                        $badgeText = 'Selesai';
+                    } elseif ($catProgress > 0) {
+                        $badgeClass = 'badge-status-partial';
+                        $badgeIcon = 'mdi-progress-wrench';
+                        $badgeText = 'Sedang Berjalan';
+                    } else {
+                        $badgeClass = 'badge-status-pending';
+                        $badgeIcon = 'mdi-clock-outline';
+                        $badgeText = 'Belum Berjalan';
+                    }
+                @endphp
                 <div class="row mb-3 mb-md-4 category-section" id="section-{{ $key }}">
                     <div class="col-12">
                         <div class="card shadow-sm border-0 rab-card" style="border-radius: 12px; overflow: hidden;">
-                            <div class="card-header bg-light bg-opacity-75 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 py-2.5 px-3 px-md-4 border-bottom">
+                            <div class="card-header bg-light bg-opacity-75 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 py-2.5 px-3 px-md-4 border-bottom">
                                 <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <span class="badge bg-primary bg-opacity-10 text-primary font-monospace px-2.5 py-1 rounded-2 fw-bold" style="font-size: 0.82rem;">
                                         Prefix: {{ $cfg['prefix'] }}
@@ -494,11 +540,27 @@
                                         {{ $cfg['title'] }}
                                     </h6>
                                 </div>
-                                @if(!$isUnitSoldOut)
-                                    <button type="button" class="btn btn-sm btn-success text-white px-3 py-1 rounded-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-1" style="height: 32px; font-size: 0.8rem;" onclick="tambahItem('{{ $key }}')">
-                                        + Tambah Item
-                                    </button>
-                                @endif
+
+                                <div class="d-flex align-items-center gap-2 flex-wrap ms-md-auto">
+                                    <!-- Badge Status Capaian -->
+                                    <span class="badge-status-pill {{ $badgeClass }}" id="badge-status-{{ $key }}">
+                                        <i class="mdi {{ $badgeIcon }} me-1"></i><span class="status-text">{{ $badgeText }}</span>
+                                    </span>
+
+                                    <!-- Mini Progress Bar & Persentase -->
+                                    <div class="d-flex align-items-center gap-1.5 px-2 py-1 bg-white border rounded-2" style="min-width: 120px;">
+                                        <div class="progress flex-grow-1" style="height: 6px; border-radius: 4px; background: #e2e8f0; width: 60px;">
+                                            <div class="progress-bar bg-gradient-primary" id="progbar-{{ $key }}" style="width: {{ $catProgress }}%;"></div>
+                                        </div>
+                                        <span class="fw-bold font-monospace text-primary" id="progpct-{{ $key }}" style="font-size: 0.8rem; width: 38px; text-align: right;">{{ $catProgress }}%</span>
+                                    </div>
+
+                                    @if(!$isUnitSoldOut)
+                                        <button type="button" class="btn btn-sm btn-success text-white px-3 py-1 rounded-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-1" style="height: 30px; font-size: 0.8rem;" onclick="tambahItem('{{ $key }}')">
+                                            + Tambah Item
+                                        </button>
+                                    @endif
+                                </div>
                             </div>
 
                             <div class="card-body p-0">
@@ -508,11 +570,12 @@
                                             <tr>
                                                 <th style="width: 50px;">NO</th>
                                                 <th>URAIAN</th>
-                                                <th style="width: 90px;">VOLUME</th>
-                                                <th style="width: 80px;">SATUAN</th>
-                                                <th style="width: 140px;">HARGA</th>
-                                                <th style="width: 150px;">TOTAL</th>
+                                                <th style="width: 85px;">VOLUME</th>
+                                                <th style="width: 75px;">SATUAN</th>
+                                                <th style="width: 130px;">HARGA</th>
+                                                <th style="width: 140px;">TOTAL</th>
                                                 <th>KETERANGAN</th>
+                                                <th style="width: 100px;">PROGRESS</th>
                                                 <th style="width: 130px;">DEADLINE</th>
                                                 <th style="width: 140px;">DOKUMENTASI</th>
                                                 <th style="width: 60px;">AKSI</th>
@@ -520,8 +583,8 @@
                                         </thead>
                                         <tbody id="body-{{ $key }}">
                                             {{-- DATA DARI DB --}}
-                                            @if ($selectedUnit->progress)
-                                                @foreach ($selectedUnit->progress->items->where('kategori', $key)->values() as $item)
+                                            @if ($selectedUnit->progress && $catItems->count() > 0)
+                                                @foreach ($catItems as $item)
                                                     <tr>
                                                         <td style="display:none;">
                                                              <input type="hidden" name="items[{{ $item->id }}][id]"
@@ -541,6 +604,18 @@
                                                         <td class="text-end fw-bold text-success">Rp {{ number_format($item->total, 0, ',', '.') }}</td>
 
                                                         <td>{{ $item->keterangan ?? '-' }}</td>
+
+                                                        <!-- Kolom Capaian Progress Item -->
+                                                        <td class="text-center">
+                                                            <div class="input-group input-group-sm" style="width: 80px; margin: 0 auto;">
+                                                                <input type="number" min="0" max="100" name="items[{{ $item->id }}][progress_persen]"
+                                                                    class="form-control form-control-sm text-center font-monospace fw-bold item-progress-input"
+                                                                    style="border-radius: 6px 0 0 6px; padding: 2px 4px; font-size: 0.82rem;"
+                                                                    value="{{ $item->progress_persen ?? 0 }}"
+                                                                    oninput="hitungSemua();" placeholder="0">
+                                                                <span class="input-group-text px-1 bg-light text-muted" style="border-radius: 0 6px 6px 0; font-size: 11px;">%</span>
+                                                            </div>
+                                                        </td>
 
                                                         <td>
                                                             <input type="date" name="deadline[{{ $item->id }}]"
@@ -596,7 +671,7 @@
                                                 @endforeach
                                             @else
                                                 <tr>
-                                                    <td colspan="10" class="text-center text-muted py-3">
+                                                    <td colspan="11" class="text-center text-muted py-3">
                                                         Belum ada progress untuk kategori ini
                                                     </td>
                                                 </tr>
@@ -607,7 +682,7 @@
                                                 <td colspan="5" class="text-start ps-3 ps-md-4 fw-bold text-dark small py-2.5">
                                                     Subtotal {{ $cfg['title'] }}
                                                 </td>
-                                                <td colspan="5" class="text-end pe-3 pe-md-4 py-2.5">
+                                                <td colspan="6" class="text-end pe-3 pe-md-4 py-2.5">
                                                     <span id="subtotal-display-{{ $key }}" class="font-monospace fw-bold text-success" style="font-size: 1rem;">
                                                         Rp 0
                                                     </span>
@@ -889,7 +964,7 @@
                 <div class="row mb-4 category-section animate__animated animate__fadeIn" id="section-${cleanKey}">
                     <div class="col-12">
                         <div class="card shadow-sm border-0 rab-card" style="border-radius: 12px; overflow: hidden;">
-                            <div class="card-header bg-light bg-opacity-75 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 py-2.5 px-3 px-md-4 border-bottom">
+                            <div class="card-header bg-light bg-opacity-75 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 py-2.5 px-3 px-md-4 border-bottom">
                                 <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <span class="badge bg-primary bg-opacity-10 text-primary font-monospace px-2.5 py-1 rounded-2 fw-bold" style="font-size: 0.82rem;">
                                         Prefix: ${nextPrefix}
@@ -899,9 +974,25 @@
                                         ${title}
                                     </h6>
                                 </div>
-                                <button type="button" class="btn btn-sm btn-success text-white px-3 py-1 rounded-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-1" style="height: 32px; font-size: 0.8rem;" onclick="tambahItem('${cleanKey}')">
-                                    + Tambah Item
-                                </button>
+
+                                <div class="d-flex align-items-center gap-2 flex-wrap ms-md-auto">
+                                    <!-- Badge Status Capaian -->
+                                    <span class="badge-status-pill badge-status-pending" id="badge-status-${cleanKey}">
+                                        <i class="mdi mdi-clock-outline me-1"></i><span class="status-text">Belum Berjalan</span>
+                                    </span>
+
+                                    <!-- Mini Progress Bar & Persentase -->
+                                    <div class="d-flex align-items-center gap-1.5 px-2 py-1 bg-white border rounded-2" style="min-width: 120px;">
+                                        <div class="progress flex-grow-1" style="height: 6px; border-radius: 4px; background: #e2e8f0; width: 60px;">
+                                            <div class="progress-bar bg-gradient-primary" id="progbar-${cleanKey}" style="width: 0%;"></div>
+                                        </div>
+                                        <span class="fw-bold font-monospace text-primary" id="progpct-${cleanKey}" style="font-size: 0.8rem; width: 38px; text-align: right;">0%</span>
+                                    </div>
+
+                                    <button type="button" class="btn btn-sm btn-success text-white px-3 py-1 rounded-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-1" style="height: 30px; font-size: 0.8rem;" onclick="tambahItem('${cleanKey}')">
+                                        + Tambah Item
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="card-body p-0">
@@ -911,11 +1002,12 @@
                                             <tr>
                                                 <th style="width: 50px;">NO</th>
                                                 <th>URAIAN</th>
-                                                <th style="width: 90px;">VOLUME</th>
-                                                <th style="width: 80px;">SATUAN</th>
-                                                <th style="width: 140px;">HARGA</th>
-                                                <th style="width: 150px;">TOTAL</th>
+                                                <th style="width: 85px;">VOLUME</th>
+                                                <th style="width: 75px;">SATUAN</th>
+                                                <th style="width: 130px;">HARGA</th>
+                                                <th style="width: 140px;">TOTAL</th>
                                                 <th>KETERANGAN</th>
+                                                <th style="width: 100px;">PROGRESS</th>
                                                 <th style="width: 130px;">DEADLINE</th>
                                                 <th style="width: 140px;">DOKUMENTASI</th>
                                                 <th style="width: 60px;">AKSI</th>
@@ -923,7 +1015,7 @@
                                         </thead>
                                         <tbody id="body-${cleanKey}">
                                             <tr>
-                                                <td colspan="10" class="text-center py-3 text-muted">
+                                                <td colspan="11" class="text-center py-3 text-muted">
                                                     Belum ada item pekerjaan. Klik <strong>+ Tambah Item</strong> di atas.
                                                 </td>
                                             </tr>
@@ -933,7 +1025,7 @@
                                                 <td colspan="5" class="text-start ps-3 ps-md-4 fw-bold text-dark small py-2.5">
                                                     Subtotal ${title}
                                                 </td>
-                                                <td colspan="5" class="text-end pe-3 pe-md-4 py-2.5">
+                                                <td colspan="6" class="text-end pe-3 pe-md-4 py-2.5">
                                                     <span id="subtotal-display-${cleanKey}" class="font-monospace fw-bold text-success" style="font-size: 1rem;">
                                                         Rp 0
                                                     </span>
@@ -969,7 +1061,7 @@
             let tbody = document.getElementById(config.body);
 
             // Hapus row "Belum ada data" jika ada
-            if (tbody.querySelector('tr td[colspan="10"]')) {
+            if (tbody.querySelector('tr td[colspan="11"]') || tbody.querySelector('tr td[colspan="10"]')) {
                 tbody.innerHTML = '';
             }
 
@@ -1010,6 +1102,16 @@
                         <input type="text"
                                name="items[${indexItem}][keterangan]"
                                class="form-control form-control-sm" placeholder="Keterangan...">
+                    </td>
+                    <td class="text-center">
+                        <div class="input-group input-group-sm" style="width: 80px; margin: 0 auto;">
+                            <input type="number" min="0" max="100" name="items[${indexItem}][progress_persen]"
+                                   class="form-control form-control-sm text-center font-monospace fw-bold item-progress-input"
+                                   style="border-radius: 6px 0 0 6px; padding: 2px 4px; font-size: 0.82rem;"
+                                   value="0"
+                                   oninput="hitungSemua()" placeholder="0">
+                            <span class="input-group-text px-1 bg-light text-muted" style="border-radius: 0 6px 6px 0; font-size: 11px;">%</span>
+                        </div>
                     </td>
                     <td>
                         <input type="date"
@@ -1195,8 +1297,14 @@
             Object.keys(kategoriMap).forEach(function(kategori) {
                 let config = kategoriMap[kategori];
                 let subtotal = 0;
+                let totalProgress = 0;
+                let itemCount = 0;
 
-                document.querySelectorAll("#" + config.body + " tr").forEach(function(row) {
+                let rows = document.querySelectorAll("#" + config.body + " tr");
+                rows.forEach(function(row) {
+                    // Cek jika row kosong
+                    if (row.querySelector('td[colspan]')) return;
+
                     let volumeInput = row.querySelector(".volume");
                     let hargaInput = row.querySelector(".harga-satuan");
                     let totalInput = row.querySelector(".total-item");
@@ -1209,11 +1317,42 @@
                         totalInput.value = total.toLocaleString('id-ID');
                         subtotal += total;
                     } else {
-                        let totalText = row.cells[6]?.innerText || row.cells[5]?.innerText || "0";
+                        let totalText = row.cells[5]?.innerText || "0";
                         let total = parseInt(totalText.replace(/[^0-9]/g, '')) || 0;
                         subtotal += total;
                     }
+
+                    // Hitung progress item
+                    let progressInput = row.querySelector(".item-progress-input");
+                    if (progressInput) {
+                        let pVal = Math.max(0, Math.min(100, parseInt(progressInput.value) || 0));
+                        totalProgress += pVal;
+                        itemCount++;
+                    }
                 });
+
+                // Update Progress Kategori (Rata-rata)
+                let avgProgress = itemCount > 0 ? Math.round(totalProgress / itemCount) : 0;
+                let progbar = document.getElementById('progbar-' + kategori);
+                if (progbar) progbar.style.width = avgProgress + '%';
+
+                let progpct = document.getElementById('progpct-' + kategori);
+                if (progpct) progpct.innerText = avgProgress + '%';
+
+                let badgeStatus = document.getElementById('badge-status-' + kategori);
+                if (badgeStatus) {
+                    badgeStatus.className = 'badge-status-pill';
+                    if (avgProgress >= 100) {
+                        badgeStatus.classList.add('badge-status-lunas');
+                        badgeStatus.innerHTML = '<i class="mdi mdi-check-circle me-1"></i><span class="status-text">Selesai</span>';
+                    } else if (avgProgress > 0) {
+                        badgeStatus.classList.add('badge-status-partial');
+                        badgeStatus.innerHTML = '<i class="mdi mdi-progress-wrench me-1"></i><span class="status-text">Sedang Berjalan</span>';
+                    } else {
+                        badgeStatus.classList.add('badge-status-pending');
+                        badgeStatus.innerHTML = '<i class="mdi mdi-clock-outline me-1"></i><span class="status-text">Belum Berjalan</span>';
+                    }
+                }
 
                 let subtotalInput = document.getElementById(config.subtotal);
                 if (subtotalInput) {
@@ -1267,7 +1406,7 @@
         }
 
         document.addEventListener("input", function(e) {
-            if (e.target.classList.contains("volume") || e.target.classList.contains("harga-satuan")) {
+            if (e.target.classList.contains("volume") || e.target.classList.contains("harga-satuan") || e.target.classList.contains("item-progress-input")) {
                 hitungSemua();
             }
         });

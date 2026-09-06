@@ -115,57 +115,148 @@ class InvoiceController extends Controller
         if ($angka < 2000) return "seribu " . $this->terbilang($angka - 1000);
         if ($angka < 1000000) return $this->terbilang(floor($angka / 1000)) . " ribu " . $this->terbilang($angka % 1000);
         if ($angka < 1000000000) return $this->terbilang(floor($angka / 1000000)) . " juta " . $this->terbilang($angka % 1000000);
+        if ($angka < 1000000000000) return $this->terbilang(floor($angka / 1000000000)) . " milyar " . $this->terbilang($angka % 1000000000);
 
         return "Angka terlalu besar";
     }
-   public function sendToWa($id)
-{
-    $booking = Booking::findOrFail($id);
 
-    $downloadUrlCash = route('dashboard.cetak.invoice.cash.pdf', $booking->id);
-    $downloadUrlKonversi = route('dashboard.cetak.invoice.konversi.pdf', $booking->id);
+    public function cetakKuitansiUtj($id)
+    {
+        $booking = Booking::with(['unit', 'unit.landBank', 'customer', 'sales', 'payments'])->findOrFail($id);
+        
+        $kuitansiNumber = 'KW-UTJ/' . date('Ymd', strtotime($booking->booking_date ?? now())) . '/' . str_pad($booking->id, 4, '0', STR_PAD_LEFT);
+        
+        $utjPayment = $booking->payments->where('type', 'booking_fee')->first();
+        $nominalUtj = $booking->utj ?? $booking->booking_fee ?? ($utjPayment->amount ?? 0);
+        $terbilang = $this->terbilang($nominalUtj);
 
-    $invoiceNumber = 'INV/CASH/' . date('Y') . '/' . str_pad($booking->id, 3, '0', STR_PAD_LEFT);
+        $downloadUrl = route('dashboard.cetak.kuitansi.utj.pdf', $booking->id);
 
-    $pdf = PDF::loadView(
-        'cetak.invoice_cash',
-        compact('booking','downloadUrlCash','downloadUrlKonversi','invoiceNumber')
-    )->setPaper('A4', 'portrait');
-
-    // =========================
-    // Pastikan folder ada
-    // =========================
-    $folderPath = public_path('invoices');
-
-    if (!File::exists($folderPath)) {
-        File::makeDirectory($folderPath, 0755, true);
+        return view('cetak.kuitansi_utj', compact(
+            'booking',
+            'kuitansiNumber',
+            'nominalUtj',
+            'terbilang',
+            'utjPayment',
+            'downloadUrl'
+        ));
     }
 
-    // Supaya tidak overwrite file lama
-    $fileName = 'invoice-' . $booking->id . '-' . time() . '.pdf';
-    $filePath = $folderPath . '/' . $fileName;
+    public function cetakKuitansiUtjPdf($id)
+    {
+        $booking = Booking::with(['unit', 'unit.landBank', 'customer', 'sales', 'payments'])->findOrFail($id);
+        
+        $kuitansiNumber = 'KW-UTJ/' . date('Ymd', strtotime($booking->booking_date ?? now())) . '/' . str_pad($booking->id, 4, '0', STR_PAD_LEFT);
+        
+        $utjPayment = $booking->payments->where('type', 'booking_fee')->first();
+        $nominalUtj = $booking->utj ?? $booking->booking_fee ?? ($utjPayment->amount ?? 0);
+        $terbilang = $this->terbilang($nominalUtj);
 
-    $pdf->save($filePath);
+        $pdf = Pdf::loadView('cetak.kuitansi_utj', [
+            'booking' => $booking,
+            'kuitansiNumber' => $kuitansiNumber,
+            'nominalUtj' => $nominalUtj,
+            'terbilang' => $terbilang,
+            'utjPayment' => $utjPayment,
+            'pdf' => true
+        ])->setPaper('A4', 'portrait')->setOption('isRemoteEnabled', true)->setOption('isHtml5ParserEnabled', true);
 
-    // =========================
-    // Format nomor WA
-    // =========================
-    $phone = preg_replace('/[^0-9]/', '', $booking->customer->phone); 
+        $fileName = 'kuitansi_utj_' . str_replace(['/', '\\'], '-', $kuitansiNumber) . '.pdf';
+        return $pdf->download($fileName);
+    }
+    public function sendUtjToWa($id)
+    {
+        $booking = Booking::with(['unit', 'unit.landBank', 'customer', 'sales', 'payments'])->findOrFail($id);
 
-    if (Str::startsWith($phone, '0')) {
-        $phone = '62' . substr($phone, 1);
+        $kuitansiNumber = 'KW-UTJ/' . date('Ymd', strtotime($booking->booking_date ?? now())) . '/' . str_pad($booking->id, 4, '0', STR_PAD_LEFT);
+        $utjPayment = $booking->payments->where('type', 'booking_fee')->first();
+        $nominalUtj = $booking->utj ?? $booking->booking_fee ?? ($utjPayment->amount ?? 0);
+        $terbilang = $this->terbilang($nominalUtj);
+
+        $pdf = Pdf::loadView('cetak.kuitansi_utj', [
+            'booking' => $booking,
+            'kuitansiNumber' => $kuitansiNumber,
+            'nominalUtj' => $nominalUtj,
+            'terbilang' => $terbilang,
+            'utjPayment' => $utjPayment,
+            'pdf' => true
+        ])->setPaper('A4', 'portrait')->setOption('isRemoteEnabled', true)->setOption('isHtml5ParserEnabled', true);
+
+        $folderPath = public_path('invoices');
+        if (!File::exists($folderPath)) {
+            File::makeDirectory($folderPath, 0755, true);
+        }
+
+        $fileName = 'kuitansi-utj-' . $booking->id . '-' . time() . '.pdf';
+        $filePath = $folderPath . '/' . $fileName;
+        $pdf->save($filePath);
+
+        $customerPhone = $booking->customer->phone ?? '';
+        $phone = preg_replace('/[^0-9]/', '', $customerPhone);
+        if (Str::startsWith($phone, '0')) {
+            $phone = '62' . substr($phone, 1);
+        }
+
+        $proyek = $booking->unit->landBank->name ?? '-';
+        $unitCode = $booking->unit->unit_name ?? ($booking->unit->unit_code ?? '-');
+        $nominalFormatted = 'Rp ' . number_format($nominalUtj, 0, ',', '.');
+        $tanggal = \Carbon\Carbon::parse($booking->booking_date ?? now())->translatedFormat('d F Y');
+        $customerName = $booking->customer->full_name ?? ($booking->customer->name ?? 'Bpk/Ibu');
+
+        $text = "Halo Bapak/Ibu *{$customerName}*,\n\n"
+            . "Berikut kami sampaikan *Kuitansi Resmi Penerimaan Uang Tanda Jadi (UTJ)* pemesanan unit properti Anda:\n\n"
+            . "📋 *No. Kuitansi* : {$kuitansiNumber}\n"
+            . "🏠 *Unit Proyek*  : {$proyek} (Blok {$unitCode})\n"
+            . "💵 *Jumlah UTJ*   : {$nominalFormatted}\n"
+            . "✅ *Status*       : *LUNAS / TERVERIFIKASI*\n"
+            . "📅 *Tanggal*      : {$tanggal}\n\n"
+            . "Dokumen kuitansi resmi dapat Anda unduh/lihat pada tautan berikut:\n"
+            . "👉 " . url('invoices/' . $fileName) . "\n\n"
+            . "Terima kasih atas kepercayaan Anda.\n"
+            . "*PT. GRAHA CIPTA SEJAHTERA*";
+
+        $message = urlencode($text);
+
+        return redirect("https://wa.me/{$phone}?text={$message}");
     }
 
-    // =========================
-    // Buat pesan WA
-    // =========================
-    $message = urlencode(
-        "Halo {$booking->customer->full_name},\n\n"
-        . "Berikut invoice Anda:\n"
-        . url('invoices/' . $fileName)
-        . "\n\nTerima kasih."
-    );
+    public function sendToWa($id)
+    {
+        $booking = Booking::with('payments', 'unit', 'customer', 'sales')->findOrFail($id);
 
-    return redirect("https://wa.me/{$phone}?text={$message}");
-}
+        $downloadUrlCash = route('dashboard.cetak.invoice.cash.pdf', $booking->id);
+        $downloadUrlKonversi = route('dashboard.cetak.invoice.konversi.pdf', $booking->id);
+
+        $invoiceNumber = 'INV/CASH/' . date('Y') . '/' . str_pad($booking->id, 3, '0', STR_PAD_LEFT);
+
+        $pdf = PDF::loadView(
+            'cetak.invoice_cash',
+            compact('booking','downloadUrlCash','downloadUrlKonversi','invoiceNumber')
+        )->setPaper('A4', 'portrait');
+
+        $folderPath = public_path('invoices');
+        if (!File::exists($folderPath)) {
+            File::makeDirectory($folderPath, 0755, true);
+        }
+
+        $fileName = 'invoice-' . $booking->id . '-' . time() . '.pdf';
+        $filePath = $folderPath . '/' . $fileName;
+
+        $pdf->save($filePath);
+
+        $customerPhone = $booking->customer->phone ?? '';
+        $phone = preg_replace('/[^0-9]/', '', $customerPhone); 
+        if (Str::startsWith($phone, '0')) {
+            $phone = '62' . substr($phone, 1);
+        }
+
+        $message = urlencode(
+            "Halo {$booking->customer->full_name},\n\n"
+            . "Berikut invoice Anda:\n"
+            . url('invoices/' . $fileName)
+            . "\n\nTerima kasih."
+        );
+
+        return redirect("https://wa.me/{$phone}?text={$message}");
+    }
 }

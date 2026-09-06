@@ -294,26 +294,55 @@
     font-size: 0.98rem;
 }
 
+.transaksi-handler-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
 .transaksi-handler {
     display: flex;
     align-items: center;
     gap: 0.85rem;
     background: #f8fafc;
     border: 1px solid #edf0f5;
-    padding: 0.75rem 1rem;
-    border-radius: 12px;
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+}
+
+.transaksi-handler.verifier {
+    background: #f0fdf4;
+    border-color: #dcfce7;
 }
 
 .transaksi-handler-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
     background: linear-gradient(135deg, #667eea, #764ba2);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.transaksi-handler.verifier .transaksi-handler-icon {
+    background: linear-gradient(135deg, #0ba360, #3cba92);
+}
+
+.transaksi-handler-role {
+    font-size: 0.72rem;
+    color: #64748b;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.transaksi-handler-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #1e293b;
 }
 
 /* INLINE ALERTS */
@@ -918,11 +947,6 @@
     line-height: 1;
 }
 </style>
-    @php
-        $currentUser = auth()->user();
-        $posName = strtolower($currentUser->position->name ?? '');
-        $isKepalaMarketing = $isKepalaMarketing ?? (str_contains($posName, 'kepala') || ($currentUser->position_id ?? null) == 1 || str_contains($posName, 'admin') || str_contains($posName, 'direktur'));
-    @endphp
     <div class="transaksi-page">
         <div class="row">
             <div class="col-12">
@@ -951,10 +975,7 @@
                                             {{ strtoupper($booking->unit->jenis ?? '-') }}
                                         </span>
                                     </h4>
-                                    <p class="customer-booking mb-0">
-                                        Booking ID: {{ $booking->booking_code ?? '-' }} 
-                                        &bull; <span class="badge {{ $isKepalaMarketing ? 'bg-primary' : 'bg-info' }} text-white" style="font-size: 0.72rem;">{{ $isKepalaMarketing ? 'Verifikator: Kepala Marketing' : 'Staff Marketing' }}</span>
-                                    </p>
+                                    <p class="customer-booking mb-0">Booking ID: {{ $booking->booking_code ?? '-' }}</p>
                                 </div>
                             </div>
 
@@ -1201,9 +1222,40 @@
                                 <span>{{ $booking->kprApplication->bank->bank_name ?? '-' }}</span>
                             </div>
                             <div class="transaksi-detail-item">
-                                <span>Jumlah Pinjaman</span>
-                                <span>Rp
-                                    {{ number_format($booking->kprApplication->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span>
+                                <span>Harga Unit</span>
+                                <span>Rp {{ number_format($booking->kprApplication->harga_unit ?? ($booking->unit->price ?? 0), 0, ',', '.') }}</span>
+                            </div>
+                            <div class="transaksi-detail-item">
+                                <span>Uang Muka (DP) Awal</span>
+                                <span>Rp {{ number_format($booking->kprApplication->dp ?? 0, 0, ',', '.') }}</span>
+                            </div>
+
+                            @if(($booking->kprApplication->promo_value ?? 0) > 0 || !empty($booking->kprApplication->promo_name))
+                            <div class="transaksi-detail-item">
+                                <span>Promo</span>
+                                <span class="text-primary fw-bold">{{ $booking->kprApplication->promo_name ?? 'Promo Spesial' }}</span>
+                            </div>
+                            <div class="transaksi-detail-item">
+                                <span>Potongan DP (Promo)</span>
+                                <span class="text-danger fw-bold">- Rp {{ number_format($booking->kprApplication->promo_value ?? 0, 0, ',', '.') }}</span>
+                            </div>
+                            @endif
+
+                            @php
+                                $dpAwal = (float)($booking->kprApplication->dp ?? 0);
+                                $nilaiPromo = (float)($booking->kprApplication->promo_value ?? 0);
+                                $dpBersih = max(0, $dpAwal - $nilaiPromo);
+                            @endphp
+                            <div class="transaksi-detail-item">
+                                <span>Total DP yang Dibayar</span>
+                                <span style="color: #2563eb; font-weight: 700;">
+                                    Rp {{ number_format($dpBersih, 0, ',', '.') }}
+                                </span>
+                            </div>
+
+                            <div class="transaksi-detail-item">
+                                <span>Jumlah Pinjaman (Plafond)</span>
+                                <span>Rp {{ number_format($booking->kprApplication->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span>
                             </div>
                             <div class="transaksi-detail-item">
                                 <span>Tenor</span>
@@ -1211,32 +1263,37 @@
                             </div>
                             <div class="transaksi-detail-item">
                                 <span>Angsuran / bln</span>
-                                <span class="highlight">Rp
-                                    {{ number_format($booking->kprApplication->estimasi_angsuran ?? 0, 0, ',', '.') }}
-                                </span>
-                            </div>
-
-
-                            <div class="transaksi-detail-item">
-                                <span>Promo</span>
-                                <span>
-                                    {{ $booking->kprApplication->promo_name ?? '-' }}
-                                </span>
-                            </div>
-
-                            <div class="transaksi-detail-item">
-                                <span>Nilai Promo</span>
-                                <span>
-                                    Rp {{ number_format($booking->kprApplication->promo_value ?? 0, 0, ',', '.') }}
-                                </span>
+                                <span class="highlight">Rp {{ number_format($booking->kprApplication->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
                             </div>
                         </div>
                         <hr class="my-4">
-                        <small class="transaksi-muted d-block mb-2">Ditangani oleh</small>
-                        <div class="transaksi-handler">
-                            <div class="transaksi-handler-icon"><i class="mdi mdi-account-tie"></i></div>
-                            <div>
-                                <div class="fw-bold">{{ $booking->sales->name ?? '-' }}</div>
+                        <small class="transaksi-muted d-block mb-2 fw-semibold">Pihak yang Menangani</small>
+                        <div class="transaksi-handler-group">
+                            <!-- MARKETING (PENGAJU) -->
+                            <div class="transaksi-handler">
+                                <div class="transaksi-handler-icon">
+                                    <i class="mdi mdi-account-tie"></i>
+                                </div>
+                                <div>
+                                    <div class="transaksi-handler-role">Marketing / Sales (Pengaju)</div>
+                                    <div class="transaksi-handler-name">{{ $booking->sales->name ?? 'Staff Marketing' }}</div>
+                                </div>
+                            </div>
+
+                            @php
+                                $currentUserRole = auth()->user()->position->name ?? (auth()->user()->role ?? 'Petugas');
+                            @endphp
+                            <!-- USER LOGIN YANG MENANGANI -->
+                            <div class="transaksi-handler verifier">
+                                <div class="transaksi-handler-icon">
+                                    <i class="mdi mdi-shield-account-variant-outline"></i>
+                                </div>
+                                <div>
+                                    <div class="transaksi-handler-role">{{ $currentUserRole }}</div>
+                                    <div class="transaksi-handler-name">
+                                        {{ auth()->user()->name ?? 'Petugas' }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1254,103 +1311,33 @@
                         </div>
 
                         @php
-                            $standardTypes = [
-                                'ktp'            => 'KTP Pemohon',
-                                'kk'             => 'Kartu Keluarga (KK)',
-                                'npwp'           => 'NPWP Pemohon',
-                                'slip_gaji'      => 'Slip Gaji 3 Bulan',
-                                'rekening_koran' => 'Rekening Koran',
-                                'sku'            => 'SKU / Surat Keterangan Kerja',
-                                'surat_nikah'    => 'Buku / Surat Nikah',
-                                'ktp_pasangan'   => 'KTP Pasangan',
+                            $documentTypes = [
+                                'ktp',
+                                'kk',
+                                'npwp',
+                                'slip_gaji',
+                                'rekening_koran',
+                                'surat_nikah',
+                                'sku',
+                                'ktp_pasangan',
                             ];
-
-                            $uploadedDocs = $booking->kprApplication->documents ?? collect();
-
-                            // Buat daftar gabungan (dokumen standar + dokumen dinamis tambahan)
-                            $allDocRows = [];
-                            foreach ($standardTypes as $typeKey => $typeLabel) {
-                                $foundDoc = $uploadedDocs->firstWhere('type', $typeKey);
-                                $allDocRows[] = [
-                                    'type'          => $typeKey,
-                                    'label'         => $typeLabel,
-                                    'is_custom'     => false,
-                                    'doc'           => $foundDoc,
-                                ];
-                            }
-
-                            // Tambahkan dokumen dinamis tambahan (yang type-nya bukan standard atau custom_*)
-                            foreach ($uploadedDocs as $uDoc) {
-                                if (!array_key_exists($uDoc->type, $standardTypes)) {
-                                    $allDocRows[] = [
-                                        'type'          => $uDoc->type,
-                                        'label'         => $uDoc->document_name ?? ucwords(str_replace('_', ' ', $uDoc->type)),
-                                        'is_custom'     => true,
-                                        'doc'           => $uDoc,
-                                    ];
-                                }
-                            }
-
-                            $totalUploaded = $uploadedDocs->count();
-                            $uploadedStandardCount = $uploadedDocs->whereIn('type', array_keys($standardTypes))->count();
-                            $completeCount = $uploadedStandardCount;
-                            $missingCount  = max(0, count($standardTypes) - $uploadedStandardCount);
-                            $approvedCount = $uploadedDocs->where('status', 'disetujui')->count();
-                            $revisiCount   = $uploadedDocs->where('status', 'revisi')->count();
-                            $rejectedCount = $uploadedDocs->where('status', 'ditolak')->count();
-                            $pendingCount  = $uploadedDocs->where('status', 'pending')->count();
-
-                            $completenessPercent = min(100, round(($uploadedStandardCount / 8) * 100));
-                            $validationPercent = $totalUploaded > 0 ? round(($approvedCount / $totalUploaded) * 100) : 0;
+                            $documents = $booking->kprApplication->documents ?? [];
+                            $completeCount = collect($documentTypes)
+                                ->filter(fn($type) => collect($documents)->firstWhere('type', $type))
+                                ->count();
+                            $missingCount = 8 - $completeCount;
                         @endphp
 
-                        <!-- PROGRESS BAR KELENGKAPAN & VALIDASI DOKUMEN -->
-                        <div class="card p-3 mb-3 border-0" style="background: linear-gradient(135deg, #fbf9ff, #f3e8ff); border-radius: 12px; border: 1px solid #ede4ff !important;">
-                            <div class="row g-3 align-items-center">
-                                <div class="col-12 col-md-6">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <span class="small fw-bold text-dark d-flex align-items-center">
-                                            <i class="mdi mdi-file-check-outline text-primary me-1" style="font-size:1.1rem;"></i>
-                                            Kelengkapan Dokumen Pokok:
-                                        </span>
-                                        <span class="fw-bold {{ $completenessPercent === 100 ? 'text-success' : 'text-primary' }}" style="font-size:0.85rem;">
-                                            {{ $uploadedStandardCount }}/8 ({{ $completenessPercent }}%)
-                                        </span>
-                                    </div>
-                                    <div class="progress" style="height: 7px; border-radius: 10px; background: #e9d5ff; overflow: hidden;">
-                                        <div class="progress-bar {{ $completenessPercent === 100 ? 'bg-success' : 'bg-primary' }}" role="progressbar" style="width: {{ $completenessPercent }}%; transition: width 0.4s ease;"></div>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <span class="small fw-bold text-dark d-flex align-items-center">
-                                            <i class="mdi mdi-shield-check-outline text-success me-1" style="font-size:1.1rem;"></i>
-                                            Validasi Kepala Marketing:
-                                        </span>
-                                        <span class="fw-bold {{ $validationPercent === 100 ? 'text-success' : 'text-primary' }}" style="font-size:0.85rem;">
-                                            {{ $approvedCount }}/{{ $totalUploaded }} ({{ $validationPercent }}%)
-                                        </span>
-                                    </div>
-                                    <div class="progress" style="height: 7px; border-radius: 10px; background: #e9d5ff; overflow: hidden;">
-                                        <div class="progress-bar {{ $validationPercent === 100 ? 'bg-success' : ($validationPercent >= 50 ? 'bg-primary' : 'bg-warning') }}" role="progressbar" style="width: {{ $validationPercent }}%; transition: width 0.4s ease;"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        @if ($revisiCount > 0 || $rejectedCount > 0)
-                            <div class="transaksi-inline-alert warning mb-3">
+                        @if ($missingCount > 0)
+                            <div class="transaksi-inline-alert warning">
                                 <i class="mdi mdi-alert-circle-outline"></i>
-                                @if ($isKepalaMarketing)
-                                    <div>Terdapat <strong>{{ $revisiCount }} dokumen perlu revisi</strong> dan <strong>{{ $rejectedCount }} dokumen ditolak</strong>. Hubungi pemohon/sales untuk perbaikan.</div>
-                                @else
-                                    <div>Terdapat <strong>{{ $revisiCount }} dokumen perlu revisi</strong> dan <strong>{{ $rejectedCount }} dokumen ditolak</strong>. Silakan periksa catatan alasan penolakan/revisi pada tabel di bawah, lalu klik tombol <strong>"Perbaiki Dokumen"</strong> atau <strong>"Upload Revisi"</strong> untuk mengunggah berkas baru.</div>
-                                @endif
+                                <div>Masih ada <strong>{{ $missingCount }} dokumen</strong> yang perlu dilengkapi sebelum
+                                    proses verifikasi final.</div>
                             </div>
-                        @elseif ($approvedCount > 0 && $approvedCount === $totalUploaded)
-                            <div class="transaksi-inline-alert success mb-3">
+                        @else
+                            <div class="transaksi-inline-alert success">
                                 <i class="mdi mdi-check-circle-outline"></i>
-                                <div>Semua dokumen telah <strong>Disetujui</strong> oleh Kepala Marketing dan siap untuk keputusan verifikasi.</div>
+                                <div>Semua dokumen utama telah tersedia dan siap untuk ditinjau.</div>
                             </div>
                         @endif
 
@@ -1358,203 +1345,53 @@
                             <table class="table transaksi-doc-table align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th style="width: 32%;">Nama Dokumen</th>
-                                        <th style="width: 20%;">Status Dokumen</th>
-                                        <th style="width: 18%;">Tgl Upload</th>
-                                        <th style="width: 30%;" class="text-end">{{ $isKepalaMarketing ? 'Aksi Validasi' : 'Aksi Dokumen' }}</th>
+                                        <th style="width: 38%;">Nama Dokumen</th>
+                                        <th style="width: 20%;">Status</th>
+                                        <th style="width: 22%;">Tanggal Upload</th>
+                                        <th style="width: 20%;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($allDocRows as $row)
+                                    @foreach ($documentTypes as $type)
                                         @php
-                                            $doc = $row['doc'];
-                                            $docLabel = $row['label'];
-                                            $rawPath = $doc ? ($doc->path ?? '') : '';
-                                            $cleanPath = ltrim(str_replace('\\', '/', $rawPath), '/');
-
-                                            if (empty($cleanPath)) {
-                                                $fileUrl = '';
-                                                $fileExt = '';
-                                            } elseif (str_starts_with($cleanPath, 'http://') || str_starts_with($cleanPath, 'https://')) {
-                                                $fileUrl = $cleanPath;
-                                                $fileExt = strtolower(pathinfo(parse_url($cleanPath, PHP_URL_PATH), PATHINFO_EXTENSION));
-                                            } elseif (file_exists(public_path('uploads/' . $cleanPath))) {
-                                                $fileUrl = asset('uploads/' . $cleanPath);
-                                                $fileExt = strtolower(pathinfo($cleanPath, PATHINFO_EXTENSION));
-                                            } elseif (file_exists(public_path($cleanPath))) {
-                                                $fileUrl = asset($cleanPath);
-                                                $fileExt = strtolower(pathinfo($cleanPath, PATHINFO_EXTENSION));
-                                            } elseif (file_exists(public_path('uploads/customer_documents/' . basename($cleanPath)))) {
-                                                $fileUrl = asset('uploads/customer_documents/' . basename($cleanPath));
-                                                $fileExt = strtolower(pathinfo($cleanPath, PATHINFO_EXTENSION));
-                                            } elseif (file_exists(public_path('uploads/kpr/' . basename($cleanPath)))) {
-                                                $fileUrl = asset('uploads/kpr/' . basename($cleanPath));
-                                                $fileExt = strtolower(pathinfo($cleanPath, PATHINFO_EXTENSION));
-                                            } else {
-                                                $fileUrl = asset(str_starts_with($cleanPath, 'uploads/') ? $cleanPath : 'uploads/' . $cleanPath);
-                                                $fileExt = strtolower(pathinfo($cleanPath, PATHINFO_EXTENSION));
-                                            }
-
-                                            $docStatus = $doc ? ($doc->status ?? 'pending') : 'missing';
+                                            $doc = collect($documents)->firstWhere('type', $type);
+                                            $fileUrl = $doc ? asset('uploads/' . $doc->path) : null;
+                                            $docLabel = strtoupper(str_replace('_', ' ', $type));
                                         @endphp
-                                        <tr id="docRow_{{ $doc->id ?? 'empty_' . $row['type'] }}">
+                                        <tr>
                                             <td>
                                                 <div class="transaksi-doc-name">
-                                                    <div class="transaksi-doc-icon">
-                                                        @if($fileExt === 'pdf')
-                                                            <i class="mdi mdi-file-pdf-box text-danger"></i>
-                                                        @else
-                                                            <i class="mdi mdi-file-document-outline text-primary"></i>
-                                                        @endif
-                                                    </div>
+                                                    <div class="transaksi-doc-icon"><i
+                                                            class="mdi mdi-file-document-outline"></i></div>
                                                     <div>
-                                                        <div class="d-flex align-items-center gap-1">
-                                                            <strong class="text-dark">{{ $docLabel }}</strong>
-                                                            @if($row['is_custom'])
-                                                                <span class="badge bg-light text-primary border" style="font-size: 0.68rem; padding: 2px 6px;">Dinamis</span>
-                                                            @endif
-                                                        </div>
-                                                        <small class="transaksi-muted">
-                                                            @if ($doc)
-                                                                {{ $doc->validator ? 'Divalidasi oleh: ' . $doc->validator->name : ($doc->status === 'disetujui' ? 'Sudah disetujui' : ($isKepalaMarketing ? 'Siap divalidasi' : 'Telah diunggah')) }}
-                                                            @else
-                                                                <span class="text-danger">Belum diunggah pemohon</span>
-                                                            @endif
-                                                        </small>
+                                                        <div>{{ $docLabel }}</div>
+                                                        <small
+                                                            class="transaksi-muted">{{ $doc ? 'Siap direview' : 'Perlu dilengkapi' }}</small>
                                                     </div>
                                                 </div>
-
-                                                {{-- Tampilkan Catatan Alasan jika ada Revisi atau Ditolak --}}
-                                                @if ($doc && in_array($doc->status, ['revisi', 'ditolak']) && !empty($doc->catatan))
-                                                    <div class="mt-2 p-2 rounded {{ $doc->status === 'revisi' ? 'bg-warning-subtle text-dark border border-warning' : 'bg-danger-subtle text-danger border border-danger' }}" style="font-size: 0.78rem;">
-                                                        <strong><i class="mdi {{ $doc->status === 'revisi' ? 'mdi-alert-outline' : 'mdi-close-octagon-outline' }} me-1"></i>{{ $doc->status === 'revisi' ? 'Catatan Revisi:' : 'Alasan Penolakan:' }}</strong>
-                                                        <div class="mt-1">{{ $doc->catatan }}</div>
-                                                    </div>
-                                                @endif
                                             </td>
                                             <td>
-                                                @if (!$doc)
-                                                    <span class="badge bg-secondary opacity-75">
-                                                        <i class="mdi mdi-minus-circle-outline me-1"></i>Belum Ada
-                                                    </span>
-                                                @elseif ($doc->status === 'disetujui')
-                                                    <span class="badge bg-success text-white">
-                                                        <i class="mdi mdi-check-circle me-1"></i>Disetujui
-                                                    </span>
-                                                @elseif ($doc->status === 'revisi')
-                                                    <span class="badge bg-warning text-dark">
-                                                        <i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi
-                                                    </span>
-                                                @elseif ($doc->status === 'ditolak')
-                                                    <span class="badge bg-danger text-white">
-                                                        <i class="mdi mdi-close-circle me-1"></i>Ditolak
-                                                    </span>
-                                                @else
-                                                    <span class="badge bg-info text-white">
-                                                        <i class="mdi mdi-clock-outline me-1"></i>Menunggu
-                                                    </span>
-                                                @endif
+                                                <span class="badge {{ $doc ? 'bg-success' : 'bg-danger' }}">
+                                                    {{ $doc ? 'Lengkap' : 'Kurang' }}
+                                                </span>
                                             </td>
                                             <td>
-                                                <span class="transaksi-muted small">
+                                                <span class="transaksi-muted">
                                                     {{ $doc ? \Carbon\Carbon::parse($doc->created_at)->translatedFormat('d M Y') : '-' }}
                                                 </span>
                                             </td>
-                                            <td class="text-end">
+                                            <td>
                                                 @if ($doc)
-                                                    <div class="d-inline-flex align-items-center gap-1">
-                                                        {{-- Button Preview --}}
-                                                        <button type="button" class="btn btn-sm btn-outline-primary btn-preview-doc"
-                                                            data-url="{{ $fileUrl }}"
-                                                            data-ext="{{ $fileExt }}"
-                                                            data-label="{{ $docLabel }}"
-                                                            title="Preview Dokumen"
-                                                            style="border-radius: 6px; padding: 4px 8px;">
-                                                            <i class="mdi mdi-eye-outline"></i>
-                                                        </button>
-
-                                                        @if ($isKepalaMarketing)
-                                                            {{-- Button Setujui (Disetujui) --}}
-                                                            <button type="button" class="btn btn-sm {{ $doc->status === 'disetujui' ? 'btn-success' : 'btn-outline-success' }} btn-action-approve"
-                                                                data-doc-id="{{ $doc->id }}"
-                                                                data-doc-name="{{ $docLabel }}"
-                                                                title="Setujui Dokumen"
-                                                                style="border-radius: 6px; padding: 4px 8px;">
-                                                                <i class="mdi mdi-check-bold"></i>
-                                                            </button>
-
-                                                            {{-- Button Minta Revisi --}}
-                                                            <button type="button" class="btn btn-sm {{ $doc->status === 'revisi' ? 'btn-warning text-dark' : 'btn-outline-warning' }} btn-action-revisi"
-                                                                data-doc-id="{{ $doc->id }}"
-                                                                data-doc-name="{{ $docLabel }}"
-                                                                data-catatan="{{ $doc->catatan ?? '' }}"
-                                                                title="Minta Revisi (dengan alasan)"
-                                                                style="border-radius: 6px; padding: 4px 8px;">
-                                                                <i class="mdi mdi-pencil-outline"></i>
-                                                            </button>
-
-                                                            {{-- Button Tolak (Ditolak) --}}
-                                                            <button type="button" class="btn btn-sm {{ $doc->status === 'ditolak' ? 'btn-danger' : 'btn-outline-danger' }} btn-action-reject"
-                                                                data-doc-id="{{ $doc->id }}"
-                                                                data-doc-name="{{ $docLabel }}"
-                                                                data-catatan="{{ $doc->catatan ?? '' }}"
-                                                                title="Tolak Dokumen (dengan alasan)"
-                                                                style="border-radius: 6px; padding: 4px 8px;">
-                                                                <i class="mdi mdi-close"></i>
-                                                            </button>
-                                                        @else
-                                                            {{-- Staff Marketing Role --}}
-                                                            @if ($doc->status === 'revisi')
-                                                                <button type="button" class="btn btn-sm btn-warning text-dark btn-open-upload-revisi d-inline-flex align-items-center gap-1 font-weight-bold"
-                                                                    data-doc-id="{{ $doc->id }}"
-                                                                    data-doc-name="{{ $docLabel }}"
-                                                                    data-catatan="{{ $doc->catatan ?? '' }}"
-                                                                    data-mode="revisi"
-                                                                    title="Upload Dokumen Revisi"
-                                                                    style="border-radius: 6px; padding: 4px 10px; font-weight: 700; font-size: 0.8rem; box-shadow: 0 2px 6px rgba(255, 193, 7, 0.3);">
-                                                                    <i class="mdi mdi-cloud-upload-outline"></i>
-                                                                    <span>Upload Revisi</span>
-                                                                </button>
-                                                            @elseif ($doc->status === 'ditolak')
-                                                                <button type="button" class="btn btn-sm btn-danger text-white btn-open-upload-revisi d-inline-flex align-items-center gap-1 font-weight-bold"
-                                                                    data-doc-id="{{ $doc->id }}"
-                                                                    data-doc-name="{{ $docLabel }}"
-                                                                    data-catatan="{{ $doc->catatan ?? '' }}"
-                                                                    data-mode="ditolak"
-                                                                    title="Perbaiki / Upload Ulang Dokumen yang Ditolak"
-                                                                    style="border-radius: 6px; padding: 4px 10px; font-weight: 700; font-size: 0.8rem; box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);">
-                                                                    <i class="mdi mdi-cloud-upload-outline"></i>
-                                                                    <span>Perbaiki Dokumen</span>
-                                                                </button>
-                                                            @elseif ($doc->status === 'pending')
-                                                                <button type="button" class="btn btn-sm btn-outline-secondary btn-open-upload-revisi d-inline-flex align-items-center gap-1"
-                                                                    data-doc-id="{{ $doc->id }}"
-                                                                    data-doc-name="{{ $docLabel }}"
-                                                                    data-catatan=""
-                                                                    data-mode="pending"
-                                                                    title="Ganti / Perbarui Berkas"
-                                                                    style="border-radius: 6px; padding: 4px 8px; font-size: 0.78rem;">
-                                                                    <i class="mdi mdi-file-replace-outline"></i>
-                                                                    <span>Ganti File</span>
-                                                                </button>
-                                                            @endif
-                                                        @endif
-                                                    </div>
+                                                    <a href="{{ route('dokumen.preview', ['path' => urlencode($doc->path)]) }}"
+                                                        target="_blank" rel="noopener noreferrer"
+                                                        class="transaksi-doc-action" title="Lihat dokumen di tab baru">
+                                                        <i class="mdi mdi-eye-outline"></i>
+                                                    </a>
                                                 @else
-                                                    @if (!$isKepalaMarketing && $booking->kprApplication)
-                                                        <button type="button" class="btn btn-sm btn-outline-primary btn-open-upload-revisi d-inline-flex align-items-center gap-1"
-                                                            data-kpr-id="{{ $booking->kprApplication->id }}"
-                                                            data-doc-type="{{ $row['type'] }}"
-                                                            data-doc-name="{{ $docLabel }}"
-                                                            data-mode="new"
-                                                            title="Upload Dokumen Baru"
-                                                            style="border-radius: 6px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600;">
-                                                            <i class="mdi mdi-cloud-upload"></i>
-                                                            <span>Upload Dokumen</span>
-                                                        </button>
-                                                    @else
-                                                        <span class="text-muted small italic">Tidak ada aksi</span>
-                                                    @endif
+                                                    <button type="button" class="transaksi-doc-action disabled"
+                                                        title="Dokumen belum tersedia" disabled>
+                                                        <i class="mdi mdi-eye-off-outline"></i>
+                                                    </button>
                                                 @endif
                                             </td>
                                         </tr>
@@ -1581,51 +1418,33 @@
                             </div>
 
                             <div class="mb-3">
-                                @if ($approvedCount > 0 && $approvedCount === $totalUploaded)
+                                @if ($completeCount === 8)
                                     <div class="transaksi-status-banner success">
                                         <i class="mdi mdi-check-circle-outline"></i>
-                                        Semua Dokumen Disetujui
-                                    </div>
-                                @elseif ($revisiCount > 0 || $rejectedCount > 0)
-                                    <div class="transaksi-status-banner warning">
-                                        <i class="mdi mdi-alert-circle-outline"></i>
-                                        Ada Dokumen Revisi / Ditolak
+                                        Semua Dokumen Lengkap
                                     </div>
                                 @else
-                                    <div class="transaksi-status-banner info">
+                                    <div class="transaksi-status-banner warning">
                                         <i class="mdi mdi-progress-clock"></i>
-                                        Menunggu Validasi Dokumen
+                                        Menunggu Kelengkapan Dokumen
                                     </div>
                                 @endif
                             </div>
 
                             <div class="transaksi-summary-grid">
                                 <div class="transaksi-summary-box success">
-                                    <div class="label">Disetujui</div>
-                                    <div class="value" id="summaryApprovedCount">{{ $approvedCount }}</div>
-                                </div>
-                                <div class="transaksi-summary-box warning">
-                                    <div class="label">Perlu Revisi</div>
-                                    <div class="value" id="summaryRevisiCount">{{ $revisiCount }}</div>
+                                    <div class="label">Dokumen Lengkap</div>
+                                    <div class="value">{{ $completeCount }}</div>
                                 </div>
                                 <div class="transaksi-summary-box danger">
-                                    <div class="label">Ditolak</div>
-                                    <div class="value" id="summaryRejectedCount">{{ $rejectedCount }}</div>
-                                </div>
-                                <div class="transaksi-summary-box info">
-                                    <div class="label">Menunggu</div>
-                                    <div class="value" id="summaryPendingCount">{{ $pendingCount }}</div>
+                                    <div class="label">Dokumen Kurang</div>
+                                    <div class="value">{{ $missingCount }}</div>
                                 </div>
                             </div>
 
                             <div class="transaksi-sidebar-section">
                                 <div class="transaksi-sidebar-title">Rekomendasi Sistem</div>
-                                @if ($revisiCount > 0 || $rejectedCount > 0)
-                                    <div class="transaksi-inline-alert warning mb-0">
-                                        <i class="mdi mdi-file-alert-outline"></i>
-                                        <div>Fokus utama saat ini adalah memperbaiki <strong>{{ $revisiCount + $rejectedCount }} berkas</strong> yang ditolak / perlu revisi.</div>
-                                    </div>
-                                @elseif ($completeCount === 8)
+                                @if ($completeCount === 8)
                                     <div class="transaksi-inline-alert success mb-0">
                                         <i class="mdi mdi-check-decagram-outline"></i>
                                         <div>Dokumen sudah lengkap. Verifikasi dapat dilanjutkan ke pengambilan keputusan.
@@ -1678,273 +1497,220 @@
 
         <div class="row mt-4">
             <div class="col-12 col-lg-8 mb-4 mb-lg-0">
-                @if ($isKepalaMarketing)
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="transaksi-section-title">
-                                <i class="mdi mdi-shield-check-outline"></i>
-                                <span>Keputusan Verifikasi KPR</span>
-                            </div>
-
-                            <div class="transaksi-inline-alert info mb-4" id="decisionHint">
-                                <i class="mdi mdi-information-outline"></i>
-                                <div>Pilih salah satu keputusan di bawah ini. Form akan menyesuaikan secara otomatis sesuai
-                                    status verifikasi.</div>
-                            </div>
-
-                            <div class="transaksi-inline-alert danger transaksi-error-box" id="decisionErrorBox">
-                                <i class="mdi mdi-alert-circle-outline"></i>
-                                <div>Silakan pilih keputusan verifikasi terlebih dahulu sebelum submit.</div>
-                            </div>
-
-                            <form action="{{ route('kpr.verifikasi.store', $booking->id) }}" method="POST"
-                                enctype="multipart/form-data" id="formVerifikasiKpr">
-                                @csrf
-                                <input type="hidden" name="status" id="statusVerifikasiInput" value="">
-
-                                <div class="row g-3 mb-3">
-                                    <div class="col-12 col-md-6">
-                                        <div class="transaksi-decision-card approve">
-                                            <input type="radio" name="decision_choice" id="decisionApprove"
-                                                value="survey">
-                                            <label for="decisionApprove" class="transaksi-decision-label">
-                                                <div class="transaksi-decision-icon"><i class="mdi mdi-check-bold"></i></div>
-                                                <div class="transaksi-decision-content">
-                                                    <div class="transaksi-decision-title">Setujui Verifikasi</div>
-                                                    <p class="transaksi-decision-desc mb-0">Dokumen dan data dinilai memadai
-                                                        untuk lanjut ke tahap survey.</p>
-                                                </div>
-                                                <div class="transaksi-decision-check"><i class="mdi mdi-check-circle"></i>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <div class="transaksi-decision-card reject">
-                                            <input type="radio" name="decision_choice" id="decisionReject"
-                                                value="rejected">
-                                            <label for="decisionReject" class="transaksi-decision-label">
-                                                <div class="transaksi-decision-icon"><i class="mdi mdi-close-thick"></i></div>
-                                                <div class="transaksi-decision-content">
-                                                    <div class="transaksi-decision-title">Tolak Verifikasi</div>
-                                                    <p class="transaksi-decision-desc mb-0">Pengajuan belum dapat dilanjutkan
-                                                        dan perlu tindakan lanjutan.</p>
-                                                </div>
-                                                <div class="transaksi-decision-check"><i class="mdi mdi-check-circle"></i>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div id="formSetuju" class="transaksi-form-shell approve">
-                                    <div class="transaksi-form-title approve">Form Persetujuan Verifikasi</div>
-                                    <div class="transaksi-inline-alert success">
-                                        <i class="mdi mdi-check-circle-outline"></i>
-                                        <div><strong>Verifikasi disetujui.</strong> Pengajuan akan diarahkan ke tahap
-                                            <strong>Survey</strong>.
-                                        </div>
-                                    </div>
-                                    <div class="transaksi-form-group">
-                                        <label class="transaksi-form-label" for="catatan_setuju">Catatan Verifikasi</label>
-                                        <textarea id="catatan_setuju" class="transaksi-form-control" name="catatan_setuju" rows="4"
-                                            placeholder="Contoh: Semua dokumen lengkap, valid, dan layak dilanjutkan ke tahap survey."></textarea>
-                                    </div>
-                                    <div class="transaksi-form-group mb-0">
-                                        <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
-                                            <label class="transaksi-form-label mb-0">Upload Berita Acara <span class="text-danger">*</span></label>
-                                            <a href="{{ route('kpr.verifikasi.cetak-ba', $booking->id) }}" target="_blank" class="btn-cetak-ba-action" title="Cetak atau Unduh Dokumen Berita Acara Resmi">
-                                                <i class="mdi mdi-printer"></i>
-                                                <span>Cetak / Unduh Format BA</span>
-                                            </a>
-                                        </div>
-                                        <div class="transaksi-file-upload">
-                                            <input type="file" name="berita_acara" id="inputBeritaAcara" accept=".jpg,.jpeg,.png,.pdf" required>
-                                            <div class="transaksi-file-label">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="transaksi-file-info">
-                                                    <span>Upload Berita Acara</span>
-                                                    <small>Format: JPG, PNG, PDF (Max 5MB)</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div id="formTolak" class="transaksi-form-shell reject">
-                                    <div class="transaksi-form-title reject">Form Penolakan Verifikasi</div>
-                                    <div class="transaksi-inline-alert danger">
-                                        <i class="mdi mdi-close-circle-outline"></i>
-                                        <div><strong>Verifikasi ditolak.</strong> Pilih alasan dan tindakan lanjutan agar proses
-                                            tetap jelas untuk customer dan internal.</div>
-                                    </div>
-                                    <div class="transaksi-form-group">
-                                        <label class="transaksi-form-label" for="catatan_tolak">Catatan / Alasan</label>
-                                        <textarea id="catatan_tolak" class="transaksi-form-control" name="catatan_tolak" rows="4"
-                                            placeholder="Contoh: NPWP belum tersedia dan rekening koran belum sesuai periode yang diminta."></textarea>
-                                    </div>
-                                    <div class="transaksi-form-group">
-                                        <label class="transaksi-form-label">Upload Berita Acara</label>
-                                        <div class="transaksi-file-upload">
-                                            <input type="file" name="berita_acara_tolak" accept=".jpg,.jpeg,.png,.pdf">
-                                            <div class="transaksi-file-label">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="transaksi-file-info">
-                                                    <span>Upload Berita Acara</span>
-                                                    <small>Format: JPG, PNG, PDF (Max 5MB)</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="transaksi-form-group mb-0">
-                                        <label class="transaksi-form-label">Tindakan Selanjutnya</label>
-                                        <div class="transaksi-next-step-grid">
-                                            <div class="transaksi-next-card">
-                                                <input type="radio" name="tindakan" id="tindakanLengkapi"
-                                                    value="Lengkapi Dokumen" checked>
-                                                <label class="transaksi-next-label" for="tindakanLengkapi">
-                                                    <div class="transaksi-next-icon"><i
-                                                            class="mdi mdi-file-document-edit-outline"></i></div>
-                                                    <div class="transaksi-next-content">
-                                                        <span class="transaksi-next-title">Lengkapi Dokumen</span>
-                                                        <span class="transaksi-next-desc">Customer diminta melengkapi dokumen
-                                                            yang belum tersedia atau belum valid.</span>
-                                                    </div>
-                                                    <div class="transaksi-next-check"><i class="mdi mdi-check-circle"></i>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <div class="transaksi-next-card">
-                                                <input type="radio" name="tindakan" id="tindakanUlang"
-                                                    value="Ajukan ke Bank Lain">
-                                                <label class="transaksi-next-label" for="tindakanUlang">
-                                                    <div class="transaksi-next-icon"><i class="mdi mdi-bank-transfer-out"></i>
-                                                    </div>
-                                                    <div class="transaksi-next-content">
-                                                        <span class="transaksi-next-title">Ajukan ke Bank Lain</span>
-                                                        <span class="transaksi-next-desc">Pengajuan diulang ke bank lain dengan
-                                                            penyesuaian kelengkapan bila diperlukan.</span>
-                                                    </div>
-                                                    <div class="transaksi-next-check"><i class="mdi mdi-check-circle"></i>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <div class="transaksi-next-card">
-                                                <input type="radio" name="tindakan" id="tindakanCash"
-                                                    value="Pindah ke Cash">
-                                                <label class="transaksi-next-label" for="tindakanCash">
-                                                    <div class="transaksi-next-icon"><i class="mdi mdi-cash-multiple"></i>
-                                                    </div>
-                                                    <div class="transaksi-next-content">
-                                                        <span class="transaksi-next-title">Pindah ke Cash</span>
-                                                        <span class="transaksi-next-desc">Customer melanjutkan pembelian dengan
-                                                            metode pembayaran tunai.</span>
-                                                    </div>
-                                                    <div class="transaksi-next-check"><i class="mdi mdi-check-circle"></i>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <div class="transaksi-next-card">
-                                                <input type="radio" name="tindakan" id="tindakanBatal"
-                                                    value="Batalkan Transaksi">
-                                                <label class="transaksi-next-label" for="tindakanBatal">
-                                                    <div class="transaksi-next-icon"><i class="mdi mdi-cancel"></i></div>
-                                                    <div class="transaksi-next-content">
-                                                        <span class="transaksi-next-title">Batalkan Transaksi</span>
-                                                        <span class="transaksi-next-desc">Customer membatalkan transaksi
-                                                            pembelian dan proses diarahkan ke refund.</span>
-                                                    </div>
-                                                    <div class="transaksi-next-check"><i class="mdi mdi-check-circle"></i>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <div class="transaksi-next-card">
-                                                <input type="radio" name="tindakan" id="tindakanBanding"
-                                                    value="Banding Ulang">
-                                                <label class="transaksi-next-label" for="tindakanBanding">
-                                                    <div class="transaksi-next-icon"><i class="mdi mdi-scale-balance"></i>
-                                                    </div>
-                                                    <div class="transaksi-next-content">
-                                                        <span class="transaksi-next-title">Banding Ulang</span>
-                                                        <span class="transaksi-next-desc">Ajukan banding atau review ulang ke
-                                                            bank yang sama dengan catatan tambahan.</span>
-                                                    </div>
-                                                    <div class="transaksi-next-check"><i class="mdi mdi-check-circle"></i>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="transaksi-action-bar">
-                                    <a href="{{ route('customer.kpr') }}" class="transaksi-btn transaksi-btn-secondary">
-                                        <i class="mdi mdi-arrow-left"></i> Kembali
-                                    </a>
-                                    <button type="submit" class="transaksi-btn transaksi-btn-primary">
-                                        <i class="mdi mdi-content-save-outline"></i> Simpan Verifikasi
-                                    </button>
-                                </div>
-                            </form>
-
-                            <div class="text-muted small mt-3 d-block d-sm-none">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Scroll untuk melihat seluruh isi form
-                            </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="transaksi-section-title">
+                            <i class="mdi mdi-shield-check-outline"></i>
+                            <span>Keputusan Verifikasi KPR</span>
                         </div>
-                    </div>
-                @else
-                    {{-- STAFF MARKETING VIEW --}}
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="transaksi-section-title">
-                                <i class="mdi mdi-information-outline"></i>
-                                <span>Status & Petunjuk Tindak Lanjut Staff Marketing</span>
+
+                        <div class="transaksi-inline-alert info mb-4" id="decisionHint">
+                            <i class="mdi mdi-information-outline"></i>
+                            <div>Pilih salah satu keputusan di bawah ini. Form akan menyesuaikan secara otomatis sesuai
+                                status verifikasi.</div>
+                        </div>
+
+                        <div class="transaksi-inline-alert danger transaksi-error-box" id="decisionErrorBox">
+                            <i class="mdi mdi-alert-circle-outline"></i>
+                            <div>Silakan pilih keputusan verifikasi terlebih dahulu sebelum submit.</div>
+                        </div>
+
+                        <form action="{{ route('kpr.verifikasi.store', $booking->id) }}" method="POST"
+                            enctype="multipart/form-data" id="formVerifikasiKpr">
+                            @csrf
+                            <input type="hidden" name="status" id="statusVerifikasiInput" value="survey">
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-md-6">
+                                    <div class="transaksi-decision-card approve">
+                                        <input type="radio" name="decision_choice" id="decisionApprove"
+                                            value="survey" checked>
+                                        <label for="decisionApprove" class="transaksi-decision-label">
+                                            <div class="transaksi-decision-icon"><i class="mdi mdi-check-bold"></i></div>
+                                            <div class="transaksi-decision-content">
+                                                <div class="transaksi-decision-title">Setujui Verifikasi</div>
+                                                <p class="transaksi-decision-desc mb-0">Dokumen dan data dinilai memadai
+                                                    untuk lanjut ke tahap survey.</p>
+                                            </div>
+                                            <div class="transaksi-decision-check"><i class="mdi mdi-check-circle"></i>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="transaksi-decision-card reject">
+                                        <input type="radio" name="decision_choice" id="decisionReject"
+                                            value="rejected">
+                                        <label for="decisionReject" class="transaksi-decision-label">
+                                            <div class="transaksi-decision-icon"><i class="mdi mdi-close-thick"></i></div>
+                                            <div class="transaksi-decision-content">
+                                                <div class="transaksi-decision-title">Tolak Verifikasi</div>
+                                                <p class="transaksi-decision-desc mb-0">Pengajuan belum dapat dilanjutkan
+                                                    dan perlu tindakan lanjutan.</p>
+                                            </div>
+                                            <div class="transaksi-decision-check"><i class="mdi mdi-check-circle"></i>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
 
-                            @if ($revisiCount > 0)
-                                <div class="transaksi-inline-alert warning mb-3">
-                                    <i class="mdi mdi-alert-circle-outline"></i>
-                                    <div>
-                                        <strong>Perhatian:</strong> Terdapat <strong>{{ $revisiCount }} dokumen</strong> yang diminta revisi oleh Kepala Marketing.
-                                        Silakan klik tombol <strong>"Upload Revisi"</strong> pada tabel dokumen di atas untuk mengunggah berkas yang telah diperbaiki.
-                                    </div>
-                                </div>
-                            @elseif ($rejectedCount > 0)
-                                <div class="transaksi-inline-alert danger mb-3">
-                                    <i class="mdi mdi-close-circle-outline"></i>
-                                    <div>
-                                        <strong>Dokumen Ditolak:</strong> Terdapat <strong>{{ $rejectedCount }} dokumen</strong> yang ditolak oleh Kepala Marketing. Silakan cek alasan penolakan dan hubungi pemohon.
-                                    </div>
-                                </div>
-                            @elseif ($approvedCount > 0 && $approvedCount === $totalUploaded)
-                                <div class="transaksi-inline-alert success mb-3">
+                            <div id="formSetuju" class="transaksi-form-shell approve">
+                                <div class="transaksi-form-title approve">Form Persetujuan Verifikasi</div>
+                                <div class="transaksi-inline-alert success">
                                     <i class="mdi mdi-check-circle-outline"></i>
-                                    <div>
-                                        <strong>Dokumen Lengkap & Terverifikasi:</strong> Seluruh dokumen telah disetujui oleh Kepala Marketing. Pengajuan saat ini menunggu proses verifikasi KPR tahap berikutnya.
+                                    <div><strong>Verifikasi disetujui.</strong> Pengajuan akan diarahkan ke tahap
+                                        <strong>Survey</strong>.
                                     </div>
                                 </div>
-                            @else
-                                <div class="transaksi-inline-alert info mb-3">
-                                    <i class="mdi mdi-clock-outline"></i>
-                                    <div>
-                                        <strong>Menunggu Validasi:</strong> Dokumen pengajuan KPR sedang ditinjau dan divalidasi oleh Kepala Marketing.
+                                <div class="transaksi-form-group">
+                                    <label class="transaksi-form-label" for="catatan_setuju">Catatan Verifikasi</label>
+                                    <textarea id="catatan_setuju" class="transaksi-form-control" name="catatan_setuju" rows="4"
+                                        placeholder="Contoh: Semua dokumen lengkap, valid, dan layak dilanjutkan ke tahap survey."></textarea>
+                                </div>
+                                <div class="transaksi-form-group mb-0">
+                                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                                        <label class="transaksi-form-label mb-0">Upload Berita Acara <span class="text-danger">*</span></label>
+                                        <a href="{{ route('kpr.verifikasi.cetak-ba', $booking->id) }}" target="_blank" class="btn-cetak-ba-action" title="Cetak atau Unduh Dokumen Berita Acara Resmi">
+                                            <i class="mdi mdi-printer"></i>
+                                            <span>Cetak / Unduh Format BA</span>
+                                        </a>
+                                    </div>
+                                    <div class="transaksi-file-upload">
+                                        <input type="file" name="berita_acara" id="inputBeritaAcara" accept=".jpg,.jpeg,.png,.pdf" required>
+                                        <div class="transaksi-file-label">
+                                            <i class="mdi mdi-cloud-upload"></i>
+                                            <div class="transaksi-file-info">
+                                                <span>Upload Berita Acara</span>
+                                                <small>Format: JPG, PNG, PDF (Max 5MB)</small>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            @endif
-
-                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-4 pt-3 border-top">
-                                <a href="{{ route('customer.kpr') }}" class="btn btn-secondary px-4 py-2 d-inline-flex align-items-center gap-2" style="border-radius: 8px;">
-                                    <i class="mdi mdi-arrow-left"></i>
-                                    <span>Kembali ke Daftar KPR</span>
-                                </a>
-                                <span class="badge bg-light text-secondary border px-3 py-2" style="font-size: 0.8rem;">
-                                    <i class="mdi mdi-account-tie me-1"></i>Peran: Staff Marketing (Monitoring & Revisi)
-                                </span>
                             </div>
+
+                            <div id="formTolak" class="transaksi-form-shell reject">
+                                <div class="transaksi-form-title reject">Form Penolakan Verifikasi</div>
+                                <div class="transaksi-inline-alert danger">
+                                    <i class="mdi mdi-close-circle-outline"></i>
+                                    <div><strong>Verifikasi ditolak.</strong> Pilih alasan dan tindakan lanjutan agar proses
+                                        tetap jelas untuk customer dan internal.</div>
+                                </div>
+                                <div class="transaksi-form-group">
+                                    <label class="transaksi-form-label" for="catatan_tolak">Catatan / Alasan</label>
+                                    <textarea id="catatan_tolak" class="transaksi-form-control" name="catatan_tolak" rows="4"
+                                        placeholder="Contoh: NPWP belum tersedia dan rekening koran belum sesuai periode yang diminta."></textarea>
+                                </div>
+                                <div class="transaksi-form-group">
+                                    <label class="transaksi-form-label">Upload Berita Acara</label>
+                                    <div class="transaksi-file-upload">
+                                        <input type="file" name="berita_acara_tolak" accept=".jpg,.jpeg,.png,.pdf">
+                                        <div class="transaksi-file-label">
+                                            <i class="mdi mdi-cloud-upload"></i>
+                                            <div class="transaksi-file-info">
+                                                <span>Upload Berita Acara</span>
+                                                <small>Format: JPG, PNG, PDF (Max 5MB)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="transaksi-form-group mb-0">
+                                    <label class="transaksi-form-label">Tindakan Selanjutnya</label>
+                                    <div class="transaksi-next-step-grid">
+                                        <div class="transaksi-next-card">
+                                            <input type="radio" name="tindakan" id="tindakanLengkapi"
+                                                value="Lengkapi Dokumen" checked>
+                                            <label class="transaksi-next-label" for="tindakanLengkapi">
+                                                <div class="transaksi-next-icon"><i
+                                                        class="mdi mdi-file-document-edit-outline"></i></div>
+                                                <div class="transaksi-next-content">
+                                                    <span class="transaksi-next-title">Lengkapi Dokumen</span>
+                                                    <span class="transaksi-next-desc">Customer diminta melengkapi dokumen
+                                                        yang belum tersedia atau belum valid.</span>
+                                                </div>
+                                                <div class="transaksi-next-check"><i class="mdi mdi-check-circle"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="transaksi-next-card">
+                                            <input type="radio" name="tindakan" id="tindakanUlang"
+                                                value="Ajukan ke Bank Lain">
+                                            <label class="transaksi-next-label" for="tindakanUlang">
+                                                <div class="transaksi-next-icon"><i class="mdi mdi-bank-transfer-out"></i>
+                                                </div>
+                                                <div class="transaksi-next-content">
+                                                    <span class="transaksi-next-title">Ajukan ke Bank Lain</span>
+                                                    <span class="transaksi-next-desc">Pengajuan diulang ke bank lain dengan
+                                                        penyesuaian kelengkapan bila diperlukan.</span>
+                                                </div>
+                                                <div class="transaksi-next-check"><i class="mdi mdi-check-circle"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="transaksi-next-card">
+                                            <input type="radio" name="tindakan" id="tindakanCash"
+                                                value="Pindah ke Cash">
+                                            <label class="transaksi-next-label" for="tindakanCash">
+                                                <div class="transaksi-next-icon"><i class="mdi mdi-cash-multiple"></i>
+                                                </div>
+                                                <div class="transaksi-next-content">
+                                                    <span class="transaksi-next-title">Pindah ke Cash</span>
+                                                    <span class="transaksi-next-desc">Customer melanjutkan pembelian dengan
+                                                        metode pembayaran tunai.</span>
+                                                </div>
+                                                <div class="transaksi-next-check"><i class="mdi mdi-check-circle"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="transaksi-next-card">
+                                            <input type="radio" name="tindakan" id="tindakanBatal"
+                                                value="Batalkan Transaksi">
+                                            <label class="transaksi-next-label" for="tindakanBatal">
+                                                <div class="transaksi-next-icon"><i class="mdi mdi-cancel"></i></div>
+                                                <div class="transaksi-next-content">
+                                                    <span class="transaksi-next-title">Batalkan Transaksi</span>
+                                                    <span class="transaksi-next-desc">Customer membatalkan transaksi
+                                                        pembelian dan proses diarahkan ke refund.</span>
+                                                </div>
+                                                <div class="transaksi-next-check"><i class="mdi mdi-check-circle"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="transaksi-next-card">
+                                            <input type="radio" name="tindakan" id="tindakanBanding"
+                                                value="Banding Ulang">
+                                            <label class="transaksi-next-label" for="tindakanBanding">
+                                                <div class="transaksi-next-icon"><i class="mdi mdi-scale-balance"></i>
+                                                </div>
+                                                <div class="transaksi-next-content">
+                                                    <span class="transaksi-next-title">Banding Ulang</span>
+                                                    <span class="transaksi-next-desc">Ajukan banding atau review ulang ke
+                                                        bank yang sama dengan catatan tambahan.</span>
+                                                </div>
+                                                <div class="transaksi-next-check"><i class="mdi mdi-check-circle"></i>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="transaksi-action-bar">
+                                <a href="{{ url('/marketing/kpr') }}" class="transaksi-btn transaksi-btn-secondary">
+                                    <i class="mdi mdi-arrow-left"></i> Kembali
+                                </a>
+                                <button type="submit" class="transaksi-btn transaksi-btn-primary">
+                                    <i class="mdi mdi-content-save-outline"></i> Simpan Verifikasi
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="text-muted small mt-3 d-block d-sm-none">
+                            <i class="mdi mdi-information-outline me-1"></i>
+                            Scroll untuk melihat seluruh isi form
                         </div>
                     </div>
-                @endif
+                </div>
             </div>
 
             <div class="col-12 col-lg-4">
@@ -1953,37 +1719,26 @@
                         <div class="card-body">
                             <div class="transaksi-section-title">
                                 <i class="mdi mdi-lightbulb-on-outline"></i>
-                                <span>{{ $isKepalaMarketing ? 'Panduan Keputusan' : 'Informasi Alur' }}</span>
+                                <span>Panduan Keputusan</span>
                             </div>
-                            @if ($isKepalaMarketing)
-                                <div class="transaksi-sidebar-section">
-                                    <div class="transaksi-sidebar-title">Saat Disetujui</div>
-                                    <ul class="transaksi-mini-list mb-0">
-                                        <li><i class="mdi mdi-arrow-right-circle-outline"></i><span>Gunakan jika dokumen utama
-                                                lengkap dan tidak ada temuan material.</span></li>
-                                        <li><i class="mdi mdi-arrow-right-circle-outline"></i><span>Tambahkan catatan singkat
-                                                agar tim survey memahami konteks review.</span></li>
-                                    </ul>
-                                </div>
-                                <div class="transaksi-sidebar-section">
-                                    <div class="transaksi-sidebar-title">Saat Ditolak</div>
-                                    <ul class="transaksi-mini-list mb-0">
-                                        <li><i class="mdi mdi-arrow-right-circle-outline"></i><span>Jelaskan alasan penolakan
-                                                secara spesifik dan dapat ditindaklanjuti.</span></li>
-                                        <li><i class="mdi mdi-arrow-right-circle-outline"></i><span>Pilih tindakan lanjutan
-                                                yang paling relevan agar proses berikutnya tidak ambigu.</span></li>
-                                    </ul>
-                                </div>
-                            @else
-                                <div class="transaksi-sidebar-section">
-                                    <div class="transaksi-sidebar-title">Tugas Staff Marketing</div>
-                                    <ul class="transaksi-mini-list mb-0">
-                                        <li><i class="mdi mdi-check-circle-outline text-success"></i><span>Memantau kelengkapan dan persentase verifikasi berkas KPR.</span></li>
-                                        <li><i class="mdi mdi-pencil-circle-outline text-warning"></i><span>Mengunggah dokumen pengganti jika ada permintaan revisi dari Kepala Marketing.</span></li>
-                                        <li><i class="mdi mdi-clock-outline text-primary"></i><span>Setelah revisi diunggah, berkas otomatis siap divalidasi ulang oleh Kepala Marketing.</span></li>
-                                    </ul>
-                                </div>
-                            @endif
+                            <div class="transaksi-sidebar-section">
+                                <div class="transaksi-sidebar-title">Saat Disetujui</div>
+                                <ul class="transaksi-mini-list mb-0">
+                                    <li><i class="mdi mdi-arrow-right-circle-outline"></i><span>Gunakan jika dokumen utama
+                                            lengkap dan tidak ada temuan material.</span></li>
+                                    <li><i class="mdi mdi-arrow-right-circle-outline"></i><span>Tambahkan catatan singkat
+                                            agar tim survey memahami konteks review.</span></li>
+                                </ul>
+                            </div>
+                            <div class="transaksi-sidebar-section">
+                                <div class="transaksi-sidebar-title">Saat Ditolak</div>
+                                <ul class="transaksi-mini-list mb-0">
+                                    <li><i class="mdi mdi-arrow-right-circle-outline"></i><span>Jelaskan alasan penolakan
+                                            secara spesifik dan dapat ditindaklanjuti.</span></li>
+                                    <li><i class="mdi mdi-arrow-right-circle-outline"></i><span>Pilih tindakan lanjutan
+                                            yang paling relevan agar proses berikutnya tidak ambigu.</span></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2043,127 +1798,11 @@
                             style="max-width:100%; max-height:75vh; object-fit:contain; border-radius:4px; box-shadow:0 4px 24px rgba(0,0,0,.5);" />
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    {{-- MODAL MINTA REVISI DOKUMEN (KEPALA MARKETING) --}}
-    <div class="modal fade" id="modalDocRevisi" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius:14px; overflow:hidden;">
-                <div class="modal-header bg-warning bg-opacity-10 py-3">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="mdi mdi-pencil-box-multiple text-warning" style="font-size:1.4rem;"></i>
-                        <h5 class="modal-title fw-bold text-dark mb-0">Minta Revisi Dokumen</h5>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-footer">
+                    <small class="text-muted me-auto" id="previewFooterInfo"></small>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Tutup</button>
                 </div>
-                <form id="formDocRevisi">
-                    @csrf
-                    <input type="hidden" id="revisiDocId" name="doc_id">
-                    <input type="hidden" name="status" value="revisi">
-                    <div class="modal-body p-4">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold text-dark">Nama Dokumen</label>
-                            <input type="text" id="revisiDocName" class="form-control" readonly style="background:#f8fafc; font-weight:600;">
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label fw-bold text-dark">Catatan / Instruksi Revisi <span class="text-danger">*</span></label>
-                            <textarea id="revisiCatatan" name="catatan" class="form-control" rows="4" placeholder="Contoh: Foto dokumen buram dan terpotong di bagian sudut kanan, mohon scan ulang dengan jelas." required></textarea>
-                            <small class="text-muted"><i class="mdi mdi-information-outline me-1"></i>Catatan ini akan menjadi acuan bagi sales/pemohon untuk mengunggah revisi berkas.</small>
-                        </div>
-                    </div>
-                    <div class="modal-footer bg-light py-2 px-3">
-                        <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-warning px-4 fw-bold text-dark">
-                            <i class="mdi mdi-send-check me-1"></i> Simpan Permintaan Revisi
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    {{-- MODAL TOLAK DOKUMEN (KEPALA MARKETING) --}}
-    <div class="modal fade" id="modalDocReject" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius:14px; overflow:hidden;">
-                <div class="modal-header bg-danger bg-opacity-10 py-3">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="mdi mdi-close-octagon text-danger" style="font-size:1.4rem;"></i>
-                        <h5 class="modal-title fw-bold text-dark mb-0">Tolak Dokumen</h5>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form id="formDocReject">
-                    @csrf
-                    <input type="hidden" id="rejectDocId" name="doc_id">
-                    <input type="hidden" name="status" value="ditolak">
-                    <div class="modal-body p-4">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold text-dark">Nama Dokumen</label>
-                            <input type="text" id="rejectDocName" class="form-control" readonly style="background:#f8fafc; font-weight:600;">
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label fw-bold text-dark">Alasan Penolakan <span class="text-danger">*</span></label>
-                            <textarea id="rejectCatatan" name="catatan" class="form-control" rows="4" placeholder="Contoh: Dokumen tidak valid atau tidak sesuai dengan identitas pemohon yang terdaftar." required></textarea>
-                            <small class="text-muted"><i class="mdi mdi-alert-outline me-1"></i>Alasan penolakan wajib dicantumkan secara jelas.</small>
-                        </div>
-                    </div>
-                    <div class="modal-footer bg-light py-2 px-3">
-                        <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-danger px-4 fw-bold text-white">
-                            <i class="mdi mdi-close-thick me-1"></i> Tolak Dokumen
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    {{-- MODAL UPLOAD REVISI / PERBAIKAN DOKUMEN (STAFF MARKETING) --}}
-    <div class="modal fade" id="modalUploadRevisi" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius:14px; overflow:hidden;">
-                <div class="modal-header py-3" id="modalUploadRevisiHeader" style="background:#fef3c7;">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="mdi mdi-cloud-upload text-warning" id="modalUploadRevisiIcon" style="font-size:1.4rem;"></i>
-                        <h5 class="modal-title fw-bold text-dark mb-0" id="modalUploadRevisiTitle">Upload Dokumen Revisi</h5>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form id="formUploadRevisi" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" id="uploadRevisiDocId" name="doc_id">
-                    <input type="hidden" id="uploadNewKprId" name="kpr_id">
-                    <input type="hidden" id="uploadNewDocType" name="type">
-                    <input type="hidden" id="uploadNewDocNameHidden" name="document_name">
-                    <div class="modal-body p-4">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold text-dark">Nama Dokumen</label>
-                            <input type="text" id="uploadRevisiDocName" class="form-control" readonly style="background:#f8fafc; font-weight:600;">
-                        </div>
-
-                        <div class="mb-3 p-3 rounded" id="boxUploadRevisiCatatan" style="background:#fef3c7; border:1px solid #fde68a;">
-                            <strong class="d-block mb-1 text-dark" id="uploadRevisiCatatanTitle">
-                                <i class="mdi mdi-alert-outline me-1"></i>Catatan Kepala Marketing:
-                            </strong>
-                            <span id="uploadRevisiCatatanText" class="small text-dark">-</span>
-                        </div>
-
-                        <div class="mb-2">
-                            <label class="form-label fw-bold text-dark">Pilih File Berkas <span class="text-danger">*</span></label>
-                            <input type="file" id="uploadRevisiFile" name="file" class="form-control" accept=".jpg,.jpeg,.png,.pdf" required>
-                            <small class="text-muted"><i class="mdi mdi-information-outline me-1"></i>Format yang didukung: PDF, JPG, JPEG, PNG (Maksimal 5MB).</small>
-                        </div>
-                    </div>
-                    <div class="modal-footer bg-light py-2 px-3">
-                        <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-warning px-4 fw-bold text-dark" id="btnSubmitUploadRevisi">
-                            <i class="mdi mdi-cloud-upload me-1"></i> Simpan & Unggah Berkas
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
@@ -2274,274 +1913,69 @@
                 }
             });
 
+            // Initialize default on page load
+            switchDecision('survey');
+
+            // Allow clicking entire decision card
+            $('.transaksi-decision-card').on('click', function() {
+                const $radio = $(this).find('input[type="radio"]');
+                if (!$radio.is(':checked')) {
+                    $radio.prop('checked', true).trigger('change');
+                }
+            });
+
             $('#formVerifikasiKpr').on('submit', function(e) {
-                if (!$statusInput.val()) {
-                    e.preventDefault();
+                e.preventDefault();
+                const form = this;
+                const status = $statusInput.val();
+
+                if (!status) {
                     $decisionErrorBox.stop(true, true).slideDown(160);
                     $('html, body').animate({
                         scrollTop: $decisionErrorBox.offset().top - 120
                     }, 300);
+                    return false;
                 }
-            });
 
-            /* =====================================================
-               3-WAY DOKUMEN VALIDATION LOGIC (KEPALA MARKETING)
-               ===================================================== */
-            const validateUrlTemplate = "{{ route('kpr.document.validate', ':id') }}";
-
-            function postDocValidation(docId, status, catatan) {
-                const url = validateUrlTemplate.replace(':id', docId);
-
-                Swal.fire({
-                    title: 'Memproses...',
-                    text: 'Menyimpan status validasi dokumen',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        status: status,
-                        catatan: catatan
-                    },
-                    success: function(response) {
+                if (status === 'survey') {
+                    const fileInput = document.getElementById('inputBeritaAcara');
+                    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
                         Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message || 'Status validasi dokumen berhasil diperbarui.',
-                            timer: 1500,
-                            showConfirmButton: false
-                        }).then(() => {
-                            location.reload();
+                            icon: 'warning',
+                            title: 'Dokumen BA Wajib Diunggah',
+                            text: 'Harap lampirkan file Berita Acara Verifikasi terlebih dahulu sebelum menyimpan.',
+                            confirmButtonColor: '#6777ef',
+                            confirmButtonText: 'OK, Saya Mengerti'
                         });
-                    },
-                    error: function(xhr) {
-                        const msg = xhr.responseJSON?.message || 'Terjadi kesalahan saat memvalidasi dokumen.';
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal Validasi',
-                            text: msg
-                        });
+                        return false;
                     }
-                });
-            }
+                }
 
-            // 1. Aksi Setujui (Disetujui)
-            $(document).on('click', '.btn-action-approve', function() {
-                const docId = $(this).data('doc-id');
-                const docName = $(this).data('doc-name');
-
+                const isApprove = status === 'survey';
                 Swal.fire({
-                    title: 'Setujui Dokumen?',
-                    text: `Apakah Anda yakin ingin menyetujui dokumen "${docName}"?`,
-                    icon: 'question',
+                    title: isApprove ? 'Konfirmasi Persetujuan KPR' : 'Konfirmasi Penolakan KPR',
+                    text: isApprove 
+                        ? 'Apakah Anda yakin ingin menyetujui verifikasi KPR ini dan meneruskannya ke tahap berikutnya?' 
+                        : 'Apakah Anda yakin ingin menolak pengajuan verifikasi KPR ini?',
+                    icon: isApprove ? 'question' : 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#28a745',
+                    confirmButtonColor: isApprove ? '#28a745' : '#dc3545',
                     cancelButtonColor: '#6c757d',
-                    confirmButtonText: '<i class="mdi mdi-check me-1"></i> Ya, Setujui',
-                    cancelButtonText: 'Batal'
+                    confirmButtonText: isApprove ? 'Ya, Setujui & Simpan' : 'Ya, Tolak Pengajuan',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        postDocValidation(docId, 'disetujui', null);
-                    }
-                });
-            });
-
-            // 2. Aksi Minta Revisi (Modal)
-            $(document).on('click', '.btn-action-revisi', function() {
-                const docId = $(this).data('doc-id');
-                const docName = $(this).data('doc-name');
-                const catatan = $(this).data('catatan') || '';
-
-                $('#revisiDocId').val(docId);
-                $('#revisiDocName').val(docName);
-                $('#revisiCatatan').val(catatan);
-
-                const modal = new bootstrap.Modal(document.getElementById('modalDocRevisi'));
-                modal.show();
-            });
-
-            $('#formDocRevisi').on('submit', function(e) {
-                e.preventDefault();
-                const docId = $('#revisiDocId').val();
-                const catatan = $('#revisiCatatan').val();
-
-                if (!catatan.trim()) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Catatan Wajib Diisi',
-                        text: 'Silakan isi catatan/alasan apa yang perlu direvisi oleh pemohon.'
-                    });
-                    return;
-                }
-
-                bootstrap.Modal.getInstance(document.getElementById('modalDocRevisi')).hide();
-                postDocValidation(docId, 'revisi', catatan);
-            });
-
-            // 3. Aksi Tolak Dokumen (Modal)
-            $(document).on('click', '.btn-action-reject', function() {
-                const docId = $(this).data('doc-id');
-                const docName = $(this).data('doc-name');
-                const catatan = $(this).data('catatan') || '';
-
-                $('#rejectDocId').val(docId);
-                $('#rejectDocName').val(docName);
-                $('#rejectCatatan').val(catatan);
-
-                const modal = new bootstrap.Modal(document.getElementById('modalDocReject'));
-                modal.show();
-            });
-
-            $('#formDocReject').on('submit', function(e) {
-                e.preventDefault();
-                const docId = $('#rejectDocId').val();
-                const catatan = $('#rejectCatatan').val();
-
-                if (!catatan.trim()) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Alasan Wajib Diisi',
-                        text: 'Silakan isi alasan penolakan dokumen.'
-                    });
-                    return;
-                }
-
-                bootstrap.Modal.getInstance(document.getElementById('modalDocReject')).hide();
-                postDocValidation(docId, 'ditolak', catatan);
-            });
-
-            /* =====================================================
-               UPLOAD REVISI / PERBAIKAN DOKUMEN (STAFF MARKETING)
-               ===================================================== */
-            const reuploadUrlTemplate = "{{ route('kpr.document.reupload', ':id') }}";
-            const uploadNewUrlTemplate = "{{ route('kpr.document.upload-new', ':kprId') }}";
-
-            $(document).on('click', '.btn-open-upload-revisi', function() {
-                const docId = $(this).data('doc-id');
-                const docName = $(this).data('doc-name');
-                const catatan = $(this).data('catatan') || '';
-                const mode = $(this).data('mode') || 'revisi';
-                const kprId = $(this).data('kpr-id');
-                const docType = $(this).data('doc-type');
-
-                $('#uploadRevisiDocId').val(docId || '');
-                $('#uploadNewKprId').val(kprId || '');
-                $('#uploadNewDocType').val(docType || '');
-                $('#uploadNewDocNameHidden').val(docName || '');
-                $('#uploadRevisiDocName').val(docName);
-                $('#uploadRevisiFile').val('');
-
-                const $header = $('#modalUploadRevisiHeader');
-                const $icon = $('#modalUploadRevisiIcon');
-                const $title = $('#modalUploadRevisiTitle');
-                const $catatanBox = $('#boxUploadRevisiCatatan');
-                const $catatanTitle = $('#uploadRevisiCatatanTitle');
-                const $catatanText = $('#uploadRevisiCatatanText');
-                const $btnSubmit = $('#btnSubmitUploadRevisi');
-
-                if (mode === 'ditolak') {
-                    $header.css('background', '#fee2e2');
-                    $icon.attr('class', 'mdi mdi-alert-circle text-danger');
-                    $title.text('Perbaiki Dokumen Ditolak');
-                    $catatanBox.css({'background': '#fee2e2', 'border-color': '#fca5a5'}).show();
-                    $catatanTitle.html('<i class="mdi mdi-close-octagon me-1 text-danger"></i>Alasan Penolakan Kepala Marketing:');
-                    $catatanText.text(catatan || 'Dokumen ditolak. Mohon perbaiki dan unggah ulang berkas yang valid.');
-                    $btnSubmit.attr('class', 'btn btn-danger px-4 fw-bold text-white').html('<i class="mdi mdi-cloud-upload me-1"></i> Unggah Dokumen Perbaikan');
-                } else if (mode === 'revisi') {
-                    $header.css('background', '#fef3c7');
-                    $icon.attr('class', 'mdi mdi-pencil-box-multiple text-warning');
-                    $title.text('Upload Dokumen Revisi');
-                    $catatanBox.css({'background': '#fef3c7', 'border-color': '#fde68a'}).show();
-                    $catatanTitle.html('<i class="mdi mdi-alert-outline me-1 text-warning"></i>Instruksi Revisi Kepala Marketing:');
-                    $catatanText.text(catatan || 'Mohon perbaiki dokumen sesuai catatan Kepala Marketing.');
-                    $btnSubmit.attr('class', 'btn btn-warning px-4 fw-bold text-dark').html('<i class="mdi mdi-cloud-upload me-1"></i> Unggah File Revisi');
-                } else if (mode === 'pending') {
-                    $header.css('background', '#f1f5f9');
-                    $icon.attr('class', 'mdi mdi-file-replace-outline text-primary');
-                    $title.text('Ganti / Perbarui Berkas Dokumen');
-                    $catatanBox.hide();
-                    $btnSubmit.attr('class', 'btn btn-primary px-4 fw-bold text-white').html('<i class="mdi mdi-cloud-upload me-1"></i> Ganti Berkas');
-                } else {
-                    $header.css('background', '#eff6ff');
-                    $icon.attr('class', 'mdi mdi-cloud-upload text-primary');
-                    $title.text('Upload Dokumen Pokok');
-                    $catatanBox.hide();
-                    $btnSubmit.attr('class', 'btn btn-primary px-4 fw-bold text-white').html('<i class="mdi mdi-cloud-upload me-1"></i> Unggah Dokumen');
-                }
-
-                const modal = new bootstrap.Modal(document.getElementById('modalUploadRevisi'));
-                modal.show();
-            });
-
-            $('#formUploadRevisi').on('submit', function(e) {
-                e.preventDefault();
-                const docId = $('#uploadRevisiDocId').val();
-                const kprId = $('#uploadNewKprId').val();
-                const fileInput = document.getElementById('uploadRevisiFile');
-
-                if (!fileInput.files || fileInput.files.length === 0) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'File Belum Dipilih',
-                        text: 'Silakan pilih file berkas terlebih dahulu.'
-                    });
-                    return;
-                }
-
-                const formData = new FormData(this);
-                let url = '';
-
-                if (docId) {
-                    url = reuploadUrlTemplate.replace(':id', docId);
-                } else if (kprId) {
-                    url = uploadNewUrlTemplate.replace(':kprId', kprId);
-                } else {
-                    Swal.fire({ icon: 'error', title: 'Target Dokumen Tidak Ditemukan' });
-                    return;
-                }
-
-                Swal.fire({
-                    title: 'Mengunggah...',
-                    text: 'Sedang mengunggah berkas dokumen',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
                         Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message || 'Dokumen berhasil diunggah.',
-                            timer: 1800,
-                            showConfirmButton: false
-                        }).then(() => {
-                            location.reload();
+                            title: 'Menyimpan Data...',
+                            html: 'Mohon tunggu sebentar, sedang memproses verifikasi dan upload dokumen.',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
                         });
-                    },
-                    error: function(xhr) {
-                        const msg = xhr.responseJSON?.message || 'Terjadi kesalahan saat mengunggah dokumen.';
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal Upload',
-                            text: msg
-                        });
+                        form.submit();
                     }
                 });
             });
@@ -2551,9 +1985,15 @@
 
     <script>
         /* =====================================================
-           MODAL PREVIEW DOKUMEN — Direct Load & Fallback
-           ===================================================== */
-        const IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+                               MODAL PREVIEW DOKUMEN — fetch → blob → iframe/img
+                               Cara kerja:
+                               - JS fetch file dari storage (raw bytes)
+                               - Convert ke Blob URL (browser render langsung, tidak download)
+                               - PDF  → ditampilkan di <iframe> dalam modal
+                               - Gambar → ditampilkan di <img> dalam modal
+                               ===================================================== */
+
+        const IMAGE_EXTS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
         const PDF_EXTS = ['pdf'];
         let activeBlobUrl = null;
 
@@ -2571,29 +2011,43 @@
 
         function showError(url) {
             $('#previewLoading').addClass('d-none').css('display', 'none');
-            $('#divImagePreview').addClass('d-none').css('display', 'none');
-            $('#iframePreview').addClass('d-none').css('display', 'none');
             $('#previewError').removeClass('d-none').css('display', 'flex');
             $('#btnErrorDownload').attr('href', url);
         }
 
+        function previewPdf(blob) {
+            activeBlobUrl = URL.createObjectURL(blob);
+            const $iframe = $('#iframePreview');
+            $iframe.off('load').on('load', function() {
+                $('#previewLoading').addClass('d-none').css('display', 'none');
+                $iframe.removeClass('d-none');
+            });
+            $iframe.attr('src', activeBlobUrl);
+        }
+
+        function previewImage(blob) {
+            activeBlobUrl = URL.createObjectURL(blob);
+            const $img = $('#imgPreview');
+            $img.off('load error')
+                .on('load', function() {
+                    $('#previewLoading').addClass('d-none').css('display', 'none');
+                    $('#divImagePreview').removeClass('d-none').css('display', 'flex');
+                    $('#previewFooterInfo').text($img[0].naturalWidth + ' × ' + $img[0].naturalHeight + ' px');
+                })
+                .on('error', function() {
+                    showError($('#btnDownloadDoc').attr('href'));
+                });
+            $img.attr('src', activeBlobUrl);
+        }
+
         $(document).on('click', '.btn-preview-doc', function() {
             const url = $(this).data('url');
-            const ext = ($(this).data('ext') || '').toLowerCase();
+            const ext = $(this).data('ext').toLowerCase();
             const label = $(this).data('label');
-
-            if (!url) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'File Belum Diunggah',
-                    text: 'Dokumen ini belum memiliki file berkas.'
-                });
-                return;
-            }
 
             // Set info modal
             $('#modalDocLabel').text(label);
-            $('#modalDocExt').text((ext || 'FILE').toUpperCase());
+            $('#modalDocExt').text(ext.toUpperCase());
             $('#btnDownloadDoc').attr('href', url);
             $('#btnErrorDownload').attr('href', url);
             $('#previewFooterInfo').text(url.split('/').pop());
@@ -2611,53 +2065,28 @@
             resetPreviewState();
             new bootstrap.Modal(document.getElementById('modalPreviewDokumen')).show();
 
-            if (IMAGE_EXTS.includes(ext)) {
-                const $img = $('#imgPreview');
-                $img.off('load error')
-                    .on('load', function() {
-                        $('#previewLoading').addClass('d-none').css('display', 'none');
-                        $('#previewError').addClass('d-none').css('display', 'none');
-                        $('#divImagePreview').removeClass('d-none').css('display', 'flex');
-                    })
-                    .on('error', function() {
-                        // Coba via fetch blob sebagai fallback jika direct image diblokir
-                        fetch(url)
-                            .then(res => {
-                                if (!res.ok) throw new Error('Fetch failed');
-                                return res.blob();
-                            })
-                            .then(blob => {
-                                activeBlobUrl = URL.createObjectURL(blob);
-                                $img.off('load error')
-                                    .on('load', function() {
-                                        $('#previewLoading').addClass('d-none').css('display', 'none');
-                                        $('#previewError').addClass('d-none').css('display', 'none');
-                                        $('#divImagePreview').removeClass('d-none').css('display', 'flex');
-                                    })
-                                    .on('error', function() {
-                                        showError(url);
-                                    })
-                                    .attr('src', activeBlobUrl);
-                            })
-                            .catch(() => {
-                                showError(url);
-                            });
-                    });
-                $img.attr('src', url);
-            } else if (PDF_EXTS.includes(ext)) {
-                const $iframe = $('#iframePreview');
-                $iframe.off('load error')
-                    .on('load', function() {
-                        $('#previewLoading').addClass('d-none').css('display', 'none');
-                        $('#iframePreview').removeClass('d-none');
-                    })
-                    .on('error', function() {
+            // Fetch file → blob
+            fetch(url)
+                .then(function(res) {
+                    if (!res.ok) throw new Error('Fetch failed: ' + res.status);
+                    return res.blob();
+                })
+                .then(function(blob) {
+                    if (PDF_EXTS.includes(ext)) {
+                        // Paksa MIME type PDF supaya browser render, bukan download
+                        const pdfBlob = new Blob([blob], {
+                            type: 'application/pdf'
+                        });
+                        previewPdf(pdfBlob);
+                    } else if (IMAGE_EXTS.includes(ext)) {
+                        previewImage(blob);
+                    } else {
                         showError(url);
-                    });
-                $iframe.attr('src', url);
-            } else {
-                showError(url);
-            }
+                    }
+                })
+                .catch(function() {
+                    showError(url);
+                });
         });
 
         // Bersihkan blob URL saat modal ditutup

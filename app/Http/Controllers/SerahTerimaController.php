@@ -181,4 +181,29 @@ class SerahTerimaController extends Controller
 
         return view('cetak.serah_terima_cetak', compact('booking', 'serahTerima', 'unit'));
     }
+
+    /**
+     * Cetak Lembar Rincian Transaksi, Harga, Pembayaran & Notaris Lengkap
+     */
+    public function cetakRincianTransaksi($bookingId)
+    {
+        $booking = Booking::with([
+            'unit',
+            'unit.landBank',
+            'customer',
+            'sales',
+            'serahTerima',
+            'akad',
+            'kprApplication.bank',
+            'payments'
+        ])->findOrFail($bookingId);
+
+        $unit = $booking->unit;
+        $kpr = $booking->kprApplication;
+        $akad = $booking->akad;
+        $serahTerima = $booking->serahTerima;
+        $companySetting = \App\Models\CompanySetting::first();
+
+        return view('cetak.rincian_transaksi_terjual', compact('booking', 'unit', 'kpr', 'akad', 'serahTerima', 'companySetting'));
+    }
 }

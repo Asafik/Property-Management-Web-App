@@ -151,11 +151,25 @@ class KprDisbursementController extends Controller
             $unitsData = $unitsData->where('statusPencairan', $statusCair);
         }
 
-        // Metrik Ringkasan KPI
+        // Metrik Ringkasan KPI (sebelum paginasi)
         $totalPlafonKpr = $unitsData->sum('plafonKpr');
         $totalDanaCair  = $unitsData->sum('totalCair');
         $totalSisaPiutang = $unitsData->sum('sisaCair');
         $totalUnitKpr   = $unitsData->count();
+
+        // Paginasi Data
+        $perPage = (int) $request->input('per_page', 10);
+        $currentPage = \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPage();
+        $currentItems = $unitsData->slice(($currentPage - 1) * $perPage, $perPage)->values();
+        $paginatedUnits = new \Illuminate\Pagination\LengthAwarePaginator(
+            $currentItems,
+            $unitsData->count(),
+            $perPage,
+            $currentPage,
+            ['path' => \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPath(), 'query' => $request->query()]
+        );
+
+        $unitsData = $paginatedUnits;
 
         return view('keuangan.pencairan_kpr.index', compact(
             'projects',
