@@ -22,7 +22,8 @@ class KprDisbursementController extends Controller
             abort(403, 'Unauthorized');
         }
         $posName = strtolower($user->position->name ?? '');
-        $isAllowed = ($user->position_id == 1 || $user->position_id == 5 || str_contains($posName, 'kepala') || str_contains($posName, 'admin') || str_contains($posName, 'kpr') || str_contains($posName, 'legal'));
+        $divName = strtolower($user->division->name ?? '');
+        $isAllowed = ($user->position_id == 1 || $user->position_id == 5 || str_contains($posName, 'kepala') || str_contains($posName, 'admin') || str_contains($posName, 'kpr') || str_contains($posName, 'legal') || str_contains($posName, 'keuangan') || str_contains($divName, 'keuangan') || str_contains($posName, 'finance') || str_contains($divName, 'finance'));
 
         if (!$isAllowed) {
             abort(403, 'Akses ditolak. Menu ini hanya dapat diakses oleh Bagian Keuangan dan Administrator.');

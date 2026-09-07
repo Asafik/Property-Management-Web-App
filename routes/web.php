@@ -85,7 +85,7 @@ Route::get('/', [LandingpageController::class, 'index'])->name('landingpage');
 //     return redirect()->route('login');
 // });
 
-Route::middleware(['auth', 'position:1,2,3,4,5,6'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 

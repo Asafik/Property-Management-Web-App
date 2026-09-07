@@ -16,8 +16,8 @@ class PositionMiddleware
             abort(403);
         }
 
-        // langsung pakai position_id
-        if (!in_array($user->position_id, $positionIds)) {
+        // Jika route menspesifikasikan batasan position_id tertentu
+        if (!empty($positionIds) && !in_array($user->position_id, $positionIds)) {
             abort(403);
         }
 
