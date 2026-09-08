@@ -11,9 +11,16 @@ class DocumentTypes extends Model
     protected $fillable = [
         'name',
         'code',
-        'has_expiry'
+        'has_expiry',
+        'applicable_categories',
     ];
- public function documents()
+
+    protected $casts = [
+        'applicable_categories' => 'array',
+        'has_expiry' => 'boolean',
+    ];
+
+    public function documents()
     {
         return $this->hasMany(LandBankDocument::class);
     }

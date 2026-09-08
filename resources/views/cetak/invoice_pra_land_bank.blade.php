@@ -589,6 +589,18 @@
                                 @endif
                             </td>
                         </tr>
+                        @if($land->notaris)
+                            <tr>
+                                <td>Notaris Rekanan</td>
+                                <td>:</td>
+                                <td>
+                                    <strong>{{ $land->notaris->nama_notaris }}</strong>
+                                    @if($land->notary_appointment_date)
+                                        <br><span style="font-size: 11px; color: #64748b;">(Jadwal: {{ \Carbon\Carbon::parse($land->notary_appointment_date)->translatedFormat('d F Y H:i') }} WIB)</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endif
                         @if($method === 'cash' && $cashPayment)
                             @if($cashPayment->payment_type === 'transfer')
                                 <tr>
@@ -789,8 +801,20 @@
 
                 <div class="signature-box">
                     <div class="signature-role">Mengetahui / Notaris Rekanan,</div>
-                    <div class="signature-name">(..........................................)</div>
-                    <div class="signature-note">PPAT / Notaris</div>
+                    <div class="signature-name">
+                        @if($land->notaris && !empty($land->notaris->nama_notaris))
+                            <span style="font-weight: 700; text-decoration: underline;">{{ $land->notaris->nama_notaris }}</span>
+                        @else
+                            (..........................................)
+                        @endif
+                    </div>
+                    <div class="signature-note">
+                        @if($land->notaris && !empty($land->notaris->no_sk))
+                            PPAT / Notaris (SK: {{ $land->notaris->no_sk }})
+                        @else
+                            PPAT / Notaris
+                        @endif
+                    </div>
                 </div>
 
                 <div class="signature-box">

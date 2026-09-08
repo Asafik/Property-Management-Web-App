@@ -47,13 +47,21 @@ class PraLandbank extends Model
         'status',
         'file_certificate',
         'photo',
+        'photo_2',
         'priority',
+        'land_protection_status',
+        'pbb_status',
+        'notaris_id',
+        'notary_appointment_date',
         'cost_ijb',
         'cost_tax',
         'cost_broker',
         'cost_other',
         'file_ijb',
         'file_tax',
+        'receipt_file',
+        'tax_pph_file',
+        'release_deed_file',
         'payment_method',
         'installment_duration',
         'installment_count',
@@ -73,5 +81,10 @@ class PraLandbank extends Model
     public function invoice()
     {
         return $this->hasOne(Invoice::class, 'pra_landbank_id');
+    }
+
+    public function notaris()
+    {
+        return $this->belongsTo(Notaris::class, 'notaris_id');
     }
 }

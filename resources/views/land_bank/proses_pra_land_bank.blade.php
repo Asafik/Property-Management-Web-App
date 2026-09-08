@@ -905,25 +905,52 @@
                                 <div class="step-title">Fase 1</div>
                             </div>
 
+                            @php
+                                $rawStatus = strtoupper($land->ownership_status ?? 'SHM');
+                                if (str_contains($rawStatus, 'APHB')) {
+                                    $selectedCat = 'APHB';
+                                } elseif (str_contains($rawStatus, 'WARIS')) {
+                                    $selectedCat = 'WARISAN';
+                                } elseif (str_contains($rawStatus, 'PETOK') || str_contains($rawStatus, 'GIRIK') || str_contains($rawStatus, 'LETTER')) {
+                                    $selectedCat = 'PETOK_C';
+                                } elseif (str_contains($rawStatus, 'AJB') || str_contains($rawStatus, 'HIBAH')) {
+                                    $selectedCat = 'AJB';
+                                } else {
+                                    $selectedCat = 'SHM';
+                                }
+
+                                $catDocTypeIds = $documentTypes->filter(function($dt) use ($selectedCat) {
+                                    $c = $dt->applicable_categories ?? [];
+                                    return empty($c) || in_array($selectedCat, $c);
+                                })->pluck('id')->toArray();
+
+                                $praDocs = $land ? $land->documents : collect();
+                                $applicablePraDocs = $praDocs->whereIn('document_type_id', $catDocTypeIds);
+                                $totalUploadedDocs = $applicablePraDocs->whereNotNull('file_path')->count();
+                                $verifiedCount = $applicablePraDocs->where('status', 'verified')->count();
+                                $isLegalSah = $land && ($totalUploadedDocs > 0) && ($verifiedCount === $totalUploadedDocs);
+                                $isFase2Done = $land && (!empty($land->survey_date) || in_array($land->status, ['fase3', 'approved', 'rejected']));
+                                $canAccessFase3 = $isLegalSah && $isFase2Done;
+                            @endphp
+
                             <!-- STEP 2 -->
-                            <div class="step-item {{ !$land ? 'disabled' : '' }}" id="step2" onclick="switchStep(2)" style="cursor: pointer;">
+                            <div class="step-item {{ !$land ? 'disabled' : '' }}" id="step2" onclick="switchStep(2)" style="cursor: pointer;" title="{{ !$isLegalSah && $land && $land->status != 'approved' ? 'Terkunci: Wajib verifikasi legalitas sah di Fase 1 terlebih dahulu' : '' }}">
                                 <div class="step-circle">2</div>
-                                <div class="step-title">Fase 2</div>
+                                <div class="step-title d-flex align-items-center justify-content-center">
+                                    Fase 2
+                                    @if(!$isLegalSah && $land && $land->status != 'approved' && $land->status != 'rejected')
+                                        <i class="mdi mdi-lock text-warning ms-1" style="font-size: 13px;" title="Terkunci: Menunggu Validasi Dokumen Sah di Fase 1"></i>
+                                    @endif
+                                </div>
                             </div>
 
                             <!-- STEP 3 -->
-                            @php
-                                $praDocs = $land ? $land->documents : collect();
-                                $totalUploadedDocs = $praDocs->whereNotNull('file_path')->count();
-                                $verifiedCount = $praDocs->where('status', 'verified')->count();
-                                $isLegalSah = $land && ($totalUploadedDocs > 0) && ($verifiedCount === $totalUploadedDocs);
-                            @endphp
-                            <div class="step-item {{ !$land ? 'disabled' : '' }}" id="step3" onclick="switchStep(3)" style="cursor: pointer;" title="{{ !$isLegalSah && $land && $land->status != 'approved' ? 'Terkunci: Wajib verifikasi legalitas sah terlebih dahulu' : '' }}">
+                            <div class="step-item {{ !$land ? 'disabled' : '' }}" id="step3" onclick="switchStep(3)" style="cursor: pointer;" title="{{ !$canAccessFase3 && $land && $land->status != 'approved' ? 'Terkunci: Wajib selesaikan Fase 1 dan Fase 2 terlebih dahulu' : '' }}">
                                 <div class="step-circle">3</div>
                                 <div class="step-title d-flex align-items-center justify-content-center">
                                     Fase 3
-                                    @if(!$isLegalSah && $land && $land->status != 'approved' && $land->status != 'rejected')
-                                        <i class="mdi mdi-lock text-warning ms-1" style="font-size: 13px;" title="Terkunci: Menunggu Validasi Legalitas Sah"></i>
+                                    @if(!$canAccessFase3 && $land && $land->status != 'approved' && $land->status != 'rejected')
+                                        <i class="mdi mdi-lock text-warning ms-1" style="font-size: 13px;" title="Terkunci: Wajib selesaikan Fase 2 terlebih dahulu"></i>
                                     @endif
                                 </div>
                             </div>
@@ -946,7 +973,7 @@
                             </h5>
                         </div>
                         <div class="card-body">
-                            <form id="formFase1">
+                            <form id="formFase1" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $land->id ?? '' }}">
                                 <input type="hidden" name="fase" value="fase1">
@@ -987,16 +1014,15 @@
                                             <input type="text" class="form-control" name="land_name" value="{{ $land->land_name ?? '' }}" placeholder="Contoh: Tanah Jember Regency" required {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-6 mb-3">
-                                            <label class="form-label">Status Tanah / Kepemilikan *</label>
+                                            <label class="form-label">Status Tanah / Kepemilikan (Dasar Perolehan) *</label>
                                             <select class="form-select select2-search" id="select_ownership_status" name="ownership_status" data-placeholder="Pilih Status Kepemilikan" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                                 <option value="">-- Pilih Status Kepemilikan --</option>
-                                                <option value="SHM" {{ ($land && ($land->ownership_status ?? 'SHM') == 'SHM') ? 'selected' : '' }}>SHM (Sertifikat Hak Milik)</option>
+                                                <option value="SHM" {{ ($land && in_array(strtoupper($land->ownership_status ?? 'SHM'), ['SHM', 'HGB', 'HGU', 'HP'])) ? 'selected' : '' }}>SHM (Sertifikat Hak Milik)</option>
+                                                <option value="AJB" {{ ($land && strtoupper($land->ownership_status) == 'AJB') ? 'selected' : '' }}>AJB / Akta Hibah</option>
+                                                <option value="APHB" {{ ($land && strtoupper($land->ownership_status) == 'APHB') ? 'selected' : '' }}>APHB (Akta Pembagian Hak Bersama)</option>
+                                                <option value="WARISAN" {{ ($land && strtoupper($land->ownership_status) == 'WARISAN') ? 'selected' : '' }}>AJB / Hibah dari Harta Warisan</option>
+                                                <option value="PETOK_C" {{ ($land && in_array(strtoupper($land->ownership_status), ['PETOK_C', 'GIRIK', 'PETOK D'])) ? 'selected' : '' }}>Petok C / Girik Asli</option>
                                                 <option value="HGB" {{ ($land && $land->ownership_status == 'HGB') ? 'selected' : '' }}>HGB (Hak Guna Bangunan)</option>
-                                                <option value="HGU" {{ ($land && $land->ownership_status == 'HGU') ? 'selected' : '' }}>HGU (Hak Guna Usaha)</option>
-                                                <option value="HP" {{ ($land && $land->ownership_status == 'HP') ? 'selected' : '' }}>HP (Hak Pakai)</option>
-                                                <option value="Girik" {{ ($land && $land->ownership_status == 'Girik') ? 'selected' : '' }}>Girik / Letter C</option>
-                                                <option value="Petok D" {{ ($land && $land->ownership_status == 'Petok D') ? 'selected' : '' }}>Petok D</option>
-                                                <option value="AJB" {{ ($land && $land->ownership_status == 'AJB') ? 'selected' : '' }}>AJB (Akta Jual Beli)</option>
                                                 <option value="Lainnya" {{ ($land && $land->ownership_status == 'Lainnya') ? 'selected' : '' }}>Lainnya</option>
                                             </select>
                                         </div>
@@ -1036,6 +1062,25 @@
                                                 <option value="tanah" {{ $land && $land->road_type == 'tanah' ? 'selected' : '' }}>Tanah</option>
                                             </select>
                                         </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-semibold">
+                                                Status Zona Tanah / Lahan <span class="text-danger">*</span>
+                                                <i class="mdi mdi-information-outline text-primary" title="Pengecekan status LBS, LSD, atau LP2B untuk kelayakan izin perumahan"></i>
+                                            </label>
+                                            <select class="form-select" name="land_protection_status" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                <option value="aman" {{ ($land && ($land->land_protection_status ?? 'aman') == 'aman') ? 'selected' : '' }}>Aman (Bukan Zona Lindung / Bebas LSD)</option>
+                                                <option value="lbs" {{ ($land && $land->land_protection_status == 'lbs') ? 'selected' : '' }}>LBS (Lahan Baku Sawah)</option>
+                                                <option value="lsd" {{ ($land && $land->land_protection_status == 'lsd') ? 'selected' : '' }}>LSD (Lahan Sawah Dilindungi)</option>
+                                                <option value="lp2b" {{ ($land && $land->land_protection_status == 'lp2b') ? 'selected' : '' }}>LP2B (Lahan Pertanian Pangan Berkelanjutan)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-semibold">Status Pembayaran SPPT PBB <span class="text-danger">*</span></label>
+                                            <select class="form-select" name="pbb_status" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                <option value="lunas" {{ ($land && ($land->pbb_status ?? 'lunas') == 'lunas') ? 'selected' : '' }}>Lunas</option>
+                                                <option value="nunggak" {{ ($land && $land->pbb_status == 'nunggak') ? 'selected' : '' }}>Nunggak (Perlu Pelunasan)</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1056,11 +1101,271 @@
                                     </div>
                                 </div>
 
-                                <!-- ACTIONS -->
+                                <!-- DOKUMEN LEGALITAS & UPLOAD BERKAS (FASE 1) -->
+                                <div class="form-section">
+                                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                                        <div>
+                                            <div class="form-section-title mb-0">
+                                                Dokumen Legalitas & Verifikasi Berkas (Fase 1)
+                                            </div>
+                                            <small class="text-muted" style="font-size: 0.8rem;">
+                                                Unggah berkas fisik dokumen legalitas tanah (KTP Pemilik, PBB, Sertifikat, dll.) dan validasi keabsahan dokumen oleh Kepala Legal.
+                                            </small>
+                                        </div>
+                                        <span class="badge bg-soft-primary text-primary border border-primary-subtle py-1.5 px-3" style="font-size: 0.82rem; font-weight: 600;">
+                                            <i class="mdi mdi-shield-check-outline me-1"></i> Berkas & Validasi Dokumen
+                                        </span>
+                                    </div>
+
+                                    @php
+                                        $uploadedDocs = [];
+                                        if ($land) {
+                                            foreach ($land->documents as $d) {
+                                                $uploadedDocs[$d->document_type_id] = $d;
+                                            }
+                                        }
+                                        $currentUser = auth()->user();
+                                        $userPositionName = strtolower($currentUser->position->name ?? '');
+                                        $isStaffLegal = str_contains($userPositionName, 'staff') && str_contains($userPositionName, 'legal');
+                                        $canValidateDoc = !$isStaffLegal;
+                                    @endphp
+
+                                    <!-- Dynamic Category Alert Banner (Filtered by Alas Hak) -->
+                                    <div class="alert alert-info py-2.5 px-3 mb-3 d-flex align-items-center justify-content-between rounded-3 border shadow-none" id="fase1CategoryAlert" style="background: #f0fdf4; border-color: #bbf7d0 !important; color: #166534;">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="mdi mdi-filter-check" style="font-size: 1.35rem; color: #16a34a;"></i>
+                                            <div>
+                                                <span class="fw-bold d-block" style="font-size: 0.88rem;">
+                                                    Berkas Wajib Dasar Perolehan: <span id="fase1CategoryName" class="badge bg-success ms-1">SHM</span>
+                                                </span>
+                                                <small class="text-muted d-block" id="fase1CategoryDesc" style="font-size: 0.76rem;">
+                                                    Menampilkan berkas wajib legalitas sesuai SOP.
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <span class="badge bg-success px-3 py-1.5 shadow-sm" id="fase1CategoryCountBadge" style="font-size: 0.82rem; font-weight: 700;">
+                                            6 Dokumen Wajib
+                                        </span>
+                                    </div>
+
+                                    <div class="row g-3" id="documentGridContainerFase1">
+                                        @foreach($documentTypes as $doc)
+                                             @php
+                                                 $existingDoc = $uploadedDocs[$doc->id] ?? null;
+                                                 $hasFile = ($existingDoc && !empty($existingDoc->file_path));
+                                                 $currentDocStatus = $existingDoc->status ?? ($hasFile ? 'pending' : 'belum_upload');
+                                                 $docPhysStatus = $existingDoc->document_status ?? 'ada';
+                                                 $docCategories = $doc->applicable_categories ?? [];
+                                             @endphp
+                                             <div class="col-12 col-md-6 col-xl-4 doc-fase1-col" id="doc-box-fase1-{{ $doc->id }}" data-categories='@json($docCategories)' data-doc-id="{{ $doc->id }}">
+                                                 <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative" style="background: #ffffff; border-color: #eaedf2 !important;">
+                                                    <!-- Header Card Box -->
+                                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
+                                                        <div>
+                                                            <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">{{ $doc->name }}</h6>
+                                                        </div>
+                                                        <div class="d-flex align-items-center gap-1 flex-wrap justify-content-end">
+                                                            <!-- Status Fisik Dokumen Badge -->
+                                                            @if($docPhysStatus === 'proses')
+                                                                <span class="badge bg-warning text-dark py-1 px-2 doc-phys-badge-{{ $doc->id }}" style="font-size: 10px;">
+                                                                    <i class="mdi mdi-progress-clock me-1"></i>Masih Proses
+                                                                </span>
+                                                            @elseif($docPhysStatus === 'belum_ada')
+                                                                <span class="badge bg-light text-muted border py-1 px-2 doc-phys-badge-{{ $doc->id }}" style="font-size: 10px;">
+                                                                    Belum Ada
+                                                                </span>
+                                                            @else
+                                                                <span class="badge bg-soft-primary text-primary border py-1 px-2 doc-phys-badge-{{ $doc->id }}" style="font-size: 10px;">
+                                                                    <i class="mdi mdi-check-circle-outline me-1"></i>Fisik Lengkap
+                                                                </span>
+                                                            @endif
+
+                                                            <!-- Status Verifikasi Legal Badge -->
+                                                            @if($currentDocStatus === 'verified' || $currentDocStatus === 'valid')
+                                                                <span class="badge bg-success py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
+                                                                    <i class="mdi mdi-shield-check me-1"></i>Sah (ACC)
+                                                                </span>
+                                                            @elseif($currentDocStatus === 'rejected' || $currentDocStatus === 'revisi')
+                                                                <span class="badge bg-danger py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
+                                                                    <i class="mdi mdi-alert-circle me-1"></i>Revisi
+                                                                </span>
+                                                            @elseif($existingDoc && !empty($existingDoc->file_path))
+                                                                <span class="badge bg-warning text-dark py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
+                                                                    <i class="mdi mdi-clock-outline me-1"></i>Menunggu Verifikasi
+                                                                </span>
+                                                            @else
+                                                                <span class="badge bg-light text-muted border py-1 px-2 doc-badge-{{ $doc->id }}" style="font-size: 10px;">
+                                                                    Belum Upload
+                                                                </span>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Status Dokumen Fisik / Progres Pengurusan -->
+                                                    <div class="mb-2">
+                                                        <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
+                                                            Status Fisik / Keberadaan Dokumen
+                                                        </label>
+                                                        <select name="documents[{{ $doc->id }}][document_status]" class="form-select form-select-sm" onchange="toggleDocProcessNotes(this, {{ $doc->id }})" style="font-size: 0.85rem;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                            <option value="ada" {{ ($existingDoc->document_status ?? 'ada') === 'ada' ? 'selected' : '' }}>Ada / Lengkap</option>
+                                                            <option value="proses" {{ ($existingDoc->document_status ?? '') === 'proses' ? 'selected' : '' }}>Masih Proses (Pengurusan Notaris/BPN/Dinas)</option>
+                                                            <option value="belum_ada" {{ ($existingDoc->document_status ?? '') === 'belum_ada' ? 'selected' : '' }}>Belum Ada</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Dynamic Form Keterangan / Progres Pengurusan (Muncul saat Masih Proses) -->
+                                                    <div class="mb-2 p-2 rounded-2 border process-notes-container {{ ($existingDoc->document_status ?? '') === 'proses' ? '' : 'd-none' }}" id="processNotesContainer_{{ $doc->id }}" style="background: #fffdf5; border-color: #fde68a !important;">
+                                                        <label class="form-label mb-1 text-dark fw-bold d-flex align-items-center gap-1" style="font-size: 0.78rem;">
+                                                            <i class="mdi mdi-progress-clock text-warning"></i> Keterangan & Progres Pengurusan Dokumen:
+                                                        </label>
+                                                        <textarea name="documents[{{ $doc->id }}][process_notes]" class="form-control form-control-sm" rows="2" placeholder="Tuliskan progres pengurusan berkas..." style="font-size: 0.8rem;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>{{ $existingDoc->process_notes ?? '' }}</textarea>
+                                                    </div>
+
+                                                    <!-- Input Nomor Dokumen -->
+                                                    <div class="mb-2">
+                                                        <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
+                                                            Nomor Dokumen {{ $doc->name }}
+                                                        </label>
+                                                        <input type="text" class="form-control form-control-sm"
+                                                            name="documents[{{ $doc->id }}][number]"
+                                                            value="{{ $existingDoc->document_number ?? '' }}"
+                                                            placeholder="Nomor {{ $doc->name }}"
+                                                            style="font-size: 0.85rem;"
+                                                            {{ $hasFile && $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    </div>
+
+                                                    <!-- Catatan Revisi Legalitas (Jika Ditolak / Direvisi) -->
+                                                    @php
+                                                        $hasRevision = $existingDoc && (($existingDoc->status ?? '') === 'rejected' || !empty($existingDoc->admin_notes));
+                                                    @endphp
+                                                    <div class="alert alert-danger p-2 mb-2 rounded-2 revision-box-{{ $doc->id }} {{ $hasRevision ? '' : 'd-none' }}" style="font-size: 0.78rem; background: #fff5f5; border: 1px solid #fed7d7; color: #c53030;">
+                                                        <div class="d-flex align-items-start gap-1">
+                                                            <i class="mdi mdi-alert-circle text-danger mt-0" style="font-size: 1rem;"></i>
+                                                            <div class="flex-grow-1">
+                                                                <div class="d-flex align-items-center justify-content-between">
+                                                                    <strong class="d-block text-danger">Catatan Revisi Legal:</strong>
+                                                                    <span class="badge bg-danger text-white px-1 py-0 rev-badge-{{ $doc->id }}" style="font-size: 9px;">
+                                                                        Rev #{{ $existingDoc->revision_number ?? 1 }}
+                                                                    </span>
+                                                                </div>
+                                                                <div class="text-dark mt-1 revision-notes-text-{{ $doc->id }}" style="font-size: 0.78rem;">
+                                                                    {{ $existingDoc->admin_notes ?? 'Berkas ditolak / perlu perbaikan dari pihak pengunggah.' }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Upload Berkas File -->
+                                                    <div class="mb-1 flex-grow-1 d-flex flex-column justify-content-end">
+                                                        @if($existingDoc && !empty($existingDoc->file_path))
+                                                            @php
+                                                                $cleanPath = str_replace('uploads/', '', $existingDoc->file_path);
+                                                                $isDocRejected = ($currentDocStatus === 'rejected' || $currentDocStatus === 'revisi');
+                                                            @endphp
+                                                            <!-- State: Berkas Sudah Terunggah -->
+                                                            <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                                                                <div class="d-flex align-items-center gap-2 mb-2">
+                                                                    <div class="p-1.5 rounded-2 flex-shrink-0 bg-success bg-opacity-10 text-success">
+                                                                        <i class="mdi mdi-file-check-outline" style="font-size: 1.25rem;"></i>
+                                                                    </div>
+                                                                    <div class="overflow-hidden flex-grow-1">
+                                                                        <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">Berkas Terunggah</span>
+                                                                        <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($existingDoc->file_path) }}</small>
+                                                                    </div>
+                                                                </div>
+                                                                <button type="button" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm btn-preview-doc"
+                                                                    data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}"
+                                                                    data-ext="{{ pathinfo($existingDoc->file_path, PATHINFO_EXTENSION) }}"
+                                                                    data-label="{{ $doc->name }}"
+                                                                    style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
+                                                                    <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                                                </button>
+                                                            </div>
+
+                                                            <!-- Opsi Ganti / Upload Ulang Berkas -->
+                                                            @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                                <div class="pratanah-file-upload-modern mb-1 ganti-file-box-{{ $doc->id }} {{ $isDocRejected ? '' : '' }}">
+                                                                    <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
+                                                                    <div class="pratanah-file-label-modern py-1 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                                                                        <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
+                                                                        <div class="pratanah-file-info-modern">
+                                                                            <span class="file-label-text text-secondary" style="font-size: 0.76rem; font-weight: 600;">Ganti Berkas / Upload Ulang</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+
+                                                            <!-- Tombol Aksi Validasi Kepala Legal / Admin (FASE 1) -->
+                                                            @if($canValidateDoc)
+                                                                <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-between gap-2 w-100" id="action-btns-doc-{{ $existingDoc->id }}">
+                                                                    @if(($existingDoc->status ?? '') !== 'verified' && ($existingDoc->status ?? '') !== 'valid')
+                                                                        <button type="button" class="btn btn-xs btn-success py-1.5 px-2 text-white flex-grow-1 d-inline-flex align-items-center justify-content-center shadow-sm" onclick="approvePraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Setujui & Validasi Dokumen" style="font-size: 11px; font-weight: 600; border-radius: 6px;">
+                                                                            <i class="mdi mdi-check me-1"></i>Validasi
+                                                                        </button>
+                                                                    @else
+                                                                        <span class="badge bg-soft-success text-success small"><i class="mdi mdi-shield-check me-1"></i>Sah</span>
+                                                                    @endif
+                                                                    @if(($existingDoc->status ?? '') !== 'rejected' && ($existingDoc->status ?? '') !== 'revisi')
+                                                                        <button type="button" class="btn btn-xs btn-danger py-1.5 px-2 text-white flex-grow-1 d-inline-flex align-items-center justify-content-center shadow-sm" onclick="rejectPraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Tolak & Minta Revisi" style="font-size: 11px; font-weight: 600; border-radius: 6px;">
+                                                                            <i class="mdi mdi-close me-1"></i>Tolak
+                                                                        </button>
+                                                                    @else
+                                                                        <span class="badge bg-soft-danger text-danger small ms-1"><i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi</span>
+                                                                    @endif
+                                                                </div>
+                                                            @else
+                                                                <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-end gap-1 w-100">
+                                                                    @if(($existingDoc->status ?? '') === 'verified' || ($existingDoc->status ?? '') === 'valid')
+                                                                        <span class="badge bg-success text-white py-1 px-2" style="font-size: 10px;">
+                                                                            <i class="mdi mdi-shield-check me-1"></i>Sah
+                                                                        </span>
+                                                                    @elseif(($existingDoc->status ?? '') === 'rejected' || ($existingDoc->status ?? '') === 'revisi')
+                                                                        <span class="badge bg-danger text-white py-1 px-2" style="font-size: 10px;">
+                                                                            <i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi
+                                                                        </span>
+                                                                    @else
+                                                                        <span class="badge bg-warning text-dark py-1 px-2" style="font-size: 10px;">
+                                                                            <i class="mdi mdi-clock-outline me-1"></i>Menunggu Review
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+                                                            @endif
+                                                        @else
+                                                            <!-- State: Dokumen Baru / Belum Ada Berkas -->
+                                                            <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.8rem; font-weight: 600;">
+                                                                <span>Upload Berkas {{ $doc->name }}</span>
+                                                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">Format PDF/JPG/PNG</span>
+                                                            </label>
+                                                            <div class="pratanah-file-upload-modern">
+                                                                <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <div class="pratanah-file-label-modern py-2 px-3" style="border: 1.5px dashed #9a55ff; background: #faf5ff;">
+                                                                    <i class="mdi mdi-cloud-upload" style="color: #9a55ff; font-size: 1.3rem;"></i>
+                                                                    <div class="pratanah-file-info-modern">
+                                                                        <span class="file-label-text fw-bold text-primary" style="font-size: 0.82rem;">Pilih Berkas {{ $doc->name }}</span>
+                                                                        <small style="font-size: 0.72rem; color: #8c98a4;">Format PDF, JPG, PNG (Maks 2MB)</small>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                <!-- ACTIONS FASE 1 -->
                                 <div class="d-flex justify-content-end gap-3 mt-4 footer-action-row">
                                     @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                        <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="saveFase1()">
-                                            <i class="mdi mdi-content-save-all"></i> {{ $land ? 'Update / Simpan Fase 1' : 'Simpan Fase 1' }}
+                                        <button type="button" class="btn btn-outline-purple btn-action-mobile" onclick="saveFase1(false)">
+                                            <i class="mdi mdi-content-save-outline me-1"></i> {{ $land ? 'Simpan Perubahan Fase 1' : 'Simpan Data Fase 1' }}
+                                        </button>
+                                        <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="saveFase1(true)">
+                                            <i class="mdi mdi-arrow-right-circle me-1"></i> Simpan & Lanjut ke Fase 2
+                                        </button>
+                                    @elseif ($land)
+                                        <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="switchStep(2)">
+                                            <i class="mdi mdi-arrow-right-circle me-1"></i> Menuju ke Fase 2
                                         </button>
                                     @endif
                                 </div>
@@ -1074,7 +1379,7 @@
                     <div class="card shadow-sm border-0">
                         <div class="card-header bg-white py-3">
                             <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
-                                FASE 2: Verifikasi Kelayakan, Dokumen & Spasial Map
+                                FASE 2: Survey Kelayakan Teknis & Spasial Map
                             </h5>
                         </div>
                         <div class="card-body">
@@ -1199,6 +1504,87 @@
                                             </select>
                                         </div>
                                     </div>
+
+                                    <!-- DOKUMENTASI FOTO LAHAN (2 FOTO) -->
+                                    <div class="row pt-2 border-top mt-2">
+                                        <div class="col-12 mb-2">
+                                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 0.88rem;">
+                                                <i class="mdi mdi-camera-outline text-purple me-1"></i> Dokumentasi Foto Lahan
+                                            </label>
+                                        </div>
+
+                                        <!-- Foto Lahan 1 -->
+                                        <div class="col-12 col-md-6 mb-3">
+                                            <div class="p-3 rounded-3 h-100 border bg-light bg-opacity-50">
+                                                <label class="form-label fw-semibold text-dark mb-2 d-flex align-items-center justify-content-between" style="font-size: 0.83rem;">
+                                                    <span><i class="mdi mdi-image-area text-primary me-1"></i> Foto Lahan 1</span>
+                                                    @if($land && $land->photo)
+                                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25" style="font-size: 10px;">Sudah Terunggah</span>
+                                                    @endif
+                                                </label>
+
+                                                @if($land && $land->photo)
+                                                    <div class="mb-2 position-relative rounded-2 overflow-hidden border" style="height: 140px; background: #000;">
+                                                        <img src="{{ asset($land->photo) }}" id="preview_photo_1" class="w-100 h-100" style="object-fit: cover;" alt="Foto Lahan 1">
+                                                        <a href="{{ asset($land->photo) }}" target="_blank" class="btn btn-xs btn-dark bg-opacity-75 text-white position-absolute bottom-0 end-0 m-2" style="font-size: 11px;">
+                                                            <i class="mdi mdi-magnify me-1"></i> Lihat Penuh
+                                                        </a>
+                                                    </div>
+                                                @else
+                                                    <div class="mb-2 d-none position-relative rounded-2 overflow-hidden border" id="box_preview_photo_1" style="height: 140px; background: #000;">
+                                                        <img id="preview_photo_1" class="w-100 h-100" style="object-fit: cover;" alt="Preview Foto Lahan 1">
+                                                    </div>
+                                                @endif
+
+                                                <div class="pratanah-file-upload-modern">
+                                                    <input type="file" name="photo" id="input_photo_1" accept="image/jpeg,image/png,image/jpg,image/webp" onchange="previewImageFase2(this, 'preview_photo_1', 'box_preview_photo_1')" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <div class="pratanah-file-label-modern py-2 px-3">
+                                                        <i class="mdi mdi-camera-plus" style="font-size: 1.25rem;"></i>
+                                                        <div class="pratanah-file-info-modern">
+                                                            <span class="file-label-text">{{ ($land && $land->photo) ? 'Ganti Foto Lahan 1' : 'Pilih Foto Lahan 1' }}</span>
+                                                            <span class="file-label-hint">JPG, PNG, JPEG, WEBP</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Foto Lahan 2 -->
+                                        <div class="col-12 col-md-6 mb-3">
+                                            <div class="p-3 rounded-3 h-100 border bg-light bg-opacity-50">
+                                                <label class="form-label fw-semibold text-dark mb-2 d-flex align-items-center justify-content-between" style="font-size: 0.83rem;">
+                                                    <span><i class="mdi mdi-image-area text-primary me-1"></i> Foto Lahan 2</span>
+                                                    @if($land && $land->photo_2)
+                                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25" style="font-size: 10px;">Sudah Terunggah</span>
+                                                    @endif
+                                                </label>
+
+                                                @if($land && $land->photo_2)
+                                                    <div class="mb-2 position-relative rounded-2 overflow-hidden border" style="height: 140px; background: #000;">
+                                                        <img src="{{ asset($land->photo_2) }}" id="preview_photo_2" class="w-100 h-100" style="object-fit: cover;" alt="Foto Lahan 2">
+                                                        <a href="{{ asset($land->photo_2) }}" target="_blank" class="btn btn-xs btn-dark bg-opacity-75 text-white position-absolute bottom-0 end-0 m-2" style="font-size: 11px;">
+                                                            <i class="mdi mdi-magnify me-1"></i> Lihat Penuh
+                                                        </a>
+                                                    </div>
+                                                @else
+                                                    <div class="mb-2 d-none position-relative rounded-2 overflow-hidden border" id="box_preview_photo_2" style="height: 140px; background: #000;">
+                                                        <img id="preview_photo_2" class="w-100 h-100" style="object-fit: cover;" alt="Preview Foto Lahan 2">
+                                                    </div>
+                                                @endif
+
+                                                <div class="pratanah-file-upload-modern">
+                                                    <input type="file" name="photo_2" id="input_photo_2" accept="image/jpeg,image/png,image/jpg,image/webp" onchange="previewImageFase2(this, 'preview_photo_2', 'box_preview_photo_2')" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <div class="pratanah-file-label-modern py-2 px-3">
+                                                        <i class="mdi mdi-camera-plus" style="font-size: 1.25rem;"></i>
+                                                        <div class="pratanah-file-info-modern">
+                                                            <span class="file-label-text">{{ ($land && $land->photo_2) ? 'Ganti Foto Lahan 2' : 'Pilih Foto Lahan 2' }}</span>
+                                                            <span class="file-label-hint">JPG, PNG, JPEG, WEBP</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- KEJELASAN LEGALITAS -->
@@ -1295,231 +1681,6 @@
                                     </div>
                                 </div>
 
-                                <!-- DOKUMEN LEGALITAS & UPLOAD BERKAS (KOTAK PER FILE) -->
-                                <div class="form-section">
-                                    <div class="form-section-title">
-                                        Dokumen Legalitas & Upload Berkas
-                                    </div>
-
-                                    @php
-                                        $uploadedDocs = [];
-                                        if ($land) {
-                                            foreach ($land->documents as $d) {
-                                                $uploadedDocs[$d->document_type_id] = $d;
-                                            }
-                                        }
-                                        $currentUser = auth()->user();
-                                        $userPositionName = strtolower($currentUser->position->name ?? '');
-                                        $isStaffLegal = str_contains($userPositionName, 'staff') && str_contains($userPositionName, 'legal');
-                                        $canValidateDoc = !$isStaffLegal;
-                                    @endphp
-
-                                    <div class="row g-3" id="documentGridContainer">
-                                        @foreach($documentTypes as $doc)
-                                            @php
-                                                $existingDoc = $uploadedDocs[$doc->id] ?? null;
-                                                $hasFile = ($existingDoc && !empty($existingDoc->file_path));
-                                            @endphp
-                                            <div class="col-12 col-md-6 col-xl-4" id="doc-box-{{ $doc->id }}">
-                                                <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative" style="background: #ffffff; border-color: #eaedf2 !important;">
-                                                    <!-- Header Card Box -->
-                                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
-                                                        <div>
-                                                            <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">{{ $doc->name }}</h6>
-                                                        </div>
-                                                        <div class="d-flex align-items-center gap-1 flex-wrap justify-content-end">
-                                                            @php
-                                                                $currentDocStatus = $existingDoc->status ?? ($hasFile ? 'pending' : 'belum_upload');
-                                                                $docPhysStatus = $existingDoc->document_status ?? 'ada';
-                                                            @endphp
-
-                                                            <!-- Status Fisik Dokumen Badge -->
-                                                            @if($docPhysStatus === 'proses')
-                                                                <span class="badge bg-warning text-dark py-1 px-2 doc-phys-badge-{{ $doc->id }}" style="font-size: 10px;">
-                                                                    <i class="mdi mdi-progress-clock me-1"></i>Masih Proses
-                                                                </span>
-                                                            @elseif($docPhysStatus === 'belum_ada')
-                                                                <span class="badge bg-light text-muted border py-1 px-2 doc-phys-badge-{{ $doc->id }}" style="font-size: 10px;">
-                                                                    Belum Ada
-                                                                </span>
-                                                            @else
-                                                                <span class="badge bg-soft-primary text-primary border py-1 px-2 doc-phys-badge-{{ $doc->id }}" style="font-size: 10px;">
-                                                                    <i class="mdi mdi-check-circle-outline me-1"></i>Fisik Lengkap
-                                                                </span>
-                                                            @endif
-
-                                                            <!-- Status Verifikasi Legal Badge -->
-                                                            @if($currentDocStatus === 'verified' || $currentDocStatus === 'valid')
-                                                                <span class="badge bg-success py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
-                                                                    <i class="mdi mdi-shield-check me-1"></i>Sah (ACC)
-                                                                </span>
-                                                            @elseif($currentDocStatus === 'rejected' || $currentDocStatus === 'revisi')
-                                                                <span class="badge bg-danger py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
-                                                                    <i class="mdi mdi-alert-circle me-1"></i>Revisi
-                                                                </span>
-                                                            @elseif($existingDoc && !empty($existingDoc->file_path))
-                                                                <span class="badge bg-warning text-dark py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
-                                                                    <i class="mdi mdi-clock-outline me-1"></i>Menunggu Verifikasi
-                                                                </span>
-                                                            @else
-                                                                <span class="badge bg-light text-muted border py-1 px-2 doc-badge-{{ $doc->id }}" style="font-size: 10px;">
-                                                                    Belum Upload
-                                                                </span>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Status Dokumen Fisik / Progres Pengurusan -->
-                                                    <div class="mb-2">
-                                                        <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
-                                                            Status Fisik / Keberadaan Dokumen
-                                                        </label>
-                                                        <select name="documents[{{ $doc->id }}][document_status]" class="form-select form-select-sm" onchange="toggleDocProcessNotes(this, {{ $doc->id }})" style="font-size: 0.85rem;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                            <option value="ada" {{ ($existingDoc->document_status ?? 'ada') === 'ada' ? 'selected' : '' }}>Ada / Lengkap</option>
-                                                            <option value="proses" {{ ($existingDoc->document_status ?? '') === 'proses' ? 'selected' : '' }}>Masih Proses (Pengurusan Notaris/BPN/Dinas)</option>
-                                                            <option value="belum_ada" {{ ($existingDoc->document_status ?? '') === 'belum_ada' ? 'selected' : '' }}>Belum Ada</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <!-- Dynamic Form Keterangan / Progres Pengurusan (Muncul saat Masih Proses) -->
-                                                    <div class="mb-2 p-2 rounded-2 border {{ ($existingDoc->document_status ?? '') === 'proses' ? '' : 'd-none' }}" id="processNotesContainer_{{ $doc->id }}" style="background: #fffdf5; border-color: #fde68a !important;">
-                                                        <label class="form-label mb-1 text-dark fw-bold d-flex align-items-center gap-1" style="font-size: 0.78rem;">
-                                                            <i class="mdi mdi-progress-clock text-warning"></i> Keterangan & Progres Pengurusan Dokumen:
-                                                        </label>
-                                                        <textarea name="documents[{{ $doc->id }}][process_notes]" class="form-control form-control-sm" rows="2" placeholder="Tuliskan progres pengurusan (contoh: Sedang proses balik nama di Notaris Budi, estimasi selesai tgl 15 bulan depan, nomor resi 123)..." style="font-size: 0.8rem;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>{{ $existingDoc->process_notes ?? '' }}</textarea>
-                                                        <small class="text-muted d-block mt-1" style="font-size: 0.72rem; line-height: 1.2;">
-                                                            *Kepala Legal dapat memverifikasi & menyetujui dokumen ini secara paralel agar alur lahan tetap bisa berjalan.
-                                                        </small>
-                                                    </div>
-
-                                                    <!-- Input Nomor Dokumen -->
-                                                    <div class="mb-2">
-                                                        <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
-                                                             Nomor Dokumen {{ $doc->name }}
-                                                        </label>
-                                                        <input type="text" class="form-control form-control-sm"
-                                                            name="documents[{{ $doc->id }}][number]"
-                                                            value="{{ $existingDoc->document_number ?? '' }}"
-                                                            placeholder="Nomor {{ $doc->name }}"
-                                                            style="font-size: 0.85rem;"
-                                                            {{ $hasFile && $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                    </div>
-
-                                                     <!-- Catatan Revisi Legalitas (Jika Ditolak / Direvisi) -->
-                                                     @php
-                                                         $hasRevision = $existingDoc && (($existingDoc->status ?? '') === 'rejected' || !empty($existingDoc->admin_notes));
-                                                     @endphp
-                                                     <div class="alert alert-danger p-2 mb-2 rounded-2 revision-box-{{ $doc->id }} {{ $hasRevision ? '' : 'd-none' }}" style="font-size: 0.78rem; background: #fff5f5; border: 1px solid #fed7d7; color: #c53030;">
-                                                         <div class="d-flex align-items-start gap-1">
-                                                             <i class="mdi mdi-alert-circle text-danger mt-0" style="font-size: 1rem;"></i>
-                                                             <div class="flex-grow-1">
-                                                                 <div class="d-flex align-items-center justify-content-between">
-                                                                     <strong class="d-block text-danger">Catatan Revisi Legal:</strong>
-                                                                     <span class="badge bg-danger text-white px-1 py-0 rev-badge-{{ $doc->id }}" style="font-size: 9px;">
-                                                                         Rev #{{ $existingDoc->revision_number ?? 1 }}
-                                                                     </span>
-                                                                 </div>
-                                                                 <div class="text-dark mt-1 revision-notes-text-{{ $doc->id }}" style="font-size: 0.78rem;">
-                                                                     {{ $existingDoc->admin_notes ?? 'Berkas ditolak / perlu perbaikan dari pihak pengunggah.' }}
-                                                                 </div>
-                                                             </div>
-                                                         </div>
-                                                     </div>
-
-                                                     <!-- Upload Berkas File -->
-                                                     <div class="mb-1 flex-grow-1 d-flex flex-column justify-content-end">
-                                                         @if($existingDoc && !empty($existingDoc->file_path))
-                                                             @php
-                                                                 $cleanPath = str_replace('uploads/', '', $existingDoc->file_path);
-                                                                 $isDocRejected = ($currentDocStatus === 'rejected' || $currentDocStatus === 'revisi');
-                                                             @endphp
-                                                             <!-- State: Berkas Sudah Terunggah -->
-                                                             <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
-                                                                 <div class="d-flex align-items-center gap-2 mb-2">
-                                                                     <div class="p-1.5 rounded-2 flex-shrink-0 bg-success bg-opacity-10 text-success">
-                                                                         <i class="mdi mdi-file-check-outline" style="font-size: 1.25rem;"></i>
-                                                                     </div>
-                                                                     <div class="overflow-hidden flex-grow-1">
-                                                                         <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">Berkas Terunggah</span>
-                                                                         <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($existingDoc->file_path) }}</small>
-                                                                     </div>
-                                                                 </div>
-                                                                 <button type="button" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm btn-preview-doc"
-                                                                      data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}"
-                                                                      data-ext="{{ pathinfo($existingDoc->file_path, PATHINFO_EXTENSION) }}"
-                                                                      data-label="{{ $doc->name }}"
-                                                                      style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
-                                                                      <i class="mdi mdi-eye me-1"></i>Lihat Berkas
-                                                                  </button>
-                                                             </div>
-
-                                                             <!-- Opsi Ganti / Upload Ulang Berkas (Hanya muncul saat status Ditolak/Revisi) -->
-                                                             @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                                 <div class="pratanah-file-upload-modern mb-1 ganti-file-box-{{ $doc->id }} {{ $isDocRejected ? '' : 'd-none' }}">
-                                                                     <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
-                                                                     <div class="pratanah-file-label-modern py-1 px-2" style="background: #fff5f5; border: 1px dashed #fca5a5;">
-                                                                         <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #ef4444;"></i>
-                                                                         <div class="pratanah-file-info-modern">
-                                                                             <span class="file-label-text text-danger" style="font-size: 0.76rem; font-weight: 600;">Ganti Berkas / Upload Ulang</span>
-                                                                         </div>
-                                                                     </div>
-                                                                 </div>
-                                                             @endif
-
-                                                             <!-- Tombol Aksi Validasi Kepala Legal / Admin -->
-                                                             @if($canValidateDoc)
-                                                                 <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-between gap-1 w-100" id="action-btns-doc-{{ $existingDoc->id }}">
-                                                                     @if(($existingDoc->status ?? '') !== 'verified')
-                                                                         <button type="button" class="btn btn-xs btn-success py-1.5 px-2 text-white flex-grow-1 d-inline-flex align-items-center justify-content-center" onclick="approvePraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Setujui & Validasi Dokumen" style="font-size: 11px; font-weight: 600;">
-                                                                             <i class="mdi mdi-check me-1"></i>Validasi
-                                                                         </button>
-                                                                     @endif
-                                                                     @if(($existingDoc->status ?? '') !== 'rejected')
-                                                                         <button type="button" class="btn btn-xs btn-outline-danger py-1.5 px-2 flex-grow-1 d-inline-flex align-items-center justify-content-center" onclick="rejectPraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Tolak & Minta Revisi" style="font-size: 11px; font-weight: 600;">
-                                                                             <i class="mdi mdi-close me-1"></i>Tolak
-                                                                         </button>
-                                                                     @endif
-                                                                 </div>
-                                                             @else
-                                                                 <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-end gap-1 w-100">
-                                                                     @if(($existingDoc->status ?? '') === 'verified' || ($existingDoc->status ?? '') === 'valid')
-                                                                         <span class="badge bg-success text-white py-1 px-2" style="font-size: 10px;">
-                                                                             <i class="mdi mdi-shield-check me-1"></i>Sah
-                                                                         </span>
-                                                                     @elseif(($existingDoc->status ?? '') === 'rejected' || ($existingDoc->status ?? '') === 'revisi')
-                                                                         <span class="badge bg-danger text-white py-1 px-2" style="font-size: 10px;">
-                                                                             <i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi
-                                                                         </span>
-                                                                     @else
-                                                                         <span class="badge bg-warning text-dark py-1 px-2" style="font-size: 10px;">
-                                                                             <i class="mdi mdi-clock-outline me-1"></i>Menunggu Review
-                                                                         </span>
-                                                                     @endif
-                                                                 </div>
-                                                             @endif
-                                                        @else
-                                                            <!-- State: Dokumen Baru / Belum Ada Berkas -> WAJIB BISA UPLOAD (TIDAK READONLY) -->
-                                                            <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.8rem; font-weight: 600;">
-                                                                <span>Upload Berkas {{ $doc->name }} <span class="text-danger">*</span></span>
-                                                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">Wajib Upload</span>
-                                                            </label>
-                                                            <div class="pratanah-file-upload-modern">
-                                                                <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
-                                                                <div class="pratanah-file-label-modern py-2 px-3" style="border: 1.5px dashed #9a55ff; background: #faf5ff;">
-                                                                    <i class="mdi mdi-cloud-upload" style="color: #9a55ff; font-size: 1.3rem;"></i>
-                                                                    <div class="pratanah-file-info-modern">
-                                                                        <span class="file-label-text fw-bold text-primary" style="font-size: 0.82rem;">Pilih Berkas {{ $doc->name }}</span>
-                                                                        <small style="font-size: 0.72rem; color: #8c98a4;">Format PDF, JPG, PNG (Maks 2MB)</small>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
 
                                 <!-- SPASIAL MAPS KOORDINAT -->
                                 <div class="form-section">
@@ -1553,19 +1714,19 @@
 
                                 <!-- ACTIONS -->
                                 <div class="d-flex justify-content-end gap-3 mt-4 footer-action-row" id="actionsFase2Wrapper">
-                                    @php
-                                        $totalRequired = max($documentTypes->count(), $land ? $land->documents->count() : 0);
-                                        $totalVerified = $land ? $land->documents->where('status', 'verified')->count() : 0;
-                                        $isAllDocsSah = ($totalRequired > 0) && ($totalVerified === $totalRequired);
-                                    @endphp
+                                    <button type="button" class="btn btn-outline-purple btn-action-mobile" onclick="switchStep(1)">
+                                        <i class="mdi mdi-arrow-left-circle me-1"></i> Kembali ke Fase 1
+                                    </button>
 
-                                    @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected') || !$isAllDocsSah)
+                                    @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
                                         <button type="button" class="btn btn-gradient-primary btn-action-mobile" id="btnSaveFase2" onclick="saveFase2()">
-                                            <i class="mdi mdi-content-save-all"></i> {{ $land ? 'Update / Simpan Fase 2' : 'Simpan Fase 2' }}
+                                            <i class="mdi mdi-content-save-all"></i> Simpan Data Fase 2
                                         </button>
-                                    @endif
 
-                                    @if ($isAllDocsSah)
+                                        <button type="button" class="btn btn-gradient-success btn-action-mobile" id="btnProceedFase3" onclick="saveFase2(true)">
+                                            <i class="mdi mdi-arrow-right-circle me-1"></i> Simpan & Lanjut ke Fase 3
+                                        </button>
+                                    @elseif($canAccessFase3)
                                         <button type="button" class="btn btn-gradient-success btn-action-mobile" onclick="switchStep(3)">
                                             <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut ke Fase 3
                                         </button>
@@ -1696,6 +1857,41 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <!-- Card Rangkuman Foto Lahan (Fase 2) di Fase 3 -->
+                                            @if($land && ($land->photo || $land->photo_2))
+                                                <div class="col-12">
+                                                    <div class="p-3 rounded-3 border bg-light bg-opacity-50">
+                                                        <h6 class="fw-bold text-primary mb-3" style="font-size: 0.88rem;">
+                                                            <i class="mdi mdi-camera me-1"></i> Dokumentasi Foto Lahan (Hasil Survey Fase 2)
+                                                        </h6>
+                                                        <div class="row g-3">
+                                                            @if($land->photo)
+                                                                <div class="col-12 col-md-6">
+                                                                    <div class="position-relative rounded-2 overflow-hidden border shadow-sm" style="height: 180px; background: #000;">
+                                                                        <img src="{{ asset($land->photo) }}" class="w-100 h-100" style="object-fit: cover;" alt="Foto Lahan 1">
+                                                                        <span class="badge bg-dark bg-opacity-75 text-white position-absolute top-0 start-0 m-2" style="font-size: 11px;">Foto Lahan 1</span>
+                                                                        <a href="{{ asset($land->photo) }}" target="_blank" class="btn btn-xs btn-light position-absolute bottom-0 end-0 m-2 shadow-sm" style="font-size: 11px;">
+                                                                            <i class="mdi mdi-magnify me-1"></i> Lihat Penuh
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                            @if($land->photo_2)
+                                                                <div class="col-12 col-md-6">
+                                                                    <div class="position-relative rounded-2 overflow-hidden border shadow-sm" style="height: 180px; background: #000;">
+                                                                        <img src="{{ asset($land->photo_2) }}" class="w-100 h-100" style="object-fit: cover;" alt="Foto Lahan 2">
+                                                                        <span class="badge bg-dark bg-opacity-75 text-white position-absolute top-0 start-0 m-2" style="font-size: 11px;">Foto Lahan 2</span>
+                                                                        <a href="{{ asset($land->photo_2) }}" target="_blank" class="btn btn-xs btn-light position-absolute bottom-0 end-0 m-2 shadow-sm" style="font-size: 11px;">
+                                                                            <i class="mdi mdi-magnify me-1"></i> Lihat Penuh
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 @endif
@@ -1726,6 +1922,263 @@
                                         <div class="col-12 mb-3">
                                             <label class="form-label fw-bold">Catatan & Kesimpulan Keputusan Sidang</label>
                                             <textarea class="form-control" name="catatan" rows="3" placeholder="Masukkan ringkasan pertimbangan keputusan rapat, kesepakatan notaris, tanggal rencana akta pelepasan..." {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>{{ $land->notes ?? '' }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- PROSES JADWAL & TRANSAKSI DI KANTOR NOTARIS -->
+                                <!-- PROSES JADWAL & TRANSAKSI DI KANTOR NOTARIS -->
+                                <div class="form-section">
+                                    <div class="form-section-title d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <i class="mdi mdi-bank me-1 text-primary"></i> Notaris Rekanan & Jadwal Tanda Tangan Akta Pelepasan
+                                        </div>
+                                        <span class="badge bg-soft-primary text-primary border border-primary-subtle py-1 px-3" style="font-size: 0.8rem;">
+                                            <i class="mdi mdi-bank me-1"></i>Transaksi Notaris
+                                        </span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-bold">Pilih Notaris Rekanan (Master Data Notaris) <span class="text-danger">*</span></label>
+                                            <select class="form-select select2-search" name="notaris_id" data-placeholder="Pilih Notaris Rekanan" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                <option value="">-- Pilih Notaris Rekanan --</option>
+                                                @if(isset($notarisList))
+                                                    @foreach($notarisList as $not)
+                                                        <option value="{{ $not->id }}" {{ ($land && $land->notaris_id == $not->id) ? 'selected' : '' }}>
+                                                            {{ $not->nama_notaris }} {{ $not->no_sk ? '('.$not->no_sk.')' : '' }} {{ $not->telepon ? ' - '.$not->telepon : '' }}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                            <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
+                                                *Data diambil langsung dari menu Master Data Notaris.
+                                            </small>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-bold">Jadwal Tanda Tangan Akta di Kantor Notaris</label>
+                                            <input type="datetime-local" class="form-control" name="notary_appointment_date" value="{{ $land && $land->notary_appointment_date ? \Carbon\Carbon::parse($land->notary_appointment_date)->format('Y-m-d\TH:i') : '' }}" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
+                                                *Jadwal kehadiran para pihak (Direktur, Penjual/Ahli Waris) di kantor notaris.
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <!-- UPLOAD BERKAS TRANSAKSI NOTARIS -->
+                                    <div class="row g-3 mt-1">
+                                        <!-- Kwitansi Bermaterai -->
+                                        <div class="col-12 col-md-4">
+                                            <div class="card border rounded-3 p-3 h-100 shadow-sm" style="background: #ffffff; border-color: #e2e8f0 !important;">
+                                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                                    <span class="fw-bold text-dark d-flex align-items-center gap-1" style="font-size: 0.86rem;">
+                                                        <i class="mdi mdi-receipt text-purple" style="font-size: 1.1rem;"></i>
+                                                        Kwitansi Pembayaran
+                                                    </span>
+                                                    <span class="badge {{ $land && $land->receipt_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
+                                                        <i class="mdi {{ $land && $land->receipt_file ? 'mdi-check-circle me-1' : 'mdi-clock-outline me-1' }}"></i>
+                                                        {{ $land && $land->receipt_file ? 'Terunggah' : 'Belum Ada' }}
+                                                    </span>
+                                                </div>
+                                                <small class="text-muted d-block mb-3" style="font-size: 0.74rem;">Bukti kwitansi bermaterai pembayaran di kantor Notaris</small>
+
+                                                <div class="d-flex flex-column justify-content-end flex-grow-1">
+                                                    @if($land && $land->receipt_file)
+                                                        @php $cleanReceipt = str_replace('uploads/', '', $land->receipt_file); @endphp
+                                                        <!-- State: Berkas Sudah Terunggah -->
+                                                        <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                                <div class="p-1.5 rounded-2 flex-shrink-0 bg-success bg-opacity-10 text-success">
+                                                                    <i class="mdi mdi-file-check-outline" style="font-size: 1.25rem;"></i>
+                                                                </div>
+                                                                <div class="overflow-hidden flex-grow-1">
+                                                                    <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">Kwitansi Terunggah</span>
+                                                                    <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($land->receipt_file) }}</small>
+                                                                </div>
+                                                            </div>
+                                                            <button type="button" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm btn-preview-doc"
+                                                                data-url="{{ route('dokumen.preview', ['path' => $cleanReceipt]) }}"
+                                                                data-ext="{{ pathinfo($land->receipt_file, PATHINFO_EXTENSION) }}"
+                                                                data-label="Kwitansi Pembayaran Bermaterai"
+                                                                style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
+                                                                <i class="mdi mdi-eye me-1"></i>Lihat Kwitansi
+                                                            </button>
+                                                        </div>
+
+                                                        @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                            <div class="pratanah-file-upload-modern mb-1">
+                                                                <input type="file" name="receipt_file" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                                                                    <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
+                                                                    <div class="pratanah-file-info-modern">
+                                                                        <span class="file-label-text text-secondary" style="font-size: 0.76rem; font-weight: 600;">Ganti Kwitansi / Upload Ulang</span>
+                                                                        <span class="file-label-hint" style="font-size: 0.7rem;">PDF, JPG, PNG</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @else
+                                                        @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                            <div class="pratanah-file-upload-modern mb-1">
+                                                                <input type="file" name="receipt_file" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <div class="pratanah-file-label-modern py-2.5 px-3">
+                                                                    <i class="mdi mdi-cloud-upload" style="font-size: 1.35rem; color: #9a55ff;"></i>
+                                                                    <div class="pratanah-file-info-modern">
+                                                                        <span class="file-label-text fw-semibold" style="font-size: 0.8rem;">Pilih File Kwitansi</span>
+                                                                        <span class="file-label-hint" style="font-size: 0.72rem;">PDF, JPG, PNG maks 10MB</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @else
+                                                            <div class="p-3 text-center text-muted bg-light rounded-2 border" style="font-size: 0.8rem;">
+                                                                <i class="mdi mdi-file-hidden me-1"></i>Belum ada berkas kwitansi
+                                                            </div>
+                                                        @endif
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Pajak PPh -->
+                                        <div class="col-12 col-md-4">
+                                            <div class="card border rounded-3 p-3 h-100 shadow-sm" style="background: #ffffff; border-color: #e2e8f0 !important;">
+                                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                                    <span class="fw-bold text-dark d-flex align-items-center gap-1" style="font-size: 0.86rem;">
+                                                        <i class="mdi mdi-file-certificate text-purple" style="font-size: 1.1rem;"></i>
+                                                        Bukti Bayar PPh
+                                                    </span>
+                                                    <span class="badge {{ $land && $land->tax_pph_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
+                                                        <i class="mdi {{ $land && $land->tax_pph_file ? 'mdi-check-circle me-1' : 'mdi-clock-outline me-1' }}"></i>
+                                                        {{ $land && $land->tax_pph_file ? 'Terunggah' : 'Belum Ada' }}
+                                                    </span>
+                                                </div>
+                                                <small class="text-muted d-block mb-3" style="font-size: 0.74rem;">Bukti bayar PPh (ACC Direktur PT & NPWP Penjual)</small>
+
+                                                <div class="d-flex flex-column justify-content-end flex-grow-1">
+                                                    @if($land && $land->tax_pph_file)
+                                                        @php $cleanPph = str_replace('uploads/', '', $land->tax_pph_file); @endphp
+                                                        <!-- State: Berkas Sudah Terunggah -->
+                                                        <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                                <div class="p-1.5 rounded-2 flex-shrink-0 bg-success bg-opacity-10 text-success">
+                                                                    <i class="mdi mdi-file-check-outline" style="font-size: 1.25rem;"></i>
+                                                                </div>
+                                                                <div class="overflow-hidden flex-grow-1">
+                                                                    <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">Bukti PPh Terunggah</span>
+                                                                    <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($land->tax_pph_file) }}</small>
+                                                                </div>
+                                                            </div>
+                                                            <button type="button" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm btn-preview-doc"
+                                                                data-url="{{ route('dokumen.preview', ['path' => $cleanPph]) }}"
+                                                                data-ext="{{ pathinfo($land->tax_pph_file, PATHINFO_EXTENSION) }}"
+                                                                data-label="Bukti Pembayaran Pajak PPh"
+                                                                style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
+                                                                <i class="mdi mdi-eye me-1"></i>Lihat Bukti PPh
+                                                            </button>
+                                                        </div>
+
+                                                        @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                            <div class="pratanah-file-upload-modern mb-1">
+                                                                <input type="file" name="tax_pph_file" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                                                                    <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
+                                                                    <div class="pratanah-file-info-modern">
+                                                                        <span class="file-label-text text-secondary" style="font-size: 0.76rem; font-weight: 600;">Ganti Bukti PPh / Upload Ulang</span>
+                                                                        <span class="file-label-hint" style="font-size: 0.7rem;">PDF, JPG, PNG</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @else
+                                                        @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                            <div class="pratanah-file-upload-modern mb-1">
+                                                                <input type="file" name="tax_pph_file" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <div class="pratanah-file-label-modern py-2.5 px-3">
+                                                                    <i class="mdi mdi-cloud-upload" style="font-size: 1.35rem; color: #9a55ff;"></i>
+                                                                    <div class="pratanah-file-info-modern">
+                                                                        <span class="file-label-text fw-semibold" style="font-size: 0.8rem;">Pilih Bukti PPh</span>
+                                                                        <span class="file-label-hint" style="font-size: 0.72rem;">PDF, JPG, PNG maks 10MB</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @else
+                                                            <div class="p-3 text-center text-muted bg-light rounded-2 border" style="font-size: 0.8rem;">
+                                                                <i class="mdi mdi-file-hidden me-1"></i>Belum ada berkas PPh
+                                                            </div>
+                                                        @endif
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Salinan Akta Pelepasan -->
+                                        <div class="col-12 col-md-4">
+                                            <div class="card border rounded-3 p-3 h-100 shadow-sm" style="background: #ffffff; border-color: #e2e8f0 !important;">
+                                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                                    <span class="fw-bold text-dark d-flex align-items-center gap-1" style="font-size: 0.86rem;">
+                                                        <i class="mdi mdi-file-sign text-purple" style="font-size: 1.1rem;"></i>
+                                                        Akta Pelepasan Hak
+                                                    </span>
+                                                    <span class="badge {{ $land && $land->release_deed_file ? 'bg-success' : 'bg-warning text-dark' }}" style="font-size: 10px;">
+                                                        <i class="mdi {{ $land && $land->release_deed_file ? 'mdi-check-circle me-1' : 'mdi-clock-outline me-1' }}"></i>
+                                                        {{ $land && $land->release_deed_file ? 'Akta Selesai' : 'Menunggu Akta' }}
+                                                    </span>
+                                                </div>
+                                                <small class="text-muted d-block mb-3" style="font-size: 0.74rem;">Salinan Akta Pelepasan Hak resmi selesai dari Notaris</small>
+
+                                                <div class="d-flex flex-column justify-content-end flex-grow-1">
+                                                    @if($land && $land->release_deed_file)
+                                                        @php $cleanDeed = str_replace('uploads/', '', $land->release_deed_file); @endphp
+                                                        <!-- State: Berkas Sudah Terunggah -->
+                                                        <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                                <div class="p-1.5 rounded-2 flex-shrink-0 bg-success bg-opacity-10 text-success">
+                                                                    <i class="mdi mdi-file-check-outline" style="font-size: 1.25rem;"></i>
+                                                                </div>
+                                                                <div class="overflow-hidden flex-grow-1">
+                                                                    <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">Akta Notaris Terunggah</span>
+                                                                    <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($land->release_deed_file) }}</small>
+                                                                </div>
+                                                            </div>
+                                                            <button type="button" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm btn-preview-doc"
+                                                                data-url="{{ route('dokumen.preview', ['path' => $cleanDeed]) }}"
+                                                                data-ext="{{ pathinfo($land->release_deed_file, PATHINFO_EXTENSION) }}"
+                                                                data-label="Salinan Akta Pelepasan Hak"
+                                                                style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
+                                                                <i class="mdi mdi-eye me-1"></i>Lihat Akta Pelepasan
+                                                            </button>
+                                                        </div>
+
+                                                        @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                            <div class="pratanah-file-upload-modern mb-1">
+                                                                <input type="file" name="release_deed_file" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                                                                    <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
+                                                                    <div class="pratanah-file-info-modern">
+                                                                        <span class="file-label-text text-secondary" style="font-size: 0.76rem; font-weight: 600;">Ganti Akta / Upload Ulang</span>
+                                                                        <span class="file-label-hint" style="font-size: 0.7rem;">PDF, JPG, PNG</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @else
+                                                        @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                            <div class="pratanah-file-upload-modern mb-1">
+                                                                <input type="file" name="release_deed_file" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <div class="pratanah-file-label-modern py-2.5 px-3">
+                                                                    <i class="mdi mdi-cloud-upload" style="font-size: 1.35rem; color: #9a55ff;"></i>
+                                                                    <div class="pratanah-file-info-modern">
+                                                                        <span class="file-label-text fw-semibold" style="font-size: 0.8rem;">Pilih Akta Pelepasan</span>
+                                                                        <span class="file-label-hint" style="font-size: 0.72rem;">PDF, JPG, PNG maks 10MB</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @else
+                                                            <div class="p-3 text-center text-muted bg-light rounded-2 border" style="font-size: 0.8rem;">
+                                                                <i class="mdi mdi-file-hidden me-1"></i>Belum ada salinan akta
+                                                            </div>
+                                                        @endif
+                                                    @endif
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1766,13 +2219,13 @@
                                     <!-- Dynamic Custom Extra Costs Container -->
                                     <div id="custom_costs_container" class="row g-2 mb-3"></div>
 
-                                    <!-- RINGKASAN DOKUMEN LEGALITAS DARI FASE 2 (READ-ONLY) -->
+                                    <!-- RINGKASAN DOKUMEN LEGALITAS DARI FASE 1 (READ-ONLY) -->
                                     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
                                         <div>
                                             <h6 class="mb-0 text-dark fw-bold" style="font-size: 0.95rem;">
-                                                Ringkasan Dokumen Legalitas (Hasil Validasi Fase 2)
+                                                Ringkasan Dokumen Legalitas (Hasil Validasi Fase 1)
                                             </h6>
-                                            <small class="text-muted" style="font-size: 0.78rem;">Seluruh berkas legalitas berikut telah diverifikasi dan disetujui sah oleh Kepala Legal pada Fase 2.</small>
+                                            <small class="text-muted" style="font-size: 0.78rem;">Seluruh berkas legalitas berikut telah diverifikasi dan disetujui sah oleh Kepala Legal pada Fase 1.</small>
                                         </div>
                                         <span class="badge bg-soft-success text-success border border-success-subtle py-1 px-3" style="font-size: 0.8rem; font-weight: 600;">
                                             Legalitas Terverifikasi Sah
@@ -2496,6 +2949,7 @@
         const isEditMode = {{ $land ? 'true' : 'false' }};
         const currentLandStatus = "{{ $land->status ?? 'fase1' }}";
         let isLegalSah = {{ $isLegalSah ? 'true' : 'false' }};
+        let isFase2Done = {{ ($isFase2Done ?? false) ? 'true' : 'false' }};
 
         // Read step query param if present
         const urlParams = new URLSearchParams(window.location.search);
@@ -2504,14 +2958,87 @@
         // Determine step based on query parameter or fallback to land status
         if (isEditMode) {
             if (queryStep >= 1 && queryStep <= 3) {
-                activeStep = (queryStep === 3 && !isLegalSah && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') ? 2 : queryStep;
+                if (queryStep === 3 && (!isLegalSah || !isFase2Done) && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
+                    activeStep = isLegalSah ? 2 : 1;
+                } else if (queryStep === 2 && !isLegalSah && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
+                    activeStep = 1;
+                } else {
+                    activeStep = queryStep;
+                }
             } else {
                 if (currentLandStatus === 'fase2') {
                     activeStep = 2;
                 } else if (currentLandStatus === 'fase3' || currentLandStatus === 'approved' || currentLandStatus === 'rejected') {
-                    activeStep = (isLegalSah || currentLandStatus === 'approved' || currentLandStatus === 'rejected') ? 3 : 2;
+                    activeStep = (isLegalSah && isFase2Done) ? 3 : (isLegalSah ? 2 : 1);
                 }
             }
+        }
+
+        // ===============================
+        // KATEGORI DOKUMEN SESUAI ALAS HAK
+        // ===============================
+        const CATEGORY_META = {
+            'SHM': {
+                name: 'SHM (Sertifikat Hak Milik)',
+                desc: '6 Dokumen Wajib: Sertifikat SHM Asli + 5 Dokumen Identitas & Pajak (KTP, KK, Nikah, NPWP, PBB).'
+            },
+            'AJB': {
+                name: 'AJB / Akta Hibah',
+                desc: '10 Dokumen Wajib: AJB/Hibah Asli, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.'
+            },
+            'APHB': {
+                name: 'APHB (Akta Pembagian Hak Bersama)',
+                desc: '11 Dokumen Wajib: APHB, Ket. Ahli Waris, Akta Kematian, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak Ahli Waris.'
+            },
+            'WARISAN': {
+                name: 'AJB & Akta Hibah (Harta Warisan)',
+                desc: '11 Dokumen Wajib: AJB/Hibah Asli, Ket. Waris, Akta Kematian, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.'
+            },
+            'PETOK_C': {
+                name: 'Petok C / Girik Asli',
+                desc: '10 Dokumen Wajib: Petok C Asli, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.'
+            }
+        };
+
+        function getNormalizedCategory(raw) {
+            const val = (raw || '').toString().toUpperCase().trim();
+            if (val.includes('APHB')) return 'APHB';
+            if (val.includes('WARIS')) return 'WARISAN';
+            if (val.includes('PETOK') || val.includes('GIRIK') || val.includes('LETTER')) return 'PETOK_C';
+            if (val.includes('AJB') || val.includes('HIBAH')) return 'AJB';
+            return 'SHM';
+        }
+
+        function filterFase1DocumentsByCategory(selectedVal) {
+            const cat = getNormalizedCategory(selectedVal);
+            let visibleCount = 0;
+
+            document.querySelectorAll('.doc-fase1-col').forEach(card => {
+                let rawCats = card.getAttribute('data-categories');
+                let cats = [];
+                try {
+                    cats = typeof rawCats === 'string' ? JSON.parse(rawCats) : (rawCats || []);
+                } catch (e) {
+                    cats = [];
+                }
+
+                if (!cats || cats.length === 0 || cats.includes(cat)) {
+                    card.classList.remove('d-none');
+                    visibleCount++;
+                } else {
+                    card.classList.add('d-none');
+                }
+            });
+
+            // Update info banner
+            const info = CATEGORY_META[cat] || CATEGORY_META['SHM'];
+            const nameEl = document.getElementById('fase1CategoryName');
+            const descEl = document.getElementById('fase1CategoryDesc');
+            const countEl = document.getElementById('fase1CategoryCountBadge');
+
+            if (nameEl) nameEl.textContent = info.name;
+            if (descEl) descEl.textContent = info.desc;
+            if (countEl) countEl.textContent = visibleCount + ' Dokumen Wajib';
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -2520,6 +3047,14 @@
 
             // Initial toggle for installment view (do not regenerate rows to preserve Blade pre-render)
             toggleInstallmentView(true);
+
+            // Filter berkas dokumen Fase 1 secara dinamis sesuai Status Kepemilikan (Alas Hak)
+            const initialOwnership = $('#select_ownership_status').val() || "{{ $land->ownership_status ?? 'SHM' }}";
+            filterFase1DocumentsByCategory(initialOwnership);
+
+            $('#select_ownership_status').on('change select2:select', function() {
+                filterFase1DocumentsByCategory(this.value);
+            });
 
 
 
@@ -2566,21 +3101,89 @@
                 return;
             }
 
-            if (step === 3 && !isLegalSah && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
+            // Cek akses ke Step 2 (Wajib dokumen di Fase 1 Sah)
+            if (step === 2 && !isLegalSah && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Status Legalitas Belum Sah!',
+                    title: 'Fase 2 Terkunci!',
                     html: `
-                        <p class="text-muted mb-2">Anda belum dapat melanjutkan ke <b>Fase 3 (Sidang & Keputusan Akhir)</b>.</p>
-                        <div class="alert alert-warning border text-start py-2 px-3 mb-0" style="font-size: 0.85rem; background: #fffbeb; border-color: #fde68a !important;">
-                            <i class="mdi mdi-shield-alert text-warning me-1"></i>
-                            <b>Syarat Mutlak:</b> Seluruh dokumen kelayakan legalitas tanah di <b>Fase 2</b> wajib berstatus <b>Terverifikasi (Sah) oleh Kepala Legal</b> terlebih dahulu.
+                        <p class="text-muted mb-3" style="font-size: 0.92rem;">
+                            Anda belum dapat melanjutkan ke <b>Fase 2 (Survey Kelayakan Teknis & Spasial)</b>.
+                        </p>
+                        <div class="p-3 rounded-3 text-start mb-2" style="background: #fffbeb; border: 1.5px solid #fde68a;">
+                            <div class="d-flex align-items-center gap-2 mb-2 text-warning fw-bold" style="font-size: 0.85rem;">
+                                <i class="mdi mdi-shield-alert" style="font-size: 1.1rem;"></i>
+                                <span>Syarat Pembukaan Akses Fase 2:</span>
+                            </div>
+                            <ul class="mb-0 ps-3 text-secondary" style="font-size: 0.82rem; line-height: 1.6;">
+                                <li>Berkas dokumen legalitas di <b>Fase 1</b> wajib diunggah lengkap.</li>
+                                <li>Seluruh dokumen wajib telah <b>Divalidasi Sah</b> oleh Kepala Legal.</li>
+                            </ul>
                         </div>
                     `,
                     confirmButtonColor: '#9a55ff',
-                    confirmButtonText: '<i class="mdi mdi-arrow-left me-1"></i> Periksa Dokumen Fase 2'
+                    confirmButtonText: '<i class="mdi mdi-arrow-left me-1"></i> Periksa Dokumen di Fase 1'
+                }).then(() => {
+                    switchStep(1);
                 });
                 return;
+            }
+
+            // Cek akses ke Step 3 (Wajib Fase 1 Sah DAN Fase 2 Selesai)
+            if (step === 3 && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
+                if (!isLegalSah) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Fase 3 Terkunci!',
+                        html: `
+                            <p class="text-muted mb-3" style="font-size: 0.92rem;">
+                                Anda belum dapat melanjutkan ke <b>Fase 3 (Sidang Keputusan Akhir)</b>.
+                            </p>
+                            <div class="p-3 rounded-3 text-start mb-2" style="background: #fffbeb; border: 1.5px solid #fde68a;">
+                                <div class="d-flex align-items-center gap-2 mb-2 text-warning fw-bold" style="font-size: 0.85rem;">
+                                    <i class="mdi mdi-shield-alert" style="font-size: 1.1rem;"></i>
+                                    <span>Syarat Pembukaan Akses Fase 3:</span>
+                                </div>
+                                <ul class="mb-0 ps-3 text-secondary" style="font-size: 0.82rem; line-height: 1.6;">
+                                    <li class="fw-semibold text-danger">Dokumen legalitas di <b>Fase 1</b> wajib diunggah dan <b>Divalidasi Sah</b> oleh Kepala Legal terlebih dahulu.</li>
+                                    <li>Data survey fisik, zonasi & titik spasial di <b>Fase 2</b> wajib diselesaikan.</li>
+                                </ul>
+                            </div>
+                        `,
+                        confirmButtonColor: '#9a55ff',
+                        confirmButtonText: '<i class="mdi mdi-arrow-left me-1"></i> Periksa Dokumen di Fase 1'
+                    }).then(() => {
+                        switchStep(1);
+                    });
+                    return;
+                }
+
+                if (!isFase2Done) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Fase 3 Terkunci!',
+                        html: `
+                            <p class="text-muted mb-3" style="font-size: 0.92rem;">
+                                Anda belum dapat melanjutkan ke <b>Fase 3 (Sidang Keputusan Akhir)</b> karena tahap <b>Fase 2</b> belum diselesaikan.
+                            </p>
+                            <div class="p-3 rounded-3 text-start mb-2" style="background: #fffbeb; border: 1.5px solid #fde68a;">
+                                <div class="d-flex align-items-center gap-2 mb-2 text-warning fw-bold" style="font-size: 0.85rem;">
+                                    <i class="mdi mdi-alert-circle-outline" style="font-size: 1.1rem;"></i>
+                                    <span>Harap Selesaikan Fase 2 Terlebih Dahulu:</span>
+                                </div>
+                                <ul class="mb-0 ps-3 text-secondary" style="font-size: 0.82rem; line-height: 1.6;">
+                                    <li class="text-success"><i class="mdi mdi-check-circle me-1"></i>Dokumen legalitas di <b>Fase 1</b> telah Divalidasi Sah.</li>
+                                    <li class="fw-semibold text-danger"><i class="mdi mdi-close-circle me-1"></i>Data survey fisik & spasial di <b>Fase 2</b> belum diisi / disimpan.</li>
+                                </ul>
+                            </div>
+                        `,
+                        confirmButtonColor: '#9a55ff',
+                        confirmButtonText: '<i class="mdi mdi-arrow-right-circle me-1"></i> Buka Fase 2'
+                    }).then(() => {
+                        switchStep(2);
+                    });
+                    return;
+                }
             }
 
 
@@ -2716,9 +3319,9 @@
         // ===============================
         // AJAX SAVE FLOWS
         // ===============================
-        async function saveFase1() {
+        async function saveFase1(andProceed = false) {
             try {
-                showLoading('Menyimpan Fase 1...');
+                showLoading('Menyimpan Data & Dokumen Fase 1...');
                 let form = document.getElementById('formFase1');
                 let formData = new FormData(form);
 
@@ -2726,8 +3329,19 @@
                 Swal.close();
 
                 if (res.success) {
-                    sessionStorage.setItem('success_message', 'Data Fase 1 berhasil disimpan.');
-                    window.location.href = "{{ route('pralandbank.all') }}";
+                    let targetId = res.id || "{{ $land->id ?? '' }}";
+                    if (andProceed && targetId) {
+                        if (!isLegalSah) {
+                            sessionStorage.setItem('success_message', 'Data Fase 1 berhasil disimpan. Lengkapi & validasi berkas dokumen oleh Kepala Legal untuk membuka akses Fase 2.');
+                            window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=1";
+                        } else {
+                            window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=2";
+                        }
+                    } else if (targetId) {
+                        window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=1";
+                    } else {
+                        window.location.href = "{{ route('pralandbank.all') }}";
+                    }
                 } else {
                     showError(res.message);
                 }
@@ -2737,9 +3351,22 @@
             }
         }
 
-        async function saveFase2() {
+        function previewImageFase2(input, imgId, boxId) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let img = document.getElementById(imgId);
+                    if (img) img.src = e.target.result;
+                    let box = document.getElementById(boxId);
+                    if (box) box.classList.remove('d-none');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function saveFase2(andProceed = false) {
             try {
-                showLoading('Menyimpan data Fase 2 & Dokumen Kelayakan...');
+                showLoading('Menyimpan data Fase 2 & Survey Kelayakan...');
                 let form = document.getElementById('formFase2');
                 let formData = new FormData(form);
 
@@ -2747,8 +3374,18 @@
                 Swal.close();
 
                 if (res.success) {
-                    sessionStorage.setItem('success_message', 'Data Fase 2 & Dokumen Kelayakan berhasil disimpan.');
-                    window.location.href = "{{ route('pralandbank.all') }}";
+                    let targetId = res.id || "{{ $land->id ?? '' }}";
+                    isFase2Done = true;
+                    document.querySelector('#step3 .mdi-lock')?.remove();
+                    document.getElementById('step3')?.classList.remove('disabled');
+                    sessionStorage.setItem('success_message', 'Data Fase 2 & Survey Kelayakan berhasil disimpan.');
+                    if (andProceed && targetId) {
+                        window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=3";
+                    } else if (targetId) {
+                        window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=2";
+                    } else {
+                        window.location.href = "{{ route('pralandbank.all') }}";
+                    }
                 } else {
                     showError(res.message);
                 }
@@ -2769,26 +3406,44 @@
                 let formData = new FormData(form);
                 disabledInputs.forEach(el => el.disabled = true);
 
-                // Explicitly check key fields
+                // Explicitly sync key fields
                 const selectPayMethod = document.getElementById('temp_payment_method');
-                if (selectPayMethod && !formData.has('payment_method_temp')) {
-                    formData.append('payment_method_temp', selectPayMethod.value);
+                const chosenMethod = selectPayMethod ? selectPayMethod.value : 'cash';
+                formData.set('payment_method_temp', chosenMethod);
+                formData.set('payment_method', chosenMethod);
+
+                if (chosenMethod === 'cash') {
+                    // CRITICAL: Delete any installments array from formData so they don't get sent when user chose Cash!
+                    for (let key of Array.from(formData.keys())) {
+                        if (key.startsWith('installments[')) {
+                            formData.delete(key);
+                        }
+                    }
                 }
+
                 const selectDuration = document.getElementById('temp_installment_duration');
-                if (selectDuration && !formData.has('installment_duration_temp')) {
-                    formData.append('installment_duration_temp', selectDuration.value);
+                if (selectDuration) {
+                    formData.set('installment_duration_temp', selectDuration.value);
                 }
                 const selectCount = document.getElementById('temp_installment_count');
-                if (selectCount && !formData.has('installment_count_temp')) {
-                    formData.append('installment_count_temp', selectCount.value);
+                if (selectCount) {
+                    formData.set('installment_count_temp', selectCount.value);
                 }
                 const selectStatusAkhir = document.getElementById('fase3_status_akhir');
-                if (selectStatusAkhir && !formData.has('status')) {
-                    formData.append('status', selectStatusAkhir.value);
+                if (selectStatusAkhir) {
+                    formData.set('status', selectStatusAkhir.value);
                 }
                 const dealPriceInput = document.getElementById('deal_price_input');
-                if (dealPriceInput && !formData.has('deal_price')) {
-                    formData.append('deal_price', dealPriceInput.value);
+                if (dealPriceInput) {
+                    formData.set('deal_price', dealPriceInput.value);
+                }
+                const selectNotaris = form.querySelector('select[name="notaris_id"]');
+                if (selectNotaris && selectNotaris.value) {
+                    formData.set('notaris_id', selectNotaris.value);
+                }
+                const inputNotaryDate = form.querySelector('input[name="notary_appointment_date"]');
+                if (inputNotaryDate && inputNotaryDate.value) {
+                    formData.set('notary_appointment_date', inputNotaryDate.value);
                 }
 
                 let res = await fetchJSON("{{ route('pra-landbanks.store') }}", formData);
@@ -2849,7 +3504,33 @@
             try {
                 showLoading('Menyiapkan dan menyinkronkan data invoice...');
                 let form = document.getElementById('formFase3');
+                let disabledInputs = form.querySelectorAll(':disabled');
+                disabledInputs.forEach(el => el.disabled = false);
                 let formData = new FormData(form);
+                disabledInputs.forEach(el => el.disabled = true);
+
+                const selectPayMethod = document.getElementById('temp_payment_method');
+                const chosenMethod = selectPayMethod ? selectPayMethod.value : 'cash';
+                formData.set('payment_method_temp', chosenMethod);
+                formData.set('payment_method', chosenMethod);
+
+                if (chosenMethod === 'cash') {
+                    for (let key of Array.from(formData.keys())) {
+                        if (key.startsWith('installments[')) {
+                            formData.delete(key);
+                        }
+                    }
+                }
+
+                const selectNotaris = form.querySelector('select[name="notaris_id"]');
+                if (selectNotaris && selectNotaris.value) {
+                    formData.set('notaris_id', selectNotaris.value);
+                }
+                const inputNotaryDate = form.querySelector('input[name="notary_appointment_date"]');
+                if (inputNotaryDate && inputNotaryDate.value) {
+                    formData.set('notary_appointment_date', inputNotaryDate.value);
+                }
+
                 formData.append('is_preview', '1');
 
                 let res = await fetchJSON("{{ route('pra-landbanks.store') }}", formData);
@@ -2968,6 +3649,9 @@
         }
 
         function toggleInstallmentView(isInitial = false) {
+            if (typeof isInitial !== 'boolean') {
+                isInitial = false;
+            }
             const method = document.getElementById('temp_payment_method') ? document.getElementById('temp_payment_method').value : 'cash';
             const cashContainer = document.getElementById('cash_payment_container');
             const durationContainer = document.getElementById('temp_duration_container');
@@ -3630,7 +4314,11 @@
 
         window.toggleDocProcessNotes = function(selectEl, docId) {
             let val = $(selectEl).val();
-            let container = $(`#processNotesContainer_${docId}`);
+            let $card = $(selectEl).closest('.card');
+            let container = $card.find('.process-notes-container');
+            if (!container.length) {
+                container = $(`#processNotesContainer_${docId}`);
+            }
             let badge = $(`.doc-phys-badge-${docId}`);
             if (val === 'proses') {
                 container.removeClass('d-none');
@@ -3668,52 +4356,53 @@
                                 $(`.doc-badge-${typeId}, .doc-badge-fase3-${typeId}`).removeClass('bg-warning bg-danger bg-light text-dark text-muted').addClass('bg-success text-white').html('<i class="mdi mdi-check-circle me-1"></i>Terverifikasi (Sah)');
                                 $(`#action-btns-doc-${docId}, #fase3-action-doc-${docId}`).html(`
                                     <span class="badge bg-soft-success text-success small"><i class="mdi mdi-shield-check me-1"></i>Sah</span>
-                                    <button type="button" class="btn btn-xs btn-outline-danger py-1 px-2 ms-1" onclick="rejectPraDoc(${docId}, ${typeId})" title="Tolak / Revisi" style="font-size: 11px;"><i class="mdi mdi-close"></i> Tolak</button>
+                                    <button type="button" class="btn btn-xs btn-danger text-white py-1 px-2 ms-1 shadow-sm" onclick="rejectPraDoc(${docId}, ${typeId})" title="Tolak / Revisi" style="font-size: 11px; font-weight: 600; border-radius: 6px;"><i class="mdi mdi-close me-1"></i>Tolak</button>
                                 `);
                                 
                                 // Hide revision note box and ganti file box on approval
                                 $(`.revision-box-${typeId}`).addClass('d-none');
                                 $(`.ganti-file-box-${typeId}`).addClass('d-none');
 
-                                // Auto check if all documents are now verified
-                                const totalUploads = document.querySelectorAll('[id^="action-btns-doc-"]').length;
-                                const totalVerified = document.querySelectorAll('[id^="action-btns-doc-"] .bg-soft-success, [id^="action-btns-doc-"] .btn-outline-danger').length;
-                                const isAllNowVerified = res.auto_advanced_to_fase3 || (totalUploads > 0 && totalVerified === totalUploads);
+                                // Auto check if all applicable documents are now verified
+                                const visibleCols = Array.from(document.querySelectorAll('.doc-fase1-col')).filter(c => !c.classList.contains('d-none'));
+                                const totalUploads = visibleCols.filter(c => c.querySelector('[id^="action-btns-doc-"]')).length;
+                                const totalVerified = visibleCols.filter(c => c.querySelector('[id^="action-btns-doc-"] .bg-soft-success')).length;
+                                const isAllNowVerified = res.auto_advanced_to_fase2 || (totalUploads > 0 && totalVerified === totalUploads);
 
                                 if (isAllNowVerified) {
                                     isLegalSah = true;
+                                    document.querySelector('#step2 .mdi-lock')?.remove();
                                     document.querySelector('#step3 .mdi-lock')?.remove();
+                                    document.getElementById('step2')?.classList.remove('disabled');
                                     document.getElementById('step3')?.classList.remove('disabled');
-
-                                    // Replace Fase 2 bottom button with Lanjut ke Fase 3
-                                    const actionsFase2 = document.getElementById('actionsFase2Wrapper');
-                                    if (actionsFase2) {
-                                        actionsFase2.innerHTML = `
-                                            <button type="button" class="btn btn-gradient-primary" onclick="switchStep(3)">
-                                                <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut ke Fase 3
-                                            </button>
-                                        `;
-                                    }
 
                                     Swal.fire({
                                         icon: 'success',
-                                        title: 'Dokumen Terverifikasi Sah!',
+                                        title: 'Semua Berkas Berhasil Divalidasi!',
                                         html: `
-                                            <p class="text-muted mb-2">${res.message}</p>
-                                            <div class="alert alert-success border py-2 px-3 mb-0 text-start" style="font-size: 0.85rem; background: #f0fdf4; border-color: #bbf7d0 !important;">
-                                                <i class="mdi mdi-check-decagram text-success me-1"></i>
-                                                Seluruh berkas legalitas telah sah diverifikasi. Mengalihkan otomatis ke <b>Fase 3 (Sidang Keputusan Direksi)</b>...
+                                            <p class="text-muted mb-3" style="font-size: 0.92rem;">
+                                                Seluruh berkas dokumen legalitas telah dinyatakan <b>Sah (Terverifikasi)</b> oleh Kepala Legal.
+                                            </p>
+                                            <div class="p-3 rounded-3 text-start mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                                                <div class="d-flex align-items-center gap-2 text-success fw-bold" style="font-size: 0.85rem;">
+                                                    <i class="mdi mdi-check-decagram" style="font-size: 1.1rem;"></i>
+                                                    <span>Akses Fase 2 & Fase 3 Telah Terbuka</span>
+                                                </div>
+                                                <small class="text-muted d-block mt-1" style="font-size: 0.82rem; line-height: 1.5;">
+                                                    Anda dapat melanjutkan ke tahap berikutnya yaitu <b>Fase 2 (Survey Kelayakan Teknis & Spasial Map)</b> atau tetap melihat berkas di Fase 1.
+                                                </small>
                                             </div>
                                         `,
-                                        timer: 1800,
-                                        showConfirmButton: false
-                                    }).then(() => {
-                                        switchStep(3);
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#9a55ff',
+                                        cancelButtonColor: '#6c757d',
+                                        confirmButtonText: '<i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut ke Fase 2',
+                                        cancelButtonText: '<i class="mdi mdi-eye me-1"></i> Tetap di Sini (Lihat Berkas)'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            switchStep(2);
+                                        }
                                     });
-
-                                    setTimeout(() => {
-                                        switchStep(3);
-                                    }, 1800);
                                 } else {
                                     Swal.fire({
                                         icon: 'success',
@@ -3771,7 +4460,7 @@
                                 });
                                 $(`.doc-badge-${typeId}, .doc-badge-fase3-${typeId}`).removeClass('bg-warning bg-success bg-light text-dark text-muted').addClass('bg-danger text-white').html('<i class="mdi mdi-alert-circle me-1"></i>Revisi');
                                 $(`#action-btns-doc-${docId}, #fase3-action-doc-${docId}`).html(`
-                                    <button type="button" class="btn btn-xs btn-success py-1 px-2 text-white" onclick="approvePraDoc(${docId}, ${typeId})" title="Setujui & Validasi Dokumen" style="font-size: 11px;"><i class="mdi mdi-check me-1"></i>Validasi</button>
+                                    <button type="button" class="btn btn-xs btn-success py-1 px-2 text-white shadow-sm" onclick="approvePraDoc(${docId}, ${typeId})" title="Setujui & Validasi Dokumen" style="font-size: 11px; font-weight: 600; border-radius: 6px;"><i class="mdi mdi-check me-1"></i>Validasi</button>
                                     <span class="badge bg-soft-danger text-danger small ms-1"><i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi</span>
                                 `);
                                 

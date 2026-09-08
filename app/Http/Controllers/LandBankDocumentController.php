@@ -26,11 +26,17 @@ class LandBankDocumentController extends Controller
             }
         }
 
-        // Jumlah tampil per halaman (default 10, opsi: 10, 15, 25)
-        $perPage = $request->input('per_page', 10);
+        // Filter by category
+        if ($request->filled('category')) {
+            $cat = $request->category;
+            $query->whereJsonContains('applicable_categories', $cat);
+        }
+
+        // Jumlah tampil per halaman (default 15, opsi: 10, 15, 25)
+        $perPage = $request->input('per_page', 15);
 
         // Ambil data dengan pagination + sort by name
-        $documentTypes = $query->orderBy('name', 'asc')
+        $documentTypes = $query->orderBy('id', 'asc')
             ->paginate($perPage)
             ->withQueryString();
 
@@ -41,16 +47,18 @@ class LandBankDocumentController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'code' => 'required|unique:document_types,code'
+            'code' => 'required|unique:document_types,code',
+            'applicable_categories' => 'nullable|array'
         ]);
 
         DocumentTypes::create([
             'name' => $request->name,
             'code' => $request->code,
             'has_expiry' => $request->has_expiry ?? false,
+            'applicable_categories' => $request->input('applicable_categories', []),
         ]);
 
-        return back()->with('success', 'Dokumen Pasca LandBank Berhasil');
+        return back()->with('success', 'Master Dokumen berhasil ditambahkan!');
     }
 
     public function edit($id)
@@ -66,15 +74,17 @@ class LandBankDocumentController extends Controller
         $request->validate([
             'name' => 'required',
             'code' => 'required|unique:document_types,code,' . $id,
+            'applicable_categories' => 'nullable|array'
         ]);
 
         $documentType->update([
             'name' => $request->name,
             'code' => $request->code,
             'has_expiry' => $request->has_expiry ?? false,
+            'applicable_categories' => $request->input('applicable_categories', []),
         ]);
 
-        return back()->with('success', 'Dokumen Pasca LandBank Berhasil');
+        return back()->with('success', 'Master Dokumen berhasil diperbarui!');
     }
 
     public function destroy($id)
