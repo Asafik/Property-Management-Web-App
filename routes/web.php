@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BankController;
+use App\Http\Controllers\NotarisController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\LandBankUnitController;
 use App\Http\Controllers\Admin\DevelopmentProgressController;
@@ -550,6 +551,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/master-data-bank/{id}/edit', [BankController::class, 'edit'])->name('bank.edit');
     Route::put('/master-data-bank/{id}', [BankController::class, 'update'])->name('bank.update');
     Route::delete('/master-data-bank/{id}', [BankController::class, 'destroy'])->name('bank.destroy');
+    // MASTER DATA NOTARIS
+    Route::get('/master-data-notaris', [NotarisController::class, 'index'])->name('notaris.index');
+    Route::post('/master-data-notaris/store', [NotarisController::class, 'store'])->name('notaris.store');
+    Route::get('/master-data-notaris/{id}', [NotarisController::class, 'show'])->name('notaris.show');
+    Route::get('/master-data-notaris/{id}/edit', [NotarisController::class, 'edit'])->name('notaris.edit');
+    Route::put('/master-data-notaris/{id}', [NotarisController::class, 'update'])->name('notaris.update');
+    Route::delete('/master-data-notaris/{id}', [NotarisController::class, 'destroy'])->name('notaris.destroy');
+    Route::post('/master-data-notaris/{id}/toggle-status', [NotarisController::class, 'toggleStatus'])->name('notaris.toggle-status');
     // MASTER DATA DIVISION
     Route::get('/master-data/division', [DivisionController::class, 'index'])->name('master.data.division.index');
     Route::post('/master-data/division/store', [DivisionController::class, 'store'])->name('master.data.division.store');
