@@ -906,7 +906,24 @@
                             </div>
 
                             @php
-                                $rawStatus = strtoupper($land->ownership_status ?? 'SHM');
+                                $currentUser = auth()->user();
+                                $userPositionName = strtolower($currentUser->position->name ?? '');
+                                $userDivisionName = strtolower($currentUser->division->name ?? ($currentUser->position->division->name ?? ''));
+                                $userPositionId = $currentUser->position_id ?? null;
+
+                                $isAdmin = ($userPositionId == 5) || str_contains($userPositionName, 'admin');
+                                $isKeuangan = ($userPositionId == 7) || str_contains($userPositionName, 'keuangan') || str_contains($userPositionName, 'finance') || str_contains($userDivisionName, 'keuangan') || str_contains($userDivisionName, 'finance');
+                                $isReadOnlyKeuangan = $isKeuangan && !$isAdmin;
+                                $isKepalaLegal = ($userPositionId == 3) || str_contains($userPositionName, 'kepala legal') || (str_contains($userPositionName, 'legal') && !str_contains($userPositionName, 'staff'));
+                                $isStaffLegal = ($userPositionId == 4) || (str_contains($userPositionName, 'staff') && str_contains($userPositionName, 'legal'));
+                                
+                                // Hak Akses Role
+                                $canEditGeneralInfo = ($isAdmin || !$isStaffLegal) && !$isKeuangan && !$land;
+                                $canEditFinancial   = $isAdmin || $isKeuangan;
+                                $canValidateDoc     = $isAdmin || $isKepalaLegal;
+                                $canEditDecisions   = $isAdmin;
+
+                                $rawStatus = strtoupper((string)($land->ownership_status ?? ''));
                                 if (str_contains($rawStatus, 'APHB')) {
                                     $selectedCat = 'APHB';
                                 } elseif (str_contains($rawStatus, 'WARIS')) {
@@ -915,41 +932,43 @@
                                     $selectedCat = 'PETOK_C';
                                 } elseif (str_contains($rawStatus, 'AJB') || str_contains($rawStatus, 'HIBAH')) {
                                     $selectedCat = 'AJB';
-                                } else {
+                                } elseif (str_contains($rawStatus, 'SHM') || str_contains($rawStatus, 'HGB') || str_contains($rawStatus, 'HGU') || str_contains($rawStatus, 'HP')) {
                                     $selectedCat = 'SHM';
+                                } else {
+                                    $selectedCat = '';
                                 }
 
-                                $catDocTypeIds = $documentTypes->filter(function($dt) use ($selectedCat) {
+                                $catDocTypeIds = !empty($selectedCat) ? $documentTypes->filter(function($dt) use ($selectedCat) {
                                     $c = $dt->applicable_categories ?? [];
                                     return empty($c) || in_array($selectedCat, $c);
-                                })->pluck('id')->toArray();
+                                })->pluck('id')->toArray() : [];
 
                                 $praDocs = $land ? $land->documents : collect();
                                 $applicablePraDocs = $praDocs->whereIn('document_type_id', $catDocTypeIds);
                                 $totalUploadedDocs = $applicablePraDocs->whereNotNull('file_path')->count();
                                 $verifiedCount = $applicablePraDocs->where('status', 'verified')->count();
-                                $isLegalSah = $land && ($totalUploadedDocs > 0) && ($verifiedCount === $totalUploadedDocs);
+                                $isLegalSah = $land && !empty($selectedCat) && ($totalUploadedDocs > 0) && ($verifiedCount === $totalUploadedDocs);
                                 $isFase2Done = $land && (!empty($land->survey_date) || in_array($land->status, ['fase3', 'approved', 'rejected']));
                                 $canAccessFase3 = $isLegalSah && $isFase2Done;
                             @endphp
 
                             <!-- STEP 2 -->
-                            <div class="step-item {{ !$land ? 'disabled' : '' }}" id="step2" onclick="switchStep(2)" style="cursor: pointer;" title="{{ !$isLegalSah && $land && $land->status != 'approved' ? 'Terkunci: Wajib verifikasi legalitas sah di Fase 1 terlebih dahulu' : '' }}">
+                            <div class="step-item {{ !$land ? 'disabled' : '' }}" id="step2" onclick="switchStep(2)" style="cursor: pointer;" title="{{ (!$isLegalSah && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved') ? 'Terkunci: Wajib verifikasi legalitas sah di Fase 1 terlebih dahulu' : '' }}">
                                 <div class="step-circle">2</div>
                                 <div class="step-title d-flex align-items-center justify-content-center">
                                     Fase 2
-                                    @if(!$isLegalSah && $land && $land->status != 'approved' && $land->status != 'rejected')
+                                    @if(!$isLegalSah && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved' && $land->status != 'rejected')
                                         <i class="mdi mdi-lock text-warning ms-1" style="font-size: 13px;" title="Terkunci: Menunggu Validasi Dokumen Sah di Fase 1"></i>
                                     @endif
                                 </div>
                             </div>
 
                             <!-- STEP 3 -->
-                            <div class="step-item {{ !$land ? 'disabled' : '' }}" id="step3" onclick="switchStep(3)" style="cursor: pointer;" title="{{ !$canAccessFase3 && $land && $land->status != 'approved' ? 'Terkunci: Wajib selesaikan Fase 1 dan Fase 2 terlebih dahulu' : '' }}">
+                            <div class="step-item {{ !$land ? 'disabled' : '' }}" id="step3" onclick="switchStep(3)" style="cursor: pointer;" title="{{ (!$canAccessFase3 && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved') ? 'Terkunci: Wajib selesaikan Fase 1 dan Fase 2 terlebih dahulu' : '' }}">
                                 <div class="step-circle">3</div>
                                 <div class="step-title d-flex align-items-center justify-content-center">
                                     Fase 3
-                                    @if(!$canAccessFase3 && $land && $land->status != 'approved' && $land->status != 'rejected')
+                                    @if(!$canAccessFase3 && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved' && $land->status != 'rejected')
                                         <i class="mdi mdi-lock text-warning ms-1" style="font-size: 13px;" title="Terkunci: Wajib selesaikan Fase 2 terlebih dahulu"></i>
                                     @endif
                                 </div>
@@ -978,27 +997,44 @@
                                 <input type="hidden" name="id" value="{{ $land->id ?? '' }}">
                                 <input type="hidden" name="fase" value="fase1">
 
+                                @if($isReadOnlyKeuangan)
+                                    <div class="alert alert-soft-info border border-info-subtle py-2.5 px-3 mb-3 d-flex align-items-center gap-2 rounded-3 text-info" style="background: #f0f9ff; font-size: 0.85rem;">
+                                        <i class="mdi mdi-eye-outline fs-5"></i>
+                                        <div>
+                                            <strong>Mode Lihat Data (Divisi Keuangan)</strong>: Anda dapat melihat seluruh riwayat penawaran, status legalitas, dan berkas fisik tanah ini (Read-Only).
+                                        </div>
+                                    </div>
+                                @elseif($isStaffLegal && $land)
+                                    <div class="alert alert-soft-primary border border-primary-subtle py-2.5 px-3 mb-3 d-flex align-items-center gap-2 rounded-3 text-primary" style="background: #eff6ff; font-size: 0.83rem;">
+                                        <i class="mdi mdi-information-outline fs-5 text-primary"></i>
+                                        <span><strong>Peran Staff Legal:</strong> Anda berwenang melengkapi nomor dokumen, masa berlaku, status fisik keberadaan, dan mengunggah berkas pada bagian <strong>Dokumen Legalitas & Verifikasi Berkas (Fase 1)</strong> di bawah.</span>
+                                    </div>
+                                @endif
+
                                 <!-- DATA MAKELAR -->
                                 <div class="form-section">
                                     <div class="form-section-title">
                                         Data Kontak Makelar
+                                        @if(!$canEditGeneralInfo)
+                                            <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Kepala Marketing / Admin)</small>
+                                        @endif
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Nama Makelar *</label>
-                                            <input type="text" class="form-control" name="land_owner" value="{{ $land->land_owner ?? '' }}" placeholder="Nama Lengkap Makelar" required {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="land_owner" value="{{ $land->land_owner ?? '' }}" placeholder="Nama Lengkap Makelar" required {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Perusahaan / Instansi</label>
-                                            <input type="text" class="form-control" name="land_source" value="{{ $land->land_source ?? '' }}" placeholder="Perusahaan Makelar" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="land_source" value="{{ $land->land_source ?? '' }}" placeholder="Perusahaan Makelar" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">No. WhatsApp / HP</label>
-                                            <input type="text" class="form-control" name="owner_contact" value="{{ $land->owner_contact ?? '' }}" placeholder="Contoh: 08123456789" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="owner_contact" value="{{ $land->owner_contact ?? '' }}" placeholder="Contoh: 08123456789" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Tanggal Penawaran</label>
-                                            <input type="date" class="form-control" name="survey_date" value="{{ $land && $land->survey_date ? \Carbon\Carbon::parse($land->survey_date)->format('Y-m-d') : '' }}" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="date" class="form-control" name="survey_date" value="{{ $land && $land->survey_date ? \Carbon\Carbon::parse($land->survey_date)->format('Y-m-d') : '' }}" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
                                     </div>
                                 </div>
@@ -1007,52 +1043,55 @@
                                 <div class="form-section">
                                     <div class="form-section-title">
                                         Data Tanah
+                                        @if(!$canEditGeneralInfo)
+                                            <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Kepala Marketing / Admin)</small>
+                                        @endif
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Nama Prospek Tanah *</label>
-                                            <input type="text" class="form-control" name="land_name" value="{{ $land->land_name ?? '' }}" placeholder="Contoh: Tanah Jember Regency" required {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="land_name" value="{{ $land->land_name ?? '' }}" placeholder="Contoh: Tanah Jember Regency" required {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Status Tanah / Kepemilikan (Dasar Perolehan) *</label>
-                                            <select class="form-select select2-search" id="select_ownership_status" name="ownership_status" data-placeholder="Pilih Dasar Perolehan Tanah" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <select class="form-select select2-search" id="select_ownership_status" name="ownership_status" data-placeholder="Pilih Dasar Perolehan Tanah" style="width: 100%;" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                                 <option value="">-- Pilih Dasar Perolehan Tanah --</option>
-                                                <option value="SHM" {{ ($land && in_array(strtoupper($land->ownership_status ?? 'SHM'), ['SHM', 'HGB', 'HGU', 'HP'])) ? 'selected' : '' }}>SHM (Sertifikat Hak Milik)</option>
-                                                <option value="AJB" {{ ($land && strtoupper($land->ownership_status) == 'AJB') ? 'selected' : '' }}>AJB / Akta Hibah</option>
-                                                <option value="APHB" {{ ($land && strtoupper($land->ownership_status) == 'APHB') ? 'selected' : '' }}>APHB (Akta Pembagian Hak Bersama)</option>
-                                                <option value="WARISAN" {{ ($land && strtoupper($land->ownership_status) == 'WARISAN') ? 'selected' : '' }}>AJB / Hibah (Harta Warisan)</option>
-                                                <option value="PETOK_C" {{ ($land && in_array(strtoupper($land->ownership_status), ['PETOK_C', 'GIRIK', 'PETOK D'])) ? 'selected' : '' }}>Petok C / Girik</option>
+                                                <option value="SHM" {{ ($land && !empty($land->ownership_status) && in_array(strtoupper($land->ownership_status), ['SHM', 'HGB', 'HGU', 'HP'])) ? 'selected' : '' }}>SHM (Sertifikat Hak Milik)</option>
+                                                <option value="AJB" {{ ($land && !empty($land->ownership_status) && strtoupper($land->ownership_status) == 'AJB') ? 'selected' : '' }}>AJB / Akta Hibah</option>
+                                                <option value="APHB" {{ ($land && !empty($land->ownership_status) && strtoupper($land->ownership_status) == 'APHB') ? 'selected' : '' }}>APHB (Akta Pembagian Hak Bersama)</option>
+                                                <option value="WARISAN" {{ ($land && !empty($land->ownership_status) && strtoupper($land->ownership_status) == 'WARISAN') ? 'selected' : '' }}>AJB / Hibah (Harta Warisan)</option>
+                                                <option value="PETOK_C" {{ ($land && !empty($land->ownership_status) && in_array(strtoupper($land->ownership_status), ['PETOK_C', 'GIRIK', 'PETOK D'])) ? 'selected' : '' }}>Petok C / Girik</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Nama di Sertifikat / Surat</label>
-                                            <input type="text" class="form-control" id="certificate_owner" name="certificate_owner" value="{{ $land->certificate_owner ?? '' }}" placeholder="Nama pemilik sah di sertifikat" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" id="certificate_owner" name="certificate_owner" value="{{ $land->certificate_owner ?? '' }}" placeholder="Nama pemilik sah di sertifikat" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <div class="d-flex justify-content-between align-items-center mb-1">
                                                 <label class="form-label mb-0">Nama Pemilik Tanah</label>
                                                 <label class="same-cert-badge" for="sameAsCertificate" title="Centang untuk menyamakan dengan nama di sertifikat">
-                                                    <input type="checkbox" id="sameAsCertificate" {{ $land && $land->owner_name && $land->certificate_owner && $land->owner_name === $land->certificate_owner ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="checkbox" id="sameAsCertificate" {{ $land && $land->owner_name && $land->certificate_owner && $land->owner_name === $land->certificate_owner ? 'checked' : '' }} {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                                     <span>Sama dengan sertifikat</span>
                                                 </label>
                                             </div>
-                                            <input type="text" class="form-control" id="owner_name" name="owner_name" value="{{ $land->owner_name ?? '' }}" placeholder="Nama pemilik tanah saat ini" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" id="owner_name" name="owner_name" value="{{ $land->owner_name ?? '' }}" placeholder="Nama pemilik tanah saat ini" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-12 mb-3">
                                             <label class="form-label">Alamat Lengkap *</label>
-                                            <input type="text" class="form-control" name="address" value="{{ $land->address ?? '' }}" placeholder="Alamat lengkap lokasi tanah" required {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="address" value="{{ $land->address ?? '' }}" placeholder="Alamat lengkap lokasi tanah" required {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Luas Tanah (m²)</label>
-                                            <input type="number" class="form-control" name="area" value="{{ $land->area ?? '' }}" placeholder="Luas tanah" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="number" class="form-control" name="area" value="{{ $land->area ?? '' }}" placeholder="Luas tanah" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Lebar Jalan Depan (m)</label>
-                                            <input type="number" class="form-control" name="road_width" value="{{ $land->road_width ?? '' }}" placeholder="Lebar jalan" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="number" class="form-control" name="road_width" value="{{ $land->road_width ?? '' }}" placeholder="Lebar jalan" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Jenis Konstruksi Jalan</label>
-                                            <select class="form-select select2-search" id="select_road_type" name="road_type" data-placeholder="Pilih Konstruksi Jalan" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <select class="form-select select2-search" id="select_road_type" name="road_type" data-placeholder="Pilih Konstruksi Jalan" style="width: 100%;" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                                 <option value="">Pilih</option>
                                                 <option value="aspal" {{ $land && $land->road_type == 'aspal' ? 'selected' : '' }}>Aspal</option>
                                                 <option value="beton" {{ $land && $land->road_type == 'beton' ? 'selected' : '' }}>Beton</option>
@@ -1065,7 +1104,7 @@
                                                 Status Zona Tanah / Lahan <span class="text-danger">*</span>
                                                 <i class="mdi mdi-information-outline text-primary" title="Pengecekan status LBS, LSD, atau LP2B untuk kelayakan izin perumahan"></i>
                                             </label>
-                                            <select class="form-select" name="land_protection_status" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <select class="form-select" name="land_protection_status" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                                 <option value="aman" {{ ($land && ($land->land_protection_status ?? 'aman') == 'aman') ? 'selected' : '' }}>Aman (Bukan Zona Lindung / Bebas LSD)</option>
                                                 <option value="lbs" {{ ($land && $land->land_protection_status == 'lbs') ? 'selected' : '' }}>LBS (Lahan Baku Sawah)</option>
                                                 <option value="lsd" {{ ($land && $land->land_protection_status == 'lsd') ? 'selected' : '' }}>LSD (Lahan Sawah Dilindungi)</option>
@@ -1074,10 +1113,30 @@
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-semibold">Status Pembayaran SPPT PBB <span class="text-danger">*</span></label>
-                                            <select class="form-select" name="pbb_status" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <select class="form-select" id="select_pbb_status" name="pbb_status" onchange="togglePbbArrearsField(this)" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                                 <option value="lunas" {{ ($land && ($land->pbb_status ?? 'lunas') == 'lunas') ? 'selected' : '' }}>Lunas</option>
-                                                <option value="nunggak" {{ ($land && $land->pbb_status == 'nunggak') ? 'selected' : '' }}>Nunggak (Perlu Pelunasan)</option>
+                                                <option value="nunggak" {{ ($land && ($land->pbb_status ?? '') == 'nunggak') ? 'selected' : '' }}>Nunggak (Perlu Pelunasan)</option>
                                             </select>
+                                        </div>
+                                        <div class="col-12 {{ ($land && ($land->pbb_status ?? '') == 'nunggak') ? '' : 'd-none' }}" id="pbb_arrears_container">
+                                            <div class="p-3 rounded-3 border border-danger-subtle mb-3" style="background: #fff8f8;">
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-semibold text-danger mb-1" style="font-size: 0.85rem;">
+                                                            <i class="mdi mdi-clock-alert-outline me-1"></i> Lama / Keterangan Tunggakan PBB <span class="text-danger">*</span>
+                                                        </label>
+                                                        <input type="text" class="form-control border-danger-subtle bg-white" id="input_pbb_note" name="pbb_note" value="{{ $land->pbb_note ?? '' }}" placeholder="Contoh: Nunggak 2 Tahun (2024 - 2025) / Nunggak 6 Bulan" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                                        <small class="text-muted" style="font-size: 0.74rem;">Tuliskan durasi tunggakan (berapa bulan/tahun) atau tahun pajak.</small>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label fw-semibold text-danger mb-1" style="font-size: 0.85rem;">
+                                                            <i class="mdi mdi-cash-multiple me-1"></i> Nominal Tunggakan PBB (Rp) <span class="text-danger">*</span>
+                                                        </label>
+                                                        <input type="text" class="form-control border-danger-subtle bg-white" id="input_pbb_nominal" name="pbb_nominal" value="{{ $land && $land->pbb_nominal ? number_format($land->pbb_nominal, 0, ',', '.') : '' }}" oninput="formatRupiah(this)" placeholder="Estimasi nominal tunggakan" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                                        <small class="text-muted" style="font-size: 0.74rem;">Total tagihan pokok + denda tunggakan PBB yang harus dilunasi.</small>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1086,15 +1145,18 @@
                                 <div class="form-section">
                                     <div class="form-section-title">
                                         Negosiasi Harga Awal
+                                        @if(!$canEditGeneralInfo)
+                                            <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Kepala Marketing / Admin)</small>
+                                        @endif
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Harga Penawaran Awal (Rp)</label>
-                                            <input type="text" class="form-control" id="offer_price" name="offer_price" value="{{ $land && $land->offer_price ? number_format($land->offer_price, 0, ',', '.') : '' }}" oninput="formatRupiah(this)" placeholder="Harga penawaran" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" id="offer_price" name="offer_price" value="{{ $land && $land->offer_price ? number_format($land->offer_price, 0, ',', '.') : '' }}" oninput="formatRupiah(this)" placeholder="Harga penawaran" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Harga Target Negosiasi (Rp)</label>
-                                            <input type="text" class="form-control" id="estimated_price" name="estimated_price" value="{{ $land && $land->estimated_price ? number_format($land->estimated_price, 0, ',', '.') : '' }}" oninput="formatRupiah(this)" placeholder="Harga negosiasi" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" id="estimated_price" name="estimated_price" value="{{ $land && $land->estimated_price ? number_format($land->estimated_price, 0, ',', '.') : '' }}" oninput="formatRupiah(this)" placeholder="Harga negosiasi" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
                                     </div>
                                 </div>
@@ -1122,28 +1184,50 @@
                                                 $uploadedDocs[$d->document_type_id] = $d;
                                             }
                                         }
-                                        $currentUser = auth()->user();
-                                        $userPositionName = strtolower($currentUser->position->name ?? '');
-                                        $isStaffLegal = str_contains($userPositionName, 'staff') && str_contains($userPositionName, 'legal');
-                                        $canValidateDoc = !$isStaffLegal;
+                                        // Uploaded docs mapping
                                     @endphp
 
                                     <!-- Dynamic Category Alert Banner (Filtered by Alas Hak) -->
-                                    <div class="alert alert-info py-2.5 px-3 mb-3 d-flex align-items-center justify-content-between rounded-3 border shadow-none" id="fase1CategoryAlert" style="background: #f0fdf4; border-color: #bbf7d0 !important; color: #166534;">
+                                    <div class="alert alert-info py-2.5 px-3 mb-3 d-flex align-items-center justify-content-between rounded-3 border shadow-none {{ empty($selectedCat) ? 'd-none' : '' }}" id="fase1CategoryAlert" style="background: #f0fdf4; border-color: #bbf7d0 !important; color: #166534;">
                                         <div class="d-flex align-items-center gap-2">
                                             <i class="mdi mdi-filter-check" style="font-size: 1.35rem; color: #16a34a;"></i>
                                             <div>
                                                 <span class="fw-bold d-block" style="font-size: 0.88rem;">
-                                                    Berkas Wajib Dasar Perolehan: <span id="fase1CategoryName" class="badge bg-success ms-1">SHM</span>
+                                                    Berkas Wajib Dasar Perolehan: <span id="fase1CategoryName" class="badge bg-success ms-1">{{ !empty($selectedCat) ? ($selectedCat == 'PETOK_C' ? 'Petok C / Girik Asli' : ($selectedCat == 'WARISAN' ? 'AJB & Akta Hibah (Harta Warisan)' : ($selectedCat == 'AJB' ? 'AJB / Akta Hibah' : ($selectedCat == 'APHB' ? 'APHB (Akta Pembagian Hak Bersama)' : 'SHM (Sertifikat Hak Milik)')))) : '' }}</span>
                                                 </span>
                                                 <small class="text-muted d-block" id="fase1CategoryDesc" style="font-size: 0.76rem;">
-                                                    Menampilkan berkas wajib legalitas sesuai SOP.
+                                                    @if($selectedCat === 'SHM')
+                                                        6 Dokumen Wajib: Sertifikat SHM Asli + 5 Dokumen Identitas & Pajak (KTP, KK, Nikah, NPWP, PBB).
+                                                    @elseif($selectedCat === 'AJB')
+                                                        10 Dokumen Wajib: AJB/Hibah Asli, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak (KTP, KK, Nikah, NPWP, PBB).
+                                                    @elseif($selectedCat === 'APHB')
+                                                        11 Dokumen Wajib: APHB, Ket. Ahli Waris, Akta Kematian, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak Ahli Waris.
+                                                    @elseif($selectedCat === 'WARISAN')
+                                                        11 Dokumen Wajib: AJB/Hibah Asli, Ket. Waris, Akta Kematian, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.
+                                                    @elseif($selectedCat === 'PETOK_C')
+                                                        10 Dokumen Wajib: Petok C Asli, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.
+                                                    @else
+                                                        Menampilkan berkas wajib legalitas sesuai SOP.
+                                                    @endif
                                                 </small>
                                             </div>
                                         </div>
                                         <span class="badge bg-success px-3 py-1.5 shadow-sm" id="fase1CategoryCountBadge" style="font-size: 0.82rem; font-weight: 700;">
-                                            6 Dokumen Wajib
+                                            {{ count($catDocTypeIds) }} Dokumen Wajib
                                         </span>
+                                    </div>
+
+                                    <!-- Empty Placeholder Banner when no category is selected -->
+                                    <div class="alert alert-light border border-dashed rounded-3 p-4 text-center mb-3 {{ !empty($selectedCat) ? 'd-none' : '' }}" id="fase1EmptyCategoryAlert" style="background: #f8fafc; border-color: #cbd5e1 !important;">
+                                        <div class="d-flex flex-column align-items-center justify-content-center py-2">
+                                            <div class="rounded-circle d-flex align-items-center justify-content-center mb-2" style="width: 48px; height: 48px; background: #e0f2fe; color: #0284c7;">
+                                                <i class="mdi mdi-file-document-outline" style="font-size: 24px;"></i>
+                                            </div>
+                                            <h6 class="fw-bold text-dark mb-1" style="font-size: 0.95rem;">Pilih Status Tanah / Kepemilikan (Dasar Perolehan)</h6>
+                                            <p class="text-muted mb-0" style="font-size: 0.82rem; max-width: 500px;">
+                                                Silakan tentukan <strong>Status Tanah / Kepemilikan (Dasar Perolehan)</strong> pada formulir Data Tanah di atas terlebih dahulu untuk memunculkan daftar berkas legalitas yang wajib diunggah.
+                                            </p>
+                                        </div>
                                     </div>
 
                                     <div class="row g-3" id="documentGridContainerFase1">
@@ -1154,8 +1238,9 @@
                                                  $currentDocStatus = $existingDoc->status ?? ($hasFile ? 'pending' : 'belum_upload');
                                                  $docPhysStatus = $existingDoc->document_status ?? 'ada';
                                                  $docCategories = $doc->applicable_categories ?? [];
+                                                 $isApplicable = !empty($selectedCat) && (empty($docCategories) || in_array($selectedCat, $docCategories));
                                              @endphp
-                                             <div class="col-12 col-md-6 col-xl-4 doc-fase1-col" id="doc-box-fase1-{{ $doc->id }}" data-categories='@json($docCategories)' data-doc-id="{{ $doc->id }}">
+                                             <div class="col-12 col-md-6 col-xl-4 doc-fase1-col {{ !$isApplicable ? 'd-none' : '' }}" id="doc-box-fase1-{{ $doc->id }}" data-categories='@json($docCategories)' data-doc-id="{{ $doc->id }}">
                                                  <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative" style="background: #ffffff; border-color: #eaedf2 !important;">
                                                     <!-- Header Card Box -->
                                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
@@ -1204,7 +1289,7 @@
                                                         <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
                                                             Status Fisik / Keberadaan Dokumen
                                                         </label>
-                                                        <select name="documents[{{ $doc->id }}][document_status]" class="form-select form-select-sm" onchange="toggleDocProcessNotes(this, {{ $doc->id }})" style="font-size: 0.85rem;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                        <select name="documents[{{ $doc->id }}][document_status]" class="form-select form-select-sm" onchange="toggleDocProcessNotes(this, {{ $doc->id }})" style="font-size: 0.85rem;" {{ ($isReadOnlyKeuangan || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                                             <option value="ada" {{ ($existingDoc->document_status ?? 'ada') === 'ada' ? 'selected' : '' }}>Ada / Lengkap</option>
                                                             <option value="proses" {{ ($existingDoc->document_status ?? '') === 'proses' ? 'selected' : '' }}>Masih Proses (Pengurusan Notaris/BPN/Dinas)</option>
                                                             <option value="belum_ada" {{ ($existingDoc->document_status ?? '') === 'belum_ada' ? 'selected' : '' }}>Belum Ada</option>
@@ -1216,7 +1301,7 @@
                                                         <label class="form-label mb-1 text-dark fw-bold d-flex align-items-center gap-1" style="font-size: 0.78rem;">
                                                             <i class="mdi mdi-progress-clock text-warning"></i> Keterangan & Progres Pengurusan Dokumen:
                                                         </label>
-                                                        <textarea name="documents[{{ $doc->id }}][process_notes]" class="form-control form-control-sm" rows="2" placeholder="Tuliskan progres pengurusan berkas..." style="font-size: 0.8rem;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>{{ $existingDoc->process_notes ?? '' }}</textarea>
+                                                        <textarea name="documents[{{ $doc->id }}][process_notes]" class="form-control form-control-sm" rows="2" placeholder="Tuliskan progres pengurusan berkas..." style="font-size: 0.8rem;" {{ ($isReadOnlyKeuangan || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>{{ $existingDoc->process_notes ?? '' }}</textarea>
                                                     </div>
 
                                                     <!-- Input Nomor Dokumen -->
@@ -1229,7 +1314,7 @@
                                                             value="{{ $existingDoc->document_number ?? '' }}"
                                                             placeholder="Nomor {{ $doc->name }}"
                                                             style="font-size: 0.85rem;"
-                                                            {{ $hasFile && $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                            {{ ($isReadOnlyKeuangan || ($hasFile && $land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                                     </div>
 
                                                     <!-- Catatan Revisi Legalitas (Jika Ditolak / Direvisi) -->
@@ -1281,7 +1366,7 @@
                                                             </div>
 
                                                             <!-- Opsi Ganti / Upload Ulang Berkas -->
-                                                            @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                            @if (!$isReadOnlyKeuangan && (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')))
                                                                 <div class="pratanah-file-upload-modern mb-1 ganti-file-box-{{ $doc->id }} {{ $isDocRejected ? '' : '' }}">
                                                                     <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
                                                                     <div class="pratanah-file-label-modern py-1 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
@@ -1330,20 +1415,26 @@
                                                             @endif
                                                         @else
                                                             <!-- State: Dokumen Baru / Belum Ada Berkas -->
-                                                            <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.8rem; font-weight: 600;">
-                                                                <span>Upload Berkas {{ $doc->name }}</span>
-                                                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">Format PDF/JPG/PNG</span>
-                                                            </label>
-                                                            <div class="pratanah-file-upload-modern">
-                                                                <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
-                                                                <div class="pratanah-file-label-modern py-2 px-3" style="border: 1.5px dashed #9a55ff; background: #faf5ff;">
-                                                                    <i class="mdi mdi-cloud-upload" style="color: #9a55ff; font-size: 1.3rem;"></i>
-                                                                    <div class="pratanah-file-info-modern">
-                                                                        <span class="file-label-text fw-bold text-primary" style="font-size: 0.82rem;">Pilih Berkas {{ $doc->name }}</span>
-                                                                        <small style="font-size: 0.72rem; color: #8c98a4;">Format PDF, JPG, PNG (Maks 2MB)</small>
+                                                            @if(!$isReadOnlyKeuangan)
+                                                                <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.8rem; font-weight: 600;">
+                                                                    <span>Upload Berkas {{ $doc->name }}</span>
+                                                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">Format PDF/JPG/PNG</span>
+                                                                </label>
+                                                                <div class="pratanah-file-upload-modern">
+                                                                    <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
+                                                                    <div class="pratanah-file-label-modern py-2 px-3" style="border: 1.5px dashed #9a55ff; background: #faf5ff;">
+                                                                        <i class="mdi mdi-cloud-upload" style="color: #9a55ff; font-size: 1.3rem;"></i>
+                                                                        <div class="pratanah-file-info-modern">
+                                                                            <span class="file-label-text fw-bold text-primary" style="font-size: 0.82rem;">Pilih Berkas {{ $doc->name }}</span>
+                                                                            <small style="font-size: 0.72rem; color: #8c98a4;">Format PDF, JPG, PNG (Maks 2MB)</small>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            @else
+                                                                <div class="p-2.5 rounded bg-light text-center border text-muted fst-italic" style="font-size: 0.78rem;">
+                                                                    Belum ada file fisik diunggah
+                                                                </div>
+                                                            @endif
                                                         @endif
                                                     </div>
                                                 </div>
@@ -1354,14 +1445,24 @@
 
                                 <!-- ACTIONS FASE 1 -->
                                 <div class="d-flex justify-content-end gap-3 mt-4 footer-action-row">
-                                    @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                        <button type="button" class="btn btn-outline-purple btn-action-mobile" onclick="saveFase1(false)">
-                                            <i class="mdi mdi-content-save-outline me-1"></i> {{ $land ? 'Simpan Perubahan Fase 1' : 'Simpan Data Fase 1' }}
+                                    @if ($isReadOnlyKeuangan)
+                                        <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="switchStep(2)">
+                                            <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut Lihat Fase 2
                                         </button>
-                                        <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="saveFase1(true)">
-                                            <i class="mdi mdi-arrow-right-circle me-1"></i> Simpan & Lanjut ke Fase 2
+                                    @elseif (!$land)
+                                        <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="saveFase1(false)">
+                                            <i class="mdi mdi-content-save-outline me-1"></i> Simpan Data Fase 1
                                         </button>
-                                    @elseif ($land)
+                                    @elseif ($land && $land->status != 'approved' && $land->status != 'rejected')
+                                        <button type="button" class="btn {{ !$isLegalSah ? 'btn-gradient-primary' : 'btn-outline-purple' }} btn-action-mobile" onclick="saveFase1(false)">
+                                            <i class="mdi mdi-content-save-outline me-1"></i> Simpan Perubahan Fase 1
+                                        </button>
+                                        @if ($isLegalSah)
+                                            <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="saveFase1(true)">
+                                                <i class="mdi mdi-arrow-right-circle me-1"></i> Simpan & Lanjut ke Fase 2
+                                            </button>
+                                        @endif
+                                    @else
                                         <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="switchStep(2)">
                                             <i class="mdi mdi-arrow-right-circle me-1"></i> Menuju ke Fase 2
                                         </button>
@@ -1453,7 +1554,7 @@
                                                     <div class="fase2-info-row">
                                                         <span class="fase2-info-label">Status Kepemilikan:</span>
                                                         <span class="fase2-info-value">
-                                                            {{ $land->ownership_status ?? 'SHM' }}
+                                                            {{ $land->ownership_status ?? '-' }}
                                                         </span>
                                                     </div>
                                                     <div class="fase2-info-row">
@@ -1468,6 +1569,34 @@
                                                         <span class="fase2-info-label">Target Negosiasi:</span>
                                                         <span class="fase2-info-value text-primary">Rp {{ number_format($land->estimated_price ?? 0, 0, ',', '.') }}</span>
                                                     </div>
+                                                    <div class="fase2-info-row">
+                                                        <span class="fase2-info-label">Status SPPT PBB:</span>
+                                                        <span class="fase2-info-value">
+                                                            @if(($land->pbb_status ?? 'lunas') === 'nunggak')
+                                                                <span class="badge bg-danger text-white py-1 px-2" style="font-size: 0.78rem;">
+                                                                    <i class="mdi mdi-alert-circle-outline me-1"></i>Nunggak
+                                                                </span>
+                                                            @else
+                                                                <span class="badge bg-success text-white py-1 px-2" style="font-size: 0.78rem;">
+                                                                    <i class="mdi mdi-check-circle-outline me-1"></i>Lunas
+                                                                </span>
+                                                            @endif
+                                                        </span>
+                                                    </div>
+                                                    @if(($land->pbb_status ?? '') === 'nunggak')
+                                                        @if(!empty($land->pbb_note))
+                                                            <div class="fase2-info-row">
+                                                                <span class="fase2-info-label text-danger">Keterangan Nunggak:</span>
+                                                                <span class="fase2-info-value text-danger fw-semibold">{{ $land->pbb_note }}</span>
+                                                            </div>
+                                                        @endif
+                                                        @if(!empty($land->pbb_nominal))
+                                                            <div class="fase2-info-row">
+                                                                <span class="fase2-info-label text-danger">Nominal Tunggakan:</span>
+                                                                <span class="fase2-info-value text-danger fw-bold">Rp {{ number_format($land->pbb_nominal, 0, ',', '.') }}</span>
+                                                            </div>
+                                                        @endif
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -1487,7 +1616,7 @@
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Kondisi Fisik / Kontur Lahan</label>
                                             <select class="form-select select2-search" id="select_land_status" name="land_status_temp" data-placeholder="Pilih Kondisi Fisik / Kontur Lahan" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="">Pilih Kondisi Fisik / Kontur Lahan</option>
+                                                <option value="">-- Pilih Kondisi Fisik / Kontur Lahan --</option>
                                                 <option value="bekas_sawah" {{ $land && $land->land_status == 'bekas_sawah' ? 'selected' : '' }}>Lahan Bekas Sawah</option>
                                                 <option value="perbukitan" {{ $land && $land->land_status == 'perbukitan' ? 'selected' : '' }}>Perbukitan</option>
                                                 <option value="pekarangan" {{ $land && $land->land_status == 'pekarangan' ? 'selected' : '' }}>Pekarangan</option>
@@ -1496,7 +1625,7 @@
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Kondisi Air</label>
                                             <select class="form-select select2-search" id="select_water_condition" name="water_condition_temp" data-placeholder="Pilih Kondisi Air" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="">Pilih Kondisi Air</option>
+                                                <option value="">-- Pilih Kondisi Air --</option>
                                                 <option value="sumur_bor" {{ $land && $land->water_condition == 'sumur_bor' ? 'selected' : '' }}>Sumur Bor</option>
                                                 <option value="pdam" {{ $land && $land->water_condition == 'pdam' ? 'selected' : '' }}>PDAM</option>
                                             </select>
@@ -1716,7 +1845,11 @@
                                         <i class="mdi mdi-arrow-left-circle me-1"></i> Kembali ke Fase 1
                                     </button>
 
-                                    @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                    @if ($isReadOnlyKeuangan)
+                                        <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="switchStep(3)">
+                                            <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut Lihat Fase 3
+                                        </button>
+                                    @elseif (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
                                         <button type="button" class="btn btn-gradient-primary btn-action-mobile" id="btnSaveFase2" onclick="saveFase2()">
                                             <i class="mdi mdi-content-save-all"></i> Simpan Data Fase 2
                                         </button>
@@ -1761,6 +1894,15 @@
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $land->id ?? '' }}">
                                 <input type="hidden" name="fase" value="fase3">
+
+                                @if($isReadOnlyKeuangan)
+                                    <div class="alert alert-soft-info border border-info-subtle py-2.5 px-3 mb-3 d-flex align-items-center gap-2 rounded-3 text-info" style="background: #f0f9ff; font-size: 0.85rem;">
+                                        <i class="mdi mdi-cash-multiple fs-5"></i>
+                                        <div>
+                                            <strong>Mode Lihat Data (Divisi Keuangan)</strong>: Menampilkan data transaksi, simulasi biaya legalitas & pajak, notaris rekanan, skema pembayaran, dan cetak invoice (Read-Only).
+                                        </div>
+                                    </div>
+                                @endif
 
                                 <!-- PROFIL PEMILIK & INFORMASI TANAH (FASE 1 & 2) -->
                                 @if($land)
@@ -1815,7 +1957,7 @@
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Status Kepemilikan:</span>
                                                             <span class="fase2-info-value">
-                                                                {{ $land->ownership_status ?? 'SHM' }}
+                                                                {{ $land->ownership_status ?? '-' }}
                                                             </span>
                                                         </div>
                                                         <div class="fase2-info-row">
@@ -1830,6 +1972,34 @@
                                                             <span class="fase2-info-label">Target Negosiasi:</span>
                                                             <span class="fase2-info-value text-primary">Rp {{ number_format($land->estimated_price ?? 0, 0, ',', '.') }}</span>
                                                         </div>
+                                                        <div class="fase2-info-row">
+                                                            <span class="fase2-info-label">Status SPPT PBB:</span>
+                                                            <span class="fase2-info-value">
+                                                                @if(($land->pbb_status ?? 'lunas') === 'nunggak')
+                                                                    <span class="badge bg-danger text-white py-1 px-2" style="font-size: 0.78rem;">
+                                                                        <i class="mdi mdi-alert-circle-outline me-1"></i>Nunggak
+                                                                    </span>
+                                                                @else
+                                                                    <span class="badge bg-success text-white py-1 px-2" style="font-size: 0.78rem;">
+                                                                        <i class="mdi mdi-check-circle-outline me-1"></i>Lunas
+                                                                    </span>
+                                                                @endif
+                                                            </span>
+                                                        </div>
+                                                        @if(($land->pbb_status ?? '') === 'nunggak')
+                                                            @if(!empty($land->pbb_note))
+                                                                <div class="fase2-info-row">
+                                                                    <span class="fase2-info-label text-danger">Keterangan Nunggak:</span>
+                                                                    <span class="fase2-info-value text-danger fw-semibold">{{ $land->pbb_note }}</span>
+                                                                </div>
+                                                            @endif
+                                                            @if(!empty($land->pbb_nominal))
+                                                                <div class="fase2-info-row">
+                                                                    <span class="fase2-info-label text-danger">Nominal Tunggakan:</span>
+                                                                    <span class="fase2-info-value text-danger fw-bold">Rp {{ number_format($land->pbb_nominal, 0, ',', '.') }}</span>
+                                                                </div>
+                                                            @endif
+                                                        @endif
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Status Legalitas / Sengketa:</span>
                                                             <span class="fase2-info-value">
@@ -1898,11 +2068,14 @@
                                 <div class="form-section">
                                     <div class="form-section-title">
                                         Hasil Sidang & Keputusan Direksi
+                                        @if(!$isAdmin)
+                                            <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Wewenang Direksi / Admin)</small>
+                                        @endif
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-bold">Hasil Keputusan Sidang Akhir <span class="text-danger">*</span></label>
-                                            <select class="form-select border-primary" id="fase3_status_akhir" name="status" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <select class="form-select border-primary" id="fase3_status_akhir" name="status" {{ (!$isAdmin || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                                 <option value="approved" {{ $land && $land->status == 'approved' ? 'selected' : '' }}>DIAMBIL - Deal untuk Diakuisisi (Masuk LandBank Utama)</option>
                                                 <option value="pending" {{ $land && $land->status == 'pending' ? 'selected' : '' }}>DIPENDING - Ditunda Sementara (Negosiasi / Evaluasi Lanjutan)</option>
                                                 <option value="rejected" {{ $land && $land->status == 'rejected' ? 'selected' : '' }}>DIBATALKAN - Gugur Prospeknya (Tidak Diambil)</option>
@@ -1910,7 +2083,7 @@
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-bold">Skala Prioritas Akuisisi</label>
-                                            <select class="form-select" name="prioritas" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <select class="form-select" name="prioritas" {{ (!$isAdmin || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                                 <option value="urgent" {{ $land && $land->priority == 'urgent' ? 'selected' : '' }}>Urgent (Sangat Prioritas / Segera Diproses)</option>
                                                 <option value="high" {{ $land && $land->priority == 'high' ? 'selected' : '' }}>High (Tinggi)</option>
                                                 <option value="normal" {{ $land && ($land->priority == 'normal' || !$land->priority) ? 'selected' : '' }}>Normal</option>
@@ -1919,12 +2092,11 @@
                                         </div>
                                         <div class="col-12 mb-3">
                                             <label class="form-label fw-bold">Catatan & Kesimpulan Keputusan Sidang</label>
-                                            <textarea class="form-control" name="catatan" rows="3" placeholder="Masukkan ringkasan pertimbangan keputusan rapat, kesepakatan notaris, tanggal rencana akta pelepasan..." {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>{{ $land->notes ?? '' }}</textarea>
+                                            <textarea class="form-control" name="catatan" rows="3" placeholder="Masukkan ringkasan pertimbangan keputusan rapat, kesepakatan notaris, tanggal rencana akta pelepasan..." {{ (!$isAdmin || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>{{ $land->notes ?? '' }}</textarea>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- PROSES JADWAL & TRANSAKSI DI KANTOR NOTARIS -->
                                 <!-- PROSES JADWAL & TRANSAKSI DI KANTOR NOTARIS -->
                                 <div class="form-section">
                                     <div class="form-section-title d-flex justify-content-between align-items-center">
@@ -1936,92 +2108,49 @@
                                         </span>
                                     </div>
                                     <div class="row">
-                                        <!-- PT Pengakuisisi / Pembeli -->
-                                        <div class="col-md-12 mb-3">
-                                            <label class="form-label fw-bold">Pilih PT Pembeli / Pengembang (Master Data PT) <span class="text-danger">*</span></label>
-                                            <select class="form-select select2-search" id="select_company_profile" name="company_profile_id" data-placeholder="Pilih Perusahaan / PT Pengakuisisi" style="width: 100%;" onchange="updateSelectedPTDetails(this.value)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="">-- Pilih Perusahaan (PT) Pengakuisisi --</option>
-                                                @if(isset($companyProfiles))
-                                                    @foreach($companyProfiles as $cp)
-                                                        <option value="{{ $cp->id }}" {{ (($land && $land->company_profile_id == $cp->id) || count($companyProfiles) === 1) ? 'selected' : '' }}>
-                                                            {{ $cp->name }} ({{ $cp->uploaded_legal_docs_count }}/6 Berkas Legalitas PT)
-                                                        </option>
-                                                    @endforeach
-                                                @endif
-                                            </select>
-                                            <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
-                                                *Badan hukum PT yang dicantumkan pada Akta Pelepasan Hak di Notaris (SOP Poin 3).
-                                            </small>
-                                        </div>
-
-                                        <!-- Notaris Rekanan -->
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-bold">Pilih Notaris Rekanan (Master Data Notaris) <span class="text-danger">*</span></label>
-                                            <select class="form-select select2-search" name="notaris_id" data-placeholder="Pilih Notaris Rekanan" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <select class="form-select select2-search" id="select_notaris_id" name="notaris_id" data-placeholder="Pilih Notaris Rekanan" style="width: 100%;" onchange="autoSaveNotaryInfo()" {{ ($isReadOnlyKeuangan || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                                 <option value="">-- Pilih Notaris Rekanan --</option>
                                                 @if(isset($notarisList))
                                                     @foreach($notarisList as $not)
                                                         <option value="{{ $not->id }}" {{ ($land && $land->notaris_id == $not->id) ? 'selected' : '' }}>
-                                                            {{ $not->nama_notaris }} {{ $not->no_sk ? '('.$not->no_sk.')' : '' }} {{ $not->telepon ? ' - '.$not->telepon : '' }}
+                                                            {{ $not->nama_notaris }}
                                                         </option>
                                                     @endforeach
                                                 @endif
                                             </select>
                                             <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
-                                                *Data diambil langsung dari menu Master Data Notaris.
+                                                *Data tersimpan otomatis & diambil langsung dari menu Master Data Notaris.
                                             </small>
                                         </div>
-
-                                        <!-- Jadwal Tanda Tangan Notaris -->
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-bold">Jadwal Tanda Tangan Akta di Kantor Notaris</label>
-                                            <input type="datetime-local" class="form-control" name="notary_appointment_date" value="{{ $land && $land->notary_appointment_date ? \Carbon\Carbon::parse($land->notary_appointment_date)->format('Y-m-d\TH:i') : '' }}" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="datetime-local" class="form-control" id="input_notary_appointment_date" name="notary_appointment_date" value="{{ $land && $land->notary_appointment_date ? \Carbon\Carbon::parse($land->notary_appointment_date)->format('Y-m-d\TH:i') : '' }}" onchange="autoSaveNotaryInfo()" onblur="autoSaveNotaryInfo()" {{ ($isReadOnlyKeuangan || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                             <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
-                                                *Jadwal kehadiran para pihak (Direktur, Penjual/Ahli Waris) di kantor notaris.
+                                                *Jadwal kehadiran para pihak tersimpan otomatis saat dipilih.
                                             </small>
                                         </div>
                                     </div>
 
-                                    <!-- WIDGET LEGALITAS PT (6 DOKUMEN SESUAI SOP POIN 3) -->
-                                    <div class="card border rounded-3 p-3 mb-4 shadow-sm" id="pt_legalitas_widget" style="background: #fbf9ff; border-color: #d8b4fe !important;">
-                                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 pb-2 border-bottom">
-                                            <div>
-                                                <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-1" style="font-size: 0.92rem;">
-                                                    <i class="mdi mdi-shield-account text-purple"></i> Legalitas PT (Persyaratan Notaris & BPN - SOP Poin 3)
-                                                </h6>
-                                                <small class="text-muted" style="font-size: 0.76rem;">6 Berkas resmi PT pengakuisisi yang wajib dibawa saat penandatanganan akta di Notaris.</small>
-                                            </div>
-                                            <div id="pt_legalitas_badge_container">
-                                                <span class="badge bg-secondary py-1.5 px-3" style="font-size: 0.78rem;" id="pt_legalitas_overall_badge">
-                                                    Pilih PT Pengakuisisi
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <!-- 6 Documents Grid -->
-                                        <div class="row g-2 pt-1" id="pt_legalitas_docs_grid">
-                                            <!-- Rendered via JS -->
-                                        </div>
-                                    </div>
-
-                                    <!-- UPLOAD BERKAS TRANSAKSI NOTARIS -->
+                                    <!-- UPLOAD BERKAS TRANSAKSI NOTARIS (AJAX AUTO-UPLOAD) -->
                                     <div class="row g-3 mt-1">
                                         <!-- Kwitansi Bermaterai -->
                                         <div class="col-12 col-md-4">
-                                            <div class="card border rounded-3 p-3 h-100 shadow-sm" style="background: #ffffff; border-color: #e2e8f0 !important;">
+                                            <div class="card border rounded-3 p-3 h-100 shadow-sm" id="notary_card_receipt_file" style="background: #ffffff; border-color: #e2e8f0 !important;">
                                                 <div class="d-flex align-items-center justify-content-between mb-1">
                                                     <span class="fw-bold text-dark d-flex align-items-center gap-1" style="font-size: 0.86rem;">
                                                         <i class="mdi mdi-receipt text-purple" style="font-size: 1.1rem;"></i>
                                                         Kwitansi Pembayaran
                                                     </span>
-                                                    <span class="badge {{ $land && $land->receipt_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
+                                                    <span id="badge_receipt_file" class="badge {{ $land && $land->receipt_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
                                                         <i class="mdi {{ $land && $land->receipt_file ? 'mdi-check-circle me-1' : 'mdi-clock-outline me-1' }}"></i>
                                                         {{ $land && $land->receipt_file ? 'Terunggah' : 'Belum Ada' }}
                                                     </span>
                                                 </div>
                                                 <small class="text-muted d-block mb-3" style="font-size: 0.74rem;">Bukti kwitansi bermaterai pembayaran di kantor Notaris</small>
 
-                                                <div class="d-flex flex-column justify-content-end flex-grow-1">
+                                                <div class="d-flex flex-column justify-content-end flex-grow-1" id="container_receipt_file">
                                                     @if($land && $land->receipt_file)
                                                         @php $cleanReceipt = str_replace('uploads/', '', $land->receipt_file); @endphp
                                                         <!-- State: Berkas Sudah Terunggah -->
@@ -2046,12 +2175,12 @@
 
                                                         @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
                                                             <div class="pratanah-file-upload-modern mb-1">
-                                                                <input type="file" name="receipt_file" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <input type="file" name="receipt_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'receipt_file')">
                                                                 <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
                                                                     <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
                                                                     <div class="pratanah-file-info-modern">
                                                                         <span class="file-label-text text-secondary" style="font-size: 0.76rem; font-weight: 600;">Ganti Kwitansi / Upload Ulang</span>
-                                                                        <span class="file-label-hint" style="font-size: 0.7rem;">PDF, JPG, PNG</span>
+                                                                        <span class="file-label-hint" style="font-size: 0.7rem;">PDF, JPG, PNG (Auto Upload)</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -2059,12 +2188,12 @@
                                                     @else
                                                         @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
                                                             <div class="pratanah-file-upload-modern mb-1">
-                                                                <input type="file" name="receipt_file" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <input type="file" name="receipt_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'receipt_file')">
                                                                 <div class="pratanah-file-label-modern py-2.5 px-3">
                                                                     <i class="mdi mdi-cloud-upload" style="font-size: 1.35rem; color: #9a55ff;"></i>
                                                                     <div class="pratanah-file-info-modern">
                                                                         <span class="file-label-text fw-semibold" style="font-size: 0.8rem;">Pilih File Kwitansi</span>
-                                                                        <span class="file-label-hint" style="font-size: 0.72rem;">PDF, JPG, PNG maks 10MB</span>
+                                                                        <span class="file-label-hint" style="font-size: 0.72rem;">PDF, JPG, PNG (Auto Upload)</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -2080,20 +2209,20 @@
 
                                         <!-- Pajak PPh -->
                                         <div class="col-12 col-md-4">
-                                            <div class="card border rounded-3 p-3 h-100 shadow-sm" style="background: #ffffff; border-color: #e2e8f0 !important;">
+                                            <div class="card border rounded-3 p-3 h-100 shadow-sm" id="notary_card_tax_pph_file" style="background: #ffffff; border-color: #e2e8f0 !important;">
                                                 <div class="d-flex align-items-center justify-content-between mb-1">
                                                     <span class="fw-bold text-dark d-flex align-items-center gap-1" style="font-size: 0.86rem;">
                                                         <i class="mdi mdi-file-certificate text-purple" style="font-size: 1.1rem;"></i>
                                                         Bukti Bayar PPh
                                                     </span>
-                                                    <span class="badge {{ $land && $land->tax_pph_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
+                                                    <span id="badge_tax_pph_file" class="badge {{ $land && $land->tax_pph_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
                                                         <i class="mdi {{ $land && $land->tax_pph_file ? 'mdi-check-circle me-1' : 'mdi-clock-outline me-1' }}"></i>
                                                         {{ $land && $land->tax_pph_file ? 'Terunggah' : 'Belum Ada' }}
                                                     </span>
                                                 </div>
                                                 <small class="text-muted d-block mb-3" style="font-size: 0.74rem;">Bukti bayar PPh (ACC Direktur PT & NPWP Penjual)</small>
 
-                                                <div class="d-flex flex-column justify-content-end flex-grow-1">
+                                                <div class="d-flex flex-column justify-content-end flex-grow-1" id="container_tax_pph_file">
                                                     @if($land && $land->tax_pph_file)
                                                         @php $cleanPph = str_replace('uploads/', '', $land->tax_pph_file); @endphp
                                                         <!-- State: Berkas Sudah Terunggah -->
@@ -2118,12 +2247,12 @@
 
                                                         @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
                                                             <div class="pratanah-file-upload-modern mb-1">
-                                                                <input type="file" name="tax_pph_file" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <input type="file" name="tax_pph_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'tax_pph_file')">
                                                                 <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
                                                                     <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
                                                                     <div class="pratanah-file-info-modern">
                                                                         <span class="file-label-text text-secondary" style="font-size: 0.76rem; font-weight: 600;">Ganti Bukti PPh / Upload Ulang</span>
-                                                                        <span class="file-label-hint" style="font-size: 0.7rem;">PDF, JPG, PNG</span>
+                                                                        <span class="file-label-hint" style="font-size: 0.7rem;">PDF, JPG, PNG (Auto Upload)</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -2131,12 +2260,12 @@
                                                     @else
                                                         @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
                                                             <div class="pratanah-file-upload-modern mb-1">
-                                                                <input type="file" name="tax_pph_file" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <input type="file" name="tax_pph_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'tax_pph_file')">
                                                                 <div class="pratanah-file-label-modern py-2.5 px-3">
                                                                     <i class="mdi mdi-cloud-upload" style="font-size: 1.35rem; color: #9a55ff;"></i>
                                                                     <div class="pratanah-file-info-modern">
                                                                         <span class="file-label-text fw-semibold" style="font-size: 0.8rem;">Pilih Bukti PPh</span>
-                                                                        <span class="file-label-hint" style="font-size: 0.72rem;">PDF, JPG, PNG maks 10MB</span>
+                                                                        <span class="file-label-hint" style="font-size: 0.72rem;">PDF, JPG, PNG (Auto Upload)</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -2152,20 +2281,20 @@
 
                                         <!-- Salinan Akta Pelepasan -->
                                         <div class="col-12 col-md-4">
-                                            <div class="card border rounded-3 p-3 h-100 shadow-sm" style="background: #ffffff; border-color: #e2e8f0 !important;">
+                                            <div class="card border rounded-3 p-3 h-100 shadow-sm" id="notary_card_release_deed_file" style="background: #ffffff; border-color: #e2e8f0 !important;">
                                                 <div class="d-flex align-items-center justify-content-between mb-1">
                                                     <span class="fw-bold text-dark d-flex align-items-center gap-1" style="font-size: 0.86rem;">
                                                         <i class="mdi mdi-file-sign text-purple" style="font-size: 1.1rem;"></i>
                                                         Akta Pelepasan Hak
                                                     </span>
-                                                    <span class="badge {{ $land && $land->release_deed_file ? 'bg-success' : 'bg-warning text-dark' }}" style="font-size: 10px;">
+                                                    <span id="badge_release_deed_file" class="badge {{ $land && $land->release_deed_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
                                                         <i class="mdi {{ $land && $land->release_deed_file ? 'mdi-check-circle me-1' : 'mdi-clock-outline me-1' }}"></i>
-                                                        {{ $land && $land->release_deed_file ? 'Akta Selesai' : 'Menunggu Akta' }}
+                                                        {{ $land && $land->release_deed_file ? 'Terunggah' : 'Belum Ada' }}
                                                     </span>
                                                 </div>
                                                 <small class="text-muted d-block mb-3" style="font-size: 0.74rem;">Salinan Akta Pelepasan Hak resmi selesai dari Notaris</small>
 
-                                                <div class="d-flex flex-column justify-content-end flex-grow-1">
+                                                <div class="d-flex flex-column justify-content-end flex-grow-1" id="container_release_deed_file">
                                                     @if($land && $land->release_deed_file)
                                                         @php $cleanDeed = str_replace('uploads/', '', $land->release_deed_file); @endphp
                                                         <!-- State: Berkas Sudah Terunggah -->
@@ -2190,12 +2319,12 @@
 
                                                         @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
                                                             <div class="pratanah-file-upload-modern mb-1">
-                                                                <input type="file" name="release_deed_file" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <input type="file" name="release_deed_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'release_deed_file')">
                                                                 <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
                                                                     <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
                                                                     <div class="pratanah-file-info-modern">
                                                                         <span class="file-label-text text-secondary" style="font-size: 0.76rem; font-weight: 600;">Ganti Akta / Upload Ulang</span>
-                                                                        <span class="file-label-hint" style="font-size: 0.7rem;">PDF, JPG, PNG</span>
+                                                                        <span class="file-label-hint" style="font-size: 0.7rem;">PDF, JPG, PNG (Auto Upload)</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -2203,12 +2332,12 @@
                                                     @else
                                                         @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
                                                             <div class="pratanah-file-upload-modern mb-1">
-                                                                <input type="file" name="release_deed_file" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <input type="file" name="release_deed_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'release_deed_file')">
                                                                 <div class="pratanah-file-label-modern py-2.5 px-3">
                                                                     <i class="mdi mdi-cloud-upload" style="font-size: 1.35rem; color: #9a55ff;"></i>
                                                                     <div class="pratanah-file-info-modern">
                                                                         <span class="file-label-text fw-semibold" style="font-size: 0.8rem;">Pilih Akta Pelepasan</span>
-                                                                        <span class="file-label-hint" style="font-size: 0.72rem;">PDF, JPG, PNG maks 10MB</span>
+                                                                        <span class="file-label-hint" style="font-size: 0.72rem;">PDF, JPG, PNG (Auto Upload)</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -2223,49 +2352,14 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- ASPEK LEGALITAS & BIAYA TRANSAKSI -->
+                                
+                                <!-- RINGKASAN DOKUMEN LEGALITAS DARI FASE 1 (READ-ONLY) -->
                                 <div class="form-section">
-                                    <div class="form-section-title d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
-                                        <div>
-                                            Aspek Legalitas, Pajak & Biaya Administrasi
-                                        </div>
-                                        @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                            <button type="button" class="btn btn-sm btn-gradient-primary py-1 px-3 shadow-sm d-inline-flex align-items-center gap-1 text-white text-nowrap flex-shrink-0" onclick="addCustomCostRow()" style="font-size: 0.8rem; font-weight: 600; border-radius: 6px; white-space: nowrap;">
-                                                <i class="mdi mdi-plus-circle me-1" style="font-size: 1rem;"></i> Tambah Biaya Admin / Lainnya
-                                            </button>
-                                        @endif
-                                    </div>
-                                    
-                                    <!-- Estimasi Biaya Transaksi Standard -->
-                                    <div class="row mb-2">
-                                        <div class="col-md-3 mb-2">
-                                            <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Biaya IJB / PPJB Notaris</label>
-                                            <input type="text" class="form-control cost-input" name="biaya_ijb_temp" data-cost-name="Biaya IJB / PPJB Notaris" value="{{ $land && $land->cost_ijb ? number_format($land->cost_ijb, 0, ',', '.') : '' }}" placeholder="Contoh: 10.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                        </div>
-                                        <div class="col-md-3 mb-2">
-                                            <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Estimasi Pajak PPh/BPHTB</label>
-                                            <input type="text" class="form-control cost-input" name="biaya_pajak_temp" data-cost-name="Estimasi Pajak (PPh & BPHTB)" value="{{ $land && $land->cost_tax ? number_format($land->cost_tax, 0, ',', '.') : '' }}" placeholder="Contoh: 50.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                        </div>
-                                        <div class="col-md-3 mb-2">
-                                            <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Fee Makelar / Perantara</label>
-                                            <input type="text" class="form-control cost-input" name="fee_makelar_temp" data-cost-name="Fee Makelar / Perantara" value="{{ $land && $land->cost_broker ? number_format($land->cost_broker, 0, ',', '.') : '' }}" placeholder="Contoh: 15.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                        </div>
-                                        <div class="col-md-3 mb-2">
-                                            <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Biaya Lain-lain</label>
-                                            <input type="text" class="form-control cost-input" name="biaya_lain_temp" data-cost-name="Biaya Lain-lain Admin" value="{{ $land && $land->cost_other ? number_format($land->cost_other, 0, ',', '.') : '' }}" placeholder="Contoh: 5.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                        </div>
-                                    </div>
-
-                                    <!-- Dynamic Custom Extra Costs Container -->
-                                    <div id="custom_costs_container" class="row g-2 mb-3"></div>
-
-                                    <!-- RINGKASAN DOKUMEN LEGALITAS DARI FASE 1 (READ-ONLY) -->
                                     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
                                         <div>
-                                            <h6 class="mb-0 text-dark fw-bold" style="font-size: 0.95rem;">
+                                            <div class="form-section-title mb-0">
                                                 Ringkasan Dokumen Legalitas (Hasil Validasi Fase 1)
-                                            </h6>
+                                            </div>
                                             <small class="text-muted" style="font-size: 0.78rem;">Seluruh berkas legalitas berikut disyaratkan untuk kategori <strong class="text-primary" id="fase3CategoryLabel">{{ $selectedCat }}</strong> dan telah diverifikasi sah pada Fase 1.</small>
                                         </div>
                                         <span class="badge bg-soft-success text-success border border-success-subtle py-1 px-3" style="font-size: 0.8rem; font-weight: 600;">
@@ -2274,7 +2368,7 @@
                                     </div>
 
                                     <!-- GRID RINGKASAN DOKUMEN FASE 3 (READ-ONLY) -->
-                                    <div class="row g-3 mb-4" id="fase3DocumentGridContainer">
+                                    <div class="row g-3 mb-2" id="fase3DocumentGridContainer">
                                         @foreach($documentTypes as $doc)
                                             @php
                                                 $docCategories = $doc->applicable_categories ?? [];
@@ -2360,348 +2454,407 @@
                                     </div>
                                 </div>
 
-                                <!-- SKEMA PEMBAYARAN & PEMBAYARAN BERTAHAP -->
-                                <div class="form-section">
-                                    <div class="form-section-title">
-                                        Skema Transaksi & Jadwal Pembayaran
-                                    </div>
-
-                                    <!-- HARGA DEAL & DP CALCULATOR -->
-                                    <div class="row g-3 mb-3">
-                                        <div class="col-12 col-sm-6 col-lg-4">
-                                            <label class="form-label text-muted">Harga Target Negosiasi (Fase 1)</label>
-                                            <input type="text" class="form-control" value="Rp {{ $land && $land->estimated_price ? number_format($land->estimated_price, 0, ',', '.') : '0' }}" disabled style="background-color: #f1f3f7; color: #6c757d; font-weight: 600;">
-                                        </div>
-                                        <div class="col-12 col-sm-6 col-lg-4">
-                                            <label class="form-label text-dark font-weight-bold">Harga Deal Pokok Tanah (Rp) <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control font-weight-bold border-primary" id="deal_price_input" name="deal_price" value="Rp {{ $land && ($land->deal_price || $land->estimated_price) ? number_format($land->deal_price ?? $land->estimated_price, 0, ',', '.') : ($land && $land->offer_price ? number_format($land->offer_price, 0, ',', '.') : '0') }}" placeholder="Contoh: 500.000.000" onkeyup="formatRupiahTemp(this); calculateInstallments(); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                        </div>
-                                        <div class="col-12 col-sm-6 col-lg-4">
-                                            <label class="form-label font-weight-bold" style="color: #7e22ce;">Grand Total Final Transaksi (Rp)</label>
-                                            <input type="text" class="form-control font-weight-bold" id="grand_total_final_display" value="Rp 0" disabled style="background-color: #f5f3ff; color: #7e22ce; border: 1.5px solid #d8b4fe; font-size: 0.95rem; font-weight: 700;">
-                                        </div>
-                                        <div class="col-12 col-sm-6 col-lg-6" id="dp_container" style="display: none;">
-                                            <label class="form-label text-primary font-weight-bold">Uang Muka / DP (Rp)</label>
-                                            <input type="text" class="form-control border-success mb-2 font-weight-bold" id="dp_price_input" placeholder="Masukkan nominal DP" value="{{ ($land && $land->payments->count() > 0) ? number_format($land->payments->first()->amount, 0, ',', '.') : '' }}" onkeyup="formatRupiahTemp(this); calculateInstallments(); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                        </div>
-                                        <div class="col-12 col-sm-6 col-lg-6" id="remaining_container" style="display: none;">
-                                            <label class="form-label text-muted">Sisa Pembayaran (Rp)</label>
-                                            <input type="text" class="form-control font-weight-bold text-danger" id="remaining_price_input" value="0" disabled style="background-color: #f8f9fa;">
-                                        </div>
-                                    </div>
-
-                                    <!-- RINCIAN AKUMULASI TOTAL BIAYA & SKEMA TRANSAKSI WIDGET (100% DINAMIS) -->
-                                    <div class="card shadow-none border mb-4 p-3 rounded-3" style="background: #ffffff;">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <h6 class="mb-0 text-dark fw-bold" style="font-size: 0.9rem;">
-                                                Rincian Akumulasi Total Biaya & Skema Transaksi
-                                            </h6>
-                                            <span class="badge bg-light text-primary border px-2 py-1" id="calc_method_badge" style="font-size: 11px;">
-                                                Cash Keras
-                                            </span>
-                                        </div>
-
-                                        <div class="table-responsive">
-                                            <table class="table table-sm table-bordered align-middle mb-0" style="font-size: 0.85rem;">
-                                                <thead class="table-light">
-                                                    <tr>
-                                                        <th width="60%">Komponen Transaksi</th>
-                                                        <th class="text-end" width="40%">Nominal (Rp)</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="calc_summary_tbody">
-                                                    <!-- Dynamic rows will be inserted here live -->
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-
-                                    <!-- METODE PEMBAYARAN & JANGKA WAKTU -->
-                                    <div class="row">
-                                        <div class="col-md-4 mb-3">
-                                            <label class="form-label fw-bold">Metode Pembayaran</label>
-                                            <select class="form-select border-primary fw-bold" id="temp_payment_method" name="payment_method_temp" onchange="toggleInstallmentView(); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="cash" {{ $land && $land->payment_method == 'cash' ? 'selected' : '' }}>Cash Keras (Lunas Sekaligus)</option>
-                                                <option value="termin" {{ $land && $land->payment_method == 'termin' ? 'selected' : '' }}>Pembayaran Bertahap (Termin)</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4 mb-3" id="temp_duration_container" style="display: none;">
-                                            <label class="form-label fw-bold">Jangka Waktu Bertahap</label>
-                                            <select class="form-select" id="temp_installment_duration" name="installment_duration_temp" onchange="generateInstallmentRows()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="3_bulan" {{ $land && $land->installment_duration == '3_bulan' ? 'selected' : '' }}>3 Bulan</option>
-                                                <option value="6_bulan" {{ $land && $land->installment_duration == '6_bulan' ? 'selected' : '' }}>6 Bulan</option>
-                                                <option value="9_bulan" {{ $land && $land->installment_duration == '9_bulan' ? 'selected' : '' }}>9 Bulan</option>
-                                                <option value="1_tahun" {{ $land && ($land->installment_duration == '1_tahun' || !$land->installment_duration) ? 'selected' : '' }}>1 Tahun</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-4 mb-3" id="temp_count_container" style="display: none;">
-                                            <label class="form-label fw-bold">Frekuensi Pembayaran</label>
-                                            <select class="form-select" id="temp_installment_count" name="installment_count_temp" onchange="generateInstallmentRows()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="2" {{ $land && $land->installment_count == 2 ? 'selected' : '' }}>2x Bayar</option>
-                                                <option value="3" {{ $land && $land->installment_count == 3 ? 'selected' : '' }}>3x Bayar</option>
-                                                <option value="4" {{ $land && ($land->installment_count == 4 || !$land->installment_count) ? 'selected' : '' }}>4x Bayar</option>
-                                                <option value="5" {{ $land && $land->installment_count == 5 ? 'selected' : '' }}>5x Bayar</option>
-                                                <option value="6" {{ $land && $land->installment_count == 6 ? 'selected' : '' }}>6x Bayar</option>
-                                                <option value="12" {{ $land && $land->installment_count == 12 ? 'selected' : '' }}>12x Bayar</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <!-- FORM PEMBAYARAN CASH KERAS -->
-                                    @php
-                                        $cashPayment = ($land && $land->payment_method == 'cash') ? $land->payments->first() : null;
-                                        $initialGrandTotal = ($land ? ($land->estimated_price ?? $land->offer_price ?? 0) + ($land->cost_ijb ?? 0) + ($land->cost_tax ?? 0) + ($land->cost_broker ?? 0) + ($land->cost_other ?? 0) : 0);
-                                    @endphp
-                                    <div id="cash_payment_container" class="card shadow-none border mt-2 mb-3 p-3 rounded-3" style="background: #fafbfe;">
-                                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+                                @if(!$isStaffLegal || $isAdmin)
+                                    <!-- ASPEK LEGALITAS & BIAYA TRANSAKSI -->
+                                    <div class="form-section">
+                                        <div class="form-section-title d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
                                             <div>
-                                                <h6 class="mb-0 text-dark font-weight-bold">
-                                                    Rincian Pembayaran Cash Keras (Lunas Sekaligus)
+                                                Aspek Legalitas, Pajak & Biaya Administrasi
+                                                @if(!$canEditFinancial)
+                                                    <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Divisi Keuangan / Admin)</small>
+                                                @endif
+                                            </div>
+                                            @if ($canEditFinancial && (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')))
+                                                <button type="button" class="btn btn-sm btn-gradient-primary py-1 px-3 shadow-sm d-inline-flex align-items-center gap-1 text-white text-nowrap flex-shrink-0" onclick="addCustomCostRow()" style="font-size: 0.8rem; font-weight: 600; border-radius: 6px; white-space: nowrap;">
+                                                    <i class="mdi mdi-plus-circle me-1" style="font-size: 1rem;"></i> Tambah Biaya Admin / Lainnya
+                                                </button>
+                                            @endif
+                                        </div>
+                                        
+                                        <!-- Estimasi Biaya Transaksi Standard -->
+                                        <div class="row mb-2">
+                                            <div class="col-md-3 mb-2">
+                                                <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Biaya IJB / PPJB Notaris</label>
+                                                <input type="text" class="form-control cost-input" name="biaya_ijb_temp" data-cost-name="Biaya IJB / PPJB Notaris" value="{{ $land && $land->cost_ijb ? number_format($land->cost_ijb, 0, ',', '.') : '' }}" placeholder="Contoh: 10.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            </div>
+                                            <div class="col-md-3 mb-2">
+                                                <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Estimasi Pajak PPh/BPHTB</label>
+                                                <input type="text" class="form-control cost-input" name="biaya_pajak_temp" data-cost-name="Estimasi Pajak (PPh & BPHTB)" value="{{ $land && $land->cost_tax ? number_format($land->cost_tax, 0, ',', '.') : '' }}" placeholder="Contoh: 50.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            </div>
+                                            <div class="col-md-3 mb-2">
+                                                <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Fee Makelar / Perantara</label>
+                                                <input type="text" class="form-control cost-input" name="fee_makelar_temp" data-cost-name="Fee Makelar / Perantara" value="{{ $land && $land->cost_broker ? number_format($land->cost_broker, 0, ',', '.') : '' }}" placeholder="Contoh: 15.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            </div>
+                                            <div class="col-md-3 mb-2">
+                                                <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Biaya Lain-lain</label>
+                                                <input type="text" class="form-control cost-input" name="biaya_lain_temp" data-cost-name="Biaya Lain-lain Admin" value="{{ $land && $land->cost_other ? number_format($land->cost_other, 0, ',', '.') : '' }}" placeholder="Contoh: 5.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            </div>
+                                        </div>
+
+                                        <!-- Dynamic Custom Extra Costs Container -->
+                                        <div id="custom_costs_container" class="row g-2 mb-3"></div>
+                                    </div>
+
+                                    <!-- SKEMA PEMBAYARAN & PEMBAYARAN BERTAHAP -->
+                                    <div class="form-section">
+                                        <div class="form-section-title">
+                                            Skema Transaksi & Jadwal Pembayaran
+                                        </div>
+
+                                        <!-- HARGA DEAL & DP CALCULATOR -->
+                                        <div class="row g-3 mb-3">
+                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                <label class="form-label text-muted">Harga Target Negosiasi (Fase 1)</label>
+                                                <input type="text" class="form-control" value="Rp {{ $land && $land->estimated_price ? number_format($land->estimated_price, 0, ',', '.') : '0' }}" disabled style="background-color: #f1f3f7; color: #6c757d; font-weight: 600;">
+                                            </div>
+                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                <label class="form-label text-dark font-weight-bold">Harga Deal Pokok Tanah (Rp) <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control font-weight-bold border-primary" id="deal_price_input" name="deal_price" value="Rp {{ $land && ($land->deal_price || $land->estimated_price) ? number_format($land->deal_price ?? $land->estimated_price, 0, ',', '.') : ($land && $land->offer_price ? number_format($land->offer_price, 0, ',', '.') : '0') }}" placeholder="Contoh: 500.000.000" onkeyup="formatRupiahTemp(this); calculateInstallments(); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            </div>
+                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                <label class="form-label font-weight-bold" style="color: #7e22ce;">Grand Total Final Transaksi (Rp)</label>
+                                                <input type="text" class="form-control font-weight-bold" id="grand_total_final_display" value="Rp 0" disabled style="background-color: #f5f3ff; color: #7e22ce; border: 1.5px solid #d8b4fe; font-size: 0.95rem; font-weight: 700;">
+                                            </div>
+                                            <div class="col-12 col-sm-6 col-lg-6" id="dp_container" style="display: none;">
+                                                <label class="form-label text-primary font-weight-bold">Uang Muka / DP (Rp)</label>
+                                                <input type="text" class="form-control border-success mb-2 font-weight-bold" id="dp_price_input" placeholder="Masukkan nominal DP" value="{{ ($land && $land->payments->count() > 0) ? number_format($land->payments->first()->amount, 0, ',', '.') : '' }}" onkeyup="formatRupiahTemp(this); calculateInstallments(); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            </div>
+                                            <div class="col-12 col-sm-6 col-lg-6" id="remaining_container" style="display: none;">
+                                                <label class="form-label text-muted">Sisa Pembayaran (Rp)</label>
+                                                <input type="text" class="form-control font-weight-bold text-danger" id="remaining_price_input" value="0" disabled style="background-color: #f8f9fa;">
+                                            </div>
+                                        </div>
+
+                                        <!-- RINCIAN AKUMULASI TOTAL BIAYA & SKEMA TRANSAKSI WIDGET (100% DINAMIS) -->
+                                        <div class="card shadow-none border mb-4 p-3 rounded-3" style="background: #ffffff;">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h6 class="mb-0 text-dark fw-bold" style="font-size: 0.9rem;">
+                                                    Rincian Akumulasi Total Biaya & Skema Transaksi
                                                 </h6>
-                                                <small class="text-muted">Lengkapi data nominal pelunasan (otomatis mengikuti Grand Total), tanggal realisasi transaksi, bukti transfer, dan status pembayaran.</small>
+                                                <span class="badge bg-light text-primary border px-2 py-1" id="calc_method_badge" style="font-size: 11px;">
+                                                    Cash Keras
+                                                </span>
                                             </div>
-                                            <span class="badge bg-success-subtle text-success border border-success px-3 py-1 fw-bold text-nowrap flex-shrink-0">
-                                                1x Pelunasan
-                                            </span>
+
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-bordered align-middle mb-0" style="font-size: 0.85rem;">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th width="60%">Komponen Transaksi</th>
+                                                            <th class="text-end" width="40%">Nominal (Rp)</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="calc_summary_tbody">
+                                                        <!-- Dynamic rows will be inserted here live -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
 
-                                        <div class="row g-3">
-                                            <!-- Tipe Pembayaran Realisasi -->
-                                            <div class="col-12 col-sm-6 col-lg-3">
-                                                <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
-                                                    Tipe Pembayaran <span class="text-danger">*</span>
-                                                </label>
-                                                <select name="cash_payment_type" id="cash_payment_type" class="form-select border-primary fw-semibold" onchange="toggleCashChannelFields()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                    <option value="transfer" {{ (!$cashPayment || $cashPayment->payment_type == 'transfer' || !$cashPayment->payment_type) ? 'selected' : '' }}>Transfer Bank</option>
-                                                    <option value="cash" {{ ($cashPayment && $cashPayment->payment_type == 'cash') ? 'selected' : '' }}>Tunai / Cash Langsung</option>
+                                        <!-- METODE PEMBAYARAN & JANGKA WAKTU -->
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label fw-bold">Metode Pembayaran</label>
+                                                <select class="form-select border-primary fw-bold" id="temp_payment_method" name="payment_method_temp" onchange="toggleInstallmentView(); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <option value="cash" {{ $land && $land->payment_method == 'cash' ? 'selected' : '' }}>Cash Keras (Lunas Sekaligus)</option>
+                                                    <option value="termin" {{ $land && $land->payment_method == 'termin' ? 'selected' : '' }}>Pembayaran Bertahap (Termin)</option>
                                                 </select>
                                             </div>
-
-                                            <!-- Nominal Pelunasan (Otomatis Ikut Grand Total) -->
-                                            <div class="col-12 col-sm-6 col-lg-3">
-                                                <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
-                                                    Nominal Pelunasan (Grand Total) <span class="text-danger">*</span>
-                                                </label>
-                                                <input type="text" class="form-control fw-bold border-success text-dark" id="cash_amount_input" name="cash_amount_temp" 
-                                                    value="Rp {{ number_format($cashPayment ? $cashPayment->amount : $initialGrandTotal, 0, ',', '.') }}" 
-                                                    placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" 
-                                                    {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <div class="col-md-4 mb-3" id="temp_duration_container" style="display: none;">
+                                                <label class="form-label fw-bold">Jangka Waktu Bertahap</label>
+                                                <select class="form-select" id="temp_installment_duration" name="installment_duration_temp" onchange="generateInstallmentRows()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <option value="3_bulan" {{ $land && $land->installment_duration == '3_bulan' ? 'selected' : '' }}>3 Bulan</option>
+                                                    <option value="6_bulan" {{ $land && $land->installment_duration == '6_bulan' ? 'selected' : '' }}>6 Bulan</option>
+                                                    <option value="9_bulan" {{ $land && $land->installment_duration == '9_bulan' ? 'selected' : '' }}>9 Bulan</option>
+                                                    <option value="1_tahun" {{ $land && ($land->installment_duration == '1_tahun' || !$land->installment_duration) ? 'selected' : '' }}>1 Tahun</option>
+                                                </select>
                                             </div>
-
-                                            <!-- Tanggal Pelunasan -->
-                                            <div class="col-12 col-sm-6 col-lg-3">
-                                                <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
-                                                    Tanggal Realisasi / Bayar <span class="text-danger">*</span>
-                                                </label>
-                                                <input type="date" class="form-control" name="cash_payment_date" 
-                                                    value="{{ $cashPayment && $cashPayment->due_date ? \Carbon\Carbon::parse($cashPayment->due_date)->format('Y-m-d') : date('Y-m-d') }}" 
-                                                    {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                            </div>
-
-                                            <!-- Status Pembayaran -->
-                                            <div class="col-12 col-sm-6 col-lg-3">
-                                                <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
-                                                    Status Pembayaran <span class="text-danger">*</span>
-                                                </label>
-                                                <select name="cash_status" class="form-select border-success fw-semibold" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                    <option value="lunas" {{ (!$cashPayment || $cashPayment->status == 'lunas') ? 'selected' : '' }}>Lunas</option>
-                                                    <option value="belum" {{ ($cashPayment && $cashPayment->status == 'belum') ? 'selected' : '' }}>Belum Lunas</option>
+                                            <div class="col-md-4 mb-3" id="temp_count_container" style="display: none;">
+                                                <label class="form-label fw-bold">Frekuensi Pembayaran</label>
+                                                <select class="form-select" id="temp_installment_count" name="installment_count_temp" onchange="generateInstallmentRows()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <option value="2" {{ $land && $land->installment_count == 2 ? 'selected' : '' }}>2x Bayar</option>
+                                                    <option value="3" {{ $land && $land->installment_count == 3 ? 'selected' : '' }}>3x Bayar</option>
+                                                    <option value="4" {{ $land && ($land->installment_count == 4 || !$land->installment_count) ? 'selected' : '' }}>4x Bayar</option>
+                                                    <option value="5" {{ $land && $land->installment_count == 5 ? 'selected' : '' }}>5x Bayar</option>
+                                                    <option value="6" {{ $land && $land->installment_count == 6 ? 'selected' : '' }}>6x Bayar</option>
+                                                    <option value="12" {{ $land && $land->installment_count == 12 ? 'selected' : '' }}>12x Bayar</option>
                                                 </select>
                                             </div>
                                         </div>
 
-                                        <!-- DETAIL TRANSFER BANK CONTAINER (MUNCUL JIKA TRANSFER) -->
-                                        <div id="cash_bank_details_container" class="row g-3 mt-1 pt-2 border-top" style="{{ ($cashPayment && $cashPayment->payment_type == 'cash') ? 'display: none;' : '' }}">
-                                            <!-- Nama Bank -->
-                                            <div class="col-12 col-sm-6 col-lg-4">
-                                                <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
-                                                    Nama Bank Penerima / Tujuan
-                                                </label>
-                                                <input type="text" class="form-control form-control-sm" name="cash_bank_name" 
-                                                    value="{{ $cashPayment->bank_name ?? '' }}" 
-                                                    placeholder="Contoh: BCA / Mandiri / BRI / BNI" 
-                                                    {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                        <!-- FORM PEMBAYARAN CASH KERAS -->
+                                        @php
+                                            $cashPayment = ($land && $land->payment_method == 'cash') ? $land->payments->first() : null;
+                                            $initialGrandTotal = ($land ? ($land->estimated_price ?? $land->offer_price ?? 0) + ($land->cost_ijb ?? 0) + ($land->cost_tax ?? 0) + ($land->cost_broker ?? 0) + ($land->cost_other ?? 0) : 0);
+                                        @endphp
+                                        <div id="cash_payment_container" class="card shadow-none border mt-2 mb-3 p-3 rounded-3" style="background: #fafbfe;">
+                                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+                                                <div>
+                                                    <h6 class="mb-0 text-dark font-weight-bold">
+                                                        Rincian Pembayaran Cash Keras (Lunas Sekaligus)
+                                                    </h6>
+                                                    <small class="text-muted">Lengkapi data nominal pelunasan (otomatis mengikuti Grand Total), tanggal realisasi transaksi, bukti transfer, dan status pembayaran.</small>
+                                                </div>
+                                                <span class="badge bg-success-subtle text-success border border-success px-3 py-1 fw-bold text-nowrap flex-shrink-0">
+                                                    1x Pelunasan
+                                                </span>
                                             </div>
 
-                                            <!-- Nomor Rekening -->
-                                            <div class="col-12 col-sm-6 col-lg-4">
-                                                <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
-                                                    Nomor Rekening Penerima
-                                                </label>
-                                                <input type="text" class="form-control form-control-sm" name="cash_account_number" 
-                                                    value="{{ $cashPayment->account_number ?? '' }}" 
-                                                    placeholder="Contoh: 1234567890" 
-                                                    {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                            </div>
-
-                                            <!-- Atas Nama Rekening -->
-                                            <div class="col-12 col-sm-6 col-lg-4">
-                                                <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
-                                                    Atas Nama Rekening (A/N)
-                                                </label>
-                                                <input type="text" class="form-control form-control-sm" name="cash_account_holder" 
-                                                    value="{{ $cashPayment->account_holder ?? ($land->owner_name ?? '') }}" 
-                                                    placeholder="Nama Pemilik Rekening" 
-                                                    {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                            </div>
-                                        </div>
-
-                                        <!-- ROW BUKTI PEMBAYARAN -->
-                                        <div class="row g-3 mt-1">
-                                            <!-- Upload Bukti Pelunasan / Transfer -->
-                                            <div class="col-12">
-                                                <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
-                                                    Bukti Transfer / Kuitansi Fisik Pelunasan
-                                                </label>
-                                                <div class="pratanah-file-upload-modern py-2 px-3 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: #ffffff;">
-                                                    <input type="file" name="cash_file" id="cash_payment_file" class="d-none" onchange="handleSingleFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                    <label for="cash_payment_file" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
-                                                        <i class="mdi mdi-cloud-upload-outline text-muted fs-4"></i>
-                                                        <span class="text-truncate text-muted file-label-text" style="max-width: 280px;">
-                                                            {{ $cashPayment && $cashPayment->file_path ? basename($cashPayment->file_path) : 'Unggah Bukti Transfer / Kuitansi Pelunasan' }}
-                                                        </span>
+                                            <div class="row g-3">
+                                                <!-- Tipe Pembayaran Realisasi -->
+                                                <div class="col-12 col-sm-6 col-lg-3">
+                                                    <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
+                                                        Tipe Pembayaran <span class="text-danger">*</span>
                                                     </label>
-                                                    @if($cashPayment && $cashPayment->file_path)
-                                                        @php $cleanCashPath = str_replace('uploads/', '', $cashPayment->file_path); @endphp
-                                                        <button type="button" class="btn btn-xs btn-outline-primary ms-2 py-1 px-2 btn-preview-doc"
-                                                            data-url="{{ route('dokumen.preview', ['path' => $cleanCashPath]) }}"
-                                                            data-ext="{{ pathinfo($cashPayment->file_path, PATHINFO_EXTENSION) }}"
-                                                            data-label="Bukti Pelunasan Tunai"
-                                                            title="Lihat Berkas" style="font-size: 11px;">
-                                                            <i class="mdi mdi-eye me-1"></i>Lihat Berkas
-                                                        </button>
-                                                    @endif
+                                                    <select name="cash_payment_type" id="cash_payment_type" class="form-select border-primary fw-semibold" onchange="toggleCashChannelFields()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                        <option value="transfer" {{ (!$cashPayment || $cashPayment->payment_type == 'transfer' || !$cashPayment->payment_type) ? 'selected' : '' }}>Transfer Bank</option>
+                                                        <option value="cash" {{ ($cashPayment && $cashPayment->payment_type == 'cash') ? 'selected' : '' }}>Tunai / Cash Langsung</option>
+                                                    </select>
+                                                </div>
+
+                                                <!-- Nominal Pelunasan (Otomatis Ikut Grand Total) -->
+                                                <div class="col-12 col-sm-6 col-lg-3">
+                                                    <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
+                                                        Nominal Pelunasan (Grand Total) <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="text" class="form-control fw-bold border-success text-dark" id="cash_amount_input" name="cash_amount_temp" 
+                                                        value="Rp {{ number_format($cashPayment ? $cashPayment->amount : $initialGrandTotal, 0, ',', '.') }}" 
+                                                        placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" 
+                                                        {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                </div>
+
+                                                <!-- Tanggal Pelunasan -->
+                                                <div class="col-12 col-sm-6 col-lg-3">
+                                                    <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
+                                                        Tanggal Realisasi / Bayar <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="date" class="form-control" name="cash_payment_date" 
+                                                        value="{{ $cashPayment && $cashPayment->due_date ? \Carbon\Carbon::parse($cashPayment->due_date)->format('Y-m-d') : date('Y-m-d') }}" 
+                                                        {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                </div>
+
+                                                <!-- Status Pembayaran -->
+                                                <div class="col-12 col-sm-6 col-lg-3">
+                                                    <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
+                                                        Status Pembayaran <span class="text-danger">*</span>
+                                                    </label>
+                                                    <select name="cash_status" class="form-select border-success fw-semibold" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                        <option value="lunas" {{ (!$cashPayment || $cashPayment->status == 'lunas') ? 'selected' : '' }}>Lunas</option>
+                                                        <option value="belum" {{ ($cashPayment && $cashPayment->status == 'belum') ? 'selected' : '' }}>Belum Lunas</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <!-- DETAIL TRANSFER BANK CONTAINER (MUNCUL JIKA TRANSFER) -->
+                                            <div id="cash_bank_details_container" class="row g-3 mt-1 pt-2 border-top" style="{{ ($cashPayment && $cashPayment->payment_type == 'cash') ? 'display: none;' : '' }}">
+                                                <!-- Nama Bank -->
+                                                <div class="col-12 col-sm-6 col-lg-4">
+                                                    <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
+                                                        Nama Bank Penerima / Tujuan
+                                                    </label>
+                                                    <input type="text" class="form-control form-control-sm" name="cash_bank_name" 
+                                                        value="{{ $cashPayment->bank_name ?? '' }}" 
+                                                        placeholder="Contoh: BCA / Mandiri / BRI / BNI" 
+                                                        {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                </div>
+
+                                                <!-- Nomor Rekening -->
+                                                <div class="col-12 col-sm-6 col-lg-4">
+                                                    <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
+                                                        Nomor Rekening Penerima
+                                                    </label>
+                                                    <input type="text" class="form-control form-control-sm" name="cash_account_number" 
+                                                        value="{{ $cashPayment->account_number ?? '' }}" 
+                                                        placeholder="Contoh: 1234567890" 
+                                                        {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                </div>
+
+                                                <!-- Atas Nama Rekening -->
+                                                <div class="col-12 col-sm-6 col-lg-4">
+                                                    <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
+                                                        Atas Nama Rekening (A/N)
+                                                    </label>
+                                                    <input type="text" class="form-control form-control-sm" name="cash_account_holder" 
+                                                        value="{{ $cashPayment->account_holder ?? ($land->owner_name ?? '') }}" 
+                                                        placeholder="Nama Pemilik Rekening" 
+                                                        {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                </div>
+                                            </div>
+
+                                            <!-- ROW BUKTI PEMBAYARAN -->
+                                            <div class="row g-3 mt-1">
+                                                <!-- Upload Bukti Pelunasan / Transfer -->
+                                                <div class="col-12">
+                                                    <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
+                                                        Bukti Transfer / Kuitansi Fisik Pelunasan
+                                                    </label>
+                                                    <div class="pratanah-file-upload-modern py-2 px-3 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: #ffffff;">
+                                                        <input type="file" name="cash_file" id="cash_payment_file" class="d-none" onchange="handleSingleFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                        <label for="cash_payment_file" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
+                                                            <i class="mdi mdi-cloud-upload-outline text-muted fs-4"></i>
+                                                            <span class="text-truncate text-muted file-label-text" style="max-width: 280px;">
+                                                                {{ $cashPayment && $cashPayment->file_path ? basename($cashPayment->file_path) : 'Unggah Bukti Transfer / Kuitansi Pelunasan' }}
+                                                            </span>
+                                                        </label>
+                                                        @if($cashPayment && $cashPayment->file_path)
+                                                            @php $cleanCashPath = str_replace('uploads/', '', $cashPayment->file_path); @endphp
+                                                            <button type="button" class="btn btn-xs btn-outline-primary ms-2 py-1 px-2 btn-preview-doc"
+                                                                data-url="{{ route('dokumen.preview', ['path' => $cleanCashPath]) }}"
+                                                                data-ext="{{ pathinfo($cashPayment->file_path, PATHINFO_EXTENSION) }}"
+                                                                data-label="Bukti Pelunasan Tunai"
+                                                                title="Lihat Berkas" style="font-size: 11px;">
+                                                                <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                                            </button>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- INSTALLMENT WIDGET (MULTI-TERMIN DINAMIS) -->
+                                        <div id="installment_widget_container" class="card shadow-none border mt-3 p-3 rounded-3" style="display: none; background: #fafbfe;">
+                                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+                                                <div>
+                                                    <h6 class="mb-0 text-dark font-weight-bold">
+                                                        Rencana Jadwal Pembayaran Bertahap (Termin)
+                                                    </h6>
+                                                    <small class="text-muted">Nominal, tanggal jatuh tempo, dan bukti pembayaran dapat dikelola per tahap.</small>
+                                                </div>
+                                                @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                    <button type="button" class="btn btn-sm btn-gradient-primary py-1 px-3 shadow-sm d-inline-flex align-items-center gap-1 text-white text-nowrap flex-shrink-0" onclick="addCustomInstallmentRow()" style="font-size: 0.8rem; font-weight: 600; border-radius: 6px; white-space: nowrap;">
+                                                        <i class="mdi mdi-plus-circle me-1" style="font-size: 1rem;"></i> Tambah Tahap Pembayaran
+                                                    </button>
+                                                @endif
+                                            </div>
+
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover align-middle mb-2" style="background: white;">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th style="min-width: 130px; width: 15%;">Tahap</th>
+                                                            <th style="min-width: 175px; width: 18%;">Metode / Rekening</th>
+                                                            <th style="min-width: 165px; width: 20%;">Nominal Pembayaran (Rp)</th>
+                                                            <th style="min-width: 135px; width: 14%;">Jatuh Tempo</th>
+                                                            <th style="min-width: 140px; width: 15%;">Bukti Pembayaran</th>
+                                                            <th style="min-width: 100px; width: 11%;" class="text-center">Status</th>
+                                                            <th style="min-width: 55px; width: 7%;" class="text-center">Aksi</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="installment_tbody">
+                                                        @if($land && $land->payments->count() > 0)
+                                                            @foreach($land->payments as $index => $payment)
+                                                                @php $i = $index + 1; @endphp
+                                                                <tr id="termin_row_{{ $i }}">
+                                                                    <td class="font-weight-bold text-primary text-center">
+                                                                        <input type="hidden" name="installments[{{ $i }}][existing_file_path]" value="{{ $payment->file_path }}">
+                                                                        <input type="text" name="installments[{{ $i }}][term_name]" class="form-control form-control-sm text-center fw-bold text-primary" value="{{ $payment->term_name }}" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                                    </td>
+                                                                    <td>
+                                                                        <select name="installments[{{ $i }}][payment_type]" class="form-select form-select-sm mb-1 py-0" style="font-size: 11px;" onchange="handleTerminTypeChange(this)" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
+                                                                            <option value="transfer" {{ (!$payment->payment_type || $payment->payment_type == 'transfer') ? 'selected' : '' }}>Transfer Bank</option>
+                                                                            <option value="cash" {{ ($payment->payment_type == 'cash') ? 'selected' : '' }}>Tunai / Cash</option>
+                                                                        </select>
+                                                                        <div class="termin-bank-box" style="{{ ($payment->payment_type == 'cash') ? 'display: none;' : '' }}">
+                                                                            <input type="text" name="installments[{{ $i }}][account_number]" class="form-control form-control-sm py-0" style="font-size: 11px;" placeholder="Bank & No. Rekening" value="{{ $payment->account_number ?? '' }}" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="text" name="installments[{{ $i }}][amount_temp]" class="form-control form-control-sm termin-amount-input fw-semibold" value="Rp {{ number_format($payment->amount, 0, ',', '.') }}" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateInstallmentBalance();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input type="date" name="installments[{{ $i }}][due_date]" class="form-control form-control-sm" value="{{ $payment->due_date ? \Carbon\Carbon::parse($payment->due_date)->format('Y-m-d') : '' }}" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="pratanah-file-upload-modern py-1 px-2 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: rgba(0,0,0,0.01);">
+                                                                            <input type="file" name="installments[{{ $i }}][file]" id="file_tahap_{{ $i }}" class="d-none" onchange="handleTerminFileName(this)" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
+                                                                            <label for="file_tahap_{{ $i }}" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
+                                                                                <i class="mdi mdi-file-upload text-muted fs-5"></i>
+                                                                                <span class="text-truncate text-muted file-label-text" style="max-width: 120px;">
+                                                                                    {{ $payment->file_path ? basename($payment->file_path) : 'Pilih Bukti' }}
+                                                                                </span>
+                                                                            </label>
+                                                                            @if($payment->file_path)
+                                                                                @php
+                                                                                    $cleanPath = str_replace('uploads/', '', $payment->file_path);
+                                                                                @endphp
+                                                                                <button type="button" class="btn btn-xs btn-link p-0 ms-1 text-primary btn-preview-doc"
+                                                                                    data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}"
+                                                                                    data-ext="{{ pathinfo($payment->file_path, PATHINFO_EXTENSION) }}"
+                                                                                    data-label="Bukti Pembayaran {{ $payment->term_name }}"
+                                                                                    title="Lihat Berkas">
+                                                                                    <i class="mdi mdi-eye" style="font-size: 14px;"></i>
+                                                                                </button>
+                                                                            @endif
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>
+                                                                        <select name="installments[{{ $i }}][status]" class="form-select form-select-sm termin-status-select" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
+                                                                            <option value="belum" {{ $payment->status == 'belum' ? 'selected' : '' }}>Belum</option>
+                                                                            <option value="lunas" {{ $payment->status == 'lunas' ? 'selected' : '' }}>Lunas</option>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                                            <button type="button" class="btn btn-xs btn-danger text-white py-1 px-2 shadow-sm" onclick="removeInstallmentRow(this)" title="Hapus Tahap" style="background-color: #ef4444; border: 1px solid #ef4444; border-radius: 4px;">
+                                                                                <i class="mdi mdi-delete text-white"></i>
+                                                                            </button>
+                                                                        @endif
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        @endif
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <!-- STATUS BALANCE INDIKATOR -->
+                                            <div class="d-flex justify-content-between align-items-center p-2 rounded-2 mt-1" id="termin_balance_box" style="background: #eef2ff; font-size: 0.82rem;">
+                                                <div>
+                                                    <span>Total Terjadwal Termin: <strong id="termin_total_scheduled">Rp 0</strong></span>
+                                                    <span class="ms-3 text-muted">Target Pokok: <strong id="termin_target_deal" class="text-dark">Rp 0</strong></span>
+                                                </div>
+                                                <div id="termin_balance_status">
+                                                    <span class="badge bg-success"><i class="mdi mdi-check-circle me-1"></i>Balance / Sesuai</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <!-- INSTALLMENT WIDGET (MULTI-TERMIN DINAMIS) -->
-                                    <div id="installment_widget_container" class="card shadow-none border mt-3 p-3 rounded-3" style="display: none; background: #fafbfe;">
-                                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
-                                            <div>
-                                                <h6 class="mb-0 text-dark font-weight-bold">
-                                                    Rencana Jadwal Pembayaran Bertahap (Termin)
-                                                </h6>
-                                                <small class="text-muted">Nominal, tanggal jatuh tempo, dan bukti pembayaran dapat dikelola per tahap.</small>
-                                            </div>
-                                            @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                <button type="button" class="btn btn-sm btn-gradient-primary py-1 px-3 shadow-sm d-inline-flex align-items-center gap-1 text-white text-nowrap flex-shrink-0" onclick="addCustomInstallmentRow()" style="font-size: 0.8rem; font-weight: 600; border-radius: 6px; white-space: nowrap;">
-                                                    <i class="mdi mdi-plus-circle me-1" style="font-size: 1rem;"></i> Tambah Tahap Pembayaran
-                                                </button>
-                                            @endif
-                                        </div>
-
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-hover align-middle mb-2" style="background: white;">
-                                                <thead class="table-light">
-                                                    <tr>
-                                                        <th style="min-width: 130px; width: 15%;">Tahap</th>
-                                                        <th style="min-width: 175px; width: 18%;">Metode / Rekening</th>
-                                                        <th style="min-width: 165px; width: 20%;">Nominal Pembayaran (Rp)</th>
-                                                        <th style="min-width: 135px; width: 14%;">Jatuh Tempo</th>
-                                                        <th style="min-width: 140px; width: 15%;">Bukti Pembayaran</th>
-                                                        <th style="min-width: 100px; width: 11%;" class="text-center">Status</th>
-                                                        <th style="min-width: 55px; width: 7%;" class="text-center">Aksi</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="installment_tbody">
-                                                    @if($land && $land->payments->count() > 0)
-                                                        @foreach($land->payments as $index => $payment)
-                                                            @php $i = $index + 1; @endphp
-                                                            <tr id="termin_row_{{ $i }}">
-                                                                <td class="font-weight-bold text-primary text-center">
-                                                                    <input type="hidden" name="installments[{{ $i }}][existing_file_path]" value="{{ $payment->file_path }}">
-                                                                    <input type="text" name="installments[{{ $i }}][term_name]" class="form-control form-control-sm text-center fw-bold text-primary" value="{{ $payment->term_name }}" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                                </td>
-                                                                <td>
-                                                                    <select name="installments[{{ $i }}][payment_type]" class="form-select form-select-sm mb-1 py-0" style="font-size: 11px;" onchange="handleTerminTypeChange(this)" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
-                                                                        <option value="transfer" {{ (!$payment->payment_type || $payment->payment_type == 'transfer') ? 'selected' : '' }}>Transfer Bank</option>
-                                                                        <option value="cash" {{ ($payment->payment_type == 'cash') ? 'selected' : '' }}>Tunai / Cash</option>
-                                                                    </select>
-                                                                    <div class="termin-bank-box" style="{{ ($payment->payment_type == 'cash') ? 'display: none;' : '' }}">
-                                                                        <input type="text" name="installments[{{ $i }}][account_number]" class="form-control form-control-sm py-0" style="font-size: 11px;" placeholder="Bank & No. Rekening" value="{{ $payment->account_number ?? '' }}" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="text" name="installments[{{ $i }}][amount_temp]" class="form-control form-control-sm termin-amount-input fw-semibold" value="Rp {{ number_format($payment->amount, 0, ',', '.') }}" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateInstallmentBalance();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="date" name="installments[{{ $i }}][due_date]" class="form-control form-control-sm" value="{{ $payment->due_date ? \Carbon\Carbon::parse($payment->due_date)->format('Y-m-d') : '' }}" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
-                                                                </td>
-                                                                <td>
-                                                                    <div class="pratanah-file-upload-modern py-1 px-2 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: rgba(0,0,0,0.01);">
-                                                                        <input type="file" name="installments[{{ $i }}][file]" id="file_tahap_{{ $i }}" class="d-none" onchange="handleTerminFileName(this)" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
-                                                                        <label for="file_tahap_{{ $i }}" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
-                                                                            <i class="mdi mdi-file-upload text-muted fs-5"></i>
-                                                                            <span class="text-truncate text-muted file-label-text" style="max-width: 120px;">
-                                                                                {{ $payment->file_path ? basename($payment->file_path) : 'Pilih Bukti' }}
-                                                                            </span>
-                                                                        </label>
-                                                                        @if($payment->file_path)
-                                                                            @php
-                                                                                $cleanPath = str_replace('uploads/', '', $payment->file_path);
-                                                                            @endphp
-                                                                            <button type="button" class="btn btn-xs btn-link p-0 ms-1 text-primary btn-preview-doc"
-                                                                                data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}"
-                                                                                data-ext="{{ pathinfo($payment->file_path, PATHINFO_EXTENSION) }}"
-                                                                                data-label="Bukti Pembayaran {{ $payment->term_name }}"
-                                                                                title="Lihat Berkas">
-                                                                                <i class="mdi mdi-eye" style="font-size: 14px;"></i>
-                                                                            </button>
-                                                                        @endif
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <select name="installments[{{ $i }}][status]" class="form-select form-select-sm termin-status-select" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
-                                                                        <option value="belum" {{ $payment->status == 'belum' ? 'selected' : '' }}>Belum</option>
-                                                                        <option value="lunas" {{ $payment->status == 'lunas' ? 'selected' : '' }}>Lunas</option>
-                                                                    </select>
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                                        <button type="button" class="btn btn-xs btn-danger text-white py-1 px-2 shadow-sm" onclick="removeInstallmentRow(this)" title="Hapus Tahap" style="background-color: #ef4444; border: 1px solid #ef4444; border-radius: 4px;">
-                                                                            <i class="mdi mdi-delete text-white"></i>
-                                                                        </button>
-                                                                    @endif
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-                                                    @endif
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <!-- STATUS BALANCE INDIKATOR -->
-                                        <div class="d-flex justify-content-between align-items-center p-2 rounded-2 mt-1" id="termin_balance_box" style="background: #eef2ff; font-size: 0.82rem;">
-                                            <div>
-                                                <span>Total Terjadwal Termin: <strong id="termin_total_scheduled">Rp 0</strong></span>
-                                                <span class="ms-3 text-muted">Target Pokok: <strong id="termin_target_deal" class="text-dark">Rp 0</strong></span>
-                                            </div>
-                                            <div id="termin_balance_status">
-                                                <span class="badge bg-success"><i class="mdi mdi-check-circle me-1"></i>Balance / Sesuai</span>
-                                            </div>
+                                @else
+                                    <div class="alert alert-soft-secondary border py-3 px-3 mb-4 rounded-3 d-flex align-items-center gap-2" style="background: #f8fafc; font-size: 0.85rem; border-color: #e2e8f0 !important;">
+                                        <i class="mdi mdi-shield-lock-outline fs-4 text-purple" style="color: #9a55ff;"></i>
+                                        <div>
+                                            <strong class="text-dark">Form Keuangan & Pembayaran Dikelola Terpisah</strong><br>
+                                            <span class="text-muted">Sebagai Staff Legal, fokus utama Anda adalah input dan verifikasi berkas dokumen legalitas pada Fase 1. Pengelolaan biaya transaksi, skema pembayaran, dan realisasi termin ditangani secara khusus oleh Divisi Keuangan & Manajemen.</span>
                                         </div>
                                     </div>
-                                </div>
+                                @endif
 
                                 <!-- ACTIONS -->
                                 <div class="d-flex justify-content-between align-items-center gap-3 mt-4 footer-action-row">
                                     <div>
-                                        @if ($land)
+                                        <button type="button" class="btn btn-outline-purple btn-action-mobile" onclick="switchStep(2)">
+                                            <i class="mdi mdi-arrow-left-circle me-1"></i> Kembali ke Fase 2
+                                        </button>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        @if ($land && ($isAdmin || $isKeuangan))
                                             <button type="button" class="btn btn-outline-purple py-2 px-3 shadow-sm" onclick="previewInvoice()">
                                                 <i class="mdi mdi-printer me-1"></i> Cetak / Pratinjau Invoice
                                             </button>
                                         @endif
-                                    </div>
-                                    <div class="d-flex gap-2">
-                                        @if ($land && $land->status == 'approved')
-                                            <button type="button" class="btn btn-gradient-warning py-2 px-4 shadow-sm" onclick="saveFase3()">
-                                                <i class="mdi mdi-cash-check me-1"></i> Update Pembayaran Cicilan
-                                            </button>
-                                        @elseif (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                        @if ($isAdmin)
+                                            @if ($land && $land->status == 'approved')
+                                                <button type="button" class="btn btn-gradient-warning py-2 px-4 shadow-sm" onclick="saveFase3()">
+                                                    <i class="mdi mdi-cash-check me-1"></i> Update Keputusan & Transaksi
+                                                </button>
+                                            @elseif (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="saveFase3()">
+                                                    <i class="mdi mdi-content-save-all me-1"></i> Simpan Keputusan Sidang (Admin)
+                                                </button>
+                                            @endif
+                                        @elseif ($isKeuangan)
                                             <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="saveFase3()">
-                                                <i class="mdi mdi-content-save-all me-1"></i> Simpan Keputusan Fase 3
+                                                <i class="mdi mdi-cash-register me-1"></i> Simpan & Update Data Keuangan
                                             </button>
                                         @endif
                                     </div>
@@ -3003,14 +3156,20 @@
             if (queryStep >= 1 && queryStep <= 3) {
                 if (queryStep === 3 && (!isLegalSah || !isFase2Done) && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
                     activeStep = isLegalSah ? 2 : 1;
+                    if (window.history.replaceState) {
+                        window.history.replaceState(null, '', window.location.pathname + '?step=' + activeStep);
+                    }
                 } else if (queryStep === 2 && !isLegalSah && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
                     activeStep = 1;
+                    if (window.history.replaceState) {
+                        window.history.replaceState(null, '', window.location.pathname + '?step=1');
+                    }
                 } else {
                     activeStep = queryStep;
                 }
             } else {
                 if (currentLandStatus === 'fase2') {
-                    activeStep = 2;
+                    activeStep = isLegalSah ? 2 : 1;
                 } else if (currentLandStatus === 'fase3' || currentLandStatus === 'approved' || currentLandStatus === 'rejected') {
                     activeStep = (isLegalSah && isFase2Done) ? 3 : (isLegalSah ? 2 : 1);
                 }
@@ -3045,17 +3204,42 @@
 
         function getNormalizedCategory(raw) {
             const val = (raw || '').toString().toUpperCase().trim();
+            if (!val) return '';
             if (val.includes('APHB')) return 'APHB';
             if (val.includes('WARIS')) return 'WARISAN';
             if (val.includes('PETOK') || val.includes('GIRIK') || val.includes('LETTER')) return 'PETOK_C';
             if (val.includes('AJB') || val.includes('HIBAH')) return 'AJB';
-            return 'SHM';
+            if (val.includes('SHM') || val.includes('HGB') || val.includes('HGU') || val.includes('HP')) return 'SHM';
+            return '';
         }
 
         function filterFase1DocumentsByCategory(selectedVal) {
             const cat = getNormalizedCategory(selectedVal);
-            let visibleCount = 0;
+            const alertEl = document.getElementById('fase1CategoryAlert');
+            const emptyEl = document.getElementById('fase1EmptyCategoryAlert');
+            const nameEl = document.getElementById('fase1CategoryName');
+            const descEl = document.getElementById('fase1CategoryDesc');
+            const countEl = document.getElementById('fase1CategoryCountBadge');
+            const fase3CatLabel = document.getElementById('fase3CategoryLabel');
 
+            if (!cat) {
+                if (alertEl) alertEl.classList.add('d-none');
+                if (emptyEl) emptyEl.classList.remove('d-none');
+
+                document.querySelectorAll('.doc-fase1-col').forEach(card => {
+                    card.classList.add('d-none');
+                });
+                document.querySelectorAll('.doc-fase3-col').forEach(card => {
+                    card.classList.add('d-none');
+                });
+                if (fase3CatLabel) fase3CatLabel.textContent = '-';
+                return;
+            }
+
+            if (emptyEl) emptyEl.classList.add('d-none');
+            if (alertEl) alertEl.classList.remove('d-none');
+
+            let visibleCount = 0;
             document.querySelectorAll('.doc-fase1-col').forEach(card => {
                 let rawCats = card.getAttribute('data-categories');
                 let cats = [];
@@ -3091,148 +3275,57 @@
             });
 
             // Update info banner
-            const info = CATEGORY_META[cat] || CATEGORY_META['SHM'];
-            const nameEl = document.getElementById('fase1CategoryName');
-            const descEl = document.getElementById('fase1CategoryDesc');
-            const countEl = document.getElementById('fase1CategoryCountBadge');
-            const fase3CatLabel = document.getElementById('fase3CategoryLabel');
-
+            const info = CATEGORY_META[cat] || { name: cat, desc: 'Menampilkan berkas wajib legalitas sesuai SOP.' };
             if (nameEl) nameEl.textContent = info.name;
             if (descEl) descEl.textContent = info.desc;
             if (countEl) countEl.textContent = visibleCount + ' Dokumen Wajib';
-            if (fase3CatLabel) fase3CatLabel.textContent = cat;
-        }
-
-        const COMPANY_PROFILES_DATA = @json($companyProfiles ?? []);
-
-        function updateSelectedPTDetails(companyId) {
-            const grid = document.getElementById('pt_legalitas_docs_grid');
-            const badgeContainer = document.getElementById('pt_legalitas_overall_badge');
-            if (!grid) return;
-
-            if (!companyId) {
-                grid.innerHTML = `
-                    <div class="col-12 text-center py-3 text-muted" style="font-size: 0.84rem;">
-                        <i class="mdi mdi-domain me-1" style="font-size: 1.25rem;"></i>
-                        Silakan pilih Perusahaan (PT) Pengakuisisi di atas untuk memeriksa kesiapan berkas legalitas.
-                    </div>
-                `;
-                if (badgeContainer) {
-                    badgeContainer.className = 'badge bg-secondary py-1.5 px-3';
-                    badgeContainer.innerHTML = 'Pilih PT Pengakuisisi';
-                }
-                return;
-            }
-
-            const company = COMPANY_PROFILES_DATA.find(c => c.id == companyId);
-            if (!company) return;
-
-            const docConfigs = [
-                { key: 'file_akta_pendirian', name: '1. Akta Pendirian & AHU', desc: 'Salinan Akta Pendirian dan SK AHU Kemenkumham' },
-                { key: 'file_akta_perubahan', name: '2. Akta Perubahan & AHU', desc: 'Akta Perubahan Terakhir & SK Kemenkumham' },
-                { key: 'file_npwp',           name: '3. NPWP Perusahaan',    desc: 'Kartu NPWP resmi badan hukum PT' },
-                { key: 'file_direksi',        name: '4. Identitas Direksi',  desc: 'KTP, NPWP, & KK Direktur yang tanda tangan' },
-                { key: 'file_nib',            name: '5. NIB Perusahaan',     desc: 'Nomor Induk Berusaha (OSS RBA)' },
-                { key: 'file_domisili',       name: '6. Surat Domisili PT',  desc: 'Surat Keterangan Domisili Desa/Kelurahan' },
-            ];
-
-            let countReady = 0;
-            let html = '';
-
-            docConfigs.forEach(cfg => {
-                const filePath = company[cfg.key];
-                const isReady = !!filePath;
-                if (isReady) countReady++;
-
-                const cleanPath = isReady ? filePath.replace('uploads/', '') : '';
-                const ext = isReady ? filePath.split('.').pop() : '';
-
-                html += `
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="p-2.5 rounded-3 border h-100 ${isReady ? 'bg-white' : 'bg-light bg-opacity-50'}" style="border-color: ${isReady ? '#86efac' : '#e2e8f0'} !important;">
-                            <div class="d-flex align-items-center justify-content-between mb-1">
-                                <span class="fw-bold text-dark text-truncate" style="font-size: 0.8rem;" title="${cfg.name}">
-                                    ${cfg.name}
-                                </span>
-                                ${isReady ?
-                                    `<span class="badge bg-success py-0.5 px-2 text-white" style="font-size: 9px;"><i class="mdi mdi-check-circle me-1"></i>Ada</span>` :
-                                    `<span class="badge bg-secondary bg-opacity-25 text-muted py-0.5 px-2" style="font-size: 9px;"><i class="mdi mdi-close-circle-outline me-1"></i>Belum Ada</span>`
-                                }
-                            </div>
-                            <small class="text-muted d-block text-truncate mb-2" style="font-size: 0.7rem;" title="${cfg.desc}">${cfg.desc}</small>
-                            ${isReady ? `
-                                <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 w-100 d-flex align-items-center justify-content-center shadow-none btn-preview-doc"
-                                    data-url="{{ url('dokumen/preview') }}/${cleanPath}"
-                                    data-ext="${ext}"
-                                    data-label="${cfg.name} (${company.name})"
-                                    style="font-size: 0.72rem; border-radius: 5px;">
-                                    <i class="mdi mdi-eye me-1"></i> Lihat Berkas
-                                </button>
-                            ` : `
-                                <a href="{{ route('company-profile.index') }}" target="_blank" class="btn btn-xs btn-outline-secondary py-1 px-2 w-100 d-flex align-items-center justify-content-center" style="font-size: 0.72rem; border-radius: 5px;">
-                                    <i class="mdi mdi-upload me-1"></i> Upload di Master PT
-                                </a>
-                            `}
-                        </div>
-                    </div>
-                `;
-            });
-
-            grid.innerHTML = html;
-
-            // Re-bind preview buttons for dynamically generated elements
-            grid.querySelectorAll('.btn-preview-doc').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const url = this.getAttribute('data-url');
-                    const ext = this.getAttribute('data-ext') || '';
-                    const label = this.getAttribute('data-label') || 'Dokumen';
-                    if (typeof openDocumentPreviewModal === 'function') {
-                        openDocumentPreviewModal(url, ext, label);
-                    } else {
-                        window.open(url, '_blank');
-                    }
-                });
-            });
-
-            if (badgeContainer) {
-                if (countReady === 6) {
-                    badgeContainer.className = 'badge bg-success py-1.5 px-3';
-                    badgeContainer.innerHTML = '<i class="mdi mdi-shield-check me-1"></i>Legalitas PT Lengkap (6/6) - Siap ke Notaris';
-                } else if (countReady > 0) {
-                    badgeContainer.className = 'badge bg-warning text-dark py-1.5 px-3';
-                    badgeContainer.innerHTML = `<i class="mdi mdi-clock-outline me-1"></i>${countReady}/6 Berkas Tersedia (${6 - countReady} Belum Lengkap)`;
-                } else {
-                    badgeContainer.className = 'badge bg-danger py-1.5 px-3';
-                    badgeContainer.innerHTML = '<i class="mdi mdi-alert-circle me-1"></i>0/6 Berkas Legalitas (Wajib Dilengkapi di Master PT)';
-                }
-            }
+            if (fase3CatLabel) fase3CatLabel.textContent = info.name || cat;
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             // Render correct step view upon loading
             switchStep(activeStep);
 
+            // Display flash or sessionStorage notifications
+            const pendingMsg = sessionStorage.getItem('success_message');
+            if (pendingMsg) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: pendingMsg,
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+                sessionStorage.removeItem('success_message');
+            }
+
+            @if(session('warning'))
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Akses Terkunci',
+                    text: "{{ session('warning') }}"
+                });
+            @endif
+
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: "{{ session('success') }}",
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+            @endif
+
             // Initial toggle for installment view (do not regenerate rows to preserve Blade pre-render)
             toggleInstallmentView(true);
 
             // Filter berkas dokumen Fase 1 secara dinamis sesuai Status Kepemilikan (Alas Hak)
-            const initialOwnership = $('#select_ownership_status').val() || "{{ $land->ownership_status ?? 'SHM' }}";
+            const initialOwnership = $('#select_ownership_status').val();
             filterFase1DocumentsByCategory(initialOwnership);
 
             $('#select_ownership_status').on('change select2:select', function() {
-                filterFase1DocumentsByCategory(this.value);
-            });
-
-            // Initial render of selected PT details
-            let initialCompanyId = $('#select_company_profile').val() || "{{ $land->company_profile_id ?? '' }}";
-            if (!initialCompanyId && COMPANY_PROFILES_DATA.length === 1) {
-                initialCompanyId = COMPANY_PROFILES_DATA[0].id;
-                $('#select_company_profile').val(initialCompanyId).trigger('change');
-            }
-            updateSelectedPTDetails(initialCompanyId);
-
-            $('#select_company_profile').on('change select2:select', function() {
-                updateSelectedPTDetails(this.value);
+                filterFase1DocumentsByCategory($(this).val());
             });
 
 
@@ -3424,10 +3517,14 @@
         function initSelect2Search() {
             if (typeof $ !== 'undefined' && typeof $.fn.select2 !== 'undefined') {
                 $('.select2-search').each(function() {
-                    if (!$(this).hasClass("select2-hidden-accessible")) {
-                        $(this).select2({
+                    const $this = $(this);
+                    if ($this.is(':visible')) {
+                        if ($this.hasClass("select2-hidden-accessible")) {
+                            $this.select2('destroy');
+                        }
+                        $this.select2({
                             theme: 'bootstrap-5',
-                            placeholder: $(this).data('placeholder') || 'Pilih...',
+                            placeholder: $this.data('placeholder') || 'Pilih...',
                             allowClear: true,
                             width: '100%'
                         });
@@ -3509,14 +3606,11 @@
 
                 if (res.success) {
                     let targetId = res.id || "{{ $land->id ?? '' }}";
-                    if (andProceed && targetId) {
-                        if (!isLegalSah) {
-                            sessionStorage.setItem('success_message', 'Data Fase 1 berhasil disimpan. Lengkapi & validasi berkas dokumen oleh Kepala Legal untuk membuka akses Fase 2.');
-                            window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=1";
-                        } else {
-                            window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=2";
-                        }
+                    if (andProceed && targetId && isLegalSah) {
+                        sessionStorage.setItem('success_message', 'Data Fase 1 berhasil disimpan.');
+                        window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=2";
                     } else if (targetId) {
+                        sessionStorage.setItem('success_message', 'Perubahan data Fase 1 berhasil disimpan.');
                         window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=1";
                     } else {
                         window.location.href = "{{ route('pralandbank.all') }}";
@@ -3616,10 +3710,6 @@
                 if (dealPriceInput) {
                     formData.set('deal_price', dealPriceInput.value);
                 }
-                const selectCompany = form.querySelector('select[name="company_profile_id"]');
-                if (selectCompany && selectCompany.value) {
-                    formData.set('company_profile_id', selectCompany.value);
-                }
                 const selectNotaris = form.querySelector('select[name="notaris_id"]');
                 if (selectNotaris && selectNotaris.value) {
                     formData.set('notaris_id', selectNotaris.value);
@@ -3642,7 +3732,7 @@
 
                     Swal.fire({
                         icon: 'success',
-                        title: 'Keputusan Fase 3 Disimpan!',
+                        title: '{!! ($isKeuangan && !$isAdmin) ? "Data Keuangan Berhasil Disimpan!" : "Keputusan Fase 3 Disimpan!" !!}',
                         html: `
                             <p class="mb-3 text-muted" style="font-size: 0.9rem;">${textMsg}</p>
                             <div class="alert alert-light border py-2 px-3 mb-0 text-start" style="font-size: 0.85rem; background: #fafbfe;">
@@ -4495,6 +4585,17 @@
             });
         }
 
+        window.togglePbbArrearsField = function(selectEl) {
+            let val = $(selectEl).val();
+            let $container = $('#pbb_arrears_container');
+            if (val === 'nunggak') {
+                $container.removeClass('d-none');
+                $('#input_pbb_note').focus();
+            } else {
+                $container.addClass('d-none');
+            }
+        };
+
         window.toggleDocProcessNotes = function(selectEl, docId) {
             let val = $(selectEl).val();
             let $card = $(selectEl).closest('.card');
@@ -4669,6 +4770,171 @@
             });
         }
 
+        function autoUploadNotaryDoc(inputEl, fieldName) {
+            if (!inputEl.files || inputEl.files.length === 0) return;
+            const file = inputEl.files[0];
+
+            // Max 20MB
+            if (file.size > 20 * 1024 * 1024) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File Terlalu Besar',
+                    text: 'Ukuran file maksimal adalah 20MB'
+                });
+                inputEl.value = '';
+                return;
+            }
+
+            const landId = '{{ $land->id ?? 0 }}';
+            if (!landId || landId === '0') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Data tanah belum tersimpan. Silakan simpan data terlebih dahulu.'
+                });
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('file_field', fieldName);
+            formData.append('file', file);
+
+            const uploadUrl = '{{ route("pra-landbank.upload-notary-doc", ["id" => $land->id ?? 0]) }}';
+
+            Swal.fire({
+                title: 'Mengunggah Berkas...',
+                text: 'Sedang memproses upload berkas notaris secara instan',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            fetch(uploadUrl, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Gagal mengunggah berkas.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil Diunggah!',
+                        text: data.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    // Update Badge
+                    const badgeEl = document.getElementById(`badge_${fieldName}`);
+                    if (badgeEl) {
+                        badgeEl.className = 'badge bg-success';
+                        badgeEl.innerHTML = '<i class="mdi mdi-check-circle me-1"></i>Terunggah';
+                    }
+
+                    // Update Container
+                    const containerEl = document.getElementById(`container_${fieldName}`);
+                    if (containerEl) {
+                        const newHtml = `
+                            <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <div class="p-1.5 rounded-2 flex-shrink-0 bg-success bg-opacity-10 text-success">
+                                        <i class="mdi mdi-file-check-outline" style="font-size: 1.25rem;"></i>
+                                    </div>
+                                    <div class="overflow-hidden flex-grow-1">
+                                        <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">${data.doc_label} Terunggah</span>
+                                        <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">${data.filename}</small>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm btn-preview-doc"
+                                    data-url="${data.preview_url}"
+                                    data-ext="${data.ext}"
+                                    data-label="${data.doc_label}"
+                                    style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
+                                    <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                </button>
+                            </div>
+                            <div class="pratanah-file-upload-modern mb-1">
+                                <input type="file" name="${fieldName}" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, '${fieldName}')">
+                                <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                                    <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
+                                    <div class="pratanah-file-info-modern">
+                                        <span class="file-label-text text-secondary" style="font-size: 0.76rem; font-weight: 600;">Ganti Berkas / Upload Ulang</span>
+                                        <span class="file-label-hint" style="font-size: 0.7rem;">PDF, JPG, PNG (Auto Upload)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        containerEl.innerHTML = newHtml;
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: data.message || 'Terjadi kesalahan saat mengunggah berkas.'
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: error.message || 'Terjadi kesalahan jaringan/server.'
+                });
+            });
+        }
+
+        function autoSaveNotaryInfo() {
+            const landId = '{{ $land->id ?? 0 }}';
+            if (!landId || landId === '0') return;
+
+            const notarisId = $('#select_notaris_id').val() || $('select[name="notaris_id"]').val() || document.getElementById('select_notaris_id')?.value;
+            const appointmentDate = document.getElementById('input_notary_appointment_date')?.value || $('input[name="notary_appointment_date"]').val();
+
+            const updateUrl = '{{ route("pra-landbank.update-notary-info", ["id" => $land->id ?? 0]) }}';
+
+            fetch(updateUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    notaris_id: notarisId,
+                    notary_appointment_date: appointmentDate
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 2500,
+                        timerProgressBar: true
+                    });
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Data Notaris & Jadwal Tersimpan'
+                    });
+                }
+            })
+            .catch(err => {
+                console.error('Auto-save notary info error:', err);
+            });
+        }
+
         function initFileUploadEvents() {
             document.querySelectorAll('.pratanah-file-upload-modern input[type="file"]').forEach(input => {
                 input.addEventListener('change', function () {
@@ -4739,6 +5005,22 @@
 
             initFileUploadEvents();
             initSelect2Search();
+
+            // Auto-save notary on change & blur
+            const notaryDateInput = document.getElementById('input_notary_appointment_date');
+            if (notaryDateInput) {
+                notaryDateInput.addEventListener('change', autoSaveNotaryInfo);
+                notaryDateInput.addEventListener('blur', autoSaveNotaryInfo);
+            }
+
+            if (typeof $ !== 'undefined') {
+                $('select[name="notaris_id"], #select_notaris_id').on('change', function() {
+                    autoSaveNotaryInfo();
+                });
+                $('#input_notary_appointment_date').on('change blur', function() {
+                    autoSaveNotaryInfo();
+                });
+            }
         });
     </script>
 @endpush

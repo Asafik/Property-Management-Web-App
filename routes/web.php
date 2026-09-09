@@ -215,6 +215,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pra-landbank/dokumen/{id}/approve', [PraLandBankController::class, 'approveDocument'])->name('pra-dokumen.approve');
     Route::post('/pra-landbank/dokumen/{id}/reject', [PraLandBankController::class, 'rejectDocument'])->name('pra-dokumen.reject');
     Route::post('/pra-landbank/dokumen/{id}/upload-completed', [PraLandBankController::class, 'uploadCompletedDocument'])->name('pra-dokumen.upload-completed');
+    Route::post('/properti/pra-landbank/{id}/upload-notary-doc', [PraLandBankController::class, 'uploadNotaryDoc'])->name('pra-landbank.upload-notary-doc');
+    Route::post('/properti/pra-landbank/{id}/update-notary-info', [PraLandBankController::class, 'updateNotaryInfo'])->name('pra-landbank.update-notary-info');
     Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
     Route::get('/properti/verifikasi-legal/{id}', [LandBankController::class, 'verifikasiLegal'])->name('properti.verifikasi');
     Route::post('/properti/{id}/update-company', [PropertyController::class, 'updateCompanyAjax'])->name('properti.updateCompany');

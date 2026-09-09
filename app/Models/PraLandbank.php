@@ -51,6 +51,8 @@ class PraLandbank extends Model
         'priority',
         'land_protection_status',
         'pbb_status',
+        'pbb_note',
+        'pbb_nominal',
         'notaris_id',
         'notary_appointment_date',
         'cost_ijb',

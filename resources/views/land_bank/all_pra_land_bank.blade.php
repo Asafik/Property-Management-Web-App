@@ -269,10 +269,20 @@
                         <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
                             <i class="mdi mdi-format-list-bulleted me-2" style="color: #9a55ff;"></i>Daftar Pra Tanah
                         </h5>
-                        <a class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center" style="gap: 5px;"
-                            href="{{ route('pra-landbank.proses') }}">
-                            <i class="mdi mdi-plus me-1"></i>Tambah Pra Tanah
-                        </a>
+                        @php
+                            $currentUser = auth()->user();
+                            $userPositionName = strtolower($currentUser->position->name ?? '');
+                            $userDivisionName = strtolower($currentUser->division->name ?? ($currentUser->position->division->name ?? ''));
+                            $userPositionId = $currentUser->position_id ?? null;
+                            $isAdmin = ($userPositionId == 5) || str_contains($userPositionName, 'admin');
+                            $isKeuangan = ($userPositionId == 7) || str_contains($userPositionName, 'keuangan') || str_contains($userPositionName, 'finance') || str_contains($userDivisionName, 'keuangan') || str_contains($userDivisionName, 'finance');
+                        @endphp
+                        @if(!$isKeuangan || $isAdmin)
+                            <a class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center" style="gap: 5px;"
+                                href="{{ route('pra-landbank.proses') }}">
+                                <i class="mdi mdi-plus me-1"></i>Tambah Pra Tanah
+                            </a>
+                        @endif
                     </div>
 
                     <div class="card-body">
@@ -639,74 +649,105 @@
 
                                             <td class="text-center text-nowrap">
                                                 <div class="d-inline-flex align-items-center gap-1">
-                                                    <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 1]) }}" 
-                                                       class="btn-fase-action btn-fase-1" 
-                                                       title="FASE 1: Negosiasi">
-                                                        <i class="mdi mdi-account-tie"></i>
-                                                        <span>Fase 1</span>
-                                                    </a>
-
                                                     @php
-                                                        $docs = $land->documents;
-                                                        $activeDocs = $docs->filter(function($d) {
-                                                            return !empty($d->file_path) || $d->document_status === 'proses' || !empty($d->document_number);
-                                                        });
-                                                        $totalActiveDocs = $activeDocs->count();
-                                                        $verifiedDocs = $docs->where('status', 'verified')->count();
-                                                        // Legalitas dianggap sah jika semua dokumen aktif terverifikasi/disetujui Kepala Legal
-                                                        $isLandLegalSah = ($totalActiveDocs > 0) && ($verifiedDocs === $totalActiveDocs);
-                                                        $canAccessFase2 = $isLandLegalSah || $land->status === 'approved' || $land->status === 'rejected' || $isTerminActive;
-
-                                                        // Fase 2 dianggap selesai jika data survey fisik telah diisi & disimpan
-                                                        $isFase2Done = !empty($land->survey_date) || in_array($land->status, ['fase3', 'approved', 'rejected']) || $isTerminActive;
-
-                                                        // FASE 3 HANYA DAPAT DIAKSES JIKA FASE 1 SAH DAN FASE 2 SELESAI
-                                                        $canAccessFase3 = ($isLandLegalSah && $isFase2Done) || $land->status === 'approved' || $land->status === 'rejected' || $isTerminActive;
+                                                        $currentUser = auth()->user();
+                                                        $userPositionName = strtolower($currentUser->position->name ?? '');
+                                                        $userDivisionName = strtolower($currentUser->division->name ?? ($currentUser->position->division->name ?? ''));
+                                                        $userPositionId = $currentUser->position_id ?? null;
+                                                        $isAdmin = ($userPositionId == 5) || str_contains($userPositionName, 'admin');
+                                                        $isKeuangan = ($userPositionId == 7) || str_contains($userPositionName, 'keuangan') || str_contains($userPositionName, 'finance') || str_contains($userDivisionName, 'keuangan') || str_contains($userDivisionName, 'finance');
                                                     @endphp
 
-                                                    {{-- TOMBOL FASE 2 (Terkunci jika legalitas di Fase 1 belum divalidasi) --}}
-                                                    @if($canAccessFase2)
+                                                    @if($isKeuangan && !$isAdmin)
+                                                        {{-- TOMBOL KHUSUS DIVISI KEUANGAN: LIHAT DATA FASE 1, FASE 2, FASE 3 (READ-ONLY) --}}
+                                                        <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 1]) }}" 
+                                                           class="btn-fase-action btn-fase-1" 
+                                                           title="Lihat Data FASE 1: Penawaran & Legalitas">
+                                                            <i class="mdi mdi-account-tie"></i>
+                                                            <span>Fase 1</span>
+                                                        </a>
                                                         <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 2]) }}" 
                                                            class="btn-fase-action btn-fase-2" 
-                                                           title="FASE 2: Survey & Teknis">
+                                                           title="Lihat Data FASE 2: Survey Teknis & Peta Spasial">
                                                             <i class="mdi mdi-map-search"></i>
                                                             <span>Fase 2</span>
                                                         </a>
-                                                    @else
-                                                        <button type="button" class="btn-fase-action btn-fase-2" 
-                                                                onclick="alertFase2Locked({{ $land->id }})" 
-                                                                style="opacity: 0.75; cursor: pointer;"
-                                                                title="Terkunci: Menunggu Validasi Legalitas Dokumen di Fase 1">
-                                                            <i class="mdi mdi-lock"></i>
-                                                            <span>Fase 2</span>
-                                                        </button>
-                                                    @endif
-
-                                                    {{-- TOMBOL FASE 3 (Terkunci jika Fase 1 belum sah atau Fase 2 belum selesai) --}}
-                                                    @if($canAccessFase3)
                                                         <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" 
                                                            class="btn-fase-action btn-fase-3" 
-                                                           title="{{ $isTerminActive ? 'Kelola Pembayaran Cicilan' : 'FASE 3: Persetujuan Direksi' }}">
-                                                            <i class="mdi {{ $isTerminActive ? 'mdi-cash-check' : 'mdi-check-decagram' }}"></i>
-                                                            <span>{{ $isTerminActive ? 'Cicilan' : 'Fase 3' }}</span>
+                                                           title="Lihat Data FASE 3: Transaksi, Notaris & Keuangan">
+                                                            <i class="mdi mdi-cash-check"></i>
+                                                            <span>Fase 3</span>
                                                         </a>
                                                     @else
-                                                        <button type="button" class="btn-fase-action btn-fase-3" 
-                                                                onclick="alertFase3Locked({{ $land->id }}, {{ $isLandLegalSah ? 'true' : 'false' }}, {{ $isFase2Done ? 'true' : 'false' }})" 
-                                                                style="opacity: 0.75; cursor: pointer;"
-                                                                title="{{ !$isLandLegalSah ? 'Terkunci: Wajib validasi sah berkas legalitas di Fase 1' : 'Terkunci: Wajib selesaikan Fase 2 terlebih dahulu' }}">
-                                                            <i class="mdi mdi-lock"></i>
-                                                            <span>Fase 3</span>
-                                                        </button>
-                                                    @endif
+                                                        <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 1]) }}" 
+                                                           class="btn-fase-action btn-fase-1" 
+                                                           title="FASE 1: Negosiasi">
+                                                            <i class="mdi mdi-account-tie"></i>
+                                                            <span>Fase 1</span>
+                                                        </a>
 
-                                                    <form action="{{ route('pra-landbanks.destroy', $land->id) }}" method="POST" class="d-inline delete-form">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="button" class="btn-fase-action btn-fase-delete delete-btn" title="Hapus Data">
-                                                            <i class="mdi mdi-trash-can-outline"></i>
-                                                        </button>
-                                                    </form>
+                                                        @php
+                                                            $docs = $land->documents;
+                                                            $activeDocs = $docs->filter(function($d) {
+                                                                return !empty($d->file_path) || $d->document_status === 'proses' || !empty($d->document_number);
+                                                            });
+                                                            $totalActiveDocs = $activeDocs->count();
+                                                            $verifiedDocs = $docs->where('status', 'verified')->count();
+                                                            // Legalitas dianggap sah jika semua dokumen aktif terverifikasi/disetujui Kepala Legal
+                                                            $isLandLegalSah = ($totalActiveDocs > 0) && ($verifiedDocs === $totalActiveDocs);
+                                                            $canAccessFase2 = $isLandLegalSah || $land->status === 'approved' || $land->status === 'rejected' || $isTerminActive;
+
+                                                            // Fase 2 dianggap selesai jika data survey fisik telah diisi & disimpan
+                                                            $isFase2Done = !empty($land->survey_date) || in_array($land->status, ['fase3', 'approved', 'rejected']) || $isTerminActive;
+
+                                                            // FASE 3 HANYA DAPAT DIAKSES JIKA FASE 1 SAH DAN FASE 2 SELESAI
+                                                            $canAccessFase3 = ($isLandLegalSah && $isFase2Done) || $land->status === 'approved' || $land->status === 'rejected' || $isTerminActive;
+                                                        @endphp
+
+                                                        {{-- TOMBOL FASE 2 (Terkunci jika legalitas di Fase 1 belum divalidasi) --}}
+                                                        @if($canAccessFase2)
+                                                            <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 2]) }}" 
+                                                               class="btn-fase-action btn-fase-2" 
+                                                               title="FASE 2: Survey & Teknis">
+                                                                <i class="mdi mdi-map-search"></i>
+                                                                <span>Fase 2</span>
+                                                            </a>
+                                                        @else
+                                                            <button type="button" class="btn-fase-action btn-fase-2" 
+                                                                    onclick="alertFase2Locked({{ $land->id }})" 
+                                                                    style="opacity: 0.75; cursor: pointer;"
+                                                                    title="Terkunci: Menunggu Validasi Legalitas Dokumen di Fase 1">
+                                                                <i class="mdi mdi-lock"></i>
+                                                                <span>Fase 2</span>
+                                                            </button>
+                                                        @endif
+
+                                                        {{-- TOMBOL FASE 3 (Terkunci jika Fase 1 belum sah atau Fase 2 belum selesai) --}}
+                                                        @if($canAccessFase3)
+                                                            <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" 
+                                                               class="btn-fase-action btn-fase-3" 
+                                                               title="{{ $isTerminActive ? 'Kelola Pembayaran Cicilan' : 'FASE 3: Persetujuan Direksi' }}">
+                                                                <i class="mdi {{ $isTerminActive ? 'mdi-cash-check' : 'mdi-check-decagram' }}"></i>
+                                                                <span>{{ $isTerminActive ? 'Cicilan' : 'Fase 3' }}</span>
+                                                            </a>
+                                                        @else
+                                                            <button type="button" class="btn-fase-action btn-fase-3" 
+                                                                    onclick="alertFase3Locked({{ $land->id }}, {{ $isLandLegalSah ? 'true' : 'false' }}, {{ $isFase2Done ? 'true' : 'false' }})" 
+                                                                    style="opacity: 0.75; cursor: pointer;"
+                                                                    title="{{ !$isLandLegalSah ? 'Terkunci: Wajib validasi sah berkas legalitas di Fase 1' : 'Terkunci: Wajib selesaikan Fase 2 terlebih dahulu' }}">
+                                                                <i class="mdi mdi-lock"></i>
+                                                                <span>Fase 3</span>
+                                                            </button>
+                                                        @endif
+
+                                                        <form action="{{ route('pra-landbanks.destroy', $land->id) }}" method="POST" class="d-inline delete-form">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="button" class="btn-fase-action btn-fase-delete delete-btn" title="Hapus Data">
+                                                                <i class="mdi mdi-trash-can-outline"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>

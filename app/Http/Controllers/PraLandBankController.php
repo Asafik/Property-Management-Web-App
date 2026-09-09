@@ -63,6 +63,13 @@ public function store(Request $request)
             $data['offer_price']     = $cleanNumber($request->offer_price);
             $data['estimated_price'] = $cleanNumber($request->estimated_price);
             $data['area']            = $cleanNumber($request->area);
+            if ($request->has('pbb_nominal')) {
+                $data['pbb_nominal'] = $request->pbb_status === 'nunggak' ? $cleanNumber($request->pbb_nominal) : null;
+            }
+            if ($request->pbb_status === 'lunas') {
+                $data['pbb_note'] = null;
+                $data['pbb_nominal'] = null;
+            }
 
             $data['status'] = 'fase1';
 
@@ -114,6 +121,15 @@ public function store(Request $request)
 
         if ($request->has('area')) {
             $data['area'] = $cleanNumber($request->area);
+        }
+
+        if ($request->has('pbb_nominal')) {
+            $data['pbb_nominal'] = ($request->pbb_status ?? $record->pbb_status) === 'nunggak' ? $cleanNumber($request->pbb_nominal) : null;
+        }
+
+        if ($request->has('pbb_status') && $request->pbb_status === 'lunas') {
+            $data['pbb_note'] = null;
+            $data['pbb_nominal'] = null;
         }
 
         // Proses penyimpanan dokumen legalitas (Fase 1 / Fase 2)
@@ -184,32 +200,41 @@ public function store(Request $request)
         }
 
         if ($request->fase === 'fase3') {
-            // Validasi: seluruh dokumen legalitas wajib sudah divalidasi (Sah/Verified) oleh Kepala Legal
+            $currentUser = auth()->user();
+            $userPositionName = strtolower($currentUser->position->name ?? '');
+            $userDivisionName = strtolower($currentUser->division->name ?? ($currentUser->position->division->name ?? ''));
+            $userPositionId = $currentUser->position_id ?? null;
+            $isAdmin = ($userPositionId == 5) || str_contains($userPositionName, 'admin');
+            $isKeuangan = ($userPositionId == 7) || str_contains($userPositionName, 'keuangan') || str_contains($userPositionName, 'finance') || str_contains($userDivisionName, 'keuangan') || str_contains($userDivisionName, 'finance');
+
+            // Validasi: seluruh dokumen legalitas wajib sudah divalidasi (Sah/Verified) oleh Kepala Legal jika memutuskan Approved
             $praDocs = pra_landbank_documents::where('pra_landbank_id', $record->id)->get();
             $activeDocs = $praDocs->filter(function($d) {
                 return !empty($d->file_path) || $d->document_status === 'proses' || !empty($d->document_number);
             });
             $hasUnverified = $activeDocs->count() === 0 || $activeDocs->contains(fn($d) => !in_array($d->status, ['verified', 'valid']));
 
-            if ($hasUnverified && ($request->status ?? 'fase3') !== 'rejected') {
+            if ($hasUnverified && ($request->status ?? 'fase3') === 'approved' && !$isAdmin) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Status Legalitas belum Sah! Kepala Legal wajib memvalidasi dan menyetujui seluruh berkas dokumen legalitas di Fase 1 terlebih dahulu sebelum dapat melanjutkan ke Fase 3.'
+                    'message' => 'Status Legalitas belum Sah! Kepala Legal wajib memvalidasi dan menyetujui seluruh berkas dokumen legalitas di Fase 1 terlebih dahulu sebelum tanah dapat disetujui (Approved).'
                 ], 422);
             }
 
-            // Validasi: Fase 2 (Survey Kelayakan) wajib sudah diisi sebelum Fase 3
-            if (empty($record->survey_date) && ($request->status ?? 'fase3') !== 'rejected') {
+            // Validasi: Fase 2 (Survey Kelayakan) wajib sudah diisi sebelum Approved
+            if (empty($record->survey_date) && ($request->status ?? 'fase3') === 'approved' && !$isAdmin) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Data Survey Kelayakan belum diisi! Harap lengkapi dan simpan data Fase 2 (Survey Kelayakan Teknis & Spasial Map) terlebih dahulu sebelum dapat memproses Fase 3.'
+                    'message' => 'Data Survey Kelayakan belum diisi! Harap lengkapi dan simpan data Fase 2 (Survey Kelayakan Teknis & Spasial Map) terlebih dahulu sebelum tanah dapat disetujui (Approved).'
                 ], 422);
             }
 
             if ($request->boolean('is_preview')) {
                 $data['status'] = $record->status ?? 'fase3';
+            } elseif ($isKeuangan && !$isAdmin && empty($request->status)) {
+                $data['status'] = $record->status ?? 'fase3';
             } else {
-                $data['status'] = $request->status ?? 'fase3'; // approved, rejected, or pending (fase3)
+                $data['status'] = $request->status ?? ($record->status ?? 'fase3'); // approved, rejected, or pending (fase3)
             }
             
             // Map Fase 3 fields
@@ -218,9 +243,6 @@ public function store(Request $request)
             }
             if ($request->has('catatan')) {
                 $data['notes'] = $request->catatan;
-            }
-            if ($request->has('company_profile_id')) {
-                $data['company_profile_id'] = $request->company_profile_id ?: null;
             }
 
             // Biaya-biaya lain / transaksi:
@@ -296,7 +318,16 @@ public function store(Request $request)
                 $data['notaris_id'] = $request->notaris_id ?: null;
             }
             if ($request->has('notary_appointment_date')) {
-                $data['notary_appointment_date'] = $request->notary_appointment_date ?: null;
+                $dateVal = $request->notary_appointment_date;
+                if (!empty($dateVal)) {
+                    try {
+                        $data['notary_appointment_date'] = \Carbon\Carbon::parse($dateVal)->format('Y-m-d H:i:s');
+                    } catch (\Exception $e) {
+                        $data['notary_appointment_date'] = null;
+                    }
+                } else {
+                    $data['notary_appointment_date'] = null;
+                }
             }
 
             // Upload Kwitansi Bermaterai Pembayaran
@@ -553,6 +584,16 @@ public function store(Request $request)
 
     public function invoice($id)
     {
+        $user = auth()->user();
+        $userPosId = (int) ($user->position_id ?? 0);
+        $userRole = strtolower($user->role ?? '');
+        $isAdmin = in_array($userPosId, [1, 5]) || $userRole === 'admin';
+        $isKeuangan = in_array($userPosId, [7]) || str_contains($userRole, 'keuangan') || str_contains($userRole, 'finance');
+
+        if (!$isAdmin && !$isKeuangan) {
+            abort(403, 'Akses ditolak. Cetak dan pratinjau invoice hanya dapat diakses oleh Admin dan Divisi Keuangan.');
+        }
+
         $land = PraLandbank::with(['payments', 'documents.documentType', 'notaris'])->findOrFail($id);
         $invoice = Invoice::syncFromPraLandbank($land);
         $invoiceNumber = $invoice->invoice_number;
@@ -623,12 +664,50 @@ public function store(Request $request)
     {
         $land = null;
         if ($id) {
-            $land = PraLandbank::with(['documents.documentType', 'notaris', 'companyProfile'])->findOrFail($id);
+            $land = PraLandbank::with(['documents.documentType', 'notaris'])->findOrFail($id);
+
+            // Jika mencoba akses step=2 atau step=3 padahal dokumen belum diverifikasi sah oleh Kepala Legal
+            if ($request->has('step') && (int)$request->step > 1 && !in_array($land->status, ['approved', 'rejected'])) {
+                $rawStatus = strtoupper((string)($land->ownership_status ?? ''));
+                if (str_contains($rawStatus, 'APHB')) {
+                    $category = 'APHB';
+                } elseif (str_contains($rawStatus, 'WARIS')) {
+                    $category = 'WARISAN';
+                } elseif (str_contains($rawStatus, 'PETOK') || str_contains($rawStatus, 'GIRIK') || str_contains($rawStatus, 'LETTER')) {
+                    $category = 'PETOK_C';
+                } elseif (str_contains($rawStatus, 'AJB') || str_contains($rawStatus, 'HIBAH')) {
+                    $category = 'AJB';
+                } elseif (!empty($rawStatus)) {
+                    $category = 'SHM';
+                } else {
+                    $category = '';
+                }
+
+                $applicableDocs = $land->documents->filter(function($d) use ($category) {
+                    $cats = $d->documentType->applicable_categories ?? [];
+                    return empty($cats) || in_array($category, $cats);
+                });
+
+                $totalUploaded = $applicableDocs->whereNotNull('file_path')->count();
+                $totalVerified = $applicableDocs->where('status', 'verified')->whereNotNull('file_path')->count();
+                $isLegalSah = !empty($category) && $totalUploaded > 0 && ($totalUploaded === $totalVerified);
+
+                $currentUser = auth()->user();
+                $userPositionName = strtolower($currentUser->position->name ?? '');
+                $userDivisionName = strtolower($currentUser->division->name ?? ($currentUser->position->division->name ?? ''));
+                $userPositionId = $currentUser->position_id ?? null;
+                $isAdmin = ($userPositionId == 5) || str_contains($userPositionName, 'admin');
+                $isKeuangan = ($userPositionId == 7) || str_contains($userPositionName, 'keuangan') || str_contains($userPositionName, 'finance') || str_contains($userDivisionName, 'keuangan') || str_contains($userDivisionName, 'finance');
+
+                if (!$isLegalSah && !$isAdmin && !$isKeuangan) {
+                    return redirect()->route('pra-landbank.proses', ['id' => $id, 'step' => 1])
+                        ->with('warning', 'Akses ke Fase 2 belum dapat dibuka. Dokumen legalitas di Fase 1 harus diverifikasi dan disahkan terlebih dahulu oleh Kepala Legal.');
+                }
+            }
         }
-        $documentTypes   = DocumentTypes::all();
-        $notarisList     = \App\Models\Notaris::where('is_active', true)->orderBy('nama_notaris', 'asc')->get();
-        $companyProfiles = \App\Models\CompanyProfile::orderBy('name', 'asc')->get();
-        return view('land_bank.proses_pra_land_bank', compact('land', 'documentTypes', 'notarisList', 'companyProfiles'));
+        $documentTypes = DocumentTypes::all();
+        $notarisList   = \App\Models\Notaris::where('is_active', true)->orderBy('nama_notaris', 'asc')->get();
+        return view('land_bank.proses_pra_land_bank', compact('land', 'documentTypes', 'notarisList'));
     }
     public function destroy($id)
     {
@@ -801,6 +880,91 @@ public function store(Request $request)
         }
 
         return back()->with('success', 'Berkas fisik dokumen berhasil diunggah!');
+    }
+
+    /**
+     * Upload Berkas Notaris (Kwitansi, Bukti PPh, Akta Pelepasan) secara Instan via AJAX
+     */
+    public function uploadNotaryDoc(Request $request, $id)
+    {
+        $request->validate([
+            'file_field' => 'required|string|in:receipt_file,tax_pph_file,release_deed_file',
+            'file'       => 'required|file|mimes:pdf,jpg,jpeg,png|max:20480',
+        ]);
+
+        $record = PraLandbank::findOrFail($id);
+        $fileField = $request->file_field;
+        $file = $request->file('file');
+
+        $prefix = match($fileField) {
+            'receipt_file'      => 'kwitansi_',
+            'tax_pph_file'      => 'pph_',
+            'release_deed_file' => 'akta_pelepasan_',
+            default             => 'notaris_'
+        };
+
+        $filename = uniqid() . '_' . $prefix . $file->getClientOriginalName();
+        $destination = public_path('uploads/pra_landbank/' . $record->id . '/transaksi');
+        if (!file_exists($destination)) {
+            mkdir($destination, 0755, true);
+        }
+        $file->move($destination, $filename);
+        $filePath = 'uploads/pra_landbank/' . $record->id . '/transaksi/' . $filename;
+
+        $record->update([
+            $fileField => $filePath
+        ]);
+
+        $cleanPath = str_replace('uploads/', '', $filePath);
+        $previewUrl = route('dokumen.preview', ['path' => $cleanPath]);
+        $docLabel = match($fileField) {
+            'receipt_file'      => 'Kwitansi Pembayaran Bermaterai',
+            'tax_pph_file'      => 'Bukti Pembayaran Pajak PPh',
+            'release_deed_file' => 'Salinan Akta Pelepasan Hak',
+            default             => 'Berkas Transaksi Notaris'
+        };
+
+        return response()->json([
+            'success'      => true,
+            'message'      => 'Berkas ' . $docLabel . ' berhasil diunggah!',
+            'file_field'   => $fileField,
+            'file_path'    => $filePath,
+            'filename'     => basename($filePath),
+            'preview_url'  => $previewUrl,
+            'doc_label'    => $docLabel,
+            'ext'          => $file->getClientOriginalExtension(),
+        ]);
+    }
+
+    /**
+     * Update Pilihan Notaris Rekanan & Jadwal Akta secara Instan via AJAX
+     */
+    public function updateNotaryInfo(Request $request, $id)
+    {
+        $record = PraLandbank::findOrFail($id);
+        $data = [];
+        if ($request->has('notaris_id')) {
+            $data['notaris_id'] = $request->notaris_id ?: null;
+        }
+        if ($request->has('notary_appointment_date')) {
+            $dateVal = $request->notary_appointment_date;
+            if (!empty($dateVal)) {
+                try {
+                    $data['notary_appointment_date'] = \Carbon\Carbon::parse($dateVal)->format('Y-m-d H:i:s');
+                } catch (\Exception $e) {
+                    $data['notary_appointment_date'] = null;
+                }
+            } else {
+                $data['notary_appointment_date'] = null;
+            }
+        }
+
+        $record->update($data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Notaris Rekanan & Jadwal Tanda Tangan Akta berhasil disimpan!',
+        ]);
     }
 
     /**
