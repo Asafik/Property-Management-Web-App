@@ -1015,15 +1015,13 @@
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Status Tanah / Kepemilikan (Dasar Perolehan) *</label>
-                                            <select class="form-select select2-search" id="select_ownership_status" name="ownership_status" data-placeholder="Pilih Status Kepemilikan" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="">-- Pilih Status Kepemilikan --</option>
+                                            <select class="form-select select2-search" id="select_ownership_status" name="ownership_status" data-placeholder="Pilih Dasar Perolehan Tanah" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                <option value="">-- Pilih Dasar Perolehan Tanah --</option>
                                                 <option value="SHM" {{ ($land && in_array(strtoupper($land->ownership_status ?? 'SHM'), ['SHM', 'HGB', 'HGU', 'HP'])) ? 'selected' : '' }}>SHM (Sertifikat Hak Milik)</option>
                                                 <option value="AJB" {{ ($land && strtoupper($land->ownership_status) == 'AJB') ? 'selected' : '' }}>AJB / Akta Hibah</option>
                                                 <option value="APHB" {{ ($land && strtoupper($land->ownership_status) == 'APHB') ? 'selected' : '' }}>APHB (Akta Pembagian Hak Bersama)</option>
-                                                <option value="WARISAN" {{ ($land && strtoupper($land->ownership_status) == 'WARISAN') ? 'selected' : '' }}>AJB / Hibah dari Harta Warisan</option>
-                                                <option value="PETOK_C" {{ ($land && in_array(strtoupper($land->ownership_status), ['PETOK_C', 'GIRIK', 'PETOK D'])) ? 'selected' : '' }}>Petok C / Girik Asli</option>
-                                                <option value="HGB" {{ ($land && $land->ownership_status == 'HGB') ? 'selected' : '' }}>HGB (Hak Guna Bangunan)</option>
-                                                <option value="Lainnya" {{ ($land && $land->ownership_status == 'Lainnya') ? 'selected' : '' }}>Lainnya</option>
+                                                <option value="WARISAN" {{ ($land && strtoupper($land->ownership_status) == 'WARISAN') ? 'selected' : '' }}>AJB / Hibah (Harta Warisan)</option>
+                                                <option value="PETOK_C" {{ ($land && in_array(strtoupper($land->ownership_status), ['PETOK_C', 'GIRIK', 'PETOK D'])) ? 'selected' : '' }}>Petok C / Girik</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6 mb-3">
@@ -1487,9 +1485,9 @@
                                             <input type="date" class="form-control" name="tgl_survey" value="{{ $land && $land->survey_date ? \Carbon\Carbon::parse($land->survey_date)->format('Y-m-d') : '' }}" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-4 mb-3">
-                                            <label class="form-label">Status Lahan</label>
-                                            <select class="form-select select2-search" id="select_land_status" name="land_status_temp" data-placeholder="Pilih Status Lahan" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="">Pilih Status Lahan</option>
+                                            <label class="form-label">Kondisi Fisik / Kontur Lahan</label>
+                                            <select class="form-select select2-search" id="select_land_status" name="land_status_temp" data-placeholder="Pilih Kondisi Fisik / Kontur Lahan" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                <option value="">Pilih Kondisi Fisik / Kontur Lahan</option>
                                                 <option value="bekas_sawah" {{ $land && $land->land_status == 'bekas_sawah' ? 'selected' : '' }}>Lahan Bekas Sawah</option>
                                                 <option value="perbukitan" {{ $land && $land->land_status == 'perbukitan' ? 'selected' : '' }}>Perbukitan</option>
                                                 <option value="pekarangan" {{ $land && $land->land_status == 'pekarangan' ? 'selected' : '' }}>Pekarangan</option>
@@ -2225,10 +2223,10 @@
                                             <h6 class="mb-0 text-dark fw-bold" style="font-size: 0.95rem;">
                                                 Ringkasan Dokumen Legalitas (Hasil Validasi Fase 1)
                                             </h6>
-                                            <small class="text-muted" style="font-size: 0.78rem;">Seluruh berkas legalitas berikut telah diverifikasi dan disetujui sah oleh Kepala Legal pada Fase 1.</small>
+                                            <small class="text-muted" style="font-size: 0.78rem;">Seluruh berkas legalitas berikut disyaratkan untuk kategori <strong class="text-primary" id="fase3CategoryLabel">{{ $selectedCat }}</strong> dan telah diverifikasi sah pada Fase 1.</small>
                                         </div>
                                         <span class="badge bg-soft-success text-success border border-success-subtle py-1 px-3" style="font-size: 0.8rem; font-weight: 600;">
-                                            Legalitas Terverifikasi Sah
+                                            <i class="mdi mdi-shield-check me-1"></i> Legalitas Terverifikasi Sah
                                         </span>
                                     </div>
 
@@ -2236,12 +2234,14 @@
                                     <div class="row g-3 mb-4" id="fase3DocumentGridContainer">
                                         @foreach($documentTypes as $doc)
                                             @php
+                                                $docCategories = $doc->applicable_categories ?? [];
+                                                $isApplicable = empty($docCategories) || in_array($selectedCat, $docCategories);
                                                 $existingDoc = $uploadedDocs[$doc->id] ?? null;
                                                 $hasExistingFile = ($existingDoc && !empty($existingDoc->file_path));
                                                 $cleanPath = $hasExistingFile ? str_replace('uploads/', '', $existingDoc->file_path) : null;
                                                 $docPhysStatus = $existingDoc->document_status ?? 'ada';
                                             @endphp
-                                            <div class="col-md-6 col-lg-4">
+                                            <div class="col-md-6 col-lg-4 doc-fase3-col {{ !$isApplicable ? 'd-none' : '' }}" data-categories='@json($docCategories)' data-doc-id="{{ $doc->id }}">
                                                 <div class="card h-100 border shadow-sm rounded-3 p-3 d-flex flex-column" style="background: #ffffff; border-color: #eaedf2 !important;">
                                                     <div class="d-flex align-items-center justify-content-between mb-2 pb-2 border-bottom">
                                                         <div>
@@ -3030,15 +3030,34 @@
                 }
             });
 
+            // Update Fase 3 document grid cards to match the category
+            document.querySelectorAll('.doc-fase3-col').forEach(card => {
+                let rawCats = card.getAttribute('data-categories');
+                let cats = [];
+                try {
+                    cats = typeof rawCats === 'string' ? JSON.parse(rawCats) : (rawCats || []);
+                } catch (e) {
+                    cats = [];
+                }
+
+                if (!cats || cats.length === 0 || cats.includes(cat)) {
+                    card.classList.remove('d-none');
+                } else {
+                    card.classList.add('d-none');
+                }
+            });
+
             // Update info banner
             const info = CATEGORY_META[cat] || CATEGORY_META['SHM'];
             const nameEl = document.getElementById('fase1CategoryName');
             const descEl = document.getElementById('fase1CategoryDesc');
             const countEl = document.getElementById('fase1CategoryCountBadge');
+            const fase3CatLabel = document.getElementById('fase3CategoryLabel');
 
             if (nameEl) nameEl.textContent = info.name;
             if (descEl) descEl.textContent = info.desc;
             if (countEl) countEl.textContent = visibleCount + ' Dokumen Wajib';
+            if (fase3CatLabel) fase3CatLabel.textContent = cat;
         }
 
         document.addEventListener('DOMContentLoaded', function() {

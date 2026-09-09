@@ -152,14 +152,8 @@
                             Kelola master jenis dokumen legalitas tanah induk landbank
                         </p>
                     </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <button type="button" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm px-3 py-2" onclick="openModal('tambah')">
-                            <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
-                            <span>Tambah Dokumen</span>
-                        </button>
-                        <div class="d-none d-md-block pe-2">
-                            <i class="mdi mdi-file-document-multiple-outline" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
-                        </div>
+                    <div class="d-none d-md-block pe-2">
+                        <i class="mdi mdi-file-document-multiple-outline" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
                     </div>
                 </div>
             </div>
@@ -169,10 +163,14 @@
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
-                    <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Jenis Dokumen
+                <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3 px-3 px-md-4 border-bottom">
+                    <h5 class="card-title mb-0 fw-bold text-dark" style="font-size: 1.05rem;">
+                        <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>Daftar Jenis Dokumen
                     </h5>
+                    <button type="button" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1.5 shadow-sm px-3 py-2 fw-semibold" onclick="openModal('tambah')" style="border-radius: 8px;">
+                        <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
+                        <span>Tambah Dokumen</span>
+                    </button>
                 </div>
 
                 <div class="card-body">
