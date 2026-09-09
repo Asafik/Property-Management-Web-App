@@ -58,6 +58,12 @@ class CompanyProfileController extends Controller
             'name' => 'required|string|max:255',
             'address' => 'nullable|string|max:500',
             'phone' => 'nullable|string|max:20',
+            'file_akta_pendirian' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'file_akta_perubahan' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'file_npwp'           => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'file_direksi'        => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'file_nib'            => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'file_domisili'       => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ], [
             'name.required' => 'Nama PT wajib diisi!',
         ]);
@@ -65,17 +71,42 @@ class CompanyProfileController extends Controller
         DB::beginTransaction();
 
         try {
-            CompanyProfile::create([
+            $data = [
                 'name' => $request->name,
                 'address' => $request->address,
                 'phone' => $request->phone,
-            ]);
+            ];
+
+            $fileFields = [
+                'file_akta_pendirian',
+                'file_akta_perubahan',
+                'file_npwp',
+                'file_direksi',
+                'file_nib',
+                'file_domisili',
+            ];
+
+            $destination = public_path('uploads/legalitas_pt');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0777, true);
+            }
+
+            foreach ($fileFields as $field) {
+                if ($request->hasFile($field)) {
+                    $file = $request->file($field);
+                    $filename = $field . '_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file->move($destination, $filename);
+                    $data[$field] = 'uploads/legalitas_pt/' . $filename;
+                }
+            }
+
+            CompanyProfile::create($data);
 
             DB::commit();
 
             return redirect()
                 ->route('company-profile.index')
-                ->with('success', 'Company profile berhasil ditambahkan.');
+                ->with('success', 'Company profile dan berkas legalitas PT berhasil ditambahkan.');
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -92,19 +123,69 @@ class CompanyProfileController extends Controller
             'name' => 'required|string|max:255',
             'address' => 'nullable|string|max:500',
             'phone' => 'nullable|string|max:20',
+            'file_akta_pendirian' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'file_akta_perubahan' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'file_npwp'           => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'file_direksi'        => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'file_nib'            => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'file_domisili'       => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ], [
             'name.required' => 'Nama PT wajib diisi!',
         ]);
 
-        $companyProfile->update($request->only(['name', 'address', 'phone']));
+        $data = $request->only(['name', 'address', 'phone']);
+
+        $fileFields = [
+            'file_akta_pendirian',
+            'file_akta_perubahan',
+            'file_npwp',
+            'file_direksi',
+            'file_nib',
+            'file_domisili',
+        ];
+
+        $destination = public_path('uploads/legalitas_pt');
+        if (!file_exists($destination)) {
+            mkdir($destination, 0777, true);
+        }
+
+        foreach ($fileFields as $field) {
+            if ($request->hasFile($field)) {
+                // Remove old file if exists
+                if (!empty($companyProfile->$field) && file_exists(public_path($companyProfile->$field))) {
+                    @unlink(public_path($companyProfile->$field));
+                }
+                $file = $request->file($field);
+                $filename = $field . '_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move($destination, $filename);
+                $data[$field] = 'uploads/legalitas_pt/' . $filename;
+            }
+        }
+
+        $companyProfile->update($data);
 
         return redirect()
             ->route('company-profile.index')
-            ->with('success', 'Company profile berhasil diperbarui.');
+            ->with('success', 'Company profile dan berkas legalitas PT berhasil diperbarui.');
     }
 
     public function destroy(CompanyProfile $companyProfile)
     {
+        $fileFields = [
+            'file_akta_pendirian',
+            'file_akta_perubahan',
+            'file_npwp',
+            'file_direksi',
+            'file_nib',
+            'file_domisili',
+        ];
+
+        foreach ($fileFields as $field) {
+            if (!empty($companyProfile->$field) && file_exists(public_path($companyProfile->$field))) {
+                @unlink(public_path($companyProfile->$field));
+            }
+        }
+
         CompanyProfile::destroy($companyProfile->id);
 
         return redirect()

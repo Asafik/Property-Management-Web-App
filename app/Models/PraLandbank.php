@@ -65,7 +65,8 @@ class PraLandbank extends Model
         'payment_method',
         'installment_duration',
         'installment_count',
-        'notes'
+        'notes',
+        'company_profile_id',
     ];
 
     public function documents()
@@ -86,5 +87,10 @@ class PraLandbank extends Model
     public function notaris()
     {
         return $this->belongsTo(Notaris::class, 'notaris_id');
+    }
+
+    public function companyProfile()
+    {
+        return $this->belongsTo(CompanyProfile::class, 'company_profile_id');
     }
 }

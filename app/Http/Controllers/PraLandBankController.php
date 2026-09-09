@@ -219,6 +219,9 @@ public function store(Request $request)
             if ($request->has('catatan')) {
                 $data['notes'] = $request->catatan;
             }
+            if ($request->has('company_profile_id')) {
+                $data['company_profile_id'] = $request->company_profile_id ?: null;
+            }
 
             // Biaya-biaya lain / transaksi:
             // JIKA ada input terisi yang dikirim form, perbarui nilainya.
@@ -620,11 +623,12 @@ public function store(Request $request)
     {
         $land = null;
         if ($id) {
-            $land = PraLandbank::with(['documents.documentType', 'notaris'])->findOrFail($id);
+            $land = PraLandbank::with(['documents.documentType', 'notaris', 'companyProfile'])->findOrFail($id);
         }
-        $documentTypes = DocumentTypes::all();
-        $notarisList   = \App\Models\Notaris::where('is_active', true)->orderBy('nama_notaris', 'asc')->get();
-        return view('land_bank.proses_pra_land_bank', compact('land', 'documentTypes', 'notarisList'));
+        $documentTypes   = DocumentTypes::all();
+        $notarisList     = \App\Models\Notaris::where('is_active', true)->orderBy('nama_notaris', 'asc')->get();
+        $companyProfiles = \App\Models\CompanyProfile::orderBy('name', 'asc')->get();
+        return view('land_bank.proses_pra_land_bank', compact('land', 'documentTypes', 'notarisList', 'companyProfiles'));
     }
     public function destroy($id)
     {

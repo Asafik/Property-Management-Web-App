@@ -1936,6 +1936,25 @@
                                         </span>
                                     </div>
                                     <div class="row">
+                                        <!-- PT Pengakuisisi / Pembeli -->
+                                        <div class="col-md-12 mb-3">
+                                            <label class="form-label fw-bold">Pilih PT Pembeli / Pengembang (Master Data PT) <span class="text-danger">*</span></label>
+                                            <select class="form-select select2-search" id="select_company_profile" name="company_profile_id" data-placeholder="Pilih Perusahaan / PT Pengakuisisi" style="width: 100%;" onchange="updateSelectedPTDetails(this.value)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                <option value="">-- Pilih Perusahaan (PT) Pengakuisisi --</option>
+                                                @if(isset($companyProfiles))
+                                                    @foreach($companyProfiles as $cp)
+                                                        <option value="{{ $cp->id }}" {{ (($land && $land->company_profile_id == $cp->id) || count($companyProfiles) === 1) ? 'selected' : '' }}>
+                                                            {{ $cp->name }} ({{ $cp->uploaded_legal_docs_count }}/6 Berkas Legalitas PT)
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                            <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
+                                                *Badan hukum PT yang dicantumkan pada Akta Pelepasan Hak di Notaris (SOP Poin 3).
+                                            </small>
+                                        </div>
+
+                                        <!-- Notaris Rekanan -->
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-bold">Pilih Notaris Rekanan (Master Data Notaris) <span class="text-danger">*</span></label>
                                             <select class="form-select select2-search" name="notaris_id" data-placeholder="Pilih Notaris Rekanan" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
@@ -1952,12 +1971,36 @@
                                                 *Data diambil langsung dari menu Master Data Notaris.
                                             </small>
                                         </div>
+
+                                        <!-- Jadwal Tanda Tangan Notaris -->
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-bold">Jadwal Tanda Tangan Akta di Kantor Notaris</label>
                                             <input type="datetime-local" class="form-control" name="notary_appointment_date" value="{{ $land && $land->notary_appointment_date ? \Carbon\Carbon::parse($land->notary_appointment_date)->format('Y-m-d\TH:i') : '' }}" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                                             <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
                                                 *Jadwal kehadiran para pihak (Direktur, Penjual/Ahli Waris) di kantor notaris.
                                             </small>
+                                        </div>
+                                    </div>
+
+                                    <!-- WIDGET LEGALITAS PT (6 DOKUMEN SESUAI SOP POIN 3) -->
+                                    <div class="card border rounded-3 p-3 mb-4 shadow-sm" id="pt_legalitas_widget" style="background: #fbf9ff; border-color: #d8b4fe !important;">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                                            <div>
+                                                <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-1" style="font-size: 0.92rem;">
+                                                    <i class="mdi mdi-shield-account text-purple"></i> Legalitas PT (Persyaratan Notaris & BPN - SOP Poin 3)
+                                                </h6>
+                                                <small class="text-muted" style="font-size: 0.76rem;">6 Berkas resmi PT pengakuisisi yang wajib dibawa saat penandatanganan akta di Notaris.</small>
+                                            </div>
+                                            <div id="pt_legalitas_badge_container">
+                                                <span class="badge bg-secondary py-1.5 px-3" style="font-size: 0.78rem;" id="pt_legalitas_overall_badge">
+                                                    Pilih PT Pengakuisisi
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <!-- 6 Documents Grid -->
+                                        <div class="row g-2 pt-1" id="pt_legalitas_docs_grid">
+                                            <!-- Rendered via JS -->
                                         </div>
                                     </div>
 
@@ -3060,6 +3103,111 @@
             if (fase3CatLabel) fase3CatLabel.textContent = cat;
         }
 
+        const COMPANY_PROFILES_DATA = @json($companyProfiles ?? []);
+
+        function updateSelectedPTDetails(companyId) {
+            const grid = document.getElementById('pt_legalitas_docs_grid');
+            const badgeContainer = document.getElementById('pt_legalitas_overall_badge');
+            if (!grid) return;
+
+            if (!companyId) {
+                grid.innerHTML = `
+                    <div class="col-12 text-center py-3 text-muted" style="font-size: 0.84rem;">
+                        <i class="mdi mdi-domain me-1" style="font-size: 1.25rem;"></i>
+                        Silakan pilih Perusahaan (PT) Pengakuisisi di atas untuk memeriksa kesiapan berkas legalitas.
+                    </div>
+                `;
+                if (badgeContainer) {
+                    badgeContainer.className = 'badge bg-secondary py-1.5 px-3';
+                    badgeContainer.innerHTML = 'Pilih PT Pengakuisisi';
+                }
+                return;
+            }
+
+            const company = COMPANY_PROFILES_DATA.find(c => c.id == companyId);
+            if (!company) return;
+
+            const docConfigs = [
+                { key: 'file_akta_pendirian', name: '1. Akta Pendirian & AHU', desc: 'Salinan Akta Pendirian dan SK AHU Kemenkumham' },
+                { key: 'file_akta_perubahan', name: '2. Akta Perubahan & AHU', desc: 'Akta Perubahan Terakhir & SK Kemenkumham' },
+                { key: 'file_npwp',           name: '3. NPWP Perusahaan',    desc: 'Kartu NPWP resmi badan hukum PT' },
+                { key: 'file_direksi',        name: '4. Identitas Direksi',  desc: 'KTP, NPWP, & KK Direktur yang tanda tangan' },
+                { key: 'file_nib',            name: '5. NIB Perusahaan',     desc: 'Nomor Induk Berusaha (OSS RBA)' },
+                { key: 'file_domisili',       name: '6. Surat Domisili PT',  desc: 'Surat Keterangan Domisili Desa/Kelurahan' },
+            ];
+
+            let countReady = 0;
+            let html = '';
+
+            docConfigs.forEach(cfg => {
+                const filePath = company[cfg.key];
+                const isReady = !!filePath;
+                if (isReady) countReady++;
+
+                const cleanPath = isReady ? filePath.replace('uploads/', '') : '';
+                const ext = isReady ? filePath.split('.').pop() : '';
+
+                html += `
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="p-2.5 rounded-3 border h-100 ${isReady ? 'bg-white' : 'bg-light bg-opacity-50'}" style="border-color: ${isReady ? '#86efac' : '#e2e8f0'} !important;">
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <span class="fw-bold text-dark text-truncate" style="font-size: 0.8rem;" title="${cfg.name}">
+                                    ${cfg.name}
+                                </span>
+                                ${isReady ?
+                                    `<span class="badge bg-success py-0.5 px-2 text-white" style="font-size: 9px;"><i class="mdi mdi-check-circle me-1"></i>Ada</span>` :
+                                    `<span class="badge bg-secondary bg-opacity-25 text-muted py-0.5 px-2" style="font-size: 9px;"><i class="mdi mdi-close-circle-outline me-1"></i>Belum Ada</span>`
+                                }
+                            </div>
+                            <small class="text-muted d-block text-truncate mb-2" style="font-size: 0.7rem;" title="${cfg.desc}">${cfg.desc}</small>
+                            ${isReady ? `
+                                <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 w-100 d-flex align-items-center justify-content-center shadow-none btn-preview-doc"
+                                    data-url="{{ url('dokumen/preview') }}/${cleanPath}"
+                                    data-ext="${ext}"
+                                    data-label="${cfg.name} (${company.name})"
+                                    style="font-size: 0.72rem; border-radius: 5px;">
+                                    <i class="mdi mdi-eye me-1"></i> Lihat Berkas
+                                </button>
+                            ` : `
+                                <a href="{{ route('company-profile.index') }}" target="_blank" class="btn btn-xs btn-outline-secondary py-1 px-2 w-100 d-flex align-items-center justify-content-center" style="font-size: 0.72rem; border-radius: 5px;">
+                                    <i class="mdi mdi-upload me-1"></i> Upload di Master PT
+                                </a>
+                            `}
+                        </div>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML = html;
+
+            // Re-bind preview buttons for dynamically generated elements
+            grid.querySelectorAll('.btn-preview-doc').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const url = this.getAttribute('data-url');
+                    const ext = this.getAttribute('data-ext') || '';
+                    const label = this.getAttribute('data-label') || 'Dokumen';
+                    if (typeof openDocumentPreviewModal === 'function') {
+                        openDocumentPreviewModal(url, ext, label);
+                    } else {
+                        window.open(url, '_blank');
+                    }
+                });
+            });
+
+            if (badgeContainer) {
+                if (countReady === 6) {
+                    badgeContainer.className = 'badge bg-success py-1.5 px-3';
+                    badgeContainer.innerHTML = '<i class="mdi mdi-shield-check me-1"></i>Legalitas PT Lengkap (6/6) - Siap ke Notaris';
+                } else if (countReady > 0) {
+                    badgeContainer.className = 'badge bg-warning text-dark py-1.5 px-3';
+                    badgeContainer.innerHTML = `<i class="mdi mdi-clock-outline me-1"></i>${countReady}/6 Berkas Tersedia (${6 - countReady} Belum Lengkap)`;
+                } else {
+                    badgeContainer.className = 'badge bg-danger py-1.5 px-3';
+                    badgeContainer.innerHTML = '<i class="mdi mdi-alert-circle me-1"></i>0/6 Berkas Legalitas (Wajib Dilengkapi di Master PT)';
+                }
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Render correct step view upon loading
             switchStep(activeStep);
@@ -3073,6 +3221,18 @@
 
             $('#select_ownership_status').on('change select2:select', function() {
                 filterFase1DocumentsByCategory(this.value);
+            });
+
+            // Initial render of selected PT details
+            let initialCompanyId = $('#select_company_profile').val() || "{{ $land->company_profile_id ?? '' }}";
+            if (!initialCompanyId && COMPANY_PROFILES_DATA.length === 1) {
+                initialCompanyId = COMPANY_PROFILES_DATA[0].id;
+                $('#select_company_profile').val(initialCompanyId).trigger('change');
+            }
+            updateSelectedPTDetails(initialCompanyId);
+
+            $('#select_company_profile').on('change select2:select', function() {
+                updateSelectedPTDetails(this.value);
             });
 
 
@@ -3455,6 +3615,10 @@
                 const dealPriceInput = document.getElementById('deal_price_input');
                 if (dealPriceInput) {
                     formData.set('deal_price', dealPriceInput.value);
+                }
+                const selectCompany = form.querySelector('select[name="company_profile_id"]');
+                if (selectCompany && selectCompany.value) {
+                    formData.set('company_profile_id', selectCompany.value);
                 }
                 const selectNotaris = form.querySelector('select[name="notaris_id"]');
                 if (selectNotaris && selectNotaris.value) {
