@@ -210,6 +210,12 @@ class MenuSeeder extends Seeder
         ])->positions()->attach($adminOnly);
 
         Menu::create([
+            'name'      => 'Master Dokumen Perizinan',
+            'route'     => 'master.dokumen-perizinan.index',
+            'parent_id' => $master->id
+        ])->positions()->attach($kepalaLegalAndAdmin);
+
+        Menu::create([
             'name'      => 'Master Barang / Bahan',
             'route'     => 'master.bahan.index',
             'parent_id' => $master->id

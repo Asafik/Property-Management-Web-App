@@ -57,6 +57,7 @@ use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\SpkController;
 use App\Http\Controllers\Finance\InvoiceMasterController;
 use App\Http\Controllers\Finance\ProjectAccountingController;
+use App\Http\Controllers\MasterDokumenPerizinanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -217,6 +218,28 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pra-landbank/dokumen/{id}/upload-completed', [PraLandBankController::class, 'uploadCompletedDocument'])->name('pra-dokumen.upload-completed');
     Route::post('/properti/pra-landbank/{id}/upload-notary-doc', [PraLandBankController::class, 'uploadNotaryDoc'])->name('pra-landbank.upload-notary-doc');
     Route::post('/properti/pra-landbank/{id}/update-notary-info', [PraLandBankController::class, 'updateNotaryInfo'])->name('pra-landbank.update-notary-info');
+    Route::post('/properti/pra-landbank/{id}/upload-workflow-doc', [PraLandBankController::class, 'uploadWorkflowDoc'])->name('pra-landbank.upload-workflow-doc');
+    Route::post('/properti/pra-landbank/{id}/upload-custom-workflow-doc', [PraLandBankController::class, 'uploadCustomWorkflowDoc'])->name('pra-landbank.upload-custom-workflow-doc');
+    Route::post('/properti/pra-landbank/{id}/delete-custom-workflow-doc', [PraLandBankController::class, 'deleteCustomWorkflowDoc'])->name('pra-landbank.delete-custom-workflow-doc');
+    Route::post('/properti/pra-landbank/{id}/load-fase4-template', [PraLandBankController::class, 'loadFase4DefaultTemplate'])->name('pra-landbank.load-fase4-template');
+    Route::post('/properti/pra-landbank/{id}/add-from-master', [PraLandBankController::class, 'addBatchFromMaster'])->name('pra-landbank.add-from-master');
+    Route::post('/properti/pra-landbank/{id}/update-workflow-info', [PraLandBankController::class, 'updateWorkflowInfo'])->name('pra-landbank.update-workflow-info');
+    Route::post('/properti/pra-landbank/{id}/finalize-pasca', [PraLandBankController::class, 'finalizeToPascaLandbank'])->name('pra-landbank.finalize-pasca');
+
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= MASTER DOKUMEN PERIZINAN =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('master-data/dokumen-perizinan')->name('master.dokumen-perizinan.')->group(function () {
+        Route::get('/', [MasterDokumenPerizinanController::class, 'index'])->name('index');
+        Route::get('/{id}/edit', [MasterDokumenPerizinanController::class, 'edit'])->name('edit');
+        Route::post('/store', [MasterDokumenPerizinanController::class, 'store'])->name('store');
+        Route::put('/{id}', [MasterDokumenPerizinanController::class, 'update'])->name('update');
+        Route::delete('/{id}', [MasterDokumenPerizinanController::class, 'destroy'])->name('destroy');
+        Route::match(['post', 'patch'], '/{id}/toggle-status', [MasterDokumenPerizinanController::class, 'toggleStatus'])->name('toggle-status');
+        Route::get('/api/list', [MasterDokumenPerizinanController::class, 'apiList'])->name('api-list');
+    });
     Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
     Route::get('/properti/verifikasi-legal/{id}', [LandBankController::class, 'verifikasiLegal'])->name('properti.verifikasi');
     Route::post('/properti/{id}/update-company', [PropertyController::class, 'updateCompanyAjax'])->name('properti.updateCompany');

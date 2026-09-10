@@ -51,6 +51,10 @@
             background: linear-gradient(135deg, #11998e, #38ef7d);
         }
 
+        .btn-fase-4 {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+        }
+
         .btn-fase-delete {
             background: linear-gradient(135deg, #ff416c, #ff4b2b);
             padding: 0.32rem 0.55rem;
@@ -399,11 +403,11 @@
                                         <th style="min-width: 170px;">Nama Tanah</th>
                                         <th style="min-width: 120px;">Makelar</th>
                                         <th style="min-width: 130px;">Harga Negosiasi</th>
-                                        <th style="min-width: 125px;">Progress 3 FASE</th>
+                                        <th style="min-width: 125px;">Progress 4 FASE</th>
                                         <th style="min-width: 150px;">Progress Legalitas</th>
                                         <th style="min-width: 95px;">Status</th>
                                         <th style="min-width: 85px;">Prioritas</th>
-                                        <th class="text-center" style="min-width: 215px;">Aksi</th>
+                                        <th class="text-center" style="min-width: 250px;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tableBody">
@@ -428,17 +432,22 @@
                                                     break;
                                                 case 'fase1':
                                                     $fase = 1;
-                                                    $percent = 33;
+                                                    $percent = 25;
                                                     break;
 
                                                 case 'fase2':
                                                     $fase = 2;
-                                                    $percent = 66;
+                                                    $percent = 50;
                                                     break;
 
                                                 case 'fase3':
-                                                case 'approved':
                                                     $fase = 3;
+                                                    $percent = 75;
+                                                    break;
+
+                                                case 'fase4':
+                                                case 'approved':
+                                                    $fase = 4;
                                                     $percent = 100;
                                                     break;
 
@@ -448,23 +457,29 @@
                                                     break;
 
                                                 case 'pending':
-                                                    if (!empty($land->survey_date) || !empty($land->survey_by)) {
-                                                        $fase = 3;
+                                                    if (!empty($land->shgb_induk_no) || !empty($land->land_bank_id) || $land->status === 'fase4') {
+                                                        $fase = 4;
                                                         $percent = 100;
+                                                    } elseif (!empty($land->notaris_id) || !empty($land->file_ijb) || $land->status === 'fase3') {
+                                                        $fase = 3;
+                                                        $percent = 75;
+                                                    } elseif (!empty($land->survey_date) || !empty($land->survey_by) || $land->status === 'fase2') {
+                                                        $fase = 2;
+                                                        $percent = 50;
                                                     } else {
                                                         $fase = 1;
-                                                        $percent = 33;
+                                                        $percent = 25;
                                                     }
                                                     break;
 
                                                 default:
                                                     $fase = 1;
-                                                    $percent = 33;
+                                                    $percent = 25;
                                             }
                                         @endphp
 
                                         <tr id="row-{{ $land->id }}">
-                                            <td class="text-center fw-bold">{{ $index + 1 }}</td>
+                                             <td class="text-center fw-bold">{{ $index + 1 }}</td>
 
                                             <td>
                                                 <i class="mdi mdi-map-marker text-primary me-1"></i>
@@ -495,7 +510,7 @@
                                                         @elseif($land->status == 'approved')
                                                             <span class="text-success fw-bold">APPROVED</span>
                                                         @else
-                                                            FASE {{ $fase }}/3
+                                                            FASE {{ $fase }}/4
                                                         @endif
                                                     </div>
 
@@ -659,7 +674,7 @@
                                                     @endphp
 
                                                     @if($isKeuangan && !$isAdmin)
-                                                        {{-- TOMBOL KHUSUS DIVISI KEUANGAN: LIHAT DATA FASE 1, FASE 2, FASE 3 (READ-ONLY) --}}
+                                                        {{-- TOMBOL KHUSUS DIVISI KEUANGAN: LIHAT DATA FASE 1, FASE 2, FASE 3, FASE 4 (READ-ONLY) --}}
                                                         <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 1]) }}" 
                                                            class="btn-fase-action btn-fase-1" 
                                                            title="Lihat Data FASE 1: Penawaran & Legalitas">
@@ -677,6 +692,12 @@
                                                            title="Lihat Data FASE 3: Transaksi, Notaris & Keuangan">
                                                             <i class="mdi mdi-cash-check"></i>
                                                             <span>Fase 3</span>
+                                                        </a>
+                                                        <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 4]) }}" 
+                                                           class="btn-fase-action btn-fase-4" 
+                                                           title="Lihat Data FASE 4: Pengurusan Dokumen Balik Nama & Pengindukan PT">
+                                                            <i class="mdi mdi-certificate"></i>
+                                                            <span>Fase 4</span>
                                                         </a>
                                                     @else
                                                         <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 1]) }}" 
@@ -698,10 +719,14 @@
                                                             $canAccessFase2 = $isLandLegalSah || $land->status === 'approved' || $land->status === 'rejected' || $isTerminActive;
 
                                                             // Fase 2 dianggap selesai jika data survey fisik telah diisi & disimpan
-                                                            $isFase2Done = !empty($land->survey_date) || in_array($land->status, ['fase3', 'approved', 'rejected']) || $isTerminActive;
+                                                            $isFase2Done = !empty($land->survey_date) || in_array($land->status, ['fase3', 'fase4', 'approved', 'rejected']) || $isTerminActive;
 
                                                             // FASE 3 HANYA DAPAT DIAKSES JIKA FASE 1 SAH DAN FASE 2 SELESAI
                                                             $canAccessFase3 = ($isLandLegalSah && $isFase2Done) || $land->status === 'approved' || $land->status === 'rejected' || $isTerminActive;
+
+                                                            // FASE 4 HANYA DAPAT DIAKSES JIKA FASE 3 SELESAI / TRANSAKSI DIPROSES
+                                                            $isFase3Done = in_array($land->status, ['fase3', 'fase4', 'approved', 'rejected']) || !empty($land->notaris_id) || !empty($land->file_ijb);
+                                                            $canAccessFase4 = ($canAccessFase3 && $isFase3Done) || $land->status === 'approved' || $land->status === 'rejected' || $isTerminActive;
                                                         @endphp
 
                                                         {{-- TOMBOL FASE 2 (Terkunci jika legalitas di Fase 1 belum divalidasi) --}}
@@ -726,7 +751,7 @@
                                                         @if($canAccessFase3)
                                                             <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" 
                                                                class="btn-fase-action btn-fase-3" 
-                                                               title="{{ $isTerminActive ? 'Kelola Pembayaran Cicilan' : 'FASE 3: Persetujuan Direksi' }}">
+                                                               title="{{ $isTerminActive ? 'Kelola Pembayaran Cicilan' : 'FASE 3: Persetujuan Direksi & Notaris' }}">
                                                                 <i class="mdi {{ $isTerminActive ? 'mdi-cash-check' : 'mdi-check-decagram' }}"></i>
                                                                 <span>{{ $isTerminActive ? 'Cicilan' : 'Fase 3' }}</span>
                                                             </a>
@@ -737,6 +762,24 @@
                                                                     title="{{ !$isLandLegalSah ? 'Terkunci: Wajib validasi sah berkas legalitas di Fase 1' : 'Terkunci: Wajib selesaikan Fase 2 terlebih dahulu' }}">
                                                                 <i class="mdi mdi-lock"></i>
                                                                 <span>Fase 3</span>
+                                                            </button>
+                                                        @endif
+
+                                                        {{-- TOMBOL FASE 4 (Terkunci jika Fase 1, 2, atau 3 belum selesai) --}}
+                                                        @if($canAccessFase4)
+                                                            <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 4]) }}" 
+                                                               class="btn-fase-action btn-fase-4" 
+                                                               title="FASE 4: Pengurusan Balik Nama & Dokumen PT">
+                                                                <i class="mdi mdi-certificate"></i>
+                                                                <span>Fase 4</span>
+                                                            </a>
+                                                        @else
+                                                            <button type="button" class="btn-fase-action btn-fase-4" 
+                                                                    onclick="alertFase4Locked({{ $land->id }}, {{ $isLandLegalSah ? 'true' : 'false' }}, {{ $isFase2Done ? 'true' : 'false' }}, {{ $isFase3Done ? 'true' : 'false' }})" 
+                                                                    style="opacity: 0.75; cursor: pointer;"
+                                                                    title="Terkunci: Wajib selesaikan Fase 1, 2, dan 3 terlebih dahulu">
+                                                                <i class="mdi mdi-lock"></i>
+                                                                <span>Fase 4</span>
                                                             </button>
                                                         @endif
 
@@ -1068,6 +1111,91 @@
             Swal.fire({
                 icon: 'warning',
                 title: 'Fase 3 Terkunci!',
+                html: infoHtml,
+                showCancelButton: !!landId,
+                confirmButtonColor: '#9a55ff',
+                confirmButtonText: landId ? btnText : '<i class="mdi mdi-check me-1"></i> Mengerti',
+                cancelButtonColor: '#6c757d',
+                cancelButtonText: 'Tutup'
+            }).then((result) => {
+                if (result.isConfirmed && landId) {
+                    window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + landId + "?step=" + targetStep;
+                }
+            });
+        }
+
+        function alertFase4Locked(landId = null, isLegalSah = false, isFase2Done = false, isFase3Done = false) {
+            let infoHtml = '';
+            let btnText = '<i class="mdi mdi-check me-1"></i> Mengerti';
+            let targetStep = 1;
+
+            if (!isLegalSah) {
+                targetStep = 1;
+                btnText = '<i class="mdi mdi-arrow-right-circle me-1"></i> Buka Fase 1';
+                infoHtml = `
+                    <p class="text-muted mb-3" style="font-size: 0.92rem;">
+                        Tahap <b>Fase 4 (Balik Nama & Pengindukan PT)</b> belum dapat dibuka untuk lahan ini.
+                    </p>
+                    <div class="p-3 rounded-3 text-start mb-2" style="background: #fffbeb; border: 1.5px solid #fde68a;">
+                        <div class="d-flex align-items-center gap-2 mb-2 text-warning fw-bold" style="font-size: 0.85rem;">
+                            <i class="mdi mdi-shield-alert" style="font-size: 1.1rem;"></i>
+                            <span>Syarat Pembukaan Akses Fase 4:</span>
+                        </div>
+                        <ul class="mb-0 ps-3 text-secondary" style="font-size: 0.82rem; line-height: 1.6;">
+                            <li class="fw-semibold text-danger">Dokumen legalitas di <b>Fase 1</b> wajib diunggah dan <b>Divalidasi Sah</b> oleh Kepala Legal terlebih dahulu.</li>
+                            <li>Hasil survey fisik & peta spasial di <b>Fase 2</b> wajib diselesaikan.</li>
+                            <li>Tahap transaksi, notaris & persetujuan di <b>Fase 3</b> wajib diproses.</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (!isFase2Done) {
+                targetStep = 2;
+                btnText = '<i class="mdi mdi-arrow-right-circle me-1"></i> Selesaikan Fase 2';
+                infoHtml = `
+                    <p class="text-muted mb-3" style="font-size: 0.92rem;">
+                        Tahap <b>Fase 4 (Balik Nama & Pengindukan PT)</b> belum dapat dibuka karena tahap <b>Fase 2</b> belum diselesaikan.
+                    </p>
+                    <div class="p-3 rounded-3 text-start mb-2" style="background: #fffbeb; border: 1.5px solid #fde68a;">
+                        <div class="d-flex align-items-center gap-2 mb-2 text-warning fw-bold" style="font-size: 0.85rem;">
+                            <i class="mdi mdi-alert-circle-outline" style="font-size: 1.1rem;"></i>
+                            <span>Harap Selesaikan Fase 2 Terlebih Dahulu:</span>
+                        </div>
+                        <ul class="mb-0 ps-3 text-secondary" style="font-size: 0.82rem; line-height: 1.6;">
+                            <li class="text-success"><i class="mdi mdi-check-circle me-1"></i>Dokumen legalitas di <b>Fase 1</b> telah Divalidasi Sah.</li>
+                            <li class="fw-semibold text-danger"><i class="mdi mdi-close-circle me-1"></i>Data survey kelayakan fisik & spasial map di <b>Fase 2</b> belum diisi / disimpan.</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (!isFase3Done) {
+                targetStep = 3;
+                btnText = '<i class="mdi mdi-arrow-right-circle me-1"></i> Buka Fase 3';
+                infoHtml = `
+                    <p class="text-muted mb-3" style="font-size: 0.92rem;">
+                        Tahap <b>Fase 4 (Balik Nama & Pengindukan PT)</b> belum dapat dibuka karena tahap <b>Fase 3 (Sidang / Notaris)</b> belum diproses.
+                    </p>
+                    <div class="p-3 rounded-3 text-start mb-2" style="background: #fffbeb; border: 1.5px solid #fde68a;">
+                        <div class="d-flex align-items-center gap-2 mb-2 text-warning fw-bold" style="font-size: 0.85rem;">
+                            <i class="mdi mdi-alert-circle-outline" style="font-size: 1.1rem;"></i>
+                            <span>Harap Selesaikan Fase 3 Terlebih Dahulu:</span>
+                        </div>
+                        <ul class="mb-0 ps-3 text-secondary" style="font-size: 0.82rem; line-height: 1.6;">
+                            <li class="text-success"><i class="mdi mdi-check-circle me-1"></i>Dokumen legalitas di <b>Fase 1</b> telah Divalidasi Sah.</li>
+                            <li class="text-success"><i class="mdi mdi-check-circle me-1"></i>Data survey fisik di <b>Fase 2</b> telah selesai.</li>
+                            <li class="fw-semibold text-danger"><i class="mdi mdi-close-circle me-1"></i>Data transaksi, notaris & persetujuan di <b>Fase 3</b> belum diproses.</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                infoHtml = `
+                    <p class="text-muted mb-3" style="font-size: 0.92rem;">
+                        Tahap <b>Fase 4 (Balik Nama & Pengindukan PT)</b> belum dapat dibuka untuk lahan ini.
+                    </p>
+                `;
+            }
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Fase 4 Terkunci!',
                 html: infoHtml,
                 showCancelButton: !!landId,
                 confirmButtonColor: '#9a55ff',

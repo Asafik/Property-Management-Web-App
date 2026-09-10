@@ -948,8 +948,9 @@
                                 $totalUploadedDocs = $applicablePraDocs->whereNotNull('file_path')->count();
                                 $verifiedCount = $applicablePraDocs->where('status', 'verified')->count();
                                 $isLegalSah = $land && !empty($selectedCat) && ($totalUploadedDocs > 0) && ($verifiedCount === $totalUploadedDocs);
-                                $isFase2Done = $land && (!empty($land->survey_date) || in_array($land->status, ['fase3', 'approved', 'rejected']));
+                                $isFase2Done = $land && (!empty($land->survey_date) || in_array($land->status, ['fase3', 'fase4', 'approved', 'rejected']));
                                 $canAccessFase3 = $isLegalSah && $isFase2Done;
+                                $canAccessFase4 = $canAccessFase3 && ($land && in_array($land->status, ['fase3', 'fase4', 'approved', 'rejected']));
                             @endphp
 
                             <!-- STEP 2 -->
@@ -970,6 +971,17 @@
                                     Fase 3
                                     @if(!$canAccessFase3 && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved' && $land->status != 'rejected')
                                         <i class="mdi mdi-lock text-warning ms-1" style="font-size: 13px;" title="Terkunci: Wajib selesaikan Fase 2 terlebih dahulu"></i>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- STEP 4 -->
+                            <div class="step-item {{ (!$land || (!$canAccessFase4 && !$isKeuangan && !$isAdmin && $land->status != 'approved')) ? 'disabled' : '' }}" id="step4" onclick="switchStep(4)" style="cursor: pointer;" title="{{ (!$canAccessFase4 && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved') ? 'Terkunci: Wajib selesaikan Fase 1, 2, dan 3 terlebih dahulu' : '' }}">
+                                <div class="step-circle">4</div>
+                                <div class="step-title d-flex align-items-center justify-content-center">
+                                    Fase 4
+                                    @if(!$canAccessFase4 && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved' && $land->status != 'rejected')
+                                        <i class="mdi mdi-lock text-warning ms-1" style="font-size: 13px;" title="Terkunci: Wajib selesaikan Fase 3 terlebih dahulu"></i>
                                     @endif
                                 </div>
                             </div>
@@ -2857,9 +2869,364 @@
                                                 <i class="mdi mdi-cash-register me-1"></i> Simpan & Update Data Keuangan
                                             </button>
                                         @endif
+                                        @if($land)
+                                            <button type="button" class="btn btn-gradient-primary py-2 px-3 shadow-sm d-inline-flex align-items-center gap-1" onclick="switchStep(4)">
+                                                <span>Lanjut ke Fase 4 (Balik Nama PT)</span> <i class="mdi mdi-arrow-right-circle ms-1"></i>
+                                            </button>
+                                        @endif
                                     </div>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= FASE 4 CONTAINER (PENGURUSAN DOKUMEN BALIK NAMA & PENGINDUKAN AN. PT - DINAMIS) ================= -->
+                <div id="containerFase4" class="d-none">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <div>
+                                <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
+                                    FASE 4: Pengurusan Dokumen Balik Nama / Pengindukan an. PT
+                                </h5>
+                                <small class="text-muted" style="font-size: 0.8rem;">
+                                    Tahapan pengurusan dokumen legalitas wilayah (Poin 7–17), perizinan teknis BPN, perizinan PKKPR OSS RBA, validasi perpajakan, form dokumen dinamis hingga penerbitan SHGB Induk an. PT dan migrasi ke Pasca Land Bank.
+                                </small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <button type="button" class="btn btn-sm btn-gradient-primary py-1.5 px-3 shadow-sm d-inline-flex align-items-center gap-1.5" onclick="openFase4DocModal()" style="font-size: 0.82rem; font-weight: 600;">
+                                    <i class="mdi mdi-plus-circle"></i> + Tambah Dokumen Lapangan
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-purple py-1.5 px-2.5 shadow-sm d-inline-flex align-items-center gap-1.5" onclick="openMasterPickerModal()" style="font-size: 0.82rem; font-weight: 600;">
+                                    <i class="mdi mdi-file-certificate-outline"></i> + Pilih dari Master Perizinan
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary py-1.5 px-2 shadow-sm d-inline-flex align-items-center gap-1" onclick="loadFase4DefaultTemplate()" style="font-size: 0.8rem; font-weight: 600;" title="Muat paket template default">
+                                    <i class="mdi mdi-clipboard-text-play-outline"></i> Template (Poin 7-17)
+                                </button>
+                                @if($land && $land->land_bank_id)
+                                    <a href="{{ route('properti-all') }}" class="btn btn-sm btn-success text-white py-1.5 px-3 shadow-sm d-inline-flex align-items-center gap-1" style="font-size: 0.82rem; font-weight: 600;">
+                                        <i class="mdi mdi-check-decagram"></i> Lahan Telah Masuk Pasca Land Bank #{{ $land->land_bank_id }}
+                                    </a>
+                                @else
+                                    <span class="badge {{ ($land && $land->hgb_process_status == 'completed_hgb_induk') ? 'bg-success' : 'bg-soft-primary text-primary border border-primary-subtle' }} py-1.5 px-3" style="font-size: 0.82rem; font-weight: 600;">
+                                        <i class="mdi {{ ($land && $land->hgb_process_status == 'completed_hgb_induk') ? 'mdi-check-all' : 'mdi-progress-clock' }} me-1"></i>
+                                        {{ ($land && $land->hgb_process_status == 'completed_hgb_induk') ? 'SHGB Induk Terbit' : 'Dalam Proses Pengindukan' }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            @php
+                                $workflowDocs = ($land && is_array($land->custom_workflow_docs)) ? $land->custom_workflow_docs : [];
+                                $totalWorkflowDocs = count($workflowDocs);
+                                $terbitCount = 0;
+                                $prosesCount = 0;
+                                $belumCount = 0;
+                                foreach ($workflowDocs as $wd) {
+                                    $st = $wd['status'] ?? 'belum';
+                                    if ($st === 'terbit' || $st === 'selesai' || !empty($wd['file_path'])) {
+                                        $terbitCount++;
+                                    } elseif ($st === 'proses' || !empty($wd['doc_number'])) {
+                                        $prosesCount++;
+                                    } else {
+                                        $belumCount++;
+                                    }
+                                }
+                                $progressWorkflowPercent = $totalWorkflowDocs > 0 ? round(($terbitCount / $totalWorkflowDocs) * 100) : 0;
+                            @endphp
+
+                            <!-- RINGKASAN DATA LAHAN (INFO BANNER) -->
+                            @if($land)
+                                <div class="p-3 rounded-3 mb-3" style="background: linear-gradient(135deg, #fbf9ff, #f6f0ff); border: 1px solid rgba(154, 85, 255, 0.2);">
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-12 col-md-3">
+                                            <small class="text-muted d-block" style="font-size: 0.74rem;">Nama Lahan / Prospek</small>
+                                            <strong class="text-dark" style="font-size: 0.92rem;">{{ $land->land_name }}</strong>
+                                        </div>
+                                        <div class="col-12 col-md-3">
+                                            <small class="text-muted d-block" style="font-size: 0.74rem;">Pemilik Awal (Alas Hak)</small>
+                                            <span class="fw-semibold text-dark" style="font-size: 0.88rem;">{{ $land->owner_name ?? ($land->certificate_owner ?? '-') }}</span>
+                                        </div>
+                                        <div class="col-12 col-md-3">
+                                            <small class="text-muted d-block" style="font-size: 0.74rem;">Notaris Rekanan Transaksi</small>
+                                            <span class="fw-semibold text-primary" style="font-size: 0.88rem;">
+                                                <i class="mdi mdi-bank me-1"></i>{{ $land->notaris ? $land->notaris->nama_notaris : ($land->notaris_id ? 'Notaris #' . $land->notaris_id : 'Belum Ditentukan') }}
+                                            </span>
+                                        </div>
+                                        <div class="col-12 col-md-3 text-md-end">
+                                            <small class="text-muted d-block" style="font-size: 0.74rem;">Total Luas Lahan Awal</small>
+                                            <span class="badge bg-purple text-white px-2.5 py-1.5" style="background: #9a55ff; font-size: 0.85rem;">{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- PROGRESS BAR & STATISTIK DOKUMEN FASE 4 -->
+                            <div class="p-3 rounded-3 mb-4 bg-white border shadow-sm">
+                                <div class="row align-items-center g-3">
+                                    <div class="col-12 col-md-5">
+                                        <div class="d-flex justify-content-between align-items-center mb-1.5">
+                                            <span class="fw-bold text-dark" style="font-size: 0.84rem;">
+                                                <i class="mdi mdi-chart-donut text-primary me-1"></i> Progres Dokumen Pengindukan:
+                                            </span>
+                                            <span class="fw-bold text-success" id="fase4_progress_text" style="font-size: 0.84rem;">
+                                                {{ $terbitCount }} dari {{ $totalWorkflowDocs }} Selesai ({{ $progressWorkflowPercent }}%)
+                                            </span>
+                                        </div>
+                                        <div class="progress" style="height: 8px; border-radius: 6px; background-color: #f1f5f9;">
+                                            <div id="fase4_progress_bar" class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ $progressWorkflowPercent }}%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-7">
+                                        <div class="d-flex flex-wrap align-items-center justify-content-md-end gap-2">
+                                            <div class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1.5 rounded-2 d-flex align-items-center gap-1.5" style="font-size: 0.78rem;">
+                                                <i class="mdi mdi-check-circle"></i>
+                                                <span id="stat_terbit">{{ $terbitCount }} Selesai / Terbit</span>
+                                            </div>
+                                            <div class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2.5 py-1.5 rounded-2 d-flex align-items-center gap-1.5" style="font-size: 0.78rem;">
+                                                <i class="mdi mdi-clock-outline"></i>
+                                                <span id="stat_proses">{{ $prosesCount }} Dalam Proses</span>
+                                            </div>
+                                            <div class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-2.5 py-1.5 rounded-2 d-flex align-items-center gap-1.5" style="font-size: 0.78rem;">
+                                                <i class="mdi mdi-alert-circle-outline"></i>
+                                                <span id="stat_belum">{{ $belumCount }} Belum Ada</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- FILTER & SEARCH BAR -->
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-primary active fase4-filter-btn" onclick="filterFase4Docs('all', this)">Semua (<span id="count_all">{{ $totalWorkflowDocs }}</span>)</button>
+                                    <button type="button" class="btn btn-outline-secondary fase4-filter-btn" onclick="filterFase4Docs('terbit', this)">Selesai / Terbit (<span id="count_terbit">{{ $terbitCount }}</span>)</button>
+                                    <button type="button" class="btn btn-outline-secondary fase4-filter-btn" onclick="filterFase4Docs('proses', this)">Proses (<span id="count_proses">{{ $prosesCount }}</span>)</button>
+                                    <button type="button" class="btn btn-outline-secondary fase4-filter-btn" onclick="filterFase4Docs('belum', this)">Belum Ada (<span id="count_belum">{{ $belumCount }}</span>)</button>
+                                </div>
+                                <div style="max-width: 260px; width: 100%;">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-white border-end-0"><i class="mdi mdi-magnify text-muted"></i></span>
+                                        <input type="text" class="form-control border-start-0" id="searchFase4Input" placeholder="Cari dokumen / nomor..." onkeyup="searchFase4Docs(this.value)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- DYNAMIC REPEATER LIST / GRID OF FASE 4 DOCUMENTS -->
+                            <div id="fase4_docs_container" class="row g-3 mb-4">
+                                @forelse($workflowDocs as $doc)
+                                    @php
+                                        $docId = $doc['id'] ?? ('doc_' . uniqid());
+                                        $poinLabel = $doc['poin_label'] ?? 'Dokumen';
+                                        $docName = $doc['doc_name'] ?? 'Dokumen Pengindukan';
+                                        $instansi = $doc['instansi'] ?? '-';
+                                        $docNumber = $doc['doc_number'] ?? '';
+                                        $docDate = !empty($doc['doc_date']) ? \Carbon\Carbon::parse($doc['doc_date'])->format('Y-m-d') : '';
+                                        $docDateDisplay = !empty($doc['doc_date']) ? \Carbon\Carbon::parse($doc['doc_date'])->format('d M Y') : '-';
+                                        $filePath = $doc['file_path'] ?? null;
+                                        $cleanPath = $filePath ? str_replace('uploads/', '', $filePath) : null;
+                                        $status = $doc['status'] ?? ($filePath ? 'terbit' : (!empty($docNumber) ? 'proses' : 'belum'));
+                                        $isTemplate = !empty($doc['is_template']);
+                                        $isFinalGoal = !empty($doc['is_final_goal']) || $docId === 'template_shgb_induk' || str_contains(strtolower($docName), 'shgb induk');
+                                        $nominal = $doc['nominal'] ?? null;
+                                        $luas = $doc['luas'] ?? null;
+                                        $notes = $doc['notes'] ?? '';
+
+                                        $badgeStatusClass = match($status) {
+                                            'terbit', 'selesai' => 'bg-success text-white',
+                                            'proses' => 'bg-warning text-dark',
+                                            'ditolak' => 'bg-danger text-white',
+                                            default => 'bg-light text-muted border',
+                                        };
+                                        $badgeStatusText = match($status) {
+                                            'terbit', 'selesai' => 'Selesai / Terbit',
+                                            'proses' => 'Sedang Proses',
+                                            'ditolak' => 'Ditolak / Revisi',
+                                            default => 'Belum Ada',
+                                        };
+                                    @endphp
+                                    <div class="col-12 col-md-6 col-lg-4 fase4-doc-card" 
+                                         id="fase4_doc_card_{{ $docId }}"
+                                         data-id="{{ $docId }}" 
+                                         data-poin="{{ $poinLabel }}"
+                                         data-name="{{ $docName }}"
+                                         data-instansi="{{ $instansi }}"
+                                         data-number="{{ $docNumber }}"
+                                         data-date="{{ $docDate }}"
+                                         data-nominal="{{ $nominal }}"
+                                         data-luas="{{ $luas }}"
+                                         data-notes="{{ $notes }}"
+                                         data-status="{{ $status }}" 
+                                         data-istemplate="{{ $isTemplate ? '1' : '0' }}"
+                                         data-search="{{ strtolower($docName . ' ' . $instansi . ' ' . $docNumber . ' ' . $poinLabel . ' ' . $notes) }}">
+                                        <div class="card h-100 border rounded-3 p-3 shadow-sm d-flex flex-column {{ $isFinalGoal ? 'border-success bg-soft-success bg-opacity-25' : 'bg-white' }}" style="{{ $isFinalGoal ? 'border-width: 2px !important;' : '' }}">
+                                            
+                                            <!-- CARD HEADER -->
+                                            <div class="d-flex justify-content-between align-items-start mb-2 pb-2 border-bottom">
+                                                <div class="overflow-hidden me-2">
+                                                    <div class="d-flex align-items-center gap-1.5 mb-1">
+                                                        <span class="badge {{ $isFinalGoal ? 'bg-success' : 'bg-primary' }} rounded-pill fase4-card-poin" style="font-size: 9.5px;">{{ $poinLabel }}</span>
+                                                        @if($isFinalGoal)
+                                                            <span class="badge bg-warning text-dark rounded-pill" style="font-size: 9.5px;">GOL AKHIR</span>
+                                                        @endif
+                                                    </div>
+                                                    <h6 class="fw-bold text-dark mb-0 text-truncate fase4-card-title" style="font-size: 0.88rem;" title="{{ $docName }}">
+                                                        {{ $docName }}
+                                                    </h6>
+                                                    <small class="text-muted d-block text-truncate fase4-card-instansi" style="font-size: 0.72rem;">
+                                                        <i class="mdi mdi-office-building text-primary me-1"></i>{{ $instansi }}
+                                                    </small>
+                                                </div>
+                                                <span class="badge {{ $badgeStatusClass }} flex-shrink-0 badge-doc-status" style="font-size: 10px; font-weight: 600;">
+                                                    {{ $badgeStatusText }}
+                                                </span>
+                                            </div>
+
+                                            <!-- CARD BODY -->
+                                            <div class="mb-3 flex-grow-1" style="font-size: 0.78rem;">
+                                                <div class="row g-1 mb-1.5">
+                                                    <div class="col-6 text-muted">No. Dokumen/Reg:</div>
+                                                    <div class="col-6 text-end fw-semibold text-dark text-truncate doc-card-number" title="{{ $docNumber ?: '-' }}">{{ $docNumber ?: '-' }}</div>
+                                                </div>
+                                                <div class="row g-1 mb-1.5">
+                                                    <div class="col-6 text-muted">Tanggal:</div>
+                                                    <div class="col-6 text-end fw-semibold text-dark doc-card-date">{{ $docDateDisplay }}</div>
+                                                </div>
+                                                @if(!empty($nominal))
+                                                    <div class="row g-1 mb-1.5">
+                                                        <div class="col-6 text-muted">Nominal:</div>
+                                                        <div class="col-6 text-end fw-semibold text-primary">Rp {{ number_format($nominal, 0, ',', '.') }}</div>
+                                                    </div>
+                                                @endif
+                                                @if(!empty($luas))
+                                                    <div class="row g-1 mb-1.5">
+                                                        <div class="col-6 text-muted">Luas Hasil Ukur:</div>
+                                                        <div class="col-6 text-end fw-semibold text-primary">{{ number_format($luas, 0, ',', '.') }} m²</div>
+                                                    </div>
+                                                @endif
+                                                @if(!empty($notes))
+                                                    <div class="p-1.5 rounded-2 bg-light border text-muted text-truncate mt-1 doc-card-notes" style="font-size: 0.72rem;" title="{{ $notes }}">
+                                                        <i class="mdi mdi-information-outline me-1"></i>{{ $notes }}
+                                                    </div>
+                                                @endif
+
+                                                @php
+                                                    $syaratDokumen = $doc['syarat_dokumen'] ?? '';
+                                                    $syaratItems = $doc['syarat_items'] ?? [];
+                                                    $syaratChecklist = (array)($doc['syarat_checklist'] ?? []);
+
+                                                    if (empty($syaratItems) && !empty($syaratDokumen)) {
+                                                        $lines = preg_split('/[\r\n]+/', $syaratDokumen);
+                                                        foreach ($lines as $line) {
+                                                            $clean = trim(preg_replace('/^[•\-\*\d+\.]\s*/u', '', trim($line)));
+                                                            if (!empty($clean)) {
+                                                                $syaratItems[] = $clean;
+                                                            }
+                                                        }
+                                                    }
+                                                    $totalSyarat = count($syaratItems);
+                                                    $checkedCount = 0;
+                                                    foreach ($syaratItems as $si) {
+                                                        if (in_array($si, $syaratChecklist)) {
+                                                            $checkedCount++;
+                                                        }
+                                                    }
+                                                    $isAllSyaratReady = ($totalSyarat > 0 && $checkedCount >= $totalSyarat);
+                                                @endphp
+
+                                                @if($totalSyarat > 0)
+                                                    <div class="mt-2 p-2 rounded-2 border {{ $isAllSyaratReady ? 'bg-success bg-opacity-10 border-success border-opacity-25' : 'bg-light' }}">
+                                                        <div class="d-flex align-items-center justify-content-between mb-1">
+                                                            <span class="fw-bold" style="font-size: 0.73rem; color: {{ $isAllSyaratReady ? '#166534' : '#475569' }};">
+                                                                <i class="mdi {{ $isAllSyaratReady ? 'mdi-checkbox-marked-circle text-success' : 'mdi-format-list-checks text-primary' }} me-1"></i>
+                                                                Prasyarat Berkas:
+                                                            </span>
+                                                            <span class="badge {{ $isAllSyaratReady ? 'bg-success text-white' : ($checkedCount > 0 ? 'bg-warning text-dark' : 'bg-secondary text-white') }}" style="font-size: 0.68rem;">
+                                                                {{ $checkedCount }}/{{ $totalSyarat }} Siap
+                                                            </span>
+                                                        </div>
+                                                        <div class="d-flex flex-column gap-1" style="font-size: 0.71rem; max-height: 95px; overflow-y: auto;">
+                                                            @foreach($syaratItems as $sItem)
+                                                                @php $isItemChecked = in_array($sItem, $syaratChecklist); @endphp
+                                                                <div class="d-flex align-items-start gap-1 {{ $isItemChecked ? 'text-success fw-semibold' : 'text-muted' }}">
+                                                                    <i class="mdi {{ $isItemChecked ? 'mdi-check-circle text-success' : 'mdi-checkbox-blank-circle-outline text-muted' }}" style="font-size: 0.78rem; margin-top: 1px;"></i>
+                                                                    <span class="text-truncate" title="{{ $sItem }}">{{ $sItem }}</span>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <!-- FILE PREVIEW & UPLOAD -->
+                                            <div class="p-2 rounded-2 mb-2 {{ $filePath ? 'bg-success bg-opacity-10 border border-success border-opacity-25' : 'bg-light border' }} doc-card-file-box">
+                                                @if($filePath)
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <div class="text-truncate me-2" style="font-size: 0.76rem;">
+                                                            <i class="mdi mdi-file-check text-success me-1"></i><span class="fw-semibold text-dark">{{ basename($filePath) }}</span>
+                                                        </div>
+                                                        <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" data-ext="{{ pathinfo($filePath, PATHINFO_EXTENSION) }}" data-label="{{ $docName }}" style="font-size: 0.72rem;">
+                                                            <i class="mdi mdi-eye me-1"></i>Lihat
+                                                        </button>
+                                                    </div>
+                                                @else
+                                                    <div class="d-flex align-items-center justify-content-between text-muted" style="font-size: 0.74rem;">
+                                                        <span><i class="mdi mdi-file-outline me-1"></i>Berkas belum diunggah</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <!-- CARD ACTION FOOTER -->
+                                            <div class="d-flex align-items-center justify-content-between pt-2 border-top gap-1">
+                                                <button type="button" class="btn btn-xs btn-outline-primary py-1 px-2.5 d-inline-flex align-items-center gap-1" onclick="editFase4Doc('{{ $docId }}')" style="font-size: 0.74rem;">
+                                                    <i class="mdi mdi-pencil-outline"></i> Edit & Upload
+                                                </button>
+                                                <button type="button" class="btn btn-xs btn-outline-danger py-1 px-2 border-0" onclick="deleteFase4Doc('{{ $docId }}', '{{ addslashes($docName) }}')" title="Hapus Dokumen">
+                                                    <i class="mdi mdi-delete-outline fs-6"></i>
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="col-12" id="fase4_docs_empty_state">
+                                        <div class="p-5 text-center bg-light rounded-4 border border-dashed my-2" style="border-width: 2px !important; border-color: #cbd5e1 !important;">
+                                            <div class="p-3 bg-white rounded-circle d-inline-flex shadow-sm mb-3" style="color: #9a55ff;">
+                                                <i class="mdi mdi-folder-plus-outline" style="font-size: 2.5rem;"></i>
+                                            </div>
+                                            <h6 class="fw-bold text-dark mb-1">Daftar Dokumen Pengurusan Masih Kosong</h6>
+                                            <p class="text-muted small mx-auto mb-3" style="max-width: 480px;">
+                                                Dokumen Fase 4 dibuat fleksibel & dinamis sesuai kebutuhan riil di lapangan. Anda dapat menambahkan perizinan/surat satu per satu, atau gunakan template standar legalitas bila diperlukan.
+                                            </p>
+                                            <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
+                                                <button type="button" class="btn btn-sm btn-gradient-primary px-3 py-2 fw-bold shadow-sm d-inline-flex align-items-center gap-1.5" onclick="openFase4DocModal()">
+                                                    <i class="mdi mdi-plus-circle"></i> + Tambah Dokumen Lapangan
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-purple px-3 py-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-1.5" onclick="openMasterPickerModal()">
+                                                    <i class="mdi mdi-file-certificate-outline"></i> + Pilih dari Master Perizinan
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1.5" onclick="loadFase4DefaultTemplate()">
+                                                    <i class="mdi mdi-clipboard-text-play-outline"></i> Gunakan Template Standar (Poin 7-17)
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforelse
+                            </div>
+
+
+                            <!-- FOOTER BACK BUTTON -->
+                            <div class="d-flex justify-content-between align-items-center gap-3 mt-4">
+                                <button type="button" class="btn btn-outline-purple btn-action-mobile" onclick="switchStep(3)">
+                                    <i class="mdi mdi-arrow-left-circle me-1"></i> Kembali ke Fase 3
+                                </button>
+                                @if(!$land || !$land->land_bank_id)
+                                    <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="confirmFinalizePasca()">
+                                        <i class="mdi mdi-shield-crown me-1"></i> Finalisasi ke Pasca Land Bank
+                                    </button>
+                                @endif
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -2956,6 +3323,371 @@
                         <i class="mdi mdi-information-outline me-1"></i>Gunakan toolbar di atas atau scroll mouse untuk memperbesar/memutar detail dokumen.
                     </small>
                     <button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal">Tutup</button>
+    {{-- MODAL TAMBAH / EDIT DOKUMEN FASE 4 (DYNAMIC WORKFLOW) --}}
+    <div class="modal fade" id="modalFase4Doc" tabindex="-1" aria-hidden="true" style="z-index: 1055;">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
+                <div class="modal-header text-white py-3 px-4" style="background: linear-gradient(135deg, #9a55ff 0%, #7e22ce 100%);">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="p-2 rounded-3 bg-white bg-opacity-20 text-white">
+                            <i class="mdi mdi-file-document-edit fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="modal-title mb-0 fw-bold text-white" id="modalFase4DocTitle">Form Dokumen & Perizinan Fase 4</h6>
+                            <small class="text-white-50" style="font-size: 0.72rem;">Pengurusan Legalisasi Wilayah, Teknis BPN & SHGB Induk</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form id="formFase4Doc" onsubmit="submitModalFase4Doc(event)" enctype="multipart/form-data">
+                    <input type="hidden" id="modal_fase4_doc_id" name="doc_id" value="">
+                    
+                    <div class="modal-body p-4 bg-light" style="max-height: 75vh; overflow-y: auto;">
+                        <div class="row g-3">
+                            <!-- Quick Fill dari Master Dokumen Perizinan -->
+                            <div class="col-12" id="modal_fase4_master_picker_section">
+                                <div class="p-3 rounded-3 border" style="background-color: #fbf9ff; border-color: rgba(154, 85, 255, 0.25) !important;">
+                                    <div class="d-flex justify-content-between align-items-center mb-1.5">
+                                        <label class="form-label small fw-bold text-dark mb-0 d-flex align-items-center gap-1.5">
+                                            <i class="mdi mdi-file-certificate-outline" style="color: #9a55ff; font-size: 1.1rem;"></i>
+                                            Pilih dari Katalog Master Perizinan (Isi Otomatis):
+                                        </label>
+                                        <a href="{{ route('master.dokumen-perizinan.index') }}" target="_blank" class="small text-decoration-none fw-semibold" style="color: #9a55ff; font-size: 0.74rem;">
+                                            Kelola Master <i class="mdi mdi-open-in-new"></i>
+                                        </a>
+                                    </div>
+                                    <select id="modal_fase4_master_select" class="form-select form-select-sm" onchange="applyMasterToFase4Form(this.value)">
+                                        <option value="">-- Ketik / Pilih Standar Perizinan untuk Auto-Fill --</option>
+                                        @if(isset($masterPerizinans) && $masterPerizinans->count() > 0)
+                                            @foreach($masterPerizinans->groupBy('kategori') as $kategori => $items)
+                                                <optgroup label="📂 {{ $kategori }}">
+                                                    @foreach($items as $mItem)
+                                                        <option value="{{ $mItem->id }}"
+                                                            data-kode="{{ $mItem->kode_dokumen }}"
+                                                            data-nama="{{ $mItem->nama_dokumen }}"
+                                                            data-instansi="{{ $mItem->instansi_terkait }}"
+                                                            data-biaya="{{ $mItem->estimasi_biaya }}"
+                                                            data-syarat="{{ $mItem->syarat_dokumen }}"
+                                                            data-deskripsi="{{ $mItem->deskripsi }}">
+                                                            {{ $mItem->nama_dokumen }} ({{ $mItem->kode_dokumen }})
+                                                        </option>
+                                                    @endforeach
+                                                </optgroup>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                    <small class="text-muted d-block mt-1" style="font-size: 0.72rem;">
+                                        Memilih izin master akan otomatis mengisi nama dokumen, instansi, estimasi biaya, dan catatan syarat.
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Info Identitas Dokumen -->
+                            <div class="col-12">
+                                <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                    <div class="fw-bold mb-2 d-flex align-items-center gap-2" style="font-size: 0.85rem; color: #7e22ce;">
+                                        <i class="mdi mdi-information-outline"></i> Identitas & Kategori Dokumen
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-md-4">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Poin / Urutan Tahapan</label>
+                                            <input type="text" class="form-control form-control-sm" id="modal_fase4_poin_label" name="poin_label" placeholder="Contoh: Poin 7 / Poin 12 / Opsional">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Nama Dokumen / Perizinan <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-sm fw-bold" id="modal_fase4_doc_name" name="doc_name" placeholder="Contoh: PKKPR OSS RBA / SK HGB BPN" required>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Instansi / Lembaga Terkait</label>
+                                            <input type="text" class="form-control form-control-sm" id="modal_fase4_instansi" name="instansi" placeholder="Contoh: Kantor Pertanahan (BPN) Kab. Jember / Kementerian Investasi (OSS)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Checklist Prasyarat Berkas (Syarat Dokumen Otomatis & Dinamis) -->
+                            <div class="col-12" id="modal_fase4_syarat_section">
+                                <div class="p-3 bg-white rounded-3 border shadow-sm" style="border-left: 4px solid #0284c7 !important;">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="fw-bold d-flex align-items-center gap-2" style="font-size: 0.85rem; color: #0284c7;">
+                                            <i class="mdi mdi-checkbox-multiple-marked-outline"></i> Daftar Checklist Prasyarat Berkas Pengajuan
+                                        </div>
+                                        <span class="badge bg-soft-info text-info border" id="modal_syarat_summary_badge" style="font-size: 0.72rem;">0/0 Terpenuhi</span>
+                                    </div>
+                                    <p class="text-muted small mb-2" style="font-size: 0.74rem;">
+                                        Tandai berkas prasyarat yang sudah siap / lengkap sebelum diajukan ke instansi terkait (Kelurahan, BPN, OSS, Bapenda).
+                                    </p>
+                                    
+                                    <!-- Container Checkboxes Dinamis -->
+                                    <div id="modal_syarat_checkboxes_container" class="p-2.5 rounded-3 mb-2" style="background-color: #f8fafc; border: 1px dashed #cbd5e1; min-height: 48px;">
+                                        <!-- Checkboxes dirender otomatis via JavaScript -->
+                                    </div>
+
+                                    <!-- Collapsible Editor untuk Tambah/Edit Prasyarat -->
+                                    <div class="mt-2">
+                                        <a class="small text-decoration-none fw-semibold text-muted d-inline-flex align-items-center gap-1" data-bs-toggle="collapse" href="#collapseSyaratEditor" role="button" aria-expanded="false" style="font-size: 0.73rem;">
+                                            <i class="mdi mdi-pencil-outline"></i> Edit Teks / Tambah Prasyarat Baru (Ketik Manual)
+                                        </a>
+                                        <div class="collapse mt-2" id="collapseSyaratEditor">
+                                            <textarea class="form-control form-control-sm" id="modal_fase4_syarat_dokumen" name="syarat_dokumen" rows="3" placeholder="Tuliskan prasyarat berkas per baris atau dengan simbol bullet (• / -)..." oninput="onSyaratTextInput(this.value)"></textarea>
+                                            <small class="text-muted d-block mt-1" style="font-size: 0.7rem;">Setiap baris teks otomatis diubah menjadi kotak centang checklist prasyarat di atas.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Legalitas & Status -->
+                            <div class="col-12">
+                                <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                    <div class="fw-bold text-primary mb-2 d-flex align-items-center gap-2" style="font-size: 0.85rem;">
+                                        <i class="mdi mdi-shield-check-outline"></i> Nomor, Tanggal & Status Progres
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-md-5">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Nomor Registrasi / SK / Surat</label>
+                                            <input type="text" class="form-control form-control-sm" id="modal_fase4_doc_number" name="doc_number" placeholder="Nomor resmi dokumen">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Tanggal Terbit / Validasi</label>
+                                            <input type="date" class="form-control form-control-sm" id="modal_fase4_doc_date" name="doc_date">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Status Progres <span class="text-danger">*</span></label>
+                                            <select class="form-select form-select-sm fw-bold" id="modal_fase4_status" name="status" required>
+                                                <option value="belum">🔴 Belum Diurus</option>
+                                                <option value="proses">🟡 Sedang Proses</option>
+                                                <option value="selesai">🟢 Selesai / Terbit</option>
+                                                <option value="ditolak">⚪ Dibatalkan / N/A</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nilai Nominal / Luas Tambahan (Opsional) -->
+                            <div class="col-12">
+                                <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                    <div class="fw-bold text-success mb-2 d-flex align-items-center gap-2" style="font-size: 0.85rem;">
+                                        <i class="mdi mdi-cash-multiple"></i> Informasi Teknis & Finansial (Opsional)
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Nominal Biaya / Pajak (Jika ada)</label>
+                                            <input type="text" class="form-control form-control-sm" id="modal_fase4_nominal" name="nominal" placeholder="Rp 0 (Contoh: BPHTB / Biaya BPN)" onkeyup="formatRupiahTemp(this)">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Luas Bidang Teknis (M²)</label>
+                                            <input type="text" class="form-control form-control-sm" id="modal_fase4_luas" name="luas" placeholder="Contoh: 15.420 m²">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Catatan Progres / Keterangan Kendala</label>
+                                            <textarea class="form-control form-control-sm" id="modal_fase4_notes" name="notes" rows="2" placeholder="Tuliskan catatan teknis, kendala berkas, atau catatan tindak lanjut..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upload Berkas Fisik -->
+                            <div class="col-12">
+                                <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                    <div class="fw-bold text-dark mb-2 d-flex align-items-center gap-2" style="font-size: 0.85rem;">
+                                        <i class="mdi mdi-cloud-upload text-primary"></i> Upload Dokumen Fisik / Scan
+                                    </div>
+                                    <div id="modal_fase4_current_file_preview" class="mb-2 d-none">
+                                        <!-- Will show existing file info if any -->
+                                    </div>
+                                    <div class="pratanah-file-upload-modern">
+                                        <input type="file" id="modal_fase4_file" name="file" accept=".pdf,.jpg,.jpeg,.png,.webp,.zip,.doc,.docx" onchange="handleModalFase4File(this)">
+                                        <div class="pratanah-file-label-modern py-2 px-3" style="background: #fafbfe; border: 1.5px dashed #cbd5e1; border-radius: 8px;">
+                                            <i class="mdi mdi-cloud-sync text-primary" style="font-size: 1.3rem;"></i>
+                                            <div class="pratanah-file-info-modern">
+                                                <span class="file-label-text fw-bold text-dark" id="modal_fase4_file_label" style="font-size: 0.8rem;">Pilih Berkas Baru (Opsional)</span>
+                                                <span class="file-label-hint text-muted" style="font-size: 0.7rem;">Format PDF, Gambar, DOCX maks. 25MB</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer bg-white border-top py-2.5 px-4 d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-sm btn-outline-secondary px-3" data-bs-dismiss="modal">
+                            <i class="mdi mdi-close me-1"></i>Batal
+                        </button>
+                        <button type="submit" class="btn btn-sm btn-primary px-4 shadow-sm fw-bold" id="btnSaveModalFase4" style="background: #9a55ff; border-color: #9a55ff;">
+                            <i class="mdi mdi-content-save-check me-1"></i>Simpan Dokumen
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- MODAL CHECKLIST PICKER: PILIH DARI MASTER DOKUMEN PERIZINAN --}}
+    <div class="modal fade" id="modalPickerMasterPerizinan" tabindex="-1" aria-hidden="true" style="z-index: 1056;">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
+                <div class="modal-header text-white py-3 px-4" style="background: linear-gradient(135deg, #9a55ff 0%, #7e22ce 100%);">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="p-2 rounded-3 bg-white bg-opacity-20 text-white">
+                            <i class="mdi mdi-file-certificate-outline fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="modal-title mb-0 fw-bold text-white">Katalog Master Dokumen Perizinan Developer</h6>
+                            <small class="text-white-50" style="font-size: 0.72rem;">Pilih dokumen perizinan standar untuk dimasukkan ke alur kerja Fase 4 lahan ini</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body p-4 bg-light" style="max-height: 75vh; overflow-y: auto;">
+                    <!-- Filter & Search Master -->
+                    <div class="p-3 bg-white rounded-3 border shadow-sm mb-3">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-5">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-white"><i class="mdi mdi-magnify text-muted"></i></span>
+                                    <input type="text" class="form-control" id="searchMasterPickerInput" placeholder="Cari nama izin, kode, instansi..." onkeyup="searchMasterPicker(this.value)">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select form-select-sm" id="filterMasterCategorySelect" onchange="filterMasterPickerCategory(this.value)">
+                                    <option value="">Semua Kategori ({{ isset($masterPerizinans) ? $masterPerizinans->count() : 0 }} Dokumen)</option>
+                                    @if(isset($masterPerizinans))
+                                        @foreach($masterPerizinans->pluck('kategori')->unique() as $kategori)
+                                            <option value="{{ $kategori }}">{{ $kategori }} ({{ $masterPerizinans->where('kategori', $kategori)->count() }})</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                            <div class="col-md-3 text-md-end">
+                                <a href="{{ route('master.dokumen-perizinan.index') }}" target="_blank" class="btn btn-sm btn-outline-purple w-100 d-inline-flex align-items-center justify-content-center gap-1" style="font-size: 0.78rem;">
+                                    <i class="mdi mdi-cog-outline"></i> Kelola Master Data
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Select All & Summary Bar -->
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-2.5 border-top">
+                            <div class="form-check form-check-inline m-0">
+                                <input class="form-check-input" type="checkbox" id="checkAllMasterPicker" onchange="togglePickerSelectAll(this)" style="cursor: pointer; width: 18px; height: 18px;">
+                                <label class="form-check-label fw-bold text-dark small ms-1" for="checkAllMasterPicker" style="cursor: pointer;">
+                                    Pilih Semua yang Ditampilkan
+                                </label>
+                            </div>
+                            <div class="small fw-semibold text-primary" id="masterPickerSelectedText">
+                                0 dokumen dipilih
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Items Checklist Container -->
+                    <form id="formPickerMasterPerizinan">
+                        @php
+                            $existingCodes = [];
+                            $existingNames = [];
+                            if (isset($workflowDocs) && is_array($workflowDocs)) {
+                                foreach ($workflowDocs as $wd) {
+                                    if (!empty($wd['poin_label'])) $existingCodes[] = strtolower(trim($wd['poin_label']));
+                                    if (!empty($wd['doc_name'])) $existingNames[] = strtolower(trim($wd['doc_name']));
+                                }
+                            }
+                        @endphp
+
+                        <div class="row g-2.5" id="masterPickerListContainer">
+                            @if(isset($masterPerizinans) && $masterPerizinans->count() > 0)
+                                @foreach($masterPerizinans as $m)
+                                    @php
+                                        $isAlreadyAdded = in_array(strtolower(trim($m->kode_dokumen)), $existingCodes) || in_array(strtolower(trim($m->nama_dokumen)), $existingNames);
+                                        $searchString = strtolower($m->nama_dokumen . ' ' . $m->kode_dokumen . ' ' . $m->kategori . ' ' . $m->instansi_terkait . ' ' . $m->syarat_dokumen . ' ' . $m->deskripsi);
+                                    @endphp
+                                    <div class="col-12 col-md-6 master-picker-item" 
+                                         data-kategori="{{ $m->kategori }}" 
+                                         data-search="{{ $searchString }}"
+                                         data-already="{{ $isAlreadyAdded ? '1' : '0' }}">
+                                        <div class="card h-100 border rounded-3 p-3 transition-all {{ $isAlreadyAdded ? 'bg-light opacity-75 border-secondary-subtle' : 'bg-white shadow-sm' }}" 
+                                             style="cursor: {{ $isAlreadyAdded ? 'default' : 'pointer' }};"
+                                             onclick="togglePickerCardClick(event, '{{ $m->id }}', {{ $isAlreadyAdded ? 'true' : 'false' }})">
+                                            <div class="d-flex align-items-start gap-2.5">
+                                                <div class="pt-0.5">
+                                                    <input class="form-check-input master-picker-checkbox" 
+                                                           type="checkbox" 
+                                                           name="master_ids[]" 
+                                                           value="{{ $m->id }}" 
+                                                           id="picker_chk_{{ $m->id }}"
+                                                           {{ $isAlreadyAdded ? 'disabled' : '' }}
+                                                           onchange="updatePickerSelectedCount()"
+                                                           style="cursor: pointer; width: 19px; height: 19px;">
+                                                </div>
+                                                <div class="flex-grow-1 overflow-hidden">
+                                                    <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                                                        <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                                            <span class="badge bg-light text-dark border font-monospace" style="font-size: 0.72rem;">{{ $m->kode_dokumen }}</span>
+                                                            <span class="badge rounded-pill fw-semibold" style="background-color: rgba(154,85,255,0.12); color: #9a55ff; font-size: 0.7rem;">{{ $m->kategori }}</span>
+                                                        </div>
+                                                        @if($isAlreadyAdded)
+                                                            <span class="badge bg-secondary rounded-pill" style="font-size: 0.68rem;">
+                                                                <i class="mdi mdi-check-all me-1"></i>Sudah Ada di Lahan
+                                                            </span>
+                                                        @elseif($m->is_required)
+                                                            <span class="badge bg-danger-soft text-danger fw-bold border border-danger-subtle rounded-pill" style="background-color: rgba(220,53,69,0.1); font-size: 0.68rem;">
+                                                                Wajib
+                                                            </span>
+                                                        @endif
+                                                    </div>
+
+                                                    <h6 class="fw-bold text-dark mb-1 text-truncate" style="font-size: 0.88rem;" title="{{ $m->nama_dokumen }}">
+                                                        {{ $m->nama_dokumen }}
+                                                    </h6>
+
+                                                    @if($m->instansi_terkait)
+                                                        <small class="text-muted d-block text-truncate mb-1" style="font-size: 0.74rem;">
+                                                            <i class="mdi mdi-office-building text-primary me-1"></i>{{ $m->instansi_terkait }}
+                                                        </small>
+                                                    @endif
+
+                                                    <div class="d-flex flex-wrap align-items-center gap-2 mt-2 pt-1.5 border-top" style="font-size: 0.74rem;">
+                                                        @if($m->estimasi_hari)
+                                                            <span class="text-muted">
+                                                                <i class="mdi mdi-clock-outline me-0.5 text-secondary"></i>{{ $m->estimasi_hari }} Hari
+                                                            </span>
+                                                        @endif
+                                                        @if($m->estimasi_biaya > 0)
+                                                            <span class="fw-bold text-success">
+                                                                Rp {{ number_format($m->estimasi_biaya, 0, ',', '.') }}
+                                                            </span>
+                                                        @endif
+                                                        @if($m->syarat_dokumen)
+                                                            <span class="text-muted text-truncate" style="max-width: 180px;" title="Syarat: {{ $m->syarat_dokumen }}">
+                                                                <i class="mdi mdi-file-outline me-0.5 text-primary"></i>{{ $m->syarat_dokumen }}
+                                                            </span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="col-12 py-5 text-center text-muted">
+                                    <i class="mdi mdi-file-certificate-outline fs-1 text-muted opacity-50"></i>
+                                    <p class="mt-2 mb-0">Belum ada data master dokumen perizinan.</p>
+                                </div>
+                            @endif
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer bg-white border-top py-2.5 px-4 d-flex justify-content-between align-items-center">
+                    <button type="button" class="btn btn-sm btn-outline-secondary px-3" data-bs-dismiss="modal">
+                        <i class="mdi mdi-close me-1"></i>Batal
+                    </button>
+                    <button type="button" class="btn btn-sm btn-gradient-primary px-4 shadow-sm fw-bold d-inline-flex align-items-center gap-1.5" id="btnSubmitMasterPicker" onclick="submitBatchFromMaster()">
+                        <i class="mdi mdi-plus-box-multiple"></i>
+                        <span id="btnSubmitMasterPickerText">Tambahkan Dokumen Terpilih</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -3146,6 +3878,8 @@
         const currentLandStatus = "{{ $land->status ?? 'fase1' }}";
         let isLegalSah = {{ $isLegalSah ? 'true' : 'false' }};
         let isFase2Done = {{ ($isFase2Done ?? false) ? 'true' : 'false' }};
+        let canAccessFase3 = {{ ($canAccessFase3 ?? false) ? 'true' : 'false' }};
+        let canAccessFase4 = {{ ($canAccessFase4 ?? false) ? 'true' : 'false' }};
 
         // Read step query param if present
         const urlParams = new URLSearchParams(window.location.search);
@@ -3153,25 +3887,26 @@
 
         // Determine step based on query parameter or fallback to land status
         if (isEditMode) {
-            if (queryStep >= 1 && queryStep <= 3) {
-                if (queryStep === 3 && (!isLegalSah || !isFase2Done) && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
+            if (queryStep >= 1 && queryStep <= 4) {
+                if (queryStep === 4 && !canAccessFase4 && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
+                    activeStep = (isLegalSah && isFase2Done) ? 3 : (isLegalSah ? 2 : 1);
+                } else if (queryStep === 3 && (!isLegalSah || !isFase2Done) && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
                     activeStep = isLegalSah ? 2 : 1;
-                    if (window.history.replaceState) {
-                        window.history.replaceState(null, '', window.location.pathname + '?step=' + activeStep);
-                    }
                 } else if (queryStep === 2 && !isLegalSah && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
                     activeStep = 1;
-                    if (window.history.replaceState) {
-                        window.history.replaceState(null, '', window.location.pathname + '?step=1');
-                    }
                 } else {
                     activeStep = queryStep;
+                }
+                if (window.history.replaceState) {
+                    window.history.replaceState(null, '', window.location.pathname + '?step=' + activeStep);
                 }
             } else {
                 if (currentLandStatus === 'fase2') {
                     activeStep = isLegalSah ? 2 : 1;
-                } else if (currentLandStatus === 'fase3' || currentLandStatus === 'approved' || currentLandStatus === 'rejected') {
+                } else if (currentLandStatus === 'fase3') {
                     activeStep = (isLegalSah && isFase2Done) ? 3 : (isLegalSah ? 2 : 1);
+                } else if (currentLandStatus === 'fase4' || currentLandStatus === 'approved' || currentLandStatus === 'rejected') {
+                    activeStep = (isLegalSah && isFase2Done) ? 4 : (isLegalSah ? 2 : 1);
                 }
             }
         }
@@ -3360,10 +4095,10 @@
         });
 
         // ===============================
-        // DYNAMIC STEP MANAGER
+        // DYNAMIC STEP MANAGER (4 FASE)
         // ===============================
         function switchStep(step) {
-            // If in create mode and user tries to skip to step 2 or 3, reject
+            // If in create mode and user tries to skip to step 2, 3, or 4, reject
             if (!isEditMode && step > 1) {
                 Swal.fire({
                     icon: 'warning',
@@ -3458,56 +4193,109 @@
                 }
             }
 
+            // Cek akses ke Step 4 (Wajib Fase 1, 2, 3 Selesai)
+            if (step === 4 && !canAccessFase4 && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Fase 4 Terkunci!',
+                    html: `
+                        <p class="text-muted mb-3" style="font-size: 0.92rem;">
+                            Anda belum dapat melanjutkan ke <b>Fase 4 (Balik Nama & Pengindukan an. PT)</b>.
+                        </p>
+                        <div class="p-3 rounded-3 text-start mb-2" style="background: #fffbeb; border: 1.5px solid #fde68a;">
+                            <div class="d-flex align-items-center gap-2 mb-2 text-warning fw-bold" style="font-size: 0.85rem;">
+                                <i class="mdi mdi-shield-alert" style="font-size: 1.1rem;"></i>
+                                <span>Syarat Pembukaan Akses Fase 4:</span>
+                            </div>
+                            <ul class="mb-0 ps-3 text-secondary" style="font-size: 0.82rem; line-height: 1.6;">
+                                <li>Tahap <b>Fase 1</b> (Validasi Dokumen Sah) wajib lengkap.</li>
+                                <li>Tahap <b>Fase 2</b> (Survey Lapangan & Spasial) wajib tersimpan.</li>
+                                <li>Tahap <b>Fase 3</b> (Sidang Keputusan / Notaris) wajib disetujui / diproses.</li>
+                            </ul>
+                        </div>
+                    `,
+                    confirmButtonColor: '#9a55ff',
+                    confirmButtonText: '<i class="mdi mdi-arrow-left me-1"></i> Periksa Fase 3'
+                }).then(() => {
+                    switchStep(3);
+                });
+                return;
+            }
 
             activeStep = step;
+            if (window.history.replaceState) {
+                window.history.replaceState(null, '', window.location.pathname + '?step=' + activeStep);
+            }
 
             // Manage CSS display containers
-            document.getElementById('containerFase1').classList.add('d-none');
-            document.getElementById('containerFase2').classList.add('d-none');
-            document.getElementById('containerFase3').classList.add('d-none');
+            document.getElementById('containerFase1')?.classList.add('d-none');
+            document.getElementById('containerFase2')?.classList.add('d-none');
+            document.getElementById('containerFase3')?.classList.add('d-none');
+            document.getElementById('containerFase4')?.classList.add('d-none');
 
             // Reset active & completed classes and text
-            document.getElementById('step1').classList.remove('active', 'completed');
-            document.getElementById('step2').classList.remove('active', 'completed');
-            document.getElementById('step3').classList.remove('active', 'completed');
-
-            document.querySelector('#step1 .step-circle').innerHTML = '1';
-            document.querySelector('#step2 .step-circle').innerHTML = '2';
-            document.querySelector('#step3 .step-circle').innerHTML = '3';
+            ['step1', 'step2', 'step3', 'step4'].forEach((sId, idx) => {
+                const el = document.getElementById(sId);
+                if (el) {
+                    el.classList.remove('active', 'completed');
+                    const circle = el.querySelector('.step-circle');
+                    if (circle) circle.innerHTML = (idx + 1).toString();
+                }
+            });
 
             // Show active container
-            document.getElementById(`containerFase${step}`).classList.remove('d-none');
-            document.getElementById(`step${step}`).classList.add('active');
+            const activeCont = document.getElementById(`containerFase${step}`);
+            if (activeCont) activeCont.classList.remove('d-none');
+            const activeStepEl = document.getElementById(`step${step}`);
+            if (activeStepEl) activeStepEl.classList.add('active');
 
             // Apply completed status & checkmarks
-            if (isEditMode) {
-                document.getElementById('step1').classList.add('completed');
-                document.querySelector('#step1 .step-circle').innerHTML = '<i class="mdi mdi-check"></i>';
+            const isFase4Finished = {{ ($land && (!empty($land->land_bank_id) || !empty($land->shgb_induk_no))) ? 'true' : 'false' }};
+            const isFase3Finished = isEditMode && (currentLandStatus === 'fase4' || currentLandStatus === 'approved' || currentLandStatus === 'rejected' || {{ ($land && !empty($land->notaris_id)) ? 'true' : 'false' }});
+
+            if (isEditMode && isLegalSah) {
+                document.getElementById('step1')?.classList.add('completed');
+                const c1 = document.querySelector('#step1 .step-circle');
+                if (c1) c1.innerHTML = '<i class="mdi mdi-check"></i>';
             }
 
-            if (isEditMode && currentLandStatus !== 'fase1') {
-                document.getElementById('step2').classList.add('completed');
-                document.querySelector('#step2 .step-circle').innerHTML = '<i class="mdi mdi-check"></i>';
+            if (isEditMode && isFase2Done) {
+                document.getElementById('step2')?.classList.add('completed');
+                const c2 = document.querySelector('#step2 .step-circle');
+                if (c2) c2.innerHTML = '<i class="mdi mdi-check"></i>';
             }
 
-            if (isEditMode && (currentLandStatus === 'approved' || currentLandStatus === 'rejected')) {
-                document.getElementById('step3').classList.add('completed');
-                document.querySelector('#step3 .step-circle').innerHTML = '<i class="mdi mdi-check"></i>';
+            if (isFase3Finished) {
+                document.getElementById('step3')?.classList.add('completed');
+                const c3 = document.querySelector('#step3 .step-circle');
+                if (c3) c3.innerHTML = '<i class="mdi mdi-check"></i>';
             }
 
-            // Manage Progress Bar Width
-            if (step === 1) {
-                document.getElementById('wizardProgressBar').style.width = '0%';
-                setTimeout(() => initSelect2Search(), 100);
-            } else if (step === 2) {
-                document.getElementById('wizardProgressBar').style.width = '50%';
-                setTimeout(() => {
-                    initMapFase2();
-                    initSelect2Search();
-                }, 300);
-            } else if (step === 3) {
-                document.getElementById('wizardProgressBar').style.width = '100%';
-                setTimeout(() => initSelect2Search(), 100);
+            if (isFase4Finished) {
+                document.getElementById('step4')?.classList.add('completed');
+                const c4 = document.querySelector('#step4 .step-circle');
+                if (c4) c4.innerHTML = '<i class="mdi mdi-check"></i>';
+            }
+
+            // Manage Progress Bar Width (4 Steps: 0%, 33%, 66%, 100%)
+            const bar = document.getElementById('wizardProgressBar');
+            if (bar) {
+                if (step === 1) {
+                    bar.style.width = '0%';
+                    setTimeout(() => initSelect2Search(), 100);
+                } else if (step === 2) {
+                    bar.style.width = '33%';
+                    setTimeout(() => {
+                        initMapFase2();
+                        initSelect2Search();
+                    }, 300);
+                } else if (step === 3) {
+                    bar.style.width = '66%';
+                    setTimeout(() => initSelect2Search(), 100);
+                } else if (step === 4) {
+                    bar.style.width = '100%';
+                    setTimeout(() => initSelect2Search(), 100);
+                }
             }
         }
 
@@ -4944,6 +5732,835 @@
                         labelText.innerHTML = `<span class="text-success fw-bold"><i class="mdi mdi-file-check me-1"></i>${fileName}</span>`;
                     }
                 });
+            });
+        }
+
+        // ==========================================
+        // DOKUMEN DINAMIS & WORKFLOW FASE 4 (REPEATER)
+        // ==========================================
+        const FASE4_DOC_DATA = @json($workflowDocs ?? []);
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function parseSyaratLines(text) {
+            if (!text) return [];
+            return text.split(/\r?\n/)
+                .map(line => line.replace(/^[•\-\*\d+\.]\s*/u, '').trim())
+                .filter(line => line.length > 0);
+        }
+
+        function renderModalSyaratChecklist(items, checkedList = []) {
+            const container = document.getElementById('modal_syarat_checkboxes_container');
+            const badge = document.getElementById('modal_syarat_summary_badge');
+            if (!container) return;
+
+            if (!Array.isArray(items) || items.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-2" style="font-size: 0.74rem;">
+                        <i class="mdi mdi-information-outline me-1"></i>Belum ada prasyarat berkas untuk dokumen ini. Gunakan tombol 'Edit Teks' di bawah untuk menambahkan prasyarat.
+                    </div>
+                `;
+                if (badge) {
+                    badge.textContent = '0/0 Terpenuhi';
+                    badge.className = 'badge bg-light text-muted border';
+                }
+                return;
+            }
+
+            const checkedSet = new Set(Array.isArray(checkedList) ? checkedList : []);
+            let html = '';
+
+            items.forEach((item, idx) => {
+                const isChecked = checkedSet.has(item);
+                const safeItem = escapeHtml(item);
+                html += `
+                    <div class="form-check d-flex align-items-center gap-2 mb-1.5 p-1.5 rounded-2 ${isChecked ? 'bg-success bg-opacity-10 border border-success border-opacity-25' : 'bg-white border'}" style="transition: all 0.2s ease;">
+                        <input class="form-check-input modal-syarat-chk ms-1" type="checkbox" name="syarat_checklist[]" value="${safeItem}" id="modal_syarat_chk_${idx}" ${isChecked ? 'checked' : ''} onchange="updateModalSyaratSummary()" style="cursor: pointer; width: 17px; height: 17px;">
+                        <label class="form-check-label small fw-semibold ${isChecked ? 'text-success' : 'text-dark'} mb-0 flex-grow-1" for="modal_syarat_chk_${idx}" style="cursor: pointer; font-size: 0.78rem;">
+                            ${safeItem}
+                        </label>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            updateModalSyaratSummary();
+        }
+
+        function updateModalSyaratSummary() {
+            const total = document.querySelectorAll('.modal-syarat-chk').length;
+            const checked = document.querySelectorAll('.modal-syarat-chk:checked').length;
+            const badge = document.getElementById('modal_syarat_summary_badge');
+
+            document.querySelectorAll('.modal-syarat-chk').forEach(cb => {
+                const row = cb.closest('.form-check');
+                const label = row?.querySelector('label');
+                if (cb.checked) {
+                    row?.classList.remove('bg-white');
+                    row?.classList.add('bg-success', 'bg-opacity-10', 'border-success', 'border-opacity-25');
+                    label?.classList.remove('text-dark');
+                    label?.classList.add('text-success');
+                } else {
+                    row?.classList.remove('bg-success', 'bg-opacity-10', 'border-success', 'border-opacity-25');
+                    row?.classList.add('bg-white');
+                    label?.classList.remove('text-success');
+                    label?.classList.add('text-dark');
+                }
+            });
+
+            if (badge) {
+                if (total === 0) {
+                    badge.textContent = '0/0 Terpenuhi';
+                    badge.className = 'badge bg-light text-muted border';
+                } else if (checked >= total) {
+                    badge.textContent = `${checked}/${total} Lengkap (100%)`;
+                    badge.className = 'badge bg-success text-white shadow-sm';
+                } else {
+                    badge.textContent = `${checked}/${total} Terpenuhi`;
+                    badge.className = 'badge bg-soft-info text-info border';
+                }
+            }
+        }
+
+        function onSyaratTextInput(val) {
+            const currentlyChecked = Array.from(document.querySelectorAll('.modal-syarat-chk:checked')).map(cb => cb.value);
+            const items = parseSyaratLines(val);
+            renderModalSyaratChecklist(items, currentlyChecked);
+        }
+
+        function handleModalFase4File(input) {
+            const labelEl = document.getElementById('modal_fase4_file_label');
+            if (input.files && input.files[0]) {
+                labelEl.textContent = input.files[0].name;
+                labelEl.classList.add('text-primary');
+            } else {
+                labelEl.textContent = 'Pilih Berkas Baru (Opsional)';
+                labelEl.classList.remove('text-primary');
+            }
+        }
+
+        function applyMasterToFase4Form(masterId) {
+            if (!masterId) return;
+            const select = document.getElementById('modal_fase4_master_select');
+            const selectedOption = select.options[select.selectedIndex];
+            if (!selectedOption) return;
+
+            const kode = selectedOption.getAttribute('data-kode') || '';
+            const nama = selectedOption.getAttribute('data-nama') || '';
+            const instansi = selectedOption.getAttribute('data-instansi') || '';
+            const biaya = selectedOption.getAttribute('data-biaya') || '';
+            const syarat = selectedOption.getAttribute('data-syarat') || '';
+            const deskripsi = selectedOption.getAttribute('data-deskripsi') || '';
+
+            if (kode) document.getElementById('modal_fase4_poin_label').value = kode;
+            if (nama) document.getElementById('modal_fase4_doc_name').value = nama;
+            if (instansi) document.getElementById('modal_fase4_instansi').value = instansi;
+            if (biaya && parseInt(biaya) > 0) {
+                document.getElementById('modal_fase4_nominal').value = 'Rp ' + parseInt(biaya).toLocaleString('id-ID');
+            }
+            if (deskripsi) {
+                document.getElementById('modal_fase4_notes').value = deskripsi;
+            }
+
+            // Syarat Dokumen & Checklist
+            const syaratInput = document.getElementById('modal_fase4_syarat_dokumen');
+            if (syaratInput) syaratInput.value = syarat || '';
+            const items = parseSyaratLines(syarat || '');
+            renderModalSyaratChecklist(items, []);
+        }
+
+        function openFase4DocModal(docId) {
+            const modalEl = document.getElementById('modalFase4Doc');
+            if (!modalEl) return;
+
+            const form = document.getElementById('formFase4Doc');
+            form.reset();
+
+            const masterSelect = document.getElementById('modal_fase4_master_select');
+            if (masterSelect) masterSelect.value = '';
+
+            const titleEl = document.getElementById('modalFase4DocTitle');
+            const hiddenId = document.getElementById('modal_fase4_doc_id');
+            const poinInput = document.getElementById('modal_fase4_poin_label');
+            const nameInput = document.getElementById('modal_fase4_doc_name');
+            const instansiInput = document.getElementById('modal_fase4_instansi');
+            const numberInput = document.getElementById('modal_fase4_doc_number');
+            const dateInput = document.getElementById('modal_fase4_doc_date');
+            const statusSelect = document.getElementById('modal_fase4_status');
+            const nominalInput = document.getElementById('modal_fase4_nominal');
+            const luasInput = document.getElementById('modal_fase4_luas');
+            const notesInput = document.getElementById('modal_fase4_notes');
+            const syaratInput = document.getElementById('modal_fase4_syarat_dokumen');
+            const previewContainer = document.getElementById('modal_fase4_current_file_preview');
+            const fileLabel = document.getElementById('modal_fase4_file_label');
+            
+            previewContainer.innerHTML = '';
+            previewContainer.classList.add('d-none');
+            fileLabel.textContent = 'Pilih Berkas Baru (Opsional)';
+            fileLabel.classList.remove('text-primary');
+
+            if (docId) {
+                // Find existing doc
+                let doc = FASE4_DOC_DATA.find(d => String(d.id) === String(docId));
+                if (!doc) {
+                    const card = document.getElementById(`fase4_doc_card_${docId}`);
+                    if (card) {
+                        doc = {
+                            id: docId,
+                            poin_label: card.querySelector('.fase4-card-poin')?.innerText || '',
+                            doc_name: card.querySelector('.fase4-card-title')?.innerText || '',
+                            instansi: card.querySelector('.fase4-card-instansi')?.innerText || '',
+                            status: card.getAttribute('data-status') || 'proses'
+                        };
+                    }
+                }
+
+                if (doc) {
+                    titleEl.innerText = `Edit: ${doc.doc_name || 'Dokumen'}`;
+                    hiddenId.value = doc.id;
+                    poinInput.value = doc.poin_label || '';
+                    nameInput.value = doc.doc_name || '';
+                    instansiInput.value = doc.instansi || '';
+                    numberInput.value = doc.doc_number || '';
+                    dateInput.value = doc.doc_date || '';
+                    statusSelect.value = doc.status || 'belum';
+                    nominalInput.value = doc.nominal ? (typeof formatRupiahTemp === 'function' ? 'Rp ' + (parseInt(doc.nominal.toString().replace(/[^0-9]/g, '')) || 0).toLocaleString('id-ID') : doc.nominal) : '';
+                    luasInput.value = doc.luas || '';
+                    notesInput.value = doc.notes || '';
+
+                    // Load syarat items and checklist
+                    const rawSyarat = doc.syarat_dokumen || '';
+                    if (syaratInput) syaratInput.value = rawSyarat;
+
+                    let items = doc.syarat_items || [];
+                    if (!items || items.length === 0) {
+                        items = parseSyaratLines(rawSyarat);
+                    }
+                    const checkedList = doc.syarat_checklist || [];
+                    renderModalSyaratChecklist(items, checkedList);
+
+                    if (doc.file_path) {
+                        const cleanPath = doc.file_path.replace('uploads/', '');
+                        const ext = doc.file_path.split('.').pop();
+                        previewContainer.innerHTML = `
+                            <div class="p-2 px-3 rounded-2 bg-success bg-opacity-10 border border-success border-opacity-25 d-flex align-items-center justify-content-between mb-2">
+                                <div class="d-flex align-items-center gap-2 overflow-hidden me-2">
+                                    <i class="mdi mdi-file-check text-success fs-5"></i>
+                                    <span class="text-truncate fw-semibold text-dark" style="font-size: 0.8rem;">Berkas Terunggah (${ext.toUpperCase()})</span>
+                                </div>
+                                <button type="button" class="btn btn-xs btn-success text-white py-1 px-2.5 shadow-sm btn-preview-doc" data-url="/dokumen/preview/${cleanPath}" data-ext="${ext}" data-label="${doc.doc_name || 'Dokumen'}" style="font-size: 0.75rem;">
+                                    <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                </button>
+                            </div>
+                        `;
+                        previewContainer.classList.remove('d-none');
+                    }
+                }
+            } else {
+                titleEl.innerText = 'Tambah Dokumen / Tahapan Workflow Baru';
+                hiddenId.value = '';
+                statusSelect.value = 'proses';
+                if (syaratInput) syaratInput.value = '';
+                renderModalSyaratChecklist([], []);
+            }
+
+            const modalObj = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modalObj.show();
+        }
+
+        function editFase4Doc(docId) {
+            openFase4DocModal(docId);
+        }
+
+        function submitModalFase4Doc(e) {
+            e.preventDefault();
+            const landId = '{{ $land->id ?? 0 }}';
+            if (!landId || landId === '0') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Data tanah belum tersimpan di database. Simpan data awal terlebih dahulu.'
+                });
+                return;
+            }
+
+            const form = document.getElementById('formFase4Doc');
+            const formData = new FormData(form);
+            formData.append('_token', '{{ csrf_token() }}');
+
+            const uploadUrl = '{{ route("pra-landbank.upload-custom-workflow-doc", ["id" => $land->id ?? 0]) }}';
+
+            Swal.fire({
+                title: 'Menyimpan Dokumen...',
+                text: 'Sedang memproses penyimpanan data dokumen dan upload berkas',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            fetch(uploadUrl, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Gagal menyimpan dokumen.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil Disimpan!',
+                        text: data.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: data.message || 'Terjadi kesalahan saat menyimpan dokumen.'
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: error.message || 'Terjadi kesalahan jaringan/server.'
+                });
+            });
+        }
+
+        function deleteFase4Doc(docId, docName) {
+            const landId = '{{ $land->id ?? 0 }}';
+            if (!landId || landId === '0') return;
+
+            Swal.fire({
+                title: `Hapus ${docName || 'Dokumen Ini'}?`,
+                text: 'Dokumen dan seluruh file lampirannya akan dihapus dari daftar workflow.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="mdi mdi-delete me-1"></i> Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Menghapus Dokumen...',
+                        text: 'Mohon tunggu sebentar',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    const deleteUrl = '{{ route("pra-landbank.delete-custom-workflow-doc", ["id" => $land->id ?? 0]) }}';
+
+                    fetch(deleteUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({ doc_id: docId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Dokumen Dihapus',
+                                text: data.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: data.message || 'Gagal menghapus dokumen.'
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Delete doc error:', err);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: 'Terjadi kesalahan saat menghapus dokumen.'
+                        });
+                    });
+                }
+            });
+        }
+
+        function loadFase4DefaultTemplate() {
+            const landId = '{{ $land->id ?? 0 }}';
+            if (!landId || landId === '0') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Data tanah belum tersimpan di database. Simpan data awal terlebih dahulu.'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Muat Template Standar (Poin 7–17)?',
+                text: 'Sistem akan menambahkan paket dokumen standar legalitas & perizinan BPN ke dalam daftar. Anda tetap bebas mengedit, mengubah, atau menghapus item yang tidak dibutuhkan.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#9a55ff',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="mdi mdi-clipboard-check me-1"></i> Ya, Muat Template',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Memuat Template...',
+                        text: 'Sedang menyiapkan paket dokumen legalitas',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    const loadUrl = '{{ route("pra-landbank.load-fase4-template", ["id" => $land->id ?? 0]) }}';
+
+                    fetch(loadUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Template Dimuat!',
+                                text: data.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: data.message || 'Gagal memuat template dokumen.'
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Load template error:', err);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: 'Terjadi kesalahan jaringan/server.'
+                        });
+                    });
+                }
+            });
+        }
+
+        // ==========================================
+        // MASTER DOKUMEN PERIZINAN PICKER FUNCTIONS
+        // ==========================================
+        function openMasterPickerModal() {
+            const modalEl = document.getElementById('modalPickerMasterPerizinan');
+            if (!modalEl) return;
+
+            const searchInput = document.getElementById('searchMasterPickerInput');
+            const categorySelect = document.getElementById('filterMasterCategorySelect');
+            const checkAll = document.getElementById('checkAllMasterPicker');
+
+            if (searchInput) searchInput.value = '';
+            if (categorySelect) categorySelect.value = '';
+            if (checkAll) checkAll.checked = false;
+
+            document.querySelectorAll('.master-picker-checkbox:not(:disabled)').forEach(cb => {
+                cb.checked = false;
+            });
+
+            document.querySelectorAll('.master-picker-item').forEach(el => {
+                el.classList.remove('d-none');
+            });
+
+            updatePickerSelectedCount();
+
+            const modalObj = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modalObj.show();
+        }
+
+        function togglePickerCardClick(event, masterId, isAlreadyAdded) {
+            if (isAlreadyAdded) return;
+            if (event.target.tagName === 'INPUT' || event.target.closest('input')) return;
+            const cb = document.getElementById('picker_chk_' + masterId);
+            if (cb && !cb.disabled) {
+                cb.checked = !cb.checked;
+                updatePickerSelectedCount();
+            }
+        }
+
+        function togglePickerSelectAll(masterCheckbox) {
+            const isChecked = masterCheckbox.checked;
+            document.querySelectorAll('.master-picker-item:not(.d-none) .master-picker-checkbox:not(:disabled)').forEach(cb => {
+                cb.checked = isChecked;
+            });
+            updatePickerSelectedCount();
+        }
+
+        function updatePickerSelectedCount() {
+            const checkedBoxes = document.querySelectorAll('.master-picker-checkbox:checked');
+            const checkedCount = checkedBoxes.length;
+            const textEl = document.getElementById('masterPickerSelectedText');
+            const btnTextEl = document.getElementById('btnSubmitMasterPickerText');
+            const btnEl = document.getElementById('btnSubmitMasterPicker');
+
+            if (textEl) {
+                textEl.textContent = `${checkedCount} dokumen dipilih`;
+            }
+            if (btnTextEl) {
+                btnTextEl.textContent = checkedCount > 0 ? `Tambahkan ${checkedCount} Dokumen Terpilih` : 'Tambahkan Dokumen Terpilih';
+            }
+            if (btnEl) {
+                btnEl.disabled = checkedCount === 0;
+            }
+        }
+
+        function filterMasterPickerCategory(cat) {
+            const query = (document.getElementById('searchMasterPickerInput')?.value || '').toLowerCase().trim();
+            applyMasterPickerFilters(cat, query);
+        }
+
+        function searchMasterPicker(query) {
+            const cat = document.getElementById('filterMasterCategorySelect')?.value || '';
+            applyMasterPickerFilters(cat, query.toLowerCase().trim());
+        }
+
+        function applyMasterPickerFilters(category, query) {
+            document.querySelectorAll('.master-picker-item').forEach(el => {
+                const itemCat = el.getAttribute('data-kategori') || '';
+                const searchContent = el.getAttribute('data-search') || '';
+
+                const matchCat = !category || itemCat === category;
+                const matchQuery = !query || searchContent.includes(query);
+
+                if (matchCat && matchQuery) {
+                    el.classList.remove('d-none');
+                } else {
+                    el.classList.add('d-none');
+                }
+            });
+
+            // Update master check all status
+            const visibleCheckboxes = document.querySelectorAll('.master-picker-item:not(.d-none) .master-picker-checkbox:not(:disabled)');
+            const allChecked = visibleCheckboxes.length > 0 && Array.from(visibleCheckboxes).every(cb => cb.checked);
+            const masterCheckbox = document.getElementById('checkAllMasterPicker');
+            if (masterCheckbox) {
+                masterCheckbox.checked = allChecked;
+            }
+
+            updatePickerSelectedCount();
+        }
+
+        function submitBatchFromMaster() {
+            const landId = '{{ $land->id ?? 0 }}';
+            if (!landId || landId === '0') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Data tanah belum tersimpan di database. Simpan data awal terlebih dahulu.'
+                });
+                return;
+            }
+
+            const selectedCheckboxes = document.querySelectorAll('.master-picker-checkbox:checked');
+            const masterIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+
+            if (masterIds.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Pilih Dokumen',
+                    text: 'Silakan centang setidaknya satu dokumen perizinan dari daftar master.'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: `Tambahkan ${masterIds.length} Dokumen?`,
+                text: 'Dokumen terpilih akan langsung dimasukkan ke alur kerja Fase 4 lahan ini.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#9a55ff',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="mdi mdi-plus-box-multiple me-1"></i> Ya, Tambahkan!',
+                cancelButtonText: 'Batal'
+            }).then((res) => {
+                if (res.isConfirmed) {
+                    Swal.fire({
+                        title: 'Menambahkan Dokumen...',
+                        text: 'Sedang menyinkronkan data perizinan',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    const batchUrl = '{{ route("pra-landbank.add-from-master", ["id" => $land->id ?? 0]) }}';
+
+                    fetch(batchUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({ master_ids: masterIds })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil Ditambahkan!',
+                                text: data.message,
+                                timer: 1600,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: data.message || 'Terjadi kesalahan saat menambahkan dokumen dari master.'
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Batch add error:', err);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: 'Terjadi kesalahan koneksi server.'
+                        });
+                    });
+                }
+            });
+        }
+
+        function filterFase4Docs(status, btn) {
+            const filterBtns = document.querySelectorAll('.fase4-filter-btn');
+            filterBtns.forEach(b => {
+                b.classList.remove('btn-primary', 'shadow-sm', 'active');
+                b.classList.add('btn-outline-secondary');
+            });
+
+            if (btn) {
+                btn.classList.remove('btn-outline-secondary');
+                btn.classList.add('btn-primary', 'shadow-sm', 'active');
+            }
+
+            const cards = document.querySelectorAll('.fase4-doc-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const cardStatus = card.getAttribute('data-status');
+                if (status === 'all' || cardStatus === status) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const emptyState = document.getElementById('fase4_docs_empty_state');
+            if (emptyState) {
+                if (visibleCount === 0 && cards.length > 0) {
+                    emptyState.style.display = '';
+                    emptyState.innerHTML = `
+                        <div class="p-4 text-center text-muted bg-light rounded-3 border w-100 my-2" style="font-size: 0.85rem;">
+                            <i class="mdi mdi-filter-remove-outline me-1 fs-4 d-block mb-1 text-secondary"></i>
+                            Tidak ada dokumen dengan filter status <strong>${status.toUpperCase()}</strong>.
+                        </div>
+                    `;
+                } else {
+                    emptyState.style.display = 'none';
+                }
+            }
+        }
+
+        function searchFase4Docs(query) {
+            const q = (query || '').toLowerCase().trim();
+            const cards = document.querySelectorAll('.fase4-doc-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (!q || text.includes(q)) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const emptyState = document.getElementById('fase4_docs_empty_state');
+            if (emptyState) {
+                if (visibleCount === 0 && cards.length > 0) {
+                    emptyState.style.display = '';
+                    emptyState.innerHTML = `
+                        <div class="p-4 text-center text-muted bg-light rounded-3 border w-100 my-2" style="font-size: 0.85rem;">
+                            <i class="mdi mdi-magnify-close me-1 fs-4 d-block mb-1 text-secondary"></i>
+                            Tidak ada dokumen yang cocok dengan pencarian "<strong>${query}</strong>".
+                        </div>
+                    `;
+                } else {
+                    emptyState.style.display = 'none';
+                }
+            }
+        }
+
+        function confirmFinalizePasca() {
+            const landId = '{{ $land->id ?? 0 }}';
+            if (!landId || landId === '0') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Data tanah belum tersimpan. Silakan simpan data terlebih dahulu.'
+                });
+                return;
+            }
+
+            // Find SHGB Induk document from Fase 4 docs
+            const shgbDoc = FASE4_DOC_DATA.find(d => (d.doc_name && d.doc_name.toLowerCase().includes('shgb induk')) || d.id === 'shgb_induk');
+            
+            const shgbNo = shgbDoc ? (shgbDoc.doc_number || '') : '';
+            const shgbDate = shgbDoc ? (shgbDoc.doc_date || '') : '';
+            const shgbArea = shgbDoc ? (shgbDoc.luas || '') : '';
+
+            if (!shgbNo) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Nomor SHGB Induk Belum Terisi',
+                    html: `
+                        <p class="text-muted small mb-3">
+                            Nomor Sertifikat SHGB Induk an. PT pada Poin 17 belum terdaftar atau masih kosong.
+                        </p>
+                        <div class="p-3 rounded-3 bg-light text-start border small">
+                            Silakan klik <b>Edit</b> pada kartu <b>Poin 17 (Penerbitan Sertifikat SHGB Induk an. PT)</b> untuk mengisi Nomor SHGB Induk, Tanggal Terbit, dan Luas sebelum melakukan finalisasi.
+                        </div>
+                    `,
+                    confirmButtonText: 'Buka Form SHGB Induk',
+                    showCancelButton: true,
+                    cancelButtonText: 'Batal'
+                }).then((res) => {
+                    if (res.isConfirmed) {
+                        openFase4DocModal('shgb_induk');
+                    }
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Finalisasi ke Pasca Land Bank?',
+                html: `
+                    <p class="text-muted small mb-2">
+                        Lahan ini akan resmi diterbitkan <b>SHGB Induk No. ${shgbNo}</b> atas nama PT dan dialihkan statusnya menjadi <b>Tanah Pasca Land Bank</b> (siap untuk dipecah kavling).
+                    </p>
+                    <div class="p-2.5 rounded-3 bg-success bg-opacity-10 border border-success border-opacity-25 text-success small fw-semibold text-start">
+                        <i class="mdi mdi-check-circle me-1"></i> Data SHGB Induk valid dan siap diterbitkan ke Master Pasca Land Bank.
+                    </div>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#22c55e',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="mdi mdi-shield-crown me-1"></i> Ya, Finalisasi Sekarang!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Memproses Finalisasi...',
+                        text: 'Sedang mendaftarkan tanah ke database Pasca Land Bank',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    const finalizeUrl = '{{ route("pra-landbank.finalize-pasca", ["id" => $land->id ?? 0]) }}';
+
+                    fetch(finalizeUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            shgb_induk_no: shgbNo,
+                            shgb_induk_date: shgbDate,
+                            shgb_induk_area: shgbArea
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil Masuk Pasca Land Bank!',
+                                text: data.message,
+                                confirmButtonText: 'Buka Master Tanah Pasca Land Bank'
+                            }).then(() => {
+                                if (data.redirect_url) {
+                                    window.location.href = data.redirect_url;
+                                } else {
+                                    window.location.reload();
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: data.message || 'Terjadi kesalahan saat memproses finalisasi.'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: error.message || 'Terjadi kesalahan jaringan/server.'
+                        });
+                    });
+                }
             });
         }
 
