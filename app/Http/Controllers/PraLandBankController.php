@@ -1409,6 +1409,61 @@ public function store(Request $request)
             $syaratItems = $currentDocs[$existingIndex]['syarat_items'];
         }
 
+        // Existing syarat_files map
+        $existingSyaratFiles = [];
+        if ($existingIndex >= 0 && !empty($currentDocs[$existingIndex]['syarat_files'])) {
+            $existingSyaratFiles = (array)$currentDocs[$existingIndex]['syarat_files'];
+        }
+        if ($request->has('existing_syarat_files')) {
+            $passedExisting = $request->input('existing_syarat_files');
+            if (is_string($passedExisting)) {
+                $passedExisting = json_decode($passedExisting, true) ?: [];
+            }
+            if (is_array($passedExisting)) {
+                $existingSyaratFiles = array_merge($existingSyaratFiles, $passedExisting);
+            }
+        }
+
+        // Handle deleted syarat files
+        if ($request->has('deleted_syarat_files')) {
+            $deleted = $request->input('deleted_syarat_files');
+            if (is_string($deleted)) {
+                $deleted = json_decode($deleted, true) ?: [];
+            }
+            if (is_array($deleted)) {
+                foreach ($deleted as $delKey) {
+                    unset($existingSyaratFiles[$delKey]);
+                }
+            }
+        }
+
+        // Handle newly uploaded files per syarat item
+        $syaratFiles = $existingSyaratFiles;
+        if ($request->hasFile('syarat_files')) {
+            $uploadedSyaratFiles = $request->file('syarat_files');
+            if (is_array($uploadedSyaratFiles)) {
+                $destinationSyarat = public_path('uploads/pra_landbank/' . $record->id . '/prasyarat');
+                if (!file_exists($destinationSyarat)) {
+                    mkdir($destinationSyarat, 0755, true);
+                }
+
+                foreach ($uploadedSyaratFiles as $key => $sFile) {
+                    if ($sFile && $sFile->isValid()) {
+                        $sFilename = uniqid() . '_syarat_' . preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $sFile->getClientOriginalName());
+                        $sFile->move($destinationSyarat, $sFilename);
+                        $savedPath = 'uploads/pra_landbank/' . $record->id . '/prasyarat/' . $sFilename;
+                        
+                        $itemName = isset($syaratItems[$key]) ? $syaratItems[$key] : (string)$key;
+                        $syaratFiles[$itemName] = $savedPath;
+                        
+                        if (!in_array($itemName, $syaratChecklist)) {
+                            $syaratChecklist[] = $itemName;
+                        }
+                    }
+                }
+            }
+        }
+
         $docPayload = [
             'id'               => $docId,
             'poin_label'       => $request->input('poin_label', 'Dokumen'),
@@ -1423,6 +1478,7 @@ public function store(Request $request)
             'syarat_dokumen'   => $syaratDokumen ?: ($existingIndex >= 0 ? ($currentDocs[$existingIndex]['syarat_dokumen'] ?? '') : ''),
             'syarat_items'     => $syaratItems,
             'syarat_checklist' => $syaratChecklist,
+            'syarat_files'     => $syaratFiles,
             'file_path'        => $filePath ?: ($existingIndex >= 0 ? ($currentDocs[$existingIndex]['file_path'] ?? null) : null),
             'is_template'      => $existingIndex >= 0 ? ($currentDocs[$existingIndex]['is_template'] ?? false) : false,
             'is_final_goal'    => $docId === 'template_shgb_induk' || ($existingIndex >= 0 && !empty($currentDocs[$existingIndex]['is_final_goal'])),

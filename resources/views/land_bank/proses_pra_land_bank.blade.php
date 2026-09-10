@@ -3751,6 +3751,7 @@
                                         $syaratDokumen = $doc['syarat_dokumen'] ?? '';
                                         $syaratItems = $doc['syarat_items'] ?? [];
                                         $syaratChecklist = (array)($doc['syarat_checklist'] ?? []);
+                                        $syaratFiles = (array)($doc['syarat_files'] ?? []);
 
                                         if (empty($syaratItems) && !empty($syaratDokumen)) {
                                             $lines = preg_split('/[\r\n]+/', $syaratDokumen);
@@ -3763,8 +3764,9 @@
                                         }
                                         $totalSyarat = count($syaratItems);
                                         $checkedCount = 0;
-                                        foreach ($syaratItems as $si) {
-                                            if (in_array($si, $syaratChecklist)) {
+                                        foreach ($syaratItems as $idx => $si) {
+                                            $hasItemFile = !empty($syaratFiles[$si]) || !empty($syaratFiles[$idx]);
+                                            if (in_array($si, $syaratChecklist) || $hasItemFile) {
                                                 $checkedCount++;
                                             }
                                         }
@@ -3856,11 +3858,23 @@
 
                                                 @if($totalSyarat > 0)
                                                     <div class="fase4-syarat-list">
-                                                        @foreach($syaratItems as $sItem)
-                                                            @php $isItemChecked = in_array($sItem, $syaratChecklist); @endphp
-                                                            <div class="fase4-syarat-item {{ $isItemChecked ? 'text-success fw-semibold' : 'text-muted' }}">
-                                                                <i class="mdi {{ $isItemChecked ? 'mdi-check-circle text-success' : 'mdi-checkbox-blank-circle-outline text-muted' }}"></i>
-                                                                <span class="text-truncate" title="{{ $sItem }}">{{ $sItem }}</span>
+                                                        @foreach($syaratItems as $idx => $sItem)
+                                                            @php 
+                                                                $itemFile = $syaratFiles[$sItem] ?? ($syaratFiles[$idx] ?? null);
+                                                                $isItemChecked = in_array($sItem, $syaratChecklist) || !empty($itemFile);
+                                                                $itemCleanPath = $itemFile ? str_replace('uploads/', '', $itemFile) : null;
+                                                                $itemExt = $itemFile ? pathinfo($itemFile, PATHINFO_EXTENSION) : 'pdf';
+                                                            @endphp
+                                                            <div class="fase4-syarat-item {{ $isItemChecked ? 'text-success fw-semibold' : 'text-muted' }} d-flex align-items-center justify-content-between gap-1 py-0.5">
+                                                                <div class="d-flex align-items-center gap-1.5 overflow-hidden flex-grow-1">
+                                                                    <i class="mdi {{ $isItemChecked ? 'mdi-check-circle text-success' : 'mdi-checkbox-blank-circle-outline text-muted' }}" style="font-size: 0.85rem; flex-shrink: 0;"></i>
+                                                                    <span class="text-truncate" title="{{ $sItem }}" style="font-size: 0.72rem;">{{ $sItem }}</span>
+                                                                </div>
+                                                                @if($itemFile)
+                                                                    <button type="button" class="btn btn-xs btn-outline-success py-0 px-1.5 rounded-1 btn-preview-doc flex-shrink-0" data-url="{{ route('dokumen.preview', ['path' => $itemCleanPath]) }}" data-ext="{{ $itemExt }}" data-label="{{ $sItem }}" title="Lihat Berkas: {{ $sItem }}" style="font-size: 0.68rem; height: 20px; line-height: 1;">
+                                                                        <i class="mdi mdi-eye me-0.5"></i>Lihat
+                                                                    </button>
+                                                                @endif
                                                             </div>
                                                         @endforeach
                                                     </div>
@@ -4192,11 +4206,11 @@
                                         </span>
                                     </div>
                                     <small class="text-muted d-block mb-2" style="font-size: 0.72rem;">
-                                        Tandai berkas prasyarat yang sudah lengkap sebelum diajukan ke instansi terkait.
+                                        Unggah berkas prasyarat pada masing-masing butir di bawah. Checklist otomatis tercentang saat berkas dipilih/diunggah.
                                     </small>
 
                                     <!-- Container Checkboxes Dinamis -->
-                                    <div id="modal_syarat_checkboxes_container" class="p-2.5 rounded-2 mb-2" style="background-color: #f8fafc; border: 1.5px dashed #cbd5e1; min-height: 110px; max-height: 180px; overflow-y: auto;">
+                                    <div id="modal_syarat_checkboxes_container" class="p-2.5 rounded-2 mb-2" style="background-color: #f8fafc; border: 1.5px dashed #cbd5e1; min-height: 140px; max-height: 260px; overflow-y: auto;">
                                         <!-- Checkboxes dirender otomatis via JavaScript -->
                                     </div>
 
@@ -4215,7 +4229,7 @@
                                 <!-- Card 5: Upload Dokumen Fisik / Scan -->
                                 <div class="fase4-modal-section-card flex-grow-1">
                                     <div class="fase4-modal-section-title text-dark">
-                                        <i class="mdi mdi-cloud-upload-outline text-primary fs-5"></i> Dokumen Fisik / Berkas Scan
+                                        <i class="mdi mdi-cloud-upload-outline text-primary fs-5"></i> Dokumen Hasil / SK Terbit Resmi (Opsional)
                                     </div>
                                     
                                     <div id="modal_fase4_current_file_preview" class="mb-2 d-none">
@@ -6464,6 +6478,9 @@
         // ==========================================
         const FASE4_DOC_DATA = @json($workflowDocs ?? []);
 
+        let currentSyaratFilesMap = {};
+        let deletedSyaratFiles = [];
+
         function escapeHtml(str) {
             if (!str) return '';
             return String(str)
@@ -6481,14 +6498,14 @@
                 .filter(line => line.length > 0);
         }
 
-        function renderModalSyaratChecklist(items, checkedList = []) {
+        function renderModalSyaratChecklist(items, checkedList = [], filesMap = {}) {
             const container = document.getElementById('modal_syarat_checkboxes_container');
             const badge = document.getElementById('modal_syarat_summary_badge');
             if (!container) return;
 
             if (!Array.isArray(items) || items.length === 0) {
                 container.innerHTML = `
-                    <div class="text-center text-muted py-2" style="font-size: 0.74rem;">
+                    <div class="text-center text-muted py-3" style="font-size: 0.74rem;">
                         <i class="mdi mdi-information-outline me-1"></i>Belum ada prasyarat berkas untuk dokumen ini. Gunakan tombol 'Edit Teks' di bawah untuk menambahkan prasyarat.
                     </div>
                 `;
@@ -6503,19 +6520,126 @@
             let html = '';
 
             items.forEach((item, idx) => {
-                const isChecked = checkedSet.has(item);
+                const filePath = filesMap[item] || filesMap[idx] || null;
+                const hasFile = !!filePath;
+                const isChecked = checkedSet.has(item) || hasFile;
                 const safeItem = escapeHtml(item);
+                const fileName = filePath ? filePath.split('/').pop() : '';
+                const fileExt = filePath ? filePath.split('.').pop().toLowerCase() : 'pdf';
+                const cleanFilePath = filePath ? filePath.replace(/^uploads\//, '') : '';
+
                 html += `
-                    <div class="form-check d-flex align-items-center gap-2 mb-1.5 p-2 rounded-2 ${isChecked ? 'bg-success bg-opacity-10 border border-success border-opacity-25' : 'bg-white border'}" style="transition: all 0.2s ease;">
-                        <input class="form-check-input modal-syarat-chk custom-picker-chk m-0" type="checkbox" name="syarat_checklist[]" value="${safeItem}" id="modal_syarat_chk_${idx}" ${isChecked ? 'checked' : ''} onchange="updateModalSyaratSummary()">
-                        <label class="form-check-label small fw-semibold ${isChecked ? 'text-success' : 'text-dark'} mb-0 flex-grow-1 user-select-none" for="modal_syarat_chk_${idx}" style="cursor: pointer; font-size: 0.78rem;">
-                            ${safeItem}
-                        </label>
+                    <div class="p-2.5 rounded-2 mb-2 bg-white border syarat-item-row" id="syarat_item_row_${idx}" style="transition: all 0.2s ease;">
+                        <div class="d-flex align-items-center justify-content-between gap-2 mb-1.5">
+                            <div class="form-check d-flex align-items-center gap-2 m-0 flex-grow-1">
+                                <input class="form-check-input modal-syarat-chk m-0" type="checkbox" name="syarat_checklist[]" value="${safeItem}" id="modal_syarat_chk_${idx}" ${isChecked ? 'checked' : ''} onchange="updateModalSyaratSummary()">
+                                <label class="form-check-label fw-semibold ${isChecked ? 'text-success' : 'text-dark'} mb-0 user-select-none" for="modal_syarat_chk_${idx}" style="cursor: pointer; font-size: 0.78rem;">
+                                    ${safeItem}
+                                </label>
+                            </div>
+                            <span class="badge ${hasFile ? 'bg-success bg-opacity-10 text-success border border-success border-opacity-25' : 'bg-light text-muted border'}" id="syarat_badge_status_${idx}" style="font-size: 0.68rem; font-weight: 600;">
+                                ${hasFile ? '<i class="mdi mdi-check-circle me-0.5"></i>Ada Berkas' : 'Belum Ada Berkas'}
+                            </span>
+                        </div>
+
+                        <!-- SLOT UPLOAD BERKAS KHUSUS BUTIR PRASYARAT INI -->
+                        <div class="d-flex align-items-center justify-content-between gap-2 pt-1.5 border-top" id="syarat_file_slot_${idx}" style="border-color: #f1f5f9 !important;">
+                            ${hasFile ? `
+                                <div class="d-flex align-items-center gap-1.5 overflow-hidden me-auto" style="max-width: 62%;">
+                                    <i class="mdi mdi-file-document-check text-success fs-6 flex-shrink-0"></i>
+                                    <span class="text-truncate fw-semibold text-dark" style="font-size: 0.73rem;" title="${fileName}">${fileName}</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                    <button type="button" class="btn btn-xs btn-outline-success py-1 px-2 rounded-1 btn-preview-doc" data-url="/dokumen/preview/${cleanFilePath}" data-ext="${fileExt}" data-label="${safeItem}" style="font-size: 0.72rem; font-weight: 600;">
+                                        <i class="mdi mdi-eye me-1"></i>Lihat
+                                    </button>
+                                    <label class="btn btn-xs btn-outline-primary py-1 px-2 rounded-1 m-0" style="font-size: 0.72rem; cursor: pointer; font-weight: 600;">
+                                        <i class="mdi mdi-file-replace me-1"></i>Ganti
+                                        <input type="file" name="syarat_files[${idx}]" accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx" class="d-none syarat-item-file-input" data-idx="${idx}" data-item="${safeItem}" onchange="handleSyaratItemFileChange(this, ${idx})">
+                                    </label>
+                                    <button type="button" class="btn btn-xs btn-outline-danger py-1 px-1.5 rounded-1" onclick="removeSyaratItemFile(${idx}, '${safeItem}')" title="Hapus Berkas">
+                                        <i class="mdi mdi-trash-can-outline"></i>
+                                    </button>
+                                </div>
+                            ` : `
+                                <div class="d-flex align-items-center gap-2 flex-grow-1">
+                                    <label class="btn btn-xs btn-outline-primary py-1 px-2.5 rounded-1 d-inline-flex align-items-center gap-1.5 m-0" style="font-size: 0.73rem; cursor: pointer; background-color: #faf5ff; font-weight: 600;">
+                                        <i class="mdi mdi-cloud-upload text-primary"></i>
+                                        <span id="syarat_file_label_${idx}">Upload Berkas</span>
+                                        <input type="file" name="syarat_files[${idx}]" accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx" class="d-none syarat-item-file-input" data-idx="${idx}" data-item="${safeItem}" onchange="handleSyaratItemFileChange(this, ${idx})">
+                                    </label>
+                                    <span class="text-muted text-truncate" style="font-size: 0.69rem;" id="syarat_file_status_${idx}">PDF, JPG, PNG, DOCX (Maks 25MB)</span>
+                                </div>
+                            `}
+                        </div>
                     </div>
                 `;
             });
 
             container.innerHTML = html;
+            updateModalSyaratSummary();
+        }
+
+        function handleSyaratItemFileChange(input, idx) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const chk = document.getElementById(`modal_syarat_chk_${idx}`);
+                if (chk) chk.checked = true;
+
+                const labelEl = document.getElementById(`syarat_file_label_${idx}`);
+                if (labelEl) {
+                    labelEl.textContent = 'Ganti: ' + file.name.substring(0, 15) + '...';
+                }
+                const statusEl = document.getElementById(`syarat_file_status_${idx}`);
+                if (statusEl) {
+                    statusEl.innerHTML = `<span class="text-success fw-bold"><i class="mdi mdi-check-circle me-1"></i>${file.name}</span>`;
+                }
+                const badgeEl = document.getElementById(`syarat_badge_status_${idx}`);
+                if (badgeEl) {
+                    badgeEl.className = 'badge bg-success bg-opacity-10 text-success border border-success border-opacity-25';
+                    badgeEl.innerHTML = '<i class="mdi mdi-check-circle me-0.5"></i>Siap Diunggah';
+                }
+
+                const row = document.getElementById(`syarat_item_row_${idx}`);
+                if (row) {
+                    row.classList.add('border-success', 'border-opacity-50');
+                }
+
+                updateModalSyaratSummary();
+            }
+        }
+
+        function removeSyaratItemFile(idx, itemName) {
+            if (!deletedSyaratFiles.includes(itemName)) {
+                deletedSyaratFiles.push(itemName);
+            }
+            if (currentSyaratFilesMap[itemName]) {
+                delete currentSyaratFilesMap[itemName];
+            }
+            if (currentSyaratFilesMap[idx]) {
+                delete currentSyaratFilesMap[idx];
+            }
+
+            const slot = document.getElementById(`syarat_file_slot_${idx}`);
+            if (slot) {
+                slot.innerHTML = `
+                    <div class="d-flex align-items-center gap-2 flex-grow-1">
+                        <label class="btn btn-xs btn-outline-primary py-1 px-2.5 rounded-1 d-inline-flex align-items-center gap-1.5 m-0" style="font-size: 0.73rem; cursor: pointer; background-color: #faf5ff; font-weight: 600;">
+                            <i class="mdi mdi-cloud-upload text-primary"></i>
+                            <span id="syarat_file_label_${idx}">Upload Berkas</span>
+                            <input type="file" name="syarat_files[${idx}]" accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx" class="d-none syarat-item-file-input" data-idx="${idx}" data-item="${escapeHtml(itemName)}" onchange="handleSyaratItemFileChange(this, ${idx})">
+                        </label>
+                        <span class="text-danger" style="font-size: 0.69rem;" id="syarat_file_status_${idx}"><i class="mdi mdi-alert-circle-outline me-0.5"></i>Berkas dihapus</span>
+                    </div>
+                `;
+            }
+
+            const badgeEl = document.getElementById(`syarat_badge_status_${idx}`);
+            if (badgeEl) {
+                badgeEl.className = 'badge bg-light text-muted border';
+                badgeEl.innerHTML = 'Belum Ada Berkas';
+            }
+
             updateModalSyaratSummary();
         }
 
@@ -6525,16 +6649,12 @@
             const badge = document.getElementById('modal_syarat_summary_badge');
 
             document.querySelectorAll('.modal-syarat-chk').forEach(cb => {
-                const row = cb.closest('.form-check');
-                const label = row?.querySelector('label');
+                const row = cb.closest('.syarat-item-row') || cb.closest('.form-check');
+                const label = row?.querySelector('.form-check-label');
                 if (cb.checked) {
-                    row?.classList.remove('bg-white');
-                    row?.classList.add('bg-success', 'bg-opacity-10', 'border-success', 'border-opacity-25');
                     label?.classList.remove('text-dark');
                     label?.classList.add('text-success');
                 } else {
-                    row?.classList.remove('bg-success', 'bg-opacity-10', 'border-success', 'border-opacity-25');
-                    row?.classList.add('bg-white');
                     label?.classList.remove('text-success');
                     label?.classList.add('text-dark');
                 }
@@ -6557,7 +6677,7 @@
         function onSyaratTextInput(val) {
             const currentlyChecked = Array.from(document.querySelectorAll('.modal-syarat-chk:checked')).map(cb => cb.value);
             const items = parseSyaratLines(val);
-            renderModalSyaratChecklist(items, currentlyChecked);
+            renderModalSyaratChecklist(items, currentlyChecked, currentSyaratFilesMap);
         }
 
         function handleModalFase4File(input) {
@@ -6598,7 +6718,9 @@
             const syaratInput = document.getElementById('modal_fase4_syarat_dokumen');
             if (syaratInput) syaratInput.value = syarat || '';
             const items = parseSyaratLines(syarat || '');
-            renderModalSyaratChecklist(items, []);
+            currentSyaratFilesMap = {};
+            deletedSyaratFiles = [];
+            renderModalSyaratChecklist(items, [], {});
         }
 
         function openFase4DocModal(docId) {
@@ -6607,6 +6729,8 @@
 
             const form = document.getElementById('formFase4Doc');
             form.reset();
+            currentSyaratFilesMap = {};
+            deletedSyaratFiles = [];
 
             const masterSelect = document.getElementById('modal_fase4_master_select');
             if (masterSelect) masterSelect.value = '';
@@ -6660,7 +6784,7 @@
                     luasInput.value = doc.luas || '';
                     notesInput.value = doc.notes || '';
 
-                    // Load syarat items and checklist
+                    // Load syarat items and checklist & files
                     const rawSyarat = doc.syarat_dokumen || '';
                     if (syaratInput) syaratInput.value = rawSyarat;
 
@@ -6669,7 +6793,8 @@
                         items = parseSyaratLines(rawSyarat);
                     }
                     const checkedList = doc.syarat_checklist || [];
-                    renderModalSyaratChecklist(items, checkedList);
+                    currentSyaratFilesMap = doc.syarat_files || {};
+                    renderModalSyaratChecklist(items, checkedList, currentSyaratFilesMap);
 
                     if (doc.file_path) {
                         const cleanPath = doc.file_path.replace('uploads/', '');
@@ -6678,7 +6803,7 @@
                             <div class="p-2 px-3 rounded-2 bg-success bg-opacity-10 border border-success border-opacity-25 d-flex align-items-center justify-content-between mb-2">
                                 <div class="d-flex align-items-center gap-2 overflow-hidden me-2">
                                     <i class="mdi mdi-file-check text-success fs-5"></i>
-                                    <span class="text-truncate fw-semibold text-dark" style="font-size: 0.8rem;">Berkas Terunggah (${ext.toUpperCase()})</span>
+                                    <span class="text-truncate fw-semibold text-dark" style="font-size: 0.8rem;">Berkas SK Terbit (${ext.toUpperCase()})</span>
                                 </div>
                                 <button type="button" class="btn btn-xs btn-success text-white py-1 px-2.5 shadow-sm btn-preview-doc" data-url="/dokumen/preview/${cleanPath}" data-ext="${ext}" data-label="${doc.doc_name || 'Dokumen'}" style="font-size: 0.75rem;">
                                     <i class="mdi mdi-eye me-1"></i>Lihat Berkas
@@ -6693,7 +6818,9 @@
                 hiddenId.value = '';
                 statusSelect.value = 'proses';
                 if (syaratInput) syaratInput.value = '';
-                renderModalSyaratChecklist([], []);
+                currentSyaratFilesMap = {};
+                deletedSyaratFiles = [];
+                renderModalSyaratChecklist([], [], {});
             }
 
             const modalObj = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -6719,6 +6846,8 @@
             const form = document.getElementById('formFase4Doc');
             const formData = new FormData(form);
             formData.append('_token', '{{ csrf_token() }}');
+            formData.append('existing_syarat_files', JSON.stringify(currentSyaratFilesMap));
+            formData.append('deleted_syarat_files', JSON.stringify(deletedSyaratFiles));
 
             const uploadUrl = '{{ route("pra-landbank.upload-custom-workflow-doc", ["id" => $land->id ?? 0]) }}';
 
