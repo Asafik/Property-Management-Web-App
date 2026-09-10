@@ -11,7 +11,7 @@ class LandBank extends Model
     protected $fillable = [
         'name',
         'company_profile_id',
-        'ceritificate_no',
+        'certificate_no',
         'ownership_status',
         'certificate_owner',
         'area',
@@ -49,9 +49,42 @@ class LandBank extends Model
         'elevasi_rencana',
         'volume_cut',
         'volume_fill',
-        'status_cut_fill',
         'fee_document_verification',
+        'custom_workflow_docs',
+        'desa_reg_no',
+        'desa_reg_date',
+        'desa_doc_file',
+        'pertek_no',
+        'pertek_date',
+        'pertek_file',
+        'peta_bidang_no',
+        'peta_bidang_date',
+        'peta_bidang_area',
+        'peta_bidang_file',
+        'pkkpr_no',
+        'pkkpr_date',
+        'pkkpr_status',
+        'pkkpr_file',
+        'sk_hgb_no',
+        'sk_hgb_date',
+        'sk_hgb_file',
+        'shgb_induk_no',
+        'shgb_induk_date',
+        'shgb_induk_area',
+        'shgb_induk_file',
     ];
+
+    protected $casts = [
+        'custom_workflow_docs' => 'array',
+        'acquisition_date'     => 'date',
+        'desa_reg_date'        => 'date',
+        'pertek_date'          => 'date',
+        'peta_bidang_date'     => 'date',
+        'pkkpr_date'           => 'date',
+        'sk_hgb_date'          => 'date',
+        'shgb_induk_date'      => 'date',
+    ];
+
     public function documents()
     {
         return $this->hasMany(LandBankDocument::class);

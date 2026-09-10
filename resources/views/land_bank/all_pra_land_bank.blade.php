@@ -693,12 +693,7 @@
                                                             <i class="mdi mdi-cash-check"></i>
                                                             <span>Fase 3</span>
                                                         </a>
-                                                        <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 4]) }}" 
-                                                           class="btn-fase-action btn-fase-4" 
-                                                           title="Lihat Data FASE 4: Pengurusan Dokumen Balik Nama & Pengindukan PT">
-                                                            <i class="mdi mdi-certificate"></i>
-                                                            <span>Fase 4</span>
-                                                        </a>
+                                                        
                                                     @else
                                                         <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 1]) }}" 
                                                            class="btn-fase-action btn-fase-1" 
@@ -724,9 +719,7 @@
                                                             // FASE 3 HANYA DAPAT DIAKSES JIKA FASE 1 SAH DAN FASE 2 SELESAI
                                                             $canAccessFase3 = ($isLandLegalSah && $isFase2Done) || $land->status === 'approved' || $land->status === 'rejected' || $isTerminActive;
 
-                                                            // FASE 4 HANYA DAPAT DIAKSES JIKA FASE 3 SELESAI / TRANSAKSI DIPROSES
-                                                            $isFase3Done = in_array($land->status, ['fase3', 'fase4', 'approved', 'rejected']) || !empty($land->notaris_id) || !empty($land->file_ijb);
-                                                            $canAccessFase4 = ($canAccessFase3 && $isFase3Done) || $land->status === 'approved' || $land->status === 'rejected' || $isTerminActive;
+                                                            
                                                         @endphp
 
                                                         {{-- TOMBOL FASE 2 (Terkunci jika legalitas di Fase 1 belum divalidasi) --}}
@@ -765,23 +758,7 @@
                                                             </button>
                                                         @endif
 
-                                                        {{-- TOMBOL FASE 4 (Terkunci jika Fase 1, 2, atau 3 belum selesai) --}}
-                                                        @if($canAccessFase4)
-                                                            <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 4]) }}" 
-                                                               class="btn-fase-action btn-fase-4" 
-                                                               title="FASE 4: Pengurusan Balik Nama & Dokumen PT">
-                                                                <i class="mdi mdi-certificate"></i>
-                                                                <span>Fase 4</span>
-                                                            </a>
-                                                        @else
-                                                            <button type="button" class="btn-fase-action btn-fase-4" 
-                                                                    onclick="alertFase4Locked({{ $land->id }}, {{ $isLandLegalSah ? 'true' : 'false' }}, {{ $isFase2Done ? 'true' : 'false' }}, {{ $isFase3Done ? 'true' : 'false' }})" 
-                                                                    style="opacity: 0.75; cursor: pointer;"
-                                                                    title="Terkunci: Wajib selesaikan Fase 1, 2, dan 3 terlebih dahulu">
-                                                                <i class="mdi mdi-lock"></i>
-                                                                <span>Fase 4</span>
-                                                            </button>
-                                                        @endif
+                                                        
 
                                                         <form action="{{ route('pra-landbanks.destroy', $land->id) }}" method="POST" class="d-inline delete-form">
                                                             @csrf
@@ -1124,202 +1101,5 @@
             });
         }
 
-        function alertFase4Locked(landId = null, isLegalSah = false, isFase2Done = false, isFase3Done = false) {
-            let infoHtml = '';
-            let btnText = '<i class="mdi mdi-check me-1"></i> Mengerti';
-            let targetStep = 1;
-
-            if (!isLegalSah) {
-                targetStep = 1;
-                btnText = '<i class="mdi mdi-arrow-right-circle me-1"></i> Buka Fase 1';
-                infoHtml = `
-                    <p class="text-muted mb-3" style="font-size: 0.92rem;">
-                        Tahap <b>Fase 4 (Balik Nama & Pengindukan PT)</b> belum dapat dibuka untuk lahan ini.
-                    </p>
-                    <div class="p-3 rounded-3 text-start mb-2" style="background: #fffbeb; border: 1.5px solid #fde68a;">
-                        <div class="d-flex align-items-center gap-2 mb-2 text-warning fw-bold" style="font-size: 0.85rem;">
-                            <i class="mdi mdi-shield-alert" style="font-size: 1.1rem;"></i>
-                            <span>Syarat Pembukaan Akses Fase 4:</span>
-                        </div>
-                        <ul class="mb-0 ps-3 text-secondary" style="font-size: 0.82rem; line-height: 1.6;">
-                            <li class="fw-semibold text-danger">Dokumen legalitas di <b>Fase 1</b> wajib diunggah dan <b>Divalidasi Sah</b> oleh Kepala Legal terlebih dahulu.</li>
-                            <li>Hasil survey fisik & peta spasial di <b>Fase 2</b> wajib diselesaikan.</li>
-                            <li>Tahap transaksi, notaris & persetujuan di <b>Fase 3</b> wajib diproses.</li>
-                        </ul>
-                    </div>
-                `;
-            } else if (!isFase2Done) {
-                targetStep = 2;
-                btnText = '<i class="mdi mdi-arrow-right-circle me-1"></i> Selesaikan Fase 2';
-                infoHtml = `
-                    <p class="text-muted mb-3" style="font-size: 0.92rem;">
-                        Tahap <b>Fase 4 (Balik Nama & Pengindukan PT)</b> belum dapat dibuka karena tahap <b>Fase 2</b> belum diselesaikan.
-                    </p>
-                    <div class="p-3 rounded-3 text-start mb-2" style="background: #fffbeb; border: 1.5px solid #fde68a;">
-                        <div class="d-flex align-items-center gap-2 mb-2 text-warning fw-bold" style="font-size: 0.85rem;">
-                            <i class="mdi mdi-alert-circle-outline" style="font-size: 1.1rem;"></i>
-                            <span>Harap Selesaikan Fase 2 Terlebih Dahulu:</span>
-                        </div>
-                        <ul class="mb-0 ps-3 text-secondary" style="font-size: 0.82rem; line-height: 1.6;">
-                            <li class="text-success"><i class="mdi mdi-check-circle me-1"></i>Dokumen legalitas di <b>Fase 1</b> telah Divalidasi Sah.</li>
-                            <li class="fw-semibold text-danger"><i class="mdi mdi-close-circle me-1"></i>Data survey kelayakan fisik & spasial map di <b>Fase 2</b> belum diisi / disimpan.</li>
-                        </ul>
-                    </div>
-                `;
-            } else if (!isFase3Done) {
-                targetStep = 3;
-                btnText = '<i class="mdi mdi-arrow-right-circle me-1"></i> Buka Fase 3';
-                infoHtml = `
-                    <p class="text-muted mb-3" style="font-size: 0.92rem;">
-                        Tahap <b>Fase 4 (Balik Nama & Pengindukan PT)</b> belum dapat dibuka karena tahap <b>Fase 3 (Sidang / Notaris)</b> belum diproses.
-                    </p>
-                    <div class="p-3 rounded-3 text-start mb-2" style="background: #fffbeb; border: 1.5px solid #fde68a;">
-                        <div class="d-flex align-items-center gap-2 mb-2 text-warning fw-bold" style="font-size: 0.85rem;">
-                            <i class="mdi mdi-alert-circle-outline" style="font-size: 1.1rem;"></i>
-                            <span>Harap Selesaikan Fase 3 Terlebih Dahulu:</span>
-                        </div>
-                        <ul class="mb-0 ps-3 text-secondary" style="font-size: 0.82rem; line-height: 1.6;">
-                            <li class="text-success"><i class="mdi mdi-check-circle me-1"></i>Dokumen legalitas di <b>Fase 1</b> telah Divalidasi Sah.</li>
-                            <li class="text-success"><i class="mdi mdi-check-circle me-1"></i>Data survey fisik di <b>Fase 2</b> telah selesai.</li>
-                            <li class="fw-semibold text-danger"><i class="mdi mdi-close-circle me-1"></i>Data transaksi, notaris & persetujuan di <b>Fase 3</b> belum diproses.</li>
-                        </ul>
-                    </div>
-                `;
-            } else {
-                infoHtml = `
-                    <p class="text-muted mb-3" style="font-size: 0.92rem;">
-                        Tahap <b>Fase 4 (Balik Nama & Pengindukan PT)</b> belum dapat dibuka untuk lahan ini.
-                    </p>
-                `;
-            }
-
-            Swal.fire({
-                icon: 'warning',
-                title: 'Fase 4 Terkunci!',
-                html: infoHtml,
-                showCancelButton: !!landId,
-                confirmButtonColor: '#9a55ff',
-                confirmButtonText: landId ? btnText : '<i class="mdi mdi-check me-1"></i> Mengerti',
-                cancelButtonColor: '#6c757d',
-                cancelButtonText: 'Tutup'
-            }).then((result) => {
-                if (result.isConfirmed && landId) {
-                    window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + landId + "?step=" + targetStep;
-                }
-            });
-        }
-
-        window.openUploadDocModal = function(docId, docName, landName, docNumber) {
-            $('#uploadDocId').val(docId);
-            $('#uploadDocTargetName').html('<i class="mdi mdi-file-document-outline me-1" style="color: #9a55ff;"></i> ' + docName);
-            $('#uploadDocLandName').html('<i class="mdi mdi-map-marker text-primary me-1"></i> Properti: ' + landName);
-            $('#uploadDocNumber').val(docNumber || '');
-            $('#uploadDocFile').val('');
-            $('#uploadDocNotes').val('Dokumen fisik telah selesai diurus dan berkas resmi telah diterima.');
-            
-            // Reset file label text & size badge (sama persis dengan proses)
-            const labelText = document.getElementById('modalUploadFileLabelText');
-            const sizeSpan = document.getElementById('modalUploadFileSize');
-            if (labelText) {
-                labelText.textContent = 'Pilih Berkas Dokumen Fisik';
-                labelText.classList.remove('text-success');
-                labelText.classList.add('text-primary');
-            }
-            if (sizeSpan) {
-                sizeSpan.classList.add('d-none');
-                sizeSpan.textContent = '0 KB';
-            }
-            
-            let modal = new bootstrap.Modal(document.getElementById('modalUploadCompletedDoc'));
-            modal.show();
-        };
-
-        window.handleModalFileChange = function(input) {
-            if (input.files && input.files[0]) {
-                const file = input.files[0];
-                const fileName = file.name;
-                const fileSize = (file.size / (1024 * 1024)).toFixed(2);
-                
-                const labelText = document.getElementById('modalUploadFileLabelText');
-                const sizeSpan = document.getElementById('modalUploadFileSize');
-                
-                if (labelText) {
-                    labelText.textContent = fileName;
-                    labelText.classList.remove('text-primary');
-                    labelText.classList.add('text-success');
-                }
-                if (sizeSpan) {
-                    sizeSpan.textContent = fileSize + ' MB';
-                    sizeSpan.classList.remove('d-none');
-                }
-            }
-        };
-
-        window.submitUploadCompletedDoc = function(e) {
-            e.preventDefault();
-            let docId = $('#uploadDocId').val();
-            if (!docId) return;
-
-            let fileInput = document.getElementById('uploadDocFile');
-            if (!fileInput.files || fileInput.files.length === 0) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Pilih File',
-                    text: 'Silakan pilih file fisik dokumen yang sudah jadi terlebih dahulu.'
-                });
-                return;
-            }
-
-            let formData = new FormData(document.getElementById('formUploadCompletedDoc'));
-            let submitBtn = $('#btnSubmitUploadDoc');
-            submitBtn.prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin me-1"></i> Mengunggah...');
-
-            $.ajax({
-                url: `/pra-landbank/dokumen/${docId}/upload-completed`,
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') || '{{ csrf_token() }}'
-                },
-                success: function(res) {
-                    submitBtn.prop('disabled', false).html('<i class="mdi mdi-check-circle me-1"></i> Simpan & Jadikan Selesai (Lengkap)');
-                    if (res.success) {
-                        let modalEl = document.getElementById('modalUploadCompletedDoc');
-                        let modalInstance = bootstrap.Modal.getInstance(modalEl);
-                        if (modalInstance) modalInstance.hide();
-
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Dokumen Berhasil Diperbarui!',
-                            text: res.message || 'Berkas fisik berhasil diunggah & status dokumen menjadi lengkap.',
-                            timer: 2000,
-                            showConfirmButton: false
-                        }).then(() => {
-                            window.location.reload();
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal',
-                            text: res.message || 'Terjadi kesalahan saat mengunggah berkas.'
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    submitBtn.prop('disabled', false).html('<i class="mdi mdi-check-circle me-1"></i> Simpan & Jadikan Selesai (Lengkap)');
-                    let msg = 'Terjadi kesalahan saat mengunggah berkas.';
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        msg = xhr.responseJSON.message;
-                    }
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal Mengunggah',
-                        text: msg
-                    });
-                }
-            });
-        };
-    </script>
+        </script>
 @endpush

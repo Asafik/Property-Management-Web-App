@@ -983,7 +983,7 @@
                         <div class="p-2 px-3 bg-white rounded-3 border mb-3 small">
                             <div class="d-flex justify-content-between py-1 border-bottom">
                                 <span class="text-muted">No. Sertifikat:</span>
-                                <strong class="text-dark">{{ $land->ceritificate_no ?? '-' }}</strong>
+                                <strong class="text-dark">{{ $land->certificate_no ?? '-' }}</strong>
                             </div>
                             <div class="d-flex justify-content-between py-1 border-bottom">
                                 <span class="text-muted">Pemilik Sertifikat:</span>

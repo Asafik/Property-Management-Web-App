@@ -245,6 +245,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/properti/{id}/update-company', [PropertyController::class, 'updateCompanyAjax'])->name('properti.updateCompany');
     Route::post('/properti/{id}/update', [PropertyController::class, 'update'])->name('properti.update');
     Route::get('/properti/{id}/edit', [PropertyController::class, 'edit'])->name('properti.edit');
+    Route::post('/properti/{id}/upload-custom-workflow-doc', [PropertyController::class, 'uploadCustomWorkflowDoc'])->name('properti.upload-custom-workflow-doc');
+    Route::post('/properti/{id}/delete-custom-workflow-doc', [PropertyController::class, 'deleteCustomWorkflowDoc'])->name('properti.delete-custom-workflow-doc');
+    Route::post('/properti/{id}/load-fase4-template', [PropertyController::class, 'loadFase4DefaultTemplate'])->name('properti.load-fase4-template');
+    Route::post('/properti/{id}/add-from-master', [PropertyController::class, 'addBatchFromMaster'])->name('properti.add-from-master');
 
 
     /*

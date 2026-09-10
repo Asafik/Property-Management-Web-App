@@ -1732,35 +1732,15 @@ public function store(Request $request)
     }
 
     /**
-     * Finalisasi Lahan: Penerbitan SHGB Induk an. PT & Migrasi Otomatis ke Pasca Land Bank
+     * Finalisasi Lahan: Alihkan dari Pra Land Bank ke Pasca Land Bank
      */
     public function finalizeToPascaLandbank(Request $request, $id)
     {
         $record = PraLandbank::findOrFail($id);
 
-        // Validasi SHGB Induk
-        $shgbNo = $request->shgb_induk_no ?: $record->shgb_induk_no;
-        if (empty($shgbNo)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Nomor SHGB Induk atas nama PT wajib diisi sebelum melakukan finalisasi ke Pasca Land Bank!'
-            ], 422);
-        }
-
-        // Update data SHGB bila dikirim bersamaan
-        if ($request->filled('shgb_induk_no')) {
-            $record->shgb_induk_no = $request->shgb_induk_no;
-        }
-        if ($request->filled('shgb_induk_date')) {
-            $record->shgb_induk_date = $request->shgb_induk_date;
-        }
-        if ($request->filled('shgb_induk_area')) {
-            $record->shgb_induk_area = preg_replace('/[^0-9.]/', '', (string)$request->shgb_induk_area);
-        }
-
         // Ambil ID profil perusahaan default
         $companyId = \App\Models\CompanyProfile::first()->id ?? 1;
-        $totalArea = $record->shgb_induk_area ?: ($record->peta_bidang_area ?: $record->area);
+        $totalArea = $record->area ?: 0;
 
         // Buat atau update data di LandBank (Pasca Land Bank)
         $landBank = null;
@@ -1768,16 +1748,23 @@ public function store(Request $request)
             $landBank = \App\Models\LandBank::find($record->land_bank_id);
         }
 
+        // Alur kerja dokumen pengindukan (custom_workflow_docs)
+        $workflowDocs = $record->custom_workflow_docs;
+        if (empty($workflowDocs)) {
+            $workflowDocs = \App\Http\Controllers\Admin\PropertyController::getDefaultFase4Templates($record);
+        }
+
         $landBankData = [
             'name'                      => $record->land_name,
             'company_profile_id'        => $companyId,
-            'ceritificate_no'           => $shgbNo,
-            'ownership_status'          => 'SHGB',
-            'certificate_owner'         => 'PT. Developer Properti (Induk)',
+            'certificate_no'            => $record->certificate_no ?: ($record->land_name . ' (' . ($record->ownership_status ?? 'SHM') . ')'),
+            'ownership_status'          => $record->ownership_status ?: 'SHM',
+            'certificate_owner'         => $record->certificate_owner ?: ($record->owner_name ?: '-'),
+            'custom_workflow_docs'      => $workflowDocs,
             'area'                      => $totalArea,
             'remaining_area'            => $totalArea,
             'acquisition_price'         => $record->deal_price ?: ($record->offer_price ?: 0),
-            'acquisition_date'          => $record->shgb_induk_date ?: now()->toDateString(),
+            'acquisition_date'          => $record->survey_date ?: now()->toDateString(),
             'address'                   => $record->address ?: '-',
             'village'                   => $record->village ?: '-',
             'district'                  => $record->district ?: '-',
@@ -1788,14 +1775,14 @@ public function store(Request $request)
             'road_type'                 => $record->road_type ?: '-',
             'lat'                       => $record->lat,
             'lng'                       => $record->lng,
-            'file_certificate'          => $record->shgb_induk_file ?: $record->file_certificate,
+            'file_certificate'          => $record->file_certificate,
             'file_pbb'                  => $record->pbb_mutasi_file,
             'photo'                     => $record->photo,
             'denah'                     => $record->peta_bidang_file,
             'status'                    => 'aktif',
             'legal_status'              => 'aman',
-            'statusKavling'             => 'belum_pecah',
-            'description'               => 'Tanah Induk resmi hasil pengindukan Pra Land Bank #' . $record->id . ' (' . $record->land_name . ')',
+            'development_status'        => 'Belum',
+            'description'               => 'Tanah Induk dialihkan dari Pra Land Bank #' . $record->id . ' (' . $record->land_name . ')',
         ];
 
         if ($landBank) {
@@ -1806,16 +1793,15 @@ public function store(Request $request)
 
         // Hubungkan pra_landbank ke land_bank
         $record->update([
-            'land_bank_id'       => $landBank->id,
-            'status'             => 'approved',
-            'hgb_process_status' => 'completed_hgb_induk'
+            'land_bank_id' => $landBank->id,
+            'status'       => 'approved',
         ]);
 
         return response()->json([
             'success'      => true,
-            'message'      => 'Selamat! Lahan ' . $record->land_name . ' resmi diterbitkan SHGB Induk an. PT dan beralih status menjadi Tanah Pasca Land Bank Aktif!',
+            'message'      => 'Lahan ' . $record->land_name . ' berhasil dialihkan ke Pasca Land Bank!',
             'land_bank_id' => $landBank->id,
-            'redirect_url' => route('properti-all'),
+            'redirect_url' => route('properti.edit', ['id' => $landBank->id]) . '#dokumen',
         ]);
     }
 
