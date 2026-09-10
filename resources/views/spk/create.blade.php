@@ -115,16 +115,99 @@
         padding: 0.6rem 0.6rem;
     }
 
+    /* ===== MODERN BUTTON STYLING (TAMPIL TEGAS SEPERTI TOMBOL SEBENARNYA) ===== */
+    .btn-secondary-modern {
+        background: #f8fafc !important;
+        border: 1.5px solid #cbd5e1 !important;
+        color: #334155 !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        transition: all 0.2s ease;
+    }
+    .btn-secondary-modern:hover {
+        background: #f1f5f9 !important;
+        border-color: #94a3b8 !important;
+        color: #0f172a !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-secondary-modern i {
+        color: #64748b;
+        transition: color 0.2s ease;
+    }
+    .btn-secondary-modern:hover i {
+        color: #0f172a;
+    }
+
+    .btn-preset-standar {
+        background: #f5f3ff !important;
+        border: 1.5px solid #c4b5fd !important;
+        color: #6d28d9 !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 1px 3px rgba(109, 40, 217, 0.08);
+        transition: all 0.2s ease;
+    }
+    .btn-preset-standar:hover {
+        background: #6d28d9 !important;
+        border-color: #6d28d9 !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(109, 40, 217, 0.25);
+    }
+    .btn-preset-standar:hover i {
+        color: #ffffff !important;
+    }
+
+    .btn-preset-infra {
+        background: #eff6ff !important;
+        border: 1.5px solid #93c5fd !important;
+        color: #1d4ed8 !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 1px 3px rgba(29, 78, 216, 0.08);
+        transition: all 0.2s ease;
+    }
+    .btn-preset-infra:hover {
+        background: #1d4ed8 !important;
+        border-color: #1d4ed8 !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(29, 78, 216, 0.25);
+    }
+    .btn-preset-infra:hover i {
+        color: #ffffff !important;
+    }
+
     .btn-gradient-purple {
-        background: linear-gradient(135deg, #da8cff, #9a55ff);
-        color: #fff;
-        border: none;
-        box-shadow: 0 2px 6px rgba(154, 85, 255, 0.2);
+        background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+        color: #ffffff !important;
+        border: none !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 8px rgba(154, 85, 255, 0.25);
+        transition: all 0.2s ease;
     }
     .btn-gradient-purple:hover {
-        color: #fff;
-        opacity: 0.92;
+        color: #ffffff !important;
         transform: translateY(-1px);
+        box-shadow: 0 5px 15px rgba(154, 85, 255, 0.45);
+    }
+
+    .btn-danger-modern {
+        background: #fef2f2 !important;
+        border: 1.5px solid #fecaca !important;
+        color: #dc2626 !important;
+        border-radius: 6px !important;
+        transition: all 0.2s ease;
+    }
+    .btn-danger-modern:hover {
+        background: #dc2626 !important;
+        border-color: #dc2626 !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(220, 38, 38, 0.25);
     }
 
     /* Animasi spin untuk tombol refresh nomor SPK */
@@ -174,7 +257,7 @@
                         </p>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <a href="{{ route('spk.index') }}" class="btn btn-outline-secondary btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5" style="border-radius: 8px; font-weight: 600;">
+                        <a href="{{ route('spk.index') }}" class="btn btn-secondary-modern btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5">
                             <i class="mdi mdi-arrow-left fs-6"></i> Kembali
                         </a>
                     </div>
@@ -220,7 +303,7 @@
                             <input type="text" name="no_spk" id="no_spk" class="form-control fw-bold font-monospace"
                                    value="{{ old('no_spk', $defaultNoSpk) }}" required readonly
                                    style="background: #f8f9fa; color: #0d6efd; cursor: default; font-size: 13px;">
-                            <button type="button" class="btn btn-outline-secondary" id="btnRefreshNoSpk" title="Generate ulang nomor SPK" onclick="refreshNoSpk()">
+                            <button type="button" class="btn btn-secondary-modern px-3" id="btnRefreshNoSpk" title="Generate ulang nomor SPK" onclick="refreshNoSpk()">
                                 <i class="mdi mdi-refresh" id="iconRefreshSpk"></i>
                             </button>
                         </div>
@@ -475,13 +558,13 @@
                     <h5 class="form-section-title">4. Skema & Jadwal Termin Pembayaran</h5>
                 </div>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <button type="button" class="btn btn-sm btn-outline-primary py-1.5 px-3 d-inline-flex align-items-center gap-1" style="border-radius: 8px; font-weight: 600;" onclick="applyPresetTermin('standar')">
+                    <button type="button" class="btn btn-sm btn-preset-standar py-1.5 px-3 d-inline-flex align-items-center gap-1" onclick="applyPresetTermin('standar')">
                         <i class="mdi mdi-flash"></i>Preset Standar Rumah (5 Tahap)
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-info py-1.5 px-3 d-inline-flex align-items-center gap-1" style="border-radius: 8px; font-weight: 600;" onclick="applyPresetTermin('infra')">
+                    <button type="button" class="btn btn-sm btn-preset-infra py-1.5 px-3 d-inline-flex align-items-center gap-1" onclick="applyPresetTermin('infra')">
                         <i class="mdi mdi-flash"></i>Preset Infrastruktur (4 Tahap)
                     </button>
-                    <button type="button" class="btn btn-sm btn-gradient-purple py-1.5 px-3 d-inline-flex align-items-center gap-1" style="border-radius: 8px; font-weight: 600;" onclick="addTerminRow()">
+                    <button type="button" class="btn btn-sm btn-gradient-purple py-1.5 px-3 d-inline-flex align-items-center gap-1" onclick="addTerminRow()">
                         <i class="mdi mdi-plus"></i>Tambah Baris
                     </button>
                 </div>
@@ -560,14 +643,14 @@
         <!-- Tombol Aksi Submit Footer Card -->
         <div class="card shadow-sm border-0 mb-5" style="border-radius: 12px; background: #ffffff;">
             <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <a href="{{ route('spk.index') }}" class="btn btn-outline-secondary px-3 py-2 d-inline-flex align-items-center gap-1.5" style="border-radius: 8px; font-weight: 600;">
+                <a href="{{ route('spk.index') }}" class="btn btn-secondary-modern px-3 py-2 d-inline-flex align-items-center gap-1.5">
                     <i class="mdi mdi-arrow-left"></i> Kembali ke Daftar SPK
                 </a>
                 <div class="d-flex align-items-center gap-2">
-                    <a href="{{ route('spk.index') }}" class="btn btn-light px-4 py-2" style="border-radius: 8px; font-weight: 600; color: #64748b; border: 1px solid #e2e8f0;">
+                    <a href="{{ route('spk.index') }}" class="btn btn-secondary-modern px-4 py-2">
                         Batal
                     </a>
-                    <button type="submit" class="btn btn-gradient-primary px-4 py-2.5 fw-bold text-white shadow-sm d-inline-flex align-items-center gap-2" style="background: linear-gradient(135deg, #da8cff, #9a55ff); border: none; border-radius: 8px;">
+                    <button type="submit" class="btn btn-gradient-purple px-4 py-2.5 fw-bold text-white shadow d-inline-flex align-items-center gap-2">
                         <i class="mdi mdi-content-save-check-outline fs-5"></i>
                         <span>Simpan & Terbitkan SPK</span>
                     </button>
@@ -832,8 +915,8 @@
                        placeholder="Keterangan...">
             </td>
             <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-danger p-1" onclick="removeTerminRow(this)" title="Hapus Baris">
-                    <i class="mdi mdi-close"></i>
+                <button type="button" class="btn btn-sm btn-danger-modern p-1" onclick="removeTerminRow(this)" title="Hapus Baris" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">
+                    <i class="mdi mdi-trash-can-outline"></i>
                 </button>
             </td>
         `;

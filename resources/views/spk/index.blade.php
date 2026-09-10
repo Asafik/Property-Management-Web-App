@@ -164,59 +164,59 @@
             </div>
         </div>
 
-        <!-- Summary Statistics Cards -->
+        <!-- Summary Statistics Cards (Serasi dengan Card Dashboard) -->
         <div class="row g-3 mb-3 mb-md-4">
-            <div class="col-6 col-md-3">
-                <div class="card stat-card p-3">
-                    <div class="d-flex align-items-center justify-content-between">
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
                         <div>
-                            <span class="text-muted small fw-semibold">Total SPK</span>
-                            <h4 class="fw-bold text-dark mb-0 mt-1">{{ $stats['total_spk'] }}</h4>
+                            <h4 class="text-dark mb-1 fw-bold">{{ $stats['total_spk'] }}</h4>
+                            <p class="text-muted mb-0" style="font-size: 0.85rem;">Total SPK</p>
                         </div>
-                        <div class="stat-icon-box" style="background: rgba(154, 85, 255, 0.12); color: #9a55ff;">
-                            <i class="mdi mdi-file-document-multiple-outline"></i>
+                        <div class="d-none d-sm-block pe-1">
+                            <i class="mdi mdi-file-document-multiple-outline" style="font-size: 2.2rem; color: #9a55ff; opacity: 0.25;"></i>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-6 col-md-3">
-                <div class="card stat-card p-3">
-                    <div class="d-flex align-items-center justify-content-between">
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
                         <div>
-                            <span class="text-muted small fw-semibold">SPK Berjalan</span>
-                            <h4 class="fw-bold text-info mb-0 mt-1">{{ $stats['spk_berjalan'] }}</h4>
+                            <h4 class="text-dark mb-1 fw-bold">{{ $stats['spk_berjalan'] }}</h4>
+                            <p class="text-muted mb-0" style="font-size: 0.85rem;">SPK Berjalan</p>
                         </div>
-                        <div class="stat-icon-box" style="background: rgba(23, 162, 184, 0.12); color: #17a2b8;">
-                            <i class="mdi mdi-progress-clock"></i>
+                        <div class="d-none d-sm-block pe-1">
+                            <i class="mdi mdi-progress-clock" style="font-size: 2.2rem; color: #0d6efd; opacity: 0.25;"></i>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-6 col-md-3">
-                <div class="card stat-card p-3">
-                    <div class="d-flex align-items-center justify-content-between">
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
                         <div>
-                            <span class="text-muted small fw-semibold">SPK Selesai</span>
-                            <h4 class="fw-bold text-success mb-0 mt-1">{{ $stats['spk_selesai'] }}</h4>
+                            <h4 class="text-dark mb-1 fw-bold">{{ $stats['spk_selesai'] }}</h4>
+                            <p class="text-muted mb-0" style="font-size: 0.85rem;">SPK Selesai</p>
                         </div>
-                        <div class="stat-icon-box" style="background: rgba(40, 167, 69, 0.12); color: #28a745;">
-                            <i class="mdi mdi-check-decagram-outline"></i>
+                        <div class="d-none d-sm-block pe-1">
+                            <i class="mdi mdi-check-decagram-outline" style="font-size: 2.2rem; color: #28a745; opacity: 0.25;"></i>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-6 col-md-3">
-                <div class="card stat-card p-3">
-                    <div class="d-flex align-items-center justify-content-between">
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="card shadow-sm border-0 h-100 mb-0">
+                    <div class="card-body d-flex justify-content-between align-items-center p-3">
                         <div>
-                            <span class="text-muted small fw-semibold">Total Nilai Kontrak</span>
-                            <h5 class="fw-bold text-primary mb-0 mt-1" style="font-size: 1.05rem;">Rp {{ number_format($stats['total_nilai'], 0, ',', '.') }}</h5>
+                            <h4 class="text-success mb-1 fw-bold" style="font-size: 1.05rem;">Rp {{ number_format($stats['total_nilai'], 0, ',', '.') }}</h4>
+                            <p class="text-muted mb-0" style="font-size: 0.85rem;">Total Nilai Kontrak</p>
                         </div>
-                        <div class="stat-icon-box" style="background: rgba(84, 110, 237, 0.12); color: #546eed;">
-                            <i class="mdi mdi-cash-multiple"></i>
+                        <div class="d-none d-sm-block pe-1">
+                            <i class="mdi mdi-cash-multiple" style="font-size: 2.2rem; color: #28a745; opacity: 0.3;"></i>
                         </div>
                     </div>
                 </div>

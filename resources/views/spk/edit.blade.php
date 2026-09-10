@@ -115,16 +115,79 @@
         padding: 0.6rem 0.6rem;
     }
 
+    /* ===== MODERN BUTTON STYLING (TAMPIL TEGAS SEPERTI TOMBOL SEBENARNYA) ===== */
+    .btn-secondary-modern {
+        background: #f8fafc !important;
+        border: 1.5px solid #cbd5e1 !important;
+        color: #334155 !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        transition: all 0.2s ease;
+    }
+    .btn-secondary-modern:hover {
+        background: #f1f5f9 !important;
+        border-color: #94a3b8 !important;
+        color: #0f172a !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-secondary-modern i {
+        color: #64748b;
+        transition: color 0.2s ease;
+    }
+    .btn-secondary-modern:hover i {
+        color: #0f172a;
+    }
+
+    .btn-success-modern {
+        background: #f0fdf4 !important;
+        border: 1.5px solid #86efac !important;
+        color: #15803d !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 1px 3px rgba(22, 163, 74, 0.08);
+        transition: all 0.2s ease;
+    }
+    .btn-success-modern:hover {
+        background: #16a34a !important;
+        border-color: #16a34a !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+    }
+    .btn-success-modern:hover i {
+        color: #ffffff !important;
+    }
+
     .btn-gradient-purple {
-        background: linear-gradient(135deg, #da8cff, #9a55ff);
-        color: #fff;
-        border: none;
-        box-shadow: 0 2px 6px rgba(154, 85, 255, 0.2);
+        background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+        color: #ffffff !important;
+        border: none !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 8px rgba(154, 85, 255, 0.25);
+        transition: all 0.2s ease;
     }
     .btn-gradient-purple:hover {
-        color: #fff;
-        opacity: 0.92;
+        color: #ffffff !important;
         transform: translateY(-1px);
+        box-shadow: 0 5px 15px rgba(154, 85, 255, 0.45);
+    }
+
+    .btn-danger-modern {
+        background: #fef2f2 !important;
+        border: 1.5px solid #fecaca !important;
+        color: #dc2626 !important;
+        border-radius: 6px !important;
+        transition: all 0.2s ease;
+    }
+    .btn-danger-modern:hover {
+        background: #dc2626 !important;
+        border-color: #dc2626 !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(220, 38, 38, 0.25);
     }
 </style>
 
@@ -141,7 +204,7 @@
                                 <i class="mdi mdi-file-sign me-1"></i>Modul Kontrak Kerja
                             </span>
                             <span class="text-muted small">|</span>
-                            <span class="text-muted small">Edit {{ $spk->no_spk }}</span>
+                            <span class="text-muted small">Edit SPK #{{ $spk->no_spk }}</span>
                         </div>
                         <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
                             Edit Surat Perintah Kerja (SPK)
@@ -151,10 +214,10 @@
                         </p>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <a href="{{ route('spk.cetak', $spk->id) }}" target="_blank" class="btn btn-outline-success btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5" style="border-radius: 8px; font-weight: 600;">
+                        <a href="{{ route('spk.cetak', $spk->id) }}" target="_blank" class="btn btn-success-modern btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5">
                             <i class="mdi mdi-printer fs-6"></i> Cetak SPK
                         </a>
-                        <a href="{{ route('spk.index') }}" class="btn btn-outline-secondary btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5" style="border-radius: 8px; font-weight: 600;">
+                        <a href="{{ route('spk.index') }}" class="btn btn-secondary-modern btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5">
                             <i class="mdi mdi-arrow-left fs-6"></i> Kembali
                         </a>
                     </div>
@@ -529,11 +592,11 @@
                                         <input type="text" name="termins[{{ $idx }}][keterangan]" class="form-control form-control-sm"
                                                value="{{ $t->keterangan }}">
                                     </td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-sm btn-outline-danger p-1" onclick="removeTerminRow(this)" title="Hapus Baris">
-                                            <i class="mdi mdi-close"></i>
-                                        </button>
-                                    </td>
+                                     <td class="text-center">
+                                         <button type="button" class="btn btn-sm btn-danger-modern p-1" onclick="removeTerminRow(this)" title="Hapus Baris" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">
+                                             <i class="mdi mdi-trash-can-outline"></i>
+                                         </button>
+                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -576,7 +639,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <label class="form-label mb-0">Isi Pasal & Ketentuan Kontrak (Dapat diedit sesuai kesepakatan)</label>
                     </div>
-                    <textarea name="pasal_syarat_ketentuan" id="pasal_syarat_ketentuan" class="form-control" rows="12"
+                    <textarea name="pasal_syarat_ketentuan" id="pasal_syarat_ketentuan" class="form-control" rows="12" 
                               style="font-family: inherit; font-size: 0.88rem; line-height: 1.65; background-color: #fcfdfe; border-color: #cbd5e1;">{{ old('pasal_syarat_ketentuan', $spk->pasal_syarat_ketentuan) }}</textarea>
                     <small class="text-muted d-block mt-1">
                         <i class="mdi mdi-information-outline me-1"></i>Klausul pasal di atas akan tercetak otomatis pada lembar resmi Surat Perintah Kerja (SPK).
@@ -593,14 +656,14 @@
         <!-- Tombol Aksi Submit Footer Card -->
         <div class="card shadow-sm border-0 mb-5" style="border-radius: 12px; background: #ffffff;">
             <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <a href="{{ route('spk.index') }}" class="btn btn-outline-secondary px-3 py-2 d-inline-flex align-items-center gap-1.5" style="border-radius: 8px; font-weight: 600;">
+                <a href="{{ route('spk.index') }}" class="btn btn-secondary-modern px-3 py-2 d-inline-flex align-items-center gap-1.5">
                     <i class="mdi mdi-arrow-left"></i> Kembali ke Daftar SPK
                 </a>
                 <div class="d-flex align-items-center gap-2">
-                    <a href="{{ route('spk.index') }}" class="btn btn-light px-4 py-2" style="border-radius: 8px; font-weight: 600; color: #64748b; border: 1px solid #e2e8f0;">
+                    <a href="{{ route('spk.index') }}" class="btn btn-secondary-modern px-4 py-2">
                         Batal
                     </a>
-                    <button type="submit" class="btn btn-gradient-primary px-4 py-2.5 fw-bold text-white shadow-sm d-inline-flex align-items-center gap-2" style="background: linear-gradient(135deg, #da8cff, #9a55ff); border: none; border-radius: 8px;">
+                    <button type="submit" class="btn btn-gradient-purple px-4 py-2.5 fw-bold text-white shadow d-inline-flex align-items-center gap-2">
                         <i class="mdi mdi-content-save-check-outline fs-5"></i>
                         <span>Perbarui SPK</span>
                     </button>
@@ -768,8 +831,8 @@
                 <input type="text" name="termins[${rowIdx}][keterangan]" class="form-control form-control-sm">
             </td>
             <td class="text-center">
-                <button type="button" class="btn btn-sm btn-outline-danger p-1" onclick="removeTerminRow(this)" title="Hapus Baris">
-                    <i class="mdi mdi-close"></i>
+                <button type="button" class="btn btn-sm btn-danger-modern p-1" onclick="removeTerminRow(this)" title="Hapus Baris" style="width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;">
+                    <i class="mdi mdi-trash-can-outline"></i>
                 </button>
             </td>
         `;
