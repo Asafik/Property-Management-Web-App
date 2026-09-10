@@ -103,7 +103,8 @@ class PraLandbank extends Model
         'payment_method',
         'installment_duration',
         'installment_count',
-        'notes'
+        'notes',
+        'company_profile_id',
     ];
 
     protected $casts = [
@@ -133,5 +134,10 @@ class PraLandbank extends Model
     public function landBank()
     {
         return $this->belongsTo(LandBank::class, 'land_bank_id');
+    }
+
+    public function companyProfile()
+    {
+        return $this->belongsTo(CompanyProfile::class, 'company_profile_id');
     }
 }

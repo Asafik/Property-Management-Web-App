@@ -14,17 +14,19 @@ return new class extends Migration
         $menus = [6, 7, 8];
         $positionId = 7; // Staff Keuangan
 
-        foreach ($menus as $menuId) {
-            $exists = DB::table('menu_position')
-                ->where('menu_id', $menuId)
-                ->where('position_id', $positionId)
-                ->exists();
+        if (DB::table('positions')->where('id', $positionId)->exists()) {
+            foreach ($menus as $menuId) {
+                $exists = DB::table('menu_position')
+                    ->where('menu_id', $menuId)
+                    ->where('position_id', $positionId)
+                    ->exists();
 
-            if (!$exists) {
-                DB::table('menu_position')->insert([
-                    'menu_id' => $menuId,
-                    'position_id' => $positionId
-                ]);
+                if (!$exists) {
+                    DB::table('menu_position')->insert([
+                        'menu_id' => $menuId,
+                        'position_id' => $positionId
+                    ]);
+                }
             }
         }
     }

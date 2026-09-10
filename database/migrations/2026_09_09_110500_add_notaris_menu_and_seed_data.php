@@ -32,16 +32,18 @@ return new class extends Migration
         if ($notarisMenu) {
             $positionsToAssign = [1, 3, 4, 5, 7]; // Kepala Marketing, Kepala Legal, Staff Legal, Admin, Staff Keuangan
             foreach ($positionsToAssign as $posId) {
-                $exists = DB::table('menu_position')
-                    ->where('menu_id', $notarisMenu->id)
-                    ->where('position_id', $posId)
-                    ->exists();
+                if (DB::table('positions')->where('id', $posId)->exists()) {
+                    $exists = DB::table('menu_position')
+                        ->where('menu_id', $notarisMenu->id)
+                        ->where('position_id', $posId)
+                        ->exists();
 
-                if (!$exists) {
-                    DB::table('menu_position')->insert([
-                        'menu_id' => $notarisMenu->id,
-                        'position_id' => $posId
-                    ]);
+                    if (!$exists) {
+                        DB::table('menu_position')->insert([
+                            'menu_id' => $notarisMenu->id,
+                            'position_id' => $posId
+                        ]);
+                    }
                 }
             }
         }
