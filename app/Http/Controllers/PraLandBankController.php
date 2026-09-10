@@ -968,6 +968,335 @@ public function store(Request $request)
     }
 
     /**
+     * Upload Berkas Alur Pengindukan & Perizinan (Poin 7 s/d 17) via AJAX Instan
+     */
+    public function uploadWorkflowDoc(Request $request, $id)
+    {
+        $allowedFields = [
+            'desa_doc_file',
+            'kecamatan_doc_file',
+            'pertek_file',
+            'peta_bidang_file',
+            'pkkpr_file',
+            'polygon_shp_file',
+            'sk_hgb_file',
+            'pbb_mutasi_file',
+            'bphtb_validasi_file',
+            'shgb_induk_file'
+        ];
+
+        $request->validate([
+            'file_field' => 'required|string|in:' . implode(',', $allowedFields),
+            'file'       => 'required|file|max:25600',
+        ]);
+
+        $record = PraLandbank::findOrFail($id);
+        $fileField = $request->file_field;
+        $file = $request->file('file');
+
+        $labels = [
+            'desa_doc_file'       => 'Blangko Permohonan Kelurahan',
+            'kecamatan_doc_file'  => 'Blangko Permohonan Kecamatan',
+            'pertek_file'         => 'Pertimbangan Teknis (PERTEK) BPN',
+            'peta_bidang_file'    => 'Peta Bidang & Pengukuran BPN',
+            'pkkpr_file'          => 'Persetujuan PKKPR OSS RBA',
+            'polygon_shp_file'    => 'File Peta Polygon SHP/KML',
+            'sk_hgb_file'         => 'SK HGB Badan Hukum BPN',
+            'pbb_mutasi_file'     => 'SPPT PBB Mutasi Bapenda',
+            'bphtb_validasi_file' => 'Bukti Validasi Pajak BPHTB',
+            'shgb_induk_file'     => 'Sertifikat SHGB Induk an. PT'
+        ];
+
+        $docLabel = $labels[$fileField] ?? 'Berkas Perizinan';
+        $prefix = str_replace('_file', '', $fileField) . '_';
+        $filename = uniqid() . '_' . $prefix . $file->getClientOriginalName();
+        $destination = public_path('uploads/pra_landbank/' . $record->id . '/pengindukan');
+        
+        if (!file_exists($destination)) {
+            mkdir($destination, 0755, true);
+        }
+        $file->move($destination, $filename);
+        $filePath = 'uploads/pra_landbank/' . $record->id . '/pengindukan/' . $filename;
+
+        $record->update([
+            $fileField => $filePath
+        ]);
+
+        $cleanPath = str_replace('uploads/', '', $filePath);
+        $previewUrl = route('dokumen.preview', ['path' => $cleanPath]);
+
+        return response()->json([
+            'success'      => true,
+            'message'      => 'Berkas ' . $docLabel . ' berhasil diunggah!',
+            'file_field'   => $fileField,
+            'file_path'    => $filePath,
+            'filename'     => basename($filePath),
+            'preview_url'  => $previewUrl,
+            'doc_label'    => $docLabel,
+            'ext'          => $file->getClientOriginalExtension(),
+        ]);
+    }
+
+    /**
+     * Upload Dokumen Tambahan Dinamis Fase 4 via AJAX
+     */
+    public function uploadCustomWorkflowDoc(Request $request, $id)
+    {
+        $request->validate([
+            'doc_name'   => 'required|string|max:255',
+            'doc_number' => 'nullable|string|max:255',
+            'doc_date'   => 'nullable|date',
+            'notes'      => 'nullable|string|max:500',
+            'file'       => 'nullable|file|max:25600',
+        ]);
+
+        $record = PraLandbank::findOrFail($id);
+        $docId = $request->input('doc_id') ?: ('doc_' . uniqid());
+        $currentDocs = $record->custom_workflow_docs ?: [];
+
+        $filePath = null;
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filename = uniqid() . '_custom_' . $file->getClientOriginalName();
+            $destination = public_path('uploads/pra_landbank/' . $record->id . '/pengindukan');
+
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+            $file->move($destination, $filename);
+            $filePath = 'uploads/pra_landbank/' . $record->id . '/pengindukan/' . $filename;
+        }
+
+        // Cari apakah update item yang sudah ada atau tambah baru
+        $existingIndex = -1;
+        foreach ($currentDocs as $index => $item) {
+            if (($item['id'] ?? '') === $docId) {
+                $existingIndex = $index;
+                break;
+            }
+        }
+
+        if ($existingIndex >= 0) {
+            $item = $currentDocs[$existingIndex];
+            $currentDocs[$existingIndex] = [
+                'id'         => $docId,
+                'doc_name'   => $request->doc_name,
+                'doc_number' => $request->doc_number,
+                'doc_date'   => $request->doc_date,
+                'notes'      => $request->notes,
+                'file_path'  => $filePath ?: ($item['file_path'] ?? null),
+                'updated_at' => now()->toDateTimeString(),
+            ];
+        } else {
+            $currentDocs[] = [
+                'id'         => $docId,
+                'doc_name'   => $request->doc_name,
+                'doc_number' => $request->doc_number,
+                'doc_date'   => $request->doc_date,
+                'notes'      => $request->notes,
+                'file_path'  => $filePath,
+                'created_at' => now()->toDateTimeString(),
+            ];
+        }
+
+        $record->update([
+            'custom_workflow_docs' => $currentDocs
+        ]);
+
+        $savedDoc = [
+            'id'         => $docId,
+            'doc_name'   => $request->doc_name,
+            'doc_number' => $request->doc_number,
+            'doc_date'   => $request->doc_date,
+            'notes'      => $request->notes,
+            'file_path'  => $filePath ?: ($existingIndex >= 0 ? ($currentDocs[$existingIndex]['file_path'] ?? null) : null),
+        ];
+
+        return response()->json([
+            'success'     => true,
+            'message'     => 'Dokumen ' . $request->doc_name . ' berhasil disimpan!',
+            'doc'         => $savedDoc,
+            'doc_id'      => $docId,
+            'doc_name'    => $request->doc_name,
+            'file_path'   => $filePath,
+            'filename'    => $filePath ? basename($filePath) : null,
+            'preview_url' => $previewUrl,
+            'docs'        => $currentDocs,
+        ]);
+    }
+
+    /**
+     * Hapus Dokumen Tambahan Dinamis Fase 4 via AJAX
+     */
+    public function deleteCustomWorkflowDoc(Request $request, $id)
+    {
+        $request->validate([
+            'doc_id' => 'required|string',
+        ]);
+
+        $record = PraLandbank::findOrFail($id);
+        $docId = $request->doc_id;
+        $currentDocs = $record->custom_workflow_docs ?: [];
+
+        $newDocs = [];
+        foreach ($currentDocs as $doc) {
+            if (($doc['id'] ?? '') === $docId) {
+                if (!empty($doc['file_path']) && file_exists(public_path($doc['file_path']))) {
+                    @unlink(public_path($doc['file_path']));
+                }
+            } else {
+                $newDocs[] = $doc;
+            }
+        }
+
+        $record->update([
+            'custom_workflow_docs' => $newDocs
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Dokumen tambahan berhasil dihapus!',
+            'docs'    => $newDocs,
+        ]);
+    }
+
+    /**
+     * Auto-save Data Informasi Perizinan & Pengindukan (Poin 7 s/d 17) via AJAX
+     */
+    public function updateWorkflowInfo(Request $request, $id)
+    {
+        $record = PraLandbank::findOrFail($id);
+
+        $fields = [
+            'desa_reg_no', 'desa_reg_date',
+            'kecamatan_reg_no', 'kecamatan_reg_date',
+            'pertek_no', 'pertek_date',
+            'peta_bidang_no', 'peta_bidang_date', 'peta_bidang_area',
+            'pkkpr_no', 'pkkpr_date', 'pkkpr_status',
+            'sk_hgb_no', 'sk_hgb_date',
+            'pbb_mutasi_nop', 'pbb_mutasi_date',
+            'bphtb_nominal', 'bphtb_payment_date', 'bphtb_billing_id', 'bphtb_approval_status',
+            'shgb_induk_no', 'shgb_induk_date', 'shgb_induk_area', 'hgb_process_status'
+        ];
+
+        $data = [];
+        foreach ($fields as $field) {
+            if ($request->has($field)) {
+                $val = $request->input($field);
+                if (str_contains($field, '_date') && !empty($val)) {
+                    try {
+                        $data[$field] = \Carbon\Carbon::parse($val)->format('Y-m-d');
+                    } catch (\Exception $e) {
+                        $data[$field] = null;
+                    }
+                } elseif (in_array($field, ['peta_bidang_area', 'shgb_induk_area', 'bphtb_nominal'])) {
+                    $clean = preg_replace('/[^0-9.]/', '', (string) $val);
+                    $data[$field] = $clean !== '' ? (float) $clean : null;
+                } else {
+                    $data[$field] = $val !== '' ? $val : null;
+                }
+            }
+        }
+
+        if (!empty($data)) {
+            $record->update($data);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data alur pengindukan & perizinan berhasil disimpan!',
+        ]);
+    }
+
+    /**
+     * Finalisasi Lahan: Penerbitan SHGB Induk an. PT & Migrasi Otomatis ke Pasca Land Bank
+     */
+    public function finalizeToPascaLandbank(Request $request, $id)
+    {
+        $record = PraLandbank::findOrFail($id);
+
+        // Validasi SHGB Induk
+        $shgbNo = $request->shgb_induk_no ?: $record->shgb_induk_no;
+        if (empty($shgbNo)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nomor SHGB Induk atas nama PT wajib diisi sebelum melakukan finalisasi ke Pasca Land Bank!'
+            ], 422);
+        }
+
+        // Update data SHGB bila dikirim bersamaan
+        if ($request->filled('shgb_induk_no')) {
+            $record->shgb_induk_no = $request->shgb_induk_no;
+        }
+        if ($request->filled('shgb_induk_date')) {
+            $record->shgb_induk_date = $request->shgb_induk_date;
+        }
+        if ($request->filled('shgb_induk_area')) {
+            $record->shgb_induk_area = preg_replace('/[^0-9.]/', '', (string)$request->shgb_induk_area);
+        }
+
+        // Ambil ID profil perusahaan default
+        $companyId = \App\Models\CompanyProfile::first()->id ?? 1;
+        $totalArea = $record->shgb_induk_area ?: ($record->peta_bidang_area ?: $record->area);
+
+        // Buat atau update data di LandBank (Pasca Land Bank)
+        $landBank = null;
+        if ($record->land_bank_id) {
+            $landBank = \App\Models\LandBank::find($record->land_bank_id);
+        }
+
+        $landBankData = [
+            'name'                      => $record->land_name,
+            'company_profile_id'        => $companyId,
+            'ceritificate_no'           => $shgbNo,
+            'ownership_status'          => 'SHGB',
+            'certificate_owner'         => 'PT. Developer Properti (Induk)',
+            'area'                      => $totalArea,
+            'remaining_area'            => $totalArea,
+            'acquisition_price'         => $record->deal_price ?: ($record->offer_price ?: 0),
+            'acquisition_date'          => $record->shgb_induk_date ?: now()->toDateString(),
+            'address'                   => $record->address ?: '-',
+            'village'                   => $record->village ?: '-',
+            'district'                  => $record->district ?: '-',
+            'city'                      => $record->city ?: '-',
+            'province'                  => $record->province ?: '-',
+            'zoning'                    => $record->zoning ?: '-',
+            'road_width'                => $record->road_width ?: '-',
+            'road_type'                 => $record->road_type ?: '-',
+            'lat'                       => $record->lat,
+            'lng'                       => $record->lng,
+            'file_certificate'          => $record->shgb_induk_file ?: $record->file_certificate,
+            'file_pbb'                  => $record->pbb_mutasi_file,
+            'photo'                     => $record->photo,
+            'denah'                     => $record->peta_bidang_file,
+            'status'                    => 'aktif',
+            'legal_status'              => 'aman',
+            'statusKavling'             => 'belum_pecah',
+            'description'               => 'Tanah Induk resmi hasil pengindukan Pra Land Bank #' . $record->id . ' (' . $record->land_name . ')',
+        ];
+
+        if ($landBank) {
+            $landBank->update($landBankData);
+        } else {
+            $landBank = \App\Models\LandBank::create($landBankData);
+        }
+
+        // Hubungkan pra_landbank ke land_bank
+        $record->update([
+            'land_bank_id'       => $landBank->id,
+            'status'             => 'approved',
+            'hgb_process_status' => 'completed_hgb_induk'
+        ]);
+
+        return response()->json([
+            'success'      => true,
+            'message'      => 'Selamat! Lahan ' . $record->land_name . ' resmi diterbitkan SHGB Induk an. PT dan beralih status menjadi Tanah Pasca Land Bank Aktif!',
+            'land_bank_id' => $landBank->id,
+            'redirect_url' => route('properti-all'),
+        ]);
+    }
+
+    /**
      * Helper untuk memproses penyimpanan & upload dokumen legalitas (Fase 1 / Fase 2)
      */
     private function processDocuments(Request $request, PraLandbank $record)

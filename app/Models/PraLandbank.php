@@ -64,10 +64,50 @@ class PraLandbank extends Model
         'receipt_file',
         'tax_pph_file',
         'release_deed_file',
+        'desa_reg_no',
+        'desa_reg_date',
+        'desa_doc_file',
+        'kecamatan_reg_no',
+        'kecamatan_reg_date',
+        'kecamatan_doc_file',
+        'pertek_no',
+        'pertek_date',
+        'pertek_file',
+        'peta_bidang_no',
+        'peta_bidang_date',
+        'peta_bidang_area',
+        'peta_bidang_file',
+        'pkkpr_no',
+        'pkkpr_date',
+        'pkkpr_status',
+        'pkkpr_file',
+        'polygon_shp_file',
+        'sk_hgb_no',
+        'sk_hgb_date',
+        'sk_hgb_file',
+        'pbb_mutasi_nop',
+        'pbb_mutasi_date',
+        'pbb_mutasi_file',
+        'bphtb_nominal',
+        'bphtb_payment_date',
+        'bphtb_billing_id',
+        'bphtb_validasi_file',
+        'bphtb_approval_status',
+        'shgb_induk_no',
+        'shgb_induk_date',
+        'shgb_induk_area',
+        'shgb_induk_file',
+        'land_bank_id',
+        'hgb_process_status',
+        'custom_workflow_docs',
         'payment_method',
         'installment_duration',
         'installment_count',
         'notes'
+    ];
+
+    protected $casts = [
+        'custom_workflow_docs' => 'array',
     ];
 
     public function documents()
@@ -88,5 +128,10 @@ class PraLandbank extends Model
     public function notaris()
     {
         return $this->belongsTo(Notaris::class, 'notaris_id');
+    }
+
+    public function landBank()
+    {
+        return $this->belongsTo(LandBank::class, 'land_bank_id');
     }
 }
