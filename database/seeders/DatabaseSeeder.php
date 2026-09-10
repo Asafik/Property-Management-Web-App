@@ -40,7 +40,9 @@ class DatabaseSeeder extends Seeder
             CompanyProfileSeeder::class,
             BankSeeder::class,
             CompanySettingSeeder::class,
-             PraLandbankDocumentSeeder::class,
+            NotarisSeeder::class,
+            MasterDokumenPerizinanSeeder::class,
+            PraLandbankDocumentSeeder::class,
         ]);
     }
 }

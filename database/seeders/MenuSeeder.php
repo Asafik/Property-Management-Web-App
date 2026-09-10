@@ -28,11 +28,13 @@ class MenuSeeder extends Seeder
         $legal          = Position::where('name', 'Kepala Legal')->first();
         $staffLegal     = Position::where('name', 'Staff Legal')->first();
         $staffKpr       = Position::where('name', 'Staff KPR')->orWhere('name', 'KPR')->first();
+        $keuanganStaff  = Position::where('name', 'Staff Keuangan')->first();
 
         // Role Groups
-        $allRoles       = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $legal?->id, $staffLegal?->id, $staffKpr?->id]));
+        $allRoles       = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $legal?->id, $staffLegal?->id, $staffKpr?->id, $keuanganStaff?->id]));
         $marketingRoles = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id]));
         $legalRoles     = array_values(array_filter([$admin?->id, $legal?->id, $staffLegal?->id]));
+        $landbankRoles  = array_values(array_filter([$admin?->id, $legal?->id, $staffLegal?->id, $keuanganStaff?->id]));
         $adminOnly      = array_values(array_filter([$admin?->id]));
         $kprTransaksiRoles = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $staffKpr?->id]));
 
@@ -77,19 +79,19 @@ class MenuSeeder extends Seeder
             'icon'  => 'mdi-office-building',
             'order' => 3
         ]);
-        $properti->positions()->attach($legalRoles);
+        $properti->positions()->attach($landbankRoles);
 
         Menu::create([
             'name'      => 'Semua Tanah Pra Land Bank',
             'route'     => 'pralandbank.all',
             'parent_id' => $properti->id
-        ])->positions()->attach($legalRoles);
+        ])->positions()->attach($landbankRoles);
 
         Menu::create([
             'name'      => 'Semua Tanah Pasca Land Bank',
             'route'     => 'properti-all',
             'parent_id' => $properti->id
-        ])->positions()->attach($legalRoles);
+        ])->positions()->attach($landbankRoles);
 
         Menu::create([
             'name'      => 'Tambah Kavling',
@@ -227,6 +229,12 @@ class MenuSeeder extends Seeder
             'parent_id' => $master->id
         ])->positions()->attach($kepalaLegalAndAdmin);
 
+        Menu::create([
+            'name'      => 'Data Notaris',
+            'route'     => 'notaris.index',
+            'parent_id' => $master->id
+        ])->positions()->attach(array_values(array_filter([$admin?->id, $marketing?->id, $legal?->id, $staffLegal?->id, $keuanganStaff?->id])));
+
         $masterMenus = [
             'promo.index'                => 'Promo',
             'company-profile.index'      => 'PT',
@@ -246,7 +254,7 @@ class MenuSeeder extends Seeder
         }
 
         // ================= 9. KEUANGAN =================
-        $keuanganRoles = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $legal?->id]));
+        $keuanganRoles = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $legal?->id, $keuanganStaff?->id]));
 
         $keuangan = Menu::create([
             'name'  => 'Keuangan',

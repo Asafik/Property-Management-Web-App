@@ -233,24 +233,94 @@
         }
 
         .btn-outline-purple {
-            background: rgba(154, 85, 255, 0.03) !important;
-            border: 1px solid #9a55ff !important;
-            color: #9a55ff !important;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
+            background: #fbf9ff !important;
+            border: 1.5px solid #9a55ff !important;
+            color: #7e22ce !important;
+            border-radius: 8px;
+            padding: 0.55rem 1.15rem;
             font-size: 0.85rem;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(154, 85, 255, 0.12);
+            transition: all 0.25s ease;
         }
 
         .btn-outline-purple:hover {
             background: #9a55ff !important;
             color: #ffffff !important;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.2) !important;
-            transform: translateY(-2px);
+            border-color: #9a55ff !important;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3) !important;
+            transform: translateY(-1px);
+        }
+
+        .btn-fase4-add {
+            background: linear-gradient(135deg, #9a55ff 0%, #7e22ce 100%) !important;
+            border: 1px solid #7e22ce !important;
+            color: #ffffff !important;
+            border-radius: 8px;
+            padding: 0.55rem 1.15rem;
+            font-size: 0.84rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 8px rgba(154, 85, 255, 0.35);
+            transition: all 0.25s ease;
+        }
+
+        .btn-fase4-add:hover {
+            background: linear-gradient(135deg, #8b3cf6 0%, #6b18b5 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 5px 14px rgba(154, 85, 255, 0.45) !important;
+            transform: translateY(-1px);
+        }
+
+        .btn-fase4-master {
+            background: #f3e8ff !important;
+            border: 1.5px solid #a855f7 !important;
+            color: #6b21a8 !important;
+            border-radius: 8px;
+            padding: 0.55rem 1.15rem;
+            font-size: 0.84rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 6px rgba(168, 85, 247, 0.18);
+            transition: all 0.25s ease;
+        }
+
+        .btn-fase4-master:hover {
+            background: #7e22ce !important;
+            color: #ffffff !important;
+            border-color: #7e22ce !important;
+            box-shadow: 0 4px 12px rgba(126, 34, 206, 0.3) !important;
+            transform: translateY(-1px);
+        }
+
+        .btn-fase4-template {
+            background: #f8fafc !important;
+            border: 1.5px solid #94a3b8 !important;
+            color: #1e293b !important;
+            border-radius: 8px;
+            padding: 0.55rem 1.15rem;
+            font-size: 0.84rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            transition: all 0.25s ease;
+        }
+
+        .btn-fase4-template:hover {
+            background: #e2e8f0 !important;
+            color: #0f172a !important;
+            border-color: #64748b !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+            transform: translateY(-1px);
         }
 
         /* Checkboxes (Sama seperti Tambah Properti) */
@@ -433,7 +503,7 @@
             font-size: 0.8rem;
             font-weight: 700;
             padding: 0.5rem 1rem;
-            border-radius: 30px;
+            border-radius: 6px;
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -610,7 +680,7 @@
             align-items: center;
             gap: 6px;
             padding: 0.35rem 0.75rem;
-            border-radius: 30px;
+            border-radius: 6px;
             font-size: 0.78rem;
             font-weight: 600;
         }
@@ -798,10 +868,20 @@
                 align-items: stretch !important;
                 gap: 0.75rem !important;
             }
-            .footer-action-row .btn,
-            .footer-action-row > div,
-            .footer-action-row > div > .btn {
+            .footer-action-row > div {
                 width: 100% !important;
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 0.5rem !important;
+            }
+            .footer-action-row .btn,
+            .footer-action-row > div > .btn {
+                flex: 1 1 100% !important;
+                width: 100% !important;
+                justify-content: center !important;
+                text-align: center !important;
+                padding: 0.65rem 1rem !important;
+                font-size: 0.85rem !important;
             }
         }
 
@@ -824,6 +904,27 @@
             }
             #mapFase2 {
                 height: 300px !important;
+            }
+            .footer-action-row {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 0.85rem !important;
+            }
+            .footer-action-row > div {
+                width: 100% !important;
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 0.65rem !important;
+            }
+            .footer-action-row .btn,
+            .footer-action-row > div > .btn {
+                flex: 1 1 calc(50% - 0.5rem) !important;
+                min-width: 150px !important;
+                justify-content: center !important;
+                text-align: center !important;
+                padding: 0.65rem 1rem !important;
+                font-size: 0.84rem !important;
+                white-space: normal !important;
             }
         }
 
@@ -849,6 +950,586 @@
             .calc-summary-table {
                 font-size: 0.85rem !important;
             }
+            .fase4-actions-top {
+                flex-wrap: wrap !important;
+                gap: 0.5rem !important;
+            }
+        }
+
+        /* ===== MODERN SEGMENTED TABS & BADGES (FASE 4) ===== */
+        .fase4-tab-wrapper {
+            background: #ffffff;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 10px !important;
+            transition: all 0.2s ease;
+        }
+
+        .fase4-tab-nav {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            background-color: #f1f5f9;
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            gap: 3px;
+        }
+
+        .fase4-tab-item {
+            border: none;
+            background: transparent;
+            color: #64748b;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 0.45rem 0.95rem;
+            border-radius: 6px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            white-space: nowrap;
+            text-decoration: none;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .fase4-tab-item i {
+            font-size: 0.95rem;
+            line-height: 1;
+        }
+
+        .fase4-tab-item:hover {
+            color: #9a55ff;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .fase4-tab-item.active {
+            background-color: #ffffff !important;
+            color: #7e22ce !important;
+            font-weight: 700 !important;
+            box-shadow: 0 2px 8px rgba(126, 34, 206, 0.12), 0 1px 3px rgba(0, 0, 0, 0.04);
+            transform: translateY(-1px);
+        }
+
+        .fase4-tab-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.15rem 0.5rem;
+            border-radius: 5px;
+            background-color: #e2e8f0;
+            color: #475569;
+            min-width: 22px;
+            line-height: 1.25;
+            transition: all 0.2s ease;
+        }
+
+        .fase4-tab-item.active .fase4-tab-count {
+            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            color: #ffffff !important;
+            box-shadow: 0 2px 6px rgba(154, 85, 255, 0.3);
+        }
+
+        /* ===== FASE 4 CARD MODERN ENHANCEMENT ===== */
+        .fase4-card-inner {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px !important;
+            padding: 1.1rem;
+            transition: all 0.22s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .fase4-card-inner:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .fase4-card-inner.is-final-goal {
+            border: 1.5px solid #22c55e !important;
+            background: linear-gradient(180deg, #ffffff 0%, #f7fee7 100%) !important;
+        }
+
+        .fase4-card-poin {
+            border-radius: 5px !important;
+            padding: 3.5px 7.5px !important;
+            font-size: 0.73rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.2px;
+            line-height: 1.2;
+        }
+
+        .fase4-badge-goal {
+            border-radius: 5px !important;
+            padding: 3.5px 7px !important;
+            font-size: 0.7rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.3px;
+            line-height: 1.2;
+        }
+
+        .badge-doc-status {
+            border-radius: 5px !important;
+            padding: 3.5px 8px !important;
+            font-size: 0.72rem !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.1px;
+            line-height: 1.2;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .fase4-badge-syarat {
+            border-radius: 4px !important;
+            padding: 2.5px 6px !important;
+            font-size: 0.68rem !important;
+            font-weight: 600 !important;
+            line-height: 1.2;
+        }
+
+        .fase4-card-title {
+            font-size: 0.88rem !important;
+            font-weight: 700 !important;
+            color: #1e293b !important;
+            line-height: 1.35 !important;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 2.4rem;
+            margin-bottom: 0.25rem !important;
+        }
+
+        .fase4-card-instansi {
+            font-size: 0.73rem;
+            color: #64748b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Container Key-Value Ringkasan */
+        .fase4-card-meta {
+            background-color: #f8fafc;
+            border: 1px solid #edf2f7;
+            border-radius: 6px;
+            padding: 0.55rem 0.75rem;
+            margin-bottom: 0.65rem;
+        }
+
+        .fase4-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.74rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .fase4-meta-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .fase4-meta-label {
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .fase4-meta-value {
+            font-weight: 600;
+            color: #1e293b;
+            text-align: right;
+        }
+
+        /* Box Prasyarat Berkas */
+        .fase4-syarat-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 0.6rem 0.75rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            margin-bottom: 0.65rem;
+            min-height: 95px;
+        }
+
+        .fase4-syarat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4.5px;
+            font-size: 0.72rem;
+            max-height: 105px;
+            overflow-y: auto;
+            padding-right: 2px;
+            margin-top: 0.35rem;
+        }
+
+        .fase4-syarat-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            line-height: 1.3;
+        }
+
+        .fase4-syarat-item i {
+            font-size: 0.85rem;
+            line-height: 1.1;
+            margin-top: 1px;
+            flex-shrink: 0;
+        }
+
+        /* File Upload / Preview Box */
+        .fase4-file-box {
+            border-radius: 6px;
+            padding: 0.55rem 0.75rem;
+            margin-bottom: 0.65rem;
+            margin-top: auto;
+            font-size: 0.74rem;
+            transition: all 0.2s ease;
+        }
+
+        /* Tombol Aksi Bawah */
+        .btn-fase4-card-edit {
+            background: #f5f3ff !important;
+            color: #7c3aed !important;
+            border: 1px solid #ddd6fe !important;
+            border-radius: 6px !important;
+            font-size: 0.76rem !important;
+            font-weight: 600 !important;
+            padding: 0.42rem 0.85rem !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .btn-fase4-card-edit:hover {
+            background: #7c3aed !important;
+            color: #ffffff !important;
+            border-color: #7c3aed !important;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25) !important;
+        }
+
+        .btn-fase4-card-delete {
+            background: #fef2f2 !important;
+            color: #ef4444 !important;
+            border: 1px solid #fecaca !important;
+            border-radius: 6px !important;
+            font-size: 0.85rem !important;
+            padding: 0.42rem 0.65rem !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .btn-fase4-card-delete:hover {
+            background: #ef4444 !important;
+            color: #ffffff !important;
+            border-color: #ef4444 !important;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25) !important;
+        }
+
+        @media (max-width: 767.98px) {
+            .fase4-tab-wrapper {
+                flex-direction: column;
+                align-items: stretch !important;
+                padding: 0.65rem !important;
+            }
+            .fase4-tab-nav {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                border-radius: 8px;
+                padding: 4px;
+                gap: 4px;
+            }
+            .fase4-tab-item {
+                justify-content: center;
+                border-radius: 6px;
+                padding: 0.5rem 0.5rem;
+                font-size: 0.76rem;
+                gap: 4px;
+            }
+            .fase4-search-wrapper {
+                width: 100% !important;
+            }
+        }
+
+        /* ===== MODAL FASE 4 FORM MODERN STYLING ===== */
+        .fase4-modal-section-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fase4-modal-section-title {
+            font-size: 0.84rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .fase4-form-input {
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            font-size: 0.85rem !important;
+            color: #1e293b !important;
+            padding: 0.48rem 0.75rem !important;
+            transition: all 0.2s ease !important;
+            background-color: #ffffff !important;
+        }
+
+        .fase4-form-input:focus {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+            background-color: #ffffff !important;
+            outline: none !important;
+        }
+
+        .fase4-form-label {
+            font-size: 0.76rem !important;
+            font-weight: 600 !important;
+            color: #334155 !important;
+            margin-bottom: 0.35rem !important;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .fase4-upload-dropzone {
+            background: #fafbfe;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 1.15rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .fase4-upload-dropzone:hover {
+            border-color: #9a55ff;
+            background: #f8f6ff;
+        }
+
+        /* ===== MODERN CHECKLIST & MASTER PICKER UI ===== */
+        .custom-picker-chk {
+            width: 20px !important;
+            height: 20px !important;
+            min-width: 20px !important;
+            cursor: pointer;
+            border: 2px solid #cbd5e1 !important;
+            border-radius: 5px !important;
+            background-color: #ffffff;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            margin: 0 !important;
+            display: inline-block;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+
+        .custom-picker-chk:hover {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+        }
+
+        .custom-picker-chk:checked {
+            background-color: #9a55ff !important;
+            border-color: #9a55ff !important;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M5 10l3 3l7-7'/%3e%3c/svg%3e") !important;
+            box-shadow: 0 2px 6px rgba(154, 85, 255, 0.4) !important;
+        }
+
+        .custom-picker-chk:disabled {
+            background-color: #f1f5f9 !important;
+            border-color: #e2e8f0 !important;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .master-picker-card {
+            border: 1.5px solid #e2e8f0 !important;
+            border-radius: 10px !important;
+            background-color: #ffffff;
+            transition: all 0.22s ease-in-out;
+        }
+
+        .master-picker-card:hover:not(.is-disabled) {
+            border-color: rgba(154, 85, 255, 0.5) !important;
+            box-shadow: 0 4px 16px rgba(154, 85, 255, 0.08) !important;
+            transform: translateY(-2px);
+        }
+
+        .master-picker-card.is-checked {
+            border-color: #9a55ff !important;
+            background-color: #fcfaff !important;
+            box-shadow: 0 4px 16px rgba(154, 85, 255, 0.14) !important;
+        }
+
+        .master-picker-card.is-disabled {
+            background-color: #f8fafc !important;
+            border-color: #e2e8f0 !important;
+            opacity: 0.75;
+            cursor: default !important;
+        }
+
+        .select-all-box {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px !important;
+            padding: 0.45rem 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .select-all-box:hover {
+            border-color: #9a55ff;
+            background: #fbf9ff;
+        }
+
+        /* Modern Search Input & Category Dropdown */
+        .master-search-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .master-search-icon {
+            position: absolute;
+            left: 14px;
+            font-size: 1.15rem;
+            color: #9a55ff;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .master-search-input {
+            height: 42px !important;
+            padding-left: 42px !important;
+            padding-right: 14px !important;
+            font-size: 0.88rem !important;
+            border-radius: 8px !important;
+            border: 1.5px solid #e2e8f0 !important;
+            background-color: #f8fafc !important;
+            color: #1e293b !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .master-search-input:focus {
+            background-color: #ffffff !important;
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+            outline: none !important;
+        }
+
+        .master-category-select {
+            height: 42px !important;
+            border-radius: 8px !important;
+            border: 1.5px solid #e2e8f0 !important;
+            background-color: #f8fafc !important;
+            font-size: 0.88rem !important;
+            color: #1e293b !important;
+            font-weight: 500 !important;
+            padding-left: 14px !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .master-category-select:focus {
+            background-color: #ffffff !important;
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+            outline: none !important;
+        }
+
+        /* Modal Footer Buttons */
+        .btn-master-cancel {
+            background-color: #f1f5f9 !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #475569 !important;
+            font-size: 0.88rem !important;
+            font-weight: 600 !important;
+            padding: 0.58rem 1.35rem !important;
+            border-radius: 8px !important;
+            transition: all 0.2s ease !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            line-height: 1.4 !important;
+        }
+
+        .btn-master-cancel:hover {
+            background-color: #e2e8f0 !important;
+            color: #0f172a !important;
+            transform: translateY(-1px);
+        }
+
+        .btn-master-submit {
+            background: linear-gradient(135deg, #9a55ff 0%, #7e22ce 100%) !important;
+            border: none !important;
+            color: #ffffff !important;
+            font-size: 0.88rem !important;
+            font-weight: 700 !important;
+            padding: 0.58rem 1.55rem !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3) !important;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            line-height: 1.4 !important;
+        }
+
+        .btn-master-submit:hover:not(:disabled) {
+            box-shadow: 0 6px 22px rgba(154, 85, 255, 0.5) !important;
+            transform: translateY(-2px);
+            color: #ffffff !important;
+        }
+
+        .btn-master-submit:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-master-submit:disabled {
+            background: #cbd5e1 !important;
+            color: #64748b !important;
+            box-shadow: none !important;
+            cursor: not-allowed;
+            opacity: 0.75;
+            transform: none !important;
+        }
+
+        /* Grid Layout for Master Document Cards to eliminate uneven row spacing */
+        #masterPickerListContainer {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 12px !important;
+            margin: 0 !important;
+        }
+
+        @media (max-width: 767.98px) {
+            #masterPickerListContainer {
+                grid-template-columns: 1fr !important;
+                gap: 10px !important;
+            }
+        }
+
+        .master-picker-item {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
         }
     </style>
 
@@ -2614,7 +3295,7 @@
 
                                             <div class="row g-3">
                                                 <!-- Tipe Pembayaran Realisasi -->
-                                                <div class="col-12 col-sm-6 col-lg-3">
+                                                <div class="col-12 col-sm-6 col-xl-3">
                                                     <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                         Tipe Pembayaran <span class="text-danger">*</span>
                                                     </label>
@@ -2625,7 +3306,7 @@
                                                 </div>
 
                                                 <!-- Nominal Pelunasan (Otomatis Ikut Grand Total) -->
-                                                <div class="col-12 col-sm-6 col-lg-3">
+                                                <div class="col-12 col-sm-6 col-xl-3">
                                                     <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                         Nominal Pelunasan (Grand Total) <span class="text-danger">*</span>
                                                     </label>
@@ -2636,7 +3317,7 @@
                                                 </div>
 
                                                 <!-- Tanggal Pelunasan -->
-                                                <div class="col-12 col-sm-6 col-lg-3">
+                                                <div class="col-12 col-sm-6 col-xl-3">
                                                     <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                         Tanggal Realisasi / Bayar <span class="text-danger">*</span>
                                                     </label>
@@ -2646,7 +3327,7 @@
                                                 </div>
 
                                                 <!-- Status Pembayaran -->
-                                                <div class="col-12 col-sm-6 col-lg-3">
+                                                <div class="col-12 col-sm-6 col-xl-3">
                                                     <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                         Status Pembayaran <span class="text-danger">*</span>
                                                     </label>
@@ -2660,7 +3341,7 @@
                                             <!-- DETAIL TRANSFER BANK CONTAINER (MUNCUL JIKA TRANSFER) -->
                                             <div id="cash_bank_details_container" class="row g-3 mt-1 pt-2 border-top" style="{{ ($cashPayment && $cashPayment->payment_type == 'cash') ? 'display: none;' : '' }}">
                                                 <!-- Nama Bank -->
-                                                <div class="col-12 col-sm-6 col-lg-4">
+                                                <div class="col-12 col-sm-6 col-md-4">
                                                     <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                         Nama Bank Penerima / Tujuan
                                                     </label>
@@ -2671,7 +3352,7 @@
                                                 </div>
 
                                                 <!-- Nomor Rekening -->
-                                                <div class="col-12 col-sm-6 col-lg-4">
+                                                <div class="col-12 col-sm-6 col-md-4">
                                                     <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                         Nomor Rekening Penerima
                                                     </label>
@@ -2682,7 +3363,7 @@
                                                 </div>
 
                                                 <!-- Atas Nama Rekening -->
-                                                <div class="col-12 col-sm-6 col-lg-4">
+                                                <div class="col-12 col-sm-6 col-md-4">
                                                     <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                         Atas Nama Rekening (A/N)
                                                     </label>
@@ -2893,22 +3574,22 @@
                                     Tahapan pengurusan dokumen legalitas wilayah (Poin 7–17), perizinan teknis BPN, perizinan PKKPR OSS RBA, validasi perpajakan, form dokumen dinamis hingga penerbitan SHGB Induk an. PT dan migrasi ke Pasca Land Bank.
                                 </small>
                             </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <button type="button" class="btn btn-sm btn-gradient-primary py-1.5 px-3 shadow-sm d-inline-flex align-items-center gap-1.5" onclick="openFase4DocModal()" style="font-size: 0.82rem; font-weight: 600;">
-                                    <i class="mdi mdi-plus-circle"></i> + Tambah Dokumen Lapangan
+                            <div class="d-flex flex-wrap align-items-center gap-2 fase4-actions-top">
+                                <button type="button" class="btn btn-sm btn-fase4-add shadow-sm" onclick="openFase4DocModal()">
+                                    <i class="mdi mdi-plus-circle-outline fs-6"></i> <span>+ Tambah Dokumen Lapangan</span>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-purple py-1.5 px-2.5 shadow-sm d-inline-flex align-items-center gap-1.5" onclick="openMasterPickerModal()" style="font-size: 0.82rem; font-weight: 600;">
-                                    <i class="mdi mdi-file-certificate-outline"></i> + Pilih dari Master Perizinan
+                                <button type="button" class="btn btn-sm btn-fase4-master shadow-sm" onclick="openMasterPickerModal()">
+                                    <i class="mdi mdi-file-certificate-outline fs-6"></i> <span>+ Pilih dari Master Perizinan</span>
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary py-1.5 px-2 shadow-sm d-inline-flex align-items-center gap-1" onclick="loadFase4DefaultTemplate()" style="font-size: 0.8rem; font-weight: 600;" title="Muat paket template default">
-                                    <i class="mdi mdi-clipboard-text-play-outline"></i> Template (Poin 7-17)
+                                <button type="button" class="btn btn-sm btn-fase4-template shadow-sm" onclick="loadFase4DefaultTemplate()" title="Muat paket template default">
+                                    <i class="mdi mdi-clipboard-text-play-outline fs-6"></i> <span>Gunakan Template (Poin 7–17)</span>
                                 </button>
                                 @if($land && $land->land_bank_id)
-                                    <a href="{{ route('properti-all') }}" class="btn btn-sm btn-success text-white py-1.5 px-3 shadow-sm d-inline-flex align-items-center gap-1" style="font-size: 0.82rem; font-weight: 600;">
+                                    <a href="{{ route('properti-all') }}" class="btn btn-sm btn-success text-white py-1.5 px-3 rounded-2 shadow-sm d-inline-flex align-items-center gap-1" style="font-size: 0.82rem; font-weight: 600;">
                                         <i class="mdi mdi-check-decagram"></i> Lahan Telah Masuk Pasca Land Bank #{{ $land->land_bank_id }}
                                     </a>
                                 @else
-                                    <span class="badge {{ ($land && $land->hgb_process_status == 'completed_hgb_induk') ? 'bg-success' : 'bg-soft-primary text-primary border border-primary-subtle' }} py-1.5 px-3" style="font-size: 0.82rem; font-weight: 600;">
+                                    <span class="badge {{ ($land && $land->hgb_process_status == 'completed_hgb_induk') ? 'bg-success' : 'bg-soft-primary text-primary border border-primary-subtle' }} py-1.5 px-3 rounded-2" style="font-size: 0.82rem; font-weight: 600;">
                                         <i class="mdi {{ ($land && $land->hgb_process_status == 'completed_hgb_induk') ? 'mdi-check-all' : 'mdi-progress-clock' }} me-1"></i>
                                         {{ ($land && $land->hgb_process_status == 'completed_hgb_induk') ? 'SHGB Induk Terbit' : 'Dalam Proses Pengindukan' }}
                                     </span>
@@ -2955,7 +3636,7 @@
                                         </div>
                                         <div class="col-12 col-md-3 text-md-end">
                                             <small class="text-muted d-block" style="font-size: 0.74rem;">Total Luas Lahan Awal</small>
-                                            <span class="badge bg-purple text-white px-2.5 py-1.5" style="background: #9a55ff; font-size: 0.85rem;">{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</span>
+                                            <span class="badge bg-purple text-white px-2.5 py-1.5 rounded-2" style="background: #9a55ff; font-size: 0.85rem;">{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</span>
                                         </div>
                                     </div>
                                 </div>
@@ -2996,18 +3677,34 @@
                                 </div>
                             </div>
 
-                            <!-- FILTER & SEARCH BAR -->
-                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <button type="button" class="btn btn-primary active fase4-filter-btn" onclick="filterFase4Docs('all', this)">Semua (<span id="count_all">{{ $totalWorkflowDocs }}</span>)</button>
-                                    <button type="button" class="btn btn-outline-secondary fase4-filter-btn" onclick="filterFase4Docs('terbit', this)">Selesai / Terbit (<span id="count_terbit">{{ $terbitCount }}</span>)</button>
-                                    <button type="button" class="btn btn-outline-secondary fase4-filter-btn" onclick="filterFase4Docs('proses', this)">Proses (<span id="count_proses">{{ $prosesCount }}</span>)</button>
-                                    <button type="button" class="btn btn-outline-secondary fase4-filter-btn" onclick="filterFase4Docs('belum', this)">Belum Ada (<span id="count_belum">{{ $belumCount }}</span>)</button>
+                            <!-- MODERN SEGMENTED FILTER TABS & SEARCH BAR -->
+                            <div class="fase4-tab-wrapper d-flex flex-wrap justify-content-between align-items-center gap-2.5 mb-4 p-2.5 bg-white rounded-3 border shadow-sm">
+                                <div class="fase4-tab-nav" role="tablist">
+                                    <button type="button" class="fase4-tab-item active fase4-filter-btn" data-status="all" onclick="filterFase4Docs('all', this)">
+                                        <i class="mdi mdi-view-grid-outline"></i>
+                                        <span>Semua Dokumen</span>
+                                        <span class="fase4-tab-count" id="count_all">{{ $totalWorkflowDocs }}</span>
+                                    </button>
+                                    <button type="button" class="fase4-tab-item fase4-filter-btn" data-status="terbit" onclick="filterFase4Docs('terbit', this)">
+                                        <i class="mdi mdi-check-decagram text-success"></i>
+                                        <span>Selesai / Terbit</span>
+                                        <span class="fase4-tab-count" id="count_terbit">{{ $terbitCount }}</span>
+                                    </button>
+                                    <button type="button" class="fase4-tab-item fase4-filter-btn" data-status="proses" onclick="filterFase4Docs('proses', this)">
+                                        <i class="mdi mdi-progress-clock text-warning"></i>
+                                        <span>Dalam Proses</span>
+                                        <span class="fase4-tab-count" id="count_proses">{{ $prosesCount }}</span>
+                                    </button>
+                                    <button type="button" class="fase4-tab-item fase4-filter-btn" data-status="belum" onclick="filterFase4Docs('belum', this)">
+                                        <i class="mdi mdi-alert-circle-outline text-secondary"></i>
+                                        <span>Belum Ada</span>
+                                        <span class="fase4-tab-count" id="count_belum">{{ $belumCount }}</span>
+                                    </button>
                                 </div>
-                                <div style="max-width: 260px; width: 100%;">
+                                <div class="fase4-search-wrapper" style="min-width: 260px;">
                                     <div class="input-group input-group-sm">
-                                        <span class="input-group-text bg-white border-end-0"><i class="mdi mdi-magnify text-muted"></i></span>
-                                        <input type="text" class="form-control border-start-0" id="searchFase4Input" placeholder="Cari dokumen / nomor..." onkeyup="searchFase4Docs(this.value)">
+                                        <span class="input-group-text bg-light border-end-0 text-muted" style="border-radius: 6px 0 0 6px;"><i class="mdi mdi-magnify"></i></span>
+                                        <input type="text" class="form-control border-start-0 bg-light" id="searchFase4Input" placeholder="Cari nama izin, instansi, nomor..." onkeyup="searchFase4Docs(this.value)" style="border-radius: 0 6px 6px 0;">
                                     </div>
                                 </div>
                             </div>
@@ -3032,11 +3729,11 @@
                                         $luas = $doc['luas'] ?? null;
                                         $notes = $doc['notes'] ?? '';
 
-                                        $badgeStatusClass = match($status) {
-                                            'terbit', 'selesai' => 'bg-success text-white',
-                                            'proses' => 'bg-warning text-dark',
-                                            'ditolak' => 'bg-danger text-white',
-                                            default => 'bg-light text-muted border',
+                                        $badgeStatusStyle = match($status) {
+                                            'terbit', 'selesai' => 'background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0;',
+                                            'proses' => 'background: #fef3c7; color: #b45309; border: 1px solid #fde68a;',
+                                            'ditolak' => 'background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca;',
+                                            default => 'background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;',
                                         };
                                         $badgeStatusText = match($status) {
                                             'terbit', 'selesai' => 'Selesai / Terbit',
@@ -3044,6 +3741,34 @@
                                             'ditolak' => 'Ditolak / Revisi',
                                             default => 'Belum Ada',
                                         };
+                                        $badgeStatusIcon = match($status) {
+                                            'terbit', 'selesai' => 'mdi-check-circle',
+                                            'proses' => 'mdi-clock-fast',
+                                            'ditolak' => 'mdi-close-circle',
+                                            default => 'mdi-minus-circle-outline',
+                                        };
+
+                                        $syaratDokumen = $doc['syarat_dokumen'] ?? '';
+                                        $syaratItems = $doc['syarat_items'] ?? [];
+                                        $syaratChecklist = (array)($doc['syarat_checklist'] ?? []);
+
+                                        if (empty($syaratItems) && !empty($syaratDokumen)) {
+                                            $lines = preg_split('/[\r\n]+/', $syaratDokumen);
+                                            foreach ($lines as $line) {
+                                                $clean = trim(preg_replace('/^[•\-\*\d+\.]\s*/u', '', trim($line)));
+                                                if (!empty($clean)) {
+                                                    $syaratItems[] = $clean;
+                                                }
+                                            }
+                                        }
+                                        $totalSyarat = count($syaratItems);
+                                        $checkedCount = 0;
+                                        foreach ($syaratItems as $si) {
+                                            if (in_array($si, $syaratChecklist)) {
+                                                $checkedCount++;
+                                            }
+                                        }
+                                        $isAllSyaratReady = ($totalSyarat > 0 && $checkedCount >= $totalSyarat);
                                     @endphp
                                     <div class="col-12 col-md-6 col-lg-4 fase4-doc-card" 
                                          id="fase4_doc_card_{{ $docId }}"
@@ -3059,130 +3784,121 @@
                                          data-status="{{ $status }}" 
                                          data-istemplate="{{ $isTemplate ? '1' : '0' }}"
                                          data-search="{{ strtolower($docName . ' ' . $instansi . ' ' . $docNumber . ' ' . $poinLabel . ' ' . $notes) }}">
-                                        <div class="card h-100 border rounded-3 p-3 shadow-sm d-flex flex-column {{ $isFinalGoal ? 'border-success bg-soft-success bg-opacity-25' : 'bg-white' }}" style="{{ $isFinalGoal ? 'border-width: 2px !important;' : '' }}">
+                                        
+                                        <div class="fase4-card-inner {{ $isFinalGoal ? 'is-final-goal' : '' }}">
                                             
-                                            <!-- CARD HEADER -->
-                                            <div class="d-flex justify-content-between align-items-start mb-2 pb-2 border-bottom">
-                                                <div class="overflow-hidden me-2">
-                                                    <div class="d-flex align-items-center gap-1.5 mb-1">
-                                                        <span class="badge {{ $isFinalGoal ? 'bg-success' : 'bg-primary' }} rounded-pill fase4-card-poin" style="font-size: 9.5px;">{{ $poinLabel }}</span>
-                                                        @if($isFinalGoal)
-                                                            <span class="badge bg-warning text-dark rounded-pill" style="font-size: 9.5px;">GOL AKHIR</span>
-                                                        @endif
-                                                    </div>
-                                                    <h6 class="fw-bold text-dark mb-0 text-truncate fase4-card-title" style="font-size: 0.88rem;" title="{{ $docName }}">
-                                                        {{ $docName }}
-                                                    </h6>
-                                                    <small class="text-muted d-block text-truncate fase4-card-instansi" style="font-size: 0.72rem;">
-                                                        <i class="mdi mdi-office-building text-primary me-1"></i>{{ $instansi }}
-                                                    </small>
+                                            <!-- CARD HEADER (POIN & STATUS) -->
+                                            <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                                                <div class="d-flex align-items-center gap-1.5">
+                                                    <span class="badge {{ $isFinalGoal ? 'bg-success' : 'bg-primary' }} fase4-card-poin">{{ $poinLabel }}</span>
+                                                    @if($isFinalGoal)
+                                                        <span class="badge bg-warning text-dark fase4-badge-goal">GOL AKHIR</span>
+                                                    @endif
                                                 </div>
-                                                <span class="badge {{ $badgeStatusClass }} flex-shrink-0 badge-doc-status" style="font-size: 10px; font-weight: 600;">
-                                                    {{ $badgeStatusText }}
+                                                <span class="badge badge-doc-status" style="{{ $badgeStatusStyle }}">
+                                                    <i class="mdi {{ $badgeStatusIcon }}"></i> {{ $badgeStatusText }}
                                                 </span>
                                             </div>
 
-                                            <!-- CARD BODY -->
-                                            <div class="mb-3 flex-grow-1" style="font-size: 0.78rem;">
-                                                <div class="row g-1 mb-1.5">
-                                                    <div class="col-6 text-muted">No. Dokumen/Reg:</div>
-                                                    <div class="col-6 text-end fw-semibold text-dark text-truncate doc-card-number" title="{{ $docNumber ?: '-' }}">{{ $docNumber ?: '-' }}</div>
+                                            <!-- CARD TITLE & INSTANSI -->
+                                            <div class="mb-2">
+                                                <h6 class="fase4-card-title mb-1" title="{{ $docName }}">
+                                                    {{ $docName }}
+                                                </h6>
+                                                <small class="fase4-card-instansi d-block" title="{{ $instansi }}">
+                                                    <i class="mdi mdi-office-building text-primary me-1"></i>{{ $instansi }}
+                                                </small>
+                                            </div>
+
+                                            <!-- META INFO PANEL (No Reg, Tanggal, Nominal, Luas) -->
+                                            <div class="fase4-card-meta">
+                                                <div class="fase4-meta-row">
+                                                    <span class="fase4-meta-label"><i class="mdi mdi-pound text-muted"></i>No. Dok/Reg:</span>
+                                                    <span class="fase4-meta-value text-truncate doc-card-number" style="max-width: 55%;" title="{{ $docNumber ?: '-' }}">{{ $docNumber ?: '-' }}</span>
                                                 </div>
-                                                <div class="row g-1 mb-1.5">
-                                                    <div class="col-6 text-muted">Tanggal:</div>
-                                                    <div class="col-6 text-end fw-semibold text-dark doc-card-date">{{ $docDateDisplay }}</div>
+                                                <div class="fase4-meta-row">
+                                                    <span class="fase4-meta-label"><i class="mdi mdi-calendar-blank-outline text-muted"></i>Tanggal:</span>
+                                                    <span class="fase4-meta-value doc-card-date">{{ $docDateDisplay }}</span>
                                                 </div>
-                                                @if(!empty($nominal))
-                                                    <div class="row g-1 mb-1.5">
-                                                        <div class="col-6 text-muted">Nominal:</div>
-                                                        <div class="col-6 text-end fw-semibold text-primary">Rp {{ number_format($nominal, 0, ',', '.') }}</div>
-                                                    </div>
-                                                @endif
-                                                @if(!empty($luas))
-                                                    <div class="row g-1 mb-1.5">
-                                                        <div class="col-6 text-muted">Luas Hasil Ukur:</div>
-                                                        <div class="col-6 text-end fw-semibold text-primary">{{ number_format($luas, 0, ',', '.') }} m²</div>
-                                                    </div>
-                                                @endif
-                                                @if(!empty($notes))
-                                                    <div class="p-1.5 rounded-2 bg-light border text-muted text-truncate mt-1 doc-card-notes" style="font-size: 0.72rem;" title="{{ $notes }}">
-                                                        <i class="mdi mdi-information-outline me-1"></i>{{ $notes }}
-                                                    </div>
-                                                @endif
-
-                                                @php
-                                                    $syaratDokumen = $doc['syarat_dokumen'] ?? '';
-                                                    $syaratItems = $doc['syarat_items'] ?? [];
-                                                    $syaratChecklist = (array)($doc['syarat_checklist'] ?? []);
-
-                                                    if (empty($syaratItems) && !empty($syaratDokumen)) {
-                                                        $lines = preg_split('/[\r\n]+/', $syaratDokumen);
-                                                        foreach ($lines as $line) {
-                                                            $clean = trim(preg_replace('/^[•\-\*\d+\.]\s*/u', '', trim($line)));
-                                                            if (!empty($clean)) {
-                                                                $syaratItems[] = $clean;
-                                                            }
-                                                        }
-                                                    }
-                                                    $totalSyarat = count($syaratItems);
-                                                    $checkedCount = 0;
-                                                    foreach ($syaratItems as $si) {
-                                                        if (in_array($si, $syaratChecklist)) {
-                                                            $checkedCount++;
-                                                        }
-                                                    }
-                                                    $isAllSyaratReady = ($totalSyarat > 0 && $checkedCount >= $totalSyarat);
-                                                @endphp
-
-                                                @if($totalSyarat > 0)
-                                                    <div class="mt-2 p-2 rounded-2 border {{ $isAllSyaratReady ? 'bg-success bg-opacity-10 border-success border-opacity-25' : 'bg-light' }}">
-                                                        <div class="d-flex align-items-center justify-content-between mb-1">
-                                                            <span class="fw-bold" style="font-size: 0.73rem; color: {{ $isAllSyaratReady ? '#166534' : '#475569' }};">
-                                                                <i class="mdi {{ $isAllSyaratReady ? 'mdi-checkbox-marked-circle text-success' : 'mdi-format-list-checks text-primary' }} me-1"></i>
-                                                                Prasyarat Berkas:
+                                                @if(!empty($nominal) || !empty($luas))
+                                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 pt-1.5 mt-1.5 border-top">
+                                                        @if(!empty($nominal))
+                                                            <span class="badge rounded-1 px-2 py-1" style="background: rgba(154, 85, 255, 0.1); color: #7e22ce; font-size: 0.72rem; font-weight: 600;">
+                                                                <i class="mdi mdi-cash-multiple me-1"></i>Rp {{ number_format($nominal, 0, ',', '.') }}
                                                             </span>
-                                                            <span class="badge {{ $isAllSyaratReady ? 'bg-success text-white' : ($checkedCount > 0 ? 'bg-warning text-dark' : 'bg-secondary text-white') }}" style="font-size: 0.68rem;">
-                                                                {{ $checkedCount }}/{{ $totalSyarat }} Siap
+                                                        @endif
+                                                        @if(!empty($luas))
+                                                            <span class="badge rounded-1 px-2 py-1" style="background: rgba(14, 165, 233, 0.1); color: #0369a1; font-size: 0.72rem; font-weight: 600;">
+                                                                <i class="mdi mdi-texture-box me-1"></i>{{ number_format($luas, 0, ',', '.') }} m²
                                                             </span>
-                                                        </div>
-                                                        <div class="d-flex flex-column gap-1" style="font-size: 0.71rem; max-height: 95px; overflow-y: auto;">
-                                                            @foreach($syaratItems as $sItem)
-                                                                @php $isItemChecked = in_array($sItem, $syaratChecklist); @endphp
-                                                                <div class="d-flex align-items-start gap-1 {{ $isItemChecked ? 'text-success fw-semibold' : 'text-muted' }}">
-                                                                    <i class="mdi {{ $isItemChecked ? 'mdi-check-circle text-success' : 'mdi-checkbox-blank-circle-outline text-muted' }}" style="font-size: 0.78rem; margin-top: 1px;"></i>
-                                                                    <span class="text-truncate" title="{{ $sItem }}">{{ $sItem }}</span>
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
+                                                        @endif
                                                     </div>
                                                 @endif
                                             </div>
 
-                                            <!-- FILE PREVIEW & UPLOAD -->
-                                            <div class="p-2 rounded-2 mb-2 {{ $filePath ? 'bg-success bg-opacity-10 border border-success border-opacity-25' : 'bg-light border' }} doc-card-file-box">
+                                            @if(!empty($notes))
+                                                <div class="p-1.5 rounded-2 bg-light border text-muted text-truncate mb-2 doc-card-notes" style="font-size: 0.72rem;" title="{{ $notes }}">
+                                                    <i class="mdi mdi-information-outline me-1 text-primary"></i>{{ $notes }}
+                                                </div>
+                                            @endif
+
+                                            <!-- PRASYARAT BERKAS (Flex-grow to balance height) -->
+                                            <div class="fase4-syarat-box">
+                                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                                    <span class="fw-bold" style="font-size: 0.73rem; color: {{ $isAllSyaratReady ? '#166534' : '#475569' }};">
+                                                        <i class="mdi {{ $isAllSyaratReady ? 'mdi-checkbox-marked-circle text-success' : 'mdi-format-list-checks text-primary' }} me-1"></i>
+                                                        Prasyarat Berkas:
+                                                    </span>
+                                                    <span class="badge {{ $isAllSyaratReady ? 'bg-success text-white' : ($checkedCount > 0 ? 'bg-warning text-dark' : 'bg-secondary text-white') }} fase4-badge-syarat">
+                                                        {{ $checkedCount }}/{{ $totalSyarat }} Siap
+                                                    </span>
+                                                </div>
+
+                                                @if($totalSyarat > 0)
+                                                    <div class="fase4-syarat-list">
+                                                        @foreach($syaratItems as $sItem)
+                                                            @php $isItemChecked = in_array($sItem, $syaratChecklist); @endphp
+                                                            <div class="fase4-syarat-item {{ $isItemChecked ? 'text-success fw-semibold' : 'text-muted' }}">
+                                                                <i class="mdi {{ $isItemChecked ? 'mdi-check-circle text-success' : 'mdi-checkbox-blank-circle-outline text-muted' }}"></i>
+                                                                <span class="text-truncate" title="{{ $sItem }}">{{ $sItem }}</span>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @else
+                                                    <div class="d-flex align-items-center justify-content-center text-muted flex-grow-1" style="font-size: 0.72rem; min-height: 45px;">
+                                                        <span class="fst-italic opacity-75">Tidak ada prasyarat berkas khusus</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <!-- FILE STATUS & PREVIEW BOX -->
+                                            <div class="fase4-file-box {{ $filePath ? 'bg-success bg-opacity-10 border border-success border-opacity-25' : 'bg-light border' }} doc-card-file-box">
                                                 @if($filePath)
                                                     <div class="d-flex align-items-center justify-content-between">
-                                                        <div class="text-truncate me-2" style="font-size: 0.76rem;">
-                                                            <i class="mdi mdi-file-check text-success me-1"></i><span class="fw-semibold text-dark">{{ basename($filePath) }}</span>
+                                                        <div class="text-truncate me-2" style="font-size: 0.75rem;">
+                                                            <i class="mdi mdi-file-check text-success me-1 fs-6"></i><span class="fw-semibold text-dark">{{ basename($filePath) }}</span>
                                                         </div>
-                                                        <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" data-ext="{{ pathinfo($filePath, PATHINFO_EXTENSION) }}" data-label="{{ $docName }}" style="font-size: 0.72rem;">
+                                                        <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 rounded-2 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" data-ext="{{ pathinfo($filePath, PATHINFO_EXTENSION) }}" data-label="{{ $docName }}" style="font-size: 0.72rem; font-weight: 600;">
                                                             <i class="mdi mdi-eye me-1"></i>Lihat
                                                         </button>
                                                     </div>
                                                 @else
                                                     <div class="d-flex align-items-center justify-content-between text-muted" style="font-size: 0.74rem;">
-                                                        <span><i class="mdi mdi-file-outline me-1"></i>Berkas belum diunggah</span>
+                                                        <span><i class="mdi mdi-cloud-upload-outline me-1 text-secondary"></i>Berkas belum diunggah</span>
+                                                        <span class="text-primary fw-semibold" role="button" onclick="editFase4Doc('{{ $docId }}')" style="font-size: 0.71rem; cursor: pointer;">
+                                                            <i class="mdi mdi-upload me-0.5"></i>Upload
+                                                        </span>
                                                     </div>
                                                 @endif
                                             </div>
 
                                             <!-- CARD ACTION FOOTER -->
-                                            <div class="d-flex align-items-center justify-content-between pt-2 border-top gap-1">
-                                                <button type="button" class="btn btn-xs btn-outline-primary py-1 px-2.5 d-inline-flex align-items-center gap-1" onclick="editFase4Doc('{{ $docId }}')" style="font-size: 0.74rem;">
-                                                    <i class="mdi mdi-pencil-outline"></i> Edit & Upload
+                                            <div class="d-flex align-items-center justify-content-between pt-2.5 border-top gap-2">
+                                                <button type="button" class="btn btn-sm btn-fase4-card-edit d-inline-flex align-items-center justify-content-center gap-1.5 flex-grow-1" onclick="editFase4Doc('{{ $docId }}')">
+                                                    <i class="mdi mdi-pencil-box-outline"></i> <span>Edit & Upload</span>
                                                 </button>
-                                                <button type="button" class="btn btn-xs btn-outline-danger py-1 px-2 border-0" onclick="deleteFase4Doc('{{ $docId }}', '{{ addslashes($docName) }}')" title="Hapus Dokumen">
-                                                    <i class="mdi mdi-delete-outline fs-6"></i>
+                                                <button type="button" class="btn btn-sm btn-fase4-card-delete d-inline-flex align-items-center justify-content-center" onclick="deleteFase4Doc('{{ $docId }}', '{{ addslashes($docName) }}')" title="Hapus Dokumen">
+                                                    <i class="mdi mdi-trash-can-outline"></i>
                                                 </button>
                                             </div>
 
@@ -3199,14 +3915,14 @@
                                                 Dokumen Fase 4 dibuat fleksibel & dinamis sesuai kebutuhan riil di lapangan. Anda dapat menambahkan perizinan/surat satu per satu, atau gunakan template standar legalitas bila diperlukan.
                                             </p>
                                             <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
-                                                <button type="button" class="btn btn-sm btn-gradient-primary px-3 py-2 fw-bold shadow-sm d-inline-flex align-items-center gap-1.5" onclick="openFase4DocModal()">
-                                                    <i class="mdi mdi-plus-circle"></i> + Tambah Dokumen Lapangan
+                                                <button type="button" class="btn btn-sm btn-fase4-add px-3 py-2 fw-bold shadow-sm" onclick="openFase4DocModal()">
+                                                    <i class="mdi mdi-plus-circle-outline fs-6"></i> <span>+ Tambah Dokumen Lapangan</span>
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-outline-purple px-3 py-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-1.5" onclick="openMasterPickerModal()">
-                                                    <i class="mdi mdi-file-certificate-outline"></i> + Pilih dari Master Perizinan
+                                                <button type="button" class="btn btn-sm btn-fase4-master px-3 py-2 fw-semibold shadow-sm" onclick="openMasterPickerModal()">
+                                                    <i class="mdi mdi-file-certificate-outline fs-6"></i> <span>+ Pilih dari Master Perizinan</span>
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1.5" onclick="loadFase4DefaultTemplate()">
-                                                    <i class="mdi mdi-clipboard-text-play-outline"></i> Gunakan Template Standar (Poin 7-17)
+                                                <button type="button" class="btn btn-sm btn-fase4-template px-3 py-2 fw-semibold shadow-sm" onclick="loadFase4DefaultTemplate()">
+                                                    <i class="mdi mdi-clipboard-text-play-outline fs-6"></i> <span>Gunakan Template Standar (Poin 7–17)</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -3216,15 +3932,19 @@
 
 
                             <!-- FOOTER BACK BUTTON -->
-                            <div class="d-flex justify-content-between align-items-center gap-3 mt-4">
-                                <button type="button" class="btn btn-outline-purple btn-action-mobile" onclick="switchStep(3)">
-                                    <i class="mdi mdi-arrow-left-circle me-1"></i> Kembali ke Fase 3
-                                </button>
-                                @if(!$land || !$land->land_bank_id)
-                                    <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="confirmFinalizePasca()">
-                                        <i class="mdi mdi-shield-crown me-1"></i> Finalisasi ke Pasca Land Bank
+                            <div class="d-flex justify-content-between align-items-center gap-3 mt-4 footer-action-row">
+                                <div>
+                                    <button type="button" class="btn btn-outline-purple btn-action-mobile" onclick="switchStep(3)">
+                                        <i class="mdi mdi-arrow-left-circle me-1"></i> Kembali ke Fase 3
                                     </button>
-                                @endif
+                                </div>
+                                <div>
+                                    @if(!$land || !$land->land_bank_id)
+                                        <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="confirmFinalizePasca()">
+                                            <i class="mdi mdi-shield-crown me-1"></i> Finalisasi ke Pasca Land Bank
+                                        </button>
+                                    @endif
+                                </div>
                             </div>
 
                         </div>
@@ -3250,7 +3970,7 @@
                     {{-- Toolbar Zoom & Aksi --}}
                     <div class="d-flex align-items-center gap-2">
                         {{-- Toolbar Image Zoom (Hanya aktif saat gambar) --}}
-                        <div id="imgZoomToolbar" class="d-none align-items-center bg-light border rounded-pill px-2 py-0.5 gap-1">
+                        <div id="imgZoomToolbar" class="d-none align-items-center bg-light border rounded-2 px-2 py-0.5 gap-1">
                             <button type="button" class="btn btn-xs btn-link text-dark p-1" onclick="changeImageZoom(-0.25)" title="Zoom Out (-)">
                                 <i class="mdi mdi-magnify-minus-outline fs-6"></i>
                             </button>
@@ -3323,45 +4043,49 @@
                         <i class="mdi mdi-information-outline me-1"></i>Gunakan toolbar di atas atau scroll mouse untuk memperbesar/memutar detail dokumen.
                     </small>
                     <button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- MODAL TAMBAH / EDIT DOKUMEN FASE 4 (DYNAMIC WORKFLOW) --}}
     <div class="modal fade" id="modalFase4Doc" tabindex="-1" aria-hidden="true" style="z-index: 1055;">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
-                <div class="modal-header text-white py-3 px-4" style="background: linear-gradient(135deg, #9a55ff 0%, #7e22ce 100%);">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="p-2 rounded-3 bg-white bg-opacity-20 text-white">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" style="max-width: 860px;">
+            <form id="formFase4Doc" class="modal-content border-0 shadow-lg" onsubmit="submitModalFase4Doc(event)" enctype="multipart/form-data" style="border-radius: 12px; overflow: hidden;">
+                <input type="hidden" id="modal_fase4_doc_id" name="doc_id" value="">
+                
+                <div class="modal-header bg-white py-3 px-4 border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
+                    <div class="d-flex align-items-center gap-2.5">
+                        <div class="p-2 rounded-2 text-primary" style="background-color: rgba(154, 85, 255, 0.12); width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
                             <i class="mdi mdi-file-document-edit fs-5"></i>
                         </div>
                         <div>
-                            <h6 class="modal-title mb-0 fw-bold text-white" id="modalFase4DocTitle">Form Dokumen & Perizinan Fase 4</h6>
-                            <small class="text-white-50" style="font-size: 0.72rem;">Pengurusan Legalisasi Wilayah, Teknis BPN & SHGB Induk</small>
+                            <h5 class="modal-title fw-bold text-dark mb-0" id="modalFase4DocTitle" style="font-size: 1.05rem;">Form Dokumen & Perizinan Fase 4</h5>
+                            <small class="text-muted d-block" style="font-size: 0.74rem;">Pengurusan Legalisasi Wilayah, Teknis BPN & SHGB Induk</small>
                         </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <form id="formFase4Doc" onsubmit="submitModalFase4Doc(event)" enctype="multipart/form-data">
-                    <input type="hidden" id="modal_fase4_doc_id" name="doc_id" value="">
-                    
-                    <div class="modal-body p-4 bg-light" style="max-height: 75vh; overflow-y: auto;">
+                <div class="modal-body px-4 py-3" style="background-color: #f8fafc; overflow-y: auto;">
                         <div class="row g-3">
-                            <!-- Quick Fill dari Master Dokumen Perizinan -->
+                            <!-- Quick Fill dari Master Dokumen Perizinan (Top Banner) -->
                             <div class="col-12" id="modal_fase4_master_picker_section">
-                                <div class="p-3 rounded-3 border" style="background-color: #fbf9ff; border-color: rgba(154, 85, 255, 0.25) !important;">
-                                    <div class="d-flex justify-content-between align-items-center mb-1.5">
+                                <div class="p-3 rounded-2 border" style="background: linear-gradient(135deg, #fcfaff, #f8f4ff); border: 1.5px solid rgba(154, 85, 255, 0.22) !important;">
+                                    <div class="d-flex justify-content-between align-items-center mb-1.5 flex-wrap gap-2">
                                         <label class="form-label small fw-bold text-dark mb-0 d-flex align-items-center gap-1.5">
-                                            <i class="mdi mdi-file-certificate-outline" style="color: #9a55ff; font-size: 1.1rem;"></i>
+                                            <i class="mdi mdi-file-certificate-outline" style="color: #9a55ff; font-size: 1.15rem;"></i>
                                             Pilih dari Katalog Master Perizinan (Isi Otomatis):
                                         </label>
-                                        <a href="{{ route('master.dokumen-perizinan.index') }}" target="_blank" class="small text-decoration-none fw-semibold" style="color: #9a55ff; font-size: 0.74rem;">
-                                            Kelola Master <i class="mdi mdi-open-in-new"></i>
+                                        <a href="{{ route('master.dokumen-perizinan.index') }}" target="_blank" class="badge text-decoration-none fw-semibold rounded-1 px-2.5 py-1.5" style="background: rgba(154, 85, 255, 0.12); color: #7e22ce; font-size: 0.74rem;">
+                                            Kelola Master Data <i class="mdi mdi-open-in-new ms-0.5"></i>
                                         </a>
                                     </div>
-                                    <select id="modal_fase4_master_select" class="form-select form-select-sm" onchange="applyMasterToFase4Form(this.value)">
+                                    <select id="modal_fase4_master_select" class="form-select fase4-form-input" onchange="applyMasterToFase4Form(this.value)">
                                         <option value="">-- Ketik / Pilih Standar Perizinan untuk Auto-Fill --</option>
                                         @if(isset($masterPerizinans) && $masterPerizinans->count() > 0)
                                             @foreach($masterPerizinans->groupBy('kategori') as $kategori => $items)
-                                                <optgroup label="📂 {{ $kategori }}">
+                                                <optgroup label="{{ $kategori }}">
                                                     @foreach($items as $mItem)
                                                         <option value="{{ $mItem->id }}"
                                                             data-kode="{{ $mItem->kode_dokumen }}"
@@ -3377,134 +4101,135 @@
                                             @endforeach
                                         @endif
                                     </select>
-                                    <small class="text-muted d-block mt-1" style="font-size: 0.72rem;">
-                                        Memilih izin master akan otomatis mengisi nama dokumen, instansi, estimasi biaya, dan catatan syarat.
+                                    <small class="text-muted d-block mt-1.5" style="font-size: 0.72rem;">
+                                        <i class="mdi mdi-information-outline text-primary me-0.5"></i> Memilih izin master akan otomatis mengisi nama dokumen, instansi, estimasi biaya, dan butir checklist prasyarat.
                                     </small>
                                 </div>
                             </div>
 
-                            <!-- Info Identitas Dokumen -->
-                            <div class="col-12">
-                                <div class="p-3 bg-white rounded-3 border shadow-sm">
-                                    <div class="fw-bold mb-2 d-flex align-items-center gap-2" style="font-size: 0.85rem; color: #7e22ce;">
-                                        <i class="mdi mdi-information-outline"></i> Identitas & Kategori Dokumen
+                            <!-- 2-KOLOM UTAMA: KIRI (IDENTITAS & STATUS) & KANAN (PRASYARAT & BERKAS) -->
+                            <div class="col-12 col-lg-6 d-flex flex-column gap-3">
+                                <!-- Card 1: Identitas Dokumen -->
+                                <div class="fase4-modal-section-card">
+                                    <div class="fase4-modal-section-title" style="color: #7e22ce;">
+                                        <i class="mdi mdi-card-account-details-outline"></i> Identitas & Instansi Dokumen
                                     </div>
                                     <div class="row g-2">
-                                        <div class="col-md-4">
-                                            <label class="form-label small fw-semibold text-dark mb-1">Poin / Urutan Tahapan</label>
-                                            <input type="text" class="form-control form-control-sm" id="modal_fase4_poin_label" name="poin_label" placeholder="Contoh: Poin 7 / Poin 12 / Opsional">
+                                        <div class="col-4">
+                                            <label class="fase4-form-label">Poin / Urutan</label>
+                                            <input type="text" class="form-control fase4-form-input" id="modal_fase4_poin_label" name="poin_label" placeholder="Poin 7">
                                         </div>
-                                        <div class="col-md-8">
-                                            <label class="form-label small fw-semibold text-dark mb-1">Nama Dokumen / Perizinan <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control form-control-sm fw-bold" id="modal_fase4_doc_name" name="doc_name" placeholder="Contoh: PKKPR OSS RBA / SK HGB BPN" required>
+                                        <div class="col-8">
+                                            <label class="fase4-form-label">Nama Dokumen / Perizinan <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control fase4-form-input fw-bold" id="modal_fase4_doc_name" name="doc_name" placeholder="Contoh: PKKPR OSS RBA / SK HGB BPN" required>
                                         </div>
-                                        <div class="col-md-12">
-                                            <label class="form-label small fw-semibold text-dark mb-1">Instansi / Lembaga Terkait</label>
-                                            <input type="text" class="form-control form-control-sm" id="modal_fase4_instansi" name="instansi" placeholder="Contoh: Kantor Pertanahan (BPN) Kab. Jember / Kementerian Investasi (OSS)">
+                                        <div class="col-12">
+                                            <label class="fase4-form-label">Instansi / Lembaga Terkait</label>
+                                            <input type="text" class="form-control fase4-form-input" id="modal_fase4_instansi" name="instansi" placeholder="Contoh: Kantor Pertanahan (BPN) / Pemda / Notaris">
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Checklist Prasyarat Berkas (Syarat Dokumen Otomatis & Dinamis) -->
-                            <div class="col-12" id="modal_fase4_syarat_section">
-                                <div class="p-3 bg-white rounded-3 border shadow-sm" style="border-left: 4px solid #0284c7 !important;">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <div class="fw-bold d-flex align-items-center gap-2" style="font-size: 0.85rem; color: #0284c7;">
-                                            <i class="mdi mdi-checkbox-multiple-marked-outline"></i> Daftar Checklist Prasyarat Berkas Pengajuan
-                                        </div>
-                                        <span class="badge bg-soft-info text-info border" id="modal_syarat_summary_badge" style="font-size: 0.72rem;">0/0 Terpenuhi</span>
-                                    </div>
-                                    <p class="text-muted small mb-2" style="font-size: 0.74rem;">
-                                        Tandai berkas prasyarat yang sudah siap / lengkap sebelum diajukan ke instansi terkait (Kelurahan, BPN, OSS, Bapenda).
-                                    </p>
-                                    
-                                    <!-- Container Checkboxes Dinamis -->
-                                    <div id="modal_syarat_checkboxes_container" class="p-2.5 rounded-3 mb-2" style="background-color: #f8fafc; border: 1px dashed #cbd5e1; min-height: 48px;">
-                                        <!-- Checkboxes dirender otomatis via JavaScript -->
-                                    </div>
-
-                                    <!-- Collapsible Editor untuk Tambah/Edit Prasyarat -->
-                                    <div class="mt-2">
-                                        <a class="small text-decoration-none fw-semibold text-muted d-inline-flex align-items-center gap-1" data-bs-toggle="collapse" href="#collapseSyaratEditor" role="button" aria-expanded="false" style="font-size: 0.73rem;">
-                                            <i class="mdi mdi-pencil-outline"></i> Edit Teks / Tambah Prasyarat Baru (Ketik Manual)
-                                        </a>
-                                        <div class="collapse mt-2" id="collapseSyaratEditor">
-                                            <textarea class="form-control form-control-sm" id="modal_fase4_syarat_dokumen" name="syarat_dokumen" rows="3" placeholder="Tuliskan prasyarat berkas per baris atau dengan simbol bullet (• / -)..." oninput="onSyaratTextInput(this.value)"></textarea>
-                                            <small class="text-muted d-block mt-1" style="font-size: 0.7rem;">Setiap baris teks otomatis diubah menjadi kotak centang checklist prasyarat di atas.</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Legalitas & Status -->
-                            <div class="col-12">
-                                <div class="p-3 bg-white rounded-3 border shadow-sm">
-                                    <div class="fw-bold text-primary mb-2 d-flex align-items-center gap-2" style="font-size: 0.85rem;">
-                                        <i class="mdi mdi-shield-check-outline"></i> Nomor, Tanggal & Status Progres
+                                <!-- Card 2: Legalitas & Status Progres -->
+                                <div class="fase4-modal-section-card">
+                                    <div class="fase4-modal-section-title text-primary">
+                                        <i class="mdi mdi-shield-check-outline"></i> Legalitas & Status Progres
                                     </div>
                                     <div class="row g-2">
-                                        <div class="col-md-5">
-                                            <label class="form-label small fw-semibold text-dark mb-1">Nomor Registrasi / SK / Surat</label>
-                                            <input type="text" class="form-control form-control-sm" id="modal_fase4_doc_number" name="doc_number" placeholder="Nomor resmi dokumen">
+                                        <div class="col-7">
+                                            <label class="fase4-form-label">Nomor Registrasi / SK / Surat</label>
+                                            <input type="text" class="form-control fase4-form-input" id="modal_fase4_doc_number" name="doc_number" placeholder="Nomor resmi registrasi / SK">
                                         </div>
-                                        <div class="col-md-4">
-                                            <label class="form-label small fw-semibold text-dark mb-1">Tanggal Terbit / Validasi</label>
-                                            <input type="date" class="form-control form-control-sm" id="modal_fase4_doc_date" name="doc_date">
+                                        <div class="col-5">
+                                            <label class="fase4-form-label">Tanggal Terbit</label>
+                                            <input type="date" class="form-control fase4-form-input" id="modal_fase4_doc_date" name="doc_date">
                                         </div>
-                                        <div class="col-md-3">
-                                            <label class="form-label small fw-semibold text-dark mb-1">Status Progres <span class="text-danger">*</span></label>
-                                            <select class="form-select form-select-sm fw-bold" id="modal_fase4_status" name="status" required>
-                                                <option value="belum">🔴 Belum Diurus</option>
-                                                <option value="proses">🟡 Sedang Proses</option>
-                                                <option value="selesai">🟢 Selesai / Terbit</option>
-                                                <option value="ditolak">⚪ Dibatalkan / N/A</option>
+                                        <div class="col-12">
+                                            <label class="fase4-form-label">Status Progres Dokumen <span class="text-danger">*</span></label>
+                                            <select class="form-select fase4-form-input fw-bold" id="modal_fase4_status" name="status" required>
+                                                <option value="belum">Belum Diurus / Belum Ada</option>
+                                                <option value="proses">Sedang Dalam Proses</option>
+                                                <option value="selesai">Selesai / Terbit Resmi</option>
+                                                <option value="ditolak">Dibatalkan / Tidak Diperlukan</option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Nilai Nominal / Luas Tambahan (Opsional) -->
-                            <div class="col-12">
-                                <div class="p-3 bg-white rounded-3 border shadow-sm">
-                                    <div class="fw-bold text-success mb-2 d-flex align-items-center gap-2" style="font-size: 0.85rem;">
-                                        <i class="mdi mdi-cash-multiple"></i> Informasi Teknis & Finansial (Opsional)
+                                <!-- Card 3: Finansial & Teknis (Opsional) -->
+                                <div class="fase4-modal-section-card">
+                                    <div class="fase4-modal-section-title text-success">
+                                        <i class="mdi mdi-cash-multiple"></i> Informasi Finansial & Teknis (Opsional)
                                     </div>
                                     <div class="row g-2">
-                                        <div class="col-md-6">
-                                            <label class="form-label small fw-semibold text-dark mb-1">Nominal Biaya / Pajak (Jika ada)</label>
-                                            <input type="text" class="form-control form-control-sm" id="modal_fase4_nominal" name="nominal" placeholder="Rp 0 (Contoh: BPHTB / Biaya BPN)" onkeyup="formatRupiahTemp(this)">
+                                        <div class="col-6">
+                                            <label class="fase4-form-label">Nominal Biaya / Pajak</label>
+                                            <input type="text" class="form-control fase4-form-input" id="modal_fase4_nominal" name="nominal" placeholder="Rp 0 (BPHTB / Biaya BPN)" onkeyup="formatRupiahTemp(this)">
                                         </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label small fw-semibold text-dark mb-1">Luas Bidang Teknis (M²)</label>
-                                            <input type="text" class="form-control form-control-sm" id="modal_fase4_luas" name="luas" placeholder="Contoh: 15.420 m²">
+                                        <div class="col-6">
+                                            <label class="fase4-form-label">Luas Hasil Ukur (M²)</label>
+                                            <input type="text" class="form-control fase4-form-input" id="modal_fase4_luas" name="luas" placeholder="Contoh: 15.420 m²">
                                         </div>
                                         <div class="col-12">
-                                            <label class="form-label small fw-semibold text-dark mb-1">Catatan Progres / Keterangan Kendala</label>
-                                            <textarea class="form-control form-control-sm" id="modal_fase4_notes" name="notes" rows="2" placeholder="Tuliskan catatan teknis, kendala berkas, atau catatan tindak lanjut..."></textarea>
+                                            <label class="fase4-form-label">Catatan Progres / Keterangan Kendala</label>
+                                            <textarea class="form-control fase4-form-input" id="modal_fase4_notes" name="notes" rows="2" placeholder="Tuliskan catatan teknis, kendala berkas, atau catatan tindak lanjut..."></textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Upload Berkas Fisik -->
-                            <div class="col-12">
-                                <div class="p-3 bg-white rounded-3 border shadow-sm">
-                                    <div class="fw-bold text-dark mb-2 d-flex align-items-center gap-2" style="font-size: 0.85rem;">
-                                        <i class="mdi mdi-cloud-upload text-primary"></i> Upload Dokumen Fisik / Scan
+                            <!-- KOLOM KANAN: CHECKLIST PRASYARAT & BERKAS UPLOAD -->
+                            <div class="col-12 col-lg-6 d-flex flex-column gap-3">
+                                <!-- Card 4: Checklist Prasyarat Berkas -->
+                                <div class="fase4-modal-section-card" id="modal_fase4_syarat_section">
+                                    <div class="fase4-modal-section-title text-dark d-flex justify-content-between align-items-center mb-1">
+                                        <div class="d-flex align-items-center gap-1.5" style="color: #0f172a;">
+                                            <i class="mdi mdi-format-list-checks text-primary fs-5"></i>
+                                            <span>Checklist Prasyarat Berkas</span>
+                                        </div>
+                                        <span class="badge rounded-1 px-2.5 py-1" id="modal_syarat_summary_badge" style="background: rgba(14, 165, 233, 0.12); color: #0284c7; font-size: 0.73rem; font-weight: 600;">
+                                            0/0 Terpenuhi
+                                        </span>
                                     </div>
+                                    <small class="text-muted d-block mb-2" style="font-size: 0.72rem;">
+                                        Tandai berkas prasyarat yang sudah lengkap sebelum diajukan ke instansi terkait.
+                                    </small>
+
+                                    <!-- Container Checkboxes Dinamis -->
+                                    <div id="modal_syarat_checkboxes_container" class="p-2.5 rounded-2 mb-2" style="background-color: #f8fafc; border: 1.5px dashed #cbd5e1; min-height: 110px; max-height: 180px; overflow-y: auto;">
+                                        <!-- Checkboxes dirender otomatis via JavaScript -->
+                                    </div>
+
+                                    <!-- Collapsible Editor untuk Tambah/Edit Prasyarat -->
+                                    <div class="pt-1">
+                                        <a class="btn btn-xs btn-outline-secondary py-1 px-2.5 rounded-2 d-inline-flex align-items-center gap-1 text-decoration-none fw-semibold" data-bs-toggle="collapse" href="#collapseSyaratEditor" role="button" aria-expanded="false" style="font-size: 0.73rem;">
+                                            <i class="mdi mdi-playlist-edit fs-6"></i> Edit Teks / Tambah Prasyarat Baru
+                                        </a>
+                                        <div class="collapse mt-2" id="collapseSyaratEditor">
+                                            <textarea class="form-control fase4-form-input" id="modal_fase4_syarat_dokumen" name="syarat_dokumen" rows="3" placeholder="Tuliskan prasyarat berkas per baris atau dengan simbol bullet (• / -)..." oninput="onSyaratTextInput(this.value)"></textarea>
+                                            <small class="text-muted d-block mt-1" style="font-size: 0.7rem;">Setiap baris teks otomatis diubah menjadi kotak centang checklist prasyarat di atas.</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 5: Upload Dokumen Fisik / Scan -->
+                                <div class="fase4-modal-section-card flex-grow-1">
+                                    <div class="fase4-modal-section-title text-dark">
+                                        <i class="mdi mdi-cloud-upload-outline text-primary fs-5"></i> Dokumen Fisik / Berkas Scan
+                                    </div>
+                                    
                                     <div id="modal_fase4_current_file_preview" class="mb-2 d-none">
                                         <!-- Will show existing file info if any -->
                                     </div>
-                                    <div class="pratanah-file-upload-modern">
+
+                                    <div class="pratanah-file-upload-modern h-100 d-flex flex-column justify-content-center">
                                         <input type="file" id="modal_fase4_file" name="file" accept=".pdf,.jpg,.jpeg,.png,.webp,.zip,.doc,.docx" onchange="handleModalFase4File(this)">
-                                        <div class="pratanah-file-label-modern py-2 px-3" style="background: #fafbfe; border: 1.5px dashed #cbd5e1; border-radius: 8px;">
-                                            <i class="mdi mdi-cloud-sync text-primary" style="font-size: 1.3rem;"></i>
-                                            <div class="pratanah-file-info-modern">
-                                                <span class="file-label-text fw-bold text-dark" id="modal_fase4_file_label" style="font-size: 0.8rem;">Pilih Berkas Baru (Opsional)</span>
-                                                <span class="file-label-hint text-muted" style="font-size: 0.7rem;">Format PDF, Gambar, DOCX maks. 25MB</span>
+                                        <div class="fase4-upload-dropzone">
+                                            <div class="mb-1.5" style="color: #9a55ff;">
+                                                <i class="mdi mdi-cloud-upload" style="font-size: 2.2rem;"></i>
                                             </div>
+                                            <div class="fw-bold text-dark mb-0.5" id="modal_fase4_file_label" style="font-size: 0.85rem;">Pilih Berkas Baru (Klik / Drop File)</div>
+                                            <small class="text-muted d-block" style="font-size: 0.72rem;">Format PDF, JPG, PNG, DOCX (Maksimal 25MB)</small>
                                         </div>
                                     </div>
                                 </div>
@@ -3512,48 +4237,52 @@
                         </div>
                     </div>
 
-                    <div class="modal-footer bg-white border-top py-2.5 px-4 d-flex justify-content-between align-items-center">
-                        <button type="button" class="btn btn-sm btn-outline-secondary px-3" data-bs-dismiss="modal">
-                            <i class="mdi mdi-close me-1"></i>Batal
+                    <div class="modal-footer bg-white border-top px-4 py-3 d-flex align-items-center justify-content-end gap-2.5 flex-shrink-0" style="background-color: #ffffff;">
+                        <button type="button" class="btn btn-master-cancel" data-bs-dismiss="modal">
+                            <i class="mdi mdi-close me-1.5"></i>Batal
                         </button>
-                        <button type="submit" class="btn btn-sm btn-primary px-4 shadow-sm fw-bold" id="btnSaveModalFase4" style="background: #9a55ff; border-color: #9a55ff;">
-                            <i class="mdi mdi-content-save-check me-1"></i>Simpan Dokumen
+                        <button type="submit" class="btn btn-master-submit" id="btnSaveModalFase4">
+                            <i class="mdi mdi-content-save-check me-1.5"></i>Simpan Dokumen
                         </button>
                     </div>
-                </form>
-            </div>
+            </form>
         </div>
     </div>
 
     {{-- MODAL CHECKLIST PICKER: PILIH DARI MASTER DOKUMEN PERIZINAN --}}
     <div class="modal fade" id="modalPickerMasterPerizinan" tabindex="-1" aria-hidden="true" style="z-index: 1056;">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
-                <div class="modal-header text-white py-3 px-4" style="background: linear-gradient(135deg, #9a55ff 0%, #7e22ce 100%);">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="p-2 rounded-3 bg-white bg-opacity-20 text-white">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header d-flex align-items-center justify-content-between flex-wrap gap-2 py-3 px-4">
+                    <div class="d-flex align-items-center gap-2.5">
+                        <div class="p-2 rounded-3 text-primary" style="background-color: rgba(154, 85, 255, 0.12);">
                             <i class="mdi mdi-file-certificate-outline fs-5"></i>
                         </div>
                         <div>
-                            <h6 class="modal-title mb-0 fw-bold text-white">Katalog Master Dokumen Perizinan Developer</h6>
-                            <small class="text-white-50" style="font-size: 0.72rem;">Pilih dokumen perizinan standar untuk dimasukkan ke alur kerja Fase 4 lahan ini</small>
+                            <h5 class="modal-title">Katalog Master Dokumen Perizinan Developer</h5>
+                            <small class="text-muted d-block" style="font-size: 0.75rem;">Pilih dokumen perizinan standar untuk dimasukkan ke alur kerja Fase 4 lahan ini</small>
                         </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="d-flex align-items-center gap-2 ms-auto">
+                        <a href="{{ route('master.dokumen-perizinan.index') }}" target="_blank" class="btn btn-sm btn-outline-purple d-inline-flex align-items-center gap-1.5 py-1.5 px-3" style="font-size: 0.78rem;">
+                            <i class="mdi mdi-cog-outline fs-6"></i> <span>Kelola Master Data</span>
+                        </a>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
                 </div>
 
                 <div class="modal-body p-4 bg-light" style="max-height: 75vh; overflow-y: auto;">
                     <!-- Filter & Search Master -->
                     <div class="p-3 bg-white rounded-3 border shadow-sm mb-3">
                         <div class="row g-2 align-items-center">
-                            <div class="col-md-5">
-                                <div class="input-group input-group-sm">
-                                    <span class="input-group-text bg-white"><i class="mdi mdi-magnify text-muted"></i></span>
-                                    <input type="text" class="form-control" id="searchMasterPickerInput" placeholder="Cari nama izin, kode, instansi..." onkeyup="searchMasterPicker(this.value)">
+                            <div class="col-md-7">
+                                <div class="master-search-group">
+                                    <i class="mdi mdi-magnify master-search-icon"></i>
+                                    <input type="text" class="form-control master-search-input" id="searchMasterPickerInput" placeholder="Cari nama izin, kode poin, instansi..." onkeyup="searchMasterPicker(this.value)">
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <select class="form-select form-select-sm" id="filterMasterCategorySelect" onchange="filterMasterPickerCategory(this.value)">
+                            <div class="col-md-5">
+                                <select class="form-select master-category-select" id="filterMasterCategorySelect" onchange="filterMasterPickerCategory(this.value)">
                                     <option value="">Semua Kategori ({{ isset($masterPerizinans) ? $masterPerizinans->count() : 0 }} Dokumen)</option>
                                     @if(isset($masterPerizinans))
                                         @foreach($masterPerizinans->pluck('kategori')->unique() as $kategori)
@@ -3562,23 +4291,18 @@
                                     @endif
                                 </select>
                             </div>
-                            <div class="col-md-3 text-md-end">
-                                <a href="{{ route('master.dokumen-perizinan.index') }}" target="_blank" class="btn btn-sm btn-outline-purple w-100 d-inline-flex align-items-center justify-content-center gap-1" style="font-size: 0.78rem;">
-                                    <i class="mdi mdi-cog-outline"></i> Kelola Master Data
-                                </a>
-                            </div>
                         </div>
 
                         <!-- Select All & Summary Bar -->
-                        <div class="d-flex justify-content-between align-items-center mt-3 pt-2.5 border-top">
-                            <div class="form-check form-check-inline m-0">
-                                <input class="form-check-input" type="checkbox" id="checkAllMasterPicker" onchange="togglePickerSelectAll(this)" style="cursor: pointer; width: 18px; height: 18px;">
-                                <label class="form-check-label fw-bold text-dark small ms-1" for="checkAllMasterPicker" style="cursor: pointer;">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mt-3 pt-2.5 border-top gap-2">
+                            <label class="select-all-box m-0" for="checkAllMasterPicker">
+                                <input class="form-check-input custom-picker-chk m-0" type="checkbox" id="checkAllMasterPicker" onchange="togglePickerSelectAll(this)">
+                                <span class="fw-bold text-dark small user-select-none" style="font-size: 0.82rem;">
                                     Pilih Semua yang Ditampilkan
-                                </label>
-                            </div>
-                            <div class="small fw-semibold text-primary" id="masterPickerSelectedText">
-                                0 dokumen dipilih
+                                </span>
+                            </label>
+                            <div class="badge px-3 py-2 fw-bold" id="masterPickerSelectedBadge" style="background: rgba(154, 85, 255, 0.1); color: #7e22ce; font-size: 0.82rem; border: 1px solid rgba(154, 85, 255, 0.25); border-radius: 8px;">
+                                <i class="mdi mdi-check-all me-1"></i> <span id="masterPickerSelectedText">0 dokumen dipilih</span>
                             </div>
                         </div>
                     </div>
@@ -3607,32 +4331,32 @@
                                          data-kategori="{{ $m->kategori }}" 
                                          data-search="{{ $searchString }}"
                                          data-already="{{ $isAlreadyAdded ? '1' : '0' }}">
-                                        <div class="card h-100 border rounded-3 p-3 transition-all {{ $isAlreadyAdded ? 'bg-light opacity-75 border-secondary-subtle' : 'bg-white shadow-sm' }}" 
+                                        <div class="card h-100 p-3 transition-all master-picker-card {{ $isAlreadyAdded ? 'is-disabled' : '' }}" 
+                                             id="picker_card_{{ $m->id }}"
                                              style="cursor: {{ $isAlreadyAdded ? 'default' : 'pointer' }};"
                                              onclick="togglePickerCardClick(event, '{{ $m->id }}', {{ $isAlreadyAdded ? 'true' : 'false' }})">
-                                            <div class="d-flex align-items-start gap-2.5">
-                                                <div class="pt-0.5">
-                                                    <input class="form-check-input master-picker-checkbox" 
+                                            <div class="d-flex align-items-start gap-3">
+                                                <div class="flex-shrink-0 pt-1 me-1">
+                                                    <input class="form-check-input master-picker-checkbox custom-picker-chk" 
                                                            type="checkbox" 
                                                            name="master_ids[]" 
                                                            value="{{ $m->id }}" 
                                                            id="picker_chk_{{ $m->id }}"
                                                            {{ $isAlreadyAdded ? 'disabled' : '' }}
-                                                           onchange="updatePickerSelectedCount()"
-                                                           style="cursor: pointer; width: 19px; height: 19px;">
+                                                           onchange="updatePickerSelectedCount()">
                                                 </div>
                                                 <div class="flex-grow-1 overflow-hidden">
                                                     <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
                                                         <div class="d-flex align-items-center gap-1.5 flex-wrap">
-                                                            <span class="badge bg-light text-dark border font-monospace" style="font-size: 0.72rem;">{{ $m->kode_dokumen }}</span>
-                                                            <span class="badge rounded-pill fw-semibold" style="background-color: rgba(154,85,255,0.12); color: #9a55ff; font-size: 0.7rem;">{{ $m->kategori }}</span>
+                                                            <span class="badge bg-light text-dark border font-monospace rounded-2" style="font-size: 0.72rem;">{{ $m->kode_dokumen }}</span>
+                                                            <span class="badge rounded-2 fw-semibold" style="background-color: rgba(154,85,255,0.12); color: #9a55ff; font-size: 0.7rem;">{{ $m->kategori }}</span>
                                                         </div>
                                                         @if($isAlreadyAdded)
-                                                            <span class="badge bg-secondary rounded-pill" style="font-size: 0.68rem;">
+                                                            <span class="badge bg-secondary rounded-2" style="font-size: 0.68rem;">
                                                                 <i class="mdi mdi-check-all me-1"></i>Sudah Ada di Lahan
                                                             </span>
                                                         @elseif($m->is_required)
-                                                            <span class="badge bg-danger-soft text-danger fw-bold border border-danger-subtle rounded-pill" style="background-color: rgba(220,53,69,0.1); font-size: 0.68rem;">
+                                                            <span class="badge bg-danger-soft text-danger fw-bold border border-danger-subtle rounded-2" style="background-color: rgba(220,53,69,0.1); font-size: 0.68rem;">
                                                                 Wajib
                                                             </span>
                                                         @endif
@@ -3680,12 +4404,12 @@
                     </form>
                 </div>
 
-                <div class="modal-footer bg-white border-top py-2.5 px-4 d-flex justify-content-between align-items-center">
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-3" data-bs-dismiss="modal">
-                        <i class="mdi mdi-close me-1"></i>Batal
+                <div class="modal-footer d-flex justify-content-end align-items-center gap-2 py-2.5 px-4">
+                    <button type="button" class="btn btn-master-cancel" data-bs-dismiss="modal">
+                        <i class="mdi mdi-close me-1.5"></i>Batal
                     </button>
-                    <button type="button" class="btn btn-sm btn-gradient-primary px-4 shadow-sm fw-bold d-inline-flex align-items-center gap-1.5" id="btnSubmitMasterPicker" onclick="submitBatchFromMaster()">
-                        <i class="mdi mdi-plus-box-multiple"></i>
+                    <button type="button" class="btn btn-master-submit" id="btnSubmitMasterPicker" onclick="submitBatchFromMaster()">
+                        <i class="mdi mdi-plus-box-multiple me-1.5 fs-6"></i>
                         <span id="btnSubmitMasterPickerText">Tambahkan Dokumen Terpilih</span>
                     </button>
                 </div>
@@ -5241,7 +5965,7 @@
                 html += `
                     <tr style="background: rgba(40, 167, 69, 0.1);">
                         <td>
-                            <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
                                 <strong class="text-success"><i class="mdi mdi-check-decagram me-1"></i>Skema: Cash Keras (Pelunasan 100% Sekaligus)</strong>
                                 <span class="badge bg-success">Lunas Langsung</span>
                             </div>
@@ -5782,9 +6506,9 @@
                 const isChecked = checkedSet.has(item);
                 const safeItem = escapeHtml(item);
                 html += `
-                    <div class="form-check d-flex align-items-center gap-2 mb-1.5 p-1.5 rounded-2 ${isChecked ? 'bg-success bg-opacity-10 border border-success border-opacity-25' : 'bg-white border'}" style="transition: all 0.2s ease;">
-                        <input class="form-check-input modal-syarat-chk ms-1" type="checkbox" name="syarat_checklist[]" value="${safeItem}" id="modal_syarat_chk_${idx}" ${isChecked ? 'checked' : ''} onchange="updateModalSyaratSummary()" style="cursor: pointer; width: 17px; height: 17px;">
-                        <label class="form-check-label small fw-semibold ${isChecked ? 'text-success' : 'text-dark'} mb-0 flex-grow-1" for="modal_syarat_chk_${idx}" style="cursor: pointer; font-size: 0.78rem;">
+                    <div class="form-check d-flex align-items-center gap-2 mb-1.5 p-2 rounded-2 ${isChecked ? 'bg-success bg-opacity-10 border border-success border-opacity-25' : 'bg-white border'}" style="transition: all 0.2s ease;">
+                        <input class="form-check-input modal-syarat-chk custom-picker-chk m-0" type="checkbox" name="syarat_checklist[]" value="${safeItem}" id="modal_syarat_chk_${idx}" ${isChecked ? 'checked' : ''} onchange="updateModalSyaratSummary()">
+                        <label class="form-check-label small fw-semibold ${isChecked ? 'text-success' : 'text-dark'} mb-0 flex-grow-1 user-select-none" for="modal_syarat_chk_${idx}" style="cursor: pointer; font-size: 0.78rem;">
                             ${safeItem}
                         </label>
                     </div>
@@ -6236,8 +6960,19 @@
         }
 
         function updatePickerSelectedCount() {
-            const checkedBoxes = document.querySelectorAll('.master-picker-checkbox:checked');
-            const checkedCount = checkedBoxes.length;
+            const allCheckboxes = document.querySelectorAll('.master-picker-checkbox');
+            let checkedCount = 0;
+
+            allCheckboxes.forEach(cb => {
+                const card = document.getElementById('picker_card_' + cb.value);
+                if (cb.checked) {
+                    checkedCount++;
+                    if (card) card.classList.add('is-checked');
+                } else {
+                    if (card) card.classList.remove('is-checked');
+                }
+            });
+
             const textEl = document.getElementById('masterPickerSelectedText');
             const btnTextEl = document.getElementById('btnSubmitMasterPickerText');
             const btnEl = document.getElementById('btnSubmitMasterPicker');
@@ -6376,15 +7111,13 @@
         }
 
         function filterFase4Docs(status, btn) {
-            const filterBtns = document.querySelectorAll('.fase4-filter-btn');
+            const filterBtns = document.querySelectorAll('.fase4-tab-item, .fase4-filter-btn');
             filterBtns.forEach(b => {
-                b.classList.remove('btn-primary', 'shadow-sm', 'active');
-                b.classList.add('btn-outline-secondary');
+                b.classList.remove('active', 'btn-primary', 'shadow-sm');
             });
 
             if (btn) {
-                btn.classList.remove('btn-outline-secondary');
-                btn.classList.add('btn-primary', 'shadow-sm', 'active');
+                btn.classList.add('active');
             }
 
             const cards = document.querySelectorAll('.fase4-doc-card');

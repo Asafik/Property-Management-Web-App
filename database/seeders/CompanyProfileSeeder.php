@@ -14,7 +14,9 @@ class CompanyProfileSeeder extends Seeder
      */
     public function run(): void
     {
+        \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
         CompanyProfile::truncate();
+        \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
 
         CompanyProfile::create([
             'id'         => 1,

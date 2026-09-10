@@ -55,6 +55,15 @@ class EmployeeSeeder extends Seeder
                 'position_id' => 6,
                 'phone' => '08123456780',
                 'address' => 'Jember'
+            ],
+            [
+                'name' => 'Staff Keuangan',
+                'username' => 'keuangan',
+                'password' => Hash::make('password'),
+                'division_id' => 5,
+                'position_id' => 7,
+                'phone' => '08123456781',
+                'address' => 'Jember'
             ]
         ]);
     }

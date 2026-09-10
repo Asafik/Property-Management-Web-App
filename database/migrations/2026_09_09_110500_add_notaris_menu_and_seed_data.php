@@ -14,35 +14,35 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // 1. Tambahkan menu Data Notaris di bawah Master Data (parent_id: 29) jika belum ada
+        // 1. Tambahkan menu Data Notaris di bawah Master Data jika Master Data sudah ada
         $parentMaster = Menu::where('name', 'Master Data')->first();
-        $parentId = $parentMaster ? $parentMaster->id : 29;
+        if ($parentMaster) {
+            $notarisMenu = Menu::firstOrCreate(
+                ['route' => 'notaris.index'],
+                [
+                    'name' => 'Data Notaris',
+                    'icon' => 'mdi-scale-balance',
+                    'parent_id' => $parentMaster->id,
+                    'order' => 12
+                ]
+            );
 
-        $notarisMenu = Menu::firstOrCreate(
-            ['route' => 'notaris.index'],
-            [
-                'name' => 'Data Notaris',
-                'icon' => 'mdi-scale-balance',
-                'parent_id' => $parentId,
-                'order' => 12
-            ]
-        );
+            // 2. Hubungkan permission menu ke posisi Admin & Legal
+            if ($notarisMenu) {
+                $positionsToAssign = [1, 3, 4, 5, 7]; // Kepala Marketing, Kepala Legal, Staff Legal, Admin, Staff Keuangan
+                foreach ($positionsToAssign as $posId) {
+                    if (DB::table('positions')->where('id', $posId)->exists()) {
+                        $exists = DB::table('menu_position')
+                            ->where('menu_id', $notarisMenu->id)
+                            ->where('position_id', $posId)
+                            ->exists();
 
-        // 2. Hubungkan permission menu ke posisi Admin & Legal
-        if ($notarisMenu) {
-            $positionsToAssign = [1, 3, 4, 5, 7]; // Kepala Marketing, Kepala Legal, Staff Legal, Admin, Staff Keuangan
-            foreach ($positionsToAssign as $posId) {
-                if (DB::table('positions')->where('id', $posId)->exists()) {
-                    $exists = DB::table('menu_position')
-                        ->where('menu_id', $notarisMenu->id)
-                        ->where('position_id', $posId)
-                        ->exists();
-
-                    if (!$exists) {
-                        DB::table('menu_position')->insert([
-                            'menu_id' => $notarisMenu->id,
-                            'position_id' => $posId
-                        ]);
+                        if (!$exists) {
+                            DB::table('menu_position')->insert([
+                                'menu_id' => $notarisMenu->id,
+                                'position_id' => $posId
+                            ]);
+                        }
                     }
                 }
             }

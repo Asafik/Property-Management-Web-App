@@ -2,20 +2,106 @@
 
 @section('title', 'Master Dokumen Perizinan & Legalitas Properti - Property Management App')
 
+@push('styles')
+<style>
+    #modalDokumenPerizinan .input-group {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+    }
+    #modalDokumenPerizinan .input-group .form-control:first-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+    }
+    #modalDokumenPerizinan .input-group .input-group-text:last-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+        border-left: 0 !important;
+        background-color: #f8f9fa;
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+    #modalDokumenPerizinan .input-group .input-group-text:first-child {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-right: 0 !important;
+        background-color: #f8f9fa;
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+    #modalDokumenPerizinan .input-group .form-control:last-child {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+    }
+    #modalDokumenPerizinan input.form-control,
+    #modalDokumenPerizinan select.form-control,
+    #modalDokumenPerizinan .input-group-text {
+        height: 38px;
+        font-size: 0.88rem;
+    }
+    #modalDokumenPerizinan textarea.form-control {
+        height: auto !important;
+        font-size: 0.88rem;
+        line-height: 1.6;
+    }
+
+    /* Tablet & Mobile Responsiveness */
+    @media (max-width: 767.98px) {
+        #modalDokumenPerizinan .modal-dialog {
+            margin: 0.75rem auto !important;
+            max-width: calc(100% - 1.5rem) !important;
+        }
+        #modalDokumenPerizinan .modal-body {
+            max-height: 72vh !important;
+            padding: 1rem !important;
+        }
+        #modalDokumenPerizinan .modal-header,
+        #modalDokumenPerizinan .modal-footer {
+            padding: 0.75rem 1rem !important;
+        }
+        #modalDokumenPerizinan .modal-title {
+            font-size: 0.95rem !important;
+        }
+        #modalDokumenPerizinan .modal-footer {
+            display: flex !important;
+            flex-direction: row !important;
+            justify-content: flex-end !important;
+            gap: 8px !important;
+        }
+        #modalDokumenPerizinan .modal-footer .btn {
+            padding: 0.45rem 1rem !important;
+            font-size: 0.85rem !important;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        #modalDokumenPerizinan .modal-dialog {
+            margin: 0.5rem auto !important;
+            max-width: calc(100% - 1rem) !important;
+        }
+        #modalDokumenPerizinan .switch-card-wrapper {
+            padding: 0.65rem 0.85rem !important;
+        }
+        #modalDokumenPerizinan .modal-footer {
+            display: flex !important;
+            flex-direction: column-reverse !important;
+            gap: 8px !important;
+        }
+        #modalDokumenPerizinan .modal-footer .btn {
+            width: 100% !important;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
 
     <!-- Header Card Banner -->
     <div class="row mb-3 mb-md-4">
         <div class="col-12">
-            <div class="card shadow-sm border-0 header-card" style="background: linear-gradient(135deg, #ffffff 0%, #fbf9ff 100%); border-left: 5px solid #9a55ff !important;">
+            <div class="card shadow-sm border-0 header-card">
                 <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
                     <div>
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <span class="badge bg-soft-purple text-purple fw-bold px-2 py-1" style="background-color: rgba(154, 85, 255, 0.12); color: #9a55ff; font-size: 0.75rem; border-radius: 6px;">
-                                <i class="mdi mdi-shield-check me-1"></i>KATALOG RESMI PERIZINAN & LEGALITAS
-                            </span>
-                        </div>
                         <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
                             Master Dokumen Perizinan Developer Properti
                         </h3>
@@ -31,56 +117,56 @@
         </div>
     </div>
 
-    <!-- Quick Stats Cards -->
+    <!-- Quick Stats Cards (Mirroring Dashboard) -->
     <div class="row g-3 mb-3 mb-md-4">
-        <div class="col-6 col-md-3">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-                <div class="card-body p-3 d-flex align-items-center gap-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(154, 85, 255, 0.12); color: #9a55ff;">
-                        <i class="mdi mdi-file-document-multiple" style="font-size: 1.4rem;"></i>
-                    </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="card shadow-sm border-0 h-100 mb-0">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
                     <div>
-                        <div class="text-muted small fw-semibold">Total Dokumen</div>
-                        <div class="fw-bold fs-5 text-dark">{{ $stats['total'] ?? 0 }}</div>
+                        <h4 class="text-dark mb-1 fw-bold">{{ $stats['total'] ?? 0 }}</h4>
+                        <p class="text-muted mb-0" style="font-size: 0.85rem;">Total Dokumen</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-file-document-multiple" style="font-size: 2.2rem; color: #9a55ff; opacity: 0.25;"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-                <div class="card-body p-3 d-flex align-items-center gap-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(40, 167, 69, 0.12); color: #28a745;">
-                        <i class="mdi mdi-check-decagram" style="font-size: 1.4rem;"></i>
-                    </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="card shadow-sm border-0 h-100 mb-0">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
                     <div>
-                        <div class="text-muted small fw-semibold">Dokumen Aktif</div>
-                        <div class="fw-bold fs-5 text-success">{{ $stats['active'] ?? 0 }}</div>
+                        <h4 class="text-success mb-1 fw-bold">{{ $stats['active'] ?? 0 }}</h4>
+                        <p class="text-muted mb-0" style="font-size: 0.85rem;">Dokumen Aktif</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-check-decagram" style="font-size: 2.2rem; color: #28a745; opacity: 0.25;"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-                <div class="card-body p-3 d-flex align-items-center gap-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(253, 126, 20, 0.12); color: #fd7e14;">
-                        <i class="mdi mdi-alert-circle-outline" style="font-size: 1.4rem;"></i>
-                    </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="card shadow-sm border-0 h-100 mb-0">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
                     <div>
-                        <div class="text-muted small fw-semibold">Dokumen Wajib</div>
-                        <div class="fw-bold fs-5 text-warning">{{ $stats['required'] ?? 0 }}</div>
+                        <h4 class="text-warning mb-1 fw-bold" style="color: #ea580c !important;">{{ $stats['required'] ?? 0 }}</h4>
+                        <p class="text-muted mb-0" style="font-size: 0.85rem;">Dokumen Wajib</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-alert-circle-outline" style="font-size: 2.2rem; color: #ea580c; opacity: 0.25;"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
-                <div class="card-body p-3 d-flex align-items-center gap-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: rgba(23, 162, 184, 0.12); color: #17a2b8;">
-                        <i class="mdi mdi-shape-outline" style="font-size: 1.4rem;"></i>
-                    </div>
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="card shadow-sm border-0 h-100 mb-0">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
                     <div>
-                        <div class="text-muted small fw-semibold">Kategori Standar</div>
-                        <div class="fw-bold fs-5 text-info">{{ count($categories) }}</div>
+                        <h4 class="text-info mb-1 fw-bold" style="color: #0d6efd !important;">{{ count($categories) }}</h4>
+                        <p class="text-muted mb-0" style="font-size: 0.85rem;">Kategori Standar</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-shape-outline" style="font-size: 2.2rem; color: #0d6efd; opacity: 0.25;"></i>
                     </div>
                 </div>
             </div>
@@ -319,7 +405,7 @@
                                                     default => 'background-color: #f8f9fa; color: #495057; border: 1px solid #dee2e6;'
                                                 };
                                             @endphp
-                                            <span class="badge rounded-pill fw-semibold px-2 py-1" style="{{ $badgeStyle }} font-size: 0.78rem;">
+                                            <span class="badge rounded-2 fw-semibold px-2 py-1" style="{{ $badgeStyle }} font-size: 0.78rem;">
                                                 {{ $doc->kategori }}
                                             </span>
                                         </td>
@@ -363,11 +449,11 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="d-inline-flex align-items-center gap-1">
-                                                <button class="btn btn-sm btn-outline-primary p-1 rounded-2" style="width: 28px; height: 28px;" title="Edit Master Dokumen" onclick="openModal('edit', {{ $doc->id }})">
-                                                    <i class="mdi mdi-pencil" style="font-size: 0.95rem;"></i>
+                                                <button class="btn-action edit" title="Edit Master Dokumen" onclick="openModal('edit', {{ $doc->id }})">
+                                                    <i class="mdi mdi-pencil"></i>
                                                 </button>
-                                                <button class="btn btn-sm btn-outline-danger p-1 rounded-2" style="width: 28px; height: 28px;" title="Hapus Master Dokumen" onclick="confirmDelete({{ $doc->id }})">
-                                                    <i class="mdi mdi-trash-can-outline" style="font-size: 0.95rem;"></i>
+                                                <button class="btn-action delete" title="Hapus Master Dokumen" onclick="confirmDelete({{ $doc->id }})">
+                                                    <i class="mdi mdi-trash-can-outline"></i>
                                                 </button>
                                             </div>
                                         </td>
@@ -432,113 +518,114 @@
 
 <!-- Modal Tambah/Edit Master Dokumen Perizinan -->
 <div class="modal fade" id="modalDokumenPerizinan" tabindex="-1" aria-labelledby="modalDokumenLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-white border-bottom py-3">
-                <h5 class="modal-title fw-bold" id="modalDokumenLabel" style="color: #2c2e3f;">
-                    <i class="mdi mdi-plus-circle me-2" id="modalIcon" style="color: #9a55ff;"></i>
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 700px;">
+        <form id="formDokumenPerizinan" class="modal-content border-0 shadow-lg" method="POST" onsubmit="return submitDocForm(event)" style="border-radius: 12px; overflow: hidden;">
+            @csrf
+            <input type="hidden" id="docId" name="id">
+
+            <div class="modal-header bg-white border-bottom py-3 px-3 px-sm-4 flex-shrink-0">
+                <h5 class="modal-title fw-bold d-flex align-items-center gap-2 mb-0" id="modalDokumenLabel" style="color: #2c2e3f; font-size: 1.05rem;">
+                    <i class="mdi mdi-plus-circle" id="modalIcon" style="color: #9a55ff; font-size: 1.25rem;"></i>
                     <span id="modalTitle">Tambah Master Dokumen Perizinan</span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="formDokumenPerizinan" method="POST" onsubmit="return submitDocForm(event)">
-                @csrf
-                <input type="hidden" id="docId" name="id">
 
-                <div class="modal-body p-4">
-                    <div class="row g-3">
-                        <!-- Kode & Urutan -->
-                        <div class="col-md-8">
-                            <label class="form-label fw-bold small text-dark">Nama Dokumen / Izin <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="nama_dokumen" id="namaDokumen" placeholder="Contoh: Surat Keputusan Pemberian HGB (SK HGB)" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold small text-dark">Kode Dokumen</label>
-                            <input type="text" class="form-control" name="kode_dokumen" id="kodeDokumen" placeholder="Contoh: DOC-BPN-01 (Auto)">
-                            <small class="text-muted" style="font-size: 0.75rem;">Biarkan kosong untuk auto-generate</small>
-                        </div>
+            <div class="modal-body p-3 p-sm-4" style="background-color: #fcfbfe; overflow-y: auto; max-height: 80vh;">
+                <div class="row g-2 g-sm-3">
+                    <!-- Kode & Nama -->
+                    <div class="col-12 col-md-8">
+                        <label class="form-label fw-bold small text-dark mb-1">Nama Dokumen / Izin <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="nama_dokumen" id="namaDokumen" placeholder="Contoh: Surat Keputusan Pemberian HGB (SK HGB)" required>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label class="form-label fw-bold small text-dark d-flex justify-content-between align-items-center mb-1">
+                            <span>Kode Dokumen</span>
+                            <span class="text-muted fw-normal" style="font-size: 0.72rem;">(Auto-generate)</span>
+                        </label>
+                        <input type="text" class="form-control font-monospace" name="kode_dokumen" id="kodeDokumen" placeholder="POIN-XX (Otomatis)">
+                    </div>
 
-                        <!-- Kategori & Instansi -->
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold small text-dark">Kategori Perizinan <span class="text-danger">*</span></label>
-                            <select name="kategori" id="kategoriDokumen" class="form-control" required>
-                                @foreach($categories as $cat)
-                                    <option value="{{ $cat }}">{{ $cat }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold small text-dark">Instansi / Dinas Terkait</label>
-                            <input type="text" name="instansi_terkait" id="instansiDokumen" class="form-control" placeholder="Contoh: Kantor Pertanahan / BPN Kab/Kota, DPMPTSP">
-                        </div>
+                    <!-- Kategori, Instansi & Urutan -->
+                    <div class="col-12 col-sm-6 col-md-5">
+                        <label class="form-label fw-bold small text-dark mb-1">Kategori Perizinan <span class="text-danger">*</span></label>
+                        <select name="kategori" id="kategoriDokumen" class="form-control" required>
+                            @foreach($categories as $cat)
+                                <option value="{{ $cat }}">{{ $cat }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-5">
+                        <label class="form-label fw-bold small text-dark mb-1">Instansi / Dinas Terkait</label>
+                        <input type="text" name="instansi_terkait" id="instansiDokumen" class="form-control" placeholder="Contoh: Kantor Pertanahan / BPN Kab/Kota">
+                    </div>
+                    <div class="col-12 col-sm-12 col-md-2">
+                        <label class="form-label fw-bold small text-dark mb-1">Urutan</label>
+                        <input type="number" name="urutan" id="urutanDokumen" class="form-control text-center" placeholder="1" min="0" value="0">
+                    </div>
 
-                        <!-- Estimasi Hari & Estimasi Biaya -->
-                        <div class="col-md-4">
-                            <label class="form-label fw-bold small text-dark">Estimasi Waktu (Hari Kerja)</label>
-                            <div class="input-group">
-                                <input type="number" name="estimasi_hari" id="estimasiHari" class="form-control" placeholder="14" min="0">
-                                <span class="input-group-text bg-light">Hari</span>
+                    <!-- Estimasi Waktu & Estimasi Biaya (Responsif: 1 Kolom di HP, 2 Kolom di Tablet/Desktop) -->
+                    <div class="col-12 col-sm-6">
+                        <label class="form-label fw-bold small text-dark mb-1">Estimasi Waktu (Hari Kerja)</label>
+                        <div class="input-group">
+                            <input type="number" name="estimasi_hari" id="estimasiHari" class="form-control" placeholder="Contoh: 14" min="0">
+                            <span class="input-group-text bg-light text-muted small px-3">Hari</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <label class="form-label fw-bold small text-dark mb-1">Estimasi Biaya Standar (Rp)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted small px-3">Rp</span>
+                            <input type="number" name="estimasi_biaya" id="estimasiBiaya" class="form-control" placeholder="0" min="0">
+                        </div>
+                    </div>
+
+                    <!-- Syarat & Deskripsi (Tinggi Nyaman, Bebas Terpotong) -->
+                    <div class="col-12">
+                        <label class="form-label fw-bold small text-dark mb-1">Persyaratan Dokumen / Berkas Pengajuan</label>
+                        <textarea name="syarat_dokumen" id="syaratDokumen" class="form-control" rows="5" style="min-height: 125px; resize: vertical; line-height: 1.6;" placeholder="Contoh: KTP & KK Direksi, Akta Pendirian PT, Bukti Bayar PBB, Peta Bidang BPN..."></textarea>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold small text-dark mb-1">Catatan Teknis / Deskripsi Prosedur</label>
+                        <textarea name="deskripsi" id="deskripsiDokumen" class="form-control" rows="3" style="min-height: 95px; resize: vertical; line-height: 1.6;" placeholder="Penjelasan mengenai dasar hukum, tahapan di portal OSS, atau tips percepatan..."></textarea>
+                    </div>
+
+                    <!-- Switches: Wajib & Status (Responsif: 1 Kolom di HP, 2 Kolom di Tablet/Desktop) -->
+                    <div class="col-12 col-sm-6">
+                        <div class="p-3 border rounded-3 bg-white d-flex justify-content-between align-items-center switch-card-wrapper">
+                            <div>
+                                <div class="fw-bold small text-dark">Dokumen Wajib</div>
+                                <div class="text-muted" style="font-size: 0.73rem;">Wajib pada proyek standar</div>
+                            </div>
+                            <div class="form-check form-switch m-0 p-0">
+                                <input class="form-check-input ms-0" type="checkbox" name="is_required" id="isRequired" value="1" style="cursor: pointer; width: 34px; height: 18px;">
                             </div>
                         </div>
-                        <div class="col-md-5">
-                            <label class="form-label fw-bold small text-dark">Estimasi Biaya Standar (Rp)</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light">Rp</span>
-                                <input type="number" name="estimasi_biaya" id="estimasiBiaya" class="form-control" placeholder="0" min="0">
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="p-3 border rounded-3 bg-white d-flex justify-content-between align-items-center switch-card-wrapper">
+                            <div>
+                                <div class="fw-bold small text-dark">Status Operasional</div>
+                                <div class="text-muted" style="font-size: 0.73rem;">Muncul di Pra Land Bank</div>
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label fw-bold small text-dark">Urutan Display</label>
-                            <input type="number" name="urutan" id="urutanDokumen" class="form-control" placeholder="1" min="0" value="0">
-                        </div>
-
-                        <!-- Syarat & Deskripsi -->
-                        <div class="col-12">
-                            <label class="form-label fw-bold small text-dark">Persyaratan Dokumen / Berkas Pengajuan</label>
-                            <textarea name="syarat_dokumen" id="syaratDokumen" class="form-control" rows="2" placeholder="Contoh: KTP & KK Direksi, Akta Pendirian PT, Bukti Bayar PBB, Peta Bidang BPN..."></textarea>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-bold small text-dark">Catatan Teknis / Deskripsi Prosedur</label>
-                            <textarea name="deskripsi" id="deskripsiDokumen" class="form-control" rows="2" placeholder="Penjelasan mengenai dasar hukum, tahapan di portal OSS, atau tips percepatan..."></textarea>
-                        </div>
-
-                        <!-- Switches: Wajib & Status -->
-                        <div class="col-md-6">
-                            <div class="p-3 border rounded-3 bg-light d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div class="fw-bold small text-dark">Dokumen Wajib (Mandatory)</div>
-                                    <div class="text-muted" style="font-size: 0.75rem;">Tandai jika dokumen ini wajib ada pada proyek standar</div>
-                                </div>
-                                <div class="form-check form-switch m-0 p-0">
-                                    <input class="form-check-input ms-0" type="checkbox" name="is_required" id="isRequired" value="1" style="cursor: pointer; width: 34px; height: 18px;">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="p-3 border rounded-3 bg-light d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div class="fw-bold small text-dark">Status Operasional Master</div>
-                                    <div class="text-muted" style="font-size: 0.75rem;">Muncul di pilihan picker Pra Land Bank</div>
-                                </div>
-                                <div class="form-check form-switch m-0 p-0">
-                                    <input class="form-check-input ms-0" type="checkbox" name="is_active" id="isActive" value="1" checked style="cursor: pointer; width: 34px; height: 18px;">
-                                </div>
+                            <div class="form-check form-switch m-0 p-0">
+                                <input class="form-check-input ms-0" type="checkbox" name="is_active" id="isActive" value="1" checked style="cursor: pointer; width: 34px; height: 18px;">
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="modal-footer bg-light border-top py-3">
-                    <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">
-                        Batal
-                    </button>
-                    <button type="submit" class="btn btn-gradient-primary btn-sm px-4" id="submitBtn">
-                        <i class="mdi mdi-content-save me-1" id="btnIcon"></i>
-                        <span id="btnText">Simpan Dokumen</span>
-                    </button>
-                </div>
-            </form>
-        </div>
+            <div class="modal-footer bg-white border-top py-2.5 px-3 px-sm-4 d-flex align-items-center justify-content-end gap-2 flex-shrink-0">
+                <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">
+                    Batal
+                </button>
+                <button type="submit" class="btn btn-gradient-primary btn-sm px-4" id="submitBtn">
+                    <i class="mdi mdi-content-save me-1" id="btnIcon"></i>
+                    <span id="btnText">Simpan Dokumen</span>
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 @endsection

@@ -13,7 +13,8 @@ class DivisionSeeder extends Seeder
             ['name' => 'Marketing'],
             ['name' => 'Legal'],
             ['name' => 'Bank'],
-            ['name' => 'Super Admin']
+            ['name' => 'Super Admin'],
+            ['name' => 'Keuangan']
         ]);
     }
 }

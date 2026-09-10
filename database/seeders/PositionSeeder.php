@@ -34,6 +34,10 @@ class PositionSeeder extends Seeder
                 'name' => 'Staff KPR',
                 'division_id' => 3
             ],
+            [
+                'name' => 'Staff Keuangan',
+                'division_id' => 5
+            ],
         ]);
     }
 }

@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::table('pra_landbanks', function (Blueprint $table) {
             if (!Schema::hasColumn('pra_landbanks', 'custom_workflow_docs')) {
-                $table->json('custom_workflow_docs')->nullable()->after('hgb_process_status');
+                $afterCol = Schema::hasColumn('pra_landbanks', 'hgb_process_status') ? 'hgb_process_status' : 'status';
+                $table->json('custom_workflow_docs')->nullable()->after($afterCol);
             }
         });
     }
