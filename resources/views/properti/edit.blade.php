@@ -842,19 +842,26 @@
         }
 
         .properti-tab-badge {
-            background: #e2e8f0;
-            color: #475569;
+            background: #ede9fe;
+            color: #7e22ce;
             font-size: 0.72rem;
             font-weight: 700;
-            padding: 2px 7px;
-            border-radius: 6px;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            border: 1px solid #ddd6fe;
             transition: all 0.2s ease;
+            margin-left: 5px;
+            line-height: 1.2;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .properti-nav-tab.active .properti-tab-badge {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            background: #7e22ce !important;
             color: #ffffff !important;
-            box-shadow: 0 2px 6px rgba(154, 85, 255, 0.3);
+            border-color: #7e22ce !important;
+            box-shadow: 0 2px 6px rgba(126, 34, 206, 0.25);
         }
 
         /* ===== WORKFLOW DOKUMEN FASE 4 STYLING ===== */
@@ -922,6 +929,35 @@
             transform: translateY(-1px);
         }
 
+        .btn-fase4-delete {
+            background-color: #fff1f2 !important;
+            border: 1.5px solid #fecdd3 !important;
+            color: #e11d48 !important;
+            font-size: 0.78rem !important;
+            font-weight: 600 !important;
+            border-radius: 6px !important;
+            padding: 0.4rem 0.85rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 1px 3px rgba(225, 29, 72, 0.08) !important;
+            cursor: pointer !important;
+            text-decoration: none !important;
+        }
+
+        .btn-fase4-delete:hover {
+            background-color: #ffe4e6 !important;
+            border-color: #fda4af !important;
+            color: #be123c !important;
+            box-shadow: 0 3px 8px rgba(225, 29, 72, 0.18) !important;
+            transform: translateY(-1px) !important;
+        }
+
+        .btn-fase4-delete:active {
+            transform: translateY(0) !important;
+        }
+
         .fase4-tab-wrapper {
             background: #ffffff;
             border: 1px solid #e2e8f0 !important;
@@ -935,23 +971,23 @@
             align-items: center;
             background-color: #f1f5f9;
             padding: 4px;
-            border-radius: 8px;
+            border-radius: 9px;
             border: 1px solid #e2e8f0;
-            gap: 3px;
+            gap: 4px;
         }
 
         .fase4-tab-item {
-            border: none;
+            border: 1px solid transparent;
             background: transparent;
             color: #64748b;
             font-size: 0.82rem;
             font-weight: 600;
-            padding: 0.45rem 0.95rem;
-            border-radius: 6px;
+            padding: 0.42rem 0.85rem;
+            border-radius: 7px;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-flex;
             align-items: center;
-            gap: 7px;
+            gap: 8px;
             white-space: nowrap;
             text-decoration: none;
             cursor: pointer;
@@ -959,15 +995,16 @@
         }
 
         .fase4-tab-item:hover {
-            color: #9a55ff;
-            background-color: rgba(255, 255, 255, 0.7);
+            color: #1e293b;
+            background-color: rgba(255, 255, 255, 0.8);
         }
 
         .fase4-tab-item.active {
             background-color: #ffffff !important;
-            color: #7e22ce !important;
+            color: #0f172a !important;
             font-weight: 700 !important;
-            box-shadow: 0 2px 8px rgba(126, 34, 206, 0.12), 0 1px 3px rgba(0, 0, 0, 0.04);
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
             transform: translateY(-1px);
         }
 
@@ -977,19 +1014,80 @@
             justify-content: center;
             font-size: 0.72rem;
             font-weight: 700;
-            padding: 0.15rem 0.5rem;
-            border-radius: 5px;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            min-width: 22px;
+            height: 20px;
+            line-height: 1;
+            margin-left: 2px;
             background-color: #e2e8f0;
             color: #475569;
-            min-width: 22px;
-            line-height: 1.25;
+            border: 1px solid #cbd5e1;
             transition: all 0.2s ease;
         }
 
-        .fase4-tab-item.active .fase4-tab-count {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-            color: #ffffff !important;
-            box-shadow: 0 2px 6px rgba(154, 85, 255, 0.3);
+        /* Default / All Tab Active Badge */
+        .fase4-tab-item.active .fase4-tab-count,
+        .fase4-tab-item[data-status="all"].active .fase4-tab-count {
+            background: #ede9fe !important;
+            color: #7e22ce !important;
+            border: 1px solid #d8b4fe !important;
+            box-shadow: none !important;
+        }
+
+        /* Selesai / Terbit Tab Pill */
+        .fase4-tab-item[data-status="terbit"] .fase4-tab-count {
+            background-color: #f0fdf4;
+            color: #16a34a;
+            border-color: #bbf7d0;
+        }
+        .fase4-tab-item[data-status="terbit"].active .fase4-tab-count {
+            background: #dcfce7 !important;
+            color: #15803d !important;
+            border: 1px solid #86efac !important;
+            box-shadow: none !important;
+        }
+
+        /* Dalam Proses Tab Pill */
+        .fase4-tab-item[data-status="proses"] .fase4-tab-count {
+            background-color: #fffbeb;
+            color: #d97706;
+            border-color: #fde68a;
+        }
+        .fase4-tab-item[data-status="proses"].active .fase4-tab-count {
+            background: #fef3c7 !important;
+            color: #b45309 !important;
+            border: 1px solid #fcd34d !important;
+            box-shadow: none !important;
+        }
+
+        /* Belum Ada Tab Pill */
+        .fase4-tab-item[data-status="belum"] .fase4-tab-count {
+            background-color: #f8fafc;
+            color: #64748b;
+            border-color: #e2e8f0;
+        }
+        .fase4-tab-item[data-status="belum"].active .fase4-tab-count {
+            background: #f1f5f9 !important;
+            color: #334155 !important;
+            border: 1px solid #cbd5e1 !important;
+            box-shadow: none !important;
+        }
+
+        .btn-modal-rincian-trigger {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            box-shadow: none !important;
+            margin-top: 14px !important;
+            margin-bottom: 6px !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .btn-modal-rincian-trigger:hover {
+            background: #f8fafc !important;
+            border-color: #9a55ff !important;
+            box-shadow: 0 2px 8px rgba(154, 85, 255, 0.12) !important;
         }
 
         .fase4-card-inner {
@@ -1006,8 +1104,7 @@
 
         .fase4-card-inner:hover {
             border-color: #cbd5e1;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .fase4-card-inner.is-final-goal {
@@ -1211,6 +1308,27 @@
             background-color: #ffffff !important;
         }
 
+        textarea.fase4-form-input {
+            min-height: 100px !important;
+            height: auto !important;
+            line-height: 1.5 !important;
+            resize: vertical !important;
+            font-size: 0.85rem !important;
+        }
+
+        textarea.fase4-form-input.fase4-syarat-area {
+            min-height: 120px !important;
+        }
+
+        textarea.fase4-form-input.fase4-notes-area {
+            min-height: 90px !important;
+        }
+
+        textarea.fase4-form-input.fase4-name-area {
+            min-height: 58px !important;
+            line-height: 1.35 !important;
+        }
+
         .fase4-form-input:focus {
             border-color: #9a55ff !important;
             box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
@@ -1291,10 +1409,16 @@
         }
 
         .master-picker-card.is-disabled {
-            background-color: #f8fafc !important;
-            border-color: #e2e8f0 !important;
-            opacity: 0.75;
-            cursor: default !important;
+            background-color: #f1f5f9 !important;
+            border: 1.5px dashed #cbd5e1 !important;
+            opacity: 0.88;
+            cursor: not-allowed !important;
+        }
+
+        .master-picker-card.is-disabled:hover {
+            transform: none !important;
+            box-shadow: none !important;
+            border-color: #cbd5e1 !important;
         }
 
         .select-all-box {
@@ -1324,15 +1448,18 @@
         .master-search-icon {
             position: absolute;
             left: 14px;
-            font-size: 1.15rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
             color: #9a55ff;
             pointer-events: none;
-            z-index: 2;
+            z-index: 5;
         }
 
-        .master-search-input {
+        .master-search-input,
+        #searchMasterPickerInput {
             height: 42px !important;
-            padding-left: 42px !important;
+            padding-left: 44px !important;
             padding-right: 14px !important;
             font-size: 0.88rem !important;
             border-radius: 8px !important;
@@ -1420,25 +1547,363 @@
             transform: none !important;
         }
 
-        #masterPickerListContainer {
-            display: grid !important;
-            grid-template-columns: repeat(2, 1fr) !important;
-            gap: 12px !important;
-            margin: 0 !important;
-        }
-
-        @media (max-width: 767.98px) {
-            #masterPickerListContainer {
-                grid-template-columns: 1fr !important;
+        /* ===== RESPONSIVE STYLING (MOBILE & TABLET) ===== */
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            .fase4-top-bar {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 12px !important;
+            }
+            .fase4-top-actions {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+            }
+            .fase4-top-actions .btn {
+                flex: 1 1 auto !important;
+                justify-content: center !important;
+            }
+            .fase4-summary-card .col-md-3 {
+                flex: 0 0 50% !important;
+                max-width: 50% !important;
+            }
+            .fase4-tab-wrapper {
                 gap: 10px !important;
             }
             .fase4-tab-nav {
-                width: 100%;
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
+                flex: 1 1 auto !important;
+            }
+            .fase4-search-wrapper {
+                flex: 1 1 240px !important;
+                min-width: 220px !important;
+            }
+            .modal-dialog {
+                max-width: 92% !important;
+                width: 92% !important;
+                margin: 1.25rem auto !important;
+            }
+            .modal-body {
+                max-height: 72vh !important;
             }
         }
 
+        @media (max-width: 767.98px) {
+            /* TOP BAR & ACTIONS */
+            .fase4-top-bar {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                padding: 1rem !important;
+                gap: 12px !important;
+            }
+            .fase4-top-info h5 {
+                font-size: 0.98rem !important;
+                line-height: 1.35 !important;
+            }
+            .fase4-top-actions {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100% !important;
+                gap: 8px !important;
+            }
+            .fase4-top-actions .btn {
+                width: 100% !important;
+                justify-content: center !important;
+                padding: 0.55rem 0.9rem !important;
+                font-size: 0.82rem !important;
+            }
+
+            /* SUMMARY CARD */
+            .fase4-summary-card {
+                padding: 0.85rem !important;
+            }
+
+            /* PROGRESS & STAT BADGES */
+            .fase4-stat-badges {
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 6px !important;
+                width: 100% !important;
+                justify-content: flex-start !important;
+            }
+            .fase4-stat-badges .badge {
+                flex: 1 1 calc(33.333% - 6px) !important;
+                min-width: 110px !important;
+                justify-content: center !important;
+                text-align: center !important;
+                padding: 0.45rem 0.5rem !important;
+                font-size: 0.74rem !important;
+            }
+
+            /* FILTER TABS & SEARCH BAR */
+            .fase4-tab-wrapper {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                padding: 0.75rem !important;
+                gap: 8px !important;
+            }
+            .fase4-tab-nav {
+                width: 100% !important;
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 6px !important;
+                padding: 4px !important;
+            }
+            .fase4-tab-item {
+                width: 100% !important;
+                justify-content: center !important;
+                padding: 0.45rem 0.4rem !important;
+                font-size: 0.76rem !important;
+                gap: 6px !important;
+            }
+            .fase4-tab-item span:first-of-type {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+            .fase4-search-wrapper {
+                width: 100% !important;
+                min-width: 100% !important;
+            }
+
+            /* CARDS IN GRID */
+            .fase4-doc-card-inner {
+                padding: 0.85rem !important;
+            }
+            .fase4-card-head {
+                gap: 6px !important;
+            }
+            .fase4-card-head-title {
+                max-width: 100% !important;
+            }
+            .fase4-card-footer {
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+            }
+            .fase4-card-footer .btn-success {
+                flex-grow: 1 !important;
+                justify-content: center !important;
+            }
+
+            /* MODALS (DETAIL, TAMBAH, MASTER) */
+            .modal-dialog {
+                margin: 0.5rem auto !important;
+                width: 96% !important;
+                max-width: 96% !important;
+            }
+            .modal-header {
+                padding: 0.75rem 1rem !important;
+            }
+            .modal-header .modal-title {
+                font-size: 0.95rem !important;
+            }
+            .modal-body {
+                padding: 0.75rem !important;
+                max-height: 74vh !important;
+            }
+            .modal-body .p-3 {
+                padding: 0.75rem !important;
+            }
+            .fase4-modal-footer {
+                padding: 0.75rem 1rem !important;
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+            }
+            .fase4-modal-footer .btn {
+                flex: 1 1 calc(50% - 6px) !important;
+                justify-content: center !important;
+                text-align: center !important;
+                padding: 0.5rem 0.75rem !important;
+                font-size: 0.82rem !important;
+            }
+
+            /* MASTER PICKER SPECIFICS */
+            .master-picker-header {
+                padding: 0.75rem 1rem !important;
+            }
+            .master-search-group,
+            .master-category-select {
+                width: 100% !important;
+            }
+            .select-all-box {
+                width: 100% !important;
+                justify-content: space-between !important;
+            }
+            #masterPickerSelectedBadge {
+                width: 100% !important;
+                text-align: center !important;
+                justify-content: center !important;
+            }
+            .master-picker-item {
+                width: 100% !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .fase4-tab-nav {
+                grid-template-columns: 1fr !important;
+            }
+            .fase4-stat-badges .badge {
+                flex: 1 1 100% !important;
+            }
+            .fase4-modal-footer .btn {
+                flex: 1 1 100% !important;
+                width: 100% !important;
+            }
+        }
+
+        /* ===== MODERN FILE UPLOAD STYLING (FASE 1 PARITY) ===== */
+        .pratanah-file-upload-modern {
+            position: relative;
+            width: 100%;
+        }
+
+        .pratanah-file-upload-modern input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            z-index: 2;
+            top: 0;
+            left: 0;
+        }
+
+        .pratanah-file-label-modern {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.65rem 1rem;
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+            border: 2px dashed #d0d4db;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pratanah-file-upload-modern:hover .pratanah-file-label-modern {
+            border-color: #9a55ff;
+            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
+        }
+
+        .pratanah-file-label-modern i {
+            font-size: 1.3rem;
+            color: #9a55ff;
+            background: rgba(154, 85, 255, 0.1);
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .pratanah-file-info-modern {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .pratanah-file-info-modern span {
+            display: block;
+            font-weight: 600;
+            color: #2c2e3f;
+            font-size: 0.8rem;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .pratanah-file-info-modern small {
+            color: #6c7383;
+            font-size: 0.68rem;
+            display: block;
+        }
+
+        .fase4-doc-card-inner {
+            border: 1.5px solid #cbd5e1 !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            transform: none !important;
+        }
+
+        .fase4-doc-card-inner:hover {
+            border-color: #9a55ff !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+            transform: none !important;
+        }
+
+        .fase4-syarat-list-container {
+            max-height: none;
+            overflow: visible;
+        }
+
+        .btn-back-daftar {
+            background-color: #ffffff !important;
+            border: 1.5px solid #cbd5e1 !important;
+            color: #334155 !important;
+            font-size: 0.82rem !important;
+            font-weight: 600 !important;
+            border-radius: 8px !important;
+            padding: 0.5rem 1.1rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            text-decoration: none !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .btn-back-daftar:hover {
+            background-color: #f8fafc !important;
+            border-color: #9a55ff !important;
+            color: #7e22ce !important;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.15) !important;
+            transform: translateY(-1px) !important;
+        }
+
+        /* Universal Icon Spacing Rules so icons NEVER stick to text */
+        i.fas, i.far, i.fab, i.mdi {
+            display: inline-block !important;
+            vertical-align: middle !important;
+            line-height: 1 !important;
+        }
+
+        /* Guarantee proper margin on icons preceding text */
+        .btn > i:first-child,
+        .badge > i:first-child,
+        .form-label > i:first-child,
+        .form-label span > i:first-child,
+        h5 > i:first-child,
+        h6 > i:first-child,
+        span > i:first-child,
+        div > i:first-child {
+            margin-right: 7px !important;
+        }
+
+        /* Reset margin only when icon is strictly solitary */
+        .btn:has(> i:only-child) > i,
+        .btn-icon > i,
+        button:has(> i:only-child) > i {
+            margin-right: 0 !important;
+        }
+
+        /* Filter Tab Items and Navigation Tabs */
+        .fase4-tab-item {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 7px !important;
+        }
+        .fase4-tab-item > i {
+            margin-right: 0 !important;
+        }
+
+        .properti-nav-tab {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        .properti-nav-tab > i {
+            margin-right: 0 !important;
+        }
     </style>
 
 
@@ -1461,8 +1926,9 @@
                                 </small>
                             </div>
                             <div class="d-flex align-items-center gap-2">
-                                <a href="{{ route('properti-all') }}" class="btn btn-sm btn-outline-secondary px-3 py-2 rounded-2 d-inline-flex align-items-center gap-1.5" style="font-size: 0.84rem; font-weight: 600;">
-                                    <i class="fas fa-arrow-left"></i> Kembali ke Daftar Tanah
+                                <a href="{{ route('properti-all') }}" class="btn-back-daftar">
+                                    <i class="fas fa-arrow-left text-primary"></i>
+                                    <span>Kembali ke Daftar Tanah</span>
                                 </a>
                             </div>
                         </div>
@@ -1783,125 +2249,113 @@
 
                             <hr class="properti-hr">
 
-                            {{-- ================= LEGAL ================= --}}
+                            {{-- ================= DOKUMEN LEGAL & BERKAS TERVERIFIKASI (FASE 1 CARD STYLE) ================= --}}
                             <h5 class="properti-section-title">
                                 <i class="fas fa-file-contract me-2"></i>
-                                Dokumen Legal
+                                Dokumen Legal & Berkas Terverifikasi
                             </h5>
 
-                            <div class="properti-row">
-                                @foreach ($documentTypes as $type)
-                                    @php
-                                        $existingDoc = $land->documents->where('document_type_id', $type->id)->first();
-                                        $isDocVerified = ($existingDoc && $existingDoc->status === 'verified') || $land->isFromPraLandbank() || $land->legal_status === 'verified';
-                                    @endphp
-                                    <div class="properti-col-md-4">
-                                        <div class="properti-form-group">
-                                            <label class="properti-form-label d-flex justify-content-between align-items-center">
-                                                <span>No {{ $type->name }}</span>
-                                                @if($isDocVerified && $existingDoc && $existingDoc->document_number)
-                                                    <span class="badge bg-success-subtle text-success border border-success px-1.5 py-0.5" style="font-size: 0.65rem;">
-                                                        <i class="fas fa-lock me-1"></i>Terkunci
-                                                    </span>
-                                                @endif
-                                            </label>
-
-                                            <input type="text" name="documents[{{ $type->id }}][number]"
-                                                class="properti-form-control {{ $isDocVerified ? 'bg-light text-muted' : '' }}" 
-                                                placeholder="Nomor {{ $type->name }}"
-                                                value="{{ old('documents.'.$type->id.'.number', $existingDoc ? $existingDoc->document_number : '') }}"
-                                                {{ $isDocVerified ? 'readonly' : '' }}>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            <hr class="properti-hr">
-
-                            <h5 class="properti-section-title">
-                                <i class="fas fa-upload me-2"></i>
-                                Berkas & Dokumen Terverifikasi
-                            </h5>
-
-                            <div class="properti-row">
+                            <div class="row g-3 mb-3">
                                 @foreach ($documentTypes as $type)
                                     @php
                                         $existingDoc = $land->documents->where('document_type_id', $type->id)->first();
                                         $hasDoc = $existingDoc && $existingDoc->file_path;
                                         $isDocVerified = ($existingDoc && $existingDoc->status === 'verified') || $land->isFromPraLandbank() || $land->legal_status === 'verified';
                                     @endphp
-                                    <div class="properti-col-md-4">
-                                        <div class="properti-form-group mb-3">
-                                            <label class="properti-form-label d-flex justify-content-between align-items-center mb-1">
-                                                <span>Berkas {{ $type->name }}</span>
-                                                @if($hasDoc && $isDocVerified)
-                                                    <span class="badge bg-success text-white fw-bold px-2 py-1" style="font-size: 0.68rem; border-radius: 4px; background-color: #28a745 !important;">
-                                                        <i class="fas fa-check-circle me-1"></i>Terverifikasi (Terkunci)
-                                                    </span>
-                                                @elseif($hasDoc)
-                                                    <span class="badge bg-warning text-dark fw-bold px-2 py-1" style="font-size: 0.68rem; border-radius: 4px;">
-                                                        <i class="fas fa-clock me-1"></i>Menunggu Verifikasi
-                                                    </span>
-                                                @else
-                                                    <span class="badge bg-secondary text-white px-2 py-1" style="font-size: 0.68rem; border-radius: 4px;">
-                                                        Belum Upload
-                                                    </span>
-                                                @endif
-                                            </label>
-
-                                            @if($isDocVerified && $hasDoc)
-                                                <!-- KOTAK DOKUMEN TERKUNCI (READ ONLY KARENA SUDAH VERIFIKASI) -->
-                                                <div class="card p-3 rounded-3 border bg-light d-flex flex-column justify-content-between" style="min-height: 110px; border-color: #28a745 !important; background: rgba(40, 167, 69, 0.04) !important;">
-                                                    <div class="d-flex align-items-start gap-2">
-                                                        <i class="fas fa-file-shield text-success fs-3 mt-1"></i>
-                                                        <div>
-                                                            <strong class="text-success d-block" style="font-size: 0.85rem;">Dokumen Sah Terverifikasi</strong>
-                                                            <small class="text-muted d-block" style="font-size: 0.73rem;">Dokumen ini telah disetujui secara legal dan tidak dapat diubah lagi.</small>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-between">
-                                                        <a href="{{ asset('uploads/' . $existingDoc->file_path) }}" target="_blank" class="btn btn-xs btn-outline-success d-inline-flex align-items-center gap-1 py-1 px-2 text-decoration-none fw-semibold" style="font-size: 0.75rem; border-radius: 6px;">
-                                                            <i class="fas fa-eye"></i> Pratinjau Dokumen
-                                                        </a>
-                                                        @if($existingDoc->document_number)
-                                                            <small class="text-muted font-monospace" style="font-size: 0.72rem;">No: {{ $existingDoc->document_number }}</small>
-                                                        @endif
-                                                    </div>
+                                    <div class="col-12 col-md-6 col-xl-4">
+                                        <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative fase4-doc-card-inner" style="background: #ffffff;">
+                                            <!-- Header Card Box (Fase 1 Style) -->
+                                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
+                                                <div>
+                                                    <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">{{ $type->name }}</h6>
                                                 </div>
-                                            @else
-                                                <!-- FORM UPLOAD (HANYA BISA JIKA BELUM TERVERIFIKASI) -->
-                                                <div class="properti-file-upload-modern {{ $hasDoc ? 'is-uploaded' : '' }}">
-                                                    <input type="file" name="documents[{{ $type->id }}][file]"
-                                                        id="upload_{{ $type->id }}" accept=".pdf,.jpg,.jpeg,.png"
-                                                        data-type-name="{{ $type->name }}"
-                                                        data-has-existing="{{ $hasDoc ? '1' : '0' }}">
-
-                                                    <div class="properti-file-label-modern">
-                                                        <i class="{{ $hasDoc ? 'fas fa-file-circle-check text-success' : 'fas fa-cloud-upload-alt' }}"
-                                                           style="{{ $hasDoc ? 'color: #28a745 !important; background: rgba(40, 167, 69, 0.1) !important;' : '' }}"></i>
-                                                        <div class="properti-file-info-modern">
-                                                            <span class="file-title-text {{ $hasDoc ? 'text-success fw-bold' : '' }}">
-                                                                {{ $hasDoc ? 'Dokumen Tersedia (Klik Ganti)' : 'Upload ' . $type->name . ' Baru' }}
-                                                            </span>
-                                                            <small class="file-sub-text text-muted">
-                                                                Format: PDF, JPG, PNG (Max: 2MB)
-                                                            </small>
-                                                        </div>
-                                                        <span class="properti-file-size"></span>
-                                                    </div>
+                                                <div class="d-flex align-items-center gap-1 flex-wrap justify-content-end">
+                                                    @if($hasDoc && $isDocVerified)
+                                                        <span class="badge bg-success py-1 px-2 text-wrap" style="font-size: 10px;">
+                                                            <i class="mdi mdi-shield-check me-1"></i>Sah (ACC)
+                                                        </span>
+                                                    @elseif($hasDoc)
+                                                        <span class="badge bg-warning text-dark py-1 px-2 text-wrap" style="font-size: 10px;">
+                                                            <i class="mdi mdi-clock-outline me-1"></i>Menunggu Verifikasi
+                                                        </span>
+                                                    @else
+                                                        <span class="badge bg-light text-muted border py-1 px-2" style="font-size: 10px;">
+                                                            Belum Upload
+                                                        </span>
+                                                    @endif
                                                 </div>
-                                                
+                                            </div>
+
+                                            <!-- Input Nomor Dokumen (Fase 1 Style) -->
+                                            <div class="mb-2">
+                                                <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.78rem; font-weight: 600;">
+                                                    <span>Nomor Dokumen {{ $type->name }}</span>
+                                                    @if($isDocVerified && $existingDoc && $existingDoc->document_number)
+                                                        <span class="badge bg-success-subtle text-success border border-success px-1.5 py-0.2" style="font-size: 0.65rem;">
+                                                            <i class="fas fa-lock me-1"></i>Terkunci
+                                                        </span>
+                                                    @endif
+                                                </label>
+                                                <input type="text" 
+                                                    name="documents[{{ $type->id }}][number]"
+                                                    class="form-control form-control-sm {{ $isDocVerified ? 'bg-light text-muted' : '' }}" 
+                                                    placeholder="Nomor {{ $type->name }}"
+                                                    value="{{ old('documents.'.$type->id.'.number', $existingDoc ? $existingDoc->document_number : '') }}"
+                                                    style="font-size: 0.84rem;"
+                                                    {{ $isDocVerified ? 'readonly' : '' }}>
+                                            </div>
+
+                                            <!-- Upload / Display Berkas File (Fase 1 Style) -->
+                                            <div class="mb-1 flex-grow-1 d-flex flex-column justify-content-end">
                                                 @if($hasDoc)
-                                                    <div class="mt-2 d-flex align-items-center justify-content-between">
-                                                        <a href="{{ asset('uploads/' . $existingDoc->file_path) }}" target="_blank" class="btn btn-xs btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2 text-decoration-none fw-semibold" style="font-size: 0.75rem; border-radius: 6px; border: 1px solid rgba(154, 85, 255, 0.2); color: #9a55ff; background: rgba(154, 85, 255, 0.05);">
-                                                            <i class="fas fa-eye"></i> Lihat Dokumen Saat Ini
+                                                    <!-- State: Berkas Terunggah (Fase 1 Style) -->
+                                                    <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                                            <div class="p-1.5 rounded-2 flex-shrink-0 bg-success bg-opacity-10 text-success">
+                                                                <i class="mdi mdi-file-check-outline" style="font-size: 1.25rem;"></i>
+                                                            </div>
+                                                            <div class="overflow-hidden flex-grow-1">
+                                                                <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">
+                                                                    {{ $isDocVerified ? 'Dokumen Sah Terverifikasi' : 'Berkas Terunggah' }}
+                                                                </span>
+                                                                <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($existingDoc->file_path) }}</small>
+                                                            </div>
+                                                        </div>
+                                                        <a href="{{ asset('uploads/' . $existingDoc->file_path) }}" target="_blank" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm text-decoration-none" style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
+                                                            <i class="mdi mdi-eye me-1"></i>Lihat Berkas
                                                         </a>
-                                                        @if($existingDoc->document_number)
-                                                            <small class="text-muted" style="font-size: 0.72rem;">No: {{ $existingDoc->document_number }}</small>
-                                                        @endif
+                                                    </div>
+
+                                                    <!-- Opsi Ganti / Upload Ulang jika belum diverifikasi / terkunci -->
+                                                    @if(!$isDocVerified)
+                                                        <div class="pratanah-file-upload-modern mb-1">
+                                                            <input type="file" name="documents[{{ $type->id }}][file]" id="upload_{{ $type->id }}" accept=".pdf,.jpg,.jpeg,.png">
+                                                            <div class="pratanah-file-label-modern py-1 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                                                                <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
+                                                                <div class="pratanah-file-info-modern">
+                                                                    <span class="file-label-text text-secondary" style="font-size: 0.76rem; font-weight: 600;">Ganti Berkas / Upload Ulang</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                @else
+                                                    <!-- State: Belum Upload (Fase 1 Style) -->
+                                                    <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.78rem; font-weight: 600;">
+                                                        <span>Upload Berkas {{ $type->name }}</span>
+                                                        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">Format PDF/JPG/PNG</span>
+                                                    </label>
+                                                    <div class="pratanah-file-upload-modern">
+                                                        <input type="file" name="documents[{{ $type->id }}][file]" id="upload_{{ $type->id }}" accept=".pdf,.jpg,.jpeg,.png">
+                                                        <div class="pratanah-file-label-modern py-2 px-3" style="border: 1.5px dashed #9a55ff; background: #faf5ff;">
+                                                            <i class="mdi mdi-cloud-upload" style="color: #9a55ff; font-size: 1.3rem;"></i>
+                                                            <div class="pratanah-file-info-modern">
+                                                                <span class="file-label-text fw-bold text-primary" style="font-size: 0.82rem;">Pilih Berkas {{ $type->name }}</span>
+                                                                <small style="font-size: 0.70rem; color: #8c98a4;">Format PDF, JPG, PNG (Maks 2MB)</small>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 @endif
-                                            @endif
+                                            </div>
                                         </div>
                                     </div>
                                 @endforeach
@@ -1920,43 +2374,65 @@
                                 $denahUrl = $hasDenah ? asset(str_starts_with($land->denah, 'uploads/') ? $land->denah : 'uploads/' . $land->denah) : null;
                             @endphp
 
-                            <div class="properti-row">
-                                <div class="properti-col-md-12">
-                                    <div class="properti-form-group mb-3">
-                                        <label class="properti-form-label d-flex justify-content-between align-items-center mb-1">
-                                            <span>Berkas Denah / Siteplan</span>
-                                            @if($hasDenah)
-                                                <span class="badge bg-success text-white fw-bold px-2 py-1" style="font-size: 0.68rem; border-radius: 4px; background-color: #28a745 !important;">
-                                                    <i class="fas fa-check-circle me-1"></i>Denah Terunggah
-                                                </span>
-                                            @endif
-                                        </label>
-
-                                        <div class="properti-file-upload-modern {{ $hasDenah ? 'is-uploaded' : '' }}">
-                                            <input type="file" name="denah" id="upload_denah" accept=".pdf,.jpg,.jpeg,.png,.webp,.svg"
-                                                data-type-name="Denah / Siteplan"
-                                                data-has-existing="{{ $hasDenah ? '1' : '0' }}">
-
-                                            <div class="properti-file-label-modern">
-                                                <i class="{{ $hasDenah ? 'fas fa-file-circle-check text-success' : 'fas fa-map' }}"
-                                                   style="{{ $hasDenah ? 'color: #28a745 !important; background: rgba(40, 167, 69, 0.1) !important;' : '' }}"></i>
-                                                <div class="properti-file-info-modern">
-                                                    <span class="file-title-text {{ $hasDenah ? 'text-success fw-bold' : '' }}">
-                                                        {{ $hasDenah ? 'Denah / Siteplan Sudah Terunggah' : 'Upload Denah / Siteplan Baru' }}
+                            <div class="row g-3 mb-3">
+                                <div class="col-12">
+                                    <div class="card border shadow-sm rounded-3 p-3 position-relative fase4-doc-card-inner" style="background: #ffffff;">
+                                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
+                                            <div>
+                                                <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">Berkas Denah / Siteplan</h6>
+                                            </div>
+                                            <div>
+                                                @if($hasDenah)
+                                                    <span class="badge bg-success py-1 px-2 text-wrap" style="font-size: 10px;">
+                                                        <i class="mdi mdi-shield-check me-1"></i>Denah Terunggah
                                                     </span>
-                                                    <small class="file-sub-text text-muted">
-                                                        {{ $hasDenah ? 'Klik di sini jika ingin mengganti file denah' : 'Format: JPG, PNG, WEBP, SVG, PDF (Max: 5MB)' }}
-                                                    </small>
-                                                </div>
-                                                <span class="properti-file-size"></span>
+                                                @else
+                                                    <span class="badge bg-light text-muted border py-1 px-2" style="font-size: 10px;">
+                                                        Belum Upload
+                                                    </span>
+                                                @endif
                                             </div>
                                         </div>
 
                                         @if($hasDenah)
-                                            <div class="mt-2 d-flex align-items-center gap-2">
-                                                <a href="{{ $denahUrl }}" target="_blank" class="btn btn-xs btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2 text-decoration-none fw-semibold" style="font-size: 0.75rem; border-radius: 6px; border: 1px solid rgba(154, 85, 255, 0.2); color: #9a55ff; background: rgba(154, 85, 255, 0.05);">
-                                                    <i class="fas fa-eye"></i> Lihat Berkas Denah Saat Ini
+                                            <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                                                <div class="d-flex align-items-center gap-2 mb-2">
+                                                    <div class="p-1.5 rounded-2 flex-shrink-0 bg-success bg-opacity-10 text-success">
+                                                        <i class="mdi mdi-file-check-outline" style="font-size: 1.25rem;"></i>
+                                                    </div>
+                                                    <div class="overflow-hidden flex-grow-1">
+                                                        <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">Denah Terunggah</span>
+                                                        <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($land->denah) }}</small>
+                                                    </div>
+                                                </div>
+                                                <a href="{{ $denahUrl }}" target="_blank" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm text-decoration-none mb-2" style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
+                                                    <i class="mdi mdi-eye me-1"></i>Lihat Berkas Denah
                                                 </a>
+                                            </div>
+
+                                            <div class="pratanah-file-upload-modern">
+                                                <input type="file" name="denah" id="upload_denah" accept=".pdf,.jpg,.jpeg,.png,.webp,.svg">
+                                                <div class="pratanah-file-label-modern py-1 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                                                    <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
+                                                    <div class="pratanah-file-info-modern">
+                                                        <span class="file-label-text text-secondary" style="font-size: 0.76rem; font-weight: 600;">Ganti Berkas Denah / Upload Ulang</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.78rem; font-weight: 600;">
+                                                <span>Upload Berkas Denah / Siteplan</span>
+                                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">JPG, PNG, WEBP, PDF (Maks 5MB)</span>
+                                            </label>
+                                            <div class="pratanah-file-upload-modern">
+                                                <input type="file" name="denah" id="upload_denah" accept=".pdf,.jpg,.jpeg,.png,.webp,.svg">
+                                                <div class="pratanah-file-label-modern py-2 px-3" style="border: 1.5px dashed #9a55ff; background: #faf5ff;">
+                                                    <i class="mdi mdi-cloud-upload" style="color: #9a55ff; font-size: 1.3rem;"></i>
+                                                    <div class="pratanah-file-info-modern">
+                                                        <span class="file-label-text fw-bold text-primary" style="font-size: 0.82rem;">Pilih Berkas Denah / Siteplan</span>
+                                                        <small style="font-size: 0.70rem; color: #8c98a4;">Format: JPG, PNG, WEBP, SVG, PDF (Maks 5MB)</small>
+                                                    </div>
+                                                </div>
                                             </div>
                                         @endif
                                     </div>
@@ -2121,31 +2597,31 @@
                             @endphp
 
                             <!-- TOP ACTION BAR -->
-                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 p-3 bg-light rounded-3 border">
-                                <div>
+                            <div class="fase4-top-bar d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 p-3 bg-light rounded-3 border">
+                                <div class="fase4-top-info">
                                     <h5 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2" style="font-size: 1.05rem;">
                                         <i class="fas fa-stamp text-primary"></i>
-                                        Workflow Dokumen Pengindukan & Perizinan Wilayah
+                                        <span>Workflow Dokumen Pengindukan & Perizinan Wilayah</span>
                                     </h5>
                                     <small class="text-muted" style="font-size: 0.8rem;">
                                         Pencatatan alur pengurusan izin (Kelurahan/Kecamatan, BPN, PKKPR OSS, Validasi Pajak, hingga SHGB Induk an. PT).
                                     </small>
                                 </div>
-                                <div class="d-flex flex-wrap align-items-center gap-2">
-                                    <button type="button" class="btn btn-sm btn-fase4-add shadow-sm" onclick="scrollToNewDocForm()">
-                                        <i class="fas fa-plus-circle me-1"></i> <span>+ Tambah Dokumen Lapangan</span>
+                                <div class="fase4-top-actions d-flex flex-wrap align-items-center gap-2">
+                                    <button type="button" class="btn btn-sm btn-fase4-add shadow-sm d-inline-flex align-items-center gap-2" onclick="openAddNewDocModal()">
+                                        <i class="fas fa-plus-circle"></i> <span>Tambah Dokumen Lapangan</span>
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-fase4-master shadow-sm" onclick="openMasterPickerModal()">
-                                        <i class="fas fa-file-signature me-1"></i> <span>+ Pilih dari Master Perizinan</span>
+                                    <button type="button" class="btn btn-sm btn-fase4-master shadow-sm d-inline-flex align-items-center gap-2" onclick="openMasterPickerModal()">
+                                        <i class="fas fa-layer-group"></i> <span>Pilih dari Master Perizinan</span>
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-fase4-template shadow-sm" onclick="loadFase4DefaultTemplate()" title="Muat paket template default">
-                                        <i class="fas fa-clipboard-list me-1"></i> <span>Gunakan Template Standar</span>
+                                    <button type="button" class="btn btn-sm btn-fase4-template shadow-sm d-inline-flex align-items-center gap-2" onclick="loadFase4DefaultTemplate()" title="Muat paket template default">
+                                        <i class="fas fa-clipboard-list"></i> <span>Gunakan Template Standar</span>
                                     </button>
                                 </div>
                             </div>
 
                             <!-- RINGKASAN DATA PROPERTI PASCA -->
-                            <div class="p-3 rounded-3 mb-3" style="background: linear-gradient(135deg, #fbf9ff, #f6f0ff); border: 1px solid rgba(154, 85, 255, 0.2);">
+                            <div class="fase4-summary-card p-3 rounded-3 mb-3" style="background: linear-gradient(135deg, #fbf9ff, #f6f0ff); border: 1px solid rgba(154, 85, 255, 0.2);">
                                 <div class="row g-3 align-items-center">
                                     <div class="col-12 col-md-3">
                                         <small class="text-muted d-block" style="font-size: 0.74rem;">Nama Lahan / Properti</small>
@@ -2157,8 +2633,9 @@
                                     </div>
                                     <div class="col-12 col-md-3">
                                         <small class="text-muted d-block" style="font-size: 0.74rem;">Alamat / Lokasi</small>
-                                        <span class="fw-semibold text-dark text-truncate d-block" style="font-size: 0.85rem;" title="{{ $land->address }}">
-                                            <i class="fas fa-map-marker-alt text-danger me-1"></i>{{ $land->city ?? ($land->address ?? '-') }}
+                                        <span class="fw-semibold text-dark text-truncate d-inline-flex align-items-center gap-1.5" style="font-size: 0.85rem;" title="{{ $land->address }}">
+                                            <i class="fas fa-map-marker-alt text-danger"></i>
+                                            <span>{{ $land->city ?? ($land->address ?? '-') }}</span>
                                         </span>
                                     </div>
                                     <div class="col-12 col-md-3 text-md-end">
@@ -2173,8 +2650,8 @@
                                 <div class="row align-items-center g-3">
                                     <div class="col-12 col-md-5">
                                         <div class="d-flex justify-content-between align-items-center mb-1.5">
-                                            <span class="fw-bold text-dark" style="font-size: 0.84rem;">
-                                                <i class="fas fa-chart-pie text-primary me-1"></i> Progres Dokumen Pengindukan:
+                                            <span class="fw-bold text-dark d-inline-flex align-items-center gap-1.5" style="font-size: 0.84rem;">
+                                                <i class="fas fa-chart-pie text-primary"></i> <span>Progres Dokumen Pengindukan:</span>
                                             </span>
                                             <span class="fw-bold text-success" id="fase4_progress_text" style="font-size: 0.84rem;">
                                                 {{ $terbitCount }} dari {{ $totalWorkflowDocs }} Selesai ({{ $progressWorkflowPercent }}%)
@@ -2185,16 +2662,16 @@
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-7">
-                                        <div class="d-flex flex-wrap align-items-center justify-content-md-end gap-2">
-                                            <div class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1.5 rounded-2 d-flex align-items-center gap-1.5" style="font-size: 0.78rem;">
+                                        <div class="fase4-stat-badges d-flex flex-wrap align-items-center justify-content-md-end gap-2">
+                                            <div class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1.5 rounded-2 d-inline-flex align-items-center gap-2" style="font-size: 0.78rem;">
                                                 <i class="fas fa-check-circle"></i>
                                                 <span id="stat_terbit">{{ $terbitCount }} Selesai / Terbit</span>
                                             </div>
-                                            <div class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2.5 py-1.5 rounded-2 d-flex align-items-center gap-1.5" style="font-size: 0.78rem;">
+                                            <div class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2.5 py-1.5 rounded-2 d-inline-flex align-items-center gap-2" style="font-size: 0.78rem;">
                                                 <i class="fas fa-clock"></i>
                                                 <span id="stat_proses">{{ $prosesCount }} Dalam Proses</span>
                                             </div>
-                                            <div class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-2.5 py-1.5 rounded-2 d-flex align-items-center gap-1.5" style="font-size: 0.78rem;">
+                                            <div class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-2.5 py-1.5 rounded-2 d-inline-flex align-items-center gap-2" style="font-size: 0.78rem;">
                                                 <i class="fas fa-exclamation-circle"></i>
                                                 <span id="stat_belum">{{ $belumCount }} Belum Ada</span>
                                             </div>
@@ -2207,7 +2684,7 @@
                             <div class="fase4-tab-wrapper d-flex flex-wrap justify-content-between align-items-center gap-2.5 mb-4 p-2.5 bg-white rounded-3 border shadow-sm">
                                 <div class="fase4-tab-nav" role="tablist">
                                     <button type="button" class="fase4-tab-item active fase4-filter-btn" data-status="all" onclick="filterFase4Docs('all', this)">
-                                        <i class="fas fa-th-large"></i>
+                                        <i class="fas fa-th-large text-primary"></i>
                                         <span>Semua Dokumen</span>
                                         <span class="fase4-tab-count" id="count_all">{{ $totalWorkflowDocs }}</span>
                                     </button>
@@ -2236,8 +2713,8 @@
                             </div>
 
                             
-                            <!-- LIST FORM WORKFLOW DOKUMEN (DIRECT INLINE FORM PER DOKUMEN) -->
-                            <div id="fase4_docs_container" class="d-flex flex-column gap-3 mb-4">
+                            <!-- LIST FORM WORKFLOW DOKUMEN (FASE 1 CARD GRID AESTHETIC) -->
+                            <div id="fase4_docs_container" class="row g-3 mb-4">
                                 @forelse(($workflowDocs ?? []) as $docIndex => $doc)
                                     @php
                                         $docId = $doc['id'] ?? ('doc_' . uniqid());
@@ -2284,318 +2761,200 @@
                                             'ditolak' => '#ef4444',
                                             default => '#cbd5e1',
                                         };
-                                        $statusHeaderBg = match($status) {
-                                            'terbit', 'selesai' => 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
-                                            'proses' => 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
-                                            'ditolak' => 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
-                                            default => 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
-                                        };
                                     @endphp
-                                    <div class="fase4-doc-card card border shadow-sm rounded-3 overflow-hidden {{ $isFinalGoal ? 'border-2 border-warning' : '' }}" 
+                                    <div class="col-12 col-md-6 col-xl-4 mb-3 fase4-doc-card" 
                                          id="fase4_doc_card_{{ $docId }}"
                                          data-id="{{ $docId }}"
                                          data-status="{{ $status }}"
                                          data-search="{{ strtolower($docName . ' ' . $instansi . ' ' . $docNumber . ' ' . $poinLabel . ' ' . $notes) }}">
                                         
-                                        <form class="fase4-item-form" id="form_doc_{{ $docId }}" onsubmit="saveSingleFase4Doc(event, '{{ $docId }}')" enctype="multipart/form-data">
-                                            <input type="hidden" name="doc_id" value="{{ $docId }}">
-                                            <input type="hidden" name="existing_syarat_files" id="existing_syarat_files_{{ $docId }}" value="{{ json_encode($syaratFiles) }}">
-                                            <input type="hidden" name="deleted_syarat_files" id="deleted_syarat_files_{{ $docId }}" value="[]">
+                                        <div class="card border shadow-sm rounded-3 p-3 position-relative fase4-doc-card-inner h-100 {{ $isFinalGoal ? 'border-2 border-warning' : '' }}" style="background: #ffffff; {{ $isFinalGoal ? 'border: 2px solid #f59e0b !important;' : '' }}">
+                                            <form class="fase4-item-form d-flex flex-column h-100" id="form_doc_{{ $docId }}" onsubmit="saveSingleFase4Doc(event, '{{ $docId }}')" enctype="multipart/form-data">
+                                                <input type="hidden" name="doc_id" value="{{ $docId }}">
+                                                <input type="hidden" name="existing_syarat_files" id="existing_syarat_files_{{ $docId }}" value="{{ json_encode($syaratFiles) }}">
+                                                <input type="hidden" name="deleted_syarat_files" id="deleted_syarat_files_{{ $docId }}" value="[]">
+                                                <input type="hidden" name="doc_name" id="card_doc_name_{{ $docId }}" value="{{ $docName }}">
+                                                <input type="hidden" name="poin_label" id="card_poin_label_{{ $docId }}" value="{{ $poinLabel }}">
+                                                <input type="hidden" name="instansi" id="card_instansi_{{ $docId }}" value="{{ $instansi }}">
+                                                <input type="hidden" name="nominal" id="card_nominal_{{ $docId }}" value="{{ $nominal }}">
+                                                <input type="hidden" name="luas" id="card_luas_{{ $docId }}" value="{{ $luas }}">
+                                                <input type="hidden" name="notes" id="card_notes_{{ $docId }}" value="{{ $notes }}">
+                                                <input type="hidden" name="syarat_dokumen" id="card_syarat_dokumen_{{ $docId }}" value="{{ $syaratDokumen }}">
 
-                                            <!-- HEADER FORM DOKUMEN -->
-                                            <div class="card-header py-2.5 px-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2" style="background: {{ $statusHeaderBg }};">
-                                                <div class="d-flex align-items-center gap-2 flex-grow-1 overflow-hidden">
-                                                    <span class="badge {{ $isFinalGoal ? 'bg-warning text-dark' : 'bg-primary' }} px-2.5 py-1.5 rounded-2 font-monospace" style="font-size: 0.82rem;">
-                                                        {{ $poinLabel }}
-                                                    </span>
-                                                    <h6 class="mb-0 fw-bold text-dark text-truncate" title="{{ $docName }}" style="font-size: 0.95rem;">
-                                                        {{ $docName }}
-                                                    </h6>
-                                                    @if($isFinalGoal)
-                                                        <span class="badge bg-success text-white" style="font-size: 0.72rem;"><i class="fas fa-crown me-1"></i>GOL AKHIR</span>
-                                                    @endif
-                                                </div>
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <label class="small fw-semibold text-muted mb-0 d-none d-sm-inline" style="font-size: 0.75rem;">Status:</label>
-                                                    <select name="status" class="form-select form-select-sm fw-bold border" style="width: auto; font-size: 0.78rem; border-color: {{ $statusBorderColor }}; border-radius: 6px;">
-                                                        <option value="belum" {{ $status == 'belum' ? 'selected' : '' }}>⚪ Belum Ada</option>
-                                                        <option value="proses" {{ $status == 'proses' ? 'selected' : '' }}>🟡 Sedang Proses</option>
-                                                        <option value="terbit" {{ $status == 'terbit' || $status == 'selesai' ? 'selected' : '' }}>🟢 Selesai / Terbit</option>
-                                                        <option value="ditolak" {{ $status == 'ditolak' ? 'selected' : '' }}>🔴 Ditolak / Kendala</option>
-                                                    </select>
-                                                    <button type="button" class="btn btn-sm btn-outline-danger px-2.5 py-1" onclick="deleteFase4Doc('{{ $docId }}', '{{ addslashes($docName) }}')" title="Hapus Form Dokumen Ini">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <!-- BODY FORM DOKUMEN -->
-                                            <div class="card-body p-3 bg-white">
-                                                <!-- BARIS 1: NAMA DOKUMEN, INSTANSI, POIN -->
-                                                <div class="row g-2.5 mb-2.5">
-                                                    <div class="col-12 col-md-5">
-                                                        <label class="form-label small fw-bold text-dark mb-1">
-                                                            Nama Dokumen / Tahapan Pengurusan <span class="text-danger">*</span>
-                                                        </label>
-                                                        <input type="text" name="doc_name" class="form-control form-control-sm fase4-form-input fw-semibold" value="{{ $docName }}" required placeholder="Nama dokumen/tahapan">
-                                                    </div>
-                                                    <div class="col-12 col-md-4">
-                                                        <label class="form-label small fw-bold text-dark mb-1">
-                                                            Instansi / Kantor Terkait
-                                                        </label>
-                                                        <input type="text" name="instansi" class="form-control form-control-sm fase4-form-input" value="{{ $instansi }}" placeholder="Contoh: Kantor Pertanahan (BPN), Kelurahan">
-                                                    </div>
-                                                    <div class="col-12 col-md-3">
-                                                        <label class="form-label small fw-bold text-dark mb-1">
-                                                            Label Urutan
-                                                        </label>
-                                                        <input type="text" name="poin_label" class="form-control form-control-sm fase4-form-input font-monospace" value="{{ $poinLabel }}" placeholder="Contoh: Tahap 1 / Poin 7">
-                                                    </div>
-                                                </div>
-
-                                                <!-- BARIS 2: NOMOR SK/REGISTRASI, TANGGAL, ESTIMASI BIAYA, LUAS -->
-                                                <div class="row g-2.5 mb-2.5">
-                                                    <div class="col-12 col-md-4">
-                                                        <label class="form-label small fw-bold text-dark mb-1">
-                                                            Nomor Registrasi / SK / Surat
-                                                        </label>
-                                                        <input type="text" name="doc_number" class="form-control form-control-sm fase4-form-input" value="{{ $docNumber }}" placeholder="Nomor resmi SK/Registrasi BPN">
-                                                    </div>
-                                                    <div class="col-12 col-md-3">
-                                                        <label class="form-label small fw-bold text-dark mb-1">
-                                                            Tanggal Dokumen / Pengurusan
-                                                        </label>
-                                                        <input type="date" name="doc_date" class="form-control form-control-sm fase4-form-input" value="{{ $docDate }}">
-                                                    </div>
-                                                    <div class="col-12 col-md-3">
-                                                        <label class="form-label small fw-bold text-dark mb-1">
-                                                            Estimasi Biaya / Pajak (Rp)
-                                                        </label>
-                                                        <input type="text" name="nominal" class="form-control form-control-sm fase4-form-input input-currency" value="{{ $nominal ? number_format($nominal, 0, ',', '.') : '' }}" placeholder="0" onkeyup="formatCurrencyDirect(this)">
-                                                    </div>
-                                                    <div class="col-12 col-md-2">
-                                                        <label class="form-label small fw-bold text-dark mb-1">
-                                                            Luas (m²)
-                                                        </label>
-                                                        <input type="number" step="0.01" name="luas" class="form-control form-control-sm fase4-form-input" value="{{ $luas }}" placeholder="m²">
-                                                    </div>
-                                                </div>
-
-                                                <!-- BARIS 3: PRASYARAT BERKAS & CHECKLIST -->
-                                                <div class="p-2.5 rounded-2 bg-light border mb-2.5">
-                                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                                        <label class="form-label small fw-bold text-dark mb-0 d-flex align-items-center gap-1.5">
-                                                            <i class="fas fa-tasks text-primary"></i>
-                                                            <span>Prasyarat Berkas Permohonan:</span>
-                                                        </label>
-                                                        <span class="badge {{ $isAllSyaratReady ? 'bg-success text-white' : ($checkedCount > 0 ? 'bg-warning text-dark' : 'bg-secondary text-white') }} px-2 py-1" style="font-size: 0.72rem;">
-                                                            {{ $checkedCount }}/{{ $totalSyarat }} Siap
-                                                        </span>
+                                                <div>
+                                                    <!-- Header Card Box (Fase 1 Aesthetic) -->
+                                                    <div class="fase4-card-head d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
+                                                        <div class="fase4-card-head-title overflow-hidden me-1" style="max-width: 65%;">
+                                                            <div class="d-flex align-items-center gap-1.5 mb-1">
+                                                                <span class="badge {{ $isFinalGoal ? 'bg-warning text-dark' : 'bg-primary' }} py-0.5 px-2 font-monospace" style="font-size: 10px;">
+                                                                    {{ $poinLabel }}
+                                                                </span>
+                                                                @if($isFinalGoal)
+                                                                    <span class="badge bg-success text-white py-0.5 px-1.5 d-inline-flex align-items-center gap-1" style="font-size: 9px;"><i class="fas fa-crown"></i> <span>GOL AKHIR</span></span>
+                                                                @endif
+                                                            </div>
+                                                            <h6 class="mb-0 fw-bold text-dark" title="{{ $docName }}" style="font-size: 0.90rem; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.4rem;">
+                                                                {{ $docName }}
+                                                            </h6>
+                                                        </div>
+                                                        <div class="d-flex align-items-center gap-1 flex-wrap justify-content-end">
+                                                            @if($status === 'terbit' || $status === 'selesai')
+                                                                <span class="badge bg-success py-1 px-2 text-wrap d-inline-flex align-items-center gap-1" style="font-size: 10px;">
+                                                                    <i class="mdi mdi-shield-check"></i> <span>Selesai / Terbit</span>
+                                                                </span>
+                                                            @elseif($status === 'proses')
+                                                                <span class="badge bg-warning text-dark py-1 px-2 text-wrap d-inline-flex align-items-center gap-1" style="font-size: 10px;">
+                                                                    <i class="mdi mdi-clock-outline"></i> <span>Sedang Proses</span>
+                                                                </span>
+                                                            @elseif($status === 'ditolak')
+                                                                <span class="badge bg-danger py-1 px-2 text-wrap d-inline-flex align-items-center gap-1" style="font-size: 10px;">
+                                                                    <i class="mdi mdi-alert-circle"></i> <span>Ditolak</span>
+                                                                </span>
+                                                            @else
+                                                                <span class="badge bg-light text-muted border py-1 px-2" style="font-size: 10px;">
+                                                                    Belum Ada
+                                                                </span>
+                                                            @endif
+                                                        </div>
                                                     </div>
 
+                                                    <!-- Status Keberadaan / Progres Dokumen -->
+                                                    <div class="mb-2">
+                                                        <label class="form-label mb-1 text-muted" style="font-size: 0.78rem; font-weight: 600;">
+                                                            Status Dokumen
+                                                        </label>
+                                                        <select name="status" class="form-select form-select-sm fw-semibold" style="font-size: 0.84rem; border-color: {{ $statusBorderColor }};">
+                                                            <option value="belum" {{ $status == 'belum' ? 'selected' : '' }}>Belum Ada</option>
+                                                            <option value="proses" {{ $status == 'proses' ? 'selected' : '' }}>Sedang Proses (BPN / Notaris / Dinas)</option>
+                                                            <option value="terbit" {{ $status == 'terbit' || $status == 'selesai' ? 'selected' : '' }}>Selesai / Terbit Resmi</option>
+                                                            <option value="ditolak" {{ $status == 'ditolak' ? 'selected' : '' }}>Ditolak / Kendala</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Nomor SK & Tanggal -->
                                                     <div class="row g-2 mb-2">
-                                                        @if($totalSyarat > 0)
-                                                            @foreach($syaratItems as $idx => $sItem)
-                                                                @php 
-                                                                    $itemFile = $syaratFiles[$sItem] ?? ($syaratFiles[$idx] ?? null);
-                                                                    $isItemChecked = in_array($sItem, $syaratChecklist) || !empty($itemFile);
-                                                                    $itemCleanPath = $itemFile ? str_replace('uploads/', '', $itemFile) : null;
-                                                                    $itemExt = $itemFile ? pathinfo($itemFile, PATHINFO_EXTENSION) : 'pdf';
-                                                                @endphp
-                                                                <div class="col-12 col-md-6">
-                                                                    <div class="p-2 rounded-2 bg-white border d-flex align-items-center justify-content-between gap-2 shadow-xs">
-                                                                        <div class="form-check mb-0 d-flex align-items-center gap-2 overflow-hidden flex-grow-1">
-                                                                            <input class="form-check-input flex-shrink-0" type="checkbox" name="syarat_checklist[]" value="{{ $sItem }}" id="chk_{{ $docId }}_{{ $idx }}" {{ $isItemChecked ? 'checked' : '' }} style="cursor: pointer;">
-                                                                            <label class="form-check-label small fw-semibold text-dark text-truncate mb-0" for="chk_{{ $docId }}_{{ $idx }}" title="{{ $sItem }}" style="cursor: pointer; font-size: 0.76rem;">
-                                                                                {{ $sItem }}
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="d-flex align-items-center gap-1 flex-shrink-0">
-                                                                            @if($itemFile)
-                                                                                <button type="button" class="btn btn-xs btn-outline-success py-0.5 px-1.5 rounded-1 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $itemCleanPath]) }}" data-ext="{{ $itemExt }}" data-label="{{ $sItem }}" title="Lihat: {{ $sItem }}" style="font-size: 0.7rem;">
-                                                                                    <i class="fas fa-eye me-0.5"></i>Lihat
-                                                                                </button>
-                                                                            @endif
-                                                                            <label class="btn btn-xs btn-outline-primary py-0.5 px-1.5 rounded-1 mb-0" style="font-size: 0.7rem; cursor: pointer;" title="Upload Berkas Prasyarat: {{ $sItem }}">
-                                                                                <i class="fas fa-upload me-0.5"></i>{{ $itemFile ? 'Ganti' : 'Upload' }}
-                                                                                <input type="file" name="syarat_file_{{ $idx }}" class="d-none" accept=".pdf,.jpg,.jpeg,.png" onchange="previewSyaratFileName(this, 'label_syarat_{{ $docId }}_{{ $idx }}', 'chk_{{ $docId }}_{{ $idx }}')">
-                                                                            </label>
-                                                                        </div>
+                                                        <div class="col-7">
+                                                            <label class="form-label mb-1 text-muted" style="font-size: 0.78rem; font-weight: 600;">
+                                                                Nomor Dokumen / SK
+                                                            </label>
+                                                            <input type="text" name="doc_number" class="form-control form-control-sm fase4-form-input" value="{{ $docNumber }}" placeholder="Nomor resmi SK/Registrasi" style="font-size: 0.84rem;">
+                                                        </div>
+                                                        <div class="col-5">
+                                                            <label class="form-label mb-1 text-muted" style="font-size: 0.78rem; font-weight: 600;">
+                                                                Tanggal
+                                                            </label>
+                                                            <input type="date" name="doc_date" class="form-control form-control-sm fase4-form-input" value="{{ $docDate }}" style="font-size: 0.84rem;">
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Upload Berkas File (PERSIS FASE 1 MODERN) -->
+                                                    <div class="mb-3">
+                                                        @if($filePath)
+                                                            <!-- State: Berkas Sudah Terunggah (Persis Fase 1) -->
+                                                            <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                                                                <div class="d-flex align-items-center gap-2 mb-2">
+                                                                    <div class="p-1.5 rounded-2 flex-shrink-0 bg-success bg-opacity-10 text-success">
+                                                                        <i class="mdi mdi-file-check-outline" style="font-size: 1.25rem;"></i>
                                                                     </div>
-                                                                    <span class="d-block small text-primary text-truncate mt-0.5 ps-1" id="label_syarat_{{ $docId }}_{{ $idx }}" style="font-size: 0.68rem;"></span>
+                                                                    <div class="overflow-hidden flex-grow-1">
+                                                                        <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">Berkas Terunggah</span>
+                                                                        <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($filePath) }}</small>
+                                                                    </div>
                                                                 </div>
-                                                            @endforeach
+                                                                <button type="button" class="btn btn-xs btn-success text-white py-1.5 px-3 d-inline-flex align-items-center justify-content-center gap-1.5 w-100 shadow-sm btn-preview-doc"
+                                                                    data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}"
+                                                                    data-ext="{{ pathinfo($filePath, PATHINFO_EXTENSION) }}"
+                                                                    data-label="{{ $docName }}"
+                                                                    style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
+                                                                    <i class="mdi mdi-eye"></i> <span>Lihat Berkas</span>
+                                                                </button>
+                                                            </div>
+
+                                                            <!-- Opsi Ganti / Upload Ulang Berkas (Persis Fase 1) -->
+                                                            <div class="pratanah-file-upload-modern mb-2">
+                                                                <input type="file" name="file_doc" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <div class="pratanah-file-label-modern py-1 px-2.5 rounded-2 d-flex align-items-center gap-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                                                                    <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
+                                                                    <div class="pratanah-file-info-modern overflow-hidden">
+                                                                        <span class="file-label-text text-secondary text-truncate d-block" style="font-size: 0.76rem; font-weight: 600;">Ganti Berkas / Upload Ulang</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         @else
-                                                            <div class="col-12 text-muted small fst-italic py-1 px-2">
-                                                                Tidak ada prasyarat berkas terdaftar untuk tahap ini.
+                                                            <!-- State: Dokumen Baru / Belum Ada Berkas (Modern Clean Box) -->
+                                                            <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.78rem; font-weight: 600;">
+                                                                <span>Upload Berkas Dokumen</span>
+                                                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">Format PDF/JPG/PNG</span>
+                                                            </label>
+                                                            <div class="pratanah-file-upload-modern mb-2">
+                                                                <input type="file" name="file_doc" accept=".pdf,.jpg,.jpeg,.png">
+                                                                <div class="pratanah-file-label-modern py-2 px-2.5 rounded-3 d-flex align-items-center gap-2.5" style="border: 1.5px dashed #c4b5fd; background: #fdfcff; transition: all 0.2s ease;">
+                                                                    <div class="p-1.5 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="background: rgba(154, 85, 255, 0.12); width: 34px; height: 34px;">
+                                                                        <i class="mdi mdi-cloud-upload text-primary" style="font-size: 1.25rem;"></i>
+                                                                    </div>
+                                                                    <div class="pratanah-file-info-modern overflow-hidden">
+                                                                        <span class="file-label-text fw-bold text-primary text-truncate d-block" style="font-size: 0.80rem;">Pilih / Upload Berkas</span>
+                                                                        <small class="text-muted d-block" style="font-size: 0.68rem;">PDF, JPG, PNG (Maks 20MB)</small>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         @endif
                                                     </div>
 
-                                                    <!-- Edit Teks Prasyarat -->
-                                                    <div class="pt-1.5 border-top">
-                                                        <a class="text-decoration-none small text-muted d-inline-flex align-items-center gap-1" data-bs-toggle="collapse" href="#collapseSyarat_{{ $docId }}" role="button" aria-expanded="false" style="font-size: 0.72rem;">
-                                                            <i class="fas fa-edit"></i> Edit / Tambah Teks Prasyarat (Satu butir per baris)
-                                                        </a>
-                                                        <div class="collapse mt-1.5" id="collapseSyarat_{{ $docId }}">
-                                                            <textarea name="syarat_dokumen" class="form-control form-control-sm fase4-form-input" rows="2" style="font-size: 0.76rem;" placeholder="• Contoh Syarat 1&#10;• Contoh Syarat 2">{{ $syaratDokumen }}</textarea>
-                                                        </div>
+                                                    <!-- TOMBOL BUKA MODAL RINCIAN & PRASYARAT -->
+                                                    <div class="mt-3 mb-2 pt-1">
+                                                        <button type="button" class="btn btn-sm w-100 py-1.5 px-3 d-flex align-items-center justify-content-between btn-modal-rincian-trigger" 
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#modalRincianDoc_{{ $docId }}" 
+                                                            style="font-size: 0.80rem; font-weight: 600; border-radius: 6px;">
+                                                            <span class="d-inline-flex align-items-center gap-2">
+                                                                <span class="text-dark fw-bold">Rincian & Prasyarat</span>
+                                                                @if($totalSyarat > 0)
+                                                                    <span class="badge {{ $isAllSyaratReady ? 'bg-success text-white' : ($checkedCount > 0 ? 'bg-warning text-dark' : 'bg-secondary text-white') }} px-2 py-0.5 font-monospace" style="font-size: 0.68rem; border-radius: 4px;">
+                                                                        {{ $checkedCount }}/{{ $totalSyarat }} Syarat
+                                                                    </span>
+                                                                @endif
+                                                            </span>
+                                                            <span class="badge text-white px-2.5 py-1 d-inline-flex align-items-center" style="background: #9a55ff; font-size: 0.74rem; font-weight: 600; border-radius: 4px;">
+                                                                Buka
+                                                            </span>
+                                                        </button>
                                                     </div>
                                                 </div>
 
-                                                <!-- BARIS 4: UPLOAD BERKAS SK TERBIT & CATATAN -->
-                                                <div class="row g-2.5 mb-2.5 align-items-center">
-                                                    <div class="col-12 col-md-6">
-                                                        <label class="form-label small fw-bold text-dark mb-1">
-                                                            Upload Berkas SK / Dokumen Terbit Resmi (PDF/JPG/PNG)
-                                                        </label>
-                                                        <div class="d-flex align-items-center gap-2">
-                                                            <input type="file" name="file_doc" class="form-control form-control-sm fase4-form-input" accept=".pdf,.jpg,.jpeg,.png">
-                                                            @if($filePath)
-                                                                <button type="button" class="btn btn-sm btn-success text-white px-2.5 flex-shrink-0 d-inline-flex align-items-center gap-1 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" data-ext="{{ pathinfo($filePath, PATHINFO_EXTENSION) }}" data-label="{{ $docName }}" style="font-size: 0.78rem;">
-                                                                    <i class="fas fa-eye"></i> Lihat SK
-                                                                </button>
-                                                            @endif
-                                                        </div>
-                                                        @if($filePath)
-                                                            <small class="text-success fw-semibold mt-1 d-block text-truncate" style="font-size: 0.72rem;">
-                                                                <i class="fas fa-check-circle me-1"></i> Terunggah: {{ basename($filePath) }}
-                                                            </small>
-                                                        @endif
-                                                    </div>
-                                                    <div class="col-12 col-md-6">
-                                                        <label class="form-label small fw-bold text-dark mb-1">
-                                                            Catatan / Keterangan Tambahan
-                                                        </label>
-                                                        <textarea name="notes" class="form-control form-control-sm fase4-form-input" rows="1" placeholder="Tuliskan catatan teknis, kendala, atau keterangan khusus...">{{ $notes }}</textarea>
-                                                    </div>
-                                                </div>
-
-                                                <!-- ACTION FOOTER FORM DOKUMEN -->
-                                                <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-                                                    <small class="text-muted" style="font-size: 0.73rem;">
-                                                        <i class="fas fa-info-circle me-1 text-primary"></i> Data pada form ini akan langsung tersimpan ke sistem.
-                                                    </small>
-                                                    <button type="submit" class="btn btn-sm btn-success px-4 py-1.5 fw-bold shadow-sm d-inline-flex align-items-center gap-1.5" id="btn_save_doc_{{ $docId }}">
-                                                        <i class="fas fa-save"></i> <span>Simpan Dokumen Ini</span>
+                                                <!-- Action Footer Box -->
+                                                <div class="fase4-card-footer d-flex align-items-center justify-content-between mt-auto pt-3 border-top" style="border-top-color: #e2e8f0 !important;">
+                                                    <button type="submit" class="btn btn-sm btn-success px-3.5 py-1.5 fw-bold shadow-sm d-inline-flex align-items-center" id="btn_save_doc_{{ $docId }}" style="border-radius: 6px; font-size: 0.82rem; gap: 8px;">
+                                                        <i class="fas fa-save me-1.5"></i> <span>Simpan Dokumen</span>
+                                                    </button>
+                                                    <button type="button" class="btn btn-fase4-delete d-inline-flex align-items-center" onclick="deleteFase4Doc('{{ $docId }}', '{{ addslashes($docName) }}')" title="Hapus Dokumen Ini" style="gap: 6px;">
+                                                        <i class="fas fa-trash-alt me-1.5"></i> <span>Hapus</span>
                                                     </button>
                                                 </div>
-                                            </div>
-                                        </form>
+                                            </form>
+                                        </div>
                                     </div>
                                 @empty
-                                    <div class="card border border-dashed rounded-3 p-4 text-center bg-light my-2" id="fase4_docs_empty_state">
-                                        <div class="p-3 bg-white rounded-circle d-inline-flex shadow-sm mb-2" style="color: #9a55ff;">
-                                            <i class="fas fa-folder-plus fa-2x"></i>
-                                        </div>
-                                        <h6 class="fw-bold text-dark mb-1">Daftar Dokumen Pengurusan Masih Kosong</h6>
-                                        <p class="text-muted small mx-auto mb-3" style="max-width: 480px;">
-                                            Silakan tambahkan dokumen / perizinan melalui form di bawah ini atau muat paket template standar.
-                                        </p>
-                                        <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
-                                            <button type="button" class="btn btn-sm btn-fase4-master px-3 py-2 fw-semibold shadow-sm" onclick="openMasterPickerModal()">
-                                                <i class="fas fa-file-signature me-1"></i> <span>+ Pilih dari Master Perizinan</span>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-fase4-template px-3 py-2 fw-semibold shadow-sm" onclick="loadFase4DefaultTemplate()">
-                                                <i class="fas fa-clipboard-list me-1"></i> <span>Gunakan Template Standar</span>
-                                            </button>
+                                    <div class="col-12" id="fase4_docs_empty_state">
+                                        <div class="card border border-dashed rounded-3 p-4 text-center bg-light my-2">
+                                            <div class="p-3 bg-white rounded-circle d-inline-flex shadow-sm mb-2" style="color: #9a55ff;">
+                                                <i class="fas fa-folder-plus fa-2x"></i>
+                                            </div>
+                                            <h6 class="fw-bold text-dark mb-1">Daftar Dokumen Pengurusan Masih Kosong</h6>
+                                            <p class="text-muted small mx-auto mb-3" style="max-width: 480px;">
+                                                Silakan tambahkan dokumen / perizinan melalui form di bawah ini atau muat paket template standar.
+                                            </p>
+                                            <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
+                                                <button type="button" class="btn btn-sm btn-fase4-master px-3 py-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-2" onclick="openMasterPickerModal()">
+                                                    <i class="fas fa-file-signature"></i> <span>Pilih dari Master Perizinan</span>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-fase4-template px-3 py-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-2" onclick="loadFase4DefaultTemplate()">
+                                                    <i class="fas fa-clipboard-list"></i> <span>Gunakan Template Standar</span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 @endforelse
-
-                                <!-- FORM TAMBAH DOKUMEN BARU (INLINE CARD FORM AT BOTTOM) -->
-                                <div class="card border-primary border-2 shadow-sm rounded-3 overflow-hidden mt-3" id="cardAddNewDoc">
-                                    <div class="card-header bg-primary bg-opacity-10 py-2.5 px-3 border-bottom d-flex align-items-center justify-content-between">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <span class="p-1.5 rounded-2 bg-primary text-white" style="font-size: 0.8rem; line-height: 1;"><i class="fas fa-plus"></i></span>
-                                            <h6 class="mb-0 fw-bold text-primary" style="font-size: 0.92rem;">+ Form Tambah Dokumen / Tahapan Baru</h6>
-                                        </div>
-                                        <span class="badge bg-primary text-white" style="font-size: 0.72rem;">Dokumen Baru</span>
-                                    </div>
-                                    <form id="formAddNewDoc" class="card-body p-3 bg-white" onsubmit="saveNewFase4Doc(event)" enctype="multipart/form-data">
-                                        <input type="hidden" name="doc_id" value="">
-                                        
-                                        <!-- BARIS 1 -->
-                                        <div class="row g-2.5 mb-2.5">
-                                            <div class="col-12 col-md-5">
-                                                <label class="form-label small fw-bold text-dark mb-1">
-                                                    Nama Dokumen / Tahapan <span class="text-danger">*</span>
-                                                </label>
-                                                <input type="text" name="doc_name" class="form-control form-control-sm fase4-form-input fw-semibold" placeholder="Contoh: SK HGB BPN / PKKPR OSS / Balik Nama" required>
-                                            </div>
-                                            <div class="col-12 col-md-4">
-                                                <label class="form-label small fw-bold text-dark mb-1">
-                                                    Instansi / Lembaga Terkait
-                                                </label>
-                                                <input type="text" name="instansi" class="form-control form-control-sm fase4-form-input" placeholder="Contoh: Kantor Pertanahan ATR/BPN, Bapenda, Notaris">
-                                            </div>
-                                            <div class="col-12 col-md-3">
-                                                <label class="form-label small fw-bold text-dark mb-1">
-                                                    Label Urutan
-                                                </label>
-                                                <input type="text" name="poin_label" class="form-control form-control-sm fase4-form-input font-monospace" placeholder="Contoh: Tahap {{ count($workflowDocs ?? []) + 1 }}">
-                                            </div>
-                                        </div>
-
-                                        <!-- BARIS 2 -->
-                                        <div class="row g-2.5 mb-2.5">
-                                            <div class="col-12 col-md-3">
-                                                <label class="form-label small fw-bold text-dark mb-1">
-                                                    Nomor Registrasi / SK / Surat
-                                                </label>
-                                                <input type="text" name="doc_number" class="form-control form-control-sm fase4-form-input" placeholder="Nomor resmi registrasi">
-                                            </div>
-                                            <div class="col-12 col-md-3">
-                                                <label class="form-label small fw-bold text-dark mb-1">
-                                                    Tanggal Dokumen
-                                                </label>
-                                                <input type="date" name="doc_date" class="form-control form-control-sm fase4-form-input">
-                                            </div>
-                                            <div class="col-12 col-md-3">
-                                                <label class="form-label small fw-bold text-dark mb-1">
-                                                    Status Dokumen
-                                                </label>
-                                                <select name="status" class="form-select form-select-sm fase4-form-input fw-semibold">
-                                                    <option value="proses" selected>🟡 Sedang Proses</option>
-                                                    <option value="belum">⚪ Belum Ada</option>
-                                                    <option value="terbit">🟢 Selesai / Terbit</option>
-                                                    <option value="ditolak">🔴 Ditolak / Kendala</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-12 col-md-3">
-                                                <label class="form-label small fw-bold text-dark mb-1">
-                                                    Estimasi Biaya (Rp)
-                                                </label>
-                                                <input type="text" name="nominal" class="form-control form-control-sm fase4-form-input input-currency" placeholder="0" onkeyup="formatCurrencyDirect(this)">
-                                            </div>
-                                        </div>
-
-                                        <!-- BARIS 3: PRASYARAT & BERKAS -->
-                                        <div class="row g-2.5 mb-2.5">
-                                            <div class="col-12 col-md-6">
-                                                <label class="form-label small fw-bold text-dark mb-1">
-                                                    Prasyarat Berkas (Satu baris per butir prasyarat)
-                                                </label>
-                                                <textarea name="syarat_dokumen" class="form-control form-control-sm fase4-form-input" rows="2" placeholder="• Copy KTP & KK Pemohon&#10;• Surat Kuasa Notaris&#10;• Bukti Bayar Pajak"></textarea>
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label class="form-label small fw-bold text-dark mb-1">
-                                                    Upload File / SK Dokumen Terbit (Opsional)
-                                                </label>
-                                                <input type="file" name="file_doc" class="form-control form-control-sm fase4-form-input mb-1.5" accept=".pdf,.jpg,.jpeg,.png">
-                                                <input type="text" name="notes" class="form-control form-control-sm fase4-form-input" placeholder="Catatan tambahan...">
-                                            </div>
-                                        </div>
-
-                                        <!-- SUBMIT ACTION -->
-                                        <div class="text-end pt-2 border-top">
-                                            <button type="submit" class="btn btn-sm btn-primary px-4 py-2 fw-bold shadow-sm" id="btnSubmitNewDoc">
-                                                <i class="fas fa-plus-circle me-1"></i> Tambahkan ke Alur Pengurusan
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-
                             </div>
 
                         </div>
@@ -2603,6 +2962,415 @@
 
 
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- MODAL RINCIAN & PRASYARAT DOKUMEN (FASE 4) --}}
+    @foreach(($workflowDocs ?? []) as $docIndex => $doc)
+        @php
+            $docId = $doc['id'] ?? ('doc_' . uniqid());
+            $poinLabel = $doc['poin_label'] ?? ('Poin ' . ($docIndex + 7));
+            $docName = $doc['doc_name'] ?? 'Dokumen Pengindukan';
+            $instansi = $doc['instansi'] ?? '-';
+            $nominal = $doc['nominal'] ?? null;
+            $luas = $doc['luas'] ?? null;
+            $notes = $doc['notes'] ?? '';
+            $isFinalGoal = !empty($doc['is_final_goal']) || $docId === 'template_shgb_induk' || str_contains(strtolower($docName), 'shgb induk');
+            $syaratDokumen = $doc['syarat_dokumen'] ?? '';
+            $syaratItems = $doc['syarat_items'] ?? [];
+            $syaratChecklist = (array)($doc['syarat_checklist'] ?? []);
+            $syaratFiles = (array)($doc['syarat_files'] ?? []);
+
+            if (empty($syaratItems) && !empty($syaratDokumen)) {
+                $lines = preg_split('/[\r\n]+/', $syaratDokumen);
+                foreach ($lines as $line) {
+                    $clean = trim(preg_replace('/^[•\-\*\d+\.]\s*/u', '', trim($line)));
+                    if (!empty($clean)) {
+                        $syaratItems[] = $clean;
+                    }
+                }
+            }
+            $totalSyarat = count($syaratItems);
+            $checkedCount = 0;
+            foreach ($syaratItems as $idx => $si) {
+                $hasItemFile = !empty($syaratFiles[$si]) || !empty($syaratFiles[$idx]);
+                if (in_array($si, $syaratChecklist) || $hasItemFile) {
+                    $checkedCount++;
+                }
+            }
+            $isAllSyaratReady = ($totalSyarat > 0 && $checkedCount >= $totalSyarat);
+        @endphp
+
+        <div class="modal fade" id="modalRincianDoc_{{ $docId }}" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 860px; width: 95%;">
+                <div class="modal-content rounded-3 border-0 shadow-lg overflow-hidden">
+                    <div class="modal-header px-4 py-3 bg-white border-bottom align-items-center">
+                        <div class="d-flex align-items-center gap-2 overflow-hidden me-2">
+                            <span class="badge {{ $isFinalGoal ? 'bg-warning text-dark' : 'bg-primary' }} py-1 px-2 font-monospace flex-shrink-0" style="font-size: 0.78rem; border-radius: 4px;">
+                                {{ $poinLabel }}
+                            </span>
+                            @if($isFinalGoal)
+                                <span class="badge bg-success text-white py-1 px-2 flex-shrink-0" style="font-size: 0.72rem; border-radius: 4px;">GOL AKHIR</span>
+                            @endif
+                            <h5 class="modal-title mb-0 fw-bold text-dark text-truncate" style="font-size: 1.05rem;" title="{{ $docName }}">
+                                {{ $docName }}
+                            </h5>
+                        </div>
+                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body p-3 p-md-3.5 bg-light" style="max-height: 68vh; overflow-y: auto;">
+                        <div class="row g-3">
+                            <!-- ================= KOLOM KIRI ================= -->
+                            <div class="col-12 col-lg-6 d-flex flex-column gap-3">
+                                <!-- 1. Identitas Dokumen -->
+                                <div class="p-3 bg-white rounded-3 border shadow-xs">
+                                    <h6 class="fw-bold text-dark mb-2.5 d-flex align-items-center gap-2" style="font-size: 0.82rem;">
+                                        <i class="fas fa-file-alt text-primary"></i> <span>Identitas Dokumen</span>
+                                    </h6>
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-8">
+                                            <label class="form-label mb-1 text-muted" style="font-size: 0.76rem; font-weight: 600;">
+                                                Nama Dokumen <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" name="modal_doc_name_{{ $docId }}" id="modal_doc_name_{{ $docId }}" class="form-control form-control-sm fase4-form-input fw-semibold" value="{{ $docName }}" required placeholder="Nama dokumen" style="font-size: 0.84rem;">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="form-label mb-1 text-muted" style="font-size: 0.76rem; font-weight: 600;">
+                                                Urutan
+                                            </label>
+                                            <input type="text" name="modal_poin_label_{{ $docId }}" id="modal_poin_label_{{ $docId }}" class="form-control form-control-sm fase4-form-input font-monospace" value="{{ $poinLabel }}" placeholder="Poin 7" style="font-size: 0.84rem;">
+                                        </div>
+                                    </div>
+                                    <div class="mb-0">
+                                        <label class="form-label mb-1 text-muted" style="font-size: 0.76rem; font-weight: 600;">
+                                            Instansi / Kantor Terkait
+                                        </label>
+                                        <input type="text" name="modal_instansi_{{ $docId }}" id="modal_instansi_{{ $docId }}" class="form-control form-control-sm fase4-form-input" value="{{ $instansi }}" placeholder="BPN / Kelurahan / Dinas" style="font-size: 0.84rem;">
+                                    </div>
+                                </div>
+
+                                <!-- 2. Biaya & Luas -->
+                                <div class="p-3 bg-white rounded-3 border shadow-xs">
+                                    <h6 class="fw-bold text-dark mb-2.5 d-flex align-items-center gap-2" style="font-size: 0.82rem;">
+                                        <i class="fas fa-coins text-warning"></i> <span>Biaya & Luas Terkait</span>
+                                    </h6>
+                                    <div class="row g-2">
+                                        <div class="col-7">
+                                            <label class="form-label mb-1 text-muted" style="font-size: 0.76rem; font-weight: 600;">
+                                                Biaya/Pajak (Rp)
+                                            </label>
+                                            <input type="text" name="modal_nominal_{{ $docId }}" id="modal_nominal_{{ $docId }}" class="form-control form-control-sm fase4-form-input input-currency" value="{{ $nominal ? number_format($nominal, 0, ',', '.') : '' }}" placeholder="0" onkeyup="formatCurrencyDirect(this)" style="font-size: 0.84rem;">
+                                        </div>
+                                        <div class="col-5">
+                                            <label class="form-label mb-1 text-muted" style="font-size: 0.76rem; font-weight: 600;">
+                                                Luas (m²)
+                                            </label>
+                                            <input type="number" step="0.01" name="modal_luas_{{ $docId }}" id="modal_luas_{{ $docId }}" class="form-control form-control-sm fase4-form-input" value="{{ $luas }}" placeholder="m²" style="font-size: 0.84rem;">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 3. Upload Berkas Dokumen (UI Persis Gambar 2) -->
+                                <div class="p-3 bg-white rounded-3 border shadow-xs">
+                                    <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.78rem; font-weight: 600;">
+                                        <span class="d-inline-flex align-items-center" style="gap: 8px;"><i class="fas fa-file-upload text-primary me-2"></i> <span>Upload Berkas Dokumen</span></span>
+                                        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">Format PDF/JPG/PNG</span>
+                                    </label>
+                                    @if($filePath)
+                                        <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <div class="p-1.5 rounded-2 flex-shrink-0 bg-success bg-opacity-10 text-success">
+                                                    <i class="mdi mdi-file-check-outline" style="font-size: 1.25rem;"></i>
+                                                </div>
+                                                <div class="overflow-hidden flex-grow-1">
+                                                    <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">Berkas Terunggah</span>
+                                                    <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($filePath) }}</small>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-xs btn-success text-white py-1.5 px-3 d-inline-flex align-items-center justify-content-center gap-1.5 w-100 shadow-sm btn-preview-doc"
+                                                data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}"
+                                                data-ext="{{ pathinfo($filePath, PATHINFO_EXTENSION) }}"
+                                                data-label="{{ $docName }}"
+                                                style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
+                                                <i class="mdi mdi-eye"></i> <span>Lihat Berkas</span>
+                                            </button>
+                                        </div>
+                                        <div class="pratanah-file-upload-modern mb-0">
+                                            <input type="file" name="modal_file_doc_{{ $docId }}" accept=".pdf,.jpg,.jpeg,.png">
+                                            <div class="pratanah-file-label-modern py-1.5 px-2.5 rounded-2 d-flex align-items-center gap-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                                                <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
+                                                <div class="pratanah-file-info-modern overflow-hidden">
+                                                    <span class="file-label-text text-secondary text-truncate d-block" style="font-size: 0.76rem; font-weight: 600;">Ganti Berkas / Upload Ulang</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="pratanah-file-upload-modern">
+                                            <input type="file" name="modal_file_doc_{{ $docId }}" accept=".pdf,.jpg,.jpeg,.png">
+                                            <div class="pratanah-file-label-modern py-2 px-2.5 rounded-3 d-flex align-items-center gap-2.5" style="border: 1.5px dashed #c4b5fd; background: #fdfcff; transition: all 0.2s ease;">
+                                                <div class="p-1.5 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="background: rgba(154, 85, 255, 0.12); width: 34px; height: 34px;">
+                                                    <i class="mdi mdi-cloud-upload text-primary" style="font-size: 1.25rem;"></i>
+                                                </div>
+                                                <div class="pratanah-file-info-modern overflow-hidden">
+                                                    <span class="file-label-text fw-bold text-primary text-truncate d-block" style="font-size: 0.80rem;">Pilih / Upload Berkas</span>
+                                                    <small class="text-muted d-block" style="font-size: 0.68rem;">PDF, JPG, PNG (Maks 20MB)</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <!-- 4. Catatan / Keterangan Tambahan -->
+                                <div class="p-3 bg-white rounded-3 border shadow-xs">
+                                    <label class="form-label mb-1 text-muted fw-bold d-flex align-items-center" style="font-size: 0.78rem; gap: 8px;">
+                                        <i class="fas fa-sticky-note text-warning me-2"></i> <span>Catatan / Keterangan</span>
+                                    </label>
+                                    <textarea name="modal_notes_{{ $docId }}" id="modal_notes_{{ $docId }}" class="form-control fase4-form-input fase4-notes-area" rows="3" placeholder="Catatan teknis pengurusan..." style="min-height: 90px !important; font-size: 0.84rem; line-height: 1.5;">{{ $notes }}</textarea>
+                                </div>
+                            </div>
+
+                            <!-- ================= KOLOM KANAN ================= -->
+                            <div class="col-12 col-lg-6 d-flex flex-column gap-3">
+                                <!-- 5. Checklist Prasyarat Berkas -->
+                                <div class="p-3 bg-white rounded-3 border shadow-xs d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                                        <span class="text-dark fw-bold d-inline-flex align-items-center gap-2" style="font-size: 0.82rem;">
+                                            <i class="fas fa-tasks text-primary"></i> <span>Checklist Prasyarat Berkas:</span>
+                                        </span>
+                                        <span class="badge {{ $isAllSyaratReady ? 'bg-success text-white' : ($checkedCount > 0 ? 'bg-warning text-dark' : 'bg-secondary text-white') }} px-2.5 py-1" style="font-size: 0.72rem;">
+                                            {{ $checkedCount }}/{{ $totalSyarat }} Siap
+                                        </span>
+                                    </div>
+
+                                    <div class="d-flex flex-column gap-2 my-1 fase4-syarat-list-container">
+                                        @if($totalSyarat > 0)
+                                            @foreach($syaratItems as $idx => $sItem)
+                                                @php 
+                                                    $itemFile = $syaratFiles[$sItem] ?? ($syaratFiles[$idx] ?? null);
+                                                    $isItemChecked = in_array($sItem, $syaratChecklist) || !empty($itemFile);
+                                                    $itemCleanPath = $itemFile ? str_replace('uploads/', '', $itemFile) : null;
+                                                    $itemExt = $itemFile ? pathinfo($itemFile, PATHINFO_EXTENSION) : 'pdf';
+                                                @endphp
+                                                <div class="p-2.5 rounded-3 border bg-white shadow-xs" style="border-color: {{ $isItemChecked ? '#86efac' : '#e2e8f0' }} !important; background: {{ $isItemChecked ? '#fbfdfb' : '#ffffff' }};">
+                                                    <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                                                        <div class="form-check mb-0 d-flex align-items-center gap-2 overflow-hidden flex-grow-1">
+                                                            <input class="form-check-input flex-shrink-0" type="checkbox" name="modal_syarat_checklist_{{ $docId }}[]" value="{{ $sItem }}" id="chk_modal_{{ $docId }}_{{ $idx }}" {{ $isItemChecked ? 'checked' : '' }} style="cursor: pointer; width: 16px; height: 16px;">
+                                                            <label class="form-check-label small fw-bold {{ $isItemChecked ? 'text-success' : 'text-dark' }} text-truncate mb-0" for="chk_modal_{{ $docId }}_{{ $idx }}" title="{{ $sItem }}" style="cursor: pointer; font-size: 0.80rem;">
+                                                                {{ $sItem }}
+                                                            </label>
+                                                        </div>
+                                                        @if($itemFile)
+                                                            <button type="button" class="btn btn-xs btn-outline-success py-1 px-2.5 rounded-2 btn-preview-doc d-inline-flex align-items-center gap-1 flex-shrink-0" data-url="{{ route('dokumen.preview', ['path' => $itemCleanPath]) }}" data-ext="{{ $itemExt }}" data-label="{{ $sItem }}" title="Lihat: {{ $sItem }}" style="font-size: 0.72rem; font-weight: 600;">
+                                                                <i class="fas fa-eye"></i> <span>Lihat</span>
+                                                            </button>
+                                                        @endif
+                                                    </div>
+
+                                                    <!-- Kotak Upload Berkas Syarat (UI Persis Gambar 2) -->
+                                                    <div class="pratanah-file-upload-modern">
+                                                        <input type="file" name="modal_syarat_file_{{ $docId }}_{{ $idx }}" id="file_syarat_{{ $docId }}_{{ $idx }}" class="d-none" accept=".pdf,.jpg,.jpeg,.png" onchange="previewSyaratFileName(this, 'label_modal_syarat_{{ $docId }}_{{ $idx }}', 'chk_modal_{{ $docId }}_{{ $idx }}')">
+                                                        <label for="file_syarat_{{ $docId }}_{{ $idx }}" class="pratanah-file-label-modern py-1.5 px-2.5 rounded-3 d-flex align-items-center gap-2.5 w-100 mb-0" style="border: 1.5px dashed {{ $itemFile ? '#86efac' : '#c4b5fd' }}; background: {{ $itemFile ? '#f0fdf4' : '#fdfcff' }}; cursor: pointer; transition: all 0.2s ease;">
+                                                            <div class="p-1 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="background: {{ $itemFile ? 'rgba(34, 197, 94, 0.12)' : 'rgba(154, 85, 255, 0.12)' }}; width: 30px; height: 30px;">
+                                                                <i class="mdi {{ $itemFile ? 'mdi-file-check text-success' : 'mdi-cloud-upload text-primary' }}" style="font-size: 1.15rem;"></i>
+                                                            </div>
+                                                            <div class="pratanah-file-info-modern overflow-hidden flex-grow-1">
+                                                                <span class="file-label-text fw-bold {{ $itemFile ? 'text-success' : 'text-primary' }} text-truncate d-block" id="label_modal_syarat_{{ $docId }}_{{ $idx }}" style="font-size: 0.77rem;">
+                                                                    @if($itemFile)
+                                                                        <i class="fas fa-check text-success me-1"></i> {{ basename($itemFile) }}
+                                                                    @else
+                                                                        Pilih / Upload Berkas
+                                                                    @endif
+                                                                </span>
+                                                                <small class="text-muted d-block" style="font-size: 0.67rem;">PDF, JPG, PNG (Maks 20MB)</small>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @else
+                                            <div class="text-muted small fst-italic py-3 text-center">
+                                                <i class="fas fa-clipboard-check fs-4 d-block mb-1 text-secondary opacity-50"></i>
+                                                Belum ada butir prasyarat berkas. Tuliskan pada kolom teks di bawah.
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <!-- 6. Teks Butir Prasyarat (Langsung Tampil Terbuka & Bisa Di-Scroll Bersama) -->
+                                <div class="p-3 bg-white rounded-3 border shadow-xs">
+                                    <div class="d-flex align-items-center justify-content-between mb-1.5">
+                                        <label class="form-label mb-0 text-muted fw-bold d-flex align-items-center gap-1.5" style="font-size: 0.78rem;">
+                                            <i class="fas fa-edit text-primary"></i> <span>Kelola Teks Butir Prasyarat</span>
+                                        </label>
+                                        <span class="badge bg-light text-muted border px-2 py-0.5" style="font-size: 0.68rem;">1 Baris per Syarat</span>
+                                    </div>
+                                    <textarea name="modal_syarat_dokumen_{{ $docId }}" id="modal_syarat_dokumen_{{ $docId }}" class="form-control fase4-form-input" rows="5" style="min-height: 120px !important; font-size: 0.84rem; line-height: 1.5;" placeholder="• Contoh Syarat 1&#10;• Contoh Syarat 2">{{ $syaratDokumen }}</textarea>
+                                    <small class="text-muted d-block mt-1" style="font-size: 0.68rem;">Gunakan baris baru atau tanda titik (•) untuk tiap syarat. Checklist akan disesuaikan otomatis saat disimpan.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer fase4-modal-footer bg-white border-top d-flex justify-content-end align-items-center gap-2.5 py-3 px-4">
+                        <button type="button" class="btn btn-light border text-secondary px-3.5 py-2 rounded-3 shadow-xs" data-bs-dismiss="modal" style="font-size: 0.82rem; font-weight: 600;">
+                            Batal
+                        </button>
+                        <button type="button" class="btn text-white px-4 py-2 rounded-3 shadow-sm" onclick="saveDocFromModal('{{ $docId }}')" style="background: linear-gradient(135deg, #9a55ff 0%, #7e22ce 100%); font-size: 0.82rem; font-weight: 700; border: none;">
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
+
+    {{-- MODAL TAMBAH DOKUMEN / TAHAPAN BARU (KANAN KIRI 2 KOLOM) --}}
+    <div class="modal fade" id="modalAddNewDoc" tabindex="-1" aria-hidden="true" style="z-index: 1058;">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 860px; width: 95%;">
+            <div class="modal-content rounded-3 border-0 shadow-lg overflow-hidden">
+                <div class="modal-header px-4 py-3 bg-white border-bottom align-items-center justify-content-between">
+                    <div>
+                        <h5 class="modal-title mb-0 fw-bold text-dark" style="font-size: 1.05rem;">Tambah Dokumen / Tahapan Baru</h5>
+                        <small class="text-muted d-block" style="font-size: 0.76rem;">Daftarkan tahapan perizinan atau legalitas baru ke alur pengindukan</small>
+                    </div>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form id="formAddNewDoc" class="modal-body p-3 p-md-3.5 bg-light" style="max-height: 68vh; overflow-y: auto;" onsubmit="saveNewFase4Doc(event)" enctype="multipart/form-data">
+                    <input type="hidden" name="doc_id" value="">
+                    
+                    <div class="row g-3">
+                        <!-- ================= KOLOM KIRI ================= -->
+                        <div class="col-12 col-lg-6 d-flex flex-column gap-3">
+                            <!-- 1. Identitas Dokumen -->
+                            <div class="p-3 bg-white rounded-3 border shadow-xs">
+                                <h6 class="fw-bold text-dark mb-2.5" style="font-size: 0.82rem;">
+                                    Identitas Dokumen
+                                </h6>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-8">
+                                        <label class="form-label mb-1 text-muted" style="font-size: 0.76rem; font-weight: 600;">
+                                            Nama Dokumen / Tahapan <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" name="doc_name" class="form-control form-control-sm fase4-form-input fw-semibold" placeholder="Contoh: SK HGB BPN / PKKPR OSS / Balik Nama" required style="font-size: 0.84rem;">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label mb-1 text-muted" style="font-size: 0.76rem; font-weight: 600;">
+                                            Urutan
+                                        </label>
+                                        <input type="text" name="poin_label" class="form-control form-control-sm fase4-form-input font-monospace" placeholder="Poin {{ count($workflowDocs ?? []) + 7 }}" style="font-size: 0.84rem;">
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label mb-1 text-muted" style="font-size: 0.76rem; font-weight: 600;">
+                                        Instansi / Lembaga Terkait
+                                    </label>
+                                    <input type="text" name="instansi" class="form-control form-control-sm fase4-form-input" placeholder="Contoh: ATR/BPN, Notaris, Kelurahan" style="font-size: 0.84rem;">
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label mb-1 text-muted" style="font-size: 0.76rem; font-weight: 600;">
+                                        Status Dokumen
+                                    </label>
+                                    <select name="status" class="form-select form-select-sm fase4-form-input fw-semibold" style="font-size: 0.84rem;">
+                                        <option value="proses" selected>Sedang Proses</option>
+                                        <option value="belum">Belum Ada</option>
+                                        <option value="terbit">Selesai / Terbit</option>
+                                        <option value="ditolak">Ditolak / Kendala</option>
+                                    </select>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-7">
+                                        <label class="form-label mb-1 text-muted" style="font-size: 0.76rem; font-weight: 600;">
+                                            Nomor SK / Registrasi
+                                        </label>
+                                        <input type="text" name="doc_number" class="form-control form-control-sm fase4-form-input" placeholder="Nomor SK/Surat" style="font-size: 0.84rem;">
+                                    </div>
+                                    <div class="col-5">
+                                        <label class="form-label mb-1 text-muted" style="font-size: 0.76rem; font-weight: 600;">
+                                            Tanggal Dokumen
+                                        </label>
+                                        <input type="date" name="doc_date" class="form-control form-control-sm fase4-form-input" style="font-size: 0.84rem;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. Biaya & Luas -->
+                            <div class="p-3 bg-white rounded-3 border shadow-xs">
+                                <h6 class="fw-bold text-dark mb-2.5" style="font-size: 0.82rem;">
+                                    Biaya & Luas Terkait
+                                </h6>
+                                <div class="row g-2">
+                                    <div class="col-7">
+                                        <label class="form-label mb-1 text-muted" style="font-size: 0.76rem; font-weight: 600;">
+                                            Biaya / Pajak (Rp)
+                                        </label>
+                                        <input type="text" name="nominal" class="form-control form-control-sm fase4-form-input input-currency" placeholder="0" onkeyup="formatCurrencyDirect(this)" style="font-size: 0.84rem;">
+                                    </div>
+                                    <div class="col-5">
+                                        <label class="form-label mb-1 text-muted" style="font-size: 0.76rem; font-weight: 600;">
+                                            Luas (m²)
+                                        </label>
+                                        <input type="number" step="0.01" name="luas" class="form-control form-control-sm fase4-form-input" placeholder="m²" style="font-size: 0.84rem;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ================= KOLOM KANAN ================= -->
+                        <div class="col-12 col-lg-6 d-flex flex-column gap-3">
+                            <!-- 3. Upload Berkas Dokumen -->
+                            <div class="p-3 bg-white rounded-3 border shadow-xs">
+                                <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.78rem; font-weight: 600;">
+                                    <span class="d-inline-flex align-items-center" style="gap: 8px;"><i class="fas fa-file-upload text-primary me-2"></i> <span>Upload Berkas Dokumen (Opsional)</span></span>
+                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">Format PDF/JPG/PNG</span>
+                                </label>
+                                <div class="pratanah-file-upload-modern">
+                                    <input type="file" name="file_doc" accept=".pdf,.jpg,.jpeg,.png">
+                                    <div class="pratanah-file-label-modern py-2 px-2.5 rounded-3 d-flex align-items-center gap-2.5" style="border: 1.5px dashed #c4b5fd; background: #fdfcff; transition: all 0.2s ease;">
+                                        <div class="p-1.5 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="background: rgba(154, 85, 255, 0.12); width: 34px; height: 34px;">
+                                            <i class="mdi mdi-cloud-upload text-primary" style="font-size: 1.25rem;"></i>
+                                        </div>
+                                        <div class="pratanah-file-info-modern overflow-hidden">
+                                            <span class="file-label-text fw-bold text-primary text-truncate d-block" style="font-size: 0.80rem;">Pilih / Upload Berkas</span>
+                                            <small class="text-muted d-block" style="font-size: 0.68rem;">PDF, JPG, PNG (Maks 20MB)</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 4. Prasyarat Berkas -->
+                            <div class="p-3 bg-white rounded-3 border shadow-xs">
+                                <div class="d-flex align-items-center justify-content-between mb-1.5">
+                                    <label class="form-label mb-0 text-muted fw-bold d-flex align-items-center" style="font-size: 0.78rem; gap: 8px;">
+                                        <i class="fas fa-tasks text-primary me-2"></i> <span>Teks Butir Prasyarat Berkas</span>
+                                    </label>
+                                    <span class="badge bg-light text-muted border px-2 py-0.5" style="font-size: 0.68rem;">1 Baris per Syarat</span>
+                                </div>
+                                <textarea name="syarat_dokumen" class="form-control fase4-form-input" rows="5" placeholder="• Copy KTP & KK Pemohon&#10;• Surat Kuasa Notaris&#10;• Bukti Lunas PBB Terakhir" style="min-height: 120px !important; font-size: 0.84rem; line-height: 1.5;"></textarea>
+                                <small class="text-muted d-block mt-1" style="font-size: 0.68rem;">Gunakan baris baru atau tanda titik (•) untuk tiap butir syarat.</small>
+                            </div>
+
+                            <!-- 5. Catatan / Keterangan -->
+                            <div class="p-3 bg-white rounded-3 border shadow-xs">
+                                <label class="form-label mb-1 text-muted fw-bold d-flex align-items-center" style="font-size: 0.78rem; gap: 8px;">
+                                    <i class="fas fa-sticky-note text-warning me-2"></i> <span>Catatan / Keterangan</span>
+                                </label>
+                                <textarea name="notes" class="form-control fase4-form-input fase4-notes-area" rows="3" placeholder="Catatan teknis pengurusan..." style="min-height: 90px !important; font-size: 0.84rem; line-height: 1.5;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="modal-footer fase4-modal-footer bg-white border-top d-flex justify-content-end align-items-center gap-2.5 py-3 px-4">
+                    <button type="button" class="btn btn-light border text-secondary px-3.5 py-2 rounded-3 shadow-xs" data-bs-dismiss="modal" style="font-size: 0.82rem; font-weight: 600;">
+                        Batal
+                    </button>
+                    <button type="submit" form="formAddNewDoc" class="btn text-white px-4 py-2 rounded-3 shadow-sm" id="btnSubmitNewDoc" style="background: linear-gradient(135deg, #9a55ff 0%, #7e22ce 100%); font-size: 0.82rem; font-weight: 700; border: none;">
+                        Simpan Dokumen
+                    </button>
                 </div>
             </div>
         </div>
@@ -2688,8 +3456,8 @@
     {{-- MODAL CHECKLIST PICKER: PILIH DARI MASTER DOKUMEN PERIZINAN --}}
     <div class="modal fade" id="modalPickerMasterPerizinan" tabindex="-1" aria-hidden="true" style="z-index: 1056;">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header d-flex align-items-center justify-content-between flex-wrap gap-2 py-3 px-4">
+            <div class="modal-content" style="border-radius: 14px; overflow: hidden; border: none; box-shadow: 0 12px 40px rgba(0,0,0,0.15);">
+                <div class="modal-header master-picker-header d-flex align-items-center justify-content-between flex-wrap gap-2 py-3 px-4">
                     <div class="d-flex align-items-center gap-2.5">
                         <div class="p-2 rounded-3 text-primary" style="background-color: rgba(154, 85, 255, 0.12);">
                             <i class="fas fa-award fs-5"></i>
@@ -2700,10 +3468,12 @@
                         </div>
                     </div>
                     <div class="d-flex align-items-center gap-2 ms-auto">
-                        <a href="{{ route('master.dokumen-perizinan.index') }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1.5 py-1.5 px-3" style="font-size: 0.78rem;">
-                            <i class="fas fa-cog"></i> <span>Kelola Master Data</span>
+                        <a href="{{ route('master.dokumen-perizinan.index') }}" target="_blank" class="btn btn-sm shadow-xs d-inline-flex align-items-center gap-2 text-decoration-none" style="background: #f5f3ff; border: 1.5px solid #c4b5fd; color: #6d28d9; font-size: 0.82rem; font-weight: 600; border-radius: 8px; padding: 0.45rem 0.95rem; transition: all 0.2s ease;">
+                            <i class="fas fa-cog text-primary"></i>
+                            <span>Kelola Master Data</span>
+                            <i class="fas fa-external-link-alt ms-1" style="font-size: 0.68rem; opacity: 0.7;"></i>
                         </a>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close ms-1" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                 </div>
 
@@ -2714,7 +3484,7 @@
                             <div class="col-md-7">
                                 <div class="master-search-group">
                                     <i class="fas fa-search master-search-icon"></i>
-                                    <input type="text" class="form-control master-search-input" id="searchMasterPickerInput" placeholder="Cari nama izin, kode poin, instansi..." onkeyup="searchMasterPicker(this.value)">
+                                    <input type="text" class="form-control master-search-input" id="searchMasterPickerInput" placeholder="Cari nama izin, kode poin, instansi..." onkeyup="searchMasterPicker(this.value)" style="padding-left: 44px !important; height: 42px !important;">
                                 </div>
                             </div>
                             <div class="col-md-5">
@@ -2756,7 +3526,7 @@
                             }
                         @endphp
 
-                        <div class="row g-2.5" id="masterPickerListContainer">
+                        <div class="row g-3" id="masterPickerListContainer">
                             @if(isset($masterDocuments) && $masterDocuments->count() > 0)
                                 @foreach($masterDocuments as $m)
                                     @php
@@ -2788,8 +3558,8 @@
                                                             <span class="badge rounded-2 fw-semibold" style="background-color: rgba(154,85,255,0.12); color: #9a55ff; font-size: 0.7rem;">{{ $m->kategori }}</span>
                                                         </div>
                                                         @if($isAlreadyAdded)
-                                                            <span class="badge bg-secondary rounded-2" style="font-size: 0.68rem;">
-                                                                <i class="fas fa-check-double me-1"></i>Sudah Ada di Lahan
+                                                            <span class="badge rounded-2 px-2 py-0.5 d-inline-flex align-items-center gap-1" style="background-color: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; font-size: 0.70rem; font-weight: 600;">
+                                                                <i class="fas fa-check-circle text-success"></i> Sudah Ada di Lahan
                                                             </span>
                                                         @elseif($m->is_required)
                                                             <span class="badge bg-danger-soft text-danger fw-bold border border-danger-subtle rounded-2" style="background-color: rgba(220,53,69,0.1); font-size: 0.68rem;">
@@ -2798,30 +3568,34 @@
                                                         @endif
                                                     </div>
 
-                                                    <h6 class="fw-bold text-dark mb-1 text-truncate" style="font-size: 0.88rem;" title="{{ $m->nama_dokumen }}">
+                                                    <h6 class="fw-bold mb-1 text-truncate {{ $isAlreadyAdded ? 'text-secondary' : 'text-dark' }}" style="font-size: 0.88rem;" title="{{ $m->nama_dokumen }}">
                                                         {{ $m->nama_dokumen }}
                                                     </h6>
 
                                                     @if($m->instansi_terkait)
-                                                        <small class="text-muted d-block text-truncate mb-1" style="font-size: 0.74rem;">
-                                                            <i class="fas fa-landmark text-primary me-1"></i>{{ $m->instansi_terkait }}
-                                                        </small>
+                                                        <div class="d-flex align-items-center gap-1.5 text-muted mb-1" style="font-size: 0.75rem;">
+                                                            <i class="fas fa-landmark text-primary" style="font-size: 0.74rem; width: 14px; text-align: center;"></i>
+                                                            <span class="text-truncate">{{ $m->instansi_terkait }}</span>
+                                                        </div>
                                                     @endif
 
-                                                    <div class="d-flex flex-wrap align-items-center gap-2 mt-2 pt-1.5 border-top" style="font-size: 0.74rem;">
+                                                    <div class="d-flex flex-wrap align-items-center gap-1.5 mt-2.5 pt-2 border-top" style="font-size: 0.74rem;">
                                                         @if($m->estimasi_hari)
-                                                            <span class="text-muted">
-                                                                <i class="far fa-clock me-0.5 text-secondary"></i>{{ $m->estimasi_hari }} Hari
+                                                            <span class="badge bg-light text-secondary border px-2 py-1 rounded-2 d-inline-flex align-items-center gap-1.5" style="font-size: 0.70rem; font-weight: 500;">
+                                                                <i class="far fa-clock text-primary"></i>
+                                                                <span>{{ $m->estimasi_hari }} Hari</span>
                                                             </span>
                                                         @endif
                                                         @if($m->estimasi_biaya > 0)
-                                                            <span class="fw-bold text-success">
-                                                                Rp {{ number_format($m->estimasi_biaya, 0, ',', '.') }}
+                                                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 rounded-2 d-inline-flex align-items-center gap-1.5" style="font-size: 0.70rem; font-weight: 700;">
+                                                                <i class="fas fa-money-bill-wave"></i>
+                                                                <span>Rp {{ number_format($m->estimasi_biaya, 0, ',', '.') }}</span>
                                                             </span>
                                                         @endif
                                                         @if($m->syarat_dokumen)
-                                                            <span class="text-muted text-truncate" style="max-width: 180px;" title="Syarat: {{ $m->syarat_dokumen }}">
-                                                                <i class="fas fa-file-alt me-0.5 text-primary"></i>{{ $m->syarat_dokumen }}
+                                                            <span class="badge bg-light text-muted border px-2 py-1 rounded-2 d-inline-flex align-items-center gap-1.5 text-truncate" style="max-width: 220px; font-size: 0.70rem; font-weight: 500;" title="Syarat: {{ $m->syarat_dokumen }}">
+                                                                <i class="fas fa-file-alt text-secondary"></i>
+                                                                <span class="text-truncate">{{ $m->syarat_dokumen }}</span>
                                                             </span>
                                                         @endif
                                                     </div>
@@ -2840,12 +3614,13 @@
                     </form>
                 </div>
 
-                <div class="modal-footer d-flex justify-content-end align-items-center gap-2 py-2.5 px-4">
-                    <button type="button" class="btn btn-master-cancel" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-1.5"></i>Batal
+                <div class="modal-footer fase4-modal-footer bg-white border-top d-flex justify-content-end align-items-center gap-2.5 py-3 px-4">
+                    <button type="button" class="btn btn-light border text-secondary d-inline-flex align-items-center gap-2 px-4 py-2 rounded-3 shadow-xs" data-bs-dismiss="modal" style="font-size: 0.85rem; font-weight: 600;">
+                        <i class="fas fa-times"></i>
+                        <span>Batal</span>
                     </button>
-                    <button type="button" class="btn btn-master-submit" id="btnSubmitMasterPicker" onclick="submitBatchFromMaster()">
-                        <i class="fas fa-plus-circle me-1.5"></i>
+                    <button type="button" class="btn text-white d-inline-flex align-items-center gap-2 px-4 py-2 rounded-3 shadow-sm" id="btnSubmitMasterPicker" onclick="submitBatchFromMaster()" style="background: linear-gradient(135deg, #9a55ff 0%, #7e22ce 100%); font-size: 0.85rem; font-weight: 700; border: none;">
+                        <i class="fas fa-plus-circle"></i>
                         <span id="btnSubmitMasterPickerText">Tambahkan Dokumen Terpilih</span>
                     </button>
                 </div>
@@ -3231,11 +4006,24 @@
 @endpush
 
 
+    <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"></script>
+
     <script>
         // ==========================================
         // PROPERTI TAB SWITCHING & FASE 4 WORKFLOW
         // ==========================================
         const FASE4_DOC_DATA = @json($workflowDocs ?? []);
+
+        // Masonry disabled: Using standard Bootstrap grid so trailing cards always align cleanly to the LEFT, not center
+        let msnryFase4 = null;
+
+        function initFase4Masonry() {
+            // Cards flow in natural left-to-right grid order
+        }
+
+        function layoutFase4Masonry() {
+            // No-op
+        }
 
         function switchPropertiTab(tabKey) {
             const btnProfil = document.getElementById('tabBtnProfil');
@@ -3249,6 +4037,7 @@
                 if (paneProfil) paneProfil.classList.add('d-none');
                 if (paneDokumen) paneDokumen.classList.remove('d-none');
                 window.location.hash = 'dokumen';
+                setTimeout(initFase4Masonry, 50);
             } else {
                 if (btnDokumen) btnDokumen.classList.remove('active');
                 if (btnProfil) btnProfil.classList.add('active');
@@ -3258,10 +4047,31 @@
             }
         }
 
-        // Auto switch tab if URL contains #dokumen
+        // Auto switch tab if URL contains #dokumen & attach collapse listeners for Masonry
         document.addEventListener("DOMContentLoaded", function() {
             if (window.location.hash === '#dokumen') {
                 switchPropertiTab('dokumen');
+            } else {
+                const paneDokumen = document.getElementById('paneDokumenPerizinan');
+                if (paneDokumen && !paneDokumen.classList.contains('d-none')) {
+                    setTimeout(initFase4Masonry, 100);
+                }
+            }
+
+            // Reposition masonry smoothly when any collapse accordion opens/closes
+            const docsContainer = document.getElementById('fase4_docs_container');
+            if (docsContainer) {
+                ['show.bs.collapse', 'shown.bs.collapse', 'hide.bs.collapse', 'hidden.bs.collapse'].forEach(evt => {
+                    docsContainer.addEventListener(evt, () => {
+                        setTimeout(layoutFase4Masonry, 20);
+                    });
+                });
+            }
+
+            if (window.jQuery) {
+                $(document).on('show.bs.collapse shown.bs.collapse hide.bs.collapse hidden.bs.collapse', '#fase4_docs_container .collapse', function() {
+                    setTimeout(layoutFase4Masonry, 20);
+                });
             }
         });
         
@@ -3290,18 +4100,76 @@
         }
 
         function scrollToNewDocForm() {
-            const card = document.getElementById('cardAddNewDoc');
-            if (card) {
-                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                const nameInput = card.querySelector('input[name="doc_name"]');
-                if (nameInput) {
-                    setTimeout(() => nameInput.focus(), 400);
+            openAddNewDocModal();
+        }
+
+        function openAddNewDocModal() {
+            const form = document.getElementById('formAddNewDoc');
+            if (form) form.reset();
+            const modalEl = document.getElementById('modalAddNewDoc');
+            if (!modalEl) return;
+            const modalObj = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modalObj.show();
+            setTimeout(() => {
+                const nameInput = form?.querySelector('input[name="doc_name"]');
+                if (nameInput) nameInput.focus();
+            }, 300);
+        }
+
+        function previewSyaratFileName(input, labelId, chkId) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const labelEl = document.getElementById(labelId);
+                if (labelEl) {
+                    labelEl.innerHTML = '<i class="fas fa-check text-success me-1"></i> ' + file.name;
+                    labelEl.classList.remove('text-primary');
+                    labelEl.classList.add('text-success');
+                }
+                const chkEl = document.getElementById(chkId);
+                if (chkEl) {
+                    chkEl.checked = true;
+                }
+                const modernBox = input.closest('.pratanah-file-upload-modern');
+                if (modernBox) {
+                    const labelWrapper = modernBox.querySelector('.pratanah-file-label-modern');
+                    if (labelWrapper) {
+                        labelWrapper.style.borderColor = '#86efac';
+                        labelWrapper.style.background = '#f0fdf4';
+                        const iconBox = labelWrapper.querySelector('.rounded-circle');
+                        if (iconBox) {
+                            iconBox.style.background = 'rgba(34, 197, 94, 0.12)';
+                            iconBox.innerHTML = '<i class="mdi mdi-file-check text-success" style="font-size: 1.15rem;"></i>';
+                        }
+                    }
                 }
             }
         }
 
-        function saveSingleFase4Doc(e, docId) {
-            e.preventDefault();
+        function saveDocFromModal(docId) {
+            const modalEl = document.getElementById('modalRincianDoc_' + docId);
+            if (!modalEl) return;
+
+            const nameInput = document.getElementById('modal_doc_name_' + docId);
+            const poinInput = document.getElementById('modal_poin_label_' + docId);
+            const instansiInput = document.getElementById('modal_instansi_' + docId);
+            const nominalInput = document.getElementById('modal_nominal_' + docId);
+            const luasInput = document.getElementById('modal_luas_' + docId);
+            const notesInput = document.getElementById('modal_notes_' + docId);
+            const syaratInput = document.getElementById('modal_syarat_dokumen_' + docId);
+
+            if (nameInput && document.getElementById('card_doc_name_' + docId)) document.getElementById('card_doc_name_' + docId).value = nameInput.value;
+            if (poinInput && document.getElementById('card_poin_label_' + docId)) document.getElementById('card_poin_label_' + docId).value = poinInput.value;
+            if (instansiInput && document.getElementById('card_instansi_' + docId)) document.getElementById('card_instansi_' + docId).value = instansiInput.value;
+            if (nominalInput && document.getElementById('card_nominal_' + docId)) document.getElementById('card_nominal_' + docId).value = nominalInput.value;
+            if (luasInput && document.getElementById('card_luas_' + docId)) document.getElementById('card_luas_' + docId).value = luasInput.value;
+            if (notesInput && document.getElementById('card_notes_' + docId)) document.getElementById('card_notes_' + docId).value = notesInput.value;
+            if (syaratInput && document.getElementById('card_syarat_dokumen_' + docId)) document.getElementById('card_syarat_dokumen_' + docId).value = syaratInput.value;
+
+            saveSingleFase4Doc(null, docId, modalEl);
+        }
+
+        function saveSingleFase4Doc(e, docId, modalSource = null) {
+            if (e) e.preventDefault();
             const form = document.getElementById('form_doc_' + docId);
             if (!form) return;
 
@@ -3313,6 +4181,40 @@
             }
 
             const formData = new FormData(form);
+
+            const modalEl = modalSource || document.getElementById('modalRincianDoc_' + docId);
+            if (modalEl) {
+                // Collect checkboxes from modal
+                const chks = modalEl.querySelectorAll('input[name="modal_syarat_checklist_' + docId + '[]"]:checked');
+                formData.delete('syarat_checklist[]');
+                chks.forEach(chk => {
+                    formData.append('syarat_checklist[]', chk.value);
+                });
+
+                // Collect file inputs from modal
+                const fileInputs = modalEl.querySelectorAll('input[type="file"]');
+                fileInputs.forEach(fi => {
+                    if (fi.files && fi.files.length > 0) {
+                        if (fi.name.includes('file_doc') || fi.name.includes('file_utama')) {
+                            formData.delete('file');
+                            formData.delete('file_doc');
+                            formData.append('file', fi.files[0]);
+                            formData.append('file_doc', fi.files[0]);
+                        } else if (fi.name.includes('syarat_file')) {
+                            const parts = fi.name.split('_');
+                            const idx = parts[parts.length - 1];
+                            formData.append('syarat_files[' + idx + ']', fi.files[0]);
+                            formData.append('syarat_file_' + idx, fi.files[0]);
+                            formData.append('syarat_file_' + docId + '_' + idx, fi.files[0]);
+                        } else {
+                            let cleanName = fi.name.replace('modal_', '');
+                            formData.delete(cleanName);
+                            formData.append(cleanName, fi.files[0]);
+                        }
+                    }
+                });
+            }
+
             formData.append('_token', '{{ csrf_token() }}');
 
             const uploadUrl = '{{ route("properti.upload-custom-workflow-doc", $land->id) }}';
@@ -3341,6 +4243,10 @@
             })
             .then(data => {
                 if (data.success) {
+                    if (modalEl) {
+                        const modalObj = bootstrap.Modal.getInstance(modalEl);
+                        if (modalObj) modalObj.hide();
+                    }
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil Disimpan!',
@@ -3417,6 +4323,11 @@
             })
             .then(data => {
                 if (data.success) {
+                    const modalEl = document.getElementById('modalAddNewDoc');
+                    if (modalEl) {
+                        const modalObj = bootstrap.Modal.getInstance(modalEl);
+                        if (modalObj) modalObj.hide();
+                    }
                     Swal.fire({
                         icon: 'success',
                         title: 'Dokumen Ditambahkan!',
@@ -3795,16 +4706,23 @@ function deleteFase4Doc(docId, docName) {
             const emptyState = document.getElementById('fase4_docs_empty_state');
             if (emptyState) {
                 if (visibleCount === 0 && cards.length > 0) {
+                    emptyState.classList.remove('d-none');
                     emptyState.style.display = '';
                     emptyState.innerHTML = `
-                        <div class="p-4 text-center text-muted bg-light rounded-3 border w-100 my-2" style="font-size: 0.85rem;">
-                            <i class="fas fa-filter me-1 fs-4 d-block mb-1 text-secondary"></i>
-                            Tidak ada dokumen dengan filter status <strong>${status.toUpperCase()}</strong>.
+                        <div class="card border border-dashed rounded-3 p-4 text-center bg-light my-2 w-100">
+                            <i class="fas fa-filter text-secondary fs-4 d-block mb-1"></i>
+                            <span class="text-muted small">Tidak ada dokumen dengan filter status <strong>${status.toUpperCase()}</strong>.</span>
                         </div>
                     `;
                 } else {
+                    emptyState.classList.add('d-none');
                     emptyState.style.display = 'none';
                 }
+            }
+
+            if (msnryFase4) {
+                msnryFase4.reloadItems();
+                msnryFase4.layout();
             }
         }
 
@@ -3826,18 +4744,36 @@ function deleteFase4Doc(docId, docName) {
             const emptyState = document.getElementById('fase4_docs_empty_state');
             if (emptyState) {
                 if (visibleCount === 0 && cards.length > 0) {
+                    emptyState.classList.remove('d-none');
                     emptyState.style.display = '';
                     emptyState.innerHTML = `
-                        <div class="p-4 text-center text-muted bg-light rounded-3 border w-100 my-2" style="font-size: 0.85rem;">
-                            <i class="fas fa-search me-1 fs-4 d-block mb-1 text-secondary"></i>
-                            Tidak ada dokumen yang cocok dengan pencarian "<strong>${query}</strong>".
+                        <div class="card border border-dashed rounded-3 p-4 text-center bg-light my-2 w-100">
+                            <i class="fas fa-search text-secondary fs-4 d-block mb-1"></i>
+                            <span class="text-muted small">Tidak ada dokumen yang cocok dengan pencarian "<strong>${query}</strong>".</span>
                         </div>
                     `;
                 } else {
+                    emptyState.classList.add('d-none');
                     emptyState.style.display = 'none';
                 }
             }
+
+            if (msnryFase4) {
+                msnryFase4.reloadItems();
+                msnryFase4.layout();
+            }
         }
+
+        // Delegated change listener for modern file upload labels
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.matches('.pratanah-file-upload-modern input[type="file"]')) {
+                const labelText = e.target.closest('.pratanah-file-upload-modern')?.querySelector('.file-label-text');
+                if (labelText && e.target.files && e.target.files.length > 0) {
+                    labelText.textContent = e.target.files[0].name;
+                    labelText.classList.add('text-success');
+                }
+            }
+        });
 
         // ==========================================
         // UNIVERSAL DOCUMENT PREVIEW MODAL LOGIC

@@ -352,6 +352,7 @@ public function update(Request $request, $id)
             'nominal'    => 'nullable|string|max:50',
             'notes'      => 'nullable|string|max:500',
             'file'       => 'nullable|file|max:25600',
+            'file_doc'   => 'nullable|file|max:25600',
         ]);
 
         $land = LandBank::findOrFail($id);
@@ -362,8 +363,9 @@ public function update(Request $request, $id)
         }
 
         $filePath = null;
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
+        $uploadedFile = $request->file('file') ?: $request->file('file_doc');
+        if ($uploadedFile) {
+            $file = $uploadedFile;
             $filename = uniqid() . '_pengindukan_' . $file->getClientOriginalName();
             $destination = public_path('uploads/landbank/' . $land->id . '/pengindukan');
 
@@ -474,12 +476,14 @@ public function update(Request $request, $id)
         // Also check for individual syarat_file_{$key} inputs
         foreach ($request->allFiles() as $fileKey => $sFile) {
             if (str_starts_with($fileKey, 'syarat_file_') && $sFile && $sFile->isValid()) {
-                $idx = str_replace('syarat_file_', '', $fileKey);
+                $rawIdx = str_replace('syarat_file_', '', $fileKey);
+                $idxParts = explode('_', $rawIdx);
+                $idx = end($idxParts);
                 $sFilename = uniqid() . '_syarat_' . preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $sFile->getClientOriginalName());
                 $sFile->move($destinationSyarat, $sFilename);
                 $savedPath = 'uploads/landbank/' . $land->id . '/prasyarat/' . $sFilename;
 
-                $itemName = isset($syaratItems[$idx]) ? $syaratItems[$idx] : (string)$idx;
+                $itemName = isset($syaratItems[$idx]) ? $syaratItems[$idx] : (isset($syaratItems[$rawIdx]) ? $syaratItems[$rawIdx] : (string)$rawIdx);
                 $syaratFiles[$itemName] = $savedPath;
 
                 if (!in_array($itemName, $syaratChecklist)) {

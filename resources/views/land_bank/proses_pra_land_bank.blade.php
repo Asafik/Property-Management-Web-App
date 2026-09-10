@@ -3984,6 +3984,366 @@
             switchStep(1);
         }
 
+        // ===============================
+        // KATEGORI DOKUMEN SESUAI ALAS HAK
+        // ===============================
+        const CATEGORY_META = {
+            'SHM': {
+                name: 'SHM (Sertifikat Hak Milik)',
+                desc: '6 Dokumen Wajib: Sertifikat SHM Asli + 5 Dokumen Identitas & Pajak (KTP, KK, Nikah, NPWP, PBB).'
+            },
+            'AJB': {
+                name: 'AJB / Akta Hibah',
+                desc: '10 Dokumen Wajib: AJB/Hibah Asli, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak (KTP, KK, Nikah, NPWP, PBB).'
+            },
+            'APHB': {
+                name: 'APHB (Akta Pembagian Hak Bersama)',
+                desc: '11 Dokumen Wajib: APHB, Ket. Ahli Waris, Akta Kematian, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak Ahli Waris.'
+            },
+            'WARISAN': {
+                name: 'AJB & Akta Hibah (Harta Warisan)',
+                desc: '11 Dokumen Wajib: AJB/Hibah Asli, Ket. Waris, Akta Kematian, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.'
+            },
+            'PETOK_C': {
+                name: 'Petok C / Girik Asli',
+                desc: '10 Dokumen Wajib: Petok C Asli, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.'
+            }
+        };
+
+        function getNormalizedCategory(raw) {
+            const val = (raw || '').toString().toUpperCase().trim();
+            if (!val) return '';
+            if (val.includes('APHB')) return 'APHB';
+            if (val.includes('WARIS')) return 'WARISAN';
+            if (val.includes('PETOK') || val.includes('GIRIK') || val.includes('LETTER')) return 'PETOK_C';
+            if (val.includes('AJB') || val.includes('HIBAH')) return 'AJB';
+            if (val.includes('SHM') || val.includes('HGB') || val.includes('HGU') || val.includes('HP')) return 'SHM';
+            return '';
+        }
+
+        function filterFase1DocumentsByCategory(selectedVal) {
+            const cat = getNormalizedCategory(selectedVal);
+            const alertEl = document.getElementById('fase1CategoryAlert');
+            const emptyEl = document.getElementById('fase1EmptyCategoryAlert');
+            const nameEl = document.getElementById('fase1CategoryName');
+            const descEl = document.getElementById('fase1CategoryDesc');
+            const countEl = document.getElementById('fase1CategoryCountBadge');
+            const fase3CatLabel = document.getElementById('fase3CategoryLabel');
+
+            if (!cat) {
+                if (alertEl) alertEl.classList.add('d-none');
+                if (emptyEl) emptyEl.classList.remove('d-none');
+
+                document.querySelectorAll('.doc-fase1-col').forEach(card => {
+                    card.classList.add('d-none');
+                });
+                document.querySelectorAll('.doc-fase3-col').forEach(card => {
+                    card.classList.add('d-none');
+                });
+                if (fase3CatLabel) fase3CatLabel.textContent = '-';
+                return;
+            }
+
+            if (emptyEl) emptyEl.classList.add('d-none');
+            if (alertEl) alertEl.classList.remove('d-none');
+
+            let visibleCount = 0;
+            document.querySelectorAll('.doc-fase1-col').forEach(card => {
+                let rawCats = card.getAttribute('data-categories');
+                let cats = [];
+                try {
+                    cats = typeof rawCats === 'string' ? JSON.parse(rawCats) : (rawCats || []);
+                } catch (e) {
+                    cats = [];
+                }
+
+                if (!cats || cats.length === 0 || cats.includes(cat)) {
+                    card.classList.remove('d-none');
+                    visibleCount++;
+                } else {
+                    card.classList.add('d-none');
+                }
+            });
+
+            // Update Fase 3 document grid cards to match the category
+            document.querySelectorAll('.doc-fase3-col').forEach(card => {
+                let rawCats = card.getAttribute('data-categories');
+                let cats = [];
+                try {
+                    cats = typeof rawCats === 'string' ? JSON.parse(rawCats) : (rawCats || []);
+                } catch (e) {
+                    cats = [];
+                }
+
+                if (!cats || cats.length === 0 || cats.includes(cat)) {
+                    card.classList.remove('d-none');
+                } else {
+                    card.classList.add('d-none');
+                }
+            });
+
+            // Update info banner
+            const info = CATEGORY_META[cat] || { name: cat };
+            if (nameEl) nameEl.textContent = info.name;
+            if (descEl) descEl.textContent = `Menampilkan ${visibleCount} berkas wajib legalitas sesuai konfigurasi Master Dokumen Tanah Induk.`;
+            if (countEl) countEl.textContent = visibleCount + ' Dokumen Wajib';
+            if (fase3CatLabel) fase3CatLabel.textContent = info.name || cat;
+        }
+
+        // ===============================
+        // SELECT2 SEARCH INITIALIZER
+        // ===============================
+        function initSelect2Search() {
+            if (typeof $ !== 'undefined' && typeof $.fn.select2 !== 'undefined') {
+                $('.select2-search').each(function() {
+                    const $this = $(this);
+                    if ($this.is(':visible')) {
+                        if ($this.hasClass("select2-hidden-accessible")) {
+                            $this.select2('destroy');
+                        }
+                        $this.select2({
+                            theme: 'bootstrap-5',
+                            placeholder: $this.data('placeholder') || 'Pilih...',
+                            allowClear: true,
+                            width: '100%'
+                        });
+                    }
+                });
+            }
+        }
+
+        // ===============================
+        // FORMAT RUPIAH
+        // ===============================
+        function formatRupiah(input) {
+            let value = input.value.replace(/[^,\d]/g, '');
+            let split = value.split(',');
+            let sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            input.value = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+        }
+
+        // ===============================
+        // HELPER FETCH API
+        // ===============================
+        async function fetchJSON(url, formData) {
+            const res = await fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                }
+            });
+
+            const text = await res.text();
+
+            try {
+                return JSON.parse(text);
+            } catch {
+                console.error("Non-JSON Response received:", text);
+                throw new Error("Sistem Server Mengalami Gangguan.");
+            }
+        }
+
+        // ===============================
+        // NOTIFICATIONS
+        // ===============================
+        function showError(msg) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Transaksi Gagal',
+                text: msg
+            });
+        }
+
+        function showLoading(msg = 'Menyimpan progres...') {
+            Swal.fire({
+                title: msg,
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+        }
+
+        // ===============================
+        // AJAX SAVE FLOWS
+        // ===============================
+        async function saveFase1(andProceed = false) {
+            try {
+                showLoading('Menyimpan Data & Dokumen Fase 1...');
+                let form = document.getElementById('formFase1');
+                let formData = new FormData(form);
+
+                let res = await fetchJSON("{{ route('pra-landbanks.store') }}", formData);
+                Swal.close();
+
+                if (res.success) {
+                    let targetId = res.id || "{{ $land->id ?? '' }}";
+                    if (andProceed && targetId && isLegalSah) {
+                        sessionStorage.setItem('success_message', 'Data Fase 1 berhasil disimpan.');
+                        window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=2";
+                    } else if (targetId) {
+                        sessionStorage.setItem('success_message', 'Perubahan data Fase 1 berhasil disimpan.');
+                        window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=1";
+                    } else {
+                        window.location.href = "{{ route('pralandbank.all') }}";
+                    }
+                } else {
+                    showError(res.message);
+                }
+            } catch (err) {
+                Swal.close();
+                showError(err.message);
+            }
+        }
+
+        function previewImageFase2(input, imgId, boxId) {
+            if (input.files && input.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let img = document.getElementById(imgId);
+                    if (img) img.src = e.target.result;
+                    let box = document.getElementById(boxId);
+                    if (box) box.classList.remove('d-none');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function saveFase2(andProceed = false) {
+            try {
+                showLoading('Menyimpan data Fase 2 & Survey Kelayakan...');
+                let form = document.getElementById('formFase2');
+                let formData = new FormData(form);
+
+                let res = await fetchJSON("{{ route('pra-landbanks.store') }}", formData);
+                Swal.close();
+
+                if (res.success) {
+                    let targetId = res.id || "{{ $land->id ?? '' }}";
+                    isFase2Done = true;
+                    document.querySelector('#step3 .mdi-lock')?.remove();
+                    document.getElementById('step3')?.classList.remove('disabled');
+                    sessionStorage.setItem('success_message', 'Data Fase 2 & Survey Kelayakan berhasil disimpan.');
+                    if (andProceed && targetId) {
+                        window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=3";
+                    } else if (targetId) {
+                        window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=2";
+                    } else {
+                        window.location.href = "{{ route('pralandbank.all') }}";
+                    }
+                } else {
+                    showError(res.message);
+                }
+            } catch (err) {
+                Swal.close();
+                showError(err.message);
+            }
+        }
+
+        async function saveFase3() {
+            try {
+                showLoading('Menyimpan keputusan & progres pembayaran...');
+                let form = document.getElementById('formFase3');
+
+                // Temporarily un-disable inputs to ensure FormData captures all amounts, fees, and installment rows
+                let disabledInputs = form.querySelectorAll(':disabled');
+                disabledInputs.forEach(el => el.disabled = false);
+                let formData = new FormData(form);
+                disabledInputs.forEach(el => el.disabled = true);
+
+                // Explicitly sync key fields
+                const selectPayMethod = document.getElementById('temp_payment_method');
+                const chosenMethod = selectPayMethod ? selectPayMethod.value : 'cash';
+                formData.set('payment_method_temp', chosenMethod);
+                formData.set('payment_method', chosenMethod);
+
+                if (chosenMethod === 'cash') {
+                    // CRITICAL: Delete any installments array from formData so they don't get sent when user chose Cash!
+                    for (let key of Array.from(formData.keys())) {
+                        if (key.startsWith('installments[')) {
+                            formData.delete(key);
+                        }
+                    }
+                }
+
+                const selectDuration = document.getElementById('temp_installment_duration');
+                if (selectDuration) {
+                    formData.set('installment_duration_temp', selectDuration.value);
+                }
+                const selectCount = document.getElementById('temp_installment_count');
+                if (selectCount) {
+                    formData.set('installment_count_temp', selectCount.value);
+                }
+                const selectStatusAkhir = document.getElementById('fase3_status_akhir');
+                if (selectStatusAkhir) {
+                    formData.set('status', selectStatusAkhir.value);
+                }
+                const dealPriceInput = document.getElementById('deal_price_input');
+                if (dealPriceInput) {
+                    formData.set('deal_price', dealPriceInput.value);
+                }
+                const selectNotaris = form.querySelector('select[name="notaris_id"]');
+                if (selectNotaris && selectNotaris.value) {
+                    formData.set('notaris_id', selectNotaris.value);
+                }
+                const inputNotaryDate = form.querySelector('input[name="notary_appointment_date"]');
+                if (inputNotaryDate && inputNotaryDate.value) {
+                    formData.set('notary_appointment_date', inputNotaryDate.value);
+                }
+
+                let res = await fetchJSON("{{ route('pra-landbanks.store') }}", formData);
+                Swal.close();
+
+                if (res.success) {
+                    let textMsg = res.message || 'Data keputusan sidang berhasil disimpan!';
+                    if (res.status === 'approved') {
+                        textMsg = 'Tanah berhasil disetujui (Deal) dan telah di-upgrade ke Daftar Proyek Landbank utama!';
+                    }
+                    
+                    const invoiceUrl = res.invoice_url || "{{ $land ? route('pra-landbank.invoice', $land->id) : '' }}";
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: '{!! ($isKeuangan && !$isAdmin) ? "Data Keuangan Berhasil Disimpan!" : "Keputusan Fase 3 Disimpan!" !!}',
+                        html: `
+                            <p class="mb-3 text-muted" style="font-size: 0.9rem;">${textMsg}</p>
+                            <div class="alert alert-light border py-2 px-3 mb-0 text-start" style="font-size: 0.85rem; background: #fafbfe;">
+                                <i class="mdi mdi-receipt-text-check text-success me-1"></i>
+                                Invoice transaksi telah otomatis digenerate oleh sistem.
+                            </div>
+                        `,
+                        showCancelButton: true,
+                        confirmButtonText: '<i class="mdi mdi-printer me-1"></i> Cetak / Lihat Invoice',
+                        cancelButtonText: '<i class="mdi mdi-check-all me-1"></i> Selesai & Kembali',
+                        confirmButtonColor: '#9a55ff',
+                        cancelButtonColor: '#6c757d',
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            if (invoiceUrl) {
+                                window.open(invoiceUrl, '_blank');
+                            }
+                            window.location.href = "{{ route('pralandbank.all') }}";
+                        } else {
+                            window.location.href = "{{ route('pralandbank.all') }}";
+                        }
+                    });
+                } else {
+                    showError(res.message);
+                }
+            } catch (err) {
+                Swal.close();
+                showError(err.message);
+            }
+        }
+
         async function previewInvoice() {
             try {
                 showLoading('Menyiapkan dan menyinkronkan data invoice...');
@@ -5245,6 +5605,52 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+            // Display flash or sessionStorage notifications
+            const pendingMsg = sessionStorage.getItem('success_message');
+            if (pendingMsg) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: pendingMsg,
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+                sessionStorage.removeItem('success_message');
+            }
+
+            @if(session('warning'))
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Akses Terkunci',
+                    text: "{{ session('warning') }}"
+                });
+            @endif
+
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: "{{ session('success') }}",
+                    timer: 2500,
+                    showConfirmButton: false
+                });
+            @endif
+
+            // Filter berkas dokumen Fase 1 secara dinamis sesuai Status Kepemilikan (Alas Hak)
+            const initialOwnership = $('#select_ownership_status').val() || (document.getElementById('select_ownership_status')?.value ?? '');
+            filterFase1DocumentsByCategory(initialOwnership);
+
+            $('#select_ownership_status').on('change select2:select', function() {
+                filterFase1DocumentsByCategory($(this).val());
+            });
+
+            const selOwner = document.getElementById('select_ownership_status');
+            if (selOwner) {
+                selOwner.addEventListener('change', function() {
+                    filterFase1DocumentsByCategory(this.value);
+                });
+            }
+
             // Financial summary listeners
             const costInputs = ['biaya_ijb_temp', 'biaya_pajak_temp', 'fee_makelar_temp', 'biaya_lain_temp'];
             costInputs.forEach(name => {

@@ -501,9 +501,22 @@ public function store(Request $request)
                 + (float)($data['cost_broker'] ?? $record->cost_broker ?? 0)
                 + (float)($data['cost_other'] ?? $record->cost_other ?? 0);
 
-            $landBank = \App\Models\LandBank::firstOrNew(['name' => $record->land_name]);
+            $landBank = null;
+            if ($record->land_bank_id) {
+                $landBank = \App\Models\LandBank::find($record->land_bank_id);
+            }
+            if (!$landBank) {
+                $landBank = \App\Models\LandBank::where('name', $record->land_name)->first();
+            }
+            if (!$landBank) {
+                $landBank = new \App\Models\LandBank(['name' => $record->land_name]);
+            }
+
+            $companyId = $landBank->company_profile_id ?? (\App\Models\CompanyProfile::first()->id ?? 1);
+
             $landBank->fill([
                 'name'              => $record->land_name,
+                'company_profile_id'=> $companyId,
                 'area'              => $record->area,
                 'remaining_area'    => $landBank->exists ? $landBank->remaining_area : $record->area,
                 'acquisition_price' => $finalGrandTotal > 0 ? $finalGrandTotal : $finalDealPrice,
@@ -532,6 +545,10 @@ public function store(Request $request)
                 'development_status'=> $landBank->exists ? $landBank->development_status : 'Belum'
             ]);
             $landBank->save();
+
+            if ($record->land_bank_id != $landBank->id) {
+                $record->update(['land_bank_id' => $landBank->id]);
+            }
 
             // Initialize default infrastructure site development items (PJU, Selokan, Jalan, etc.)
             $landBank->initializeDefaultInfrastructures();
@@ -1345,6 +1362,7 @@ public function store(Request $request)
             'nominal'    => 'nullable|string|max:50',
             'notes'      => 'nullable|string|max:500',
             'file'       => 'nullable|file|max:25600',
+            'file_doc'   => 'nullable|file|max:25600',
         ]);
 
         $record = PraLandbank::findOrFail($id);
@@ -1355,8 +1373,9 @@ public function store(Request $request)
         }
 
         $filePath = null;
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
+        $uploadedFile = $request->file('file') ?: $request->file('file_doc');
+        if ($uploadedFile) {
+            $file = $uploadedFile;
             $filename = uniqid() . '_pengindukan_' . $file->getClientOriginalName();
             $destination = public_path('uploads/pra_landbank/' . $record->id . '/pengindukan');
 
@@ -1460,6 +1479,29 @@ public function store(Request $request)
                             $syaratChecklist[] = $itemName;
                         }
                     }
+                }
+            }
+        }
+
+        // Also check for individual syarat_file_{$key} inputs
+        foreach ($request->allFiles() as $fileKey => $sFile) {
+            if (str_starts_with($fileKey, 'syarat_file_') && $sFile && $sFile->isValid()) {
+                $rawIdx = str_replace('syarat_file_', '', $fileKey);
+                $idxParts = explode('_', $rawIdx);
+                $idx = end($idxParts);
+                $destinationSyarat = public_path('uploads/pra_landbank/' . $record->id . '/prasyarat');
+                if (!file_exists($destinationSyarat)) {
+                    mkdir($destinationSyarat, 0755, true);
+                }
+                $sFilename = uniqid() . '_syarat_' . preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $sFile->getClientOriginalName());
+                $sFile->move($destinationSyarat, $sFilename);
+                $savedPath = 'uploads/pra_landbank/' . $record->id . '/prasyarat/' . $sFilename;
+
+                $itemName = isset($syaratItems[$idx]) ? $syaratItems[$idx] : (isset($syaratItems[$rawIdx]) ? $syaratItems[$rawIdx] : (string)$rawIdx);
+                $syaratFiles[$itemName] = $savedPath;
+
+                if (!in_array($itemName, $syaratChecklist)) {
+                    $syaratChecklist[] = $itemName;
                 }
             }
         }
@@ -1746,6 +1788,9 @@ public function store(Request $request)
         $landBank = null;
         if ($record->land_bank_id) {
             $landBank = \App\Models\LandBank::find($record->land_bank_id);
+        }
+        if (!$landBank) {
+            $landBank = \App\Models\LandBank::where('name', $record->land_name)->first();
         }
 
         // Alur kerja dokumen pengindukan (custom_workflow_docs)

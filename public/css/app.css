@@ -409,27 +409,28 @@ body {
 
 /* Micro Dot saat Sidebar Terbuka (Full) */
 .sidebar-child-link .menu-dot-open {
-  width: 3.5px;
-  height: 3.5px;
+  width: 4px;
+  height: 4px;
   background-color: #a2a8bc;
   border-radius: 50%;
-  display: inline-block;
+  display: inline-block !important;
   transition: all 0.15s ease;
 }
 
 .sidebar-child-link:hover .menu-dot-open {
   background-color: var(--primary-purple);
-  transform: scale(1.2);
+  transform: scale(1.3);
 }
 
 .sidebar-child-link.active .menu-dot-open {
   background-color: #ffffff;
-  transform: scale(1.2);
+  transform: scale(1.3);
 }
 
-/* Sembunyikan Ikon Child saat Terbuka */
+/* Sembunyikan Ikon Child saat Sidebar Terbuka (Hanya tampilkan Dot & Teks) */
+body:not(.sidebar-icon-only) .sidebar-child-link .menu-icon-minimized,
 .sidebar-child-link .menu-icon-minimized {
-  display: none;
+  display: none !important;
 }
 
 .sidebar-menu-link .menu-title-text {

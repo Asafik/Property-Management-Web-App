@@ -542,102 +542,83 @@
             font-weight: 600;
         }
 
-        /* ===== MODERN FILE UPLOAD STYLING ===== */
-        .properti-file-upload-modern {
+        /* ===== MODERN FILE UPLOAD & CARD STYLING (PARITY WITH EDIT PAGE) ===== */
+        .pratanah-file-upload-modern {
             position: relative;
             width: 100%;
         }
 
-        .properti-file-upload-modern input[type="file"] {
+        .pratanah-file-upload-modern input[type="file"] {
             position: absolute;
             opacity: 0;
             width: 100%;
             height: 100%;
             cursor: pointer;
             z-index: 2;
+            top: 0;
+            left: 0;
         }
 
-        .properti-file-upload-modern .properti-file-label-modern {
+        .pratanah-file-label-modern {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            text-align: center;
-            gap: 6px;
-            padding: 1rem 0.6rem;
+            gap: 10px;
+            padding: 0.65rem 1rem;
             background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 2px dashed #d0d4db;
-            border-radius: 12px;
+            border: 1.5px dashed #c4b5fd;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-height: 100px;
         }
 
-        @media (min-width: 576px) {
-            .properti-file-upload-modern .properti-file-label-modern {
-                flex-direction: row;
-                text-align: left;
-                gap: 8px;
-                padding: 0.75rem 1rem;
-                min-height: auto;
-            }
-        }
-
-        .properti-file-upload-modern:hover .properti-file-label-modern {
+        .pratanah-file-upload-modern:hover .pratanah-file-label-modern {
             border-color: #9a55ff;
             background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
         }
 
-        .properti-file-upload-modern.is-uploaded .properti-file-label-modern {
-            border: 2px dashed #28a745;
-            background: linear-gradient(135deg, #f2faf4, #f9fdfa);
-        }
-
-        .properti-file-upload-modern.is-uploaded:hover .properti-file-label-modern {
-            border-color: #1e7e34;
-            background: linear-gradient(135deg, #e7f7ec, #f2faf4);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.15);
-        }
-
-        .properti-file-upload-modern .properti-file-label-modern i {
-            font-size: 1.6rem;
+        .pratanah-file-label-modern i {
+            font-size: 1.2rem;
             color: #9a55ff;
             background: rgba(154, 85, 255, 0.1);
             padding: 8px;
             border-radius: 50%;
-        }
-
-        .properti-file-upload-modern .properti-file-info-modern {
             display: flex;
-            flex-direction: column;
-            flex-grow: 1;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
         }
 
-        .properti-file-upload-modern .properti-file-label-modern .file-title-text {
-            font-size: 0.85rem;
+        .pratanah-file-info-modern {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .pratanah-file-info-modern span {
+            display: block;
             font-weight: 600;
             color: #2c2e3f;
+            font-size: 0.8rem;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
         }
 
-        .properti-file-upload-modern .properti-file-label-modern .file-sub-text {
-            font-size: 0.72rem;
-            color: #6c757d;
+        .pratanah-file-info-modern small {
+            color: #6c7383;
+            font-size: 0.68rem;
+            display: block;
         }
 
-        .properti-file-upload-modern .properti-file-label-modern .properti-file-size {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #9a55ff;
-            margin-top: 4px;
+        .properti-doc-card-inner {
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 10px !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
-        @media (min-width: 576px) {
-            .properti-file-upload-modern .properti-file-label-modern .properti-file-size {
-                margin-top: 0;
-            }
+        .properti-doc-card-inner:hover {
+            border-color: #9a55ff !important;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.08) !important;
         }
 
         /* Button Group */
@@ -968,61 +949,58 @@
 
                             <hr class="properti-hr">
 
-                            {{-- ================= DOKUMEN LEGAL NUMBER ================= --}}
+                            {{-- ================= DOKUMEN LEGAL & BERKAS (CARD GRID AESTHETIC) ================= --}}
                             <h5 class="properti-section-title">
                                 <i class="fas fa-file-contract me-2"></i>
-                                Dokumen Legal
+                                Dokumen Legal & Berkas
                             </h5>
 
-                            <div class="properti-row">
+                            <div class="row g-3 mb-4">
                                 @foreach ($documentTypes as $type)
-                                    <div class="properti-col-md-4">
-                                        <div class="properti-form-group">
-                                            <label class="properti-form-label">No {{ $type->name }}</label>
-                                            <input type="text" name="documents[{{ $type->id }}][number]"
-                                                class="properti-form-control" placeholder="Nomor {{ $type->name }}"
-                                                value="{{ old('documents.'.$type->id.'.number') }}">
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
+                                    <div class="col-12 col-md-6 col-xl-4">
+                                        <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative properti-doc-card-inner" style="background: #ffffff;">
+                                            <!-- Header Card Box -->
+                                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
+                                                <div>
+                                                    <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">{{ $type->name }}</h6>
+                                                </div>
+                                                <div class="d-flex align-items-center gap-1 flex-wrap justify-content-end">
+                                                    <span class="badge bg-light text-muted border py-1 px-2" id="doc_badge_{{ $type->id }}" style="font-size: 10px;">
+                                                        Belum Upload
+                                                    </span>
+                                                </div>
+                                            </div>
 
-                            <hr class="properti-hr">
+                                            <!-- Input Nomor Dokumen -->
+                                            <div class="mb-2">
+                                                <label class="form-label mb-1 text-muted" style="font-size: 0.78rem; font-weight: 600;">
+                                                    Nomor Dokumen {{ $type->name }}
+                                                </label>
+                                                <input type="text" 
+                                                    name="documents[{{ $type->id }}][number]"
+                                                    class="form-control form-control-sm" 
+                                                    placeholder="Nomor {{ $type->name }}"
+                                                    value="{{ old('documents.'.$type->id.'.number') }}"
+                                                    style="font-size: 0.84rem; border-radius: 6px; border: 1.5px solid #cbd5e1;">
+                                            </div>
 
-                            {{-- ================= BERKAS & DOKUMEN UPLOAD ================= --}}
-                            <h5 class="properti-section-title">
-                                <i class="fas fa-upload me-2"></i>
-                                Berkas & Dokumen Legal
-                            </h5>
-
-                            <div class="properti-row">
-                                @foreach ($documentTypes as $type)
-                                    <div class="properti-col-md-4">
-                                        <div class="properti-form-group mb-3">
-                                            <label class="properti-form-label d-flex justify-content-between align-items-center mb-1">
-                                                <span>Berkas {{ $type->name }}</span>
-                                                <span class="badge bg-secondary text-white px-2 py-1" style="font-size: 0.68rem; border-radius: 4px;">
-                                                    Belum Upload
-                                                </span>
-                                            </label>
-
-                                            <div class="properti-file-upload-modern">
-                                                <input type="file" name="documents[{{ $type->id }}][file]"
-                                                    id="upload_{{ $type->id }}" accept=".pdf,.jpg,.jpeg,.png"
-                                                    data-type-name="{{ $type->name }}"
-                                                    data-has-existing="0">
-
-                                                <div class="properti-file-label-modern">
-                                                    <i class="fas fa-cloud-upload-alt"></i>
-                                                    <div class="properti-file-info-modern">
-                                                        <span class="file-title-text">
-                                                            Upload {{ $type->name }} Baru
-                                                        </span>
-                                                        <small class="file-sub-text text-muted">
-                                                            Format: PDF, JPG, PNG (Max: 2MB)
-                                                        </small>
+                                            <!-- Upload Berkas File (Fase 1 Modern Style) -->
+                                            <div class="mb-1 flex-grow-1 d-flex flex-column justify-content-end">
+                                                <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.78rem; font-weight: 600;">
+                                                    <span>Upload Berkas {{ $type->name }}</span>
+                                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">Format PDF/JPG/PNG</span>
+                                                </label>
+                                                <div class="pratanah-file-upload-modern">
+                                                    <input type="file" name="documents[{{ $type->id }}][file]" id="upload_{{ $type->id }}" accept=".pdf,.jpg,.jpeg,.png" data-badge-id="doc_badge_{{ $type->id }}" data-type-name="{{ $type->name }}">
+                                                    <div class="pratanah-file-label-modern py-2 px-2.5 rounded-3 d-flex align-items-center gap-2.5" style="border: 1.5px dashed #c4b5fd; background: #fdfcff; transition: all 0.2s ease;">
+                                                        <div class="p-1.5 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="background: rgba(154, 85, 255, 0.12); width: 34px; height: 34px;">
+                                                            <i class="fas fa-cloud-upload-alt text-primary" style="font-size: 1.1rem; color: #9a55ff;"></i>
+                                                        </div>
+                                                        <div class="pratanah-file-info-modern overflow-hidden">
+                                                            <span class="file-label-text fw-bold text-primary text-truncate d-block" style="font-size: 0.80rem;">Pilih Berkas {{ $type->name }}</span>
+                                                            <small class="text-muted d-block" style="font-size: 0.68rem;">PDF, JPG, PNG (Maks 2MB)</small>
+                                                        </div>
                                                     </div>
-                                                    <span class="properti-file-size"></span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1032,33 +1010,42 @@
 
                             <hr class="properti-hr">
 
-                            {{-- ================= DENAH / SITEPLAN ================= --}}
+                            {{-- ================= DENAH / SITEPLAN (CARD AESTHETIC) ================= --}}
                             <h5 class="properti-section-title">
                                 <i class="fas fa-layer-group me-2"></i>
                                 Upload Denah / Siteplan Properti
                             </h5>
 
-                            <div class="properti-row">
-                                <div class="properti-col-md-12">
-                                    <div class="properti-form-group mb-3">
-                                        <label class="properti-form-label mb-1">Berkas Denah / Siteplan</label>
+                            <div class="row g-3 mb-4">
+                                <div class="col-12">
+                                    <div class="card border shadow-sm rounded-3 p-3 position-relative properti-doc-card-inner" style="background: #ffffff;">
+                                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
+                                            <div>
+                                                <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">Berkas Denah / Siteplan</h6>
+                                            </div>
+                                            <div>
+                                                <span class="badge bg-light text-muted border py-1 px-2" id="denah_badge" style="font-size: 10px;">
+                                                    Belum Upload
+                                                </span>
+                                            </div>
+                                        </div>
 
-                                        <div class="properti-file-upload-modern">
-                                            <input type="file" name="denah" id="upload_denah" accept=".pdf,.jpg,.jpeg,.png,.webp,.svg"
-                                                data-type-name="Denah / Siteplan"
-                                                data-has-existing="0">
-
-                                            <div class="properti-file-label-modern">
-                                                <i class="fas fa-map"></i>
-                                                <div class="properti-file-info-modern">
-                                                    <span class="file-title-text">
-                                                        Upload Denah / Siteplan Baru
-                                                    </span>
-                                                    <small class="file-sub-text text-muted">
-                                                        Format: JPG, PNG, WEBP, SVG, PDF (Max: 5MB)
-                                                    </small>
+                                        <div class="mb-1">
+                                            <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.78rem; font-weight: 600;">
+                                                <span>Upload Berkas Denah / Siteplan</span>
+                                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">Format PDF/JPG/PNG/WEBP/SVG</span>
+                                            </label>
+                                            <div class="pratanah-file-upload-modern">
+                                                <input type="file" name="denah" id="upload_denah" accept=".pdf,.jpg,.jpeg,.png,.webp,.svg" data-badge-id="denah_badge" data-type-name="Denah / Siteplan">
+                                                <div class="pratanah-file-label-modern py-2 px-2.5 rounded-3 d-flex align-items-center gap-2.5" style="border: 1.5px dashed #c4b5fd; background: #fdfcff; transition: all 0.2s ease;">
+                                                    <div class="p-1.5 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="background: rgba(154, 85, 255, 0.12); width: 34px; height: 34px;">
+                                                        <i class="fas fa-map text-primary" style="font-size: 1.1rem; color: #9a55ff;"></i>
+                                                    </div>
+                                                    <div class="pratanah-file-info-modern overflow-hidden">
+                                                        <span class="file-label-text fw-bold text-primary text-truncate d-block" style="font-size: 0.80rem;">Pilih Berkas Denah / Siteplan</span>
+                                                        <small class="text-muted d-block" style="font-size: 0.68rem;">Format JPG, PNG, WEBP, SVG, PDF (Maks 5MB)</small>
+                                                    </div>
                                                 </div>
-                                                <span class="properti-file-size"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -1225,43 +1212,41 @@
             }
         });
 
-        // File upload modern preview
+        // File upload modern preview (paritas dengan halaman edit)
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.properti-file-upload-modern input[type="file"]').forEach(input => {
+            document.querySelectorAll('.pratanah-file-upload-modern input[type="file"], .properti-file-upload-modern input[type="file"]').forEach(input => {
                 input.addEventListener('change', function(e) {
                     const file = e.target.files[0];
-                    const container = this.closest('.properti-file-upload-modern');
-                    const label = container.querySelector('.file-title-text');
-                    const subText = container.querySelector('.file-sub-text');
-                    const sizeSpan = container.querySelector('.properti-file-size');
-                    const icon = container.querySelector('.properti-file-label-modern i');
+                    const container = this.closest('.pratanah-file-upload-modern, .properti-file-upload-modern');
+                    const label = container ? container.querySelector('.file-label-text, .file-title-text') : null;
+                    const badgeId = this.getAttribute('data-badge-id');
                     const typeName = this.getAttribute('data-type-name') || 'Dokumen';
 
                     if (file) {
                         const fileName = file.name;
-                        const fileSize = file.size;
-                        label.textContent = fileName.length > 26 ? fileName.substring(0, 26) + '...' : fileName;
-                        label.className = 'file-title-text text-primary fw-bold';
-                        subText.textContent = 'File baru siap diupload';
-                        
-                        if (fileSize) {
-                            const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                            sizeSpan.textContent = sizeInMB + ' MB';
+                        if (label) {
+                            label.textContent = fileName.length > 28 ? fileName.substring(0, 28) + '...' : fileName;
+                            label.className = 'file-label-text text-success fw-bold text-truncate d-block';
                         }
-                        
-                        if (icon) {
-                            icon.className = 'fas fa-file-arrow-up text-primary';
-                            icon.style.cssText = 'color: #9a55ff !important; background: rgba(154, 85, 255, 0.1) !important;';
+                        if (badgeId) {
+                            const badge = document.getElementById(badgeId);
+                            if (badge) {
+                                badge.className = 'badge bg-success text-white py-1 px-2';
+                                badge.innerHTML = '<i class="fas fa-check-circle me-1"></i>Siap Diupload';
+                            }
                         }
                     } else {
-                        label.textContent = 'Upload ' + typeName + ' Baru';
-                        label.className = 'file-title-text';
-                        subText.textContent = 'Format: PDF, JPG, PNG (Max: 2MB)';
-                        if (icon) {
-                            icon.className = 'fas fa-cloud-upload-alt';
-                            icon.style.cssText = '';
+                        if (label) {
+                            label.textContent = 'Pilih Berkas ' + typeName;
+                            label.className = 'file-label-text fw-bold text-primary text-truncate d-block';
                         }
-                        sizeSpan.textContent = '';
+                        if (badgeId) {
+                            const badge = document.getElementById(badgeId);
+                            if (badge) {
+                                badge.className = 'badge bg-light text-muted border py-1 px-2';
+                                badge.textContent = 'Belum Upload';
+                            }
+                        }
                     }
                 });
             });

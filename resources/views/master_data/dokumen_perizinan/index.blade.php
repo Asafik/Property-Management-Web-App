@@ -576,7 +576,7 @@
                         <label class="form-label fw-bold small text-dark mb-1">Estimasi Biaya Standar (Rp)</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light text-muted small px-3">Rp</span>
-                            <input type="number" name="estimasi_biaya" id="estimasiBiaya" class="form-control" placeholder="0" min="0">
+                            <input type="text" name="estimasi_biaya" id="estimasiBiaya" class="form-control" placeholder="0" inputmode="numeric" autocomplete="off">
                         </div>
                     </div>
 
@@ -675,6 +675,12 @@ $(document).ready(function() {
             confirmButtonColor: '#dc3545'
         });
     @endif
+
+    // Auto-format input biaya: tampilkan pemisah ribuan saat mengetik
+    $('#estimasiBiaya').on('input', function() {
+        const raw = this.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+        this.value = raw ? raw.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+    });
 });
 
 function showFilterLoading() {
@@ -718,6 +724,12 @@ function showPaginationLoading(event) {
 
 function submitDocForm(event) {
     event.preventDefault();
+
+    // Bersihkan format ribuan (titik) dari estimasi biaya sebelum submit
+    const biayaInput = document.getElementById('estimasiBiaya');
+    const rawValue = biayaInput.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+    biayaInput.value = rawValue || 0;
+
     Swal.fire({
         title: 'Mohon tunggu...',
         html: 'Sedang menyimpan data dokumen perizinan',
@@ -732,6 +744,12 @@ function submitDocForm(event) {
     }, 100);
 
     return false;
+}
+
+// Format angka ribuan: 1500000 -> 1.500.000
+function formatRibuan(angka) {
+    if (!angka && angka !== 0) return '';
+    return angka.toString().replace(/\./g, '').replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
 function openModal(type, id = null) {
@@ -767,7 +785,7 @@ function openModal(type, id = null) {
             $('#kategoriDokumen').val(data.kategori);
             $('#instansiDokumen').val(data.instansi_terkait);
             $('#estimasiHari').val(data.estimasi_hari);
-            $('#estimasiBiaya').val(data.estimasi_biaya);
+            $('#estimasiBiaya').val(formatRibuan(data.estimasi_biaya));
             $('#urutanDokumen').val(data.urutan);
             $('#syaratDokumen').val(data.syarat_dokumen);
             $('#deskripsiDokumen').val(data.deskripsi);
