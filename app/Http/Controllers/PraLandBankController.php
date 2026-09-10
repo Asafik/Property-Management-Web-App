@@ -705,9 +705,10 @@ public function store(Request $request)
                 }
             }
         }
-        $documentTypes = DocumentTypes::all();
-        $notarisList   = \App\Models\Notaris::where('is_active', true)->orderBy('nama_notaris', 'asc')->get();
-        return view('land_bank.proses_pra_land_bank', compact('land', 'documentTypes', 'notarisList'));
+        $documentTypes    = DocumentTypes::all();
+        $notarisList      = \App\Models\Notaris::where('is_active', true)->orderBy('nama_notaris', 'asc')->get();
+        $masterPerizinans = \App\Models\MasterDokumenPerizinan::active()->get();
+        return view('land_bank.proses_pra_land_bank', compact('land', 'documentTypes', 'notarisList', 'masterPerizinans'));
     }
     public function destroy($id)
     {
@@ -1038,7 +1039,298 @@ public function store(Request $request)
     }
 
     /**
-     * Upload Dokumen Tambahan Dinamis Fase 4 via AJAX
+     * Template Daftar Dokumen Standar Pengurusan Balik Nama & Pengindukan an. PT (Fase 4: Poin 7 s/d 19)
+     */
+    public static function getDefaultFase4Templates($land = null)
+    {
+        return [
+            // Poin 7: Kelurahan & Kecamatan
+            [
+                'id'              => 'template_desa_kecamatan',
+                'poin_label'      => 'Poin 7',
+                'doc_name'        => 'Penandatanganan Blangko Permohonan Kelurahan & Kecamatan Setempat',
+                'instansi'        => 'Pihak Kelurahan dan Kantor Kecamatan Setempat',
+                'doc_number'      => $land->desa_reg_no ?? '',
+                'doc_date'        => $land && $land->desa_reg_date ? \Carbon\Carbon::parse($land->desa_reg_date)->format('Y-m-d') : '',
+                'status'          => ($land && $land->desa_doc_file) ? 'terbit' : (($land && $land->desa_reg_no) ? 'proses' : 'belum'),
+                'file_path'       => $land->desa_doc_file ?? null,
+                'syarat_dokumen'  => "• Upload Salinan Akta Pelepasan Hak dari Notaris\n• Copy Salinan akta pelepasan\n• Berkas kepemilikan tanah yang sudah lengkap\n• Legalitas PT",
+                'syarat_items'    => [
+                    'Upload Salinan Akta Pelepasan Hak dari Notaris',
+                    'Copy Salinan akta pelepasan',
+                    'Berkas kepemilikan tanah yang sudah lengkap',
+                    'Legalitas PT'
+                ],
+                'syarat_checklist'=> [],
+                'notes'           => 'Registrasi blangko permohonan pengalihan/pengindukan an. PT di pihak kelurahan dan kecamatan setempat.',
+                'is_template'     => true,
+            ],
+
+            // Poin 8: PERTEK BPN
+            [
+                'id'              => 'template_pertek',
+                'poin_label'      => 'Poin 8',
+                'doc_name'        => 'Proses Pertimbangan Teknis Pertanahan (PERTEK)',
+                'instansi'        => 'Kantor Pertanahan (ATR/BPN)',
+                'doc_number'      => $land->pertek_no ?? '',
+                'doc_date'        => $land && $land->pertek_date ? \Carbon\Carbon::parse($land->pertek_date)->format('Y-m-d') : '',
+                'status'          => ($land && $land->pertek_file) ? 'terbit' : (($land && $land->pertek_no) ? 'proses' : 'belum'),
+                'file_path'       => $land->pertek_file ?? null,
+                'nominal'         => 2500000,
+                'syarat_dokumen'  => "• Copy Salinan akta pelepasan\n• Berkas kepemilikan tanah yang sudah lengkap\n• Legalitas PT",
+                'syarat_items'    => [
+                    'Copy Salinan akta pelepasan',
+                    'Berkas kepemilikan tanah yang sudah lengkap',
+                    'Legalitas PT'
+                ],
+                'syarat_checklist'=> [],
+                'notes'           => 'Kajian teknis kesesuaian ruang dan kemampuan tanah oleh tim Kantor Pertanahan ATR/BPN.',
+                'is_template'     => true,
+            ],
+
+            // Poin 9: Peta Bidang & Pengukuran
+            [
+                'id'              => 'template_peta_bidang',
+                'poin_label'      => 'Poin 9',
+                'doc_name'        => 'Proses Peta Bidang dan Pengukuran Tanah (NIB)',
+                'instansi'        => 'Seksi Survei & Pemetaan ATR/BPN',
+                'doc_number'      => $land->peta_bidang_no ?? '',
+                'doc_date'        => $land && $land->peta_bidang_date ? \Carbon\Carbon::parse($land->peta_bidang_date)->format('Y-m-d') : '',
+                'luas'            => $land->peta_bidang_area ?? ($land->area ?? ''),
+                'status'          => ($land && $land->peta_bidang_file) ? 'terbit' : (($land && $land->peta_bidang_no) ? 'proses' : 'belum'),
+                'file_path'       => $land->peta_bidang_file ?? null,
+                'nominal'         => 3500000,
+                'syarat_dokumen'  => "• Copy Salinan akta pelepasan\n• Berkas kepemilikan tanah yang sudah lengkap\n• Legalitas PT",
+                'syarat_items'    => [
+                    'Copy Salinan akta pelepasan',
+                    'Berkas kepemilikan tanah yang sudah lengkap',
+                    'Legalitas PT'
+                ],
+                'syarat_checklist'=> [],
+                'notes'           => 'Pengukuran batas keliling fisik bidang tanah & penerbitan Peta Bidang NIB oleh BPN.',
+                'is_template'     => true,
+            ],
+
+            // Poin 10: PKKPR Dinas PTSP & PU
+            [
+                'id'              => 'template_pkkpr',
+                'poin_label'      => 'Poin 10',
+                'doc_name'        => 'Proses PKKPR (Dinas PTSP dan Dinas PU Tata Ruang)',
+                'instansi'        => 'Dinas PTSP & Dinas PU Tata Ruang / OSS RBA',
+                'doc_number'      => $land->pkkpr_no ?? '',
+                'doc_date'        => $land && $land->pkkpr_date ? \Carbon\Carbon::parse($land->pkkpr_date)->format('Y-m-d') : '',
+                'status'          => ($land && $land->pkkpr_status === 'terbit') ? 'terbit' : (($land && $land->pkkpr_status === 'ditolak') ? 'ditolak' : (($land && $land->pkkpr_no) ? 'proses' : 'belum')),
+                'file_path'       => $land->pkkpr_file ?? null,
+                'syarat_dokumen'  => "• Input pada system OSS RBA\n• Legalitas PT\n• Sket gambar tanah\n• Polygon / SHP\n• Pertek BPN\n• Peta Bidang BPN",
+                'syarat_items'    => [
+                    'Input pada system OSS RBA',
+                    'Legalitas PT',
+                    'Sket gambar tanah',
+                    'Polygon / SHP',
+                    'Pertek BPN',
+                    'Peta Bidang BPN'
+                ],
+                'syarat_checklist'=> [],
+                'notes'           => 'Persetujuan Kesesuaian Kegiatan Pemanfaatan Ruang (PKKPR) pada sistem OSS RBA.',
+                'is_template'     => true,
+            ],
+
+            // Poin 11: Permohonan HGB Badan Hukum
+            [
+                'id'              => 'template_permohonan_hgb',
+                'poin_label'      => 'Poin 11',
+                'doc_name'        => 'Permohonan HGB Badan Hukum (Pengindukan Sertipikat)',
+                'instansi'        => 'Kantor Pertanahan ATR/BPN',
+                'doc_number'      => '',
+                'doc_date'        => '',
+                'status'          => 'belum',
+                'file_path'       => null,
+                'nominal'         => 5000000,
+                'syarat_dokumen'  => "• Legalitas PT\n• PKKPR\n• PERTEK\n• PETA BIDANG",
+                'syarat_items'    => [
+                    'Legalitas PT',
+                    'PKKPR',
+                    'PERTEK',
+                    'PETA BIDANG'
+                ],
+                'syarat_checklist'=> [],
+                'notes'           => 'Pengajuan permohonan pemberian hak atas tanah menjadi HGB an. Badan Hukum PT Developer.',
+                'is_template'     => true,
+            ],
+
+            // Poin 12: SK HGB dari BPN
+            [
+                'id'              => 'template_sk_hgb',
+                'poin_label'      => 'Poin 12',
+                'doc_name'        => 'SK HGB Keluar dari BPN',
+                'instansi'        => 'Kantor Pertanahan ATR/BPN',
+                'doc_number'      => $land->sk_hgb_no ?? '',
+                'doc_date'        => $land && $land->sk_hgb_date ? \Carbon\Carbon::parse($land->sk_hgb_date)->format('Y-m-d') : '',
+                'status'          => ($land && $land->sk_hgb_file) ? 'terbit' : (($land && $land->sk_hgb_no) ? 'proses' : 'belum'),
+                'file_path'       => $land->sk_hgb_file ?? null,
+                'syarat_dokumen'  => "• Asli Salinan Akta Pelepasan\n• Berkas kepemilikan tanah yang sudah lengkap\n• Bukti Pembayaran PPH",
+                'syarat_items'    => [
+                    'Asli Salinan Akta Pelepasan',
+                    'Berkas kepemilikan tanah yang sudah lengkap',
+                    'Bukti Pembayaran PPH'
+                ],
+                'syarat_checklist'=> [],
+                'notes'           => 'Surat Keputusan (SK) resmi Pemberian Hak Guna Bangunan atas nama PT dari BPN.',
+                'is_template'     => true,
+            ],
+
+            // Poin 13: Mutasi Pajak PBB Bapenda
+            [
+                'id'              => 'template_pbb_mutasi',
+                'poin_label'      => 'Poin 13',
+                'doc_name'        => 'Mutasi Pajak PBB pada Kantor BAPENDA',
+                'instansi'        => 'Bapenda / BPKAD Kab/Kota',
+                'doc_number'      => $land->pbb_mutasi_nop ?? '',
+                'doc_date'        => $land && $land->pbb_mutasi_date ? \Carbon\Carbon::parse($land->pbb_mutasi_date)->format('Y-m-d') : '',
+                'status'          => ($land && $land->pbb_mutasi_file) ? 'terbit' : (($land && $land->pbb_mutasi_nop) ? 'proses' : 'belum'),
+                'file_path'       => $land->pbb_mutasi_file ?? null,
+                'syarat_dokumen'  => "• SPPT PBB th berjalan\n• Copy SK HGB dari BPN",
+                'syarat_items'    => [
+                    'SPPT PBB th berjalan',
+                    'Copy SK HGB dari BPN'
+                ],
+                'syarat_checklist'=> [],
+                'notes'           => 'Penerbitan NOP dan SPPT PBB baru atas nama PT Developer pasca SK HGB.',
+                'is_template'     => true,
+            ],
+
+            // Poin 14: Pembayaran Pajak BPHTB
+            [
+                'id'              => 'template_bayar_bphtb',
+                'poin_label'      => 'Poin 14',
+                'doc_name'        => 'Pembayaran Pajak BPHTB',
+                'instansi'        => 'Kantor BAPENDA / Bank Persepsi',
+                'doc_number'      => $land->bphtb_billing_id ?? '',
+                'doc_date'        => $land && $land->bphtb_payment_date ? \Carbon\Carbon::parse($land->bphtb_payment_date)->format('Y-m-d') : '',
+                'nominal'         => $land->bphtb_nominal ?? null,
+                'status'          => ($land && $land->bphtb_payment_date) ? 'proses' : 'belum',
+                'file_path'       => null,
+                'syarat_dokumen'  => "• PBB yang sudah Mutasi\n• Pengajuan yang sudah di ACC oleh Direktur PT",
+                'syarat_items'    => [
+                    'PBB yang sudah Mutasi',
+                    'Pengajuan yang sudah di ACC oleh Direktur PT'
+                ],
+                'syarat_checklist'=> [],
+                'notes'           => 'Pembayaran tagihan BPHTB tanah induk setelah SPPT PBB mutasi terbit.',
+                'is_template'     => true,
+            ],
+
+            // Poin 15: Validasi BPHTB Bapenda
+            [
+                'id'              => 'template_validasi_bphtb',
+                'poin_label'      => 'Poin 15',
+                'doc_name'        => 'Validasi BPHTB BAPENDA',
+                'instansi'        => 'Badan Pendapatan Daerah (BAPENDA)',
+                'doc_number'      => $land->bphtb_billing_id ?? '',
+                'doc_date'        => $land && $land->bphtb_payment_date ? \Carbon\Carbon::parse($land->bphtb_payment_date)->format('Y-m-d') : '',
+                'status'          => ($land && $land->bphtb_validasi_file) ? 'terbit' : (($land && $land->bphtb_billing_id) ? 'proses' : 'belum'),
+                'file_path'       => $land->bphtb_validasi_file ?? null,
+                'syarat_dokumen'  => "• Bukti pembayaran BPHTB\n• Id Billing",
+                'syarat_items'    => [
+                    'Bukti pembayaran BPHTB',
+                    'Id Billing'
+                ],
+                'syarat_checklist'=> [],
+                'notes'           => 'Pengesahan & validasi bukti setor SSPD BPHTB dari petugas Bapenda.',
+                'is_template'     => true,
+            ],
+
+            // Poin 16: Proses HGB Induk
+            [
+                'id'              => 'template_proses_hgb_induk',
+                'poin_label'      => 'Poin 16',
+                'doc_name'        => 'Proses Penerbitan Buku HGB Induk',
+                'instansi'        => 'Kantor Pertanahan ATR/BPN',
+                'doc_number'      => '',
+                'doc_date'        => '',
+                'status'          => 'belum',
+                'file_path'       => null,
+                'nominal'         => 1500000,
+                'syarat_dokumen'  => "• SK HGB\n• SPTT PBB\n• Validasi BPHTB\n• Legalitas PT",
+                'syarat_items'    => [
+                    'SK HGB',
+                    'SPTT PBB',
+                    'Validasi BPHTB',
+                    'Legalitas PT'
+                ],
+                'syarat_checklist'=> [],
+                'notes'           => 'Pemasukan berkas pendaftaran sertipikat dan pencatatan buku tanah di loket BPN.',
+                'is_template'     => true,
+            ],
+
+            // Poin 17: SHGB Induk Selesai an. PT
+            [
+                'id'              => 'template_shgb_induk',
+                'poin_label'      => 'Poin 17',
+                'doc_name'        => 'Buku Sertifikat SHGB Induk an. PT Selesai',
+                'instansi'        => 'Kantor Pertanahan ATR/BPN',
+                'doc_number'      => $land->shgb_induk_no ?? '',
+                'doc_date'        => $land && $land->shgb_induk_date ? \Carbon\Carbon::parse($land->shgb_induk_date)->format('Y-m-d') : '',
+                'luas'            => $land->shgb_induk_area ?? ($land->area ?? ''),
+                'status'          => ($land && $land->shgb_induk_file) ? 'terbit' : (($land && $land->shgb_induk_no) ? 'proses' : 'belum'),
+                'file_path'       => $land->shgb_induk_file ?? null,
+                'syarat_dokumen'  => "• Berkas lengkap permohonan HGB Induk\n• Resi Tanda Terima BPN",
+                'syarat_items'    => [
+                    'Berkas lengkap permohonan HGB Induk',
+                    'Resi Tanda Terima BPN'
+                ],
+                'syarat_checklist'=> [],
+                'notes'           => 'Buku Sertipikat SHGB Induk resmi terbit dan siap dimigrasi ke Pasca Land Bank.',
+                'is_template'     => true,
+                'is_final_goal'   => true,
+            ],
+
+            // Poin 18: Pemecahan SHGB Induk Per Kavling
+            [
+                'id'              => 'template_pecah_kavling',
+                'poin_label'      => 'Poin 18',
+                'doc_name'        => 'Proses Pemecahan SHGB Induk Per Kavling',
+                'instansi'        => 'Kantor Pertanahan ATR/BPN & Dinas Perkim/PUPR',
+                'doc_number'      => '',
+                'doc_date'        => '',
+                'status'          => 'belum',
+                'file_path'       => null,
+                'nominal'         => 5000000,
+                'syarat_dokumen'  => "• Asli SHGB INDUK\n• Siteplan yang sudah disahkan oleh Dinas Terkait\n• Legalitas PT",
+                'syarat_items'    => [
+                    'Asli SHGB INDUK',
+                    'Siteplan yang sudah disahkan oleh Dinas Terkait',
+                    'Legalitas PT'
+                ],
+                'syarat_checklist'=> [],
+                'notes'           => 'Pemecahan sertipikat SHGB Induk menjadi sertipikat satuan tiap unit kavling konsumen.',
+                'is_template'     => true,
+            ],
+
+            // Poin 19: Sertipikat Selesai Per Kavling an. PT
+            [
+                'id'              => 'template_sertipikat_kavling_selesai',
+                'poin_label'      => 'Poin 19',
+                'doc_name'        => 'Sertipikat Selesai Per Kavling atas nama PT',
+                'instansi'        => 'Kantor Pertanahan ATR/BPN',
+                'doc_number'      => '',
+                'doc_date'        => '',
+                'status'          => 'belum',
+                'file_path'       => null,
+                'syarat_dokumen'  => "• Berkas Pemecahan Sertipikat Per Kavling\n• Tanda Terima Penyerahan BPN",
+                'syarat_items'    => [
+                    'Berkas Pemecahan Sertipikat Per Kavling',
+                    'Tanda Terima Penyerahan BPN'
+                ],
+                'syarat_checklist'=> [],
+                'notes'           => 'Seluruh sertipikat per kavling selesai dicetak dan siap digunakan untuk akad transaksi unit konsumen.',
+                'is_template'     => true,
+            ],
+        ];
+    }
+
+    /**
+     * Upload / Simpan Dokumen Dinamis Fase 4 via AJAX
      */
     public function uploadCustomWorkflowDoc(Request $request, $id)
     {
@@ -1046,18 +1338,26 @@ public function store(Request $request)
             'doc_name'   => 'required|string|max:255',
             'doc_number' => 'nullable|string|max:255',
             'doc_date'   => 'nullable|date',
+            'instansi'   => 'nullable|string|max:255',
+            'poin_label' => 'nullable|string|max:100',
+            'status'     => 'nullable|string|max:50',
+            'luas'       => 'nullable|string|max:50',
+            'nominal'    => 'nullable|string|max:50',
             'notes'      => 'nullable|string|max:500',
             'file'       => 'nullable|file|max:25600',
         ]);
 
         $record = PraLandbank::findOrFail($id);
         $docId = $request->input('doc_id') ?: ('doc_' . uniqid());
-        $currentDocs = $record->custom_workflow_docs ?: [];
+        $currentDocs = $record->custom_workflow_docs;
+        if (!is_array($currentDocs)) {
+            $currentDocs = [];
+        }
 
         $filePath = null;
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $filename = uniqid() . '_custom_' . $file->getClientOriginalName();
+            $filename = uniqid() . '_pengindukan_' . $file->getClientOriginalName();
             $destination = public_path('uploads/pra_landbank/' . $record->id . '/pengindukan');
 
             if (!file_exists($destination)) {
@@ -1076,57 +1376,119 @@ public function store(Request $request)
             }
         }
 
-        if ($existingIndex >= 0) {
-            $item = $currentDocs[$existingIndex];
-            $currentDocs[$existingIndex] = [
-                'id'         => $docId,
-                'doc_name'   => $request->doc_name,
-                'doc_number' => $request->doc_number,
-                'doc_date'   => $request->doc_date,
-                'notes'      => $request->notes,
-                'file_path'  => $filePath ?: ($item['file_path'] ?? null),
-                'updated_at' => now()->toDateTimeString(),
-            ];
-        } else {
-            $currentDocs[] = [
-                'id'         => $docId,
-                'doc_name'   => $request->doc_name,
-                'doc_number' => $request->doc_number,
-                'doc_date'   => $request->doc_date,
-                'notes'      => $request->notes,
-                'file_path'  => $filePath,
-                'created_at' => now()->toDateTimeString(),
-            ];
+        $status = $request->input('status', 'belum');
+        if ($filePath && $status === 'belum') {
+            $status = 'terbit';
         }
 
-        $record->update([
-            'custom_workflow_docs' => $currentDocs
-        ]);
+        $cleanNominal = $request->filled('nominal') ? (float)preg_replace('/[^0-9.]/', '', $request->nominal) : null;
+        $cleanLuas = $request->filled('luas') ? (float)preg_replace('/[^0-9.]/', '', $request->luas) : null;
 
-        $savedDoc = [
-            'id'         => $docId,
-            'doc_name'   => $request->doc_name,
-            'doc_number' => $request->doc_number,
-            'doc_date'   => $request->doc_date,
-            'notes'      => $request->notes,
-            'file_path'  => $filePath ?: ($existingIndex >= 0 ? ($currentDocs[$existingIndex]['file_path'] ?? null) : null),
+        // Prasyarat Dokumen & Checklist
+        $syaratDokumen = $request->input('syarat_dokumen', '');
+        $syaratChecklist = $request->input('syarat_checklist', []);
+        if (is_string($syaratChecklist)) {
+            $syaratChecklist = json_decode($syaratChecklist, true) ?: [];
+        }
+        if (!is_array($syaratChecklist)) {
+            $syaratChecklist = [];
+        }
+
+        // Parse syarat_items dari syarat_dokumen
+        $syaratItems = [];
+        if (!empty($syaratDokumen)) {
+            $lines = preg_split('/[\r\n]+/', $syaratDokumen);
+            foreach ($lines as $line) {
+                $cleanLine = trim(preg_replace('/^[•\-\*\d+\.]\s*/u', '', trim($line)));
+                if (!empty($cleanLine)) {
+                    $syaratItems[] = $cleanLine;
+                }
+            }
+        }
+        if (empty($syaratItems) && $existingIndex >= 0 && !empty($currentDocs[$existingIndex]['syarat_items'])) {
+            $syaratItems = $currentDocs[$existingIndex]['syarat_items'];
+        }
+
+        $docPayload = [
+            'id'               => $docId,
+            'poin_label'       => $request->input('poin_label', 'Dokumen'),
+            'doc_name'         => $request->doc_name,
+            'instansi'         => $request->input('instansi', '-'),
+            'doc_number'       => $request->doc_number,
+            'doc_date'         => $request->doc_date,
+            'status'           => $status,
+            'nominal'          => $cleanNominal,
+            'luas'             => $cleanLuas,
+            'notes'            => $request->notes,
+            'syarat_dokumen'   => $syaratDokumen ?: ($existingIndex >= 0 ? ($currentDocs[$existingIndex]['syarat_dokumen'] ?? '') : ''),
+            'syarat_items'     => $syaratItems,
+            'syarat_checklist' => $syaratChecklist,
+            'file_path'        => $filePath ?: ($existingIndex >= 0 ? ($currentDocs[$existingIndex]['file_path'] ?? null) : null),
+            'is_template'      => $existingIndex >= 0 ? ($currentDocs[$existingIndex]['is_template'] ?? false) : false,
+            'is_final_goal'    => $docId === 'template_shgb_induk' || ($existingIndex >= 0 && !empty($currentDocs[$existingIndex]['is_final_goal'])),
+            'updated_at'       => now()->toDateTimeString(),
         ];
 
+        if ($existingIndex >= 0) {
+            $currentDocs[$existingIndex] = $docPayload;
+        } else {
+            $docPayload['created_at'] = now()->toDateTimeString();
+            $currentDocs[] = $docPayload;
+        }
+
+        // Sinkronisasi data ke kolom tabel model PraLandbank untuk kompatibilitas
+        $syncUpdates = ['custom_workflow_docs' => $currentDocs];
+
+        if ($docId === 'template_desa_kecamatan' || $docId === 'template_desa') {
+            $syncUpdates['desa_reg_no'] = $request->doc_number;
+            $syncUpdates['desa_reg_date'] = $request->doc_date;
+            if ($filePath) $syncUpdates['desa_doc_file'] = $filePath;
+        } elseif ($docId === 'template_pertek') {
+            $syncUpdates['pertek_no'] = $request->doc_number;
+            $syncUpdates['pertek_date'] = $request->doc_date;
+            if ($filePath) $syncUpdates['pertek_file'] = $filePath;
+        } elseif ($docId === 'template_peta_bidang') {
+            $syncUpdates['peta_bidang_no'] = $request->doc_number;
+            $syncUpdates['peta_bidang_date'] = $request->doc_date;
+            if ($cleanLuas) $syncUpdates['peta_bidang_area'] = $cleanLuas;
+            if ($filePath) $syncUpdates['peta_bidang_file'] = $filePath;
+        } elseif ($docId === 'template_pkkpr') {
+            $syncUpdates['pkkpr_no'] = $request->doc_number;
+            $syncUpdates['pkkpr_date'] = $request->doc_date;
+            $syncUpdates['pkkpr_status'] = $status === 'terbit' ? 'terbit' : ($status === 'ditolak' ? 'ditolak' : 'proses');
+            if ($filePath) $syncUpdates['pkkpr_file'] = $filePath;
+        } elseif ($docId === 'template_sk_hgb') {
+            $syncUpdates['sk_hgb_no'] = $request->doc_number;
+            $syncUpdates['sk_hgb_date'] = $request->doc_date;
+            if ($filePath) $syncUpdates['sk_hgb_file'] = $filePath;
+        } elseif ($docId === 'template_pbb_mutasi') {
+            $syncUpdates['pbb_mutasi_nop'] = $request->doc_number;
+            $syncUpdates['pbb_mutasi_date'] = $request->doc_date;
+            if ($filePath) $syncUpdates['pbb_mutasi_file'] = $filePath;
+        } elseif ($docId === 'template_validasi_bphtb' || $docId === 'template_bphtb') {
+            $syncUpdates['bphtb_billing_id'] = $request->doc_number;
+            $syncUpdates['bphtb_payment_date'] = $request->doc_date;
+            if ($cleanNominal) $syncUpdates['bphtb_nominal'] = $cleanNominal;
+            if ($filePath) $syncUpdates['bphtb_validasi_file'] = $filePath;
+        } elseif ($docId === 'template_shgb_induk') {
+            $syncUpdates['shgb_induk_no'] = $request->doc_number;
+            $syncUpdates['shgb_induk_date'] = $request->doc_date;
+            if ($cleanLuas) $syncUpdates['shgb_induk_area'] = $cleanLuas;
+            if ($filePath) $syncUpdates['shgb_induk_file'] = $filePath;
+            if ($status === 'terbit') $syncUpdates['hgb_process_status'] = 'completed_hgb_induk';
+        }
+
+        $record->update($syncUpdates);
+
         return response()->json([
-            'success'     => true,
-            'message'     => 'Dokumen ' . $request->doc_name . ' berhasil disimpan!',
-            'doc'         => $savedDoc,
-            'doc_id'      => $docId,
-            'doc_name'    => $request->doc_name,
-            'file_path'   => $filePath,
-            'filename'    => $filePath ? basename($filePath) : null,
-            'preview_url' => $previewUrl,
-            'docs'        => $currentDocs,
+            'success' => true,
+            'message' => 'Dokumen ' . $request->doc_name . ' berhasil diperbarui!',
+            'doc'     => $docPayload
         ]);
     }
 
     /**
-     * Hapus Dokumen Tambahan Dinamis Fase 4 via AJAX
+     * Hapus Dokumen Dinamis Fase 4 via AJAX
      */
     public function deleteCustomWorkflowDoc(Request $request, $id)
     {
@@ -1135,28 +1497,133 @@ public function store(Request $request)
         ]);
 
         $record = PraLandbank::findOrFail($id);
-        $docId = $request->doc_id;
-        $currentDocs = $record->custom_workflow_docs ?: [];
-
-        $newDocs = [];
-        foreach ($currentDocs as $doc) {
-            if (($doc['id'] ?? '') === $docId) {
-                if (!empty($doc['file_path']) && file_exists(public_path($doc['file_path']))) {
-                    @unlink(public_path($doc['file_path']));
-                }
-            } else {
-                $newDocs[] = $doc;
-            }
+        $docId = $request->input('doc_id');
+        $currentDocs = $record->custom_workflow_docs;
+        if (!is_array($currentDocs)) {
+            $currentDocs = [];
         }
 
+        $filtered = array_values(array_filter($currentDocs, function($d) use ($docId) {
+            return ($d['id'] ?? '') !== $docId;
+        }));
+
         $record->update([
-            'custom_workflow_docs' => $newDocs
+            'custom_workflow_docs' => $filtered
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Dokumen tambahan berhasil dihapus!',
-            'docs'    => $newDocs,
+            'message' => 'Dokumen berhasil dihapus dari alur kerja.',
+            'docs'    => $filtered
+        ]);
+    }
+
+    /**
+     * Memuat Template Standar Rekomendasi (Poin 7 s/d 19) ke Dokumen Dinamis Fase 4 via AJAX
+     */
+    public function loadFase4DefaultTemplate(Request $request, $id)
+    {
+        $record = PraLandbank::findOrFail($id);
+        $templates = self::getDefaultFase4Templates($record);
+        
+        $currentDocs = $record->custom_workflow_docs;
+        if (empty($currentDocs) || !is_array($currentDocs)) {
+            $currentDocs = $templates;
+        } else {
+            // Merge template items that don't exist yet
+            $existingIds = array_column($currentDocs, 'id');
+            foreach ($templates as $t) {
+                if (!in_array($t['id'], $existingIds)) {
+                    $currentDocs[] = $t;
+                }
+            }
+        }
+
+        $record->update([
+            'custom_workflow_docs' => $currentDocs
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Template standar legalitas perizinan (Poin 7–19) berhasil dimuat!',
+            'docs'    => $currentDocs
+        ]);
+    }
+
+    /**
+     * Tambahkan batch dokumen dari Master Dokumen Perizinan ke alur Fase 4
+     */
+    public function addBatchFromMaster(Request $request, $id)
+    {
+        $request->validate([
+            'master_ids' => 'required|array',
+            'master_ids.*' => 'integer|exists:master_dokumen_perizinans,id',
+        ]);
+
+        $record = PraLandbank::findOrFail($id);
+        $masterItems = \App\Models\MasterDokumenPerizinan::whereIn('id', $request->master_ids)->get();
+
+        $currentDocs = $record->custom_workflow_docs;
+        if (!is_array($currentDocs)) {
+            $currentDocs = [];
+        }
+
+        $existingNames = array_map(function($d) {
+            return strtolower(trim($d['doc_name'] ?? ''));
+        }, $currentDocs);
+
+        $addedCount = 0;
+        foreach ($masterItems as $m) {
+            if (in_array(strtolower(trim($m->nama_dokumen)), $existingNames)) {
+                continue;
+            }
+
+            $docId = 'doc_' . uniqid();
+            $isFinalGoal = str_contains(strtolower($m->nama_dokumen), 'shgb induk') || str_contains(strtolower($m->kode_dokumen), 'shgb');
+
+            // Parse syarat_items dari syarat_dokumen
+            $syaratItems = [];
+            if (!empty($m->syarat_dokumen)) {
+                $lines = preg_split('/[\r\n]+/', $m->syarat_dokumen);
+                foreach ($lines as $line) {
+                    $cleanLine = trim(preg_replace('/^[•\-\*\d+\.]\s*/u', '', trim($line)));
+                    if (!empty($cleanLine)) {
+                        $syaratItems[] = $cleanLine;
+                    }
+                }
+            }
+
+            $currentDocs[] = [
+                'id'               => $docId,
+                'poin_label'       => $m->kode_dokumen ?: 'Perizinan',
+                'doc_name'         => $m->nama_dokumen,
+                'instansi'         => $m->instansi_terkait ?: '-',
+                'doc_number'       => '',
+                'doc_date'         => '',
+                'status'           => 'belum',
+                'nominal'          => $m->estimasi_biaya ?: null,
+                'luas'             => null,
+                'notes'            => $m->deskripsi ?: '',
+                'syarat_dokumen'   => $m->syarat_dokumen ?: '',
+                'syarat_items'     => $syaratItems,
+                'syarat_checklist' => [],
+                'file_path'        => null,
+                'is_template'      => false,
+                'is_final_goal'    => $isFinalGoal,
+                'created_at'       => now()->toDateTimeString(),
+            ];
+            $addedCount++;
+        }
+
+        $record->update([
+            'custom_workflow_docs' => $currentDocs
+        ]);
+
+        return response()->json([
+            'success'     => true,
+            'message'     => "{$addedCount} dokumen perizinan dari Master berhasil ditambahkan!",
+            'added_count' => $addedCount,
+            'docs'        => $currentDocs
         ]);
     }
 

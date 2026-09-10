@@ -2881,7 +2881,7 @@
                     </div>
                 </div>
 
-                <!-- ================= FASE 4 CONTAINER (PENGURUSAN DOKUMEN BALIK NAMA & PENGINDUKAN AN. PT) ================= -->
+                <!-- ================= FASE 4 CONTAINER (PENGURUSAN DOKUMEN BALIK NAMA & PENGINDUKAN AN. PT - DINAMIS) ================= -->
                 <div id="containerFase4" class="d-none">
                     <div class="card shadow-sm border-0">
                         <div class="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
@@ -2894,6 +2894,15 @@
                                 </small>
                             </div>
                             <div class="d-flex align-items-center gap-2">
+                                <button type="button" class="btn btn-sm btn-gradient-primary py-1.5 px-3 shadow-sm d-inline-flex align-items-center gap-1.5" onclick="openFase4DocModal()" style="font-size: 0.82rem; font-weight: 600;">
+                                    <i class="mdi mdi-plus-circle"></i> + Tambah Dokumen Lapangan
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-purple py-1.5 px-2.5 shadow-sm d-inline-flex align-items-center gap-1.5" onclick="openMasterPickerModal()" style="font-size: 0.82rem; font-weight: 600;">
+                                    <i class="mdi mdi-file-certificate-outline"></i> + Pilih dari Master Perizinan
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary py-1.5 px-2 shadow-sm d-inline-flex align-items-center gap-1" onclick="loadFase4DefaultTemplate()" style="font-size: 0.8rem; font-weight: 600;" title="Muat paket template default">
+                                    <i class="mdi mdi-clipboard-text-play-outline"></i> Template (Poin 7-17)
+                                </button>
                                 @if($land && $land->land_bank_id)
                                     <a href="{{ route('properti-all') }}" class="btn btn-sm btn-success text-white py-1.5 px-3 shadow-sm d-inline-flex align-items-center gap-1" style="font-size: 0.82rem; font-weight: 600;">
                                         <i class="mdi mdi-check-decagram"></i> Lahan Telah Masuk Pasca Land Bank #{{ $land->land_bank_id }}
@@ -2907,689 +2916,317 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <form id="formFase4">
-                                @csrf
-                                <input type="hidden" name="id" value="{{ $land->id ?? '' }}">
-                                <input type="hidden" name="fase" value="fase4">
+                            @php
+                                $workflowDocs = ($land && is_array($land->custom_workflow_docs)) ? $land->custom_workflow_docs : [];
+                                $totalWorkflowDocs = count($workflowDocs);
+                                $terbitCount = 0;
+                                $prosesCount = 0;
+                                $belumCount = 0;
+                                foreach ($workflowDocs as $wd) {
+                                    $st = $wd['status'] ?? 'belum';
+                                    if ($st === 'terbit' || $st === 'selesai' || !empty($wd['file_path'])) {
+                                        $terbitCount++;
+                                    } elseif ($st === 'proses' || !empty($wd['doc_number'])) {
+                                        $prosesCount++;
+                                    } else {
+                                        $belumCount++;
+                                    }
+                                }
+                                $progressWorkflowPercent = $totalWorkflowDocs > 0 ? round(($terbitCount / $totalWorkflowDocs) * 100) : 0;
+                            @endphp
 
-                                <!-- RINGKASAN DATA LAHAN (INFO BANNER) -->
-                                @if($land)
-                                    <div class="p-3 rounded-3 mb-4" style="background: linear-gradient(135deg, #fbf9ff, #f6f0ff); border: 1px solid rgba(154, 85, 255, 0.2);">
-                                        <div class="row g-3 align-items-center">
-                                            <div class="col-12 col-md-3">
-                                                <small class="text-muted d-block" style="font-size: 0.74rem;">Nama Lahan / Prospek</small>
-                                                <strong class="text-dark" style="font-size: 0.92rem;">{{ $land->land_name }}</strong>
+                            <!-- RINGKASAN DATA LAHAN (INFO BANNER) -->
+                            @if($land)
+                                <div class="p-3 rounded-3 mb-3" style="background: linear-gradient(135deg, #fbf9ff, #f6f0ff); border: 1px solid rgba(154, 85, 255, 0.2);">
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-12 col-md-3">
+                                            <small class="text-muted d-block" style="font-size: 0.74rem;">Nama Lahan / Prospek</small>
+                                            <strong class="text-dark" style="font-size: 0.92rem;">{{ $land->land_name }}</strong>
+                                        </div>
+                                        <div class="col-12 col-md-3">
+                                            <small class="text-muted d-block" style="font-size: 0.74rem;">Pemilik Awal (Alas Hak)</small>
+                                            <span class="fw-semibold text-dark" style="font-size: 0.88rem;">{{ $land->owner_name ?? ($land->certificate_owner ?? '-') }}</span>
+                                        </div>
+                                        <div class="col-12 col-md-3">
+                                            <small class="text-muted d-block" style="font-size: 0.74rem;">Notaris Rekanan Transaksi</small>
+                                            <span class="fw-semibold text-primary" style="font-size: 0.88rem;">
+                                                <i class="mdi mdi-bank me-1"></i>{{ $land->notaris ? $land->notaris->nama_notaris : ($land->notaris_id ? 'Notaris #' . $land->notaris_id : 'Belum Ditentukan') }}
+                                            </span>
+                                        </div>
+                                        <div class="col-12 col-md-3 text-md-end">
+                                            <small class="text-muted d-block" style="font-size: 0.74rem;">Total Luas Lahan Awal</small>
+                                            <span class="badge bg-purple text-white px-2.5 py-1.5" style="background: #9a55ff; font-size: 0.85rem;">{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- PROGRESS BAR & STATISTIK DOKUMEN FASE 4 -->
+                            <div class="p-3 rounded-3 mb-4 bg-white border shadow-sm">
+                                <div class="row align-items-center g-3">
+                                    <div class="col-12 col-md-5">
+                                        <div class="d-flex justify-content-between align-items-center mb-1.5">
+                                            <span class="fw-bold text-dark" style="font-size: 0.84rem;">
+                                                <i class="mdi mdi-chart-donut text-primary me-1"></i> Progres Dokumen Pengindukan:
+                                            </span>
+                                            <span class="fw-bold text-success" id="fase4_progress_text" style="font-size: 0.84rem;">
+                                                {{ $terbitCount }} dari {{ $totalWorkflowDocs }} Selesai ({{ $progressWorkflowPercent }}%)
+                                            </span>
+                                        </div>
+                                        <div class="progress" style="height: 8px; border-radius: 6px; background-color: #f1f5f9;">
+                                            <div id="fase4_progress_bar" class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ $progressWorkflowPercent }}%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-md-7">
+                                        <div class="d-flex flex-wrap align-items-center justify-content-md-end gap-2">
+                                            <div class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2.5 py-1.5 rounded-2 d-flex align-items-center gap-1.5" style="font-size: 0.78rem;">
+                                                <i class="mdi mdi-check-circle"></i>
+                                                <span id="stat_terbit">{{ $terbitCount }} Selesai / Terbit</span>
                                             </div>
-                                            <div class="col-12 col-md-3">
-                                                <small class="text-muted d-block" style="font-size: 0.74rem;">Pemilik Awal (Alas Hak)</small>
-                                                <span class="fw-semibold text-dark" style="font-size: 0.88rem;">{{ $land->owner_name ?? ($land->certificate_owner ?? '-') }}</span>
+                                            <div class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2.5 py-1.5 rounded-2 d-flex align-items-center gap-1.5" style="font-size: 0.78rem;">
+                                                <i class="mdi mdi-clock-outline"></i>
+                                                <span id="stat_proses">{{ $prosesCount }} Dalam Proses</span>
                                             </div>
-                                            <div class="col-12 col-md-3">
-                                                <small class="text-muted d-block" style="font-size: 0.74rem;">Notaris Rekanan Transaksi</small>
-                                                <span class="fw-semibold text-primary" style="font-size: 0.88rem;">
-                                                    <i class="mdi mdi-bank me-1"></i>{{ $land->notaris ? $land->notaris->nama_notaris : ($land->notaris_id ? 'Notaris #' . $land->notaris_id : 'Belum Ditentukan') }}
+                                            <div class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-2.5 py-1.5 rounded-2 d-flex align-items-center gap-1.5" style="font-size: 0.78rem;">
+                                                <i class="mdi mdi-alert-circle-outline"></i>
+                                                <span id="stat_belum">{{ $belumCount }} Belum Ada</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- FILTER & SEARCH BAR -->
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-primary active fase4-filter-btn" onclick="filterFase4Docs('all', this)">Semua (<span id="count_all">{{ $totalWorkflowDocs }}</span>)</button>
+                                    <button type="button" class="btn btn-outline-secondary fase4-filter-btn" onclick="filterFase4Docs('terbit', this)">Selesai / Terbit (<span id="count_terbit">{{ $terbitCount }}</span>)</button>
+                                    <button type="button" class="btn btn-outline-secondary fase4-filter-btn" onclick="filterFase4Docs('proses', this)">Proses (<span id="count_proses">{{ $prosesCount }}</span>)</button>
+                                    <button type="button" class="btn btn-outline-secondary fase4-filter-btn" onclick="filterFase4Docs('belum', this)">Belum Ada (<span id="count_belum">{{ $belumCount }}</span>)</button>
+                                </div>
+                                <div style="max-width: 260px; width: 100%;">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-white border-end-0"><i class="mdi mdi-magnify text-muted"></i></span>
+                                        <input type="text" class="form-control border-start-0" id="searchFase4Input" placeholder="Cari dokumen / nomor..." onkeyup="searchFase4Docs(this.value)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- DYNAMIC REPEATER LIST / GRID OF FASE 4 DOCUMENTS -->
+                            <div id="fase4_docs_container" class="row g-3 mb-4">
+                                @forelse($workflowDocs as $doc)
+                                    @php
+                                        $docId = $doc['id'] ?? ('doc_' . uniqid());
+                                        $poinLabel = $doc['poin_label'] ?? 'Dokumen';
+                                        $docName = $doc['doc_name'] ?? 'Dokumen Pengindukan';
+                                        $instansi = $doc['instansi'] ?? '-';
+                                        $docNumber = $doc['doc_number'] ?? '';
+                                        $docDate = !empty($doc['doc_date']) ? \Carbon\Carbon::parse($doc['doc_date'])->format('Y-m-d') : '';
+                                        $docDateDisplay = !empty($doc['doc_date']) ? \Carbon\Carbon::parse($doc['doc_date'])->format('d M Y') : '-';
+                                        $filePath = $doc['file_path'] ?? null;
+                                        $cleanPath = $filePath ? str_replace('uploads/', '', $filePath) : null;
+                                        $status = $doc['status'] ?? ($filePath ? 'terbit' : (!empty($docNumber) ? 'proses' : 'belum'));
+                                        $isTemplate = !empty($doc['is_template']);
+                                        $isFinalGoal = !empty($doc['is_final_goal']) || $docId === 'template_shgb_induk' || str_contains(strtolower($docName), 'shgb induk');
+                                        $nominal = $doc['nominal'] ?? null;
+                                        $luas = $doc['luas'] ?? null;
+                                        $notes = $doc['notes'] ?? '';
+
+                                        $badgeStatusClass = match($status) {
+                                            'terbit', 'selesai' => 'bg-success text-white',
+                                            'proses' => 'bg-warning text-dark',
+                                            'ditolak' => 'bg-danger text-white',
+                                            default => 'bg-light text-muted border',
+                                        };
+                                        $badgeStatusText = match($status) {
+                                            'terbit', 'selesai' => 'Selesai / Terbit',
+                                            'proses' => 'Sedang Proses',
+                                            'ditolak' => 'Ditolak / Revisi',
+                                            default => 'Belum Ada',
+                                        };
+                                    @endphp
+                                    <div class="col-12 col-md-6 col-lg-4 fase4-doc-card" 
+                                         id="fase4_doc_card_{{ $docId }}"
+                                         data-id="{{ $docId }}" 
+                                         data-poin="{{ $poinLabel }}"
+                                         data-name="{{ $docName }}"
+                                         data-instansi="{{ $instansi }}"
+                                         data-number="{{ $docNumber }}"
+                                         data-date="{{ $docDate }}"
+                                         data-nominal="{{ $nominal }}"
+                                         data-luas="{{ $luas }}"
+                                         data-notes="{{ $notes }}"
+                                         data-status="{{ $status }}" 
+                                         data-istemplate="{{ $isTemplate ? '1' : '0' }}"
+                                         data-search="{{ strtolower($docName . ' ' . $instansi . ' ' . $docNumber . ' ' . $poinLabel . ' ' . $notes) }}">
+                                        <div class="card h-100 border rounded-3 p-3 shadow-sm d-flex flex-column {{ $isFinalGoal ? 'border-success bg-soft-success bg-opacity-25' : 'bg-white' }}" style="{{ $isFinalGoal ? 'border-width: 2px !important;' : '' }}">
+                                            
+                                            <!-- CARD HEADER -->
+                                            <div class="d-flex justify-content-between align-items-start mb-2 pb-2 border-bottom">
+                                                <div class="overflow-hidden me-2">
+                                                    <div class="d-flex align-items-center gap-1.5 mb-1">
+                                                        <span class="badge {{ $isFinalGoal ? 'bg-success' : 'bg-primary' }} rounded-pill fase4-card-poin" style="font-size: 9.5px;">{{ $poinLabel }}</span>
+                                                        @if($isFinalGoal)
+                                                            <span class="badge bg-warning text-dark rounded-pill" style="font-size: 9.5px;">GOL AKHIR</span>
+                                                        @endif
+                                                    </div>
+                                                    <h6 class="fw-bold text-dark mb-0 text-truncate fase4-card-title" style="font-size: 0.88rem;" title="{{ $docName }}">
+                                                        {{ $docName }}
+                                                    </h6>
+                                                    <small class="text-muted d-block text-truncate fase4-card-instansi" style="font-size: 0.72rem;">
+                                                        <i class="mdi mdi-office-building text-primary me-1"></i>{{ $instansi }}
+                                                    </small>
+                                                </div>
+                                                <span class="badge {{ $badgeStatusClass }} flex-shrink-0 badge-doc-status" style="font-size: 10px; font-weight: 600;">
+                                                    {{ $badgeStatusText }}
                                                 </span>
                                             </div>
-                                            <div class="col-12 col-md-3 text-md-end">
-                                                <small class="text-muted d-block" style="font-size: 0.74rem;">Total Luas Lahan Awal</small>
-                                                <span class="badge bg-purple text-white px-2.5 py-1.5" style="background: #9a55ff; font-size: 0.85rem;">{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</span>
+
+                                            <!-- CARD BODY -->
+                                            <div class="mb-3 flex-grow-1" style="font-size: 0.78rem;">
+                                                <div class="row g-1 mb-1.5">
+                                                    <div class="col-6 text-muted">No. Dokumen/Reg:</div>
+                                                    <div class="col-6 text-end fw-semibold text-dark text-truncate doc-card-number" title="{{ $docNumber ?: '-' }}">{{ $docNumber ?: '-' }}</div>
+                                                </div>
+                                                <div class="row g-1 mb-1.5">
+                                                    <div class="col-6 text-muted">Tanggal:</div>
+                                                    <div class="col-6 text-end fw-semibold text-dark doc-card-date">{{ $docDateDisplay }}</div>
+                                                </div>
+                                                @if(!empty($nominal))
+                                                    <div class="row g-1 mb-1.5">
+                                                        <div class="col-6 text-muted">Nominal:</div>
+                                                        <div class="col-6 text-end fw-semibold text-primary">Rp {{ number_format($nominal, 0, ',', '.') }}</div>
+                                                    </div>
+                                                @endif
+                                                @if(!empty($luas))
+                                                    <div class="row g-1 mb-1.5">
+                                                        <div class="col-6 text-muted">Luas Hasil Ukur:</div>
+                                                        <div class="col-6 text-end fw-semibold text-primary">{{ number_format($luas, 0, ',', '.') }} m²</div>
+                                                    </div>
+                                                @endif
+                                                @if(!empty($notes))
+                                                    <div class="p-1.5 rounded-2 bg-light border text-muted text-truncate mt-1 doc-card-notes" style="font-size: 0.72rem;" title="{{ $notes }}">
+                                                        <i class="mdi mdi-information-outline me-1"></i>{{ $notes }}
+                                                    </div>
+                                                @endif
+
+                                                @php
+                                                    $syaratDokumen = $doc['syarat_dokumen'] ?? '';
+                                                    $syaratItems = $doc['syarat_items'] ?? [];
+                                                    $syaratChecklist = (array)($doc['syarat_checklist'] ?? []);
+
+                                                    if (empty($syaratItems) && !empty($syaratDokumen)) {
+                                                        $lines = preg_split('/[\r\n]+/', $syaratDokumen);
+                                                        foreach ($lines as $line) {
+                                                            $clean = trim(preg_replace('/^[•\-\*\d+\.]\s*/u', '', trim($line)));
+                                                            if (!empty($clean)) {
+                                                                $syaratItems[] = $clean;
+                                                            }
+                                                        }
+                                                    }
+                                                    $totalSyarat = count($syaratItems);
+                                                    $checkedCount = 0;
+                                                    foreach ($syaratItems as $si) {
+                                                        if (in_array($si, $syaratChecklist)) {
+                                                            $checkedCount++;
+                                                        }
+                                                    }
+                                                    $isAllSyaratReady = ($totalSyarat > 0 && $checkedCount >= $totalSyarat);
+                                                @endphp
+
+                                                @if($totalSyarat > 0)
+                                                    <div class="mt-2 p-2 rounded-2 border {{ $isAllSyaratReady ? 'bg-success bg-opacity-10 border-success border-opacity-25' : 'bg-light' }}">
+                                                        <div class="d-flex align-items-center justify-content-between mb-1">
+                                                            <span class="fw-bold" style="font-size: 0.73rem; color: {{ $isAllSyaratReady ? '#166534' : '#475569' }};">
+                                                                <i class="mdi {{ $isAllSyaratReady ? 'mdi-checkbox-marked-circle text-success' : 'mdi-format-list-checks text-primary' }} me-1"></i>
+                                                                Prasyarat Berkas:
+                                                            </span>
+                                                            <span class="badge {{ $isAllSyaratReady ? 'bg-success text-white' : ($checkedCount > 0 ? 'bg-warning text-dark' : 'bg-secondary text-white') }}" style="font-size: 0.68rem;">
+                                                                {{ $checkedCount }}/{{ $totalSyarat }} Siap
+                                                            </span>
+                                                        </div>
+                                                        <div class="d-flex flex-column gap-1" style="font-size: 0.71rem; max-height: 95px; overflow-y: auto;">
+                                                            @foreach($syaratItems as $sItem)
+                                                                @php $isItemChecked = in_array($sItem, $syaratChecklist); @endphp
+                                                                <div class="d-flex align-items-start gap-1 {{ $isItemChecked ? 'text-success fw-semibold' : 'text-muted' }}">
+                                                                    <i class="mdi {{ $isItemChecked ? 'mdi-check-circle text-success' : 'mdi-checkbox-blank-circle-outline text-muted' }}" style="font-size: 0.78rem; margin-top: 1px;"></i>
+                                                                    <span class="text-truncate" title="{{ $sItem }}">{{ $sItem }}</span>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                @endif
                                             </div>
+
+                                            <!-- FILE PREVIEW & UPLOAD -->
+                                            <div class="p-2 rounded-2 mb-2 {{ $filePath ? 'bg-success bg-opacity-10 border border-success border-opacity-25' : 'bg-light border' }} doc-card-file-box">
+                                                @if($filePath)
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <div class="text-truncate me-2" style="font-size: 0.76rem;">
+                                                            <i class="mdi mdi-file-check text-success me-1"></i><span class="fw-semibold text-dark">{{ basename($filePath) }}</span>
+                                                        </div>
+                                                        <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" data-ext="{{ pathinfo($filePath, PATHINFO_EXTENSION) }}" data-label="{{ $docName }}" style="font-size: 0.72rem;">
+                                                            <i class="mdi mdi-eye me-1"></i>Lihat
+                                                        </button>
+                                                    </div>
+                                                @else
+                                                    <div class="d-flex align-items-center justify-content-between text-muted" style="font-size: 0.74rem;">
+                                                        <span><i class="mdi mdi-file-outline me-1"></i>Berkas belum diunggah</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <!-- CARD ACTION FOOTER -->
+                                            <div class="d-flex align-items-center justify-content-between pt-2 border-top gap-1">
+                                                <button type="button" class="btn btn-xs btn-outline-primary py-1 px-2.5 d-inline-flex align-items-center gap-1" onclick="editFase4Doc('{{ $docId }}')" style="font-size: 0.74rem;">
+                                                    <i class="mdi mdi-pencil-outline"></i> Edit & Upload
+                                                </button>
+                                                <button type="button" class="btn btn-xs btn-outline-danger py-1 px-2 border-0" onclick="deleteFase4Doc('{{ $docId }}', '{{ addslashes($docName) }}')" title="Hapus Dokumen">
+                                                    <i class="mdi mdi-delete-outline fs-6"></i>
+                                                </button>
+                                            </div>
+
                                         </div>
                                     </div>
-                                @endif
-
-                                <!-- ========================================== -->
-                                <!-- MILESTONE 1: BLANGKO KELURAHAN & KECAMATAN -->
-                                <!-- ========================================== -->
-                                <div class="p-3 rounded-3 mb-4 bg-white border shadow-sm" style="border-color: #e2e8f0 !important;">
-                                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
-                                        <div class="fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 0.88rem;">
-                                            <span class="badge bg-primary rounded-pill px-2.5 py-1">Poin 7</span>
-                                            <span>Penandatanganan Blangko Permohonan ke Kelurahan & Kecamatan Setempat</span>
-                                        </div>
-                                        <span class="badge bg-light text-muted border" style="font-size: 11px;">Syarat: Akta Pelepasan + Berkas Alas Hak + Legalitas PT</span>
-                                    </div>
-
-                                    <div class="row g-3">
-                                        <!-- Card Kelurahan / Desa -->
-                                        <div class="col-12 col-md-6">
-                                            <div class="p-3 rounded-3 h-100 border bg-light bg-opacity-50">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <span class="fw-semibold text-dark" style="font-size: 0.84rem;">
-                                                        <i class="mdi mdi-home-city-outline text-primary me-1"></i> Blangko Permohonan Kelurahan / Desa
-                                                    </span>
-                                                    <span id="badge_desa_doc_file" class="badge {{ $land && $land->desa_doc_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
-                                                        {{ $land && $land->desa_doc_file ? 'Terunggah' : 'Belum Ada' }}
-                                                    </span>
-                                                </div>
-                                                <div class="row g-2 mb-2">
-                                                    <div class="col-7">
-                                                        <label class="form-label mb-1" style="font-size: 0.74rem;">Nomor Register Kelurahan</label>
-                                                        <input type="text" class="form-control form-control-sm" name="desa_reg_no" placeholder="Contoh: 590/045/Kel/2026" value="{{ $land->desa_reg_no ?? '' }}" onchange="autoSaveWorkflowInfo()">
-                                                    </div>
-                                                    <div class="col-5">
-                                                        <label class="form-label mb-1" style="font-size: 0.74rem;">Tanggal Registrasi</label>
-                                                        <input type="date" class="form-control form-control-sm" name="desa_reg_date" value="{{ $land && $land->desa_reg_date ? \Carbon\Carbon::parse($land->desa_reg_date)->format('Y-m-d') : '' }}" onchange="autoSaveWorkflowInfo()">
-                                                    </div>
-                                                </div>
-                                                <div id="container_desa_doc_file">
-                                                    @if($land && $land->desa_doc_file)
-                                                        @php $cleanDesa = str_replace('uploads/', '', $land->desa_doc_file); @endphp
-                                                        <div class="p-2 rounded-2 mb-2 bg-success bg-opacity-10 border border-success border-opacity-25 d-flex align-items-center justify-content-between">
-                                                            <div class="text-truncate me-2" style="font-size: 0.78rem;">
-                                                                <i class="mdi mdi-file-check text-success me-1"></i>{{ basename($land->desa_doc_file) }}
-                                                            </div>
-                                                            <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $cleanDesa]) }}" data-ext="{{ pathinfo($land->desa_doc_file, PATHINFO_EXTENSION) }}" data-label="Blangko Permohonan Kelurahan" style="font-size: 0.74rem;">
-                                                                <i class="mdi mdi-eye me-1"></i>Lihat
-                                                            </button>
-                                                        </div>
-                                                    @endif
-                                                    <div class="pratanah-file-upload-modern">
-                                                        <input type="file" name="desa_doc_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadWorkflowDoc(this, 'desa_doc_file')">
-                                                        <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #ffffff; border: 1px dashed #cbd5e1;">
-                                                            <i class="mdi mdi-cloud-upload text-primary" style="font-size: 1.1rem;"></i>
-                                                            <div class="pratanah-file-info-modern">
-                                                                <span class="file-label-text" style="font-size: 0.76rem;">{{ ($land && $land->desa_doc_file) ? 'Ganti Scan Blangko Kelurahan' : 'Upload Scan Blangko Kelurahan' }}</span>
-                                                                <span class="file-label-hint" style="font-size: 0.68rem;">PDF, JPG, PNG (Auto Upload)</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                @empty
+                                    <div class="col-12" id="fase4_docs_empty_state">
+                                        <div class="p-5 text-center bg-light rounded-4 border border-dashed my-2" style="border-width: 2px !important; border-color: #cbd5e1 !important;">
+                                            <div class="p-3 bg-white rounded-circle d-inline-flex shadow-sm mb-3" style="color: #9a55ff;">
+                                                <i class="mdi mdi-folder-plus-outline" style="font-size: 2.5rem;"></i>
                                             </div>
-                                        </div>
-
-                                        <!-- Card Kecamatan -->
-                                        <div class="col-12 col-md-6">
-                                            <div class="p-3 rounded-3 h-100 border bg-light bg-opacity-50">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <span class="fw-semibold text-dark" style="font-size: 0.84rem;">
-                                                        <i class="mdi mdi-office-building-outline text-primary me-1"></i> Blangko Permohonan Kecamatan
-                                                    </span>
-                                                    <span id="badge_kecamatan_doc_file" class="badge {{ $land && $land->kecamatan_doc_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
-                                                        {{ $land && $land->kecamatan_doc_file ? 'Terunggah' : 'Belum Ada' }}
-                                                    </span>
-                                                </div>
-                                                <div class="row g-2 mb-2">
-                                                    <div class="col-7">
-                                                        <label class="form-label mb-1" style="font-size: 0.74rem;">Nomor Register Kecamatan</label>
-                                                        <input type="text" class="form-control form-control-sm" name="kecamatan_reg_no" placeholder="Contoh: 590/088/Kec/2026" value="{{ $land->kecamatan_reg_no ?? '' }}" onchange="autoSaveWorkflowInfo()">
-                                                    </div>
-                                                    <div class="col-5">
-                                                        <label class="form-label mb-1" style="font-size: 0.74rem;">Tanggal Registrasi</label>
-                                                        <input type="date" class="form-control form-control-sm" name="kecamatan_reg_date" value="{{ $land && $land->kecamatan_reg_date ? \Carbon\Carbon::parse($land->kecamatan_reg_date)->format('Y-m-d') : '' }}" onchange="autoSaveWorkflowInfo()">
-                                                    </div>
-                                                </div>
-                                                <div id="container_kecamatan_doc_file">
-                                                    @if($land && $land->kecamatan_doc_file)
-                                                        @php $cleanKec = str_replace('uploads/', '', $land->kecamatan_doc_file); @endphp
-                                                        <div class="p-2 rounded-2 mb-2 bg-success bg-opacity-10 border border-success border-opacity-25 d-flex align-items-center justify-content-between">
-                                                            <div class="text-truncate me-2" style="font-size: 0.78rem;">
-                                                                <i class="mdi mdi-file-check text-success me-1"></i>{{ basename($land->kecamatan_doc_file) }}
-                                                            </div>
-                                                            <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $cleanKec]) }}" data-ext="{{ pathinfo($land->kecamatan_doc_file, PATHINFO_EXTENSION) }}" data-label="Blangko Permohonan Kecamatan" style="font-size: 0.74rem;">
-                                                                <i class="mdi mdi-eye me-1"></i>Lihat
-                                                            </button>
-                                                        </div>
-                                                    @endif
-                                                    <div class="pratanah-file-upload-modern">
-                                                        <input type="file" name="kecamatan_doc_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadWorkflowDoc(this, 'kecamatan_doc_file')">
-                                                        <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #ffffff; border: 1px dashed #cbd5e1;">
-                                                            <i class="mdi mdi-cloud-upload text-primary" style="font-size: 1.1rem;"></i>
-                                                            <div class="pratanah-file-info-modern">
-                                                                <span class="file-label-text" style="font-size: 0.76rem;">{{ ($land && $land->kecamatan_doc_file) ? 'Ganti Scan Blangko Kecamatan' : 'Upload Scan Blangko Kecamatan' }}</span>
-                                                                <span class="file-label-hint" style="font-size: 0.68rem;">PDF, JPG, PNG (Auto Upload)</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- ========================================================================= -->
-                                <!-- MILESTONE 2: TEKNIS BPN (PERTEK & PETA BIDANG) & PERIZINAN OSS RBA (PKKPR) -->
-                                <!-- ========================================================================= -->
-                                <div class="p-3 rounded-3 mb-4 bg-white border shadow-sm" style="border-color: #e2e8f0 !important;">
-                                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
-                                        <div class="fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 0.88rem;">
-                                            <span class="badge bg-primary rounded-pill px-2.5 py-1">Poin 8, 9 & 10</span>
-                                            <span>Pertimbangan Teknis Pertanahan (PERTEK), Peta Bidang BPN & PKKPR OSS RBA</span>
-                                        </div>
-                                        <span class="badge bg-light text-muted border" style="font-size: 11px;">Kantor ATR/BPN & Dinas PTSP / PU Tata Ruang</span>
-                                    </div>
-
-                                    <div class="row g-3">
-                                        <!-- PERTEK BPN (Poin 8) -->
-                                        <div class="col-12 col-md-4">
-                                            <div class="p-3 rounded-3 h-100 border bg-light bg-opacity-50">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <span class="fw-semibold text-dark" style="font-size: 0.84rem;">
-                                                        <i class="mdi mdi-file-document-check text-primary me-1"></i> PERTEK Kantor ATR/BPN
-                                                    </span>
-                                                    <span id="badge_pertek_file" class="badge {{ $land && $land->pertek_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
-                                                        {{ $land && $land->pertek_file ? 'Terunggah' : 'Belum Ada' }}
-                                                    </span>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <label class="form-label mb-1" style="font-size: 0.74rem;">Nomor Dokumen PERTEK</label>
-                                                    <input type="text" class="form-control form-control-sm" name="pertek_no" placeholder="Contoh: 120/PERTEK/BPN/2026" value="{{ $land->pertek_no ?? '' }}" onchange="autoSaveWorkflowInfo()">
-                                                </div>
-                                                <div class="mb-2">
-                                                    <label class="form-label mb-1" style="font-size: 0.74rem;">Tanggal Terbit PERTEK</label>
-                                                    <input type="date" class="form-control form-control-sm" name="pertek_date" value="{{ $land && $land->pertek_date ? \Carbon\Carbon::parse($land->pertek_date)->format('Y-m-d') : '' }}" onchange="autoSaveWorkflowInfo()">
-                                                </div>
-                                                <div id="container_pertek_file">
-                                                    @if($land && $land->pertek_file)
-                                                        @php $cleanPertek = str_replace('uploads/', '', $land->pertek_file); @endphp
-                                                        <div class="p-2 rounded-2 mb-2 bg-success bg-opacity-10 border border-success border-opacity-25 d-flex align-items-center justify-content-between">
-                                                            <div class="text-truncate me-2" style="font-size: 0.78rem;">
-                                                                <i class="mdi mdi-file-check text-success me-1"></i>{{ basename($land->pertek_file) }}
-                                                            </div>
-                                                            <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $cleanPertek]) }}" data-ext="{{ pathinfo($land->pertek_file, PATHINFO_EXTENSION) }}" data-label="Dokumen PERTEK BPN" style="font-size: 0.74rem;">
-                                                                <i class="mdi mdi-eye me-1"></i>Lihat
-                                                            </button>
-                                                        </div>
-                                                    @endif
-                                                    <div class="pratanah-file-upload-modern">
-                                                        <input type="file" name="pertek_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadWorkflowDoc(this, 'pertek_file')">
-                                                        <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #ffffff; border: 1px dashed #cbd5e1;">
-                                                            <i class="mdi mdi-cloud-upload text-primary" style="font-size: 1.1rem;"></i>
-                                                            <div class="pratanah-file-info-modern">
-                                                                <span class="file-label-text" style="font-size: 0.76rem;">{{ ($land && $land->pertek_file) ? 'Ganti File PERTEK' : 'Upload File PERTEK' }}</span>
-                                                                <span class="file-label-hint" style="font-size: 0.68rem;">PDF/Gambar (Auto Upload)</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- PETA BIDANG BPN (Poin 9) -->
-                                        <div class="col-12 col-md-4">
-                                            <div class="p-3 rounded-3 h-100 border bg-light bg-opacity-50">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <span class="fw-semibold text-dark" style="font-size: 0.84rem;">
-                                                        <i class="mdi mdi-map-marker-path text-primary me-1"></i> Peta Bidang & Pengukuran BPN
-                                                    </span>
-                                                    <span id="badge_peta_bidang_file" class="badge {{ $land && $land->peta_bidang_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
-                                                        {{ $land && $land->peta_bidang_file ? 'Terunggah' : 'Belum Ada' }}
-                                                    </span>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <label class="form-label mb-1" style="font-size: 0.74rem;">Nomor Peta Bidang (NIB/PBT)</label>
-                                                    <input type="text" class="form-control form-control-sm" name="peta_bidang_no" placeholder="Contoh: 12.04.05.00124" value="{{ $land->peta_bidang_no ?? '' }}" onchange="autoSaveWorkflowInfo()">
-                                                </div>
-                                                <div class="row g-2 mb-2">
-                                                    <div class="col-6">
-                                                        <label class="form-label mb-1" style="font-size: 0.74rem;">Tanggal Ukur</label>
-                                                        <input type="date" class="form-control form-control-sm" name="peta_bidang_date" value="{{ $land && $land->peta_bidang_date ? \Carbon\Carbon::parse($land->peta_bidang_date)->format('Y-m-d') : '' }}" onchange="autoSaveWorkflowInfo()">
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="form-label mb-1" style="font-size: 0.74rem;">Hasil Luas (m²)</label>
-                                                        <input type="number" step="0.01" class="form-control form-control-sm" name="peta_bidang_area" placeholder="Luas m²" value="{{ $land->peta_bidang_area ?? ($land->area ?? '') }}" onchange="autoSaveWorkflowInfo()">
-                                                    </div>
-                                                </div>
-                                                <div id="container_peta_bidang_file">
-                                                    @if($land && $land->peta_bidang_file)
-                                                        @php $cleanPeta = str_replace('uploads/', '', $land->peta_bidang_file); @endphp
-                                                        <div class="p-2 rounded-2 mb-2 bg-success bg-opacity-10 border border-success border-opacity-25 d-flex align-items-center justify-content-between">
-                                                            <div class="text-truncate me-2" style="font-size: 0.78rem;">
-                                                                <i class="mdi mdi-file-check text-success me-1"></i>{{ basename($land->peta_bidang_file) }}
-                                                            </div>
-                                                            <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $cleanPeta]) }}" data-ext="{{ pathinfo($land->peta_bidang_file, PATHINFO_EXTENSION) }}" data-label="Peta Bidang BPN" style="font-size: 0.74rem;">
-                                                                <i class="mdi mdi-eye me-1"></i>Lihat
-                                                            </button>
-                                                        </div>
-                                                    @endif
-                                                    <div class="pratanah-file-upload-modern">
-                                                        <input type="file" name="peta_bidang_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadWorkflowDoc(this, 'peta_bidang_file')">
-                                                        <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #ffffff; border: 1px dashed #cbd5e1;">
-                                                            <i class="mdi mdi-cloud-upload text-primary" style="font-size: 1.1rem;"></i>
-                                                            <div class="pratanah-file-info-modern">
-                                                                <span class="file-label-text" style="font-size: 0.76rem;">{{ ($land && $land->peta_bidang_file) ? 'Ganti Peta Bidang' : 'Upload Peta Bidang' }}</span>
-                                                                <span class="file-label-hint" style="font-size: 0.68rem;">PDF/Gambar (Auto Upload)</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- PKKPR OSS RBA (Poin 10) -->
-                                        <div class="col-12 col-md-4">
-                                            <div class="p-3 rounded-3 h-100 border bg-light bg-opacity-50">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <span class="fw-semibold text-dark" style="font-size: 0.84rem;">
-                                                        <i class="mdi mdi-web text-primary me-1"></i> PKKPR PTSP / OSS RBA
-                                                    </span>
-                                                    <span id="badge_pkkpr_file" class="badge {{ $land && $land->pkkpr_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
-                                                        {{ $land && $land->pkkpr_file ? 'Terunggah' : 'Belum Ada' }}
-                                                    </span>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <label class="form-label mb-1" style="font-size: 0.74rem;">Nomor Registrasi PKKPR OSS</label>
-                                                    <input type="text" class="form-control form-control-sm" name="pkkpr_no" placeholder="Contoh: PKKPR-2026-004812" value="{{ $land->pkkpr_no ?? '' }}" onchange="autoSaveWorkflowInfo()">
-                                                </div>
-                                                <div class="row g-2 mb-2">
-                                                    <div class="col-6">
-                                                        <label class="form-label mb-1" style="font-size: 0.74rem;">Tanggal PKKPR</label>
-                                                        <input type="date" class="form-control form-control-sm" name="pkkpr_date" value="{{ $land && $land->pkkpr_date ? \Carbon\Carbon::parse($land->pkkpr_date)->format('Y-m-d') : '' }}" onchange="autoSaveWorkflowInfo()">
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="form-label mb-1" style="font-size: 0.74rem;">Status PKKPR</label>
-                                                        <select class="form-select form-select-sm" name="pkkpr_status" onchange="autoSaveWorkflowInfo()">
-                                                            <option value="proses" {{ ($land && $land->pkkpr_status == 'proses') ? 'selected' : '' }}>Proses</option>
-                                                            <option value="terbit" {{ ($land && $land->pkkpr_status == 'terbit') ? 'selected' : '' }}>Terbit (Disetujui)</option>
-                                                            <option value="ditolak" {{ ($land && $land->pkkpr_status == 'ditolak') ? 'selected' : '' }}>Ditolak / Revisi</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div id="container_pkkpr_file">
-                                                    @if($land && $land->pkkpr_file)
-                                                        @php $cleanPkkpr = str_replace('uploads/', '', $land->pkkpr_file); @endphp
-                                                        <div class="p-2 rounded-2 mb-2 bg-success bg-opacity-10 border border-success border-opacity-25 d-flex align-items-center justify-content-between">
-                                                            <div class="text-truncate me-2" style="font-size: 0.78rem;">
-                                                                <i class="mdi mdi-file-check text-success me-1"></i>{{ basename($land->pkkpr_file) }}
-                                                            </div>
-                                                            <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $cleanPkkpr]) }}" data-ext="{{ pathinfo($land->pkkpr_file, PATHINFO_EXTENSION) }}" data-label="Persetujuan PKKPR OSS" style="font-size: 0.74rem;">
-                                                                <i class="mdi mdi-eye me-1"></i>Lihat
-                                                            </button>
-                                                        </div>
-                                                    @endif
-                                                    <div class="pratanah-file-upload-modern">
-                                                        <input type="file" name="pkkpr_file" accept=".pdf,.jpg,.jpeg,.png,.zip" onchange="autoUploadWorkflowDoc(this, 'pkkpr_file')">
-                                                        <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #ffffff; border: 1px dashed #cbd5e1;">
-                                                            <i class="mdi mdi-cloud-upload text-primary" style="font-size: 1.1rem;"></i>
-                                                            <div class="pratanah-file-info-modern">
-                                                                <span class="file-label-text" style="font-size: 0.76rem;">{{ ($land && $land->pkkpr_file) ? 'Ganti File PKKPR' : 'Upload File PKKPR / SHP' }}</span>
-                                                                <span class="file-label-hint" style="font-size: 0.68rem;">PDF/Gambar/Zip (Auto Upload)</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- ========================================================================= -->
-                                <!-- MILESTONE 3: SK PEMBERIAN HAK HGB, MUTASI PBB & BUKTI VALIDASI BPHTB -->
-                                <!-- ========================================================================= -->
-                                <div class="p-3 rounded-3 mb-4 bg-white border shadow-sm" style="border-color: #e2e8f0 !important;">
-                                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
-                                        <div class="fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 0.88rem;">
-                                            <span class="badge bg-primary rounded-pill px-2.5 py-1">Poin 11 s/d 16</span>
-                                            <span>SK Pemberian Hak HGB Badan Hukum, Mutasi PBB Bapenda & Validasi Pajak BPHTB</span>
-                                        </div>
-                                        <span class="badge bg-light text-muted border" style="font-size: 11px;">Kantor ATR/BPN & Bapenda / BPKAD</span>
-                                    </div>
-
-                                    <div class="row g-3">
-                                        <!-- SK HGB (Poin 11-14) -->
-                                        <div class="col-12 col-md-4">
-                                            <div class="p-3 rounded-3 h-100 border bg-light bg-opacity-50">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <span class="fw-semibold text-dark" style="font-size: 0.84rem;">
-                                                        <i class="mdi mdi-certificate text-primary me-1"></i> SK HGB Badan Hukum
-                                                    </span>
-                                                    <span id="badge_sk_hgb_file" class="badge {{ $land && $land->sk_hgb_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
-                                                        {{ $land && $land->sk_hgb_file ? 'Terunggah' : 'Belum Ada' }}
-                                                    </span>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <label class="form-label mb-1" style="font-size: 0.74rem;">Nomor SK Pemberian HGB BPN</label>
-                                                    <input type="text" class="form-control form-control-sm" name="sk_hgb_no" placeholder="Contoh: SK.590/HGB/BPN/2026" value="{{ $land->sk_hgb_no ?? '' }}" onchange="autoSaveWorkflowInfo()">
-                                                </div>
-                                                <div class="mb-2">
-                                                    <label class="form-label mb-1" style="font-size: 0.74rem;">Tanggal Terbit SK</label>
-                                                    <input type="date" class="form-control form-control-sm" name="sk_hgb_date" value="{{ $land && $land->sk_hgb_date ? \Carbon\Carbon::parse($land->sk_hgb_date)->format('Y-m-d') : '' }}" onchange="autoSaveWorkflowInfo()">
-                                                </div>
-                                                <div id="container_sk_hgb_file">
-                                                    @if($land && $land->sk_hgb_file)
-                                                        @php $cleanSk = str_replace('uploads/', '', $land->sk_hgb_file); @endphp
-                                                        <div class="p-2 rounded-2 mb-2 bg-success bg-opacity-10 border border-success border-opacity-25 d-flex align-items-center justify-content-between">
-                                                            <div class="text-truncate me-2" style="font-size: 0.78rem;">
-                                                                <i class="mdi mdi-file-check text-success me-1"></i>{{ basename($land->sk_hgb_file) }}
-                                                            </div>
-                                                            <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $cleanSk]) }}" data-ext="{{ pathinfo($land->sk_hgb_file, PATHINFO_EXTENSION) }}" data-label="SK Pemberian HGB BPN" style="font-size: 0.74rem;">
-                                                                <i class="mdi mdi-eye me-1"></i>Lihat
-                                                            </button>
-                                                        </div>
-                                                    @endif
-                                                    <div class="pratanah-file-upload-modern">
-                                                        <input type="file" name="sk_hgb_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadWorkflowDoc(this, 'sk_hgb_file')">
-                                                        <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #ffffff; border: 1px dashed #cbd5e1;">
-                                                            <i class="mdi mdi-cloud-upload text-primary" style="font-size: 1.1rem;"></i>
-                                                            <div class="pratanah-file-info-modern">
-                                                                <span class="file-label-text" style="font-size: 0.74rem;">{{ ($land && $land->sk_hgb_file) ? 'Ganti File SK HGB' : 'Upload SK HGB BPN' }}</span>
-                                                                <span class="file-label-hint" style="font-size: 0.68rem;">PDF/Gambar (Auto Upload)</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Mutasi PBB (Poin 15) -->
-                                        <div class="col-12 col-md-4">
-                                            <div class="p-3 rounded-3 h-100 border bg-light bg-opacity-50">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <span class="fw-semibold text-dark" style="font-size: 0.84rem;">
-                                                        <i class="mdi mdi-domain text-primary me-1"></i> Mutasi PBB an. PT (Bapenda)
-                                                    </span>
-                                                    <span id="badge_pbb_mutasi_file" class="badge {{ $land && $land->pbb_mutasi_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
-                                                        {{ $land && $land->pbb_mutasi_file ? 'Terunggah' : 'Belum Ada' }}
-                                                    </span>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <label class="form-label mb-1" style="font-size: 0.74rem;">Nomor Objek Pajak (NOP) Baru</label>
-                                                    <input type="text" class="form-control form-control-sm" name="pbb_mutasi_nop" placeholder="Contoh: 35.09.120.001.005-0120.0" value="{{ $land->pbb_mutasi_nop ?? '' }}" onchange="autoSaveWorkflowInfo()">
-                                                </div>
-                                                <div class="mb-2">
-                                                    <label class="form-label mb-1" style="font-size: 0.74rem;">Tanggal Mutasi PBB</label>
-                                                    <input type="date" class="form-control form-control-sm" name="pbb_mutasi_date" value="{{ $land && $land->pbb_mutasi_date ? \Carbon\Carbon::parse($land->pbb_mutasi_date)->format('Y-m-d') : '' }}" onchange="autoSaveWorkflowInfo()">
-                                                </div>
-                                                <div id="container_pbb_mutasi_file">
-                                                    @if($land && $land->pbb_mutasi_file)
-                                                        @php $cleanPbb = str_replace('uploads/', '', $land->pbb_mutasi_file); @endphp
-                                                        <div class="p-2 rounded-2 mb-2 bg-success bg-opacity-10 border border-success border-opacity-25 d-flex align-items-center justify-content-between">
-                                                            <div class="text-truncate me-2" style="font-size: 0.78rem;">
-                                                                <i class="mdi mdi-file-check text-success me-1"></i>{{ basename($land->pbb_mutasi_file) }}
-                                                            </div>
-                                                            <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $cleanPbb]) }}" data-ext="{{ pathinfo($land->pbb_mutasi_file, PATHINFO_EXTENSION) }}" data-label="SPPT PBB Mutasi an. PT" style="font-size: 0.74rem;">
-                                                                <i class="mdi mdi-eye me-1"></i>Lihat
-                                                            </button>
-                                                        </div>
-                                                    @endif
-                                                    <div class="pratanah-file-upload-modern">
-                                                        <input type="file" name="pbb_mutasi_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadWorkflowDoc(this, 'pbb_mutasi_file')">
-                                                        <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #ffffff; border: 1px dashed #cbd5e1;">
-                                                            <i class="mdi mdi-cloud-upload text-primary" style="font-size: 1.1rem;"></i>
-                                                            <div class="pratanah-file-info-modern">
-                                                                <span class="file-label-text" style="font-size: 0.74rem;">{{ ($land && $land->pbb_mutasi_file) ? 'Ganti SPPT PBB Mutasi' : 'Upload SPPT PBB Mutasi' }}</span>
-                                                                <span class="file-label-hint" style="font-size: 0.68rem;">PDF/Gambar (Auto Upload)</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Validasi BPHTB (Poin 16) -->
-                                        <div class="col-12 col-md-4">
-                                            <div class="p-3 rounded-3 h-100 border bg-light bg-opacity-50">
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <span class="fw-semibold text-dark" style="font-size: 0.84rem;">
-                                                        <i class="mdi mdi-cash-check text-primary me-1"></i> Validasi Pajak BPHTB
-                                                    </span>
-                                                    <span id="badge_bphtb_validasi_file" class="badge {{ $land && $land->bphtb_validasi_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
-                                                        {{ $land && $land->bphtb_validasi_file ? 'Terunggah' : 'Belum Ada' }}
-                                                    </span>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <label class="form-label mb-1" style="font-size: 0.74rem;">Nomor Registrasi / NTPN</label>
-                                                    <input type="text" class="form-control form-control-sm" name="bphtb_billing_id" placeholder="Billing ID / NTPN" value="{{ $land->bphtb_billing_id ?? '' }}" onchange="autoSaveWorkflowInfo()">
-                                                </div>
-                                                <div class="row g-2 mb-2">
-                                                    <div class="col-6">
-                                                        <label class="form-label mb-1" style="font-size: 0.74rem;">Nominal BPHTB (Rp)</label>
-                                                        <input type="text" class="form-control form-control-sm" name="bphtb_nominal" placeholder="Nominal Rp" value="{{ $land && $land->bphtb_nominal ? number_format($land->bphtb_nominal, 0, ',', '.') : '' }}" onkeyup="formatRupiah(this)" onchange="autoSaveWorkflowInfo()">
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="form-label mb-1" style="font-size: 0.74rem;">Tgl Validasi</label>
-                                                        <input type="date" class="form-control form-control-sm" name="bphtb_payment_date" value="{{ $land && $land->bphtb_payment_date ? \Carbon\Carbon::parse($land->bphtb_payment_date)->format('Y-m-d') : '' }}" onchange="autoSaveWorkflowInfo()">
-                                                    </div>
-                                                </div>
-                                                <div id="container_bphtb_validasi_file">
-                                                    @if($land && $land->bphtb_validasi_file)
-                                                        @php $cleanBphtb = str_replace('uploads/', '', $land->bphtb_validasi_file); @endphp
-                                                        <div class="p-2 rounded-2 mb-2 bg-success bg-opacity-10 border border-success border-opacity-25 d-flex align-items-center justify-content-between">
-                                                            <div class="text-truncate me-2" style="font-size: 0.76rem;">
-                                                                <i class="mdi mdi-file-check text-success me-1"></i>{{ basename($land->bphtb_validasi_file) }}
-                                                            </div>
-                                                            <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $cleanBphtb]) }}" data-ext="{{ pathinfo($land->bphtb_validasi_file, PATHINFO_EXTENSION) }}" data-label="Validasi Pajak BPHTB" style="font-size: 0.72rem;">
-                                                                <i class="mdi mdi-eye me-1"></i>Lihat
-                                                            </button>
-                                                        </div>
-                                                    @endif
-                                                    <div class="pratanah-file-upload-modern">
-                                                        <input type="file" name="bphtb_validasi_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadWorkflowDoc(this, 'bphtb_validasi_file')">
-                                                        <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #ffffff; border: 1px dashed #cbd5e1;">
-                                                            <i class="mdi mdi-cloud-upload text-primary" style="font-size: 1.1rem;"></i>
-                                                            <div class="pratanah-file-info-modern">
-                                                                <span class="file-label-text" style="font-size: 0.74rem;">{{ ($land && $land->bphtb_validasi_file) ? 'Ganti Bukti BPHTB' : 'Upload Validasi BPHTB' }}</span>
-                                                                <span class="file-label-hint" style="font-size: 0.68rem;">PDF/Gambar (Auto Upload)</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- ========================================================================= -->
-                                <!-- SECTION: FORM DOKUMEN DINAMIS TAMBAHAN (DYNAMIC EXTRA DOCUMENTS) -->
-                                <!-- ========================================================================= -->
-                                <div class="p-3 rounded-3 mb-4 bg-white border shadow-sm" style="border-color: #e2e8f0 !important;">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 pb-2 border-bottom gap-2">
-                                        <div>
-                                            <div class="fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 0.88rem;">
-                                                <i class="mdi mdi-folder-plus text-primary fs-5"></i>
-                                                <span>Dokumen & Arsip Pendukung Tambahan (Form Dinamis)</span>
-                                            </div>
-                                            <small class="text-muted" style="font-size: 0.76rem;">
-                                                Tambahkan dokumen legalitas tambahan atau kelengkapan berkas pengindukan lainnya sewaktu-waktu secara fleksibel.
-                                            </small>
-                                        </div>
-                                        <button type="button" class="btn btn-sm btn-outline-purple py-1.5 px-3 shadow-sm d-inline-flex align-items-center gap-1" onclick="toggleDynamicDocForm()" style="font-size: 0.8rem; font-weight: 600;">
-                                            <i class="mdi mdi-plus-circle"></i> Tambah Dokumen Lainnya
-                                        </button>
-                                    </div>
-
-                                    <!-- INLINE FORM TAMBAH DOKUMEN DINAMIS -->
-                                    <div id="inline_add_dynamic_doc_card" class="card border border-primary border-opacity-25 rounded-3 p-3 mb-3 d-none" style="background: linear-gradient(135deg, #faf7ff, #f3ecff);">
-                                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
-                                            <h6 class="fw-bold text-primary mb-0" style="font-size: 0.85rem;">
-                                                <i class="mdi mdi-file-plus-outline me-1"></i> Form Input Dokumen Tambahan
-                                            </h6>
-                                            <button type="button" class="btn-close btn-sm" onclick="toggleDynamicDocForm(false)" aria-label="Tutup"></button>
-                                        </div>
-                                        <div class="row g-2">
-                                            <div class="col-12 col-md-4">
-                                                <label class="form-label mb-1" style="font-size: 0.75rem;">Nama Dokumen <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control form-control-sm" id="dyn_doc_name" placeholder="Contoh: Surat Kuasa / Rekomendasi...">
-                                            </div>
-                                            <div class="col-12 col-md-3">
-                                                <label class="form-label mb-1" style="font-size: 0.75rem;">Nomor Dokumen</label>
-                                                <input type="text" class="form-control form-control-sm" id="dyn_doc_number" placeholder="Nomor Surat / Dokumen">
-                                            </div>
-                                            <div class="col-12 col-md-2">
-                                                <label class="form-label mb-1" style="font-size: 0.75rem;">Tanggal Dokumen</label>
-                                                <input type="date" class="form-control form-control-sm" id="dyn_doc_date">
-                                            </div>
-                                            <div class="col-12 col-md-3">
-                                                <label class="form-label mb-1" style="font-size: 0.75rem;">Upload File Berkas</label>
-                                                <input type="file" class="form-control form-control-sm" id="dyn_doc_file" accept=".pdf,.jpg,.jpeg,.png,.zip">
-                                            </div>
-                                            <div class="col-12 col-md-9">
-                                                <label class="form-label mb-1" style="font-size: 0.75rem;">Catatan / Keterangan Tambahan</label>
-                                                <input type="text" class="form-control form-control-sm" id="dyn_doc_notes" placeholder="Keterangan instansi penerbit, catatan berkas...">
-                                            </div>
-                                            <div class="col-12 col-md-3 d-flex align-items-end">
-                                                <button type="button" class="btn btn-sm btn-gradient-primary w-100 py-1.5 fw-bold" onclick="submitCustomWorkflowDoc()">
-                                                    <i class="mdi mdi-check-circle me-1"></i> Simpan Dokumen
+                                            <h6 class="fw-bold text-dark mb-1">Daftar Dokumen Pengurusan Masih Kosong</h6>
+                                            <p class="text-muted small mx-auto mb-3" style="max-width: 480px;">
+                                                Dokumen Fase 4 dibuat fleksibel & dinamis sesuai kebutuhan riil di lapangan. Anda dapat menambahkan perizinan/surat satu per satu, atau gunakan template standar legalitas bila diperlukan.
+                                            </p>
+                                            <div class="d-flex flex-wrap justify-content-center align-items-center gap-2">
+                                                <button type="button" class="btn btn-sm btn-gradient-primary px-3 py-2 fw-bold shadow-sm d-inline-flex align-items-center gap-1.5" onclick="openFase4DocModal()">
+                                                    <i class="mdi mdi-plus-circle"></i> + Tambah Dokumen Lapangan
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-purple px-3 py-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-1.5" onclick="openMasterPickerModal()">
+                                                    <i class="mdi mdi-file-certificate-outline"></i> + Pilih dari Master Perizinan
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1.5" onclick="loadFase4DefaultTemplate()">
+                                                    <i class="mdi mdi-clipboard-text-play-outline"></i> Gunakan Template Standar (Poin 7-17)
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
+                                @endforelse
+                            </div>
 
-                                    <!-- CONTAINER LIST DOKUMEN DINAMIS -->
-                                    <div id="custom_workflow_docs_list" class="row g-3">
-                                        @php
-                                            $customDocs = $land->custom_workflow_docs ?? [];
-                                        @endphp
-                                        @if(!empty($customDocs) && count($customDocs) > 0)
-                                            @foreach($customDocs as $cdoc)
-                                                @php
-                                                    $cdocId = $cdoc['id'] ?? ('doc_' . uniqid());
-                                                    $cdocCleanPath = !empty($cdoc['file_path']) ? str_replace('uploads/', '', $cdoc['file_path']) : null;
-                                                @endphp
-                                                <div class="col-12 col-md-6 col-lg-4" id="custom_doc_card_{{ $cdocId }}">
-                                                    <div class="card h-100 border rounded-3 p-3 shadow-sm" style="background: #ffffff;">
-                                                        <div class="d-flex justify-content-between align-items-start mb-2 pb-2 border-bottom">
-                                                            <div class="overflow-hidden me-2">
-                                                                <h6 class="fw-bold text-dark mb-0 text-truncate" style="font-size: 0.85rem;" title="{{ $cdoc['doc_name'] ?? 'Dokumen Tambahan' }}">
-                                                                    <i class="mdi mdi-file-document-outline text-primary me-1"></i>{{ $cdoc['doc_name'] ?? 'Dokumen Tambahan' }}
-                                                                </h6>
-                                                                <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">No: {{ $cdoc['doc_number'] ?: '-' }}</small>
-                                                            </div>
-                                                            <button type="button" class="btn btn-xs btn-outline-danger p-1 border-0" onclick="deleteCustomWorkflowDoc('{{ $cdocId }}')" title="Hapus Dokumen">
-                                                                <i class="mdi mdi-delete fs-6"></i>
-                                                            </button>
-                                                        </div>
-                                                        <div class="mb-2" style="font-size: 0.75rem;">
-                                                            <div class="d-flex justify-content-between text-muted mb-1">
-                                                                <span>Tanggal:</span>
-                                                                <strong class="text-dark">{{ !empty($cdoc['doc_date']) ? \Carbon\Carbon::parse($cdoc['doc_date'])->format('d M Y') : '-' }}</strong>
-                                                            </div>
-                                                            @if(!empty($cdoc['notes']))
-                                                                <div class="text-muted text-truncate" title="{{ $cdoc['notes'] }}">
-                                                                    <span>Ket: </span>{{ $cdoc['notes'] }}
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                        <div class="mt-auto pt-2 border-top">
-                                                            @if(!empty($cdoc['file_path']))
-                                                                <button type="button" class="btn btn-xs btn-success text-white w-100 py-1.5 px-2 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $cdocCleanPath]) }}" data-ext="{{ pathinfo($cdoc['file_path'], PATHINFO_EXTENSION) }}" data-label="{{ $cdoc['doc_name'] ?? 'Dokumen Tambahan' }}" style="font-size: 0.74rem;">
-                                                                    <i class="mdi mdi-eye me-1"></i>Lihat Berkas
-                                                                </button>
-                                                            @else
-                                                                <span class="badge bg-light text-muted border w-100 py-1 text-center" style="font-size: 0.72rem;">Tidak ada file fisik</span>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        @else
-                                            <div class="col-12" id="custom_docs_empty_state">
-                                                <div class="p-3 text-center text-muted bg-light rounded-2 border" style="font-size: 0.8rem;">
-                                                    <i class="mdi mdi-folder-open-outline me-1"></i>Belum ada dokumen tambahan yang dimasukkan. Klik tombol <strong>+ Tambah Dokumen Lainnya</strong> di atas untuk menambahkan dokumen baru secara dinamis.
-                                                </div>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
 
-                                <!-- ========================================================== -->
-                                <!-- MILESTONE 4: PENERBITAN SHGB INDUK AN. PT (POIN 17) & FINAL -->
-                                <!-- ========================================================== -->
-                                <div class="p-3.5 rounded-3 border-2 border shadow mb-4" style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border-color: #22c55e !important;">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 pb-2 border-bottom border-success border-opacity-25">
-                                        <div>
-                                            <div class="fw-bold text-success d-flex align-items-center gap-2" style="font-size: 0.95rem;">
-                                                <span class="badge bg-success rounded-pill px-3 py-1">Poin 17 (GOL AKHIR)</span>
-                                                <span>Penerbitan Sertifikat SHGB Induk atas nama PT & Migrasi Pasca Land Bank</span>
-                                            </div>
-                                            <small class="text-muted" style="font-size: 0.78rem;">
-                                                Setelah SHGB Induk resmi terbit dari BPN, lahan sah 100% menjadi Aset Induk Developer dan beralih ke <strong>Pasca Land Bank</strong> untuk pemecahan sertifikat unit kavling.
-                                            </small>
-                                        </div>
-                                        <span id="badge_shgb_induk_file" class="badge {{ $land && $land->shgb_induk_file ? 'bg-success' : 'bg-warning text-dark' }} py-1.5 px-3" style="font-size: 0.8rem; font-weight: 600;">
-                                            <i class="mdi {{ $land && $land->shgb_induk_file ? 'mdi-shield-check' : 'mdi-clock-outline' }} me-1"></i>
-                                            {{ $land && $land->shgb_induk_file ? 'Buku SHGB Induk Terbit' : 'Menunggu Terbit Buku SHGB' }}
-                                        </span>
-                                    </div>
+                            <!-- FOOTER BACK BUTTON -->
+                            <div class="d-flex justify-content-between align-items-center gap-3 mt-4">
+                                <button type="button" class="btn btn-outline-purple btn-action-mobile" onclick="switchStep(3)">
+                                    <i class="mdi mdi-arrow-left-circle me-1"></i> Kembali ke Fase 3
+                                </button>
+                                @if(!$land || !$land->land_bank_id)
+                                    <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="confirmFinalizePasca()">
+                                        <i class="mdi mdi-shield-crown me-1"></i> Finalisasi ke Pasca Land Bank
+                                    </button>
+                                @endif
+                            </div>
 
-                                    <div class="row g-3">
-                                        <div class="col-12 col-md-4">
-                                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 0.8rem;">Nomor Sertifikat SHGB Induk an. PT <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control form-control-sm border-success" name="shgb_induk_no" placeholder="Contoh: SHGB No. 01245/Kelurahan..." value="{{ $land->shgb_induk_no ?? '' }}" onchange="autoSaveWorkflowInfo()">
-                                            <small class="text-muted" style="font-size: 0.72rem;">*Nomor sertifikat resmi yang tertera di buku BPN.</small>
-                                        </div>
-
-                                        <div class="col-12 col-md-3">
-                                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 0.8rem;">Tanggal Terbit SHGB</label>
-                                            <input type="date" class="form-control form-control-sm border-success" name="shgb_induk_date" value="{{ $land && $land->shgb_induk_date ? \Carbon\Carbon::parse($land->shgb_induk_date)->format('Y-m-d') : '' }}" onchange="autoSaveWorkflowInfo()">
-                                            <small class="text-muted" style="font-size: 0.72rem;">*Tanggal pengesahan buku sertifikat.</small>
-                                        </div>
-
-                                        <div class="col-12 col-md-2">
-                                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 0.8rem;">Luas SHGB Induk (m²)</label>
-                                            <input type="number" step="0.01" class="form-control form-control-sm border-success" name="shgb_induk_area" placeholder="Luas m²" value="{{ $land->shgb_induk_area ?? ($land->peta_bidang_area ?? ($land->area ?? '')) }}" onchange="autoSaveWorkflowInfo()">
-                                            <small class="text-muted" style="font-size: 0.72rem;">*Luas di SHGB Induk.</small>
-                                        </div>
-
-                                        <div class="col-12 col-md-3">
-                                            <label class="form-label fw-bold text-dark mb-1" style="font-size: 0.8rem;">Scan Buku SHGB Induk</label>
-                                            <div id="container_shgb_induk_file">
-                                                @if($land && $land->shgb_induk_file)
-                                                    @php $cleanShgb = str_replace('uploads/', '', $land->shgb_induk_file); @endphp
-                                                    <div class="p-2 rounded-2 mb-2 bg-success bg-opacity-20 border border-success d-flex align-items-center justify-content-between">
-                                                        <div class="text-truncate me-2" style="font-size: 0.76rem; font-weight: 600;">
-                                                            <i class="mdi mdi-certificate text-success me-1"></i>{{ basename($land->shgb_induk_file) }}
-                                                        </div>
-                                                        <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 btn-preview-doc" data-url="{{ route('dokumen.preview', ['path' => $cleanShgb]) }}" data-ext="{{ pathinfo($land->shgb_induk_file, PATHINFO_EXTENSION) }}" data-label="Buku Sertifikat SHGB Induk an. PT" style="font-size: 0.72rem;">
-                                                            <i class="mdi mdi-eye me-1"></i>Lihat
-                                                        </button>
-                                                    </div>
-                                                @endif
-                                                <div class="pratanah-file-upload-modern">
-                                                    <input type="file" name="shgb_induk_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadWorkflowDoc(this, 'shgb_induk_file')">
-                                                    <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #ffffff; border: 1.5px dashed #22c55e;">
-                                                        <i class="mdi mdi-cloud-upload text-success" style="font-size: 1.1rem;"></i>
-                                                        <div class="pratanah-file-info-modern">
-                                                            <span class="file-label-text text-success fw-bold" style="font-size: 0.74rem;">{{ ($land && $land->shgb_induk_file) ? 'Ganti Scan SHGB Induk' : 'Upload Scan SHGB Induk' }}</span>
-                                                            <span class="file-label-hint" style="font-size: 0.68rem;">PDF / Scan Buku (Auto Upload)</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- ACTION BUTTON: FINALISASI & MIGRASI PASCA LAND BANK -->
-                                        <div class="col-12 mt-3 pt-3 border-top border-success border-opacity-25 d-flex flex-wrap justify-content-between align-items-center gap-2">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <i class="mdi mdi-information-outline text-success fs-5"></i>
-                                                <span class="text-muted" style="font-size: 0.8rem;">
-                                                    Menekan tombol ini akan secara resmi mengonfirmasi penerbitan <strong>SHGB Induk</strong> dan mendaftarkan lahan ini ke daftar <strong>Semua Tanah Pasca Land Bank</strong> serta modul <strong>Pecah Tanah Induk Unit</strong>.
-                                                </span>
-                                            </div>
-                                            <div>
-                                                @if($land && $land->land_bank_id)
-                                                    <a href="{{ route('properti-all') }}" class="btn btn-success py-2 px-4 shadow-sm fw-bold d-inline-flex align-items-center gap-1.5" style="font-size: 0.85rem; border-radius: 8px;">
-                                                        <i class="mdi mdi-check-decagram fs-5"></i> Lahan Telah Masuk Pasca Land Bank (Buka Menu)
-                                                    </a>
-                                                @else
-                                                    <button type="button" class="btn btn-gradient-success py-2.5 px-4 shadow fw-bold d-inline-flex align-items-center gap-2" onclick="confirmFinalizePasca()" style="font-size: 0.88rem; border-radius: 8px; letter-spacing: 0.3px;">
-                                                        <i class="mdi mdi-shield-crown fs-5"></i> Finalisasi & Terbitkan ke Pasca Land Bank
-                                                    </button>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- ACTIONS FASE 4 -->
-                                <div class="d-flex justify-content-between align-items-center gap-3 mt-4 footer-action-row">
-                                    <div>
-                                        <button type="button" class="btn btn-outline-purple btn-action-mobile" onclick="switchStep(3)">
-                                            <i class="mdi mdi-arrow-left-circle me-1"></i> Kembali ke Fase 3
-                                        </button>
-                                    </div>
-                                    <div class="d-flex gap-2">
-                                        <button type="button" class="btn btn-gradient-primary py-2 px-4 shadow-sm" onclick="autoSaveWorkflowInfo(true)">
-                                            <i class="mdi mdi-content-save-all me-1"></i> Simpan Data Fase 4
-                                        </button>
-                                        @if(!$land || !$land->land_bank_id)
-                                            <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="confirmFinalizePasca()">
-                                                <i class="mdi mdi-shield-crown me-1"></i> Finalisasi ke Pasca Land Bank
-                                            </button>
-                                        @endif
-                                    </div>
-                                </div>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -3686,6 +3323,371 @@
                         <i class="mdi mdi-information-outline me-1"></i>Gunakan toolbar di atas atau scroll mouse untuk memperbesar/memutar detail dokumen.
                     </small>
                     <button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal">Tutup</button>
+    {{-- MODAL TAMBAH / EDIT DOKUMEN FASE 4 (DYNAMIC WORKFLOW) --}}
+    <div class="modal fade" id="modalFase4Doc" tabindex="-1" aria-hidden="true" style="z-index: 1055;">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
+                <div class="modal-header text-white py-3 px-4" style="background: linear-gradient(135deg, #9a55ff 0%, #7e22ce 100%);">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="p-2 rounded-3 bg-white bg-opacity-20 text-white">
+                            <i class="mdi mdi-file-document-edit fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="modal-title mb-0 fw-bold text-white" id="modalFase4DocTitle">Form Dokumen & Perizinan Fase 4</h6>
+                            <small class="text-white-50" style="font-size: 0.72rem;">Pengurusan Legalisasi Wilayah, Teknis BPN & SHGB Induk</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <form id="formFase4Doc" onsubmit="submitModalFase4Doc(event)" enctype="multipart/form-data">
+                    <input type="hidden" id="modal_fase4_doc_id" name="doc_id" value="">
+                    
+                    <div class="modal-body p-4 bg-light" style="max-height: 75vh; overflow-y: auto;">
+                        <div class="row g-3">
+                            <!-- Quick Fill dari Master Dokumen Perizinan -->
+                            <div class="col-12" id="modal_fase4_master_picker_section">
+                                <div class="p-3 rounded-3 border" style="background-color: #fbf9ff; border-color: rgba(154, 85, 255, 0.25) !important;">
+                                    <div class="d-flex justify-content-between align-items-center mb-1.5">
+                                        <label class="form-label small fw-bold text-dark mb-0 d-flex align-items-center gap-1.5">
+                                            <i class="mdi mdi-file-certificate-outline" style="color: #9a55ff; font-size: 1.1rem;"></i>
+                                            Pilih dari Katalog Master Perizinan (Isi Otomatis):
+                                        </label>
+                                        <a href="{{ route('master.dokumen-perizinan.index') }}" target="_blank" class="small text-decoration-none fw-semibold" style="color: #9a55ff; font-size: 0.74rem;">
+                                            Kelola Master <i class="mdi mdi-open-in-new"></i>
+                                        </a>
+                                    </div>
+                                    <select id="modal_fase4_master_select" class="form-select form-select-sm" onchange="applyMasterToFase4Form(this.value)">
+                                        <option value="">-- Ketik / Pilih Standar Perizinan untuk Auto-Fill --</option>
+                                        @if(isset($masterPerizinans) && $masterPerizinans->count() > 0)
+                                            @foreach($masterPerizinans->groupBy('kategori') as $kategori => $items)
+                                                <optgroup label="📂 {{ $kategori }}">
+                                                    @foreach($items as $mItem)
+                                                        <option value="{{ $mItem->id }}"
+                                                            data-kode="{{ $mItem->kode_dokumen }}"
+                                                            data-nama="{{ $mItem->nama_dokumen }}"
+                                                            data-instansi="{{ $mItem->instansi_terkait }}"
+                                                            data-biaya="{{ $mItem->estimasi_biaya }}"
+                                                            data-syarat="{{ $mItem->syarat_dokumen }}"
+                                                            data-deskripsi="{{ $mItem->deskripsi }}">
+                                                            {{ $mItem->nama_dokumen }} ({{ $mItem->kode_dokumen }})
+                                                        </option>
+                                                    @endforeach
+                                                </optgroup>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                    <small class="text-muted d-block mt-1" style="font-size: 0.72rem;">
+                                        Memilih izin master akan otomatis mengisi nama dokumen, instansi, estimasi biaya, dan catatan syarat.
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Info Identitas Dokumen -->
+                            <div class="col-12">
+                                <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                    <div class="fw-bold mb-2 d-flex align-items-center gap-2" style="font-size: 0.85rem; color: #7e22ce;">
+                                        <i class="mdi mdi-information-outline"></i> Identitas & Kategori Dokumen
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-md-4">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Poin / Urutan Tahapan</label>
+                                            <input type="text" class="form-control form-control-sm" id="modal_fase4_poin_label" name="poin_label" placeholder="Contoh: Poin 7 / Poin 12 / Opsional">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Nama Dokumen / Perizinan <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-sm fw-bold" id="modal_fase4_doc_name" name="doc_name" placeholder="Contoh: PKKPR OSS RBA / SK HGB BPN" required>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Instansi / Lembaga Terkait</label>
+                                            <input type="text" class="form-control form-control-sm" id="modal_fase4_instansi" name="instansi" placeholder="Contoh: Kantor Pertanahan (BPN) Kab. Jember / Kementerian Investasi (OSS)">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Checklist Prasyarat Berkas (Syarat Dokumen Otomatis & Dinamis) -->
+                            <div class="col-12" id="modal_fase4_syarat_section">
+                                <div class="p-3 bg-white rounded-3 border shadow-sm" style="border-left: 4px solid #0284c7 !important;">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="fw-bold d-flex align-items-center gap-2" style="font-size: 0.85rem; color: #0284c7;">
+                                            <i class="mdi mdi-checkbox-multiple-marked-outline"></i> Daftar Checklist Prasyarat Berkas Pengajuan
+                                        </div>
+                                        <span class="badge bg-soft-info text-info border" id="modal_syarat_summary_badge" style="font-size: 0.72rem;">0/0 Terpenuhi</span>
+                                    </div>
+                                    <p class="text-muted small mb-2" style="font-size: 0.74rem;">
+                                        Tandai berkas prasyarat yang sudah siap / lengkap sebelum diajukan ke instansi terkait (Kelurahan, BPN, OSS, Bapenda).
+                                    </p>
+                                    
+                                    <!-- Container Checkboxes Dinamis -->
+                                    <div id="modal_syarat_checkboxes_container" class="p-2.5 rounded-3 mb-2" style="background-color: #f8fafc; border: 1px dashed #cbd5e1; min-height: 48px;">
+                                        <!-- Checkboxes dirender otomatis via JavaScript -->
+                                    </div>
+
+                                    <!-- Collapsible Editor untuk Tambah/Edit Prasyarat -->
+                                    <div class="mt-2">
+                                        <a class="small text-decoration-none fw-semibold text-muted d-inline-flex align-items-center gap-1" data-bs-toggle="collapse" href="#collapseSyaratEditor" role="button" aria-expanded="false" style="font-size: 0.73rem;">
+                                            <i class="mdi mdi-pencil-outline"></i> Edit Teks / Tambah Prasyarat Baru (Ketik Manual)
+                                        </a>
+                                        <div class="collapse mt-2" id="collapseSyaratEditor">
+                                            <textarea class="form-control form-control-sm" id="modal_fase4_syarat_dokumen" name="syarat_dokumen" rows="3" placeholder="Tuliskan prasyarat berkas per baris atau dengan simbol bullet (• / -)..." oninput="onSyaratTextInput(this.value)"></textarea>
+                                            <small class="text-muted d-block mt-1" style="font-size: 0.7rem;">Setiap baris teks otomatis diubah menjadi kotak centang checklist prasyarat di atas.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Legalitas & Status -->
+                            <div class="col-12">
+                                <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                    <div class="fw-bold text-primary mb-2 d-flex align-items-center gap-2" style="font-size: 0.85rem;">
+                                        <i class="mdi mdi-shield-check-outline"></i> Nomor, Tanggal & Status Progres
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-md-5">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Nomor Registrasi / SK / Surat</label>
+                                            <input type="text" class="form-control form-control-sm" id="modal_fase4_doc_number" name="doc_number" placeholder="Nomor resmi dokumen">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Tanggal Terbit / Validasi</label>
+                                            <input type="date" class="form-control form-control-sm" id="modal_fase4_doc_date" name="doc_date">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Status Progres <span class="text-danger">*</span></label>
+                                            <select class="form-select form-select-sm fw-bold" id="modal_fase4_status" name="status" required>
+                                                <option value="belum">🔴 Belum Diurus</option>
+                                                <option value="proses">🟡 Sedang Proses</option>
+                                                <option value="selesai">🟢 Selesai / Terbit</option>
+                                                <option value="ditolak">⚪ Dibatalkan / N/A</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Nilai Nominal / Luas Tambahan (Opsional) -->
+                            <div class="col-12">
+                                <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                    <div class="fw-bold text-success mb-2 d-flex align-items-center gap-2" style="font-size: 0.85rem;">
+                                        <i class="mdi mdi-cash-multiple"></i> Informasi Teknis & Finansial (Opsional)
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Nominal Biaya / Pajak (Jika ada)</label>
+                                            <input type="text" class="form-control form-control-sm" id="modal_fase4_nominal" name="nominal" placeholder="Rp 0 (Contoh: BPHTB / Biaya BPN)" onkeyup="formatRupiahTemp(this)">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Luas Bidang Teknis (M²)</label>
+                                            <input type="text" class="form-control form-control-sm" id="modal_fase4_luas" name="luas" placeholder="Contoh: 15.420 m²">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label small fw-semibold text-dark mb-1">Catatan Progres / Keterangan Kendala</label>
+                                            <textarea class="form-control form-control-sm" id="modal_fase4_notes" name="notes" rows="2" placeholder="Tuliskan catatan teknis, kendala berkas, atau catatan tindak lanjut..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upload Berkas Fisik -->
+                            <div class="col-12">
+                                <div class="p-3 bg-white rounded-3 border shadow-sm">
+                                    <div class="fw-bold text-dark mb-2 d-flex align-items-center gap-2" style="font-size: 0.85rem;">
+                                        <i class="mdi mdi-cloud-upload text-primary"></i> Upload Dokumen Fisik / Scan
+                                    </div>
+                                    <div id="modal_fase4_current_file_preview" class="mb-2 d-none">
+                                        <!-- Will show existing file info if any -->
+                                    </div>
+                                    <div class="pratanah-file-upload-modern">
+                                        <input type="file" id="modal_fase4_file" name="file" accept=".pdf,.jpg,.jpeg,.png,.webp,.zip,.doc,.docx" onchange="handleModalFase4File(this)">
+                                        <div class="pratanah-file-label-modern py-2 px-3" style="background: #fafbfe; border: 1.5px dashed #cbd5e1; border-radius: 8px;">
+                                            <i class="mdi mdi-cloud-sync text-primary" style="font-size: 1.3rem;"></i>
+                                            <div class="pratanah-file-info-modern">
+                                                <span class="file-label-text fw-bold text-dark" id="modal_fase4_file_label" style="font-size: 0.8rem;">Pilih Berkas Baru (Opsional)</span>
+                                                <span class="file-label-hint text-muted" style="font-size: 0.7rem;">Format PDF, Gambar, DOCX maks. 25MB</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer bg-white border-top py-2.5 px-4 d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-sm btn-outline-secondary px-3" data-bs-dismiss="modal">
+                            <i class="mdi mdi-close me-1"></i>Batal
+                        </button>
+                        <button type="submit" class="btn btn-sm btn-primary px-4 shadow-sm fw-bold" id="btnSaveModalFase4" style="background: #9a55ff; border-color: #9a55ff;">
+                            <i class="mdi mdi-content-save-check me-1"></i>Simpan Dokumen
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- MODAL CHECKLIST PICKER: PILIH DARI MASTER DOKUMEN PERIZINAN --}}
+    <div class="modal fade" id="modalPickerMasterPerizinan" tabindex="-1" aria-hidden="true" style="z-index: 1056;">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
+                <div class="modal-header text-white py-3 px-4" style="background: linear-gradient(135deg, #9a55ff 0%, #7e22ce 100%);">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="p-2 rounded-3 bg-white bg-opacity-20 text-white">
+                            <i class="mdi mdi-file-certificate-outline fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="modal-title mb-0 fw-bold text-white">Katalog Master Dokumen Perizinan Developer</h6>
+                            <small class="text-white-50" style="font-size: 0.72rem;">Pilih dokumen perizinan standar untuk dimasukkan ke alur kerja Fase 4 lahan ini</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body p-4 bg-light" style="max-height: 75vh; overflow-y: auto;">
+                    <!-- Filter & Search Master -->
+                    <div class="p-3 bg-white rounded-3 border shadow-sm mb-3">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-5">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text bg-white"><i class="mdi mdi-magnify text-muted"></i></span>
+                                    <input type="text" class="form-control" id="searchMasterPickerInput" placeholder="Cari nama izin, kode, instansi..." onkeyup="searchMasterPicker(this.value)">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select form-select-sm" id="filterMasterCategorySelect" onchange="filterMasterPickerCategory(this.value)">
+                                    <option value="">Semua Kategori ({{ isset($masterPerizinans) ? $masterPerizinans->count() : 0 }} Dokumen)</option>
+                                    @if(isset($masterPerizinans))
+                                        @foreach($masterPerizinans->pluck('kategori')->unique() as $kategori)
+                                            <option value="{{ $kategori }}">{{ $kategori }} ({{ $masterPerizinans->where('kategori', $kategori)->count() }})</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                            <div class="col-md-3 text-md-end">
+                                <a href="{{ route('master.dokumen-perizinan.index') }}" target="_blank" class="btn btn-sm btn-outline-purple w-100 d-inline-flex align-items-center justify-content-center gap-1" style="font-size: 0.78rem;">
+                                    <i class="mdi mdi-cog-outline"></i> Kelola Master Data
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Select All & Summary Bar -->
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-2.5 border-top">
+                            <div class="form-check form-check-inline m-0">
+                                <input class="form-check-input" type="checkbox" id="checkAllMasterPicker" onchange="togglePickerSelectAll(this)" style="cursor: pointer; width: 18px; height: 18px;">
+                                <label class="form-check-label fw-bold text-dark small ms-1" for="checkAllMasterPicker" style="cursor: pointer;">
+                                    Pilih Semua yang Ditampilkan
+                                </label>
+                            </div>
+                            <div class="small fw-semibold text-primary" id="masterPickerSelectedText">
+                                0 dokumen dipilih
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Items Checklist Container -->
+                    <form id="formPickerMasterPerizinan">
+                        @php
+                            $existingCodes = [];
+                            $existingNames = [];
+                            if (isset($workflowDocs) && is_array($workflowDocs)) {
+                                foreach ($workflowDocs as $wd) {
+                                    if (!empty($wd['poin_label'])) $existingCodes[] = strtolower(trim($wd['poin_label']));
+                                    if (!empty($wd['doc_name'])) $existingNames[] = strtolower(trim($wd['doc_name']));
+                                }
+                            }
+                        @endphp
+
+                        <div class="row g-2.5" id="masterPickerListContainer">
+                            @if(isset($masterPerizinans) && $masterPerizinans->count() > 0)
+                                @foreach($masterPerizinans as $m)
+                                    @php
+                                        $isAlreadyAdded = in_array(strtolower(trim($m->kode_dokumen)), $existingCodes) || in_array(strtolower(trim($m->nama_dokumen)), $existingNames);
+                                        $searchString = strtolower($m->nama_dokumen . ' ' . $m->kode_dokumen . ' ' . $m->kategori . ' ' . $m->instansi_terkait . ' ' . $m->syarat_dokumen . ' ' . $m->deskripsi);
+                                    @endphp
+                                    <div class="col-12 col-md-6 master-picker-item" 
+                                         data-kategori="{{ $m->kategori }}" 
+                                         data-search="{{ $searchString }}"
+                                         data-already="{{ $isAlreadyAdded ? '1' : '0' }}">
+                                        <div class="card h-100 border rounded-3 p-3 transition-all {{ $isAlreadyAdded ? 'bg-light opacity-75 border-secondary-subtle' : 'bg-white shadow-sm' }}" 
+                                             style="cursor: {{ $isAlreadyAdded ? 'default' : 'pointer' }};"
+                                             onclick="togglePickerCardClick(event, '{{ $m->id }}', {{ $isAlreadyAdded ? 'true' : 'false' }})">
+                                            <div class="d-flex align-items-start gap-2.5">
+                                                <div class="pt-0.5">
+                                                    <input class="form-check-input master-picker-checkbox" 
+                                                           type="checkbox" 
+                                                           name="master_ids[]" 
+                                                           value="{{ $m->id }}" 
+                                                           id="picker_chk_{{ $m->id }}"
+                                                           {{ $isAlreadyAdded ? 'disabled' : '' }}
+                                                           onchange="updatePickerSelectedCount()"
+                                                           style="cursor: pointer; width: 19px; height: 19px;">
+                                                </div>
+                                                <div class="flex-grow-1 overflow-hidden">
+                                                    <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                                                        <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                                            <span class="badge bg-light text-dark border font-monospace" style="font-size: 0.72rem;">{{ $m->kode_dokumen }}</span>
+                                                            <span class="badge rounded-pill fw-semibold" style="background-color: rgba(154,85,255,0.12); color: #9a55ff; font-size: 0.7rem;">{{ $m->kategori }}</span>
+                                                        </div>
+                                                        @if($isAlreadyAdded)
+                                                            <span class="badge bg-secondary rounded-pill" style="font-size: 0.68rem;">
+                                                                <i class="mdi mdi-check-all me-1"></i>Sudah Ada di Lahan
+                                                            </span>
+                                                        @elseif($m->is_required)
+                                                            <span class="badge bg-danger-soft text-danger fw-bold border border-danger-subtle rounded-pill" style="background-color: rgba(220,53,69,0.1); font-size: 0.68rem;">
+                                                                Wajib
+                                                            </span>
+                                                        @endif
+                                                    </div>
+
+                                                    <h6 class="fw-bold text-dark mb-1 text-truncate" style="font-size: 0.88rem;" title="{{ $m->nama_dokumen }}">
+                                                        {{ $m->nama_dokumen }}
+                                                    </h6>
+
+                                                    @if($m->instansi_terkait)
+                                                        <small class="text-muted d-block text-truncate mb-1" style="font-size: 0.74rem;">
+                                                            <i class="mdi mdi-office-building text-primary me-1"></i>{{ $m->instansi_terkait }}
+                                                        </small>
+                                                    @endif
+
+                                                    <div class="d-flex flex-wrap align-items-center gap-2 mt-2 pt-1.5 border-top" style="font-size: 0.74rem;">
+                                                        @if($m->estimasi_hari)
+                                                            <span class="text-muted">
+                                                                <i class="mdi mdi-clock-outline me-0.5 text-secondary"></i>{{ $m->estimasi_hari }} Hari
+                                                            </span>
+                                                        @endif
+                                                        @if($m->estimasi_biaya > 0)
+                                                            <span class="fw-bold text-success">
+                                                                Rp {{ number_format($m->estimasi_biaya, 0, ',', '.') }}
+                                                            </span>
+                                                        @endif
+                                                        @if($m->syarat_dokumen)
+                                                            <span class="text-muted text-truncate" style="max-width: 180px;" title="Syarat: {{ $m->syarat_dokumen }}">
+                                                                <i class="mdi mdi-file-outline me-0.5 text-primary"></i>{{ $m->syarat_dokumen }}
+                                                            </span>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="col-12 py-5 text-center text-muted">
+                                    <i class="mdi mdi-file-certificate-outline fs-1 text-muted opacity-50"></i>
+                                    <p class="mt-2 mb-0">Belum ada data master dokumen perizinan.</p>
+                                </div>
+                            @endif
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer bg-white border-top py-2.5 px-4 d-flex justify-content-between align-items-center">
+                    <button type="button" class="btn btn-sm btn-outline-secondary px-3" data-bs-dismiss="modal">
+                        <i class="mdi mdi-close me-1"></i>Batal
+                    </button>
+                    <button type="button" class="btn btn-sm btn-gradient-primary px-4 shadow-sm fw-bold d-inline-flex align-items-center gap-1.5" id="btnSubmitMasterPicker" onclick="submitBatchFromMaster()">
+                        <i class="mdi mdi-plus-box-multiple"></i>
+                        <span id="btnSubmitMasterPickerText">Tambahkan Dokumen Terpilih</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -4248,25 +4250,28 @@
             if (activeStepEl) activeStepEl.classList.add('active');
 
             // Apply completed status & checkmarks
-            if (isEditMode) {
+            const isFase4Finished = {{ ($land && (!empty($land->land_bank_id) || !empty($land->shgb_induk_no))) ? 'true' : 'false' }};
+            const isFase3Finished = isEditMode && (currentLandStatus === 'fase4' || currentLandStatus === 'approved' || currentLandStatus === 'rejected' || {{ ($land && !empty($land->notaris_id)) ? 'true' : 'false' }});
+
+            if (isEditMode && isLegalSah) {
                 document.getElementById('step1')?.classList.add('completed');
                 const c1 = document.querySelector('#step1 .step-circle');
                 if (c1) c1.innerHTML = '<i class="mdi mdi-check"></i>';
             }
 
-            if (isEditMode && currentLandStatus !== 'fase1') {
+            if (isEditMode && isFase2Done) {
                 document.getElementById('step2')?.classList.add('completed');
                 const c2 = document.querySelector('#step2 .step-circle');
                 if (c2) c2.innerHTML = '<i class="mdi mdi-check"></i>';
             }
 
-            if (isEditMode && (currentLandStatus === 'fase4' || currentLandStatus === 'approved' || currentLandStatus === 'rejected')) {
+            if (isFase3Finished) {
                 document.getElementById('step3')?.classList.add('completed');
                 const c3 = document.querySelector('#step3 .step-circle');
                 if (c3) c3.innerHTML = '<i class="mdi mdi-check"></i>';
             }
 
-            if (isEditMode && (currentLandStatus === 'approved' || {{ ($land && $land->land_bank_id) ? 'true' : 'false' }})) {
+            if (isFase4Finished) {
                 document.getElementById('step4')?.classList.add('completed');
                 const c4 = document.querySelector('#step4 .step-circle');
                 if (c4) c4.innerHTML = '<i class="mdi mdi-check"></i>';
@@ -5730,67 +5735,272 @@
             });
         }
 
-        // ===============================
-        // DOKUMEN DINAMIS WORKFLOW FASE 4
-        // ===============================
-        function toggleDynamicDocForm(show) {
-            const el = document.getElementById('inline_add_dynamic_doc_card');
-            if (!el) return;
-            if (show === undefined) {
-                el.classList.toggle('d-none');
-            } else if (show) {
-                el.classList.remove('d-none');
-            } else {
-                el.classList.add('d-none');
+        // ==========================================
+        // DOKUMEN DINAMIS & WORKFLOW FASE 4 (REPEATER)
+        // ==========================================
+        const FASE4_DOC_DATA = @json($workflowDocs ?? []);
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function parseSyaratLines(text) {
+            if (!text) return [];
+            return text.split(/\r?\n/)
+                .map(line => line.replace(/^[•\-\*\d+\.]\s*/u, '').trim())
+                .filter(line => line.length > 0);
+        }
+
+        function renderModalSyaratChecklist(items, checkedList = []) {
+            const container = document.getElementById('modal_syarat_checkboxes_container');
+            const badge = document.getElementById('modal_syarat_summary_badge');
+            if (!container) return;
+
+            if (!Array.isArray(items) || items.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-2" style="font-size: 0.74rem;">
+                        <i class="mdi mdi-information-outline me-1"></i>Belum ada prasyarat berkas untuk dokumen ini. Gunakan tombol 'Edit Teks' di bawah untuk menambahkan prasyarat.
+                    </div>
+                `;
+                if (badge) {
+                    badge.textContent = '0/0 Terpenuhi';
+                    badge.className = 'badge bg-light text-muted border';
+                }
+                return;
             }
-            if (!el.classList.contains('d-none')) {
-                document.getElementById('dyn_doc_name')?.focus();
+
+            const checkedSet = new Set(Array.isArray(checkedList) ? checkedList : []);
+            let html = '';
+
+            items.forEach((item, idx) => {
+                const isChecked = checkedSet.has(item);
+                const safeItem = escapeHtml(item);
+                html += `
+                    <div class="form-check d-flex align-items-center gap-2 mb-1.5 p-1.5 rounded-2 ${isChecked ? 'bg-success bg-opacity-10 border border-success border-opacity-25' : 'bg-white border'}" style="transition: all 0.2s ease;">
+                        <input class="form-check-input modal-syarat-chk ms-1" type="checkbox" name="syarat_checklist[]" value="${safeItem}" id="modal_syarat_chk_${idx}" ${isChecked ? 'checked' : ''} onchange="updateModalSyaratSummary()" style="cursor: pointer; width: 17px; height: 17px;">
+                        <label class="form-check-label small fw-semibold ${isChecked ? 'text-success' : 'text-dark'} mb-0 flex-grow-1" for="modal_syarat_chk_${idx}" style="cursor: pointer; font-size: 0.78rem;">
+                            ${safeItem}
+                        </label>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            updateModalSyaratSummary();
+        }
+
+        function updateModalSyaratSummary() {
+            const total = document.querySelectorAll('.modal-syarat-chk').length;
+            const checked = document.querySelectorAll('.modal-syarat-chk:checked').length;
+            const badge = document.getElementById('modal_syarat_summary_badge');
+
+            document.querySelectorAll('.modal-syarat-chk').forEach(cb => {
+                const row = cb.closest('.form-check');
+                const label = row?.querySelector('label');
+                if (cb.checked) {
+                    row?.classList.remove('bg-white');
+                    row?.classList.add('bg-success', 'bg-opacity-10', 'border-success', 'border-opacity-25');
+                    label?.classList.remove('text-dark');
+                    label?.classList.add('text-success');
+                } else {
+                    row?.classList.remove('bg-success', 'bg-opacity-10', 'border-success', 'border-opacity-25');
+                    row?.classList.add('bg-white');
+                    label?.classList.remove('text-success');
+                    label?.classList.add('text-dark');
+                }
+            });
+
+            if (badge) {
+                if (total === 0) {
+                    badge.textContent = '0/0 Terpenuhi';
+                    badge.className = 'badge bg-light text-muted border';
+                } else if (checked >= total) {
+                    badge.textContent = `${checked}/${total} Lengkap (100%)`;
+                    badge.className = 'badge bg-success text-white shadow-sm';
+                } else {
+                    badge.textContent = `${checked}/${total} Terpenuhi`;
+                    badge.className = 'badge bg-soft-info text-info border';
+                }
             }
         }
 
-        function submitCustomWorkflowDoc() {
+        function onSyaratTextInput(val) {
+            const currentlyChecked = Array.from(document.querySelectorAll('.modal-syarat-chk:checked')).map(cb => cb.value);
+            const items = parseSyaratLines(val);
+            renderModalSyaratChecklist(items, currentlyChecked);
+        }
+
+        function handleModalFase4File(input) {
+            const labelEl = document.getElementById('modal_fase4_file_label');
+            if (input.files && input.files[0]) {
+                labelEl.textContent = input.files[0].name;
+                labelEl.classList.add('text-primary');
+            } else {
+                labelEl.textContent = 'Pilih Berkas Baru (Opsional)';
+                labelEl.classList.remove('text-primary');
+            }
+        }
+
+        function applyMasterToFase4Form(masterId) {
+            if (!masterId) return;
+            const select = document.getElementById('modal_fase4_master_select');
+            const selectedOption = select.options[select.selectedIndex];
+            if (!selectedOption) return;
+
+            const kode = selectedOption.getAttribute('data-kode') || '';
+            const nama = selectedOption.getAttribute('data-nama') || '';
+            const instansi = selectedOption.getAttribute('data-instansi') || '';
+            const biaya = selectedOption.getAttribute('data-biaya') || '';
+            const syarat = selectedOption.getAttribute('data-syarat') || '';
+            const deskripsi = selectedOption.getAttribute('data-deskripsi') || '';
+
+            if (kode) document.getElementById('modal_fase4_poin_label').value = kode;
+            if (nama) document.getElementById('modal_fase4_doc_name').value = nama;
+            if (instansi) document.getElementById('modal_fase4_instansi').value = instansi;
+            if (biaya && parseInt(biaya) > 0) {
+                document.getElementById('modal_fase4_nominal').value = 'Rp ' + parseInt(biaya).toLocaleString('id-ID');
+            }
+            if (deskripsi) {
+                document.getElementById('modal_fase4_notes').value = deskripsi;
+            }
+
+            // Syarat Dokumen & Checklist
+            const syaratInput = document.getElementById('modal_fase4_syarat_dokumen');
+            if (syaratInput) syaratInput.value = syarat || '';
+            const items = parseSyaratLines(syarat || '');
+            renderModalSyaratChecklist(items, []);
+        }
+
+        function openFase4DocModal(docId) {
+            const modalEl = document.getElementById('modalFase4Doc');
+            if (!modalEl) return;
+
+            const form = document.getElementById('formFase4Doc');
+            form.reset();
+
+            const masterSelect = document.getElementById('modal_fase4_master_select');
+            if (masterSelect) masterSelect.value = '';
+
+            const titleEl = document.getElementById('modalFase4DocTitle');
+            const hiddenId = document.getElementById('modal_fase4_doc_id');
+            const poinInput = document.getElementById('modal_fase4_poin_label');
+            const nameInput = document.getElementById('modal_fase4_doc_name');
+            const instansiInput = document.getElementById('modal_fase4_instansi');
+            const numberInput = document.getElementById('modal_fase4_doc_number');
+            const dateInput = document.getElementById('modal_fase4_doc_date');
+            const statusSelect = document.getElementById('modal_fase4_status');
+            const nominalInput = document.getElementById('modal_fase4_nominal');
+            const luasInput = document.getElementById('modal_fase4_luas');
+            const notesInput = document.getElementById('modal_fase4_notes');
+            const syaratInput = document.getElementById('modal_fase4_syarat_dokumen');
+            const previewContainer = document.getElementById('modal_fase4_current_file_preview');
+            const fileLabel = document.getElementById('modal_fase4_file_label');
+            
+            previewContainer.innerHTML = '';
+            previewContainer.classList.add('d-none');
+            fileLabel.textContent = 'Pilih Berkas Baru (Opsional)';
+            fileLabel.classList.remove('text-primary');
+
+            if (docId) {
+                // Find existing doc
+                let doc = FASE4_DOC_DATA.find(d => String(d.id) === String(docId));
+                if (!doc) {
+                    const card = document.getElementById(`fase4_doc_card_${docId}`);
+                    if (card) {
+                        doc = {
+                            id: docId,
+                            poin_label: card.querySelector('.fase4-card-poin')?.innerText || '',
+                            doc_name: card.querySelector('.fase4-card-title')?.innerText || '',
+                            instansi: card.querySelector('.fase4-card-instansi')?.innerText || '',
+                            status: card.getAttribute('data-status') || 'proses'
+                        };
+                    }
+                }
+
+                if (doc) {
+                    titleEl.innerText = `Edit: ${doc.doc_name || 'Dokumen'}`;
+                    hiddenId.value = doc.id;
+                    poinInput.value = doc.poin_label || '';
+                    nameInput.value = doc.doc_name || '';
+                    instansiInput.value = doc.instansi || '';
+                    numberInput.value = doc.doc_number || '';
+                    dateInput.value = doc.doc_date || '';
+                    statusSelect.value = doc.status || 'belum';
+                    nominalInput.value = doc.nominal ? (typeof formatRupiahTemp === 'function' ? 'Rp ' + (parseInt(doc.nominal.toString().replace(/[^0-9]/g, '')) || 0).toLocaleString('id-ID') : doc.nominal) : '';
+                    luasInput.value = doc.luas || '';
+                    notesInput.value = doc.notes || '';
+
+                    // Load syarat items and checklist
+                    const rawSyarat = doc.syarat_dokumen || '';
+                    if (syaratInput) syaratInput.value = rawSyarat;
+
+                    let items = doc.syarat_items || [];
+                    if (!items || items.length === 0) {
+                        items = parseSyaratLines(rawSyarat);
+                    }
+                    const checkedList = doc.syarat_checklist || [];
+                    renderModalSyaratChecklist(items, checkedList);
+
+                    if (doc.file_path) {
+                        const cleanPath = doc.file_path.replace('uploads/', '');
+                        const ext = doc.file_path.split('.').pop();
+                        previewContainer.innerHTML = `
+                            <div class="p-2 px-3 rounded-2 bg-success bg-opacity-10 border border-success border-opacity-25 d-flex align-items-center justify-content-between mb-2">
+                                <div class="d-flex align-items-center gap-2 overflow-hidden me-2">
+                                    <i class="mdi mdi-file-check text-success fs-5"></i>
+                                    <span class="text-truncate fw-semibold text-dark" style="font-size: 0.8rem;">Berkas Terunggah (${ext.toUpperCase()})</span>
+                                </div>
+                                <button type="button" class="btn btn-xs btn-success text-white py-1 px-2.5 shadow-sm btn-preview-doc" data-url="/dokumen/preview/${cleanPath}" data-ext="${ext}" data-label="${doc.doc_name || 'Dokumen'}" style="font-size: 0.75rem;">
+                                    <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                </button>
+                            </div>
+                        `;
+                        previewContainer.classList.remove('d-none');
+                    }
+                }
+            } else {
+                titleEl.innerText = 'Tambah Dokumen / Tahapan Workflow Baru';
+                hiddenId.value = '';
+                statusSelect.value = 'proses';
+                if (syaratInput) syaratInput.value = '';
+                renderModalSyaratChecklist([], []);
+            }
+
+            const modalObj = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modalObj.show();
+        }
+
+        function editFase4Doc(docId) {
+            openFase4DocModal(docId);
+        }
+
+        function submitModalFase4Doc(e) {
+            e.preventDefault();
             const landId = '{{ $land->id ?? 0 }}';
             if (!landId || landId === '0') {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Perhatian',
-                    text: 'Data tanah belum tersimpan. Silakan simpan data terlebih dahulu.'
+                    text: 'Data tanah belum tersimpan di database. Simpan data awal terlebih dahulu.'
                 });
                 return;
             }
 
-            const docName = document.getElementById('dyn_doc_name')?.value?.trim();
-            const docNumber = document.getElementById('dyn_doc_number')?.value?.trim();
-            const docDate = document.getElementById('dyn_doc_date')?.value;
-            const docNotes = document.getElementById('dyn_doc_notes')?.value?.trim();
-            const fileInput = document.getElementById('dyn_doc_file');
-            const file = fileInput?.files?.[0];
-
-            if (!docName) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Nama Dokumen Kosong',
-                    text: 'Silakan isi Nama Dokumen terlebih dahulu.'
-                });
-                document.getElementById('dyn_doc_name')?.focus();
-                return;
-            }
-
-            const formData = new FormData();
+            const form = document.getElementById('formFase4Doc');
+            const formData = new FormData(form);
             formData.append('_token', '{{ csrf_token() }}');
-            formData.append('doc_name', docName);
-            formData.append('doc_number', docNumber || '');
-            formData.append('doc_date', docDate || '');
-            formData.append('notes', docNotes || '');
-            if (file) {
-                formData.append('file', file);
-            }
 
             const uploadUrl = '{{ route("pra-landbank.upload-custom-workflow-doc", ["id" => $land->id ?? 0]) }}';
 
             Swal.fire({
                 title: 'Menyimpan Dokumen...',
-                text: 'Sedang memproses penyimpanan dokumen tambahan',
+                text: 'Sedang memproses penyimpanan data dokumen dan upload berkas',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
@@ -5806,7 +6016,7 @@
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Gagal menyimpan dokumen tambahan.');
+                    throw new Error('Gagal menyimpan dokumen.');
                 }
                 return response.json();
             })
@@ -5816,60 +6026,11 @@
                         icon: 'success',
                         title: 'Berhasil Disimpan!',
                         text: data.message,
-                        timer: 2000,
+                        timer: 1500,
                         showConfirmButton: false
+                    }).then(() => {
+                        window.location.reload();
                     });
-
-                    // Clear form
-                    document.getElementById('dyn_doc_name').value = '';
-                    document.getElementById('dyn_doc_number').value = '';
-                    document.getElementById('dyn_doc_date').value = '';
-                    document.getElementById('dyn_doc_notes').value = '';
-                    if (fileInput) fileInput.value = '';
-                    toggleDynamicDocForm(false);
-
-                    // Remove empty state
-                    const emptyState = document.getElementById('custom_docs_empty_state');
-                    if (emptyState) emptyState.remove();
-
-                    // Render new card
-                    const doc = data.doc;
-                    const cleanPath = doc.file_path ? doc.file_path.replace('uploads/', '') : '';
-                    const dateDisplay = doc.doc_date ? new Date(doc.doc_date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
-                    const newCardHtml = `
-                        <div class="col-12 col-md-6 col-lg-4" id="custom_doc_card_${doc.id}">
-                            <div class="card h-100 border rounded-3 p-3 shadow-sm" style="background: #ffffff;">
-                                <div class="d-flex justify-content-between align-items-start mb-2 pb-2 border-bottom">
-                                    <div class="overflow-hidden me-2">
-                                        <h6 class="fw-bold text-dark mb-0 text-truncate" style="font-size: 0.85rem;" title="${doc.doc_name || 'Dokumen Tambahan'}">
-                                            <i class="mdi mdi-file-document-outline text-primary me-1"></i>${doc.doc_name || 'Dokumen Tambahan'}
-                                        </h6>
-                                        <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">No: ${doc.doc_number || '-'}</small>
-                                    </div>
-                                    <button type="button" class="btn btn-xs btn-outline-danger p-1 border-0" onclick="deleteCustomWorkflowDoc('${doc.id}')" title="Hapus Dokumen">
-                                        <i class="mdi mdi-delete fs-6"></i>
-                                    </button>
-                                </div>
-                                <div class="mb-2" style="font-size: 0.75rem;">
-                                    <div class="d-flex justify-content-between text-muted mb-1">
-                                        <span>Tanggal:</span>
-                                        <strong class="text-dark">${dateDisplay}</strong>
-                                    </div>
-                                    ${doc.notes ? `<div class="text-muted text-truncate" title="${doc.notes}"><span>Ket: </span>${doc.notes}</div>` : ''}
-                                </div>
-                                <div class="mt-auto pt-2 border-top">
-                                    ${doc.file_path ? `
-                                        <button type="button" class="btn btn-xs btn-success text-white w-100 py-1.5 px-2 btn-preview-doc" data-url="/dokumen/preview/${cleanPath}" data-ext="${doc.file_path.split('.').pop()}" data-label="${doc.doc_name || 'Dokumen Tambahan'}" style="font-size: 0.74rem;">
-                                            <i class="mdi mdi-eye me-1"></i>Lihat Berkas
-                                        </button>
-                                    ` : `
-                                        <span class="badge bg-light text-muted border w-100 py-1 text-center" style="font-size: 0.72rem;">Tidak ada file fisik</span>
-                                    `}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    document.getElementById('custom_workflow_docs_list').insertAdjacentHTML('beforeend', newCardHtml);
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -5887,21 +6048,30 @@
             });
         }
 
-        function deleteCustomWorkflowDoc(docId) {
+        function deleteFase4Doc(docId, docName) {
             const landId = '{{ $land->id ?? 0 }}';
             if (!landId || landId === '0') return;
 
             Swal.fire({
-                title: 'Hapus Dokumen Ini?',
-                text: 'Dokumen tambahan dan file terkait akan dihapus secara permanen.',
+                title: `Hapus ${docName || 'Dokumen Ini'}?`,
+                text: 'Dokumen dan seluruh file lampirannya akan dihapus dari daftar workflow.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#ef4444',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Ya, Hapus!',
+                confirmButtonText: '<i class="mdi mdi-delete me-1"></i> Ya, Hapus!',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Menghapus Dokumen...',
+                        text: 'Mohon tunggu sebentar',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
                     const deleteUrl = '{{ route("pra-landbank.delete-custom-workflow-doc", ["id" => $land->id ?? 0]) }}';
 
                     fetch(deleteUrl, {
@@ -5916,30 +6086,14 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            const card = document.getElementById(`custom_doc_card_${docId}`);
-                            if (card) card.remove();
-
-                            const list = document.getElementById('custom_workflow_docs_list');
-                            if (list && list.querySelectorAll('.col-12.col-md-6').length === 0) {
-                                list.innerHTML = `
-                                    <div class="col-12" id="custom_docs_empty_state">
-                                        <div class="p-3 text-center text-muted bg-light rounded-2 border" style="font-size: 0.8rem;">
-                                            <i class="mdi mdi-folder-open-outline me-1"></i>Belum ada dokumen tambahan yang dimasukkan. Klik tombol <strong>+ Tambah Dokumen Lainnya</strong> di atas untuk menambahkan dokumen baru secara dinamis.
-                                        </div>
-                                    </div>
-                                `;
-                            }
-
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 2000,
-                                timerProgressBar: true
-                            });
-                            Toast.fire({
+                            Swal.fire({
                                 icon: 'success',
-                                title: 'Dokumen Berhasil Dihapus'
+                                title: 'Dokumen Dihapus',
+                                text: data.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload();
                             });
                         } else {
                             Swal.fire({
@@ -5950,178 +6104,347 @@
                         }
                     })
                     .catch(err => {
-                        console.error('Delete custom doc error:', err);
+                        console.error('Delete doc error:', err);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: 'Terjadi kesalahan saat menghapus dokumen.'
+                        });
                     });
                 }
             });
         }
 
-        function autoUploadWorkflowDoc(inputEl, fieldName) {
-            if (!inputEl.files || inputEl.files.length === 0) return;
-            const file = inputEl.files[0];
-
-            if (file.size > 25 * 1024 * 1024) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'File Terlalu Besar',
-                    text: 'Ukuran file maksimal adalah 25MB'
-                });
-                inputEl.value = '';
-                return;
-            }
-
+        function loadFase4DefaultTemplate() {
             const landId = '{{ $land->id ?? 0 }}';
             if (!landId || landId === '0') {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Perhatian',
-                    text: 'Data tanah belum tersimpan. Silakan simpan data terlebih dahulu.'
+                    text: 'Data tanah belum tersimpan di database. Simpan data awal terlebih dahulu.'
                 });
                 return;
             }
 
-            const formData = new FormData();
-            formData.append('_token', '{{ csrf_token() }}');
-            formData.append('file_field', fieldName);
-            formData.append('file', file);
-
-            const uploadUrl = '{{ route("pra-landbank.upload-workflow-doc", ["id" => $land->id ?? 0]) }}';
-
             Swal.fire({
-                title: 'Mengunggah Berkas...',
-                text: 'Sedang memproses upload berkas perizinan secara instan',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            fetch(uploadUrl, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Gagal mengunggah berkas.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
+                title: 'Muat Template Standar (Poin 7–17)?',
+                text: 'Sistem akan menambahkan paket dokumen standar legalitas & perizinan BPN ke dalam daftar. Anda tetap bebas mengedit, mengubah, atau menghapus item yang tidak dibutuhkan.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#9a55ff',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="mdi mdi-clipboard-check me-1"></i> Ya, Muat Template',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil Diunggah!',
-                        text: data.message,
-                        timer: 2000,
-                        showConfirmButton: false
+                        title: 'Memuat Template...',
+                        text: 'Sedang menyiapkan paket dokumen legalitas',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
                     });
 
-                    // Update Badge
-                    const badgeEl = document.getElementById(`badge_${fieldName}`);
-                    if (badgeEl) {
-                        badgeEl.className = 'badge bg-success';
-                        badgeEl.innerHTML = '<i class="mdi mdi-check-circle me-1"></i>Terunggah';
-                    }
+                    const loadUrl = '{{ route("pra-landbank.load-fase4-template", ["id" => $land->id ?? 0]) }}';
 
-                    // Update Container
-                    const containerEl = document.getElementById(`container_${fieldName}`);
-                    if (containerEl) {
-                        const newHtml = `
-                            <div class="p-2 rounded-2 mb-2 bg-success bg-opacity-10 border border-success border-opacity-25 d-flex align-items-center justify-content-between">
-                                <div class="text-truncate me-2" style="font-size: 0.76rem;">
-                                    <i class="mdi mdi-file-check text-success me-1"></i>${data.filename}
-                                </div>
-                                <button type="button" class="btn btn-xs btn-success text-white py-1 px-2 btn-preview-doc" data-url="${data.preview_url}" data-ext="${data.ext}" data-label="${data.doc_label}" style="font-size: 0.72rem;">
-                                    <i class="mdi mdi-eye me-1"></i>Lihat
-                                </button>
-                            </div>
-                            <div class="pratanah-file-upload-modern">
-                                <input type="file" name="${fieldName}" accept=".pdf,.jpg,.jpeg,.png,.zip" onchange="autoUploadWorkflowDoc(this, '${fieldName}')">
-                                <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #ffffff; border: 1px dashed #cbd5e1;">
-                                    <i class="mdi mdi-cloud-upload text-primary" style="font-size: 1.1rem;"></i>
-                                    <div class="pratanah-file-info-modern">
-                                        <span class="file-label-text" style="font-size: 0.74rem;">Ganti ${data.doc_label}</span>
-                                        <span class="file-label-hint" style="font-size: 0.68rem;">PDF/Gambar (Auto Upload)</span>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        containerEl.innerHTML = newHtml;
-                    }
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal',
-                        text: data.message || 'Terjadi kesalahan saat mengunggah berkas.'
+                    fetch(loadUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Template Dimuat!',
+                                text: data.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: data.message || 'Gagal memuat template dokumen.'
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Load template error:', err);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: 'Terjadi kesalahan jaringan/server.'
+                        });
                     });
                 }
-            })
-            .catch(error => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal',
-                    text: error.message || 'Terjadi kesalahan jaringan/server.'
-                });
             });
         }
 
-        function autoSaveWorkflowInfo() {
+        // ==========================================
+        // MASTER DOKUMEN PERIZINAN PICKER FUNCTIONS
+        // ==========================================
+        function openMasterPickerModal() {
+            const modalEl = document.getElementById('modalPickerMasterPerizinan');
+            if (!modalEl) return;
+
+            const searchInput = document.getElementById('searchMasterPickerInput');
+            const categorySelect = document.getElementById('filterMasterCategorySelect');
+            const checkAll = document.getElementById('checkAllMasterPicker');
+
+            if (searchInput) searchInput.value = '';
+            if (categorySelect) categorySelect.value = '';
+            if (checkAll) checkAll.checked = false;
+
+            document.querySelectorAll('.master-picker-checkbox:not(:disabled)').forEach(cb => {
+                cb.checked = false;
+            });
+
+            document.querySelectorAll('.master-picker-item').forEach(el => {
+                el.classList.remove('d-none');
+            });
+
+            updatePickerSelectedCount();
+
+            const modalObj = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modalObj.show();
+        }
+
+        function togglePickerCardClick(event, masterId, isAlreadyAdded) {
+            if (isAlreadyAdded) return;
+            if (event.target.tagName === 'INPUT' || event.target.closest('input')) return;
+            const cb = document.getElementById('picker_chk_' + masterId);
+            if (cb && !cb.disabled) {
+                cb.checked = !cb.checked;
+                updatePickerSelectedCount();
+            }
+        }
+
+        function togglePickerSelectAll(masterCheckbox) {
+            const isChecked = masterCheckbox.checked;
+            document.querySelectorAll('.master-picker-item:not(.d-none) .master-picker-checkbox:not(:disabled)').forEach(cb => {
+                cb.checked = isChecked;
+            });
+            updatePickerSelectedCount();
+        }
+
+        function updatePickerSelectedCount() {
+            const checkedBoxes = document.querySelectorAll('.master-picker-checkbox:checked');
+            const checkedCount = checkedBoxes.length;
+            const textEl = document.getElementById('masterPickerSelectedText');
+            const btnTextEl = document.getElementById('btnSubmitMasterPickerText');
+            const btnEl = document.getElementById('btnSubmitMasterPicker');
+
+            if (textEl) {
+                textEl.textContent = `${checkedCount} dokumen dipilih`;
+            }
+            if (btnTextEl) {
+                btnTextEl.textContent = checkedCount > 0 ? `Tambahkan ${checkedCount} Dokumen Terpilih` : 'Tambahkan Dokumen Terpilih';
+            }
+            if (btnEl) {
+                btnEl.disabled = checkedCount === 0;
+            }
+        }
+
+        function filterMasterPickerCategory(cat) {
+            const query = (document.getElementById('searchMasterPickerInput')?.value || '').toLowerCase().trim();
+            applyMasterPickerFilters(cat, query);
+        }
+
+        function searchMasterPicker(query) {
+            const cat = document.getElementById('filterMasterCategorySelect')?.value || '';
+            applyMasterPickerFilters(cat, query.toLowerCase().trim());
+        }
+
+        function applyMasterPickerFilters(category, query) {
+            document.querySelectorAll('.master-picker-item').forEach(el => {
+                const itemCat = el.getAttribute('data-kategori') || '';
+                const searchContent = el.getAttribute('data-search') || '';
+
+                const matchCat = !category || itemCat === category;
+                const matchQuery = !query || searchContent.includes(query);
+
+                if (matchCat && matchQuery) {
+                    el.classList.remove('d-none');
+                } else {
+                    el.classList.add('d-none');
+                }
+            });
+
+            // Update master check all status
+            const visibleCheckboxes = document.querySelectorAll('.master-picker-item:not(.d-none) .master-picker-checkbox:not(:disabled)');
+            const allChecked = visibleCheckboxes.length > 0 && Array.from(visibleCheckboxes).every(cb => cb.checked);
+            const masterCheckbox = document.getElementById('checkAllMasterPicker');
+            if (masterCheckbox) {
+                masterCheckbox.checked = allChecked;
+            }
+
+            updatePickerSelectedCount();
+        }
+
+        function submitBatchFromMaster() {
             const landId = '{{ $land->id ?? 0 }}';
-            if (!landId || landId === '0') return;
+            if (!landId || landId === '0') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Data tanah belum tersimpan di database. Simpan data awal terlebih dahulu.'
+                });
+                return;
+            }
 
-            const fields = [
-                'desa_reg_no', 'desa_reg_date',
-                'kecamatan_reg_no', 'kecamatan_reg_date',
-                'pertek_no', 'pertek_date',
-                'peta_bidang_no', 'peta_bidang_date', 'peta_bidang_area',
-                'pkkpr_no', 'pkkpr_date', 'pkkpr_status',
-                'sk_hgb_no', 'sk_hgb_date',
-                'pbb_mutasi_nop', 'pbb_mutasi_date',
-                'bphtb_nominal', 'bphtb_payment_date', 'bphtb_billing_id', 'bphtb_approval_status',
-                'shgb_induk_no', 'shgb_induk_date', 'shgb_induk_area', 'hgb_process_status'
-            ];
+            const selectedCheckboxes = document.querySelectorAll('.master-picker-checkbox:checked');
+            const masterIds = Array.from(selectedCheckboxes).map(cb => cb.value);
 
-            const payload = {};
-            fields.forEach(f => {
-                const el = document.querySelector(`[name="${f}"]`);
-                if (el) {
-                    payload[f] = el.value;
+            if (masterIds.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Pilih Dokumen',
+                    text: 'Silakan centang setidaknya satu dokumen perizinan dari daftar master.'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: `Tambahkan ${masterIds.length} Dokumen?`,
+                text: 'Dokumen terpilih akan langsung dimasukkan ke alur kerja Fase 4 lahan ini.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#9a55ff',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="mdi mdi-plus-box-multiple me-1"></i> Ya, Tambahkan!',
+                cancelButtonText: 'Batal'
+            }).then((res) => {
+                if (res.isConfirmed) {
+                    Swal.fire({
+                        title: 'Menambahkan Dokumen...',
+                        text: 'Sedang menyinkronkan data perizinan',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    const batchUrl = '{{ route("pra-landbank.add-from-master", ["id" => $land->id ?? 0]) }}';
+
+                    fetch(batchUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({ master_ids: masterIds })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil Ditambahkan!',
+                                text: data.message,
+                                timer: 1600,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: data.message || 'Terjadi kesalahan saat menambahkan dokumen dari master.'
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Batch add error:', err);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: 'Terjadi kesalahan koneksi server.'
+                        });
+                    });
+                }
+            });
+        }
+
+        function filterFase4Docs(status, btn) {
+            const filterBtns = document.querySelectorAll('.fase4-filter-btn');
+            filterBtns.forEach(b => {
+                b.classList.remove('btn-primary', 'shadow-sm', 'active');
+                b.classList.add('btn-outline-secondary');
+            });
+
+            if (btn) {
+                btn.classList.remove('btn-outline-secondary');
+                btn.classList.add('btn-primary', 'shadow-sm', 'active');
+            }
+
+            const cards = document.querySelectorAll('.fase4-doc-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const cardStatus = card.getAttribute('data-status');
+                if (status === 'all' || cardStatus === status) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
                 }
             });
 
-            const updateUrl = '{{ route("pra-landbank.update-workflow-info", ["id" => $land->id ?? 0]) }}';
-
-            fetch(updateUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 2000,
-                        timerProgressBar: true
-                    });
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Data Perizinan Tersimpan Otomatis'
-                    });
+            const emptyState = document.getElementById('fase4_docs_empty_state');
+            if (emptyState) {
+                if (visibleCount === 0 && cards.length > 0) {
+                    emptyState.style.display = '';
+                    emptyState.innerHTML = `
+                        <div class="p-4 text-center text-muted bg-light rounded-3 border w-100 my-2" style="font-size: 0.85rem;">
+                            <i class="mdi mdi-filter-remove-outline me-1 fs-4 d-block mb-1 text-secondary"></i>
+                            Tidak ada dokumen dengan filter status <strong>${status.toUpperCase()}</strong>.
+                        </div>
+                    `;
+                } else {
+                    emptyState.style.display = 'none';
                 }
-            })
-            .catch(err => {
-                console.error('Auto-save workflow info error:', err);
+            }
+        }
+
+        function searchFase4Docs(query) {
+            const q = (query || '').toLowerCase().trim();
+            const cards = document.querySelectorAll('.fase4-doc-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (!q || text.includes(q)) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
             });
+
+            const emptyState = document.getElementById('fase4_docs_empty_state');
+            if (emptyState) {
+                if (visibleCount === 0 && cards.length > 0) {
+                    emptyState.style.display = '';
+                    emptyState.innerHTML = `
+                        <div class="p-4 text-center text-muted bg-light rounded-3 border w-100 my-2" style="font-size: 0.85rem;">
+                            <i class="mdi mdi-magnify-close me-1 fs-4 d-block mb-1 text-secondary"></i>
+                            Tidak ada dokumen yang cocok dengan pencarian "<strong>${query}</strong>".
+                        </div>
+                    `;
+                } else {
+                    emptyState.style.display = 'none';
+                }
+            }
         }
 
         function confirmFinalizePasca() {
@@ -6135,28 +6458,51 @@
                 return;
             }
 
-            const shgbNo = document.querySelector('input[name="shgb_induk_no"]')?.value;
-            const shgbDate = document.querySelector('input[name="shgb_induk_date"]')?.value;
-            const shgbArea = document.querySelector('input[name="shgb_induk_area"]')?.value;
+            // Find SHGB Induk document from Fase 4 docs
+            const shgbDoc = FASE4_DOC_DATA.find(d => (d.doc_name && d.doc_name.toLowerCase().includes('shgb induk')) || d.id === 'shgb_induk');
+            
+            const shgbNo = shgbDoc ? (shgbDoc.doc_number || '') : '';
+            const shgbDate = shgbDoc ? (shgbDoc.doc_date || '') : '';
+            const shgbArea = shgbDoc ? (shgbDoc.luas || '') : '';
 
             if (!shgbNo) {
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Nomor SHGB Induk Kosong',
-                    text: 'Silakan isi Nomor Sertifikat SHGB Induk an. PT terlebih dahulu sebelum finalisasi.'
+                    title: 'Nomor SHGB Induk Belum Terisi',
+                    html: `
+                        <p class="text-muted small mb-3">
+                            Nomor Sertifikat SHGB Induk an. PT pada Poin 17 belum terdaftar atau masih kosong.
+                        </p>
+                        <div class="p-3 rounded-3 bg-light text-start border small">
+                            Silakan klik <b>Edit</b> pada kartu <b>Poin 17 (Penerbitan Sertifikat SHGB Induk an. PT)</b> untuk mengisi Nomor SHGB Induk, Tanggal Terbit, dan Luas sebelum melakukan finalisasi.
+                        </div>
+                    `,
+                    confirmButtonText: 'Buka Form SHGB Induk',
+                    showCancelButton: true,
+                    cancelButtonText: 'Batal'
+                }).then((res) => {
+                    if (res.isConfirmed) {
+                        openFase4DocModal('shgb_induk');
+                    }
                 });
-                document.querySelector('input[name="shgb_induk_no"]')?.focus();
                 return;
             }
 
             Swal.fire({
                 title: 'Finalisasi ke Pasca Land Bank?',
-                text: 'Lahan ini akan resmi diterbitkan SHGB Induk atas nama PT dan dialihkan menjadi Tanah Pasca Land Bank (siap untuk dipecah kavling). Apakah Anda yakin?',
+                html: `
+                    <p class="text-muted small mb-2">
+                        Lahan ini akan resmi diterbitkan <b>SHGB Induk No. ${shgbNo}</b> atas nama PT dan dialihkan statusnya menjadi <b>Tanah Pasca Land Bank</b> (siap untuk dipecah kavling).
+                    </p>
+                    <div class="p-2.5 rounded-3 bg-success bg-opacity-10 border border-success border-opacity-25 text-success small fw-semibold text-start">
+                        <i class="mdi mdi-check-circle me-1"></i> Data SHGB Induk valid dan siap diterbitkan ke Master Pasca Land Bank.
+                    </div>
+                `,
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#22c55e',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: '<i class="mdi mdi-check-all"></i> Ya, Finalisasi Sekarang!',
+                confirmButtonText: '<i class="mdi mdi-shield-crown me-1"></i> Ya, Finalisasi Sekarang!',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {

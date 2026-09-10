@@ -67,6 +67,7 @@
             'agency.index' => 'mdi-account-group-outline',
             // Master Data
             'master.data.menu' => 'mdi-shield-account-outline',
+            'master.dokumen-perizinan.index' => 'mdi-file-certificate-outline',
             'master.bahan.index' => 'mdi-package-variant-closed',
             'master.progress.index' => 'mdi-progress-check',
             'promo.index' => 'mdi-tag-outline',
@@ -110,6 +111,7 @@
             'agency.create' => ['agency.create*'],
             'agency.index' => ['agency.index*', 'agency.edit*'],
             'master.data.menu' => ['master.data.menu*'],
+            'master.dokumen-perizinan.index' => ['master.dokumen-perizinan.*', 'master-dokumen-perizinan*'],
             'master.bahan.index' => ['master.bahan.index*', 'master.data.bahan*'],
             'master.progress.index' => ['master.progress.*', 'master-progress-kategori*'],
             'promo.index' => ['promo.index*', 'promo.*'],
