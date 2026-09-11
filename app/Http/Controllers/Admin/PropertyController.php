@@ -286,19 +286,20 @@ public function update(Request $request, $id)
                     ->where('document_type_id', $typeId)
                     ->first();
 
-                $isDocVerified = ($existingDoc && $existingDoc->status === 'verified') || $isLandVerified;
+                // Dokumen hanya dikunci jika SUDAH memiliki file DAN statusnya verified/berasal dari pra landbank
+                $isDocVerified = $existingDoc && !empty($existingDoc->file_path) && (($existingDoc->status === 'verified') || $isLandVerified);
 
                 // Jika dokumen sudah verified dan sudah punya file, kunci agar tidak bisa ditimpa
-                if ($isDocVerified && $existingDoc && !empty($existingDoc->file_path)) {
+                if ($isDocVerified) {
                     continue;
                 }
 
                 $filePath = $existingDoc ? $existingDoc->file_path : null;
 
-                if (!empty($doc['file']) && !$isDocVerified) {
+                if (!empty($doc['file'])) {
                     $file = $doc['file'];
                     $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-                    $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/landbank/' . $land->id . '/' . $typeId;
+                    $destination = public_path('uploads/landbank/' . $land->id . '/' . $typeId);
 
                     if (!file_exists($destination)) {
                         mkdir($destination, 0755, true);
@@ -312,7 +313,7 @@ public function update(Request $request, $id)
                     $updateData = [
                         'file_path' => $filePath,
                     ];
-                    if (!$isDocVerified && isset($doc['number'])) {
+                    if (isset($doc['number'])) {
                         $updateData['document_number'] = $doc['number'];
                     }
                     $existingDoc->update($updateData);

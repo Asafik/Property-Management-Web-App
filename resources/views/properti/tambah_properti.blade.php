@@ -307,13 +307,16 @@
 
         /* Button Styling */
         .properti-btn {
-            font-size: 0.8rem;
-            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            padding: 0.55rem 1.25rem;
             border-radius: 8px;
             font-weight: 600;
             transition: all 0.3s ease;
             font-family: 'Nunito', sans-serif;
-            display: inline-block;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
             text-decoration: none;
             cursor: pointer;
             border: none;
@@ -321,10 +324,14 @@
             text-align: center;
         }
 
+        .properti-btn i {
+            margin-right: 6px;
+        }
+
         @media (min-width: 576px) {
             .properti-btn {
                 width: auto;
-                padding: 0.5rem 1.2rem;
+                padding: 0.55rem 1.35rem;
             }
         }
 
@@ -1165,12 +1172,12 @@
                             {{-- ================= BUTTON ================= --}}
                             <div class="properti-btn-group mt-4">
                                 <a href="{{ route('properti-all') }}" class="properti-btn properti-btn-secondary">
-                                    <i class="fas fa-arrow-left me-2"></i>Kembali
+                                    <i class="fas fa-arrow-left mr-2"></i>Kembali
                                 </a>
 
                                 <div class="btn-right">
                                     <button type="submit" class="properti-btn properti-btn-primary">
-                                        <i class="fas fa-save me-2"></i>Simpan Data Tanah
+                                        <i class="fas fa-save mr-2"></i>Simpan Data Tanah
                                     </button>
                                 </div>
                             </div>
