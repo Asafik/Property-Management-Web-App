@@ -1634,9 +1634,7 @@
                                             </th>
                                             <th class="d-none d-md-table-cell">Lokasi</th>
                                             <th>Luas Tanah</th>
-                                            <th>Luas Bangunan</th>
                                             <th>Harga</th>
-                                            <th>Hadap</th>
                                             <th>Status</th>
                                             <th>Status Pembangunan / Progres</th>
                                             <th class="sortable" data-field="agent_name"
@@ -1762,17 +1760,8 @@
                                                         <i class="mdi mdi-arrow-expand-all"></i>{{ $unit->area ?? '-' }}
                                                     </span>
                                                 </td>
-                                                <td>
-                                                    <span class="info-badge-icon building-badge">
-                                                        <i
-                                                            class="mdi mdi-home-floor-1"></i>{{ $unit->building_area ?? '-' }}
-                                                    </span>
-                                                </td>
                                                 <td class="price-text">Rp
                                                     {{ number_format($unit->price ?? 0, 0, ',', '.') }}
-                                                </td>
-                                                <td class="fw-bold"><i
-                                                        class="mdi mdi-compass-outline text-primary me-1"></i>{{ $unit->facing ?? '-' }}
                                                 </td>
                                                 <td>
                                                     <span class="badge-soft {{ $statusBadge }}">
@@ -1859,6 +1848,8 @@
                                                             data-area="{{ $unit->area ?? 0 }}"
                                                             data-building="{{ $unit->building_area ?? 0 }}"
                                                             data-price="{{ $unit->price ?? 0 }}"
+                                                            data-certificate_no="{{ $unit->certificate_no ?? '' }}"
+                                                            data-certificate_doc="{{ $unit->file_certificate ? asset($unit->file_certificate) : '' }}"
                                                             data-direction="{{ $unit->facing ?? '-' }}"
                                                             data-status_raw="{{ $unit->status }}"
                                                             data-status_text="{{ $statusText }}"
@@ -1890,7 +1881,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="16" class="text-center text-muted py-4">
+                                                <td colspan="14" class="text-center text-muted py-4">
                                                     <i class="mdi mdi-home-outline"
                                                         style="font-size: 2rem; opacity: 0.3;"></i>
                                                     <p class="mt-2">Data unit belum tersedia</p>
@@ -1997,8 +1988,8 @@
                                                         class="mdi mdi-office-building me-1"></i>{{ $unit->landBank->name ?? '-' }}
                                                 </p>
                                                 <p class="small mb-1"><i
-                                                        class="mdi mdi-ruler-square me-1"></i>{{ $unit->building_area ?? ($unit->area ?? '-') }}
-                                                    mÂ² | <i class="mdi mdi-currency-usd me-1"></i>Rp
+                                                        class="mdi mdi-ruler-square me-1"></i>{{ $unit->area ?? '-' }}
+                                                    m² | <i class="mdi mdi-currency-usd me-1"></i>Rp
                                                     {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>
 
                                                 <div class="mt-2 border-top pt-2">
@@ -2454,8 +2445,8 @@
                                                 <div class="col-md-4">
                                                     <div class="timeline-detail-item">
                                                         <div class="timeline-detail-label"><i
-                                                                class="mdi mdi-home-city-outline"></i>Luas Bangunan</div>
-                                                        <div class="timeline-detail-value" id="m_building">-</div>
+                                                                class="mdi mdi-certificate-outline"></i>Nomor Sertifikat</div>
+                                                        <div class="timeline-detail-value" id="m_certificate_no">-</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
@@ -2468,8 +2459,8 @@
                                                 <div class="col-md-4">
                                                     <div class="timeline-detail-item">
                                                         <div class="timeline-detail-label"><i
-                                                                class="mdi mdi-compass-outline"></i>Arah Hadap</div>
-                                                        <div class="timeline-detail-value" id="m_direction">-</div>
+                                                                class="mdi mdi-file-certificate-outline"></i>Dokumen Sertifikat</div>
+                                                        <div class="timeline-detail-value" id="m_certificate_doc">-</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
@@ -2946,11 +2937,25 @@
             document.getElementById('m_type').innerText = data.type || '-';
             document.getElementById('m_area').innerText = new Intl.NumberFormat('id-ID').format(data.area || 0) +
                 ' m\u00b2';
-            document.getElementById('m_building').innerText = new Intl.NumberFormat('id-ID').format(data.building ||
-                0) + ' m\u00b2';
+            if (document.getElementById('m_building')) {
+                document.getElementById('m_building').innerText = new Intl.NumberFormat('id-ID').format(data.building ||
+                    0) + ' m\u00b2';
+            }
             document.getElementById('m_price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.price ||
                 0);
-            document.getElementById('m_direction').innerText = data.direction || '-';
+            if (document.getElementById('m_direction')) {
+                document.getElementById('m_direction').innerText = data.direction || '-';
+            }
+            if (document.getElementById('m_certificate_no')) {
+                document.getElementById('m_certificate_no').innerText = data.certificateNo || '-';
+            }
+            if (document.getElementById('m_certificate_doc')) {
+                if (data.fileCertificate) {
+                    document.getElementById('m_certificate_doc').innerHTML = `<a href="${data.fileCertificate}" target="_blank" class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 py-1 px-2 text-decoration-none d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;"><i class="mdi mdi-file-document-outline"></i>Lihat Dokumen</a>`;
+                } else {
+                    document.getElementById('m_certificate_doc').innerHTML = `<span class="text-muted small">-</span>`;
+                }
+            }
             document.getElementById('m_address').innerText = data.address || '-';
 
             // ---- Badge Status Unit ----
@@ -3048,11 +3053,27 @@
                 document.getElementById('m_type').innerText = button.getAttribute('data-type') || '-';
                 document.getElementById('m_area').innerText = new Intl.NumberFormat('id-ID').format(button
                     .getAttribute('data-area') || 0) + ' m\u00b2';
-                document.getElementById('m_building').innerText = new Intl.NumberFormat('id-ID').format(button
-                    .getAttribute('data-building') || 0) + ' m\u00b2';
+                if (document.getElementById('m_building')) {
+                    document.getElementById('m_building').innerText = new Intl.NumberFormat('id-ID').format(button
+                        .getAttribute('data-building') || 0) + ' m\u00b2';
+                }
                 document.getElementById('m_price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(button
                     .getAttribute('data-price') || 0);
-                document.getElementById('m_direction').innerText = button.getAttribute('data-direction') || '-';
+                if (document.getElementById('m_direction')) {
+                    document.getElementById('m_direction').innerText = button.getAttribute('data-direction') || '-';
+                }
+                if (document.getElementById('m_certificate_no')) {
+                    const cNo = button.getAttribute('data-certificate_no');
+                    document.getElementById('m_certificate_no').innerText = cNo ? cNo : '-';
+                }
+                if (document.getElementById('m_certificate_doc')) {
+                    const cDoc = button.getAttribute('data-certificate_doc');
+                    if (cDoc) {
+                        document.getElementById('m_certificate_doc').innerHTML = `<a href="${cDoc}" target="_blank" class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 py-1 px-2 text-decoration-none d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;"><i class="mdi mdi-file-document-outline"></i>Lihat Dokumen</a>`;
+                    } else {
+                        document.getElementById('m_certificate_doc').innerHTML = `<span class="text-muted small">-</span>`;
+                    }
+                }
                 document.getElementById('m_address').innerText = button.getAttribute('data-address') || '-';
 
                 // ---- Badge Status Unit ----
@@ -3175,6 +3196,8 @@
                 building: {{ $unit->building_area ?? 0 }},
                 price: {{ $unit->price ?? 0 }},
                 direction: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->facing ?? '-')) }}",
+                certificateNo: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->certificate_no ?? '')) }}",
+                fileCertificate: "{{ $unit->file_certificate ? asset($unit->file_certificate) : '' }}",
                 statusRaw: "{{ $unit->status }}",
                 statusText: "{{ $unit->status == 'ready' || $unit->status == 'tersedia' ? 'Tersedia' : ($unit->status == 'sold' ? 'Terjual' : 'Booking') }}",
                 construction: "{{ $unit->construction_progress ?? 'belum_mulai' }}",
@@ -3642,9 +3665,23 @@
             document.getElementById('m_jenis').innerText = data.jenis ? (data.jenis.charAt(0).toUpperCase() + data.jenis.slice(1)) : '-';
             document.getElementById('m_type').innerText = data.type || '-';
             document.getElementById('m_area').innerText = data.area ? data.area + ' m²' : '-';
-            document.getElementById('m_building').innerText = data.building ? data.building + ' m²' : '-';
+            if (document.getElementById('m_building')) {
+                document.getElementById('m_building').innerText = data.building ? data.building + ' m²' : '-';
+            }
             document.getElementById('m_price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.price || 0);
-            document.getElementById('m_direction').innerText = data.direction || '-';
+            if (document.getElementById('m_direction')) {
+                document.getElementById('m_direction').innerText = data.direction || '-';
+            }
+            if (document.getElementById('m_certificate_no')) {
+                document.getElementById('m_certificate_no').innerText = data.certificateNo || '-';
+            }
+            if (document.getElementById('m_certificate_doc')) {
+                if (data.fileCertificate) {
+                    document.getElementById('m_certificate_doc').innerHTML = `<a href="${data.fileCertificate}" target="_blank" class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 py-1 px-2 text-decoration-none d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;"><i class="mdi mdi-file-document-outline"></i>Lihat Dokumen</a>`;
+                } else {
+                    document.getElementById('m_certificate_doc').innerHTML = `<span class="text-muted small">-</span>`;
+                }
+            }
             document.getElementById('m_address').innerText = data.address || '-';
 
             // Status Penjualan
