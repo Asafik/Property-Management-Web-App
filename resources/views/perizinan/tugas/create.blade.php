@@ -9,16 +9,17 @@
             background: #ffffff !important;
             border: 1px solid #e2e8f0 !important;
             border-radius: 10px !important;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
             overflow: hidden;
+            width: 100% !important;
         }
         .compact-table-card .card-header {
             background: #ffffff !important;
             border-bottom: 1px solid #e2e8f0 !important;
-            padding: 1rem 1.5rem !important;
+            padding: 1.1rem 1.75rem !important;
         }
         .compact-table-card .card-body {
-            padding: 1.5rem !important;
+            padding: 1.75rem !important;
             background: #ffffff !important;
         }
         .form-label-custom {
@@ -36,6 +37,10 @@
             color: #1e293b;
             background-color: #ffffff;
             transition: all 0.2s ease;
+            height: 42px;
+        }
+        textarea.form-control-custom {
+            height: auto !important;
         }
         .form-control-custom:focus,
         .form-select-custom:focus {
@@ -49,6 +54,82 @@
             color: #0f172a !important;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
         }
+
+        /* Segmented Mode Pill Toggle */
+        .mode-pill-toggle {
+            display: inline-flex;
+            background: #f1f5f9;
+            padding: 3px;
+            border-radius: 9999px;
+            border: 1px solid #e2e8f0;
+        }
+        .mode-pill-btn {
+            border: none;
+            background: transparent;
+            padding: 4px 14px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #64748b;
+            border-radius: 9999px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+        }
+        .mode-pill-btn:hover {
+            color: #1e293b;
+        }
+        .mode-pill-btn.active {
+            background: #4f46e5;
+            color: #ffffff !important;
+            box-shadow: 0 1px 4px rgba(79, 70, 229, 0.3);
+        }
+
+        /* Select2 Customization */
+        .select2-container {
+            width: 100% !important;
+        }
+        .select2-container .select2-selection--single {
+            height: 42px !important;
+            padding: 6px 12px !important;
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+            font-size: 0.88rem !important;
+            display: flex !important;
+            align-items: center !important;
+            background-color: #ffffff !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #1e293b !important;
+            line-height: normal !important;
+            padding-left: 0 !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 40px !important;
+            right: 10px !important;
+        }
+        .select2-dropdown {
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+            font-size: 0.86rem !important;
+            overflow: hidden !important;
+            z-index: 1050;
+        }
+        .select2-search--dropdown {
+            padding: 8px !important;
+        }
+        .select2-search--dropdown .select2-search__field {
+            border: 1px solid #cbd5e1 !important;
+            border-radius: 6px !important;
+            padding: 6px 10px !important;
+            font-size: 0.85rem !important;
+            outline: none !important;
+        }
+        .select2-results__option--highlighted[aria-selected] {
+            background-color: #4f46e5 !important;
+            color: #ffffff !important;
+        }
     </style>
 @endpush
 
@@ -56,7 +137,7 @@
 <div class="container-fluid px-2 px-md-4 py-3">
 
     <!-- Header & Tombol Kembali -->
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
         <div>
             <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
                 Tugaskan Staf Legal
@@ -76,7 +157,7 @@
 
     <!-- Alert Notifikasi -->
     @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm d-flex align-items-center gap-2 mb-4" role="alert" style="border-radius: 8px; background: #fef2f2; color: #991b1b;">
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm d-flex align-items-center gap-2 mb-3" role="alert" style="border-radius: 8px; background: #fef2f2; color: #991b1b;">
             <i class="mdi mdi-alert-circle fs-5 text-danger"></i>
             <div>{{ session('error') }}</div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -84,7 +165,7 @@
     @endif
 
     @if($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-radius: 8px; background: #fef2f2; color: #991b1b;">
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-3" role="alert" style="border-radius: 8px; background: #fef2f2; color: #991b1b;">
             <div class="fw-bold mb-1">Periksa kembali data yang dimasukkan:</div>
             <ul class="mb-0 ps-3">
                 @foreach($errors->all() as $error)
@@ -95,13 +176,13 @@
         </div>
     @endif
 
-    <!-- Form Container -->
-    <div class="row justify-content-center">
-        <div class="col-lg-10 col-xl-9">
-            <div class="card compact-table-card">
+    <!-- Form Container: Mentok Kanan-Kiri (col-12) Sesuai Standar Modul -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card compact-table-card w-100">
                 
                 <!-- Card Header -->
-                <div class="card-header d-flex align-items-center justify-content-between">
+                <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
                     <div class="d-flex align-items-center gap-2">
                         <div style="width: 34px; height: 34px; border-radius: 8px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
                             <i class="mdi mdi-clipboard-plus-outline"></i>
@@ -122,19 +203,26 @@
 
                             <!-- 1. Nama Tugas Perizinan -->
                             <div class="col-md-7">
-                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
                                     <label class="form-label-custom mb-0">
                                         Nama Dokumen / Tugas Perizinan <span class="text-danger">*</span>
                                     </label>
-                                    <button type="button" class="btn btn-link p-0 text-primary text-decoration-none fw-semibold" id="btnToggleManualTugas" onclick="toggleManualNamaTugas()" style="font-size: 0.78rem;">
-                                        <i class="mdi mdi-keyboard-outline me-0.5"></i>Ketik Manual
-                                    </button>
+                                    
+                                    <!-- Segmented Switch Mode (Pilih Master vs Ketik Manual) -->
+                                    <div class="mode-pill-toggle">
+                                        <button type="button" class="mode-pill-btn active" id="btnModeMaster" onclick="switchModeTugas('master')">
+                                            <i class="mdi mdi-format-list-bulleted me-1"></i>Pilih dari Master
+                                        </button>
+                                        <button type="button" class="mode-pill-btn" id="btnModeManual" onclick="switchModeTugas('manual')">
+                                            <i class="mdi mdi-pencil-outline me-1"></i>Ketik Manual
+                                        </button>
+                                    </div>
                                 </div>
 
-                                <!-- Dropdown Pilihan Dokumen Perizinan (Default) -->
+                                <!-- Mode 1: Live Search Select2 Master Dokumen -->
                                 <div id="wrapperSelectNamaTugas">
-                                    <select class="form-select form-select-custom w-100" id="selectNamaTugas" onchange="onSelectNamaTugasChange(this)">
-                                        <option value="">-- Pilih Dokumen / Tugas Perizinan --</option>
+                                    <select class="form-select form-select-custom w-100" id="selectNamaTugas">
+                                        <option value="">-- Cari atau Pilih Dokumen Perizinan --</option>
                                         @foreach($masterDocs as $md)
                                             <option value="{{ $md->nama_dokumen }}" 
                                                 data-instansi="{{ $md->instansi_terkait }}"
@@ -142,19 +230,23 @@
                                                 {{ $md->kode_dokumen ? '[' . $md->kode_dokumen . '] ' : '' }}{{ $md->nama_dokumen }}
                                             </option>
                                         @endforeach
-                                        <option value="__custom__">✍️ + Ketik Manual / Izin Lainnya...</option>
                                     </select>
                                 </div>
 
-                                <!-- Input Ketik Manual (Jika memilih custom atau klik toggle) -->
-                                <div id="wrapperInputNamaTugas" style="display: none;" class="mt-2">
-                                    <input type="text" id="inputManualNamaTugas" class="form-control form-control-custom" placeholder="Contoh: Pengurusan Izin Amdal Kawasan / PKKPR Khusus" oninput="onManualInputNamaTugas(this.value)">
+                                <!-- Mode 2: Input Ketik Manual (Bersih Tanpa Emoji) -->
+                                <div id="wrapperInputNamaTugas" style="display: none;">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-muted border-end-0" style="border-radius: 8px 0 0 8px; height: 42px;">
+                                            <i class="mdi mdi-file-document-edit-outline"></i>
+                                        </span>
+                                        <input type="text" id="inputManualNamaTugas" class="form-control form-control-custom border-start-0" placeholder="Ketik nama berkas / tugas izin (misal: Izin Reklame, Amdal Khusus, dll.)..." oninput="onManualInputNamaTugas(this.value)" style="border-radius: 0 8px 8px 0;">
+                                    </div>
                                 </div>
 
                                 <!-- Hidden field yang dikirim ke controller -->
                                 <input type="hidden" name="nama_tugas" id="tambahNamaTugas" required>
-                                <small class="text-muted d-block mt-1" style="font-size: 0.74rem;">
-                                    Pilih dari daftar master dokumen atau klik "Ketik Manual" untuk izin kustom.
+                                <small class="text-muted d-block mt-1" id="keteranganMode" style="font-size: 0.74rem;">
+                                    Ketik kata kunci untuk mencari dokumen izin dari master secara live.
                                 </small>
                             </div>
 
@@ -164,13 +256,13 @@
                                     Instansi / Dinas Terkait
                                 </label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light text-muted border-end-0" style="border-radius: 8px 0 0 8px;">
+                                    <span class="input-group-text bg-light text-muted border-end-0" style="border-radius: 8px 0 0 8px; height: 42px;">
                                         <i class="mdi mdi-bank-outline"></i>
                                     </span>
-                                    <input type="text" name="instansi" id="tambahInstansi" class="form-control form-control-custom border-start-0" placeholder="Contoh: DPMPTSP / BPN / DLH" style="border-radius: 0 8px 8px 0;">
+                                    <input type="text" name="instansi" id="tambahInstansi" class="form-control form-control-custom border-start-0" placeholder="Contoh: DPMPTSP / BPN / DLH" value="{{ old('instansi') }}" style="border-radius: 0 8px 8px 0;">
                                 </div>
                                 <small class="text-muted d-block mt-1" style="font-size: 0.74rem;">
-                                    Terisi otomatis dari master dokumen atau dapat diubah.
+                                    Otomatis terisi saat memilih master dokumen atau dapat diisi manual.
                                 </small>
                             </div>
 
@@ -179,7 +271,7 @@
                                 <label class="form-label-custom">
                                     Proyek Kawasan Properti
                                 </label>
-                                <select name="proyek_id" class="form-select form-select-custom">
+                                <select name="proyek_id" id="selectProyekId" class="form-select form-select-custom">
                                     <option value="">-- Bebas / Kawasan Umum --</option>
                                     @foreach($projects as $proj)
                                         <option value="{{ $proj['id'] }}" {{ old('proyek_id') == $proj['id'] ? 'selected' : '' }}>
@@ -197,8 +289,8 @@
                                 <label class="form-label-custom">
                                     Ditugaskan Kepada (Staf Legal) <span class="text-danger">*</span>
                                 </label>
-                                <select name="employee_id" class="form-select form-select-custom" required>
-                                    <option value="">-- Pilih Staf Legal Pelaksana --</option>
+                                <select name="employee_id" id="selectEmployeeId" class="form-select form-select-custom" required>
+                                    <option value="">-- Cari & Pilih Staf Legal Pelaksana --</option>
                                     @foreach($legalStaffs as $staf)
                                         <option value="{{ $staf->id }}" {{ old('employee_id') == $staf->id ? 'selected' : '' }}>
                                             {{ $staf->name }} &bull; {{ $staf->position->name ?? 'Staff Legal' }}
@@ -216,13 +308,13 @@
                                     Tenggat Waktu Selesai (Deadline)
                                 </label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light text-muted border-end-0" style="border-radius: 8px 0 0 8px;">
+                                    <span class="input-group-text bg-light text-muted border-end-0" style="border-radius: 8px 0 0 8px; height: 42px;">
                                         <i class="mdi mdi-calendar-clock"></i>
                                     </span>
                                     <input type="date" name="deadline" class="form-control form-control-custom border-start-0" min="{{ date('Y-m-d') }}" value="{{ old('deadline') }}" style="border-radius: 0 8px 8px 0;">
                                 </div>
                                 <small class="text-muted d-block mt-1" style="font-size: 0.74rem;">
-                                    Sistem akan menandai "Terlambat" jika melewati tanggal ini.
+                                    Sistem akan menandai status "Terlambat" jika melewati tanggal ini.
                                 </small>
                             </div>
 
@@ -260,53 +352,83 @@
 
 @push('scripts')
 <script>
-    var isManualMode = false;
+    var currentMode = 'master';
 
-    function toggleManualNamaTugas() {
-        isManualMode = !isManualMode;
-        var wrapperSelect = document.getElementById('wrapperSelectNamaTugas');
-        var wrapperInput  = document.getElementById('wrapperInputNamaTugas');
-        var btnToggle     = document.getElementById('btnToggleManualTugas');
+    $(document).ready(function() {
+        // Inisialisasi Select2 Live Search untuk Dokumen Perizinan
+        $('#selectNamaTugas').select2({
+            placeholder: '-- Cari atau Pilih Dokumen Perizinan --',
+            allowClear: true,
+            width: '100%'
+        }).on('change', function() {
+            var val = $(this).val();
+            var hiddenInput = document.getElementById('tambahNamaTugas');
+            hiddenInput.value = val || '';
+
+            if (val) {
+                var selectedOpt = this.options[this.selectedIndex];
+                if (selectedOpt && selectedOpt.dataset) {
+                    var instansi = selectedOpt.dataset.instansi || '';
+                    var catatan  = selectedOpt.dataset.catatan || '';
+                    var inpInstansi = document.getElementById('tambahInstansi');
+                    var inpCatatan  = document.getElementById('tambahCatatan');
+
+                    if (instansi && inpInstansi && !inpInstansi.value) {
+                        inpInstansi.value = instansi;
+                    }
+                    if (catatan && inpCatatan && !inpCatatan.value) {
+                        inpCatatan.value = catatan;
+                    }
+                }
+            }
+        });
+
+        // Inisialisasi Select2 untuk Proyek Kawasan
+        $('#selectProyekId').select2({
+            placeholder: '-- Bebas / Kawasan Umum --',
+            allowClear: true,
+            width: '100%'
+        });
+
+        // Inisialisasi Select2 untuk Staf Legal
+        $('#selectEmployeeId').select2({
+            placeholder: '-- Cari & Pilih Staf Legal Pelaksana --',
+            allowClear: true,
+            width: '100%'
+        });
+    });
+
+    // Switch Mode: Master vs Manual
+    function switchModeTugas(mode) {
+        currentMode = mode;
+        var btnMaster     = document.getElementById('btnModeMaster');
+        var btnManual     = document.getElementById('btnModeManual');
+        var wrapMaster    = document.getElementById('wrapperSelectNamaTugas');
+        var wrapManual    = document.getElementById('wrapperInputNamaTugas');
         var hiddenInput   = document.getElementById('tambahNamaTugas');
+        var ketMode       = document.getElementById('keteranganMode');
 
-        if (isManualMode) {
-            wrapperSelect.style.display = 'none';
-            wrapperInput.style.display  = 'block';
-            btnToggle.innerHTML = '<i class="mdi mdi-format-list-bulleted me-0.5"></i>Pilih dari Daftar Master';
-            hiddenInput.value = document.getElementById('inputManualNamaTugas').value.trim();
+        if (mode === 'manual') {
+            btnMaster.classList.remove('active');
+            btnManual.classList.add('active');
+
+            wrapMaster.style.display = 'none';
+            wrapManual.style.display = 'block';
+
+            var manualVal = document.getElementById('inputManualNamaTugas').value.trim();
+            hiddenInput.value = manualVal;
+            ketMode.textContent = 'Ketik bebas nama dokumen atau tugas perizinan yang ingin didelegasikan.';
             document.getElementById('inputManualNamaTugas').focus();
         } else {
-            wrapperSelect.style.display = 'block';
-            wrapperInput.style.display  = 'none';
-            btnToggle.innerHTML = '<i class="mdi mdi-keyboard-outline me-0.5"></i>Ketik Manual';
-            var sel = document.getElementById('selectNamaTugas');
-            hiddenInput.value = (sel.value && sel.value !== '__custom__') ? sel.value : '';
-        }
-    }
+            btnManual.classList.remove('active');
+            btnMaster.classList.add('active');
 
-    function onSelectNamaTugasChange(sel) {
-        var hiddenInput = document.getElementById('tambahNamaTugas');
-        if (sel.value === '__custom__') {
-            toggleManualNamaTugas();
-            return;
-        }
+            wrapManual.style.display = 'none';
+            wrapMaster.style.display = 'block';
 
-        hiddenInput.value = sel.value;
-
-        // Auto-fill instansi & catatan dari data attribute
-        var selectedOpt = sel.options[sel.selectedIndex];
-        if (selectedOpt && selectedOpt.dataset) {
-            var instansi = selectedOpt.dataset.instansi || '';
-            var catatan  = selectedOpt.dataset.catatan || '';
-            var inpInstansi = document.getElementById('tambahInstansi');
-            var inpCatatan  = document.getElementById('tambahCatatan');
-
-            if (instansi && inpInstansi && !inpInstansi.value) {
-                inpInstansi.value = instansi;
-            }
-            if (catatan && inpCatatan && !inpCatatan.value) {
-                inpCatatan.value = catatan;
-            }
+            var masterVal = $('#selectNamaTugas').val();
+            hiddenInput.value = masterVal || '';
+            ketMode.textContent = 'Ketik kata kunci untuk mencari dokumen izin dari master secara live.';
         }
     }
 
@@ -317,14 +439,22 @@
     function validateFormTugaskan() {
         var namaTugas = document.getElementById('tambahNamaTugas').value.trim();
         if (!namaTugas) {
-            alert('Silakan pilih atau ketik Nama Dokumen / Tugas Perizinan terlebih dahulu.');
-            if (isManualMode) {
+            alert('Silakan pilih dari master dokumen atau ketik nama tugas perizinan terlebih dahulu.');
+            if (currentMode === 'manual') {
                 document.getElementById('inputManualNamaTugas').focus();
             } else {
-                document.getElementById('selectNamaTugas').focus();
+                $('#selectNamaTugas').select2('open');
             }
             return false;
         }
+
+        var staf = document.getElementById('selectEmployeeId').value;
+        if (!staf) {
+            alert('Silakan pilih Staf Legal Pelaksana.');
+            $('#selectEmployeeId').select2('open');
+            return false;
+        }
+
         return true;
     }
 </script>
