@@ -84,7 +84,7 @@ class MasterBiayaLegalitasSeeder extends Seeder
                 'urutan'            => 5,
                 'is_standard'       => false,
                 'is_required'       => false,
-                'is_active'         => true,
+                'is_active'         => false,
             ],
             [
                 'kode_biaya'        => 'BIAYA-PLOTTING-BPN',
@@ -98,7 +98,7 @@ class MasterBiayaLegalitasSeeder extends Seeder
                 'urutan'            => 6,
                 'is_standard'       => false,
                 'is_required'       => false,
-                'is_active'         => true,
+                'is_active'         => false,
             ],
             [
                 'kode_biaya'        => 'FEE-SAKSI-BATAS',
@@ -112,7 +112,7 @@ class MasterBiayaLegalitasSeeder extends Seeder
                 'urutan'            => 7,
                 'is_standard'       => false,
                 'is_required'       => false,
-                'is_active'         => true,
+                'is_active'         => false,
             ],
             [
                 'kode_biaya'        => 'BIAYA-KUASA-MENJUAL',
@@ -126,7 +126,7 @@ class MasterBiayaLegalitasSeeder extends Seeder
                 'urutan'            => 8,
                 'is_standard'       => false,
                 'is_required'       => false,
-                'is_active'         => true,
+                'is_active'         => false,
             ],
             [
                 'kode_biaya'        => 'BIAYA-BALIK-NAMA',
@@ -140,7 +140,7 @@ class MasterBiayaLegalitasSeeder extends Seeder
                 'urutan'            => 9,
                 'is_standard'       => false,
                 'is_required'       => false,
-                'is_active'         => true,
+                'is_active'         => false,
             ],
             [
                 'kode_biaya'        => 'BIAYA-IZIN-WARGA',
@@ -154,7 +154,7 @@ class MasterBiayaLegalitasSeeder extends Seeder
                 'urutan'            => 10,
                 'is_standard'       => false,
                 'is_required'       => false,
-                'is_active'         => true,
+                'is_active'         => false,
             ],
         ];
 

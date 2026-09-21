@@ -3148,60 +3148,129 @@
                                                     <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Divisi Keuangan / Admin)</small>
                                                 @endif
                                             </div>
-                                            <div class="d-flex flex-wrap align-items-center gap-2">
-                                                <a href="{{ route('master.biaya-legalitas.index') }}" target="_blank" class="btn btn-sm shadow-xs d-inline-flex align-items-center gap-1 text-decoration-none" style="background: #f5f3ff; border: 1.5px solid #c4b5fd; color: #6d28d9; font-size: 0.8rem; font-weight: 600; border-radius: 6px; padding: 0.35rem 0.75rem;" title="Buka Kelola Master Biaya Legalitas">
-                                                    <i class="mdi mdi-cog-outline"></i> Master Biaya
-                                                </a>
-                                                @if ($canEditFinancial && (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')))
-                                                    <button type="button" class="btn btn-sm btn-gradient-primary py-1 px-3 shadow-sm d-inline-flex align-items-center gap-1 text-white text-nowrap flex-shrink-0" onclick="openMasterBiayaPicker()" style="font-size: 0.8rem; font-weight: 600; border-radius: 6px; white-space: nowrap;">
-                                                        <i class="mdi mdi-format-list-checks me-1" style="font-size: 1rem;"></i> Pilih dari Master Biaya
-                                                    </button>
-                                                    <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2.5 shadow-sm d-inline-flex align-items-center gap-1 text-nowrap flex-shrink-0" onclick="addCustomCostRow()" style="font-size: 0.8rem; font-weight: 600; border-radius: 6px; white-space: nowrap;" title="Tambah Input Biaya Kustom Bebas">
-                                                        <i class="mdi mdi-plus-circle me-1"></i> Biaya Kustom
-                                                    </button>
-                                                @endif
-                                            </div>
                                         </div>
                                         
-                                        <!-- Estimasi Biaya Transaksi Standard -->
+                                        <!-- Komponen Biaya Legalitas & Administrasi (Otomatis Diatur dari Master Data) -->
                                         <div class="row mb-2">
-                                            <div class="col-md-3 mb-2">
-                                                <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Biaya IJB / PPJB Notaris</label>
-                                                <input type="text" class="form-control cost-input" name="biaya_ijb_temp" data-cost-name="Biaya IJB / PPJB Notaris" value="{{ $land && $land->cost_ijb ? number_format($land->cost_ijb, 0, ',', '.') : '' }}" placeholder="Contoh: 10.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                            </div>
-                                            <div class="col-md-3 mb-2">
-                                                <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Estimasi Pajak PPh/BPHTB</label>
-                                                <input type="text" class="form-control cost-input" name="biaya_pajak_temp" data-cost-name="Estimasi Pajak (PPh & BPHTB)" value="{{ $land && $land->cost_tax ? number_format($land->cost_tax, 0, ',', '.') : '' }}" placeholder="Contoh: 50.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                            </div>
-                                            <div class="col-md-3 mb-2">
-                                                <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Fee Makelar / Perantara</label>
-                                                <input type="text" class="form-control cost-input" name="fee_makelar_temp" data-cost-name="Fee Makelar / Perantara" value="{{ $land && $land->cost_broker ? number_format($land->cost_broker, 0, ',', '.') : '' }}" placeholder="Contoh: 15.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                            </div>
-                                            <div class="col-md-3 mb-2">
-                                                <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Biaya Lain-lain</label>
-                                                <input type="text" class="form-control cost-input" name="biaya_lain_temp" data-cost-name="Biaya Lain-lain Admin" value="{{ $land && $land->cost_other ? number_format($land->cost_other, 0, ',', '.') : '' }}" placeholder="Contoh: 5.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                            </div>
-                                        </div>
+                                            @php
+                                                $activeBiayas = (isset($masterBiayaLegalitas) && $masterBiayaLegalitas->isNotEmpty())
+                                                    ? $masterBiayaLegalitas
+                                                    : \App\Models\MasterBiayaLegalitas::active()->get();
 
-                                        <!-- Dynamic Custom Extra Costs Container -->
-                                        <div id="custom_costs_container" class="row g-2 mb-3">
-                                            @if($land && is_array($land->custom_costs))
-                                                @foreach($land->custom_costs as $idx => $cost)
-                                                    @php $rowId = 'custom_cost_saved_' . $idx; @endphp
-                                                    <div class="col-md-6 custom-cost-row mb-2" id="{{ $rowId }}">
-                                                        <div class="d-flex align-items-center gap-2">
-                                                            <input type="hidden" name="custom_costs[{{ $rowId }}][master_id]" value="{{ $cost['master_id'] ?? '' }}">
-                                                            <input type="text" name="custom_costs[{{ $rowId }}][name]" value="{{ $cost['name'] ?? '' }}" class="form-control custom-cost-name" placeholder="Nama Biaya" onkeyup="updateFinancialSummary()" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                                            <input type="text" name="custom_costs[{{ $rowId }}][amount]" value="{{ !empty($cost['amount']) ? number_format($cost['amount'], 0, ',', '.') : '' }}" class="form-control custom-cost-amount fw-bold" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                                            @if($canEditFinancial && (!$land || ($land->status != 'approved' && $land->status != 'rejected')))
-                                                                <button type="button" class="btn btn-danger text-white px-2 py-1 flex-shrink-0 shadow-sm" onclick="document.getElementById('{{ $rowId }}').remove(); updateFinancialSummary();" title="Hapus Biaya" style="height: 38px; width: 38px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background-color: #ef4444; border: 1px solid #ef4444;">
-                                                                    <i class="mdi mdi-delete text-white" style="font-size: 1.15rem;"></i>
-                                                                </button>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            @endif
+                                                $savedCustomMap = [];
+                                                if ($land && is_array($land->custom_costs)) {
+                                                    foreach ($land->custom_costs as $sc) {
+                                                        if (!empty($sc['master_id'])) {
+                                                            $savedCustomMap[$sc['master_id']] = $sc['amount'] ?? 0;
+                                                        }
+                                                        if (!empty($sc['code'])) {
+                                                            $savedCustomMap[$sc['code']] = $sc['amount'] ?? 0;
+                                                        }
+                                                    }
+                                                }
+
+                                                $totalActiveCosts = 0;
+                                            @endphp
+
+                                            @forelse($activeBiayas as $mItem)
+                                                @php
+                                                    $val = null;
+                                                    $hasSavedVal = false;
+                                                    $basePriceForCalc = ($land ? ($land->deal_price ?? $land->estimated_price ?? $land->offer_price ?? 0) : 0);
+
+                                                    if ($mItem->kode_biaya === 'BIAYA-IJB-PPJB') {
+                                                        if ($land && $land->cost_ijb !== null && $land->cost_ijb !== '') {
+                                                            $val = $land->cost_ijb;
+                                                            $hasSavedVal = true;
+                                                        } else {
+                                                            $val = $mItem->nominal_standar;
+                                                        }
+                                                        $inputName = 'biaya_ijb_temp';
+                                                        $inputId = 'biaya_ijb_input';
+                                                    } elseif ($mItem->kode_biaya === 'PAJAK-PPH-BPHTB') {
+                                                        if ($land && $land->cost_tax !== null && $land->cost_tax !== '') {
+                                                            $val = $land->cost_tax;
+                                                            $hasSavedVal = true;
+                                                        } elseif ($mItem->tipe_perhitungan === 'persentase' && $mItem->persentase_standar && $basePriceForCalc > 0) {
+                                                            $val = round($basePriceForCalc * ($mItem->persentase_standar / 100));
+                                                        } else {
+                                                            $val = $mItem->nominal_standar;
+                                                        }
+                                                        $inputName = 'biaya_pajak_temp';
+                                                        $inputId = 'biaya_pajak_input';
+                                                    } elseif ($mItem->kode_biaya === 'FEE-MAKELAR') {
+                                                        if ($land && $land->cost_broker !== null && $land->cost_broker !== '') {
+                                                            $val = $land->cost_broker;
+                                                            $hasSavedVal = true;
+                                                        } elseif ($mItem->tipe_perhitungan === 'persentase' && $mItem->persentase_standar && $basePriceForCalc > 0) {
+                                                            $val = round($basePriceForCalc * ($mItem->persentase_standar / 100));
+                                                        } else {
+                                                            $val = $mItem->nominal_standar;
+                                                        }
+                                                        $inputName = 'fee_makelar_temp';
+                                                        $inputId = 'fee_makelar_input';
+                                                    } elseif ($mItem->kode_biaya === 'BIAYA-LAIN-ADMIN') {
+                                                        if ($land && $land->cost_other !== null && $land->cost_other !== '') {
+                                                            $val = $land->cost_other;
+                                                            $hasSavedVal = true;
+                                                        } else {
+                                                            $val = $mItem->nominal_standar;
+                                                        }
+                                                        $inputName = 'biaya_lain_temp';
+                                                        $inputId = 'biaya_lain_input';
+                                                    } else {
+                                                        if (isset($savedCustomMap[$mItem->id])) {
+                                                            $val = $savedCustomMap[$mItem->id];
+                                                            $hasSavedVal = true;
+                                                        } elseif (isset($savedCustomMap[$mItem->kode_biaya])) {
+                                                            $val = $savedCustomMap[$mItem->kode_biaya];
+                                                            $hasSavedVal = true;
+                                                        } elseif ($mItem->tipe_perhitungan === 'persentase' && $mItem->persentase_standar && $basePriceForCalc > 0) {
+                                                            $val = round($basePriceForCalc * ($mItem->persentase_standar / 100));
+                                                        } else {
+                                                            $val = $mItem->nominal_standar;
+                                                        }
+                                                        $inputName = "custom_costs[master_{$mItem->id}][amount]";
+                                                        $inputId = "cost_master_{$mItem->id}";
+                                                    }
+                                                    $totalActiveCosts += (float) ($val ?? 0);
+                                                @endphp
+
+                                                <div class="col-12 col-sm-6 col-md-3 mb-2">
+                                                    <label class="form-label text-muted fw-semibold d-flex justify-content-between align-items-center" style="font-size: 0.82rem;">
+                                                        <span class="text-truncate" title="{{ $mItem->nama_biaya }}">{{ $mItem->nama_biaya }}</span>
+                                                        @if($mItem->tipe_perhitungan === 'persentase' && $mItem->persentase_standar)
+                                                            <span class="badge bg-purple-subtle text-purple ms-1 flex-shrink-0" style="font-size: 10px; color: #7e22ce; background: rgba(126, 34, 206, 0.1);">
+                                                                {{ $mItem->persentase_standar }}%
+                                                            </span>
+                                                        @endif
+                                                    </label>
+
+                                                    @if(!in_array($mItem->kode_biaya, ['BIAYA-IJB-PPJB', 'PAJAK-PPH-BPHTB', 'FEE-MAKELAR', 'BIAYA-LAIN-ADMIN']))
+                                                        <input type="hidden" name="custom_costs[master_{{ $mItem->id }}][master_id]" value="{{ $mItem->id }}">
+                                                        <input type="hidden" name="custom_costs[master_{{ $mItem->id }}][name]" value="{{ $mItem->nama_biaya }}">
+                                                        <input type="hidden" name="custom_costs[master_{{ $mItem->id }}][code]" value="{{ $mItem->kode_biaya }}">
+                                                        <input type="hidden" name="custom_costs[master_{{ $mItem->id }}][category]" value="{{ $mItem->kategori }}">
+                                                    @endif
+
+                                                    <input type="text" 
+                                                        class="form-control cost-input" 
+                                                        id="{{ $inputId }}"
+                                                        name="{{ $inputName }}" 
+                                                        data-cost-name="{{ $mItem->nama_biaya }}" 
+                                                        data-default-val="{{ $mItem->nominal_standar }}" 
+                                                        @if($mItem->tipe_perhitungan === 'persentase') data-persen="{{ $mItem->persentase_standar }}" @endif
+                                                        data-user-edited="{{ $hasSavedVal ? 'true' : 'false' }}"
+                                                        value="{{ ($val !== null && $val !== '') ? number_format($val, 0, ',', '.') : '' }}" 
+                                                        placeholder="Contoh: {{ number_format($mItem->nominal_standar ?? 10000000, 0, ',', '.') }}" 
+                                                        onkeyup="this.dataset.userEdited = 'true'; formatRupiahTemp(this); updateFinancialSummary();" 
+                                                        {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                                </div>
+                                            @empty
+                                                <div class="col-12 text-muted fst-italic py-2">
+                                                    Belum ada komponen biaya aktif di Master Data Biaya Legalitas.
+                                                </div>
+                                            @endforelse
                                         </div>
                                     </div>
 
@@ -3295,7 +3364,7 @@
                                         <!-- FORM PEMBAYARAN CASH KERAS -->
                                         @php
                                             $cashPayment = ($land && $land->payment_method == 'cash') ? $land->payments->first() : null;
-                                            $initialGrandTotal = ($land ? ($land->estimated_price ?? $land->offer_price ?? 0) + ($land->cost_ijb ?? 0) + ($land->cost_tax ?? 0) + ($land->cost_broker ?? 0) + ($land->cost_other ?? 0) : 0);
+                                            $initialGrandTotal = ($land ? ($land->estimated_price ?? $land->offer_price ?? 0) : 0) + ($valIjb ?? 0) + ($valTax ?? 0) + ($valBroker ?? 0) + ($valOther ?? 0);
                                         @endphp
                                         <div id="cash_payment_container" class="card shadow-none border mt-2 mb-3 p-3 rounded-3" style="background: #fafbfe;">
                                             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
@@ -3675,103 +3744,7 @@
                 </div>
             </div>
         </div>
-    {{-- MODAL PILIH DARI MASTER BIAYA LEGALITAS & ADMINISTRASI --}}
-    <div class="modal fade" id="modalPilihMasterBiaya" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content shadow-lg border-0" style="border-radius: 14px; overflow: hidden;">
-                <div class="modal-header bg-gradient-primary text-white py-3 px-4 d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="mdi mdi-cash-multiple fs-4 text-white"></i>
-                        <div>
-                            <h6 class="modal-title mb-0 fw-bold text-white">Pilih dari Master Biaya Legalitas & Transaksi</h6>
-                            <small class="text-white-50">Tambahkan komponen biaya terstandarisasi ke rincian transaksi lahan</small>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
 
-                <div class="modal-body p-3 p-md-4">
-                    <!-- Search Input & Direct Link -->
-                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
-                        <div class="input-group" style="max-width: 320px;">
-                            <span class="input-group-text bg-light border-end-0"><i class="mdi mdi-magnify text-muted"></i></span>
-                            <input type="text" id="searchMasterBiayaInput" class="form-control border-start-0" placeholder="Cari nama biaya atau kategori..." onkeyup="filterMasterBiayaCards()">
-                        </div>
-                        <a href="{{ route('master.biaya-legalitas.index') }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1" style="font-size: 0.8rem; font-weight: 600;">
-                            <i class="mdi mdi-open-in-new"></i> Buka Master Data Biaya
-                        </a>
-                    </div>
-
-                    <!-- Items Container -->
-                    <div class="row g-2" id="masterBiayaCardsContainer">
-                        @forelse($masterBiayaLegalitas ?? [] as $mBiaya)
-                            @php
-                                $badgeColor = match($mBiaya->kategori) {
-                                    'Legalitas & Notaris'       => 'background: rgba(126, 34, 206, 0.1); color: #7e22ce;',
-                                    'Pajak & Retribusi'         => 'background: rgba(220, 38, 38, 0.1); color: #dc2626;',
-                                    'Perantara & Broker'        => 'background: rgba(217, 119, 6, 0.1); color: #d97706;',
-                                    'Perizinan & Kas Desa'      => 'background: rgba(16, 185, 129, 0.1); color: #059669;',
-                                    default                     => 'background: rgba(59, 130, 246, 0.1); color: #2563eb;',
-                                };
-                            @endphp
-                            <div class="col-12 col-md-6 master-biaya-card-item" data-name="{{ strtolower($mBiaya->nama_biaya . ' ' . $mBiaya->kode_biaya . ' ' . $mBiaya->kategori) }}">
-                                <div class="card h-100 p-3 border rounded-3 shadow-none hover-shadow-sm" style="background: #fafbfe; transition: all 0.2s ease;">
-                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                                        <div>
-                                            <span class="badge px-2 py-1 rounded-pill" style="{{ $badgeColor }} font-size: 10.5px; font-weight: 600;">
-                                                {{ $mBiaya->kategori }}
-                                            </span>
-                                            <h6 class="fw-bold text-dark mt-1 mb-0" style="font-size: 0.92rem;">
-                                                {{ $mBiaya->nama_biaya }}
-                                            </h6>
-                                        </div>
-                                        <button type="button" class="btn btn-sm btn-gradient-primary py-1 px-2.5 rounded-2 d-flex align-items-center gap-1 shadow-xs flex-shrink-0"
-                                            onclick="applyMasterBiaya({{ $mBiaya->id }}, '{{ addslashes($mBiaya->nama_biaya) }}', '{{ $mBiaya->tipe_perhitungan }}', {{ $mBiaya->nominal_standar ?? 0 }}, {{ $mBiaya->persentase_standar ?? 0 }})"
-                                            style="font-size: 0.78rem; font-weight: 600;">
-                                            <i class="mdi mdi-plus"></i> Tambah
-                                        </button>
-                                    </div>
-
-                                    <div class="d-flex align-items-center justify-content-between mt-auto pt-2 border-top">
-                                        <div>
-                                            @if($mBiaya->tipe_perhitungan === 'nominal_tetap')
-                                                <small class="text-muted d-block" style="font-size: 11px;">Nominal Acuan</small>
-                                                <span class="fw-bold text-success" style="font-size: 0.88rem;">
-                                                    Rp {{ number_format($mBiaya->nominal_standar ?? 0, 0, ',', '.') }}
-                                                </span>
-                                            @elseif($mBiaya->tipe_perhitungan === 'persentase')
-                                                <small class="text-muted d-block" style="font-size: 11px;">Persentase Deal</small>
-                                                <span class="fw-bold text-purple" style="color: #7e22ce; font-size: 0.88rem;">
-                                                    {{ $mBiaya->persentase_standar }}% dari Deal
-                                                </span>
-                                            @else
-                                                <small class="text-muted d-block" style="font-size: 11px;">Tipe Biaya</small>
-                                                <span class="badge bg-secondary text-white" style="font-size: 11px;">Fleksibel</span>
-                                            @endif
-                                        </div>
-                                        <div class="text-end">
-                                            <small class="text-muted d-block" style="font-size: 11px;">Penanggung</small>
-                                            <span class="badge bg-light text-secondary border" style="font-size: 10px;">
-                                                {{ ucfirst($mBiaya->pihak_penanggung) }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="col-12 text-center py-4 text-muted">
-                                <p class="mb-0">Belum ada data Master Biaya Legalitas.</p>
-                            </div>
-                        @endforelse
-                    </div>
-                </div>
-
-                <div class="modal-footer bg-light py-2 px-3 border-top">
-                    <button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     @endsection
 
@@ -5050,90 +5023,29 @@
             }
         }
 
-        function openMasterBiayaPicker() {
-            const modalEl = document.getElementById('modalPilihMasterBiaya');
-            if (modalEl) {
-                const searchInput = document.getElementById('searchMasterBiayaInput');
-                if (searchInput) {
-                    searchInput.value = '';
-                    filterMasterBiayaCards();
-                }
-                const modal = new bootstrap.Modal(modalEl);
-                modal.show();
-            }
-        }
-
-        function filterMasterBiayaCards() {
-            const query = (document.getElementById('searchMasterBiayaInput')?.value || '').toLowerCase().trim();
-            const cards = document.querySelectorAll('.master-biaya-card-item');
-            cards.forEach(card => {
-                const text = card.getAttribute('data-name') || '';
-                card.style.display = text.includes(query) ? '' : 'none';
-            });
-        }
-
-        function applyMasterBiaya(masterId, name, tipe, nominal, persen) {
+        function syncPercentageCostsFromDeal() {
             const cleanNum = (str) => parseInt((str || '').replace(/[^0-9]/g, '')) || 0;
+            const formatRp = (num) => new Intl.NumberFormat('id-ID').format(num || 0);
             const dealPrice = cleanNum(document.getElementById('deal_price_input')?.value || 0);
-            
-            let calculatedAmount = nominal || 0;
-            if (tipe === 'persentase' && persen > 0) {
-                if (dealPrice > 0) {
-                    calculatedAmount = Math.round(dealPrice * (persen / 100));
-                } else if (nominal > 0) {
-                    calculatedAmount = nominal;
-                }
-            }
-
-            addCustomCostRow(name, calculatedAmount, masterId);
-
-            const modalEl = document.getElementById('modalPilihMasterBiaya');
-            if (modalEl) {
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                if (modal) modal.hide();
-            }
-
-            if (typeof Swal !== 'undefined') {
-                const toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 2500,
-                    timerProgressBar: true
-                });
-                toast.fire({
-                    icon: 'success',
-                    title: `"${name}" ditambahkan ke transaksi`
+            if (dealPrice > 0) {
+                document.querySelectorAll('.cost-input[data-persen]').forEach(input => {
+                    if (input.dataset.userEdited !== 'true') {
+                        const persen = parseFloat(input.getAttribute('data-persen')) || 0;
+                        if (persen > 0) {
+                            const calculated = Math.round(dealPrice * (persen / 100));
+                            input.value = formatRp(calculated);
+                        }
+                    }
                 });
             }
-        }
-
-        function addCustomCostRow(presetName = '', presetAmount = '', masterId = null) {
-            const container = document.getElementById('custom_costs_container');
-            if (!container) return;
-
-            const rowId = 'custom_cost_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
-            const formattedPreset = presetAmount ? (typeof presetAmount === 'number' ? new Intl.NumberFormat('id-ID').format(presetAmount) : presetAmount) : '';
-            const rowHtml = `
-                <div class="col-md-6 custom-cost-row mb-2" id="${rowId}" style="animation: fadeIn 0.3s ease;">
-                    <div class="d-flex align-items-center gap-2">
-                        <input type="hidden" name="custom_costs[${rowId}][master_id]" value="${masterId || ''}">
-                        <input type="text" name="custom_costs[${rowId}][name]" value="${presetName}" class="form-control custom-cost-name" placeholder="Nama Biaya (Contoh: Retribusi / Pengeringan)" onkeyup="updateFinancialSummary()">
-                        <input type="text" name="custom_costs[${rowId}][amount]" value="${formattedPreset}" class="form-control custom-cost-amount fw-bold" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateFinancialSummary();">
-                        <button type="button" class="btn btn-danger text-white px-2 py-1 flex-shrink-0 shadow-sm" onclick="document.getElementById('${rowId}').remove(); updateFinancialSummary();" title="Hapus Biaya" style="height: 38px; width: 38px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background-color: #ef4444; border: 1px solid #ef4444;">
-                            <i class="mdi mdi-delete text-white" style="font-size: 1.15rem;"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', rowHtml);
-            updateFinancialSummary();
         }
 
         function updateFinancialSummary() {
             const cleanNum = (str) => parseInt((str || '').replace(/[^0-9]/g, '')) || 0;
             const formatRp = (num) => 'Rp ' + (num || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             
+            syncPercentageCostsFromDeal();
+
             const dealPrice = cleanNum(document.getElementById('deal_price_input')?.value || 0);
             const method = document.getElementById('temp_payment_method')?.value || 'cash';
             const methodBadge = document.getElementById('calc_method_badge');
