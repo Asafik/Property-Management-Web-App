@@ -120,9 +120,54 @@
             white-space: nowrap !important;
         }
         .table-perizinan .col-aksi {
-            width: 130px;
+            width: 195px !important;
+            min-width: 195px !important;
             text-align: center;
             white-space: nowrap !important;
+        }
+
+        /* Cegah dropdown terpotong dan hilangkan scrollbar merusak tabel */
+        .compact-table-card {
+            overflow: visible !important;
+        }
+        .compact-table-card .table-responsive {
+            overflow: visible !important;
+        }
+        @media (max-width: 991.98px) {
+            .compact-table-card .table-responsive {
+                overflow-x: auto !important;
+            }
+        }
+
+        .dropdown-menu-action {
+            min-width: 110px !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12) !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 6px !important;
+            padding: 4px 0 !important;
+            z-index: 1060 !important;
+            background: #ffffff !important;
+        }
+        .dropdown-menu-action .dropdown-item {
+            padding: 6px 14px !important;
+            font-size: 0.82rem !important;
+            font-weight: 500 !important;
+            color: #334155 !important;
+            display: flex !important;
+            align-items: center !important;
+            transition: all 0.15s ease !important;
+            border: none !important;
+            background: transparent !important;
+            width: 100% !important;
+            text-align: left !important;
+        }
+        .dropdown-menu-action .dropdown-item:hover {
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
+        }
+        .dropdown-menu-action .dropdown-item.text-danger:hover {
+            background-color: #fef2f2 !important;
+            color: #dc2626 !important;
         }
 
         /* Styling Card Tabel Meniru Persis Card Perizinan (.compact-table-card) */
@@ -133,7 +178,6 @@
             border-radius: 8px !important;
             box-shadow: none !important;
             transition: border-color 0.2s ease;
-            overflow: hidden;
         }
         .card.compact-table-card:hover,
         .compact-table-card:hover {
@@ -526,29 +570,31 @@
                                                 </button>
 
                                                 @if($canManage)
-                                                    <div class="dropdown d-inline-block">
-                                                        <button class="btn btn-action-dots d-inline-flex align-items-center justify-content-center shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <div class="dropdown d-inline-block position-relative">
+                                                        <button class="btn btn-action-dots d-inline-flex align-items-center justify-content-center shadow-none" 
+                                                            type="button" 
+                                                            data-toggle="dropdown" 
+                                                            data-bs-toggle="dropdown" 
+                                                            aria-haspopup="true" 
+                                                            aria-expanded="false"
+                                                            title="Pilihan Lainnya">
                                                             <i class="mdi mdi-dots-vertical"></i>
                                                         </button>
-                                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border" style="font-size: 0.82rem; border-radius: 6px; border-color: #e2e8f0 !important;">
-                                                            <li>
-                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-1.5" href="{{ route('perizinan.tugas.edit', $task->id) }}">
-                                                                    <i class="mdi mdi-pencil-outline text-warning"></i>
-                                                                    <span>Edit</span>
-                                                                </a>
-                                                            </li>
-                                                            <li><hr class="dropdown-divider my-1"></li>
-                                                            <li>
-                                                                <form action="{{ route('perizinan.tugas.destroy', $task->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tugas ini? Riwayat log tugas juga akan terhapus.');">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2 py-1.5">
-                                                                        <i class="mdi mdi-trash-can-outline"></i>
-                                                                        <span>Hapus</span>
-                                                                    </button>
-                                                                </form>
-                                                            </li>
-                                                        </ul>
+                                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-end dropdown-menu-action shadow-sm border">
+                                                            <a class="dropdown-item py-1.5" href="{{ route('perizinan.tugas.edit', $task->id) }}">
+                                                                <i class="mdi mdi-pencil-outline text-warning" style="margin-right: 6px !important; font-size: 0.95rem;"></i>
+                                                                <span>Edit</span>
+                                                            </a>
+                                                            <div class="dropdown-divider my-1"></div>
+                                                            <form action="{{ route('perizinan.tugas.destroy', $task->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tugas ini? Riwayat log tugas juga akan terhapus.');" class="m-0 p-0">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="dropdown-item text-danger py-1.5">
+                                                                    <i class="mdi mdi-trash-can-outline" style="margin-right: 6px !important; font-size: 0.95rem;"></i>
+                                                                    <span>Hapus</span>
+                                                                </button>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 @endif
                                             </div>
@@ -656,6 +702,11 @@
 
 @push('scripts')
 <script>
+    $(document).ready(function() {
+        if (typeof $.fn.dropdown !== 'undefined') {
+            $('[data-toggle="dropdown"]').dropdown();
+        }
+    });
 
     // BUKA MODAL RIWAYAT AUDIT TRAIL LOG
     function bukaModalRiwayatLog(taskId) {
