@@ -105,10 +105,12 @@ class PraLandbank extends Model
         'installment_count',
         'notes',
         'company_profile_id',
+        'custom_costs',
     ];
 
     protected $casts = [
         'custom_workflow_docs' => 'array',
+        'custom_costs'         => 'array',
     ];
 
     public function documents()

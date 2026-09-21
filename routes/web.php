@@ -58,6 +58,7 @@ use App\Http\Controllers\SpkController;
 use App\Http\Controllers\Finance\InvoiceMasterController;
 use App\Http\Controllers\Finance\ProjectAccountingController;
 use App\Http\Controllers\MasterDokumenPerizinanController;
+use App\Http\Controllers\MasterBiayaLegalitasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -239,6 +240,21 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{id}', [MasterDokumenPerizinanController::class, 'destroy'])->name('destroy');
         Route::match(['post', 'patch'], '/{id}/toggle-status', [MasterDokumenPerizinanController::class, 'toggleStatus'])->name('toggle-status');
         Route::get('/api/list', [MasterDokumenPerizinanController::class, 'apiList'])->name('api-list');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= MASTER BIAYA LEGALITAS & ADMIN =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('master-data/biaya-legalitas')->name('master.biaya-legalitas.')->group(function () {
+        Route::get('/', [MasterBiayaLegalitasController::class, 'index'])->name('index');
+        Route::get('/{id}/edit', [MasterBiayaLegalitasController::class, 'edit'])->name('edit');
+        Route::post('/store', [MasterBiayaLegalitasController::class, 'store'])->name('store');
+        Route::put('/{id}', [MasterBiayaLegalitasController::class, 'update'])->name('update');
+        Route::delete('/{id}', [MasterBiayaLegalitasController::class, 'destroy'])->name('destroy');
+        Route::match(['post', 'patch'], '/{id}/toggle-status', [MasterBiayaLegalitasController::class, 'toggleStatus'])->name('toggle-status');
+        Route::get('/api/list', [MasterBiayaLegalitasController::class, 'apiList'])->name('api-list');
     });
     Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
     Route::get('/properti/verifikasi-legal/{id}', [LandBankController::class, 'verifikasiLegal'])->name('properti.verifikasi');

@@ -271,19 +271,30 @@ public function store(Request $request)
 
             if ($request->has('biaya_lain_temp') || ($request->has('custom_costs') && is_array($request->custom_costs))) {
                 $otherCost = 0;
+                $savedCustomCosts = [];
                 if ($request->filled('biaya_lain_temp')) {
                     $otherCost += (float)$cleanNumber($request->biaya_lain_temp);
                 }
                 if ($request->has('custom_costs') && is_array($request->custom_costs)) {
                     foreach ($request->custom_costs as $cCost) {
-                        if (!empty($cCost['amount'])) {
-                            $otherCost += (float)$cleanNumber($cCost['amount']);
+                        $amt = !empty($cCost['amount']) ? (float)$cleanNumber($cCost['amount']) : 0;
+                        $costName = trim($cCost['name'] ?? '');
+                        if (!empty($costName) || $amt > 0) {
+                            $otherCost += $amt;
+                            $savedCustomCosts[] = [
+                                'master_id' => $cCost['master_id'] ?? null,
+                                'name'      => $costName ?: 'Biaya Tambahan Lainnya',
+                                'amount'    => $amt,
+                                'category'  => $cCost['category'] ?? null,
+                            ];
                         }
                     }
                 }
                 $data['cost_other'] = $otherCost;
+                $data['custom_costs'] = $savedCustomCosts;
             } elseif (!$record->exists) {
                 $data['cost_other'] = 0;
+                $data['custom_costs'] = [];
             }
 
             // Ensure payment_method is correctly detected
@@ -726,8 +737,9 @@ public function store(Request $request)
         }
         $documentTypes    = DocumentTypes::all();
         $notarisList      = \App\Models\Notaris::where('is_active', true)->orderBy('nama_notaris', 'asc')->get();
-        $masterPerizinans = \App\Models\MasterDokumenPerizinan::active()->get();
-        return view('land_bank.proses_pra_land_bank', compact('land', 'documentTypes', 'notarisList', 'masterPerizinans'));
+        $masterPerizinans     = \App\Models\MasterDokumenPerizinan::active()->get();
+        $masterBiayaLegalitas = \App\Models\MasterBiayaLegalitas::active()->get();
+        return view('land_bank.proses_pra_land_bank', compact('land', 'documentTypes', 'notarisList', 'masterPerizinans', 'masterBiayaLegalitas'));
     }
     public function destroy($id)
     {

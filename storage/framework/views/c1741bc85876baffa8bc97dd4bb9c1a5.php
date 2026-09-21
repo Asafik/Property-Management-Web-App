@@ -1,8 +1,6 @@
-@extends('layouts.partial.app')
+<?php $__env->startSection('title', 'Proses Pra Tanah - Property Management App'); ?>
 
-@section('title', 'Proses Pra Tanah - Property Management App')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
     <style>
         /* ===== STEP WIZARD STYLING ===== */
@@ -1542,28 +1540,28 @@
                     <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3" style="min-height: 105px;">
                         <div>
                             <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
-                                @if ($land)
-                                    @if($land->status == 'approved' || $land->status == 'rejected')
+                                <?php if($land): ?>
+                                    <?php if($land->status == 'approved' || $land->status == 'rejected'): ?>
                                         Detail Pra Tanah
-                                    @else
+                                    <?php else: ?>
                                         Proses Pra Tanah
-                                    @endif
-                                @else
+                                    <?php endif; ?>
+                                <?php else: ?>
                                     Tambah Pra Tanah Baru
-                                @endif
+                                <?php endif; ?>
                             </h3>
                             <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                                @if ($land)
-                                    Mengelola dan mengulas alur pelepasan tanah untuk <strong>{{ $land->land_name }}</strong>
-                                @else
+                                <?php if($land): ?>
+                                    Mengelola dan mengulas alur pelepasan tanah untuk <strong><?php echo e($land->land_name); ?></strong>
+                                <?php else: ?>
                                     Inisialisasi data penawaran awal makelar (Fase 1)
-                                @endif
+                                <?php endif; ?>
                             </p>
                         </div>
 
                         <!-- BUTTON KEMBALI -->
                         <div class="d-flex align-items-center gap-3">
-                            <a href="{{ route('pralandbank.all') }}" class="btn btn-sm btn-gradient-secondary d-inline-flex align-items-center gap-1 btn-back shadow-sm px-3 py-2">
+                            <a href="<?php echo e(route('pralandbank.all')); ?>" class="btn btn-sm btn-gradient-secondary d-inline-flex align-items-center gap-1 btn-back shadow-sm px-3 py-2">
                                 <i class="mdi mdi-arrow-left"></i> Kembali
                             </a>
                         </div>
@@ -1586,7 +1584,7 @@
                                 <div class="step-title">Fase 1</div>
                             </div>
 
-                            @php
+                            <?php
                                 $currentUser = auth()->user();
                                 $userPositionName = strtolower($currentUser->position->name ?? '');
                                 $userDivisionName = strtolower($currentUser->division->name ?? ($currentUser->position->division->name ?? ''));
@@ -1632,27 +1630,27 @@
                                 $isFase2Done = $land && (!empty($land->survey_date) || in_array($land->status, ['fase3', 'fase4', 'approved', 'rejected']));
                                 $canAccessFase3 = $isLegalSah && $isFase2Done;
                                 
-                            @endphp
+                            ?>
 
                             <!-- STEP 2 -->
-                            <div class="step-item {{ !$land ? 'disabled' : '' }}" id="step2" onclick="switchStep(2)" style="cursor: pointer;" title="{{ (!$isLegalSah && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved') ? 'Terkunci: Wajib verifikasi legalitas sah di Fase 1 terlebih dahulu' : '' }}">
+                            <div class="step-item <?php echo e(!$land ? 'disabled' : ''); ?>" id="step2" onclick="switchStep(2)" style="cursor: pointer;" title="<?php echo e((!$isLegalSah && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved') ? 'Terkunci: Wajib verifikasi legalitas sah di Fase 1 terlebih dahulu' : ''); ?>">
                                 <div class="step-circle">2</div>
                                 <div class="step-title d-flex align-items-center justify-content-center">
                                     Fase 2
-                                    @if(!$isLegalSah && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved' && $land->status != 'rejected')
+                                    <?php if(!$isLegalSah && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved' && $land->status != 'rejected'): ?>
                                         <i class="mdi mdi-lock text-warning ms-1" style="font-size: 13px;" title="Terkunci: Menunggu Validasi Dokumen Sah di Fase 1"></i>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
 
                             <!-- STEP 3 -->
-                            <div class="step-item {{ !$land ? 'disabled' : '' }}" id="step3" onclick="switchStep(3)" style="cursor: pointer;" title="{{ (!$canAccessFase3 && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved') ? 'Terkunci: Wajib selesaikan Fase 1 dan Fase 2 terlebih dahulu' : '' }}">
+                            <div class="step-item <?php echo e(!$land ? 'disabled' : ''); ?>" id="step3" onclick="switchStep(3)" style="cursor: pointer;" title="<?php echo e((!$canAccessFase3 && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved') ? 'Terkunci: Wajib selesaikan Fase 1 dan Fase 2 terlebih dahulu' : ''); ?>">
                                 <div class="step-circle">3</div>
                                 <div class="step-title d-flex align-items-center justify-content-center">
                                     Fase 3
-                                    @if(!$canAccessFase3 && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved' && $land->status != 'rejected')
+                                    <?php if(!$canAccessFase3 && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved' && $land->status != 'rejected'): ?>
                                         <i class="mdi mdi-lock text-warning ms-1" style="font-size: 13px;" title="Terkunci: Wajib selesaikan Fase 2 terlebih dahulu"></i>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
 
@@ -1677,48 +1675,48 @@
                         </div>
                         <div class="card-body">
                             <form id="formFase1" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <input type="hidden" name="id" value="{{ $land->id ?? '' }}">
+                                <?php echo csrf_field(); ?>
+                                <input type="hidden" name="id" value="<?php echo e($land->id ?? ''); ?>">
                                 <input type="hidden" name="fase" value="fase1">
 
-                                @if($isReadOnlyKeuangan)
+                                <?php if($isReadOnlyKeuangan): ?>
                                     <div class="alert alert-soft-info border border-info-subtle py-2.5 px-3 mb-3 d-flex align-items-center gap-2 rounded-3 text-info" style="background: #f0f9ff; font-size: 0.85rem;">
                                         <i class="mdi mdi-eye-outline fs-5"></i>
                                         <div>
                                             <strong>Mode Lihat Data (Divisi Keuangan)</strong>: Anda dapat melihat seluruh riwayat penawaran, status legalitas, dan berkas fisik tanah ini (Read-Only).
                                         </div>
                                     </div>
-                                @elseif($isStaffLegal && $land)
+                                <?php elseif($isStaffLegal && $land): ?>
                                     <div class="alert alert-soft-primary border border-primary-subtle py-2.5 px-3 mb-3 d-flex align-items-center gap-2 rounded-3 text-primary" style="background: #eff6ff; font-size: 0.83rem;">
                                         <i class="mdi mdi-information-outline fs-5 text-primary"></i>
                                         <span><strong>Peran Staff Legal:</strong> Anda berwenang melengkapi nomor dokumen, masa berlaku, status fisik keberadaan, dan mengunggah berkas pada bagian <strong>Dokumen Legalitas & Verifikasi Berkas (Fase 1)</strong> di bawah.</span>
                                     </div>
-                                @endif
+                                <?php endif; ?>
 
                                 <!-- DATA MAKELAR -->
                                 <div class="form-section">
                                     <div class="form-section-title">
                                         Data Kontak Makelar
-                                        @if(!$canEditGeneralInfo)
+                                        <?php if(!$canEditGeneralInfo): ?>
                                             <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Kepala Marketing / Admin)</small>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Nama Makelar *</label>
-                                            <input type="text" class="form-control" name="land_owner" value="{{ $land->land_owner ?? '' }}" placeholder="Nama Lengkap Makelar" required {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="land_owner" value="<?php echo e($land->land_owner ?? ''); ?>" placeholder="Nama Lengkap Makelar" required <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Perusahaan / Instansi</label>
-                                            <input type="text" class="form-control" name="land_source" value="{{ $land->land_source ?? '' }}" placeholder="Perusahaan Makelar" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="land_source" value="<?php echo e($land->land_source ?? ''); ?>" placeholder="Perusahaan Makelar" <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">No. WhatsApp / HP</label>
-                                            <input type="text" class="form-control" name="owner_contact" value="{{ $land->owner_contact ?? '' }}" placeholder="Contoh: 08123456789" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="owner_contact" value="<?php echo e($land->owner_contact ?? ''); ?>" placeholder="Contoh: 08123456789" <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Tanggal Penawaran</label>
-                                            <input type="date" class="form-control" name="survey_date" value="{{ $land && $land->survey_date ? \Carbon\Carbon::parse($land->survey_date)->format('Y-m-d') : '' }}" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <input type="date" class="form-control" name="survey_date" value="<?php echo e($land && $land->survey_date ? \Carbon\Carbon::parse($land->survey_date)->format('Y-m-d') : ''); ?>" <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                         </div>
                                     </div>
                                 </div>
@@ -1727,60 +1725,60 @@
                                 <div class="form-section">
                                     <div class="form-section-title">
                                         Data Tanah
-                                        @if(!$canEditGeneralInfo)
+                                        <?php if(!$canEditGeneralInfo): ?>
                                             <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Kepala Marketing / Admin)</small>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Nama Prospek Tanah *</label>
-                                            <input type="text" class="form-control" name="land_name" value="{{ $land->land_name ?? '' }}" placeholder="Contoh: Tanah Jember Regency" required {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="land_name" value="<?php echo e($land->land_name ?? ''); ?>" placeholder="Contoh: Tanah Jember Regency" required <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Status Tanah / Kepemilikan (Dasar Perolehan) *</label>
-                                            <select class="form-select select2-search" id="select_ownership_status" name="ownership_status" data-placeholder="Pilih Dasar Perolehan Tanah" style="width: 100%;" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <select class="form-select select2-search" id="select_ownership_status" name="ownership_status" data-placeholder="Pilih Dasar Perolehan Tanah" style="width: 100%;" <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                                 <option value="">-- Pilih Dasar Perolehan Tanah --</option>
-                                                <option value="SHM" {{ ($land && !empty($land->ownership_status) && in_array(strtoupper($land->ownership_status), ['SHM', 'HGB', 'HGU', 'HP'])) ? 'selected' : '' }}>SHM (Sertifikat Hak Milik)</option>
-                                                <option value="AJB" {{ ($land && !empty($land->ownership_status) && strtoupper($land->ownership_status) == 'AJB') ? 'selected' : '' }}>AJB / Akta Hibah</option>
-                                                <option value="APHB" {{ ($land && !empty($land->ownership_status) && strtoupper($land->ownership_status) == 'APHB') ? 'selected' : '' }}>APHB (Akta Pembagian Hak Bersama)</option>
-                                                <option value="WARISAN" {{ ($land && !empty($land->ownership_status) && strtoupper($land->ownership_status) == 'WARISAN') ? 'selected' : '' }}>AJB / Hibah (Harta Warisan)</option>
-                                                <option value="PETOK_C" {{ ($land && !empty($land->ownership_status) && in_array(strtoupper($land->ownership_status), ['PETOK_C', 'GIRIK', 'PETOK D'])) ? 'selected' : '' }}>Petok C / Girik</option>
+                                                <option value="SHM" <?php echo e(($land && !empty($land->ownership_status) && in_array(strtoupper($land->ownership_status), ['SHM', 'HGB', 'HGU', 'HP'])) ? 'selected' : ''); ?>>SHM (Sertifikat Hak Milik)</option>
+                                                <option value="AJB" <?php echo e(($land && !empty($land->ownership_status) && strtoupper($land->ownership_status) == 'AJB') ? 'selected' : ''); ?>>AJB / Akta Hibah</option>
+                                                <option value="APHB" <?php echo e(($land && !empty($land->ownership_status) && strtoupper($land->ownership_status) == 'APHB') ? 'selected' : ''); ?>>APHB (Akta Pembagian Hak Bersama)</option>
+                                                <option value="WARISAN" <?php echo e(($land && !empty($land->ownership_status) && strtoupper($land->ownership_status) == 'WARISAN') ? 'selected' : ''); ?>>AJB / Hibah (Harta Warisan)</option>
+                                                <option value="PETOK_C" <?php echo e(($land && !empty($land->ownership_status) && in_array(strtoupper($land->ownership_status), ['PETOK_C', 'GIRIK', 'PETOK D'])) ? 'selected' : ''); ?>>Petok C / Girik</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Nama di Sertifikat / Surat</label>
-                                            <input type="text" class="form-control" id="certificate_owner" name="certificate_owner" value="{{ $land->certificate_owner ?? '' }}" placeholder="Nama pemilik sah di sertifikat" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" id="certificate_owner" name="certificate_owner" value="<?php echo e($land->certificate_owner ?? ''); ?>" placeholder="Nama pemilik sah di sertifikat" <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <div class="d-flex justify-content-between align-items-center mb-1">
                                                 <label class="form-label mb-0">Nama Pemilik Tanah</label>
                                                 <label class="same-cert-badge" for="sameAsCertificate" title="Centang untuk menyamakan dengan nama di sertifikat">
-                                                    <input type="checkbox" id="sameAsCertificate" {{ $land && $land->owner_name && $land->certificate_owner && $land->owner_name === $land->certificate_owner ? 'checked' : '' }} {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                                    <input type="checkbox" id="sameAsCertificate" <?php echo e($land && $land->owner_name && $land->certificate_owner && $land->owner_name === $land->certificate_owner ? 'checked' : ''); ?> <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                                     <span>Sama dengan sertifikat</span>
                                                 </label>
                                             </div>
-                                            <input type="text" class="form-control" id="owner_name" name="owner_name" value="{{ $land->owner_name ?? '' }}" placeholder="Nama pemilik tanah saat ini" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" id="owner_name" name="owner_name" value="<?php echo e($land->owner_name ?? ''); ?>" placeholder="Nama pemilik tanah saat ini" <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                         </div>
                                         <div class="col-12 mb-3">
                                             <label class="form-label">Alamat Lengkap *</label>
-                                            <input type="text" class="form-control" name="address" value="{{ $land->address ?? '' }}" placeholder="Alamat lengkap lokasi tanah" required {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="address" value="<?php echo e($land->address ?? ''); ?>" placeholder="Alamat lengkap lokasi tanah" required <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Luas Tanah (m²)</label>
-                                            <input type="number" class="form-control" name="area" value="{{ $land->area ?? '' }}" placeholder="Luas tanah" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <input type="number" class="form-control" name="area" value="<?php echo e($land->area ?? ''); ?>" placeholder="Luas tanah" <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Lebar Jalan Depan (m)</label>
-                                            <input type="number" class="form-control" name="road_width" value="{{ $land->road_width ?? '' }}" placeholder="Lebar jalan" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <input type="number" class="form-control" name="road_width" value="<?php echo e($land->road_width ?? ''); ?>" placeholder="Lebar jalan" <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Jenis Konstruksi Jalan</label>
-                                            <select class="form-select select2-search" id="select_road_type" name="road_type" data-placeholder="Pilih Konstruksi Jalan" style="width: 100%;" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <select class="form-select select2-search" id="select_road_type" name="road_type" data-placeholder="Pilih Konstruksi Jalan" style="width: 100%;" <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                                 <option value="">Pilih</option>
-                                                <option value="aspal" {{ $land && $land->road_type == 'aspal' ? 'selected' : '' }}>Aspal</option>
-                                                <option value="beton" {{ $land && $land->road_type == 'beton' ? 'selected' : '' }}>Beton</option>
-                                                <option value="paving" {{ $land && $land->road_type == 'paving' ? 'selected' : '' }}>Paving</option>
-                                                <option value="tanah" {{ $land && $land->road_type == 'tanah' ? 'selected' : '' }}>Tanah</option>
+                                                <option value="aspal" <?php echo e($land && $land->road_type == 'aspal' ? 'selected' : ''); ?>>Aspal</option>
+                                                <option value="beton" <?php echo e($land && $land->road_type == 'beton' ? 'selected' : ''); ?>>Beton</option>
+                                                <option value="paving" <?php echo e($land && $land->road_type == 'paving' ? 'selected' : ''); ?>>Paving</option>
+                                                <option value="tanah" <?php echo e($land && $land->road_type == 'tanah' ? 'selected' : ''); ?>>Tanah</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6 mb-3">
@@ -1788,35 +1786,35 @@
                                                 Status Zona Tanah / Lahan <span class="text-danger">*</span>
                                                 <i class="mdi mdi-information-outline text-primary" title="Pengecekan status LBS, LSD, atau LP2B untuk kelayakan izin perumahan"></i>
                                             </label>
-                                            <select class="form-select" name="land_protection_status" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                                <option value="aman" {{ ($land && ($land->land_protection_status ?? 'aman') == 'aman') ? 'selected' : '' }}>Aman (Bukan Zona Lindung / Bebas LSD)</option>
-                                                <option value="lbs" {{ ($land && $land->land_protection_status == 'lbs') ? 'selected' : '' }}>LBS (Lahan Baku Sawah)</option>
-                                                <option value="lsd" {{ ($land && $land->land_protection_status == 'lsd') ? 'selected' : '' }}>LSD (Lahan Sawah Dilindungi)</option>
-                                                <option value="lp2b" {{ ($land && $land->land_protection_status == 'lp2b') ? 'selected' : '' }}>LP2B (Lahan Pertanian Pangan Berkelanjutan)</option>
+                                            <select class="form-select" name="land_protection_status" <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
+                                                <option value="aman" <?php echo e(($land && ($land->land_protection_status ?? 'aman') == 'aman') ? 'selected' : ''); ?>>Aman (Bukan Zona Lindung / Bebas LSD)</option>
+                                                <option value="lbs" <?php echo e(($land && $land->land_protection_status == 'lbs') ? 'selected' : ''); ?>>LBS (Lahan Baku Sawah)</option>
+                                                <option value="lsd" <?php echo e(($land && $land->land_protection_status == 'lsd') ? 'selected' : ''); ?>>LSD (Lahan Sawah Dilindungi)</option>
+                                                <option value="lp2b" <?php echo e(($land && $land->land_protection_status == 'lp2b') ? 'selected' : ''); ?>>LP2B (Lahan Pertanian Pangan Berkelanjutan)</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-semibold">Status Pembayaran SPPT PBB <span class="text-danger">*</span></label>
-                                            <select class="form-select" id="select_pbb_status" name="pbb_status" onchange="togglePbbArrearsField(this)" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                                <option value="lunas" {{ ($land && ($land->pbb_status ?? 'lunas') == 'lunas') ? 'selected' : '' }}>Lunas</option>
-                                                <option value="nunggak" {{ ($land && ($land->pbb_status ?? '') == 'nunggak') ? 'selected' : '' }}>Nunggak (Perlu Pelunasan)</option>
+                                            <select class="form-select" id="select_pbb_status" name="pbb_status" onchange="togglePbbArrearsField(this)" <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
+                                                <option value="lunas" <?php echo e(($land && ($land->pbb_status ?? 'lunas') == 'lunas') ? 'selected' : ''); ?>>Lunas</option>
+                                                <option value="nunggak" <?php echo e(($land && ($land->pbb_status ?? '') == 'nunggak') ? 'selected' : ''); ?>>Nunggak (Perlu Pelunasan)</option>
                                             </select>
                                         </div>
-                                        <div class="col-12 {{ ($land && ($land->pbb_status ?? '') == 'nunggak') ? '' : 'd-none' }}" id="pbb_arrears_container">
+                                        <div class="col-12 <?php echo e(($land && ($land->pbb_status ?? '') == 'nunggak') ? '' : 'd-none'); ?>" id="pbb_arrears_container">
                                             <div class="p-3 rounded-3 border border-danger-subtle mb-3" style="background: #fff8f8;">
                                                 <div class="row g-3">
                                                     <div class="col-md-6">
                                                         <label class="form-label fw-semibold text-danger mb-1" style="font-size: 0.85rem;">
                                                             <i class="mdi mdi-clock-alert-outline me-1"></i> Lama / Keterangan Tunggakan PBB <span class="text-danger">*</span>
                                                         </label>
-                                                        <input type="text" class="form-control border-danger-subtle bg-white" id="input_pbb_note" name="pbb_note" value="{{ $land->pbb_note ?? '' }}" placeholder="Contoh: Nunggak 2 Tahun (2024 - 2025) / Nunggak 6 Bulan" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                                        <input type="text" class="form-control border-danger-subtle bg-white" id="input_pbb_note" name="pbb_note" value="<?php echo e($land->pbb_note ?? ''); ?>" placeholder="Contoh: Nunggak 2 Tahun (2024 - 2025) / Nunggak 6 Bulan" <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                                         <small class="text-muted" style="font-size: 0.74rem;">Tuliskan durasi tunggakan (berapa bulan/tahun) atau tahun pajak.</small>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label class="form-label fw-semibold text-danger mb-1" style="font-size: 0.85rem;">
                                                             <i class="mdi mdi-cash-multiple me-1"></i> Nominal Tunggakan PBB (Rp) <span class="text-danger">*</span>
                                                         </label>
-                                                        <input type="text" class="form-control border-danger-subtle bg-white" id="input_pbb_nominal" name="pbb_nominal" value="{{ $land && $land->pbb_nominal ? number_format($land->pbb_nominal, 0, ',', '.') : '' }}" oninput="formatRupiah(this)" placeholder="Estimasi nominal tunggakan" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                                        <input type="text" class="form-control border-danger-subtle bg-white" id="input_pbb_nominal" name="pbb_nominal" value="<?php echo e($land && $land->pbb_nominal ? number_format($land->pbb_nominal, 0, ',', '.') : ''); ?>" oninput="formatRupiah(this)" placeholder="Estimasi nominal tunggakan" <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                                         <small class="text-muted" style="font-size: 0.74rem;">Total tagihan pokok + denda tunggakan PBB yang harus dilunasi.</small>
                                                     </div>
                                                 </div>
@@ -1829,18 +1827,18 @@
                                 <div class="form-section">
                                     <div class="form-section-title">
                                         Negosiasi Harga Awal
-                                        @if(!$canEditGeneralInfo)
+                                        <?php if(!$canEditGeneralInfo): ?>
                                             <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Kepala Marketing / Admin)</small>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Harga Penawaran Awal (Rp)</label>
-                                            <input type="text" class="form-control" id="offer_price" name="offer_price" value="{{ $land && $land->offer_price ? number_format($land->offer_price, 0, ',', '.') : '' }}" oninput="formatRupiah(this)" placeholder="Harga penawaran" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" id="offer_price" name="offer_price" value="<?php echo e($land && $land->offer_price ? number_format($land->offer_price, 0, ',', '.') : ''); ?>" oninput="formatRupiah(this)" placeholder="Harga penawaran" <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Harga Target Negosiasi (Rp)</label>
-                                            <input type="text" class="form-control" id="estimated_price" name="estimated_price" value="{{ $land && $land->estimated_price ? number_format($land->estimated_price, 0, ',', '.') : '' }}" oninput="formatRupiah(this)" placeholder="Harga negosiasi" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" id="estimated_price" name="estimated_price" value="<?php echo e($land && $land->estimated_price ? number_format($land->estimated_price, 0, ',', '.') : ''); ?>" oninput="formatRupiah(this)" placeholder="Harga negosiasi" <?php echo e((!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                         </div>
                                     </div>
                                 </div>
@@ -1861,7 +1859,7 @@
                                         </span>
                                     </div>
 
-                                    @php
+                                    <?php
                                         $uploadedDocs = [];
                                         if ($land) {
                                             foreach ($land->documents as $d) {
@@ -1869,40 +1867,40 @@
                                             }
                                         }
                                         // Uploaded docs mapping
-                                    @endphp
+                                    ?>
 
                                     <!-- Dynamic Category Alert Banner (Filtered by Alas Hak) -->
-                                    <div class="alert alert-info py-2.5 px-3 mb-3 d-flex align-items-center justify-content-between rounded-3 border shadow-none {{ empty($selectedCat) ? 'd-none' : '' }}" id="fase1CategoryAlert" style="background: #f0fdf4; border-color: #bbf7d0 !important; color: #166534;">
+                                    <div class="alert alert-info py-2.5 px-3 mb-3 d-flex align-items-center justify-content-between rounded-3 border shadow-none <?php echo e(empty($selectedCat) ? 'd-none' : ''); ?>" id="fase1CategoryAlert" style="background: #f0fdf4; border-color: #bbf7d0 !important; color: #166534;">
                                         <div class="d-flex align-items-center gap-2">
                                             <i class="mdi mdi-filter-check" style="font-size: 1.35rem; color: #16a34a;"></i>
                                             <div>
                                                 <span class="fw-bold d-block" style="font-size: 0.88rem;">
-                                                    Berkas Wajib Dasar Perolehan: <span id="fase1CategoryName" class="badge bg-success ms-1">{{ !empty($selectedCat) ? ($selectedCat == 'PETOK_C' ? 'Petok C / Girik Asli' : ($selectedCat == 'WARISAN' ? 'AJB & Akta Hibah (Harta Warisan)' : ($selectedCat == 'AJB' ? 'AJB / Akta Hibah' : ($selectedCat == 'APHB' ? 'APHB (Akta Pembagian Hak Bersama)' : 'SHM (Sertifikat Hak Milik)')))) : '' }}</span>
+                                                    Berkas Wajib Dasar Perolehan: <span id="fase1CategoryName" class="badge bg-success ms-1"><?php echo e(!empty($selectedCat) ? ($selectedCat == 'PETOK_C' ? 'Petok C / Girik Asli' : ($selectedCat == 'WARISAN' ? 'AJB & Akta Hibah (Harta Warisan)' : ($selectedCat == 'AJB' ? 'AJB / Akta Hibah' : ($selectedCat == 'APHB' ? 'APHB (Akta Pembagian Hak Bersama)' : 'SHM (Sertifikat Hak Milik)')))) : ''); ?></span>
                                                 </span>
                                                 <small class="text-muted d-block" id="fase1CategoryDesc" style="font-size: 0.76rem;">
-                                                    @if($selectedCat === 'SHM')
+                                                    <?php if($selectedCat === 'SHM'): ?>
                                                         6 Dokumen Wajib: Sertifikat SHM Asli + 5 Dokumen Identitas & Pajak (KTP, KK, Nikah, NPWP, PBB).
-                                                    @elseif($selectedCat === 'AJB')
+                                                    <?php elseif($selectedCat === 'AJB'): ?>
                                                         10 Dokumen Wajib: AJB/Hibah Asli, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak (KTP, KK, Nikah, NPWP, PBB).
-                                                    @elseif($selectedCat === 'APHB')
+                                                    <?php elseif($selectedCat === 'APHB'): ?>
                                                         11 Dokumen Wajib: APHB, Ket. Ahli Waris, Akta Kematian, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak Ahli Waris.
-                                                    @elseif($selectedCat === 'WARISAN')
+                                                    <?php elseif($selectedCat === 'WARISAN'): ?>
                                                         11 Dokumen Wajib: AJB/Hibah Asli, Ket. Waris, Akta Kematian, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.
-                                                    @elseif($selectedCat === 'PETOK_C')
+                                                    <?php elseif($selectedCat === 'PETOK_C'): ?>
                                                         10 Dokumen Wajib: Petok C Asli, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.
-                                                    @else
+                                                    <?php else: ?>
                                                         Menampilkan berkas wajib legalitas sesuai SOP.
-                                                    @endif
+                                                    <?php endif; ?>
                                                 </small>
                                             </div>
                                         </div>
                                         <span class="badge bg-success px-3 py-1.5 shadow-sm" id="fase1CategoryCountBadge" style="font-size: 0.82rem; font-weight: 700;">
-                                            {{ count($catDocTypeIds) }} Dokumen Wajib
+                                            <?php echo e(count($catDocTypeIds)); ?> Dokumen Wajib
                                         </span>
                                     </div>
 
                                     <!-- Empty Placeholder Banner when no category is selected -->
-                                    <div class="alert alert-light border border-dashed rounded-3 p-4 text-center mb-3 {{ !empty($selectedCat) ? 'd-none' : '' }}" id="fase1EmptyCategoryAlert" style="background: #f8fafc; border-color: #cbd5e1 !important;">
+                                    <div class="alert alert-light border border-dashed rounded-3 p-4 text-center mb-3 <?php echo e(!empty($selectedCat) ? 'd-none' : ''); ?>" id="fase1EmptyCategoryAlert" style="background: #f8fafc; border-color: #cbd5e1 !important;">
                                         <div class="d-flex flex-column align-items-center justify-content-center py-2">
                                             <div class="rounded-circle d-flex align-items-center justify-content-center mb-2" style="width: 48px; height: 48px; background: #e0f2fe; color: #0284c7;">
                                                 <i class="mdi mdi-file-document-outline" style="font-size: 24px;"></i>
@@ -1915,56 +1913,56 @@
                                     </div>
 
                                     <div class="row g-3" id="documentGridContainerFase1">
-                                        @foreach($documentTypes as $doc)
-                                             @php
+                                        <?php $__currentLoopData = $documentTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $doc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                             <?php
                                                  $existingDoc = $uploadedDocs[$doc->id] ?? null;
                                                  $hasFile = ($existingDoc && !empty($existingDoc->file_path));
                                                  $currentDocStatus = $existingDoc->status ?? ($hasFile ? 'pending' : 'belum_upload');
                                                  $docPhysStatus = $existingDoc->document_status ?? 'ada';
                                                  $docCategories = $doc->applicable_categories ?? [];
                                                  $isApplicable = !empty($selectedCat) && (empty($docCategories) || in_array($selectedCat, $docCategories));
-                                             @endphp
-                                             <div class="col-12 col-md-6 col-xl-4 doc-fase1-col {{ !$isApplicable ? 'd-none' : '' }}" id="doc-box-fase1-{{ $doc->id }}" data-categories='@json($docCategories)' data-doc-id="{{ $doc->id }}">
+                                             ?>
+                                             <div class="col-12 col-md-6 col-xl-4 doc-fase1-col <?php echo e(!$isApplicable ? 'd-none' : ''); ?>" id="doc-box-fase1-<?php echo e($doc->id); ?>" data-categories='<?php echo json_encode($docCategories, 15, 512) ?>' data-doc-id="<?php echo e($doc->id); ?>">
                                                  <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative" style="background: #ffffff; border-color: #eaedf2 !important;">
                                                     <!-- Header Card Box -->
                                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
                                                         <div>
-                                                            <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">{{ $doc->name }}</h6>
+                                                            <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;"><?php echo e($doc->name); ?></h6>
                                                         </div>
                                                         <div class="d-flex align-items-center gap-1 flex-wrap justify-content-end">
                                                             <!-- Status Fisik Dokumen Badge -->
-                                                            @if($docPhysStatus === 'proses')
-                                                                <span class="badge bg-warning text-dark py-1 px-2 doc-phys-badge-{{ $doc->id }}" style="font-size: 10px;">
+                                                            <?php if($docPhysStatus === 'proses'): ?>
+                                                                <span class="badge bg-warning text-dark py-1 px-2 doc-phys-badge-<?php echo e($doc->id); ?>" style="font-size: 10px;">
                                                                     <i class="mdi mdi-progress-clock me-1"></i>Masih Proses
                                                                 </span>
-                                                            @elseif($docPhysStatus === 'belum_ada')
-                                                                <span class="badge bg-light text-muted border py-1 px-2 doc-phys-badge-{{ $doc->id }}" style="font-size: 10px;">
+                                                            <?php elseif($docPhysStatus === 'belum_ada'): ?>
+                                                                <span class="badge bg-light text-muted border py-1 px-2 doc-phys-badge-<?php echo e($doc->id); ?>" style="font-size: 10px;">
                                                                     Belum Ada
                                                                 </span>
-                                                            @else
-                                                                <span class="badge bg-soft-primary text-primary border py-1 px-2 doc-phys-badge-{{ $doc->id }}" style="font-size: 10px;">
+                                                            <?php else: ?>
+                                                                <span class="badge bg-soft-primary text-primary border py-1 px-2 doc-phys-badge-<?php echo e($doc->id); ?>" style="font-size: 10px;">
                                                                     <i class="mdi mdi-check-circle-outline me-1"></i>Fisik Lengkap
                                                                 </span>
-                                                            @endif
+                                                            <?php endif; ?>
 
                                                             <!-- Status Verifikasi Legal Badge -->
-                                                            @if($currentDocStatus === 'verified' || $currentDocStatus === 'valid')
-                                                                <span class="badge bg-success py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
+                                                            <?php if($currentDocStatus === 'verified' || $currentDocStatus === 'valid'): ?>
+                                                                <span class="badge bg-success py-1 px-2 doc-badge-<?php echo e($doc->id); ?> text-wrap" style="font-size: 10px;">
                                                                     <i class="mdi mdi-shield-check me-1"></i>Sah (ACC)
                                                                 </span>
-                                                            @elseif($currentDocStatus === 'rejected' || $currentDocStatus === 'revisi')
-                                                                <span class="badge bg-danger py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
+                                                            <?php elseif($currentDocStatus === 'rejected' || $currentDocStatus === 'revisi'): ?>
+                                                                <span class="badge bg-danger py-1 px-2 doc-badge-<?php echo e($doc->id); ?> text-wrap" style="font-size: 10px;">
                                                                     <i class="mdi mdi-alert-circle me-1"></i>Revisi
                                                                 </span>
-                                                            @elseif($existingDoc && !empty($existingDoc->file_path))
-                                                                <span class="badge bg-warning text-dark py-1 px-2 doc-badge-{{ $doc->id }} text-wrap" style="font-size: 10px;">
+                                                            <?php elseif($existingDoc && !empty($existingDoc->file_path)): ?>
+                                                                <span class="badge bg-warning text-dark py-1 px-2 doc-badge-<?php echo e($doc->id); ?> text-wrap" style="font-size: 10px;">
                                                                     <i class="mdi mdi-clock-outline me-1"></i>Menunggu Verifikasi
                                                                 </span>
-                                                            @else
-                                                                <span class="badge bg-light text-muted border py-1 px-2 doc-badge-{{ $doc->id }}" style="font-size: 10px;">
+                                                            <?php else: ?>
+                                                                <span class="badge bg-light text-muted border py-1 px-2 doc-badge-<?php echo e($doc->id); ?>" style="font-size: 10px;">
                                                                     Belum Upload
                                                                 </span>
-                                                            @endif
+                                                            <?php endif; ?>
                                                         </div>
                                                     </div>
 
@@ -1973,50 +1971,53 @@
                                                         <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
                                                             Status Fisik / Keberadaan Dokumen
                                                         </label>
-                                                        <select name="documents[{{ $doc->id }}][document_status]" class="form-select form-select-sm" onchange="toggleDocProcessNotes(this, {{ $doc->id }})" style="font-size: 0.85rem;" {{ ($isReadOnlyKeuangan || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                                            <option value="ada" {{ ($existingDoc->document_status ?? 'ada') === 'ada' ? 'selected' : '' }}>Ada / Lengkap</option>
-                                                            <option value="proses" {{ ($existingDoc->document_status ?? '') === 'proses' ? 'selected' : '' }}>Masih Proses (Pengurusan Notaris/BPN/Dinas)</option>
-                                                            <option value="belum_ada" {{ ($existingDoc->document_status ?? '') === 'belum_ada' ? 'selected' : '' }}>Belum Ada</option>
+                                                        <select name="documents[<?php echo e($doc->id); ?>][document_status]" class="form-select form-select-sm" onchange="toggleDocProcessNotes(this, <?php echo e($doc->id); ?>)" style="font-size: 0.85rem;" <?php echo e(($isReadOnlyKeuangan || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
+                                                            <option value="ada" <?php echo e(($existingDoc->document_status ?? 'ada') === 'ada' ? 'selected' : ''); ?>>Ada / Lengkap</option>
+                                                            <option value="proses" <?php echo e(($existingDoc->document_status ?? '') === 'proses' ? 'selected' : ''); ?>>Masih Proses (Pengurusan Notaris/BPN/Dinas)</option>
+                                                            <option value="belum_ada" <?php echo e(($existingDoc->document_status ?? '') === 'belum_ada' ? 'selected' : ''); ?>>Belum Ada</option>
                                                         </select>
                                                     </div>
 
                                                     <!-- Dynamic Form Keterangan / Progres Pengurusan (Muncul saat Masih Proses) -->
-                                                    <div class="mb-2 p-2 rounded-2 border process-notes-container {{ ($existingDoc->document_status ?? '') === 'proses' ? '' : 'd-none' }}" id="processNotesContainer_{{ $doc->id }}" style="background: #fffdf5; border-color: #fde68a !important;">
+                                                    <div class="mb-2 p-2 rounded-2 border process-notes-container <?php echo e(($existingDoc->document_status ?? '') === 'proses' ? '' : 'd-none'); ?>" id="processNotesContainer_<?php echo e($doc->id); ?>" style="background: #fffdf5; border-color: #fde68a !important;">
                                                         <label class="form-label mb-1 text-dark fw-bold d-flex align-items-center gap-1" style="font-size: 0.78rem;">
                                                             <i class="mdi mdi-progress-clock text-warning"></i> Keterangan & Progres Pengurusan Dokumen:
                                                         </label>
-                                                        <textarea name="documents[{{ $doc->id }}][process_notes]" class="form-control form-control-sm" rows="2" placeholder="Tuliskan progres pengurusan berkas..." style="font-size: 0.8rem;" {{ ($isReadOnlyKeuangan || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>{{ $existingDoc->process_notes ?? '' }}</textarea>
+                                                        <textarea name="documents[<?php echo e($doc->id); ?>][process_notes]" class="form-control form-control-sm" rows="2" placeholder="Tuliskan progres pengurusan berkas..." style="font-size: 0.8rem;" <?php echo e(($isReadOnlyKeuangan || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>><?php echo e($existingDoc->process_notes ?? ''); ?></textarea>
                                                     </div>
 
                                                     <!-- Input Nomor Dokumen -->
                                                     <div class="mb-2">
                                                         <label class="form-label mb-1 text-muted" style="font-size: 0.8rem; font-weight: 600;">
-                                                            Nomor Dokumen {{ $doc->name }}
+                                                            Nomor Dokumen <?php echo e($doc->name); ?>
+
                                                         </label>
                                                         <input type="text" class="form-control form-control-sm"
-                                                            name="documents[{{ $doc->id }}][number]"
-                                                            value="{{ $existingDoc->document_number ?? '' }}"
-                                                            placeholder="Nomor {{ $doc->name }}"
+                                                            name="documents[<?php echo e($doc->id); ?>][number]"
+                                                            value="<?php echo e($existingDoc->document_number ?? ''); ?>"
+                                                            placeholder="Nomor <?php echo e($doc->name); ?>"
                                                             style="font-size: 0.85rem;"
-                                                            {{ ($isReadOnlyKeuangan || ($hasFile && $land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                                            <?php echo e(($isReadOnlyKeuangan || ($hasFile && $land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                                     </div>
 
                                                     <!-- Catatan Revisi Legalitas (Jika Ditolak / Direvisi) -->
-                                                    @php
+                                                    <?php
                                                         $hasRevision = $existingDoc && (($existingDoc->status ?? '') === 'rejected' || !empty($existingDoc->admin_notes));
-                                                    @endphp
-                                                    <div class="alert alert-danger p-2 mb-2 rounded-2 revision-box-{{ $doc->id }} {{ $hasRevision ? '' : 'd-none' }}" style="font-size: 0.78rem; background: #fff5f5; border: 1px solid #fed7d7; color: #c53030;">
+                                                    ?>
+                                                    <div class="alert alert-danger p-2 mb-2 rounded-2 revision-box-<?php echo e($doc->id); ?> <?php echo e($hasRevision ? '' : 'd-none'); ?>" style="font-size: 0.78rem; background: #fff5f5; border: 1px solid #fed7d7; color: #c53030;">
                                                         <div class="d-flex align-items-start gap-1">
                                                             <i class="mdi mdi-alert-circle text-danger mt-0" style="font-size: 1rem;"></i>
                                                             <div class="flex-grow-1">
                                                                 <div class="d-flex align-items-center justify-content-between">
                                                                     <strong class="d-block text-danger">Catatan Revisi Legal:</strong>
-                                                                    <span class="badge bg-danger text-white px-1 py-0 rev-badge-{{ $doc->id }}" style="font-size: 9px;">
-                                                                        Rev #{{ $existingDoc->revision_number ?? 1 }}
+                                                                    <span class="badge bg-danger text-white px-1 py-0 rev-badge-<?php echo e($doc->id); ?>" style="font-size: 9px;">
+                                                                        Rev #<?php echo e($existingDoc->revision_number ?? 1); ?>
+
                                                                     </span>
                                                                 </div>
-                                                                <div class="text-dark mt-1 revision-notes-text-{{ $doc->id }}" style="font-size: 0.78rem;">
-                                                                    {{ $existingDoc->admin_notes ?? 'Berkas ditolak / perlu perbaikan dari pihak pengunggah.' }}
+                                                                <div class="text-dark mt-1 revision-notes-text-<?php echo e($doc->id); ?>" style="font-size: 0.78rem;">
+                                                                    <?php echo e($existingDoc->admin_notes ?? 'Berkas ditolak / perlu perbaikan dari pihak pengunggah.'); ?>
+
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -2024,11 +2025,11 @@
 
                                                     <!-- Upload Berkas File -->
                                                     <div class="mb-1 flex-grow-1 d-flex flex-column justify-content-end">
-                                                        @if($existingDoc && !empty($existingDoc->file_path))
-                                                            @php
+                                                        <?php if($existingDoc && !empty($existingDoc->file_path)): ?>
+                                                            <?php
                                                                 $cleanPath = str_replace('uploads/', '', $existingDoc->file_path);
                                                                 $isDocRejected = ($currentDocStatus === 'rejected' || $currentDocStatus === 'revisi');
-                                                            @endphp
+                                                            ?>
                                                             <!-- State: Berkas Sudah Terunggah -->
                                                             <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
                                                                 <div class="d-flex align-items-center gap-2 mb-2">
@@ -2037,22 +2038,22 @@
                                                                     </div>
                                                                     <div class="overflow-hidden flex-grow-1">
                                                                         <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">Berkas Terunggah</span>
-                                                                        <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($existingDoc->file_path) }}</small>
+                                                                        <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;"><?php echo e(basename($existingDoc->file_path)); ?></small>
                                                                     </div>
                                                                 </div>
                                                                 <button type="button" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm btn-preview-doc"
-                                                                    data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}"
-                                                                    data-ext="{{ pathinfo($existingDoc->file_path, PATHINFO_EXTENSION) }}"
-                                                                    data-label="{{ $doc->name }}"
+                                                                    data-url="<?php echo e(route('dokumen.preview', ['path' => $cleanPath])); ?>"
+                                                                    data-ext="<?php echo e(pathinfo($existingDoc->file_path, PATHINFO_EXTENSION)); ?>"
+                                                                    data-label="<?php echo e($doc->name); ?>"
                                                                     style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
                                                                     <i class="mdi mdi-eye me-1"></i>Lihat Berkas
                                                                 </button>
                                                             </div>
 
                                                             <!-- Opsi Ganti / Upload Ulang Berkas -->
-                                                            @if (!$isReadOnlyKeuangan && (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')))
-                                                                <div class="pratanah-file-upload-modern mb-1 ganti-file-box-{{ $doc->id }} {{ $isDocRejected ? '' : '' }}">
-                                                                    <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
+                                                            <?php if(!$isReadOnlyKeuangan && (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))): ?>
+                                                                <div class="pratanah-file-upload-modern mb-1 ganti-file-box-<?php echo e($doc->id); ?> <?php echo e($isDocRejected ? '' : ''); ?>">
+                                                                    <input type="file" name="documents[<?php echo e($doc->id); ?>][file]" accept=".pdf,.jpg,.jpeg,.png">
                                                                     <div class="pratanah-file-label-modern py-1 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
                                                                         <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
                                                                         <div class="pratanah-file-info-modern">
@@ -2060,97 +2061,97 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            @endif
+                                                            <?php endif; ?>
 
                                                             <!-- Tombol Aksi Validasi Kepala Legal / Admin (FASE 1) -->
-                                                            @if($canValidateDoc)
-                                                                <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-between gap-2 w-100" id="action-btns-doc-{{ $existingDoc->id }}">
-                                                                    @if(($existingDoc->status ?? '') !== 'verified' && ($existingDoc->status ?? '') !== 'valid')
-                                                                        <button type="button" class="btn btn-xs btn-success py-1.5 px-2 text-white flex-grow-1 d-inline-flex align-items-center justify-content-center shadow-sm" onclick="approvePraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Setujui & Validasi Dokumen" style="font-size: 11px; font-weight: 600; border-radius: 6px;">
+                                                            <?php if($canValidateDoc): ?>
+                                                                <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-between gap-2 w-100" id="action-btns-doc-<?php echo e($existingDoc->id); ?>">
+                                                                    <?php if(($existingDoc->status ?? '') !== 'verified' && ($existingDoc->status ?? '') !== 'valid'): ?>
+                                                                        <button type="button" class="btn btn-xs btn-success py-1.5 px-2 text-white flex-grow-1 d-inline-flex align-items-center justify-content-center shadow-sm" onclick="approvePraDoc(<?php echo e($existingDoc->id); ?>, <?php echo e($doc->id); ?>)" title="Setujui & Validasi Dokumen" style="font-size: 11px; font-weight: 600; border-radius: 6px;">
                                                                             <i class="mdi mdi-check me-1"></i>Validasi
                                                                         </button>
-                                                                    @else
+                                                                    <?php else: ?>
                                                                         <span class="badge bg-soft-success text-success small"><i class="mdi mdi-shield-check me-1"></i>Sah</span>
-                                                                    @endif
-                                                                    @if(($existingDoc->status ?? '') !== 'rejected' && ($existingDoc->status ?? '') !== 'revisi')
-                                                                        <button type="button" class="btn btn-xs btn-danger py-1.5 px-2 text-white flex-grow-1 d-inline-flex align-items-center justify-content-center shadow-sm" onclick="rejectPraDoc({{ $existingDoc->id }}, {{ $doc->id }})" title="Tolak & Minta Revisi" style="font-size: 11px; font-weight: 600; border-radius: 6px;">
+                                                                    <?php endif; ?>
+                                                                    <?php if(($existingDoc->status ?? '') !== 'rejected' && ($existingDoc->status ?? '') !== 'revisi'): ?>
+                                                                        <button type="button" class="btn btn-xs btn-danger py-1.5 px-2 text-white flex-grow-1 d-inline-flex align-items-center justify-content-center shadow-sm" onclick="rejectPraDoc(<?php echo e($existingDoc->id); ?>, <?php echo e($doc->id); ?>)" title="Tolak & Minta Revisi" style="font-size: 11px; font-weight: 600; border-radius: 6px;">
                                                                             <i class="mdi mdi-close me-1"></i>Tolak
                                                                         </button>
-                                                                    @else
+                                                                    <?php else: ?>
                                                                         <span class="badge bg-soft-danger text-danger small ms-1"><i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi</span>
-                                                                    @endif
+                                                                    <?php endif; ?>
                                                                 </div>
-                                                            @else
+                                                            <?php else: ?>
                                                                 <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-end gap-1 w-100">
-                                                                    @if(($existingDoc->status ?? '') === 'verified' || ($existingDoc->status ?? '') === 'valid')
+                                                                    <?php if(($existingDoc->status ?? '') === 'verified' || ($existingDoc->status ?? '') === 'valid'): ?>
                                                                         <span class="badge bg-success text-white py-1 px-2" style="font-size: 10px;">
                                                                             <i class="mdi mdi-shield-check me-1"></i>Sah
                                                                         </span>
-                                                                    @elseif(($existingDoc->status ?? '') === 'rejected' || ($existingDoc->status ?? '') === 'revisi')
+                                                                    <?php elseif(($existingDoc->status ?? '') === 'rejected' || ($existingDoc->status ?? '') === 'revisi'): ?>
                                                                         <span class="badge bg-danger text-white py-1 px-2" style="font-size: 10px;">
                                                                             <i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi
                                                                         </span>
-                                                                    @else
+                                                                    <?php else: ?>
                                                                         <span class="badge bg-warning text-dark py-1 px-2" style="font-size: 10px;">
                                                                             <i class="mdi mdi-clock-outline me-1"></i>Menunggu Review
                                                                         </span>
-                                                                    @endif
+                                                                    <?php endif; ?>
                                                                 </div>
-                                                            @endif
-                                                        @else
+                                                            <?php endif; ?>
+                                                        <?php else: ?>
                                                             <!-- State: Dokumen Baru / Belum Ada Berkas -->
-                                                            @if(!$isReadOnlyKeuangan)
+                                                            <?php if(!$isReadOnlyKeuangan): ?>
                                                                 <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.8rem; font-weight: 600;">
-                                                                    <span>Upload Berkas {{ $doc->name }}</span>
+                                                                    <span>Upload Berkas <?php echo e($doc->name); ?></span>
                                                                     <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">Format PDF/JPG/PNG</span>
                                                                 </label>
                                                                 <div class="pratanah-file-upload-modern">
-                                                                    <input type="file" name="documents[{{ $doc->id }}][file]" accept=".pdf,.jpg,.jpeg,.png">
+                                                                    <input type="file" name="documents[<?php echo e($doc->id); ?>][file]" accept=".pdf,.jpg,.jpeg,.png">
                                                                     <div class="pratanah-file-label-modern py-2 px-3" style="border: 1.5px dashed #9a55ff; background: #faf5ff;">
                                                                         <i class="mdi mdi-cloud-upload" style="color: #9a55ff; font-size: 1.3rem;"></i>
                                                                         <div class="pratanah-file-info-modern">
-                                                                            <span class="file-label-text fw-bold text-primary" style="font-size: 0.82rem;">Pilih Berkas {{ $doc->name }}</span>
+                                                                            <span class="file-label-text fw-bold text-primary" style="font-size: 0.82rem;">Pilih Berkas <?php echo e($doc->name); ?></span>
                                                                             <small style="font-size: 0.72rem; color: #8c98a4;">Format PDF, JPG, PNG (Maks 2MB)</small>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            @else
+                                                            <?php else: ?>
                                                                 <div class="p-2.5 rounded bg-light text-center border text-muted fst-italic" style="font-size: 0.78rem;">
                                                                     Belum ada file fisik diunggah
                                                                 </div>
-                                                            @endif
-                                                        @endif
+                                                            <?php endif; ?>
+                                                        <?php endif; ?>
                                                     </div>
                                                 </div>
                                             </div>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </div>
                                 </div>
 
                                 <!-- ACTIONS FASE 1 -->
                                 <div class="d-flex justify-content-end gap-3 mt-4 footer-action-row">
-                                    @if ($isReadOnlyKeuangan)
+                                    <?php if($isReadOnlyKeuangan): ?>
                                         <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="switchStep(2)">
                                             <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut Lihat Fase 2
                                         </button>
-                                    @elseif (!$land)
+                                    <?php elseif(!$land): ?>
                                         <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="saveFase1(false)">
                                             <i class="mdi mdi-content-save-outline me-1"></i> Simpan Data Fase 1
                                         </button>
-                                    @elseif ($land && $land->status != 'approved' && $land->status != 'rejected')
-                                        <button type="button" class="btn {{ !$isLegalSah ? 'btn-gradient-primary' : 'btn-outline-purple' }} btn-action-mobile" onclick="saveFase1(false)">
+                                    <?php elseif($land && $land->status != 'approved' && $land->status != 'rejected'): ?>
+                                        <button type="button" class="btn <?php echo e(!$isLegalSah ? 'btn-gradient-primary' : 'btn-outline-purple'); ?> btn-action-mobile" onclick="saveFase1(false)">
                                             <i class="mdi mdi-content-save-outline me-1"></i> Simpan Perubahan Fase 1
                                         </button>
-                                        @if ($isLegalSah)
+                                        <?php if($isLegalSah): ?>
                                             <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="saveFase1(true)">
                                                 <i class="mdi mdi-arrow-right-circle me-1"></i> Simpan & Lanjut ke Fase 2
                                             </button>
-                                        @endif
-                                    @else
+                                        <?php endif; ?>
+                                    <?php else: ?>
                                         <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="switchStep(2)">
                                             <i class="mdi mdi-arrow-right-circle me-1"></i> Menuju ke Fase 2
                                         </button>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </form>
                         </div>
@@ -2167,8 +2168,8 @@
                         </div>
                         <div class="card-body">
                             <form id="formFase2" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <input type="hidden" name="id" value="{{ $land->id ?? '' }}">
+                                <?php echo csrf_field(); ?>
+                                <input type="hidden" name="id" value="<?php echo e($land->id ?? ''); ?>">
                                 <input type="hidden" name="fase" value="fase2">
 
                                 <!-- PROFIL PEMILIK & INFORMASI TANAH DARI FASE 1 -->
@@ -2192,33 +2193,34 @@
                                                 <div class="d-flex flex-column gap-2">
                                                     <div class="fase2-info-row">
                                                         <span class="fase2-info-label">Nama Pemilik Tanah:</span>
-                                                        <span class="fase2-info-value">{{ $land->owner_name ?? ($land->certificate_owner ?? '-') }}</span>
+                                                        <span class="fase2-info-value"><?php echo e($land->owner_name ?? ($land->certificate_owner ?? '-')); ?></span>
                                                     </div>
                                                     <div class="fase2-info-row">
                                                         <span class="fase2-info-label">Nama di Sertifikat:</span>
-                                                        <span class="fase2-info-value">{{ $land->certificate_owner ?? '-' }}</span>
+                                                        <span class="fase2-info-value"><?php echo e($land->certificate_owner ?? '-'); ?></span>
                                                     </div>
                                                     <div class="fase2-info-row">
                                                         <span class="fase2-info-label">Nama Makelar:</span>
-                                                        <span class="fase2-info-value">{{ $land->land_owner ?? '-' }}</span>
+                                                        <span class="fase2-info-value"><?php echo e($land->land_owner ?? '-'); ?></span>
                                                     </div>
                                                     <div class="fase2-info-row">
                                                         <span class="fase2-info-label">Instansi / Perusahaan:</span>
-                                                        <span class="fase2-info-value text-muted">{{ $land->land_source ?? '-' }}</span>
+                                                        <span class="fase2-info-value text-muted"><?php echo e($land->land_source ?? '-'); ?></span>
                                                     </div>
                                                     <div class="fase2-info-row">
                                                         <span class="fase2-info-label">No. WhatsApp / HP:</span>
                                                         <span class="fase2-info-value text-success">
-                                                            @if(!empty($land->owner_contact))
-                                                                 {{ $land->owner_contact }}
-                                                            @else
+                                                            <?php if(!empty($land->owner_contact)): ?>
+                                                                 <?php echo e($land->owner_contact); ?>
+
+                                                            <?php else: ?>
                                                                 -
-                                                            @endif
+                                                            <?php endif; ?>
                                                         </span>
                                                     </div>
                                                     <div class="fase2-info-row">
                                                         <span class="fase2-info-label">Alamat Lokasi:</span>
-                                                        <span class="fase2-info-value">{{ $land->address ?? '-' }}</span>
+                                                        <span class="fase2-info-value"><?php echo e($land->address ?? '-'); ?></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -2233,54 +2235,55 @@
                                                 <div class="d-flex flex-column gap-2">
                                                     <div class="fase2-info-row">
                                                         <span class="fase2-info-label">Nama Prospek:</span>
-                                                        <span class="fase2-info-value">{{ $land->land_name ?? '-' }}</span>
+                                                        <span class="fase2-info-value"><?php echo e($land->land_name ?? '-'); ?></span>
                                                     </div>
                                                     <div class="fase2-info-row">
                                                         <span class="fase2-info-label">Status Kepemilikan:</span>
                                                         <span class="fase2-info-value">
-                                                            {{ $land->ownership_status ?? '-' }}
+                                                            <?php echo e($land->ownership_status ?? '-'); ?>
+
                                                         </span>
                                                     </div>
                                                     <div class="fase2-info-row">
                                                         <span class="fase2-info-label">Luas Tanah:</span>
-                                                        <span class="fase2-info-value">{{ $land && $land->area ? number_format($land->area, 0, ',', '.') . ' m²' : '-' }}</span>
+                                                        <span class="fase2-info-value"><?php echo e($land && $land->area ? number_format($land->area, 0, ',', '.') . ' m²' : '-'); ?></span>
                                                     </div>
                                                     <div class="fase2-info-row">
                                                         <span class="fase2-info-label">Harga Penawaran:</span>
-                                                        <span class="fase2-info-value text-danger">Rp {{ number_format($land->offer_price ?? 0, 0, ',', '.') }}</span>
+                                                        <span class="fase2-info-value text-danger">Rp <?php echo e(number_format($land->offer_price ?? 0, 0, ',', '.')); ?></span>
                                                     </div>
                                                     <div class="fase2-info-row">
                                                         <span class="fase2-info-label">Target Negosiasi:</span>
-                                                        <span class="fase2-info-value text-primary">Rp {{ number_format($land->estimated_price ?? 0, 0, ',', '.') }}</span>
+                                                        <span class="fase2-info-value text-primary">Rp <?php echo e(number_format($land->estimated_price ?? 0, 0, ',', '.')); ?></span>
                                                     </div>
                                                     <div class="fase2-info-row">
                                                         <span class="fase2-info-label">Status SPPT PBB:</span>
                                                         <span class="fase2-info-value">
-                                                            @if(($land->pbb_status ?? 'lunas') === 'nunggak')
+                                                            <?php if(($land->pbb_status ?? 'lunas') === 'nunggak'): ?>
                                                                 <span class="badge bg-danger text-white py-1 px-2" style="font-size: 0.78rem;">
                                                                     <i class="mdi mdi-alert-circle-outline me-1"></i>Nunggak
                                                                 </span>
-                                                            @else
+                                                            <?php else: ?>
                                                                 <span class="badge bg-success text-white py-1 px-2" style="font-size: 0.78rem;">
                                                                     <i class="mdi mdi-check-circle-outline me-1"></i>Lunas
                                                                 </span>
-                                                            @endif
+                                                            <?php endif; ?>
                                                         </span>
                                                     </div>
-                                                    @if(($land->pbb_status ?? '') === 'nunggak')
-                                                        @if(!empty($land->pbb_note))
+                                                    <?php if(($land->pbb_status ?? '') === 'nunggak'): ?>
+                                                        <?php if(!empty($land->pbb_note)): ?>
                                                             <div class="fase2-info-row">
                                                                 <span class="fase2-info-label text-danger">Keterangan Nunggak:</span>
-                                                                <span class="fase2-info-value text-danger fw-semibold">{{ $land->pbb_note }}</span>
+                                                                <span class="fase2-info-value text-danger fw-semibold"><?php echo e($land->pbb_note); ?></span>
                                                             </div>
-                                                        @endif
-                                                        @if(!empty($land->pbb_nominal))
+                                                        <?php endif; ?>
+                                                        <?php if(!empty($land->pbb_nominal)): ?>
                                                             <div class="fase2-info-row">
                                                                 <span class="fase2-info-label text-danger">Nominal Tunggakan:</span>
-                                                                <span class="fase2-info-value text-danger fw-bold">Rp {{ number_format($land->pbb_nominal, 0, ',', '.') }}</span>
+                                                                <span class="fase2-info-value text-danger fw-bold">Rp <?php echo e(number_format($land->pbb_nominal, 0, ',', '.')); ?></span>
                                                             </div>
-                                                        @endif
-                                                    @endif
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -2295,23 +2298,23 @@
                                     <div class="row">
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Tanggal Survey Fisik</label>
-                                            <input type="date" class="form-control" name="tgl_survey" value="{{ $land && $land->survey_date ? \Carbon\Carbon::parse($land->survey_date)->format('Y-m-d') : '' }}" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="date" class="form-control" name="tgl_survey" value="<?php echo e($land && $land->survey_date ? \Carbon\Carbon::parse($land->survey_date)->format('Y-m-d') : ''); ?>" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Kondisi Fisik / Kontur Lahan</label>
-                                            <select class="form-select select2-search" id="select_land_status" name="land_status_temp" data-placeholder="Pilih Kondisi Fisik / Kontur Lahan" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <select class="form-select select2-search" id="select_land_status" name="land_status_temp" data-placeholder="Pilih Kondisi Fisik / Kontur Lahan" style="width: 100%;" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                 <option value="">-- Pilih Kondisi Fisik / Kontur Lahan --</option>
-                                                <option value="bekas_sawah" {{ $land && $land->land_status == 'bekas_sawah' ? 'selected' : '' }}>Lahan Bekas Sawah</option>
-                                                <option value="perbukitan" {{ $land && $land->land_status == 'perbukitan' ? 'selected' : '' }}>Perbukitan</option>
-                                                <option value="pekarangan" {{ $land && $land->land_status == 'pekarangan' ? 'selected' : '' }}>Pekarangan</option>
+                                                <option value="bekas_sawah" <?php echo e($land && $land->land_status == 'bekas_sawah' ? 'selected' : ''); ?>>Lahan Bekas Sawah</option>
+                                                <option value="perbukitan" <?php echo e($land && $land->land_status == 'perbukitan' ? 'selected' : ''); ?>>Perbukitan</option>
+                                                <option value="pekarangan" <?php echo e($land && $land->land_status == 'pekarangan' ? 'selected' : ''); ?>>Pekarangan</option>
                                             </select>
                                         </div>
                                         <div class="col-md-4 mb-3">
                                             <label class="form-label">Kondisi Air</label>
-                                            <select class="form-select select2-search" id="select_water_condition" name="water_condition_temp" data-placeholder="Pilih Kondisi Air" style="width: 100%;" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <select class="form-select select2-search" id="select_water_condition" name="water_condition_temp" data-placeholder="Pilih Kondisi Air" style="width: 100%;" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                 <option value="">-- Pilih Kondisi Air --</option>
-                                                <option value="sumur_bor" {{ $land && $land->water_condition == 'sumur_bor' ? 'selected' : '' }}>Sumur Bor</option>
-                                                <option value="pdam" {{ $land && $land->water_condition == 'pdam' ? 'selected' : '' }}>PDAM</option>
+                                                <option value="sumur_bor" <?php echo e($land && $land->water_condition == 'sumur_bor' ? 'selected' : ''); ?>>Sumur Bor</option>
+                                                <option value="pdam" <?php echo e($land && $land->water_condition == 'pdam' ? 'selected' : ''); ?>>PDAM</option>
                                             </select>
                                         </div>
                                     </div>
@@ -2329,30 +2332,30 @@
                                             <div class="p-3 rounded-3 h-100 border bg-light bg-opacity-50">
                                                 <label class="form-label fw-semibold text-dark mb-2 d-flex align-items-center justify-content-between" style="font-size: 0.83rem;">
                                                     <span><i class="mdi mdi-image-area text-primary me-1"></i> Foto Lahan 1</span>
-                                                    @if($land && $land->photo)
+                                                    <?php if($land && $land->photo): ?>
                                                         <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25" style="font-size: 10px;">Sudah Terunggah</span>
-                                                    @endif
+                                                    <?php endif; ?>
                                                 </label>
 
-                                                @if($land && $land->photo)
+                                                <?php if($land && $land->photo): ?>
                                                     <div class="mb-2 position-relative rounded-2 overflow-hidden border" style="height: 140px; background: #000;">
-                                                        <img src="{{ asset($land->photo) }}" id="preview_photo_1" class="w-100 h-100" style="object-fit: cover;" alt="Foto Lahan 1">
-                                                        <a href="{{ asset($land->photo) }}" target="_blank" class="btn btn-xs btn-dark bg-opacity-75 text-white position-absolute bottom-0 end-0 m-2" style="font-size: 11px;">
+                                                        <img src="<?php echo e(asset($land->photo)); ?>" id="preview_photo_1" class="w-100 h-100" style="object-fit: cover;" alt="Foto Lahan 1">
+                                                        <a href="<?php echo e(asset($land->photo)); ?>" target="_blank" class="btn btn-xs btn-dark bg-opacity-75 text-white position-absolute bottom-0 end-0 m-2" style="font-size: 11px;">
                                                             <i class="mdi mdi-magnify me-1"></i> Lihat Penuh
                                                         </a>
                                                     </div>
-                                                @else
+                                                <?php else: ?>
                                                     <div class="mb-2 d-none position-relative rounded-2 overflow-hidden border" id="box_preview_photo_1" style="height: 140px; background: #000;">
                                                         <img id="preview_photo_1" class="w-100 h-100" style="object-fit: cover;" alt="Preview Foto Lahan 1">
                                                     </div>
-                                                @endif
+                                                <?php endif; ?>
 
                                                 <div class="pratanah-file-upload-modern">
-                                                    <input type="file" name="photo" id="input_photo_1" accept="image/jpeg,image/png,image/jpg,image/webp" onchange="previewImageFase2(this, 'preview_photo_1', 'box_preview_photo_1')" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="file" name="photo" id="input_photo_1" accept="image/jpeg,image/png,image/jpg,image/webp" onchange="previewImageFase2(this, 'preview_photo_1', 'box_preview_photo_1')" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                     <div class="pratanah-file-label-modern py-2 px-3">
                                                         <i class="mdi mdi-camera-plus" style="font-size: 1.25rem;"></i>
                                                         <div class="pratanah-file-info-modern">
-                                                            <span class="file-label-text">{{ ($land && $land->photo) ? 'Ganti Foto Lahan 1' : 'Pilih Foto Lahan 1' }}</span>
+                                                            <span class="file-label-text"><?php echo e(($land && $land->photo) ? 'Ganti Foto Lahan 1' : 'Pilih Foto Lahan 1'); ?></span>
                                                             <span class="file-label-hint">JPG, PNG, JPEG, WEBP</span>
                                                         </div>
                                                     </div>
@@ -2365,30 +2368,30 @@
                                             <div class="p-3 rounded-3 h-100 border bg-light bg-opacity-50">
                                                 <label class="form-label fw-semibold text-dark mb-2 d-flex align-items-center justify-content-between" style="font-size: 0.83rem;">
                                                     <span><i class="mdi mdi-image-area text-primary me-1"></i> Foto Lahan 2</span>
-                                                    @if($land && $land->photo_2)
+                                                    <?php if($land && $land->photo_2): ?>
                                                         <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25" style="font-size: 10px;">Sudah Terunggah</span>
-                                                    @endif
+                                                    <?php endif; ?>
                                                 </label>
 
-                                                @if($land && $land->photo_2)
+                                                <?php if($land && $land->photo_2): ?>
                                                     <div class="mb-2 position-relative rounded-2 overflow-hidden border" style="height: 140px; background: #000;">
-                                                        <img src="{{ asset($land->photo_2) }}" id="preview_photo_2" class="w-100 h-100" style="object-fit: cover;" alt="Foto Lahan 2">
-                                                        <a href="{{ asset($land->photo_2) }}" target="_blank" class="btn btn-xs btn-dark bg-opacity-75 text-white position-absolute bottom-0 end-0 m-2" style="font-size: 11px;">
+                                                        <img src="<?php echo e(asset($land->photo_2)); ?>" id="preview_photo_2" class="w-100 h-100" style="object-fit: cover;" alt="Foto Lahan 2">
+                                                        <a href="<?php echo e(asset($land->photo_2)); ?>" target="_blank" class="btn btn-xs btn-dark bg-opacity-75 text-white position-absolute bottom-0 end-0 m-2" style="font-size: 11px;">
                                                             <i class="mdi mdi-magnify me-1"></i> Lihat Penuh
                                                         </a>
                                                     </div>
-                                                @else
+                                                <?php else: ?>
                                                     <div class="mb-2 d-none position-relative rounded-2 overflow-hidden border" id="box_preview_photo_2" style="height: 140px; background: #000;">
                                                         <img id="preview_photo_2" class="w-100 h-100" style="object-fit: cover;" alt="Preview Foto Lahan 2">
                                                     </div>
-                                                @endif
+                                                <?php endif; ?>
 
                                                 <div class="pratanah-file-upload-modern">
-                                                    <input type="file" name="photo_2" id="input_photo_2" accept="image/jpeg,image/png,image/jpg,image/webp" onchange="previewImageFase2(this, 'preview_photo_2', 'box_preview_photo_2')" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="file" name="photo_2" id="input_photo_2" accept="image/jpeg,image/png,image/jpg,image/webp" onchange="previewImageFase2(this, 'preview_photo_2', 'box_preview_photo_2')" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                     <div class="pratanah-file-label-modern py-2 px-3">
                                                         <i class="mdi mdi-camera-plus" style="font-size: 1.25rem;"></i>
                                                         <div class="pratanah-file-info-modern">
-                                                            <span class="file-label-text">{{ ($land && $land->photo_2) ? 'Ganti Foto Lahan 2' : 'Pilih Foto Lahan 2' }}</span>
+                                                            <span class="file-label-text"><?php echo e(($land && $land->photo_2) ? 'Ganti Foto Lahan 2' : 'Pilih Foto Lahan 2'); ?></span>
                                                             <span class="file-label-hint">JPG, PNG, JPEG, WEBP</span>
                                                         </div>
                                                     </div>
@@ -2406,15 +2409,15 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Status Kejelasan Sengketa</label>
-                                            <select class="form-select" id="select_status_tanah" name="status_tanah" onchange="toggleMasalahHukum()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="clear" {{ $land && $land->legal_status == 'clear' ? 'selected' : '' }}>Clear & Clean (Bebas Sengketa)</option>
-                                                <option value="checking" {{ $land && $land->legal_status == 'checking' ? 'selected' : '' }}>Dalam Pengecekan Notaris/BPN</option>
-                                                <option value="problem" {{ $land && $land->legal_status == 'problem' ? 'selected' : '' }}>Bermasalah / Dalam Sengketa</option>
+                                            <select class="form-select" id="select_status_tanah" name="status_tanah" onchange="toggleMasalahHukum()" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
+                                                <option value="clear" <?php echo e($land && $land->legal_status == 'clear' ? 'selected' : ''); ?>>Clear & Clean (Bebas Sengketa)</option>
+                                                <option value="checking" <?php echo e($land && $land->legal_status == 'checking' ? 'selected' : ''); ?>>Dalam Pengecekan Notaris/BPN</option>
+                                                <option value="problem" <?php echo e($land && $land->legal_status == 'problem' ? 'selected' : ''); ?>>Bermasalah / Dalam Sengketa</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-6 mb-3 {{ ($land && $land->legal_status == 'problem') ? '' : 'd-none' }}" id="wrapper_keterangan_masalah">
+                                        <div class="col-md-6 mb-3 <?php echo e(($land && $land->legal_status == 'problem') ? '' : 'd-none'); ?>" id="wrapper_keterangan_masalah">
                                             <label class="form-label text-danger">Detail Permasalahan Hukum <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control border-danger" id="input_keterangan_masalah" name="keterangan_masalah" value="{{ $land->legal_issue_note ?? '' }}" placeholder="Catatan masalah legalitas / sengketa" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control border-danger" id="input_keterangan_masalah" name="keterangan_masalah" value="<?php echo e($land->legal_issue_note ?? ''); ?>" placeholder="Catatan masalah legalitas / sengketa" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                         </div>
                                     </div>
                                 </div>
@@ -2427,61 +2430,61 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Rencana Tata Ruang / Zonasi</label>
-                                            <input type="text" class="form-control" name="zoning" value="{{ $land->zoning ?? '' }}" placeholder="Contoh: Perumahan Kepadatan Sedang, Komersil" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control" name="zoning" value="<?php echo e($land->zoning ?? ''); ?>" placeholder="Contoh: Perumahan Kepadatan Sedang, Komersil" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Tingkat Kesulitan Pengurusan Izin</label>
-                                            <select class="form-select" id="select_kesulitan_izin" name="kesulitan_izin" onchange="toggleKeteranganIzin()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                <option value="mudah" {{ $land && $land->permit_difficulty == 'mudah' ? 'selected' : '' }}>Mudah</option>
-                                                <option value="sedang" {{ $land && $land->permit_difficulty == 'sedang' ? 'selected' : '' }}>Sedang</option>
-                                                <option value="sulit" {{ $land && $land->permit_difficulty == 'sulit' ? 'selected' : '' }}>Sulit</option>
-                                                <option value="very_sulit" {{ $land && $land->permit_difficulty == 'very_sulit' ? 'selected' : '' }}>Sangat Sulit (Zonasi Hijau)</option>
+                                            <select class="form-select" id="select_kesulitan_izin" name="kesulitan_izin" onchange="toggleKeteranganIzin()" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
+                                                <option value="mudah" <?php echo e($land && $land->permit_difficulty == 'mudah' ? 'selected' : ''); ?>>Mudah</option>
+                                                <option value="sedang" <?php echo e($land && $land->permit_difficulty == 'sedang' ? 'selected' : ''); ?>>Sedang</option>
+                                                <option value="sulit" <?php echo e($land && $land->permit_difficulty == 'sulit' ? 'selected' : ''); ?>>Sulit</option>
+                                                <option value="very_sulit" <?php echo e($land && $land->permit_difficulty == 'very_sulit' ? 'selected' : ''); ?>>Sangat Sulit (Zonasi Hijau)</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-12 mb-3 {{ ($land && in_array($land->permit_difficulty, ['sulit', 'very_sulit'])) ? '' : 'd-none' }}" id="wrapper_keterangan_izin">
+                                        <div class="col-md-12 mb-3 <?php echo e(($land && in_array($land->permit_difficulty, ['sulit', 'very_sulit'])) ? '' : 'd-none'); ?>" id="wrapper_keterangan_izin">
                                             <label class="form-label text-danger fw-semibold">Detail / Keterangan Masalah Izin <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control border-danger" id="input_keterangan_izin" name="keterangan_kesulitan_izin" value="{{ $land->permit_difficulty_note ?? '' }}" placeholder="Catatan kendala pengurusan perizinan (contoh: Masuk zona hijau / kendala tata ruang / butuh rekomendasi khusus)..." {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                            <input type="text" class="form-control border-danger" id="input_keterangan_izin" name="keterangan_kesulitan_izin" value="<?php echo e($land->permit_difficulty_note ?? ''); ?>" placeholder="Catatan kendala pengurusan perizinan (contoh: Masuk zona hijau / kendala tata ruang / butuh rekomendasi khusus)..." <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                         </div>
                                         <div class="col-12 mb-3">
                                             <label class="form-label">Fasilitas Sekitar</label>
                                             <div class="pratanah-checkbox-group">
                                                 <div class="pratanah-checkbox-wrapper">
-                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="sekolah" id="fase2_fac_sekolah" {{ $land && $land->facility_school ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="sekolah" id="fase2_fac_sekolah" <?php echo e($land && $land->facility_school ? 'checked' : ''); ?> <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_sekolah">
                                                         <i class="mdi mdi-checkbox-marked-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Dekat Sekolah</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
-                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="rumah_sakit" id="fase2_fac_rs" {{ $land && $land->facility_hospital ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="rumah_sakit" id="fase2_fac_rs" <?php echo e($land && $land->facility_hospital ? 'checked' : ''); ?> <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_rs">
                                                         <i class="mdi mdi-checkbox-marked-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Rumah Sakit</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
-                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="pasar" id="fase2_fac_pasar" {{ $land && $land->facility_market ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="pasar" id="fase2_fac_pasar" <?php echo e($land && $land->facility_market ? 'checked' : ''); ?> <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_pasar">
                                                         <i class="mdi mdi-checkbox-marked-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Pasar</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
-                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="transportasi" id="fase2_fac_trans" {{ $land && $land->facility_transport ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="transportasi" id="fase2_fac_trans" <?php echo e($land && $land->facility_transport ? 'checked' : ''); ?> <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_trans">
                                                         <i class="mdi mdi-checkbox-marked-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Transportasi Umum</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
-                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="mall" id="fase2_fac_mall" {{ $land && $land->facility_mall ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="mall" id="fase2_fac_mall" <?php echo e($land && $land->facility_mall ? 'checked' : ''); ?> <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_mall">
                                                         <i class="mdi mdi-checkbox-marked-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Mall / Swalayan</span>
                                                     </label>
                                                 </div>
                                                 <div class="pratanah-checkbox-wrapper">
-                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="bank" id="fase2_fac_bank" {{ $land && $land->facility_bank ? 'checked' : '' }} {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                    <input type="checkbox" class="pratanah-checkbox-input" name="fasilitas[]" value="bank" id="fase2_fac_bank" <?php echo e($land && $land->facility_bank ? 'checked' : ''); ?> <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                     <label class="pratanah-checkbox-label" for="fase2_fac_bank">
                                                         <i class="mdi mdi-checkbox-marked-circle pratanah-check-icon"></i>
                                                         <span class="pratanah-check-text">Bank / ATM</span>
@@ -2502,12 +2505,12 @@
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Latitude</label>
                                             <input type="text" class="form-control" id="fase2_lat" name="lat"
-                                                value="{{ $land->lat ?? '-8.1727' }}" placeholder="Contoh: -6.2088" required {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                value="<?php echo e($land->lat ?? '-8.1727'); ?>" placeholder="Contoh: -6.2088" required <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Longitude</label>
                                             <input type="text" class="form-control" id="fase2_lng" name="lng"
-                                                value="{{ $land->lng ?? '113.7000' }}" placeholder="Contoh: 106.8456" required {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                value="<?php echo e($land->lng ?? '113.7000'); ?>" placeholder="Contoh: 106.8456" required <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                         </div>
                                         <div class="col-12 mb-2">
                                             <div class="pratanah-map-container">
@@ -2516,7 +2519,7 @@
                                         </div>
                                         <div class="col-12 text-end">
                                             <button type="button" class="btn btn-outline-purple btn-action-mobile"
-                                                onclick="getCurrentLocation()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                onclick="getCurrentLocation()" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                 <i class="mdi mdi-map-marker"></i> Gunakan Lokasi Saya
                                             </button>
                                         </div>
@@ -2529,11 +2532,11 @@
                                         <i class="mdi mdi-arrow-left-circle me-1"></i> Kembali ke Fase 1
                                     </button>
 
-                                    @if ($isReadOnlyKeuangan)
+                                    <?php if($isReadOnlyKeuangan): ?>
                                         <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="switchStep(3)">
                                             <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut Lihat Fase 3
                                         </button>
-                                    @elseif (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                    <?php elseif(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')): ?>
                                         <button type="button" class="btn btn-gradient-primary btn-action-mobile" id="btnSaveFase2" onclick="saveFase2()">
                                             <i class="mdi mdi-content-save-all"></i> Simpan Data Fase 2
                                         </button>
@@ -2541,11 +2544,11 @@
                                         <button type="button" class="btn btn-gradient-success btn-action-mobile" id="btnProceedFase3" onclick="saveFase2(true)">
                                             <i class="mdi mdi-arrow-right-circle me-1"></i> Simpan & Lanjut ke Fase 3
                                         </button>
-                                    @elseif($canAccessFase3)
+                                    <?php elseif($canAccessFase3): ?>
                                         <button type="button" class="btn btn-gradient-success btn-action-mobile" onclick="switchStep(3)">
                                             <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut ke Fase 3
                                         </button>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </form>
                         </div>
@@ -2557,39 +2560,39 @@
                             <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
                                 FASE 3: Sidang & Keputusan Akhir
                             </h5>
-                            @if ($land)
-                                @if ($land->status == 'approved')
+                            <?php if($land): ?>
+                                <?php if($land->status == 'approved'): ?>
                                     <span class="badge bg-success py-2 px-3">
                                         Status: DISETUJUI (APPROVED)
                                     </span>
-                                @elseif ($land->status == 'rejected')
+                                <?php elseif($land->status == 'rejected'): ?>
                                     <span class="badge bg-danger py-2 px-3">
                                         Status: DIBATALKAN (REJECTED)
                                     </span>
-                                @else
+                                <?php else: ?>
                                     <span class="badge bg-primary py-2 px-3" style="background: linear-gradient(135deg, #da8cff, #9a55ff) !important;">
                                         Status: FASE 3
                                     </span>
-                                @endif
-                            @endif
+                                <?php endif; ?>
+                            <?php endif; ?>
                         </div>
                         <div class="card-body">
                             <form id="formFase3">
-                                @csrf
-                                <input type="hidden" name="id" value="{{ $land->id ?? '' }}">
+                                <?php echo csrf_field(); ?>
+                                <input type="hidden" name="id" value="<?php echo e($land->id ?? ''); ?>">
                                 <input type="hidden" name="fase" value="fase3">
 
-                                @if($isReadOnlyKeuangan)
+                                <?php if($isReadOnlyKeuangan): ?>
                                     <div class="alert alert-soft-info border border-info-subtle py-2.5 px-3 mb-3 d-flex align-items-center gap-2 rounded-3 text-info" style="background: #f0f9ff; font-size: 0.85rem;">
                                         <i class="mdi mdi-cash-multiple fs-5"></i>
                                         <div>
                                             <strong>Mode Lihat Data (Divisi Keuangan)</strong>: Menampilkan data transaksi, simulasi biaya legalitas & pajak, notaris rekanan, skema pembayaran, dan cetak invoice (Read-Only).
                                         </div>
                                     </div>
-                                @endif
+                                <?php endif; ?>
 
                                 <!-- PROFIL PEMILIK & INFORMASI TANAH (FASE 1 & 2) -->
-                                @if($land)
+                                <?php if($land): ?>
                                     <div class="form-section mb-4">
                                         <div class="form-section-title mb-3">
                                             Profil Pemilik & Informasi Tanah
@@ -2605,23 +2608,23 @@
                                                     <div class="d-flex flex-column gap-2">
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Nama Pemilik Tanah:</span>
-                                                            <span class="fase2-info-value">{{ $land->owner_name ?? ($land->certificate_owner ?? '-') }}</span>
+                                                            <span class="fase2-info-value"><?php echo e($land->owner_name ?? ($land->certificate_owner ?? '-')); ?></span>
                                                         </div>
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Nama di Sertifikat:</span>
-                                                            <span class="fase2-info-value">{{ $land->certificate_owner ?? '-' }}</span>
+                                                            <span class="fase2-info-value"><?php echo e($land->certificate_owner ?? '-'); ?></span>
                                                         </div>
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Sumber Info:</span>
-                                                            <span class="fase2-info-value text-muted">{{ $land->land_source ?? '-' }}</span>
+                                                            <span class="fase2-info-value text-muted"><?php echo e($land->land_source ?? '-'); ?></span>
                                                         </div>
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Alamat Lokasi:</span>
-                                                            <span class="fase2-info-value">{{ $land->address ?? '-' }}</span>
+                                                            <span class="fase2-info-value"><?php echo e($land->address ?? '-'); ?></span>
                                                         </div>
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Zonasi:</span>
-                                                            <span class="fase2-info-value">{{ $land->zoning ?? '-' }}</span>
+                                                            <span class="fase2-info-value"><?php echo e($land->zoning ?? '-'); ?></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -2636,74 +2639,75 @@
                                                     <div class="d-flex flex-column gap-2">
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Nama Prospek:</span>
-                                                            <span class="fase2-info-value">{{ $land->land_name ?? '-' }}</span>
+                                                            <span class="fase2-info-value"><?php echo e($land->land_name ?? '-'); ?></span>
                                                         </div>
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Status Kepemilikan:</span>
                                                             <span class="fase2-info-value">
-                                                                {{ $land->ownership_status ?? '-' }}
+                                                                <?php echo e($land->ownership_status ?? '-'); ?>
+
                                                             </span>
                                                         </div>
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Luas Tanah:</span>
-                                                            <span class="fase2-info-value">{{ $land && $land->area ? number_format($land->area, 0, ',', '.') . ' m²' : '-' }}</span>
+                                                            <span class="fase2-info-value"><?php echo e($land && $land->area ? number_format($land->area, 0, ',', '.') . ' m²' : '-'); ?></span>
                                                         </div>
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Harga Penawaran:</span>
-                                                            <span class="fase2-info-value text-danger">Rp {{ number_format($land->offer_price ?? 0, 0, ',', '.') }}</span>
+                                                            <span class="fase2-info-value text-danger">Rp <?php echo e(number_format($land->offer_price ?? 0, 0, ',', '.')); ?></span>
                                                         </div>
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Target Negosiasi:</span>
-                                                            <span class="fase2-info-value text-primary">Rp {{ number_format($land->estimated_price ?? 0, 0, ',', '.') }}</span>
+                                                            <span class="fase2-info-value text-primary">Rp <?php echo e(number_format($land->estimated_price ?? 0, 0, ',', '.')); ?></span>
                                                         </div>
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Status SPPT PBB:</span>
                                                             <span class="fase2-info-value">
-                                                                @if(($land->pbb_status ?? 'lunas') === 'nunggak')
+                                                                <?php if(($land->pbb_status ?? 'lunas') === 'nunggak'): ?>
                                                                     <span class="badge bg-danger text-white py-1 px-2" style="font-size: 0.78rem;">
                                                                         <i class="mdi mdi-alert-circle-outline me-1"></i>Nunggak
                                                                     </span>
-                                                                @else
+                                                                <?php else: ?>
                                                                     <span class="badge bg-success text-white py-1 px-2" style="font-size: 0.78rem;">
                                                                         <i class="mdi mdi-check-circle-outline me-1"></i>Lunas
                                                                     </span>
-                                                                @endif
+                                                                <?php endif; ?>
                                                             </span>
                                                         </div>
-                                                        @if(($land->pbb_status ?? '') === 'nunggak')
-                                                            @if(!empty($land->pbb_note))
+                                                        <?php if(($land->pbb_status ?? '') === 'nunggak'): ?>
+                                                            <?php if(!empty($land->pbb_note)): ?>
                                                                 <div class="fase2-info-row">
                                                                     <span class="fase2-info-label text-danger">Keterangan Nunggak:</span>
-                                                                    <span class="fase2-info-value text-danger fw-semibold">{{ $land->pbb_note }}</span>
+                                                                    <span class="fase2-info-value text-danger fw-semibold"><?php echo e($land->pbb_note); ?></span>
                                                                 </div>
-                                                            @endif
-                                                            @if(!empty($land->pbb_nominal))
+                                                            <?php endif; ?>
+                                                            <?php if(!empty($land->pbb_nominal)): ?>
                                                                 <div class="fase2-info-row">
                                                                     <span class="fase2-info-label text-danger">Nominal Tunggakan:</span>
-                                                                    <span class="fase2-info-value text-danger fw-bold">Rp {{ number_format($land->pbb_nominal, 0, ',', '.') }}</span>
+                                                                    <span class="fase2-info-value text-danger fw-bold">Rp <?php echo e(number_format($land->pbb_nominal, 0, ',', '.')); ?></span>
                                                                 </div>
-                                                            @endif
-                                                        @endif
+                                                            <?php endif; ?>
+                                                        <?php endif; ?>
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Status Legalitas / Sengketa:</span>
                                                             <span class="fase2-info-value">
-                                                                @if(($land->legal_status ?? '') == 'problem')
-                                                                    <span class="badge bg-danger py-1 px-2" style="font-size: 11px;">Bermasalah: {{ $land->legal_issue_note ?? 'Dalam Sengketa' }}</span>
-                                                                @elseif(($land->legal_status ?? '') == 'checking')
+                                                                <?php if(($land->legal_status ?? '') == 'problem'): ?>
+                                                                    <span class="badge bg-danger py-1 px-2" style="font-size: 11px;">Bermasalah: <?php echo e($land->legal_issue_note ?? 'Dalam Sengketa'); ?></span>
+                                                                <?php elseif(($land->legal_status ?? '') == 'checking'): ?>
                                                                     <span class="badge bg-warning text-dark py-1 px-2" style="font-size: 11px;">Dalam Pengecekan Notaris/BPN</span>
-                                                                @else
+                                                                <?php else: ?>
                                                                     <span class="badge bg-success py-1 px-2" style="font-size: 11px;">Clear / Bebas Sengketa</span>
-                                                                @endif
+                                                                <?php endif; ?>
                                                             </span>
                                                         </div>
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Tingkat Kesulitan Izin:</span>
                                                             <span class="fase2-info-value">
-                                                                @if(in_array(($land->permit_difficulty ?? ''), ['sulit', 'very_sulit']))
-                                                                    <span class="badge bg-warning text-dark py-1 px-2" style="font-size: 11px;">{{ ucfirst($land->permit_difficulty) }} ({{ $land->permit_difficulty_note ?? '-' }})</span>
-                                                                @else
-                                                                    <span class="badge bg-info text-white py-1 px-2" style="font-size: 11px;">{{ ucfirst($land->permit_difficulty ?? 'Mudah') }}</span>
-                                                                @endif
+                                                                <?php if(in_array(($land->permit_difficulty ?? ''), ['sulit', 'very_sulit'])): ?>
+                                                                    <span class="badge bg-warning text-dark py-1 px-2" style="font-size: 11px;"><?php echo e(ucfirst($land->permit_difficulty)); ?> (<?php echo e($land->permit_difficulty_note ?? '-'); ?>)</span>
+                                                                <?php else: ?>
+                                                                    <span class="badge bg-info text-white py-1 px-2" style="font-size: 11px;"><?php echo e(ucfirst($land->permit_difficulty ?? 'Mudah')); ?></span>
+                                                                <?php endif; ?>
                                                             </span>
                                                         </div>
                                                     </div>
@@ -2711,72 +2715,72 @@
                                             </div>
 
                                             <!-- Card Rangkuman Foto Lahan (Fase 2) di Fase 3 -->
-                                            @if($land && ($land->photo || $land->photo_2))
+                                            <?php if($land && ($land->photo || $land->photo_2)): ?>
                                                 <div class="col-12">
                                                     <div class="p-3 rounded-3 border bg-light bg-opacity-50">
                                                         <h6 class="fw-bold text-primary mb-3" style="font-size: 0.88rem;">
                                                             <i class="mdi mdi-camera me-1"></i> Dokumentasi Foto Lahan (Hasil Survey Fase 2)
                                                         </h6>
                                                         <div class="row g-3">
-                                                            @if($land->photo)
+                                                            <?php if($land->photo): ?>
                                                                 <div class="col-12 col-md-6">
                                                                     <div class="position-relative rounded-2 overflow-hidden border shadow-sm" style="height: 180px; background: #000;">
-                                                                        <img src="{{ asset($land->photo) }}" class="w-100 h-100" style="object-fit: cover;" alt="Foto Lahan 1">
+                                                                        <img src="<?php echo e(asset($land->photo)); ?>" class="w-100 h-100" style="object-fit: cover;" alt="Foto Lahan 1">
                                                                         <span class="badge bg-dark bg-opacity-75 text-white position-absolute top-0 start-0 m-2" style="font-size: 11px;">Foto Lahan 1</span>
-                                                                        <a href="{{ asset($land->photo) }}" target="_blank" class="btn btn-xs btn-light position-absolute bottom-0 end-0 m-2 shadow-sm" style="font-size: 11px;">
+                                                                        <a href="<?php echo e(asset($land->photo)); ?>" target="_blank" class="btn btn-xs btn-light position-absolute bottom-0 end-0 m-2 shadow-sm" style="font-size: 11px;">
                                                                             <i class="mdi mdi-magnify me-1"></i> Lihat Penuh
                                                                         </a>
                                                                     </div>
                                                                 </div>
-                                                            @endif
-                                                            @if($land->photo_2)
+                                                            <?php endif; ?>
+                                                            <?php if($land->photo_2): ?>
                                                                 <div class="col-12 col-md-6">
                                                                     <div class="position-relative rounded-2 overflow-hidden border shadow-sm" style="height: 180px; background: #000;">
-                                                                        <img src="{{ asset($land->photo_2) }}" class="w-100 h-100" style="object-fit: cover;" alt="Foto Lahan 2">
+                                                                        <img src="<?php echo e(asset($land->photo_2)); ?>" class="w-100 h-100" style="object-fit: cover;" alt="Foto Lahan 2">
                                                                         <span class="badge bg-dark bg-opacity-75 text-white position-absolute top-0 start-0 m-2" style="font-size: 11px;">Foto Lahan 2</span>
-                                                                        <a href="{{ asset($land->photo_2) }}" target="_blank" class="btn btn-xs btn-light position-absolute bottom-0 end-0 m-2 shadow-sm" style="font-size: 11px;">
+                                                                        <a href="<?php echo e(asset($land->photo_2)); ?>" target="_blank" class="btn btn-xs btn-light position-absolute bottom-0 end-0 m-2 shadow-sm" style="font-size: 11px;">
                                                                             <i class="mdi mdi-magnify me-1"></i> Lihat Penuh
                                                                         </a>
                                                                     </div>
                                                                 </div>
-                                                            @endif
+                                                            <?php endif; ?>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                     </div>
-                                @endif
+                                <?php endif; ?>
 
                                 <!-- KEPUTUSAN SIDANG AKHIR -->
                                 <div class="form-section">
                                     <div class="form-section-title">
                                         Hasil Sidang & Keputusan Direksi
-                                        @if(!$isAdmin)
+                                        <?php if(!$isAdmin): ?>
                                             <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Wewenang Direksi / Admin)</small>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-bold">Hasil Keputusan Sidang Akhir <span class="text-danger">*</span></label>
-                                            <select class="form-select border-primary" id="fase3_status_akhir" name="status" {{ (!$isAdmin || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                                <option value="approved" {{ $land && $land->status == 'approved' ? 'selected' : '' }}>DIAMBIL - Deal untuk Diakuisisi (Masuk LandBank Utama)</option>
-                                                <option value="pending" {{ $land && $land->status == 'pending' ? 'selected' : '' }}>DIPENDING - Ditunda Sementara (Negosiasi / Evaluasi Lanjutan)</option>
-                                                <option value="rejected" {{ $land && $land->status == 'rejected' ? 'selected' : '' }}>DIBATALKAN - Gugur Prospeknya (Tidak Diambil)</option>
+                                            <select class="form-select border-primary" id="fase3_status_akhir" name="status" <?php echo e((!$isAdmin || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
+                                                <option value="approved" <?php echo e($land && $land->status == 'approved' ? 'selected' : ''); ?>>DIAMBIL - Deal untuk Diakuisisi (Masuk LandBank Utama)</option>
+                                                <option value="pending" <?php echo e($land && $land->status == 'pending' ? 'selected' : ''); ?>>DIPENDING - Ditunda Sementara (Negosiasi / Evaluasi Lanjutan)</option>
+                                                <option value="rejected" <?php echo e($land && $land->status == 'rejected' ? 'selected' : ''); ?>>DIBATALKAN - Gugur Prospeknya (Tidak Diambil)</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-bold">Skala Prioritas Akuisisi</label>
-                                            <select class="form-select" name="prioritas" {{ (!$isAdmin || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                                <option value="urgent" {{ $land && $land->priority == 'urgent' ? 'selected' : '' }}>Urgent (Sangat Prioritas / Segera Diproses)</option>
-                                                <option value="high" {{ $land && $land->priority == 'high' ? 'selected' : '' }}>High (Tinggi)</option>
-                                                <option value="normal" {{ $land && ($land->priority == 'normal' || !$land->priority) ? 'selected' : '' }}>Normal</option>
-                                                <option value="low" {{ $land && $land->priority == 'low' ? 'selected' : '' }}>Low (Rendah)</option>
+                                            <select class="form-select" name="prioritas" <?php echo e((!$isAdmin || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
+                                                <option value="urgent" <?php echo e($land && $land->priority == 'urgent' ? 'selected' : ''); ?>>Urgent (Sangat Prioritas / Segera Diproses)</option>
+                                                <option value="high" <?php echo e($land && $land->priority == 'high' ? 'selected' : ''); ?>>High (Tinggi)</option>
+                                                <option value="normal" <?php echo e($land && ($land->priority == 'normal' || !$land->priority) ? 'selected' : ''); ?>>Normal</option>
+                                                <option value="low" <?php echo e($land && $land->priority == 'low' ? 'selected' : ''); ?>>Low (Rendah)</option>
                                             </select>
                                         </div>
                                         <div class="col-12 mb-3">
                                             <label class="form-label fw-bold">Catatan & Kesimpulan Keputusan Sidang</label>
-                                            <textarea class="form-control" name="catatan" rows="3" placeholder="Masukkan ringkasan pertimbangan keputusan rapat, kesepakatan notaris, tanggal rencana akta pelepasan..." {{ (!$isAdmin || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>{{ $land->notes ?? '' }}</textarea>
+                                            <textarea class="form-control" name="catatan" rows="3" placeholder="Masukkan ringkasan pertimbangan keputusan rapat, kesepakatan notaris, tanggal rencana akta pelepasan..." <?php echo e((!$isAdmin || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>><?php echo e($land->notes ?? ''); ?></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -2794,15 +2798,16 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-bold">Pilih Notaris Rekanan (Master Data Notaris) <span class="text-danger">*</span></label>
-                                            <select class="form-select select2-search" id="select_notaris_id" name="notaris_id" data-placeholder="Pilih Notaris Rekanan" style="width: 100%;" onchange="autoSaveNotaryInfo()" {{ ($isReadOnlyKeuangan || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <select class="form-select select2-search" id="select_notaris_id" name="notaris_id" data-placeholder="Pilih Notaris Rekanan" style="width: 100%;" onchange="autoSaveNotaryInfo()" <?php echo e(($isReadOnlyKeuangan || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                                 <option value="">-- Pilih Notaris Rekanan --</option>
-                                                @if(isset($notarisList))
-                                                    @foreach($notarisList as $not)
-                                                        <option value="{{ $not->id }}" {{ ($land && $land->notaris_id == $not->id) ? 'selected' : '' }}>
-                                                            {{ $not->nama_notaris }}
+                                                <?php if(isset($notarisList)): ?>
+                                                    <?php $__currentLoopData = $notarisList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $not): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($not->id); ?>" <?php echo e(($land && $land->notaris_id == $not->id) ? 'selected' : ''); ?>>
+                                                            <?php echo e($not->nama_notaris); ?>
+
                                                         </option>
-                                                    @endforeach
-                                                @endif
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                <?php endif; ?>
                                             </select>
                                             <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
                                                 *Data tersimpan otomatis & diambil langsung dari menu Master Data Notaris.
@@ -2810,7 +2815,7 @@
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-bold">Jadwal Tanda Tangan Akta di Kantor Notaris</label>
-                                            <input type="datetime-local" class="form-control" id="input_notary_appointment_date" name="notary_appointment_date" value="{{ $land && $land->notary_appointment_date ? \Carbon\Carbon::parse($land->notary_appointment_date)->format('Y-m-d\TH:i') : '' }}" onchange="autoSaveNotaryInfo()" onblur="autoSaveNotaryInfo()" {{ ($isReadOnlyKeuangan || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <input type="datetime-local" class="form-control" id="input_notary_appointment_date" name="notary_appointment_date" value="<?php echo e($land && $land->notary_appointment_date ? \Carbon\Carbon::parse($land->notary_appointment_date)->format('Y-m-d\TH:i') : ''); ?>" onchange="autoSaveNotaryInfo()" onblur="autoSaveNotaryInfo()" <?php echo e(($isReadOnlyKeuangan || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                             <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">
                                                 *Jadwal kehadiran para pihak tersimpan otomatis saat dipilih.
                                             </small>
@@ -2827,16 +2832,17 @@
                                                         <i class="mdi mdi-receipt text-purple" style="font-size: 1.1rem;"></i>
                                                         Kwitansi Pembayaran
                                                     </span>
-                                                    <span id="badge_receipt_file" class="badge {{ $land && $land->receipt_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
-                                                        <i class="mdi {{ $land && $land->receipt_file ? 'mdi-check-circle me-1' : 'mdi-clock-outline me-1' }}"></i>
-                                                        {{ $land && $land->receipt_file ? 'Terunggah' : 'Belum Ada' }}
+                                                    <span id="badge_receipt_file" class="badge <?php echo e($land && $land->receipt_file ? 'bg-success' : 'bg-light text-muted border'); ?>" style="font-size: 10px;">
+                                                        <i class="mdi <?php echo e($land && $land->receipt_file ? 'mdi-check-circle me-1' : 'mdi-clock-outline me-1'); ?>"></i>
+                                                        <?php echo e($land && $land->receipt_file ? 'Terunggah' : 'Belum Ada'); ?>
+
                                                     </span>
                                                 </div>
                                                 <small class="text-muted d-block mb-3" style="font-size: 0.74rem;">Bukti kwitansi bermaterai pembayaran di kantor Notaris</small>
 
                                                 <div class="d-flex flex-column justify-content-end flex-grow-1" id="container_receipt_file">
-                                                    @if($land && $land->receipt_file)
-                                                        @php $cleanReceipt = str_replace('uploads/', '', $land->receipt_file); @endphp
+                                                    <?php if($land && $land->receipt_file): ?>
+                                                        <?php $cleanReceipt = str_replace('uploads/', '', $land->receipt_file); ?>
                                                         <!-- State: Berkas Sudah Terunggah -->
                                                         <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
                                                             <div class="d-flex align-items-center gap-2 mb-2">
@@ -2845,19 +2851,19 @@
                                                                 </div>
                                                                 <div class="overflow-hidden flex-grow-1">
                                                                     <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">Kwitansi Terunggah</span>
-                                                                    <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($land->receipt_file) }}</small>
+                                                                    <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;"><?php echo e(basename($land->receipt_file)); ?></small>
                                                                 </div>
                                                             </div>
                                                             <button type="button" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm btn-preview-doc"
-                                                                data-url="{{ route('dokumen.preview', ['path' => $cleanReceipt]) }}"
-                                                                data-ext="{{ pathinfo($land->receipt_file, PATHINFO_EXTENSION) }}"
+                                                                data-url="<?php echo e(route('dokumen.preview', ['path' => $cleanReceipt])); ?>"
+                                                                data-ext="<?php echo e(pathinfo($land->receipt_file, PATHINFO_EXTENSION)); ?>"
                                                                 data-label="Kwitansi Pembayaran Bermaterai"
                                                                 style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
                                                                 <i class="mdi mdi-eye me-1"></i>Lihat Kwitansi
                                                             </button>
                                                         </div>
 
-                                                        @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                        <?php if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')): ?>
                                                             <div class="pratanah-file-upload-modern mb-1">
                                                                 <input type="file" name="receipt_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'receipt_file')">
                                                                 <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
@@ -2868,9 +2874,9 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        @endif
-                                                    @else
-                                                        @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                        <?php endif; ?>
+                                                    <?php else: ?>
+                                                        <?php if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')): ?>
                                                             <div class="pratanah-file-upload-modern mb-1">
                                                                 <input type="file" name="receipt_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'receipt_file')">
                                                                 <div class="pratanah-file-label-modern py-2.5 px-3">
@@ -2881,12 +2887,12 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        @else
+                                                        <?php else: ?>
                                                             <div class="p-3 text-center text-muted bg-light rounded-2 border" style="font-size: 0.8rem;">
                                                                 <i class="mdi mdi-file-hidden me-1"></i>Belum ada berkas kwitansi
                                                             </div>
-                                                        @endif
-                                                    @endif
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -2899,16 +2905,17 @@
                                                         <i class="mdi mdi-file-certificate text-purple" style="font-size: 1.1rem;"></i>
                                                         Bukti Bayar PPh
                                                     </span>
-                                                    <span id="badge_tax_pph_file" class="badge {{ $land && $land->tax_pph_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
-                                                        <i class="mdi {{ $land && $land->tax_pph_file ? 'mdi-check-circle me-1' : 'mdi-clock-outline me-1' }}"></i>
-                                                        {{ $land && $land->tax_pph_file ? 'Terunggah' : 'Belum Ada' }}
+                                                    <span id="badge_tax_pph_file" class="badge <?php echo e($land && $land->tax_pph_file ? 'bg-success' : 'bg-light text-muted border'); ?>" style="font-size: 10px;">
+                                                        <i class="mdi <?php echo e($land && $land->tax_pph_file ? 'mdi-check-circle me-1' : 'mdi-clock-outline me-1'); ?>"></i>
+                                                        <?php echo e($land && $land->tax_pph_file ? 'Terunggah' : 'Belum Ada'); ?>
+
                                                     </span>
                                                 </div>
                                                 <small class="text-muted d-block mb-3" style="font-size: 0.74rem;">Bukti bayar PPh (ACC Direktur PT & NPWP Penjual)</small>
 
                                                 <div class="d-flex flex-column justify-content-end flex-grow-1" id="container_tax_pph_file">
-                                                    @if($land && $land->tax_pph_file)
-                                                        @php $cleanPph = str_replace('uploads/', '', $land->tax_pph_file); @endphp
+                                                    <?php if($land && $land->tax_pph_file): ?>
+                                                        <?php $cleanPph = str_replace('uploads/', '', $land->tax_pph_file); ?>
                                                         <!-- State: Berkas Sudah Terunggah -->
                                                         <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
                                                             <div class="d-flex align-items-center gap-2 mb-2">
@@ -2917,19 +2924,19 @@
                                                                 </div>
                                                                 <div class="overflow-hidden flex-grow-1">
                                                                     <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">Bukti PPh Terunggah</span>
-                                                                    <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($land->tax_pph_file) }}</small>
+                                                                    <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;"><?php echo e(basename($land->tax_pph_file)); ?></small>
                                                                 </div>
                                                             </div>
                                                             <button type="button" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm btn-preview-doc"
-                                                                data-url="{{ route('dokumen.preview', ['path' => $cleanPph]) }}"
-                                                                data-ext="{{ pathinfo($land->tax_pph_file, PATHINFO_EXTENSION) }}"
+                                                                data-url="<?php echo e(route('dokumen.preview', ['path' => $cleanPph])); ?>"
+                                                                data-ext="<?php echo e(pathinfo($land->tax_pph_file, PATHINFO_EXTENSION)); ?>"
                                                                 data-label="Bukti Pembayaran Pajak PPh"
                                                                 style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
                                                                 <i class="mdi mdi-eye me-1"></i>Lihat Bukti PPh
                                                             </button>
                                                         </div>
 
-                                                        @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                        <?php if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')): ?>
                                                             <div class="pratanah-file-upload-modern mb-1">
                                                                 <input type="file" name="tax_pph_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'tax_pph_file')">
                                                                 <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
@@ -2940,9 +2947,9 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        @endif
-                                                    @else
-                                                        @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                        <?php endif; ?>
+                                                    <?php else: ?>
+                                                        <?php if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')): ?>
                                                             <div class="pratanah-file-upload-modern mb-1">
                                                                 <input type="file" name="tax_pph_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'tax_pph_file')">
                                                                 <div class="pratanah-file-label-modern py-2.5 px-3">
@@ -2953,12 +2960,12 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        @else
+                                                        <?php else: ?>
                                                             <div class="p-3 text-center text-muted bg-light rounded-2 border" style="font-size: 0.8rem;">
                                                                 <i class="mdi mdi-file-hidden me-1"></i>Belum ada berkas PPh
                                                             </div>
-                                                        @endif
-                                                    @endif
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -2971,16 +2978,17 @@
                                                         <i class="mdi mdi-file-sign text-purple" style="font-size: 1.1rem;"></i>
                                                         Akta Pelepasan Hak
                                                     </span>
-                                                    <span id="badge_release_deed_file" class="badge {{ $land && $land->release_deed_file ? 'bg-success' : 'bg-light text-muted border' }}" style="font-size: 10px;">
-                                                        <i class="mdi {{ $land && $land->release_deed_file ? 'mdi-check-circle me-1' : 'mdi-clock-outline me-1' }}"></i>
-                                                        {{ $land && $land->release_deed_file ? 'Terunggah' : 'Belum Ada' }}
+                                                    <span id="badge_release_deed_file" class="badge <?php echo e($land && $land->release_deed_file ? 'bg-success' : 'bg-light text-muted border'); ?>" style="font-size: 10px;">
+                                                        <i class="mdi <?php echo e($land && $land->release_deed_file ? 'mdi-check-circle me-1' : 'mdi-clock-outline me-1'); ?>"></i>
+                                                        <?php echo e($land && $land->release_deed_file ? 'Terunggah' : 'Belum Ada'); ?>
+
                                                     </span>
                                                 </div>
                                                 <small class="text-muted d-block mb-3" style="font-size: 0.74rem;">Salinan Akta Pelepasan Hak resmi selesai dari Notaris</small>
 
                                                 <div class="d-flex flex-column justify-content-end flex-grow-1" id="container_release_deed_file">
-                                                    @if($land && $land->release_deed_file)
-                                                        @php $cleanDeed = str_replace('uploads/', '', $land->release_deed_file); @endphp
+                                                    <?php if($land && $land->release_deed_file): ?>
+                                                        <?php $cleanDeed = str_replace('uploads/', '', $land->release_deed_file); ?>
                                                         <!-- State: Berkas Sudah Terunggah -->
                                                         <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
                                                             <div class="d-flex align-items-center gap-2 mb-2">
@@ -2989,19 +2997,19 @@
                                                                 </div>
                                                                 <div class="overflow-hidden flex-grow-1">
                                                                     <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">Akta Notaris Terunggah</span>
-                                                                    <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($land->release_deed_file) }}</small>
+                                                                    <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;"><?php echo e(basename($land->release_deed_file)); ?></small>
                                                                 </div>
                                                             </div>
                                                             <button type="button" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm btn-preview-doc"
-                                                                data-url="{{ route('dokumen.preview', ['path' => $cleanDeed]) }}"
-                                                                data-ext="{{ pathinfo($land->release_deed_file, PATHINFO_EXTENSION) }}"
+                                                                data-url="<?php echo e(route('dokumen.preview', ['path' => $cleanDeed])); ?>"
+                                                                data-ext="<?php echo e(pathinfo($land->release_deed_file, PATHINFO_EXTENSION)); ?>"
                                                                 data-label="Salinan Akta Pelepasan Hak"
                                                                 style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
                                                                 <i class="mdi mdi-eye me-1"></i>Lihat Akta Pelepasan
                                                             </button>
                                                         </div>
 
-                                                        @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                        <?php if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')): ?>
                                                             <div class="pratanah-file-upload-modern mb-1">
                                                                 <input type="file" name="release_deed_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'release_deed_file')">
                                                                 <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
@@ -3012,9 +3020,9 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        @endif
-                                                    @else
-                                                        @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                        <?php endif; ?>
+                                                    <?php else: ?>
+                                                        <?php if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')): ?>
                                                             <div class="pratanah-file-upload-modern mb-1">
                                                                 <input type="file" name="release_deed_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'release_deed_file')">
                                                                 <div class="pratanah-file-label-modern py-2.5 px-3">
@@ -3025,12 +3033,12 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        @else
+                                                        <?php else: ?>
                                                             <div class="p-3 text-center text-muted bg-light rounded-2 border" style="font-size: 0.8rem;">
                                                                 <i class="mdi mdi-file-hidden me-1"></i>Belum ada salinan akta
                                                             </div>
-                                                        @endif
-                                                    @endif
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -3044,7 +3052,7 @@
                                             <div class="form-section-title mb-0">
                                                 Ringkasan Dokumen Legalitas (Hasil Validasi Fase 1)
                                             </div>
-                                            <small class="text-muted" style="font-size: 0.78rem;">Seluruh berkas legalitas berikut disyaratkan untuk kategori <strong class="text-primary" id="fase3CategoryLabel">{{ $selectedCat }}</strong> dan telah diverifikasi sah pada Fase 1.</small>
+                                            <small class="text-muted" style="font-size: 0.78rem;">Seluruh berkas legalitas berikut disyaratkan untuk kategori <strong class="text-primary" id="fase3CategoryLabel"><?php echo e($selectedCat); ?></strong> dan telah diverifikasi sah pada Fase 1.</small>
                                         </div>
                                         <span class="badge bg-soft-success text-success border border-success-subtle py-1 px-3" style="font-size: 0.8rem; font-weight: 600;">
                                             <i class="mdi mdi-shield-check me-1"></i> Legalitas Terverifikasi Sah
@@ -3053,156 +3061,133 @@
 
                                     <!-- GRID RINGKASAN DOKUMEN FASE 3 (READ-ONLY) -->
                                     <div class="row g-3 mb-2" id="fase3DocumentGridContainer">
-                                        @foreach($documentTypes as $doc)
-                                            @php
+                                        <?php $__currentLoopData = $documentTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $doc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php
                                                 $docCategories = $doc->applicable_categories ?? [];
                                                 $isApplicable = empty($docCategories) || in_array($selectedCat, $docCategories);
                                                 $existingDoc = $uploadedDocs[$doc->id] ?? null;
                                                 $hasExistingFile = ($existingDoc && !empty($existingDoc->file_path));
                                                 $cleanPath = $hasExistingFile ? str_replace('uploads/', '', $existingDoc->file_path) : null;
                                                 $docPhysStatus = $existingDoc->document_status ?? 'ada';
-                                            @endphp
-                                            <div class="col-md-6 col-lg-4 doc-fase3-col {{ !$isApplicable ? 'd-none' : '' }}" data-categories='@json($docCategories)' data-doc-id="{{ $doc->id }}">
+                                            ?>
+                                            <div class="col-md-6 col-lg-4 doc-fase3-col <?php echo e(!$isApplicable ? 'd-none' : ''); ?>" data-categories='<?php echo json_encode($docCategories, 15, 512) ?>' data-doc-id="<?php echo e($doc->id); ?>">
                                                 <div class="card h-100 border shadow-sm rounded-3 p-3 d-flex flex-column" style="background: #ffffff; border-color: #eaedf2 !important;">
                                                     <div class="d-flex align-items-center justify-content-between mb-2 pb-2 border-bottom">
                                                         <div>
-                                                            <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.9rem;">{{ $doc->name }}</h6>
+                                                            <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.9rem;"><?php echo e($doc->name); ?></h6>
                                                         </div>
                                                         <div class="d-flex align-items-center gap-1">
-                                                            @if($docPhysStatus === 'proses')
+                                                            <?php if($docPhysStatus === 'proses'): ?>
                                                                 <span class="badge bg-warning text-dark py-1 px-2" style="font-size: 10px;">
                                                                     <i class="mdi mdi-progress-clock me-1"></i>Proses
                                                                 </span>
-                                                            @endif
+                                                            <?php endif; ?>
 
-                                                            @if($existingDoc && in_array($existingDoc->status ?? '', ['verified', 'valid']))
+                                                            <?php if($existingDoc && in_array($existingDoc->status ?? '', ['verified', 'valid'])): ?>
                                                                 <span class="badge bg-success py-1 px-2" style="font-size: 10px;">
                                                                     <i class="mdi mdi-shield-check me-1"></i>Sah (ACC)
                                                                 </span>
-                                                            @else
+                                                            <?php else: ?>
                                                                 <span class="badge bg-secondary py-1 px-2" style="font-size: 10px;">
-                                                                    {{ ucfirst($existingDoc->status ?? 'Tersedia') }}
+                                                                    <?php echo e(ucfirst($existingDoc->status ?? 'Tersedia')); ?>
+
                                                                 </span>
-                                                            @endif
+                                                            <?php endif; ?>
                                                         </div>
                                                     </div>
 
                                                     <div class="mb-2">
                                                         <small class="text-muted d-block" style="font-size: 0.75rem;">Status Keberadaan:</small>
-                                                        <span class="fw-semibold {{ $docPhysStatus === 'proses' ? 'text-warning-emphasis' : ($docPhysStatus === 'belum_ada' ? 'text-danger' : 'text-success') }}" style="font-size: 0.82rem;">
-                                                            @if($docPhysStatus === 'proses')
+                                                        <span class="fw-semibold <?php echo e($docPhysStatus === 'proses' ? 'text-warning-emphasis' : ($docPhysStatus === 'belum_ada' ? 'text-danger' : 'text-success')); ?>" style="font-size: 0.82rem;">
+                                                            <?php if($docPhysStatus === 'proses'): ?>
                                                                 <i class="mdi mdi-clock-outline me-1"></i>Masih Proses Pengurusan
-                                                            @elseif($docPhysStatus === 'belum_ada')
+                                                            <?php elseif($docPhysStatus === 'belum_ada'): ?>
                                                                 <i class="mdi mdi-close-circle-outline me-1"></i>Belum Ada
-                                                            @else
+                                                            <?php else: ?>
                                                                 <i class="mdi mdi-check-circle-outline me-1"></i>Fisik Lengkap
-                                                            @endif
+                                                            <?php endif; ?>
                                                         </span>
                                                     </div>
 
                                                     <div class="mb-2">
                                                         <small class="text-muted d-block" style="font-size: 0.75rem;">Nomor Dokumen:</small>
                                                         <span class="fw-semibold text-dark" style="font-size: 0.85rem;">
-                                                            {{ $existingDoc->document_number ?? '-' }}
+                                                            <?php echo e($existingDoc->document_number ?? '-'); ?>
+
                                                         </span>
                                                     </div>
 
-                                                    @if($docPhysStatus === 'proses' && !empty($existingDoc->process_notes))
+                                                    <?php if($docPhysStatus === 'proses' && !empty($existingDoc->process_notes)): ?>
                                                         <div class="p-2 rounded-2 mb-2 border" style="background: #fffdf5; border-color: #fde68a !important; font-size: 0.78rem;">
                                                             <strong class="d-block text-dark mb-1"><i class="mdi mdi-information-outline text-warning me-1"></i>Keterangan Proses:</strong>
-                                                            <span class="text-muted">{{ $existingDoc->process_notes }}</span>
+                                                            <span class="text-muted"><?php echo e($existingDoc->process_notes); ?></span>
                                                         </div>
-                                                    @endif
+                                                    <?php endif; ?>
 
-                                                    @if($hasExistingFile)
+                                                    <?php if($hasExistingFile): ?>
                                                         <div class="mt-auto pt-2 border-top d-flex align-items-center justify-content-between">
                                                             <button type="button" class="btn btn-sm btn-success text-white py-1 px-3 d-inline-flex align-items-center flex-shrink-0 btn-preview-doc"
-                                                                data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}"
-                                                                data-ext="{{ pathinfo($existingDoc->file_path, PATHINFO_EXTENSION) }}"
-                                                                data-label="{{ $doc->name }}"
+                                                                data-url="<?php echo e(route('dokumen.preview', ['path' => $cleanPath])); ?>"
+                                                                data-ext="<?php echo e(pathinfo($existingDoc->file_path, PATHINFO_EXTENSION)); ?>"
+                                                                data-label="<?php echo e($doc->name); ?>"
                                                                 style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
                                                                 <i class="mdi mdi-eye me-1"></i>Lihat Berkas
                                                             </button>
                                                             <small class="text-muted" style="font-size: 0.72rem;">
-                                                                {{ $existingDoc->updated_at ? $existingDoc->updated_at->format('d M Y') : '' }}
+                                                                <?php echo e($existingDoc->updated_at ? $existingDoc->updated_at->format('d M Y') : ''); ?>
+
                                                             </small>
                                                         </div>
-                                                    @else
+                                                    <?php else: ?>
                                                         <div class="mt-auto pt-2 border-top">
                                                             <span class="text-muted fst-italic" style="font-size: 0.75rem;">Tidak ada file berkas fisik</span>
                                                         </div>
-                                                    @endif
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </div>
                                 </div>
 
-                                @if(!$isStaffLegal || $isAdmin)
+                                <?php if(!$isStaffLegal || $isAdmin): ?>
                                     <!-- ASPEK LEGALITAS & BIAYA TRANSAKSI -->
                                     <div class="form-section">
                                         <div class="form-section-title d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
                                             <div>
                                                 Aspek Legalitas, Pajak & Biaya Administrasi
-                                                @if(!$canEditFinancial)
+                                                <?php if(!$canEditFinancial): ?>
                                                     <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Divisi Keuangan / Admin)</small>
-                                                @endif
+                                                <?php endif; ?>
                                             </div>
-                                            <div class="d-flex flex-wrap align-items-center gap-2">
-                                                <a href="{{ route('master.biaya-legalitas.index') }}" target="_blank" class="btn btn-sm shadow-xs d-inline-flex align-items-center gap-1 text-decoration-none" style="background: #f5f3ff; border: 1.5px solid #c4b5fd; color: #6d28d9; font-size: 0.8rem; font-weight: 600; border-radius: 6px; padding: 0.35rem 0.75rem;" title="Buka Kelola Master Biaya Legalitas">
-                                                    <i class="mdi mdi-cog-outline"></i> Master Biaya
-                                                </a>
-                                                @if ($canEditFinancial && (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')))
-                                                    <button type="button" class="btn btn-sm btn-gradient-primary py-1 px-3 shadow-sm d-inline-flex align-items-center gap-1 text-white text-nowrap flex-shrink-0" onclick="openMasterBiayaPicker()" style="font-size: 0.8rem; font-weight: 600; border-radius: 6px; white-space: nowrap;">
-                                                        <i class="mdi mdi-format-list-checks me-1" style="font-size: 1rem;"></i> Pilih dari Master Biaya
-                                                    </button>
-                                                    <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2.5 shadow-sm d-inline-flex align-items-center gap-1 text-nowrap flex-shrink-0" onclick="addCustomCostRow()" style="font-size: 0.8rem; font-weight: 600; border-radius: 6px; white-space: nowrap;" title="Tambah Input Biaya Kustom Bebas">
-                                                        <i class="mdi mdi-plus-circle me-1"></i> Biaya Kustom
-                                                    </button>
-                                                @endif
-                                            </div>
+                                            <?php if($canEditFinancial && (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))): ?>
+                                                <button type="button" class="btn btn-sm btn-gradient-primary py-1 px-3 shadow-sm d-inline-flex align-items-center gap-1 text-white text-nowrap flex-shrink-0" onclick="addCustomCostRow()" style="font-size: 0.8rem; font-weight: 600; border-radius: 6px; white-space: nowrap;">
+                                                    <i class="mdi mdi-plus-circle me-1" style="font-size: 1rem;"></i> Tambah Biaya Admin / Lainnya
+                                                </button>
+                                            <?php endif; ?>
                                         </div>
                                         
                                         <!-- Estimasi Biaya Transaksi Standard -->
                                         <div class="row mb-2">
                                             <div class="col-md-3 mb-2">
                                                 <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Biaya IJB / PPJB Notaris</label>
-                                                <input type="text" class="form-control cost-input" name="biaya_ijb_temp" data-cost-name="Biaya IJB / PPJB Notaris" value="{{ $land && $land->cost_ijb ? number_format($land->cost_ijb, 0, ',', '.') : '' }}" placeholder="Contoh: 10.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                                <input type="text" class="form-control cost-input" name="biaya_ijb_temp" data-cost-name="Biaya IJB / PPJB Notaris" value="<?php echo e($land && $land->cost_ijb ? number_format($land->cost_ijb, 0, ',', '.') : ''); ?>" placeholder="Contoh: 10.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" <?php echo e((!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                             </div>
                                             <div class="col-md-3 mb-2">
                                                 <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Estimasi Pajak PPh/BPHTB</label>
-                                                <input type="text" class="form-control cost-input" name="biaya_pajak_temp" data-cost-name="Estimasi Pajak (PPh & BPHTB)" value="{{ $land && $land->cost_tax ? number_format($land->cost_tax, 0, ',', '.') : '' }}" placeholder="Contoh: 50.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                                <input type="text" class="form-control cost-input" name="biaya_pajak_temp" data-cost-name="Estimasi Pajak (PPh & BPHTB)" value="<?php echo e($land && $land->cost_tax ? number_format($land->cost_tax, 0, ',', '.') : ''); ?>" placeholder="Contoh: 50.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" <?php echo e((!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                             </div>
                                             <div class="col-md-3 mb-2">
                                                 <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Fee Makelar / Perantara</label>
-                                                <input type="text" class="form-control cost-input" name="fee_makelar_temp" data-cost-name="Fee Makelar / Perantara" value="{{ $land && $land->cost_broker ? number_format($land->cost_broker, 0, ',', '.') : '' }}" placeholder="Contoh: 15.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                                <input type="text" class="form-control cost-input" name="fee_makelar_temp" data-cost-name="Fee Makelar / Perantara" value="<?php echo e($land && $land->cost_broker ? number_format($land->cost_broker, 0, ',', '.') : ''); ?>" placeholder="Contoh: 15.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" <?php echo e((!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                             </div>
                                             <div class="col-md-3 mb-2">
                                                 <label class="form-label text-muted fw-semibold" style="font-size: 0.82rem;">Biaya Lain-lain</label>
-                                                <input type="text" class="form-control cost-input" name="biaya_lain_temp" data-cost-name="Biaya Lain-lain Admin" value="{{ $land && $land->cost_other ? number_format($land->cost_other, 0, ',', '.') : '' }}" placeholder="Contoh: 5.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                                <input type="text" class="form-control cost-input" name="biaya_lain_temp" data-cost-name="Biaya Lain-lain Admin" value="<?php echo e($land && $land->cost_other ? number_format($land->cost_other, 0, ',', '.') : ''); ?>" placeholder="Contoh: 5.000.000" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" <?php echo e((!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : ''); ?>>
                                             </div>
                                         </div>
 
                                         <!-- Dynamic Custom Extra Costs Container -->
-                                        <div id="custom_costs_container" class="row g-2 mb-3">
-                                            @if($land && is_array($land->custom_costs))
-                                                @foreach($land->custom_costs as $idx => $cost)
-                                                    @php $rowId = 'custom_cost_saved_' . $idx; @endphp
-                                                    <div class="col-md-6 custom-cost-row mb-2" id="{{ $rowId }}">
-                                                        <div class="d-flex align-items-center gap-2">
-                                                            <input type="hidden" name="custom_costs[{{ $rowId }}][master_id]" value="{{ $cost['master_id'] ?? '' }}">
-                                                            <input type="text" name="custom_costs[{{ $rowId }}][name]" value="{{ $cost['name'] ?? '' }}" class="form-control custom-cost-name" placeholder="Nama Biaya" onkeyup="updateFinancialSummary()" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                                            <input type="text" name="custom_costs[{{ $rowId }}][amount]" value="{{ !empty($cost['amount']) ? number_format($cost['amount'], 0, ',', '.') : '' }}" class="form-control custom-cost-amount fw-bold" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                                            @if($canEditFinancial && (!$land || ($land->status != 'approved' && $land->status != 'rejected')))
-                                                                <button type="button" class="btn btn-danger text-white px-2 py-1 flex-shrink-0 shadow-sm" onclick="document.getElementById('{{ $rowId }}').remove(); updateFinancialSummary();" title="Hapus Biaya" style="height: 38px; width: 38px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background-color: #ef4444; border: 1px solid #ef4444;">
-                                                                    <i class="mdi mdi-delete text-white" style="font-size: 1.15rem;"></i>
-                                                                </button>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            @endif
-                                        </div>
+                                        <div id="custom_costs_container" class="row g-2 mb-3"></div>
                                     </div>
 
                                     <!-- SKEMA PEMBAYARAN & PEMBAYARAN BERTAHAP -->
@@ -3215,11 +3200,11 @@
                                         <div class="row g-3 mb-3">
                                             <div class="col-12 col-sm-6 col-lg-4">
                                                 <label class="form-label text-muted">Harga Target Negosiasi (Fase 1)</label>
-                                                <input type="text" class="form-control" value="Rp {{ $land && $land->estimated_price ? number_format($land->estimated_price, 0, ',', '.') : '0' }}" disabled style="background-color: #f1f3f7; color: #6c757d; font-weight: 600;">
+                                                <input type="text" class="form-control" value="Rp <?php echo e($land && $land->estimated_price ? number_format($land->estimated_price, 0, ',', '.') : '0'); ?>" disabled style="background-color: #f1f3f7; color: #6c757d; font-weight: 600;">
                                             </div>
                                             <div class="col-12 col-sm-6 col-lg-4">
                                                 <label class="form-label text-dark font-weight-bold">Harga Deal Pokok Tanah (Rp) <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control font-weight-bold border-primary" id="deal_price_input" name="deal_price" value="Rp {{ $land && ($land->deal_price || $land->estimated_price) ? number_format($land->deal_price ?? $land->estimated_price, 0, ',', '.') : ($land && $land->offer_price ? number_format($land->offer_price, 0, ',', '.') : '0') }}" placeholder="Contoh: 500.000.000" onkeyup="formatRupiahTemp(this); calculateInstallments(); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                <input type="text" class="form-control font-weight-bold border-primary" id="deal_price_input" name="deal_price" value="Rp <?php echo e($land && ($land->deal_price || $land->estimated_price) ? number_format($land->deal_price ?? $land->estimated_price, 0, ',', '.') : ($land && $land->offer_price ? number_format($land->offer_price, 0, ',', '.') : '0')); ?>" placeholder="Contoh: 500.000.000" onkeyup="formatRupiahTemp(this); calculateInstallments(); updateFinancialSummary();" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                             </div>
                                             <div class="col-12 col-sm-6 col-lg-4">
                                                 <label class="form-label font-weight-bold" style="color: #7e22ce;">Grand Total Final Transaksi (Rp)</label>
@@ -3227,7 +3212,7 @@
                                             </div>
                                             <div class="col-12 col-sm-6 col-lg-6" id="dp_container" style="display: none;">
                                                 <label class="form-label text-primary font-weight-bold">Uang Muka / DP (Rp)</label>
-                                                <input type="text" class="form-control border-success mb-2 font-weight-bold" id="dp_price_input" placeholder="Masukkan nominal DP" value="{{ ($land && $land->payments->count() > 0) ? number_format($land->payments->first()->amount, 0, ',', '.') : '' }}" onkeyup="formatRupiahTemp(this); calculateInstallments(); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                <input type="text" class="form-control border-success mb-2 font-weight-bold" id="dp_price_input" placeholder="Masukkan nominal DP" value="<?php echo e(($land && $land->payments->count() > 0) ? number_format($land->payments->first()->amount, 0, ',', '.') : ''); ?>" onkeyup="formatRupiahTemp(this); calculateInstallments(); updateFinancialSummary();" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                             </div>
                                             <div class="col-12 col-sm-6 col-lg-6" id="remaining_container" style="display: none;">
                                                 <label class="form-label text-muted">Sisa Pembayaran (Rp)</label>
@@ -3265,38 +3250,38 @@
                                         <div class="row">
                                             <div class="col-md-4 mb-3">
                                                 <label class="form-label fw-bold">Metode Pembayaran</label>
-                                                <select class="form-select border-primary fw-bold" id="temp_payment_method" name="payment_method_temp" onchange="toggleInstallmentView(); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                    <option value="cash" {{ $land && $land->payment_method == 'cash' ? 'selected' : '' }}>Cash Keras (Lunas Sekaligus)</option>
-                                                    <option value="termin" {{ $land && $land->payment_method == 'termin' ? 'selected' : '' }}>Pembayaran Bertahap (Termin)</option>
+                                                <select class="form-select border-primary fw-bold" id="temp_payment_method" name="payment_method_temp" onchange="toggleInstallmentView(); updateFinancialSummary();" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
+                                                    <option value="cash" <?php echo e($land && $land->payment_method == 'cash' ? 'selected' : ''); ?>>Cash Keras (Lunas Sekaligus)</option>
+                                                    <option value="termin" <?php echo e($land && $land->payment_method == 'termin' ? 'selected' : ''); ?>>Pembayaran Bertahap (Termin)</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4 mb-3" id="temp_duration_container" style="display: none;">
                                                 <label class="form-label fw-bold">Jangka Waktu Bertahap</label>
-                                                <select class="form-select" id="temp_installment_duration" name="installment_duration_temp" onchange="generateInstallmentRows()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                    <option value="3_bulan" {{ $land && $land->installment_duration == '3_bulan' ? 'selected' : '' }}>3 Bulan</option>
-                                                    <option value="6_bulan" {{ $land && $land->installment_duration == '6_bulan' ? 'selected' : '' }}>6 Bulan</option>
-                                                    <option value="9_bulan" {{ $land && $land->installment_duration == '9_bulan' ? 'selected' : '' }}>9 Bulan</option>
-                                                    <option value="1_tahun" {{ $land && ($land->installment_duration == '1_tahun' || !$land->installment_duration) ? 'selected' : '' }}>1 Tahun</option>
+                                                <select class="form-select" id="temp_installment_duration" name="installment_duration_temp" onchange="generateInstallmentRows()" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
+                                                    <option value="3_bulan" <?php echo e($land && $land->installment_duration == '3_bulan' ? 'selected' : ''); ?>>3 Bulan</option>
+                                                    <option value="6_bulan" <?php echo e($land && $land->installment_duration == '6_bulan' ? 'selected' : ''); ?>>6 Bulan</option>
+                                                    <option value="9_bulan" <?php echo e($land && $land->installment_duration == '9_bulan' ? 'selected' : ''); ?>>9 Bulan</option>
+                                                    <option value="1_tahun" <?php echo e($land && ($land->installment_duration == '1_tahun' || !$land->installment_duration) ? 'selected' : ''); ?>>1 Tahun</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4 mb-3" id="temp_count_container" style="display: none;">
                                                 <label class="form-label fw-bold">Frekuensi Pembayaran</label>
-                                                <select class="form-select" id="temp_installment_count" name="installment_count_temp" onchange="generateInstallmentRows()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                    <option value="2" {{ $land && $land->installment_count == 2 ? 'selected' : '' }}>2x Bayar</option>
-                                                    <option value="3" {{ $land && $land->installment_count == 3 ? 'selected' : '' }}>3x Bayar</option>
-                                                    <option value="4" {{ $land && ($land->installment_count == 4 || !$land->installment_count) ? 'selected' : '' }}>4x Bayar</option>
-                                                    <option value="5" {{ $land && $land->installment_count == 5 ? 'selected' : '' }}>5x Bayar</option>
-                                                    <option value="6" {{ $land && $land->installment_count == 6 ? 'selected' : '' }}>6x Bayar</option>
-                                                    <option value="12" {{ $land && $land->installment_count == 12 ? 'selected' : '' }}>12x Bayar</option>
+                                                <select class="form-select" id="temp_installment_count" name="installment_count_temp" onchange="generateInstallmentRows()" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
+                                                    <option value="2" <?php echo e($land && $land->installment_count == 2 ? 'selected' : ''); ?>>2x Bayar</option>
+                                                    <option value="3" <?php echo e($land && $land->installment_count == 3 ? 'selected' : ''); ?>>3x Bayar</option>
+                                                    <option value="4" <?php echo e($land && ($land->installment_count == 4 || !$land->installment_count) ? 'selected' : ''); ?>>4x Bayar</option>
+                                                    <option value="5" <?php echo e($land && $land->installment_count == 5 ? 'selected' : ''); ?>>5x Bayar</option>
+                                                    <option value="6" <?php echo e($land && $land->installment_count == 6 ? 'selected' : ''); ?>>6x Bayar</option>
+                                                    <option value="12" <?php echo e($land && $land->installment_count == 12 ? 'selected' : ''); ?>>12x Bayar</option>
                                                 </select>
                                             </div>
                                         </div>
 
                                         <!-- FORM PEMBAYARAN CASH KERAS -->
-                                        @php
+                                        <?php
                                             $cashPayment = ($land && $land->payment_method == 'cash') ? $land->payments->first() : null;
                                             $initialGrandTotal = ($land ? ($land->estimated_price ?? $land->offer_price ?? 0) + ($land->cost_ijb ?? 0) + ($land->cost_tax ?? 0) + ($land->cost_broker ?? 0) + ($land->cost_other ?? 0) : 0);
-                                        @endphp
+                                        ?>
                                         <div id="cash_payment_container" class="card shadow-none border mt-2 mb-3 p-3 rounded-3" style="background: #fafbfe;">
                                             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
                                                 <div>
@@ -3316,9 +3301,9 @@
                                                     <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                         Tipe Pembayaran <span class="text-danger">*</span>
                                                     </label>
-                                                    <select name="cash_payment_type" id="cash_payment_type" class="form-select border-primary fw-semibold" onchange="toggleCashChannelFields()" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                        <option value="transfer" {{ (!$cashPayment || $cashPayment->payment_type == 'transfer' || !$cashPayment->payment_type) ? 'selected' : '' }}>Transfer Bank</option>
-                                                        <option value="cash" {{ ($cashPayment && $cashPayment->payment_type == 'cash') ? 'selected' : '' }}>Tunai / Cash Langsung</option>
+                                                    <select name="cash_payment_type" id="cash_payment_type" class="form-select border-primary fw-semibold" onchange="toggleCashChannelFields()" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
+                                                        <option value="transfer" <?php echo e((!$cashPayment || $cashPayment->payment_type == 'transfer' || !$cashPayment->payment_type) ? 'selected' : ''); ?>>Transfer Bank</option>
+                                                        <option value="cash" <?php echo e(($cashPayment && $cashPayment->payment_type == 'cash') ? 'selected' : ''); ?>>Tunai / Cash Langsung</option>
                                                     </select>
                                                 </div>
 
@@ -3328,9 +3313,9 @@
                                                         Nominal Pelunasan (Grand Total) <span class="text-danger">*</span>
                                                     </label>
                                                     <input type="text" class="form-control fw-bold border-success text-dark" id="cash_amount_input" name="cash_amount_temp" 
-                                                        value="Rp {{ number_format($cashPayment ? $cashPayment->amount : $initialGrandTotal, 0, ',', '.') }}" 
+                                                        value="Rp <?php echo e(number_format($cashPayment ? $cashPayment->amount : $initialGrandTotal, 0, ',', '.')); ?>" 
                                                         placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateFinancialSummary();" 
-                                                        {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                        <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                 </div>
 
                                                 <!-- Tanggal Pelunasan -->
@@ -3339,8 +3324,8 @@
                                                         Tanggal Realisasi / Bayar <span class="text-danger">*</span>
                                                     </label>
                                                     <input type="date" class="form-control" name="cash_payment_date" 
-                                                        value="{{ $cashPayment && $cashPayment->due_date ? \Carbon\Carbon::parse($cashPayment->due_date)->format('Y-m-d') : date('Y-m-d') }}" 
-                                                        {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                        value="<?php echo e($cashPayment && $cashPayment->due_date ? \Carbon\Carbon::parse($cashPayment->due_date)->format('Y-m-d') : date('Y-m-d')); ?>" 
+                                                        <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                 </div>
 
                                                 <!-- Status Pembayaran -->
@@ -3348,24 +3333,24 @@
                                                     <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                         Status Pembayaran <span class="text-danger">*</span>
                                                     </label>
-                                                    <select name="cash_status" class="form-select border-success fw-semibold" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                        <option value="lunas" {{ (!$cashPayment || $cashPayment->status == 'lunas') ? 'selected' : '' }}>Lunas</option>
-                                                        <option value="belum" {{ ($cashPayment && $cashPayment->status == 'belum') ? 'selected' : '' }}>Belum Lunas</option>
+                                                    <select name="cash_status" class="form-select border-success fw-semibold" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
+                                                        <option value="lunas" <?php echo e((!$cashPayment || $cashPayment->status == 'lunas') ? 'selected' : ''); ?>>Lunas</option>
+                                                        <option value="belum" <?php echo e(($cashPayment && $cashPayment->status == 'belum') ? 'selected' : ''); ?>>Belum Lunas</option>
                                                     </select>
                                                 </div>
                                             </div>
 
                                             <!-- DETAIL TRANSFER BANK CONTAINER (MUNCUL JIKA TRANSFER) -->
-                                            <div id="cash_bank_details_container" class="row g-3 mt-1 pt-2 border-top" style="{{ ($cashPayment && $cashPayment->payment_type == 'cash') ? 'display: none;' : '' }}">
+                                            <div id="cash_bank_details_container" class="row g-3 mt-1 pt-2 border-top" style="<?php echo e(($cashPayment && $cashPayment->payment_type == 'cash') ? 'display: none;' : ''); ?>">
                                                 <!-- Nama Bank -->
                                                 <div class="col-12 col-sm-6 col-md-4">
                                                     <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                         Nama Bank Penerima / Tujuan
                                                     </label>
                                                     <input type="text" class="form-control form-control-sm" name="cash_bank_name" 
-                                                        value="{{ $cashPayment->bank_name ?? '' }}" 
+                                                        value="<?php echo e($cashPayment->bank_name ?? ''); ?>" 
                                                         placeholder="Contoh: BCA / Mandiri / BRI / BNI" 
-                                                        {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                        <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                 </div>
 
                                                 <!-- Nomor Rekening -->
@@ -3374,9 +3359,9 @@
                                                         Nomor Rekening Penerima
                                                     </label>
                                                     <input type="text" class="form-control form-control-sm" name="cash_account_number" 
-                                                        value="{{ $cashPayment->account_number ?? '' }}" 
+                                                        value="<?php echo e($cashPayment->account_number ?? ''); ?>" 
                                                         placeholder="Contoh: 1234567890" 
-                                                        {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                        <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                 </div>
 
                                                 <!-- Atas Nama Rekening -->
@@ -3385,9 +3370,9 @@
                                                         Atas Nama Rekening (A/N)
                                                     </label>
                                                     <input type="text" class="form-control form-control-sm" name="cash_account_holder" 
-                                                        value="{{ $cashPayment->account_holder ?? ($land->owner_name ?? '') }}" 
+                                                        value="<?php echo e($cashPayment->account_holder ?? ($land->owner_name ?? '')); ?>" 
                                                         placeholder="Nama Pemilik Rekening" 
-                                                        {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                        <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                 </div>
                                             </div>
 
@@ -3399,23 +3384,24 @@
                                                         Bukti Transfer / Kuitansi Fisik Pelunasan
                                                     </label>
                                                     <div class="pratanah-file-upload-modern py-2 px-3 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: #ffffff;">
-                                                        <input type="file" name="cash_file" id="cash_payment_file" class="d-none" onchange="handleSingleFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                        <input type="file" name="cash_file" id="cash_payment_file" class="d-none" onchange="handleSingleFileUpload(this)" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                         <label for="cash_payment_file" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
                                                             <i class="mdi mdi-cloud-upload-outline text-muted fs-4"></i>
                                                             <span class="text-truncate text-muted file-label-text" style="max-width: 280px;">
-                                                                {{ $cashPayment && $cashPayment->file_path ? basename($cashPayment->file_path) : 'Unggah Bukti Transfer / Kuitansi Pelunasan' }}
+                                                                <?php echo e($cashPayment && $cashPayment->file_path ? basename($cashPayment->file_path) : 'Unggah Bukti Transfer / Kuitansi Pelunasan'); ?>
+
                                                             </span>
                                                         </label>
-                                                        @if($cashPayment && $cashPayment->file_path)
-                                                            @php $cleanCashPath = str_replace('uploads/', '', $cashPayment->file_path); @endphp
+                                                        <?php if($cashPayment && $cashPayment->file_path): ?>
+                                                            <?php $cleanCashPath = str_replace('uploads/', '', $cashPayment->file_path); ?>
                                                             <button type="button" class="btn btn-xs btn-outline-primary ms-2 py-1 px-2 btn-preview-doc"
-                                                                data-url="{{ route('dokumen.preview', ['path' => $cleanCashPath]) }}"
-                                                                data-ext="{{ pathinfo($cashPayment->file_path, PATHINFO_EXTENSION) }}"
+                                                                data-url="<?php echo e(route('dokumen.preview', ['path' => $cleanCashPath])); ?>"
+                                                                data-ext="<?php echo e(pathinfo($cashPayment->file_path, PATHINFO_EXTENSION)); ?>"
                                                                 data-label="Bukti Pelunasan Tunai"
                                                                 title="Lihat Berkas" style="font-size: 11px;">
                                                                 <i class="mdi mdi-eye me-1"></i>Lihat Berkas
                                                             </button>
-                                                        @endif
+                                                        <?php endif; ?>
                                                     </div>
                                                 </div>
                                             </div>
@@ -3430,11 +3416,11 @@
                                                     </h6>
                                                     <small class="text-muted">Nominal, tanggal jatuh tempo, dan bukti pembayaran dapat dikelola per tahap.</small>
                                                 </div>
-                                                @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                <?php if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')): ?>
                                                     <button type="button" class="btn btn-sm btn-gradient-primary py-1 px-3 shadow-sm d-inline-flex align-items-center gap-1 text-white text-nowrap flex-shrink-0" onclick="addCustomInstallmentRow()" style="font-size: 0.8rem; font-weight: 600; border-radius: 6px; white-space: nowrap;">
                                                         <i class="mdi mdi-plus-circle me-1" style="font-size: 1rem;"></i> Tambah Tahap Pembayaran
                                                     </button>
-                                                @endif
+                                                <?php endif; ?>
                                             </div>
 
                                             <div class="table-responsive">
@@ -3451,68 +3437,69 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody id="installment_tbody">
-                                                        @if($land && $land->payments->count() > 0)
-                                                            @foreach($land->payments as $index => $payment)
-                                                                @php $i = $index + 1; @endphp
-                                                                <tr id="termin_row_{{ $i }}">
+                                                        <?php if($land && $land->payments->count() > 0): ?>
+                                                            <?php $__currentLoopData = $land->payments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $payment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <?php $i = $index + 1; ?>
+                                                                <tr id="termin_row_<?php echo e($i); ?>">
                                                                     <td class="font-weight-bold text-primary text-center">
-                                                                        <input type="hidden" name="installments[{{ $i }}][existing_file_path]" value="{{ $payment->file_path }}">
-                                                                        <input type="text" name="installments[{{ $i }}][term_name]" class="form-control form-control-sm text-center fw-bold text-primary" value="{{ $payment->term_name }}" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                                        <input type="hidden" name="installments[<?php echo e($i); ?>][existing_file_path]" value="<?php echo e($payment->file_path); ?>">
+                                                                        <input type="text" name="installments[<?php echo e($i); ?>][term_name]" class="form-control form-control-sm text-center fw-bold text-primary" value="<?php echo e($payment->term_name); ?>" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                                     </td>
                                                                     <td>
-                                                                        <select name="installments[{{ $i }}][payment_type]" class="form-select form-select-sm mb-1 py-0" style="font-size: 11px;" onchange="handleTerminTypeChange(this)" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
-                                                                            <option value="transfer" {{ (!$payment->payment_type || $payment->payment_type == 'transfer') ? 'selected' : '' }}>Transfer Bank</option>
-                                                                            <option value="cash" {{ ($payment->payment_type == 'cash') ? 'selected' : '' }}>Tunai / Cash</option>
+                                                                        <select name="installments[<?php echo e($i); ?>][payment_type]" class="form-select form-select-sm mb-1 py-0" style="font-size: 11px;" onchange="handleTerminTypeChange(this)" <?php echo e($land && $land->status == 'rejected' ? 'disabled' : ''); ?>>
+                                                                            <option value="transfer" <?php echo e((!$payment->payment_type || $payment->payment_type == 'transfer') ? 'selected' : ''); ?>>Transfer Bank</option>
+                                                                            <option value="cash" <?php echo e(($payment->payment_type == 'cash') ? 'selected' : ''); ?>>Tunai / Cash</option>
                                                                         </select>
-                                                                        <div class="termin-bank-box" style="{{ ($payment->payment_type == 'cash') ? 'display: none;' : '' }}">
-                                                                            <input type="text" name="installments[{{ $i }}][account_number]" class="form-control form-control-sm py-0" style="font-size: 11px;" placeholder="Bank & No. Rekening" value="{{ $payment->account_number ?? '' }}" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
+                                                                        <div class="termin-bank-box" style="<?php echo e(($payment->payment_type == 'cash') ? 'display: none;' : ''); ?>">
+                                                                            <input type="text" name="installments[<?php echo e($i); ?>][account_number]" class="form-control form-control-sm py-0" style="font-size: 11px;" placeholder="Bank & No. Rekening" value="<?php echo e($payment->account_number ?? ''); ?>" <?php echo e($land && $land->status == 'rejected' ? 'disabled' : ''); ?>>
                                                                         </div>
                                                                     </td>
                                                                     <td>
-                                                                        <input type="text" name="installments[{{ $i }}][amount_temp]" class="form-control form-control-sm termin-amount-input fw-semibold" value="Rp {{ number_format($payment->amount, 0, ',', '.') }}" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateInstallmentBalance();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                                        <input type="text" name="installments[<?php echo e($i); ?>][amount_temp]" class="form-control form-control-sm termin-amount-input fw-semibold" value="Rp <?php echo e(number_format($payment->amount, 0, ',', '.')); ?>" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateInstallmentBalance();" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                                                                     </td>
                                                                     <td>
-                                                                        <input type="date" name="installments[{{ $i }}][due_date]" class="form-control form-control-sm" value="{{ $payment->due_date ? \Carbon\Carbon::parse($payment->due_date)->format('Y-m-d') : '' }}" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
+                                                                        <input type="date" name="installments[<?php echo e($i); ?>][due_date]" class="form-control form-control-sm" value="<?php echo e($payment->due_date ? \Carbon\Carbon::parse($payment->due_date)->format('Y-m-d') : ''); ?>" <?php echo e($land && $land->status == 'rejected' ? 'disabled' : ''); ?>>
                                                                     </td>
                                                                     <td>
                                                                         <div class="pratanah-file-upload-modern py-1 px-2 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: rgba(0,0,0,0.01);">
-                                                                            <input type="file" name="installments[{{ $i }}][file]" id="file_tahap_{{ $i }}" class="d-none" onchange="handleTerminFileName(this)" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
-                                                                            <label for="file_tahap_{{ $i }}" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
+                                                                            <input type="file" name="installments[<?php echo e($i); ?>][file]" id="file_tahap_<?php echo e($i); ?>" class="d-none" onchange="handleTerminFileName(this)" <?php echo e($land && $land->status == 'rejected' ? 'disabled' : ''); ?>>
+                                                                            <label for="file_tahap_<?php echo e($i); ?>" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
                                                                                 <i class="mdi mdi-file-upload text-muted fs-5"></i>
                                                                                 <span class="text-truncate text-muted file-label-text" style="max-width: 120px;">
-                                                                                    {{ $payment->file_path ? basename($payment->file_path) : 'Pilih Bukti' }}
+                                                                                    <?php echo e($payment->file_path ? basename($payment->file_path) : 'Pilih Bukti'); ?>
+
                                                                                 </span>
                                                                             </label>
-                                                                            @if($payment->file_path)
-                                                                                @php
+                                                                            <?php if($payment->file_path): ?>
+                                                                                <?php
                                                                                     $cleanPath = str_replace('uploads/', '', $payment->file_path);
-                                                                                @endphp
+                                                                                ?>
                                                                                 <button type="button" class="btn btn-xs btn-link p-0 ms-1 text-primary btn-preview-doc"
-                                                                                    data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}"
-                                                                                    data-ext="{{ pathinfo($payment->file_path, PATHINFO_EXTENSION) }}"
-                                                                                    data-label="Bukti Pembayaran {{ $payment->term_name }}"
+                                                                                    data-url="<?php echo e(route('dokumen.preview', ['path' => $cleanPath])); ?>"
+                                                                                    data-ext="<?php echo e(pathinfo($payment->file_path, PATHINFO_EXTENSION)); ?>"
+                                                                                    data-label="Bukti Pembayaran <?php echo e($payment->term_name); ?>"
                                                                                     title="Lihat Berkas">
                                                                                     <i class="mdi mdi-eye" style="font-size: 14px;"></i>
                                                                                 </button>
-                                                                            @endif
+                                                                            <?php endif; ?>
                                                                         </div>
                                                                     </td>
                                                                     <td>
-                                                                        <select name="installments[{{ $i }}][status]" class="form-select form-select-sm termin-status-select" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
-                                                                            <option value="belum" {{ $payment->status == 'belum' ? 'selected' : '' }}>Belum</option>
-                                                                            <option value="lunas" {{ $payment->status == 'lunas' ? 'selected' : '' }}>Lunas</option>
+                                                                        <select name="installments[<?php echo e($i); ?>][status]" class="form-select form-select-sm termin-status-select" <?php echo e($land && $land->status == 'rejected' ? 'disabled' : ''); ?>>
+                                                                            <option value="belum" <?php echo e($payment->status == 'belum' ? 'selected' : ''); ?>>Belum</option>
+                                                                            <option value="lunas" <?php echo e($payment->status == 'lunas' ? 'selected' : ''); ?>>Lunas</option>
                                                                         </select>
                                                                     </td>
                                                                     <td class="text-center">
-                                                                        @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                                        <?php if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')): ?>
                                                                             <button type="button" class="btn btn-xs btn-danger text-white py-1 px-2 shadow-sm" onclick="removeInstallmentRow(this)" title="Hapus Tahap" style="background-color: #ef4444; border: 1px solid #ef4444; border-radius: 4px;">
                                                                                 <i class="mdi mdi-delete text-white"></i>
                                                                             </button>
-                                                                        @endif
+                                                                        <?php endif; ?>
                                                                     </td>
                                                                 </tr>
-                                                            @endforeach
-                                                        @endif
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        <?php endif; ?>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -3529,7 +3516,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                @else
+                                <?php else: ?>
                                     <div class="alert alert-soft-secondary border py-3 px-3 mb-4 rounded-3 d-flex align-items-center gap-2" style="background: #f8fafc; font-size: 0.85rem; border-color: #e2e8f0 !important;">
                                         <i class="mdi mdi-shield-lock-outline fs-4 text-purple" style="color: #9a55ff;"></i>
                                         <div>
@@ -3537,7 +3524,7 @@
                                             <span class="text-muted">Sebagai Staff Legal, fokus utama Anda adalah input dan verifikasi berkas dokumen legalitas pada Fase 1. Pengelolaan biaya transaksi, skema pembayaran, dan realisasi termin ditangani secara khusus oleh Divisi Keuangan & Manajemen.</span>
                                         </div>
                                     </div>
-                                @endif
+                                <?php endif; ?>
 
                                 <!-- ACTIONS -->
                                 <div class="d-flex justify-content-between align-items-center gap-3 mt-4 footer-action-row">
@@ -3547,37 +3534,38 @@
                                         </button>
                                     </div>
                                     <div class="d-flex gap-2">
-                                        @if ($land && ($isAdmin || $isKeuangan))
+                                        <?php if($land && ($isAdmin || $isKeuangan)): ?>
                                             <button type="button" class="btn btn-outline-purple py-2 px-3 shadow-sm" onclick="previewInvoice()">
                                                 <i class="mdi mdi-printer me-1"></i> Cetak / Pratinjau Invoice
                                             </button>
-                                        @endif
-                                        @if ($isAdmin)
-                                            @if ($land && $land->status == 'approved')
+                                        <?php endif; ?>
+                                        <?php if($isAdmin): ?>
+                                            <?php if($land && $land->status == 'approved'): ?>
                                                 <button type="button" class="btn btn-gradient-warning py-2 px-4 shadow-sm" onclick="saveFase3()">
                                                     <i class="mdi mdi-cash-check me-1"></i> Update Keputusan & Transaksi
                                                 </button>
-                                            @elseif (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                            <?php elseif(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')): ?>
                                                 <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="saveFase3()">
                                                     <i class="mdi mdi-content-save-all me-1"></i> Simpan Keputusan Sidang (Admin)
                                                 </button>
-                                            @endif
-                                        @elseif ($isKeuangan)
+                                            <?php endif; ?>
+                                        <?php elseif($isKeuangan): ?>
                                             <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="saveFase3()">
                                                 <i class="mdi mdi-cash-register me-1"></i> Simpan & Update Data Keuangan
                                             </button>
-                                        @endif
-                                        @if($land)
-                                            @if($land->land_bank_id)
-                                                <a href="{{ route('properti.edit', $land->land_bank_id) }}#dokumen" class="btn btn-gradient-success py-2 px-3 shadow-sm d-inline-flex align-items-center gap-1" title="Buka Dokumen Pengindukan & Perizinan di Pasca Land Bank">
-                                                    <i class="mdi mdi-check-decagram me-1"></i> Buka Perizinan di Pasca Land Bank #{{ $land->land_bank_id }}
+                                        <?php endif; ?>
+                                        <?php if($land): ?>
+                                            <?php if($land->land_bank_id): ?>
+                                                <a href="<?php echo e(route('properti.edit', $land->land_bank_id)); ?>#dokumen" class="btn btn-gradient-success py-2 px-3 shadow-sm d-inline-flex align-items-center gap-1" title="Buka Dokumen Pengindukan & Perizinan di Pasca Land Bank">
+                                                    <i class="mdi mdi-check-decagram me-1"></i> Buka Perizinan di Pasca Land Bank #<?php echo e($land->land_bank_id); ?>
+
                                                 </a>
-                                            @else
+                                            <?php else: ?>
                                                 <button type="button" class="btn btn-gradient-success py-2 px-3 shadow-sm d-inline-flex align-items-center gap-1" onclick="confirmFinalizePasca()" title="Finalisasi dan alihkan tanah ke Pasca Land Bank">
                                                     <i class="mdi mdi-shield-crown me-1"></i> Finalisasi ke Pasca Land Bank
                                                 </button>
-                                            @endif
-                                        @endif
+                                            <?php endif; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </form>
@@ -3585,7 +3573,7 @@
                     </div>
                 </div>
 
-                {{-- MODAL PREVIEW DOKUMEN (ZOOMABLE IMAGE + PDF READER + SCROLLABLE) --}}
+                
     <div class="modal fade" id="modalPreviewDokumen" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content shadow-lg" style="border-radius:14px; overflow:hidden; border:none;">
@@ -3596,9 +3584,9 @@
                         <span class="badge bg-secondary ms-1" id="modalDocExt" style="font-size:0.68rem;"></span>
                     </div>
 
-                    {{-- Toolbar Zoom & Aksi --}}
+                    
                     <div class="d-flex align-items-center gap-2">
-                        {{-- Toolbar Image Zoom (Hanya aktif saat gambar) --}}
+                        
                         <div id="imgZoomToolbar" class="d-none align-items-center bg-light border rounded-2 px-2 py-0.5 gap-1">
                             <button type="button" class="btn btn-xs btn-link text-dark p-1" onclick="changeImageZoom(-0.25)" title="Zoom Out (-)">
                                 <i class="mdi mdi-magnify-minus-outline fs-6"></i>
@@ -3616,12 +3604,12 @@
                             </button>
                         </div>
 
-                        {{-- Tombol Buka Tab Baru --}}
+                        
                         <a href="#" id="btnOpenNewTab" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2 d-flex align-items-center gap-1" title="Buka di Tab Baru">
                             <i class="mdi mdi-open-in-new"></i> <span class="d-none d-md-inline" style="font-size: 0.78rem;">Tab Baru</span>
                         </a>
 
-                        {{-- Tombol Unduh --}}
+                        
                         <a href="#" id="btnDownloadDoc" class="btn btn-sm btn-outline-primary py-1 px-2.5 d-flex align-items-center gap-1" download title="Download Dokumen">
                             <i class="mdi mdi-download"></i> <span class="d-none d-md-inline" style="font-size: 0.78rem;">Unduh</span>
                         </a>
@@ -3631,13 +3619,13 @@
                 </div>
 
                 <div class="modal-body p-0 position-relative" style="background:#0f1117; min-height:65vh;">
-                    {{-- Loading State --}}
+                    
                     <div id="previewLoading" class="flex-column align-items-center justify-content-center gap-3" style="min-height:65vh; background: #ffffff; display: flex;">
                         <div class="spinner-border text-primary" style="width:2.5rem;height:2.5rem;"></div>
                         <span class="text-muted small fw-semibold">Memuat dokumen, mohon tunggu...</span>
                     </div>
 
-                    {{-- Error State --}}
+                    
                     <div id="previewError" class="flex-column align-items-center justify-content-center gap-3 text-center p-4" style="min-height:65vh; background: #ffffff; display: none;">
                         <i class="mdi mdi-file-alert-outline text-danger" style="font-size:4rem; opacity:.8;"></i>
                         <div>
@@ -3656,10 +3644,10 @@
                         </div>
                     </div>
 
-                    {{-- PDF Viewer via iframe --}}
+                    
                     <iframe id="iframePreview" src="" style="width:100%; height:75vh; border:none; display:none; background:#ffffff;"></iframe>
 
-                    {{-- Image Viewer Container with Scrollbars & Drag-Zoom --}}
+                    
                     <div id="divImagePreview" class="justify-content-center align-items-center" style="width: 100%; height: 75vh; overflow: auto; background: #181924; position: relative; padding: 20px; display: none;">
                         <div id="imgWrapper" style="display: inline-block; transform-origin: center center; transition: transform 0.12s ease-out; margin: auto;">
                             <img id="imgPreview" src="" alt="Preview Dokumen" style="max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 6px; box-shadow: 0 10px 35px rgba(0,0,0,0.6); display: block;" />
@@ -3675,107 +3663,11 @@
                 </div>
             </div>
         </div>
-    {{-- MODAL PILIH DARI MASTER BIAYA LEGALITAS & ADMINISTRASI --}}
-    <div class="modal fade" id="modalPilihMasterBiaya" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content shadow-lg border-0" style="border-radius: 14px; overflow: hidden;">
-                <div class="modal-header bg-gradient-primary text-white py-3 px-4 d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="mdi mdi-cash-multiple fs-4 text-white"></i>
-                        <div>
-                            <h6 class="modal-title mb-0 fw-bold text-white">Pilih dari Master Biaya Legalitas & Transaksi</h6>
-                            <small class="text-white-50">Tambahkan komponen biaya terstandarisasi ke rincian transaksi lahan</small>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body p-3 p-md-4">
-                    <!-- Search Input & Direct Link -->
-                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
-                        <div class="input-group" style="max-width: 320px;">
-                            <span class="input-group-text bg-light border-end-0"><i class="mdi mdi-magnify text-muted"></i></span>
-                            <input type="text" id="searchMasterBiayaInput" class="form-control border-start-0" placeholder="Cari nama biaya atau kategori..." onkeyup="filterMasterBiayaCards()">
-                        </div>
-                        <a href="{{ route('master.biaya-legalitas.index') }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1" style="font-size: 0.8rem; font-weight: 600;">
-                            <i class="mdi mdi-open-in-new"></i> Buka Master Data Biaya
-                        </a>
-                    </div>
-
-                    <!-- Items Container -->
-                    <div class="row g-2" id="masterBiayaCardsContainer">
-                        @forelse($masterBiayaLegalitas ?? [] as $mBiaya)
-                            @php
-                                $badgeColor = match($mBiaya->kategori) {
-                                    'Legalitas & Notaris'       => 'background: rgba(126, 34, 206, 0.1); color: #7e22ce;',
-                                    'Pajak & Retribusi'         => 'background: rgba(220, 38, 38, 0.1); color: #dc2626;',
-                                    'Perantara & Broker'        => 'background: rgba(217, 119, 6, 0.1); color: #d97706;',
-                                    'Perizinan & Kas Desa'      => 'background: rgba(16, 185, 129, 0.1); color: #059669;',
-                                    default                     => 'background: rgba(59, 130, 246, 0.1); color: #2563eb;',
-                                };
-                            @endphp
-                            <div class="col-12 col-md-6 master-biaya-card-item" data-name="{{ strtolower($mBiaya->nama_biaya . ' ' . $mBiaya->kode_biaya . ' ' . $mBiaya->kategori) }}">
-                                <div class="card h-100 p-3 border rounded-3 shadow-none hover-shadow-sm" style="background: #fafbfe; transition: all 0.2s ease;">
-                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-                                        <div>
-                                            <span class="badge px-2 py-1 rounded-pill" style="{{ $badgeColor }} font-size: 10.5px; font-weight: 600;">
-                                                {{ $mBiaya->kategori }}
-                                            </span>
-                                            <h6 class="fw-bold text-dark mt-1 mb-0" style="font-size: 0.92rem;">
-                                                {{ $mBiaya->nama_biaya }}
-                                            </h6>
-                                        </div>
-                                        <button type="button" class="btn btn-sm btn-gradient-primary py-1 px-2.5 rounded-2 d-flex align-items-center gap-1 shadow-xs flex-shrink-0"
-                                            onclick="applyMasterBiaya({{ $mBiaya->id }}, '{{ addslashes($mBiaya->nama_biaya) }}', '{{ $mBiaya->tipe_perhitungan }}', {{ $mBiaya->nominal_standar ?? 0 }}, {{ $mBiaya->persentase_standar ?? 0 }})"
-                                            style="font-size: 0.78rem; font-weight: 600;">
-                                            <i class="mdi mdi-plus"></i> Tambah
-                                        </button>
-                                    </div>
-
-                                    <div class="d-flex align-items-center justify-content-between mt-auto pt-2 border-top">
-                                        <div>
-                                            @if($mBiaya->tipe_perhitungan === 'nominal_tetap')
-                                                <small class="text-muted d-block" style="font-size: 11px;">Nominal Acuan</small>
-                                                <span class="fw-bold text-success" style="font-size: 0.88rem;">
-                                                    Rp {{ number_format($mBiaya->nominal_standar ?? 0, 0, ',', '.') }}
-                                                </span>
-                                            @elseif($mBiaya->tipe_perhitungan === 'persentase')
-                                                <small class="text-muted d-block" style="font-size: 11px;">Persentase Deal</small>
-                                                <span class="fw-bold text-purple" style="color: #7e22ce; font-size: 0.88rem;">
-                                                    {{ $mBiaya->persentase_standar }}% dari Deal
-                                                </span>
-                                            @else
-                                                <small class="text-muted d-block" style="font-size: 11px;">Tipe Biaya</small>
-                                                <span class="badge bg-secondary text-white" style="font-size: 11px;">Fleksibel</span>
-                                            @endif
-                                        </div>
-                                        <div class="text-end">
-                                            <small class="text-muted d-block" style="font-size: 11px;">Penanggung</small>
-                                            <span class="badge bg-light text-secondary border" style="font-size: 10px;">
-                                                {{ ucfirst($mBiaya->pihak_penanggung) }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="col-12 text-center py-4 text-muted">
-                                <p class="mb-0">Belum ada data Master Biaya Legalitas.</p>
-                            </div>
-                        @endforelse
-                    </div>
-                </div>
-
-                <div class="modal-footer bg-light py-2 px-3 border-top">
-                    <button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
     </div>
 
-    @endsection
+    <?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -3954,11 +3846,11 @@
         });
         // State variables
         let activeStep = 1;
-        const isEditMode = {{ $land ? 'true' : 'false' }};
-        const currentLandStatus = "{{ $land->status ?? 'fase1' }}";
-        let isLegalSah = {{ $isLegalSah ? 'true' : 'false' }};
-        let isFase2Done = {{ ($isFase2Done ?? false) ? 'true' : 'false' }};
-        let canAccessFase3 = {{ ($canAccessFase3 ?? false) ? 'true' : 'false' }};
+        const isEditMode = <?php echo e($land ? 'true' : 'false'); ?>;
+        const currentLandStatus = "<?php echo e($land->status ?? 'fase1'); ?>";
+        let isLegalSah = <?php echo e($isLegalSah ? 'true' : 'false'); ?>;
+        let isFase2Done = <?php echo e(($isFase2Done ?? false) ? 'true' : 'false'); ?>;
+        let canAccessFase3 = <?php echo e(($canAccessFase3 ?? false) ? 'true' : 'false'); ?>;
 
         function switchStep(step) {
             // If in create mode and user tries to skip to step 2 or 3, reject
@@ -4046,7 +3938,7 @@
             if (activeStepEl) activeStepEl.classList.add('active');
 
             // Apply completed status & checkmarks
-            const isFase3Finished = isEditMode && (currentLandStatus === 'fase3' || currentLandStatus === 'fase4' || currentLandStatus === 'approved' || currentLandStatus === 'rejected' || {{ ($land && !empty($land->notaris_id)) ? 'true' : 'false' }});
+            const isFase3Finished = isEditMode && (currentLandStatus === 'fase3' || currentLandStatus === 'fase4' || currentLandStatus === 'approved' || currentLandStatus === 'rejected' || <?php echo e(($land && !empty($land->notaris_id)) ? 'true' : 'false'); ?>);
 
             if (isEditMode && isLegalSah) {
                 document.getElementById('step1')?.classList.add('completed');
@@ -4302,19 +4194,19 @@
                 let form = document.getElementById('formFase1');
                 let formData = new FormData(form);
 
-                let res = await fetchJSON("{{ route('pra-landbanks.store') }}", formData);
+                let res = await fetchJSON("<?php echo e(route('pra-landbanks.store')); ?>", formData);
                 Swal.close();
 
                 if (res.success) {
-                    let targetId = res.id || "{{ $land->id ?? '' }}";
+                    let targetId = res.id || "<?php echo e($land->id ?? ''); ?>";
                     if (andProceed && targetId && isLegalSah) {
                         sessionStorage.setItem('success_message', 'Data Fase 1 berhasil disimpan.');
-                        window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=2";
+                        window.location.href = "<?php echo e(url('/properti/pra-landbank/proses')); ?>/" + targetId + "?step=2";
                     } else if (targetId) {
                         sessionStorage.setItem('success_message', 'Perubahan data Fase 1 berhasil disimpan.');
-                        window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=1";
+                        window.location.href = "<?php echo e(url('/properti/pra-landbank/proses')); ?>/" + targetId + "?step=1";
                     } else {
-                        window.location.href = "{{ route('pralandbank.all') }}";
+                        window.location.href = "<?php echo e(route('pralandbank.all')); ?>";
                     }
                 } else {
                     showError(res.message);
@@ -4344,21 +4236,21 @@
                 let form = document.getElementById('formFase2');
                 let formData = new FormData(form);
 
-                let res = await fetchJSON("{{ route('pra-landbanks.store') }}", formData);
+                let res = await fetchJSON("<?php echo e(route('pra-landbanks.store')); ?>", formData);
                 Swal.close();
 
                 if (res.success) {
-                    let targetId = res.id || "{{ $land->id ?? '' }}";
+                    let targetId = res.id || "<?php echo e($land->id ?? ''); ?>";
                     isFase2Done = true;
                     document.querySelector('#step3 .mdi-lock')?.remove();
                     document.getElementById('step3')?.classList.remove('disabled');
                     sessionStorage.setItem('success_message', 'Data Fase 2 & Survey Kelayakan berhasil disimpan.');
                     if (andProceed && targetId) {
-                        window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=3";
+                        window.location.href = "<?php echo e(url('/properti/pra-landbank/proses')); ?>/" + targetId + "?step=3";
                     } else if (targetId) {
-                        window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=2";
+                        window.location.href = "<?php echo e(url('/properti/pra-landbank/proses')); ?>/" + targetId + "?step=2";
                     } else {
-                        window.location.href = "{{ route('pralandbank.all') }}";
+                        window.location.href = "<?php echo e(route('pralandbank.all')); ?>";
                     }
                 } else {
                     showError(res.message);
@@ -4420,7 +4312,7 @@
                     formData.set('notary_appointment_date', inputNotaryDate.value);
                 }
 
-                let res = await fetchJSON("{{ route('pra-landbanks.store') }}", formData);
+                let res = await fetchJSON("<?php echo e(route('pra-landbanks.store')); ?>", formData);
                 Swal.close();
 
                 if (res.success) {
@@ -4429,11 +4321,11 @@
                         textMsg = 'Tanah berhasil disetujui (Deal) dan telah di-upgrade ke Daftar Proyek Landbank utama!';
                     }
                     
-                    const invoiceUrl = res.invoice_url || "{{ $land ? route('pra-landbank.invoice', $land->id) : '' }}";
+                    const invoiceUrl = res.invoice_url || "<?php echo e($land ? route('pra-landbank.invoice', $land->id) : ''); ?>";
 
                     Swal.fire({
                         icon: 'success',
-                        title: '{!! ($isKeuangan && !$isAdmin) ? "Data Keuangan Berhasil Disimpan!" : "Keputusan Fase 3 Disimpan!" !!}',
+                        title: '<?php echo ($isKeuangan && !$isAdmin) ? "Data Keuangan Berhasil Disimpan!" : "Keputusan Fase 3 Disimpan!"; ?>',
                         html: `
                             <p class="mb-3 text-muted" style="font-size: 0.9rem;">${textMsg}</p>
                             <div class="alert alert-light border py-2 px-3 mb-0 text-start" style="font-size: 0.85rem; background: #fafbfe;">
@@ -4452,9 +4344,9 @@
                             if (invoiceUrl) {
                                 window.open(invoiceUrl, '_blank');
                             }
-                            window.location.href = "{{ route('pralandbank.all') }}";
+                            window.location.href = "<?php echo e(route('pralandbank.all')); ?>";
                         } else {
-                            window.location.href = "{{ route('pralandbank.all') }}";
+                            window.location.href = "<?php echo e(route('pralandbank.all')); ?>";
                         }
                     });
                 } else {
@@ -4499,7 +4391,7 @@
 
                 formData.append('is_preview', '1');
 
-                let res = await fetchJSON("{{ route('pra-landbanks.store') }}", formData);
+                let res = await fetchJSON("<?php echo e(route('pra-landbanks.store')); ?>", formData);
                 Swal.close();
 
                 if (res.success) {
@@ -4529,7 +4421,7 @@
             let lat = parseFloat(document.getElementById('fase2_lat')?.value) || -8.1727;
             let lng = parseFloat(document.getElementById('fase2_lng')?.value) || 113.7000;
 
-            const isReadOnly = {{ ($land && ($land->status == 'approved' || $land->status == 'rejected')) ? 'true' : 'false' }};
+            const isReadOnly = <?php echo e(($land && ($land->status == 'approved' || $land->status == 'rejected')) ? 'true' : 'false'); ?>;
 
             if (!mapFase2) {
                 // Google Maps Tile Layers
@@ -4762,26 +4654,26 @@
                 row.id = `installment_row_${i}`;
                 row.innerHTML = `
                     <td>
-                        <input type="text" name="installments[${i}][term_name]" value="${terminName}" class="form-control form-control-sm text-center fw-bold text-primary" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                        <input type="text" name="installments[${i}][term_name]" value="${terminName}" class="form-control form-control-sm text-center fw-bold text-primary" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                     </td>
                     <td>
-                        <select name="installments[${i}][payment_type]" class="form-select form-select-sm mb-1 py-0" style="font-size: 11px;" onchange="handleTerminTypeChange(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                        <select name="installments[${i}][payment_type]" class="form-select form-select-sm mb-1 py-0" style="font-size: 11px;" onchange="handleTerminTypeChange(this)" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                             <option value="transfer">Transfer Bank</option>
                             <option value="cash">Tunai / Cash</option>
                         </select>
                         <div class="termin-bank-box">
-                            <input type="text" name="installments[${i}][account_number]" class="form-control form-control-sm py-0" style="font-size: 11px;" placeholder="Bank & No. Rekening" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                            <input type="text" name="installments[${i}][account_number]" class="form-control form-control-sm py-0" style="font-size: 11px;" placeholder="Bank & No. Rekening" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                         </div>
                     </td>
                     <td>
-                        <input type="text" name="installments[${i}][amount_temp]" class="form-control form-control-sm termin-amount-input fw-semibold" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateInstallmentBalance();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                        <input type="text" name="installments[${i}][amount_temp]" class="form-control form-control-sm termin-amount-input fw-semibold" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateInstallmentBalance();" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                     </td>
                     <td>
-                        <input type="date" name="installments[${i}][due_date]" value="${dateStr}" class="form-control form-control-sm" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                        <input type="date" name="installments[${i}][due_date]" value="${dateStr}" class="form-control form-control-sm" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                     </td>
                     <td>
                         <div class="pratanah-file-upload-modern py-1 px-2 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: rgba(0,0,0,0.01);">
-                            <input type="file" name="installments[${i}][file]" id="file_tahap_${i}" class="d-none" onchange="handleTerminFileName(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                            <input type="file" name="installments[${i}][file]" id="file_tahap_${i}" class="d-none" onchange="handleTerminFileName(this)" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                             <label for="file_tahap_${i}" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
                                 <i class="mdi mdi-file-upload text-muted fs-5"></i>
                                 <span class="text-truncate text-muted file-label-text" style="max-width: 120px;">Pilih Bukti</span>
@@ -4789,17 +4681,17 @@
                         </div>
                     </td>
                     <td>
-                        <select name="installments[${i}][status]" class="form-select form-select-sm termin-status-select" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                        <select name="installments[${i}][status]" class="form-select form-select-sm termin-status-select" <?php echo e($land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : ''); ?>>
                             <option value="belum">Belum</option>
                             <option value="lunas">Lunas</option>
                         </select>
                     </td>
                     <td class="text-center">
-                        @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                        <?php if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected')): ?>
                             <button type="button" class="btn btn-xs btn-danger text-white py-1 px-2 shadow-sm" onclick="removeInstallmentRow(this)" title="Hapus Tahap" style="background-color: #ef4444; border: 1px solid #ef4444; border-radius: 4px;">
                                 <i class="mdi mdi-delete text-white"></i>
                             </button>
-                        @endif
+                        <?php endif; ?>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -5050,76 +4942,16 @@
             }
         }
 
-        function openMasterBiayaPicker() {
-            const modalEl = document.getElementById('modalPilihMasterBiaya');
-            if (modalEl) {
-                const searchInput = document.getElementById('searchMasterBiayaInput');
-                if (searchInput) {
-                    searchInput.value = '';
-                    filterMasterBiayaCards();
-                }
-                const modal = new bootstrap.Modal(modalEl);
-                modal.show();
-            }
-        }
-
-        function filterMasterBiayaCards() {
-            const query = (document.getElementById('searchMasterBiayaInput')?.value || '').toLowerCase().trim();
-            const cards = document.querySelectorAll('.master-biaya-card-item');
-            cards.forEach(card => {
-                const text = card.getAttribute('data-name') || '';
-                card.style.display = text.includes(query) ? '' : 'none';
-            });
-        }
-
-        function applyMasterBiaya(masterId, name, tipe, nominal, persen) {
-            const cleanNum = (str) => parseInt((str || '').replace(/[^0-9]/g, '')) || 0;
-            const dealPrice = cleanNum(document.getElementById('deal_price_input')?.value || 0);
-            
-            let calculatedAmount = nominal || 0;
-            if (tipe === 'persentase' && persen > 0) {
-                if (dealPrice > 0) {
-                    calculatedAmount = Math.round(dealPrice * (persen / 100));
-                } else if (nominal > 0) {
-                    calculatedAmount = nominal;
-                }
-            }
-
-            addCustomCostRow(name, calculatedAmount, masterId);
-
-            const modalEl = document.getElementById('modalPilihMasterBiaya');
-            if (modalEl) {
-                const modal = bootstrap.Modal.getInstance(modalEl);
-                if (modal) modal.hide();
-            }
-
-            if (typeof Swal !== 'undefined') {
-                const toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 2500,
-                    timerProgressBar: true
-                });
-                toast.fire({
-                    icon: 'success',
-                    title: `"${name}" ditambahkan ke transaksi`
-                });
-            }
-        }
-
-        function addCustomCostRow(presetName = '', presetAmount = '', masterId = null) {
+        function addCustomCostRow() {
             const container = document.getElementById('custom_costs_container');
             if (!container) return;
 
-            const rowId = 'custom_cost_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
-            const formattedPreset = presetAmount ? (typeof presetAmount === 'number' ? new Intl.NumberFormat('id-ID').format(presetAmount) : presetAmount) : '';
+            const rowId = 'custom_cost_' + Date.now();
             const rowHtml = `
                 <div class="col-md-6 custom-cost-row mb-2" id="${rowId}" style="animation: fadeIn 0.3s ease;">
                     <div class="d-flex align-items-center gap-2">
-                        <input type="hidden" name="custom_costs[${rowId}][master_id]" value="${masterId || ''}">
-                        <input type="text" name="custom_costs[${rowId}][name]" value="${presetName}" class="form-control custom-cost-name" placeholder="Nama Biaya (Contoh: Retribusi / Pengeringan)" onkeyup="updateFinancialSummary()">
-                        <input type="text" name="custom_costs[${rowId}][amount]" value="${formattedPreset}" class="form-control custom-cost-amount fw-bold" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateFinancialSummary();">
+                        <input type="text" name="custom_costs[${rowId}][name]" class="form-control custom-cost-name" placeholder="Nama Biaya (Contoh: Retribusi / Pengeringan)" onkeyup="updateFinancialSummary()">
+                        <input type="text" name="custom_costs[${rowId}][amount]" class="form-control custom-cost-amount fw-bold" placeholder="Rp 0" onkeyup="formatRupiahTemp(this); updateFinancialSummary();">
                         <button type="button" class="btn btn-danger text-white px-2 py-1 flex-shrink-0 shadow-sm" onclick="document.getElementById('${rowId}').remove(); updateFinancialSummary();" title="Hapus Biaya" style="height: 38px; width: 38px; display: flex; align-items: center; justify-content: center; border-radius: 6px; background-color: #ef4444; border: 1px solid #ef4444;">
                             <i class="mdi mdi-delete text-white" style="font-size: 1.15rem;"></i>
                         </button>
@@ -5127,7 +4959,6 @@
                 </div>
             `;
             container.insertAdjacentHTML('beforeend', rowHtml);
-            updateFinancialSummary();
         }
 
         function updateFinancialSummary() {
@@ -5386,7 +5217,7 @@
                         url: `/pra-landbank/dokumen/${docId}/approve`,
                         type: 'POST',
                         data: {
-                            _token: '{{ csrf_token() }}'
+                            _token: '<?php echo e(csrf_token()); ?>'
                         },
                         dataType: 'json',
                         success: function(res) {
@@ -5482,7 +5313,7 @@
                         url: `/pra-landbank/dokumen/${docId}/reject`,
                         type: 'POST',
                         data: {
-                            _token: '{{ csrf_token() }}',
+                            _token: '<?php echo e(csrf_token()); ?>',
                             catatan_admin: result.value
                         },
                         dataType: 'json',
@@ -5539,7 +5370,7 @@
                 return;
             }
 
-            const landId = '{{ $land->id ?? 0 }}';
+            const landId = '<?php echo e($land->id ?? 0); ?>';
             if (!landId || landId === '0') {
                 Swal.fire({
                     icon: 'warning',
@@ -5550,11 +5381,11 @@
             }
 
             const formData = new FormData();
-            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('_token', '<?php echo e(csrf_token()); ?>');
             formData.append('file_field', fieldName);
             formData.append('file', file);
 
-            const uploadUrl = '{{ route("pra-landbank.upload-notary-doc", ["id" => $land->id ?? 0]) }}';
+            const uploadUrl = '<?php echo e(route("pra-landbank.upload-notary-doc", ["id" => $land->id ?? 0])); ?>';
 
             Swal.fire({
                 title: 'Mengunggah Berkas...',
@@ -5648,19 +5479,19 @@
         }
 
         function autoSaveNotaryInfo() {
-            const landId = '{{ $land->id ?? 0 }}';
+            const landId = '<?php echo e($land->id ?? 0); ?>';
             if (!landId || landId === '0') return;
 
             const notarisId = $('#select_notaris_id').val() || $('select[name="notaris_id"]').val() || document.getElementById('select_notaris_id')?.value;
             const appointmentDate = document.getElementById('input_notary_appointment_date')?.value || $('input[name="notary_appointment_date"]').val();
 
-            const updateUrl = '{{ route("pra-landbank.update-notary-info", ["id" => $land->id ?? 0]) }}';
+            const updateUrl = '<?php echo e(route("pra-landbank.update-notary-info", ["id" => $land->id ?? 0])); ?>';
 
             fetch(updateUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
                 body: JSON.stringify({
@@ -5705,7 +5536,7 @@
         // FINALISASI KE PASCA LAND BANK
         // ==========================================
         function confirmFinalizePasca() {
-            const landId = '{{ $land->id ?? 0 }}';
+            const landId = '<?php echo e($land->id ?? 0); ?>';
             if (!landId || landId === '0') {
                 Swal.fire({
                     icon: 'warning',
@@ -5740,13 +5571,13 @@
                         }
                     });
 
-                    const finalizeUrl = '{{ route("pra-landbank.finalize-pasca", ["id" => $land->id ?? 0]) }}';
+                    const finalizeUrl = '<?php echo e(route("pra-landbank.finalize-pasca", ["id" => $land->id ?? 0])); ?>';
 
                     fetch(finalizeUrl, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>',
                             'X-Requested-With': 'XMLHttpRequest'
                         },
                         body: JSON.stringify({})
@@ -5801,23 +5632,23 @@
                 sessionStorage.removeItem('success_message');
             }
 
-            @if(session('warning'))
+            <?php if(session('warning')): ?>
                 Swal.fire({
                     icon: 'warning',
                     title: 'Akses Terkunci',
-                    text: "{{ session('warning') }}"
+                    text: "<?php echo e(session('warning')); ?>"
                 });
-            @endif
+            <?php endif; ?>
 
-            @if(session('success'))
+            <?php if(session('success')): ?>
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil',
-                    text: "{{ session('success') }}",
+                    text: "<?php echo e(session('success')); ?>",
                     timer: 2500,
                     showConfirmButton: false
                 });
-            @endif
+            <?php endif; ?>
 
             // Filter berkas dokumen Fase 1 secara dinamis sesuai Status Kepemilikan (Alas Hak)
             const initialOwnership = $('#select_ownership_status').val() || (document.getElementById('select_ownership_status')?.value ?? '');
@@ -5909,4 +5740,6 @@
             }
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.partial.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Property-Management-Web-App\resources\views/land_bank/proses_pra_land_bank.blade.php ENDPATH**/ ?>

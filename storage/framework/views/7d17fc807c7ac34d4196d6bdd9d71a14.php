@@ -9,4 +9,4 @@
         </div>
     </div>
 </footer>
-<?php /**PATH F:\Property-Management-Web-App\resources\views/layouts/footer.blade.php ENDPATH**/ ?>
+<?php /**PATH D:\Property-Management-Web-App\resources\views/layouts/footer.blade.php ENDPATH**/ ?>
