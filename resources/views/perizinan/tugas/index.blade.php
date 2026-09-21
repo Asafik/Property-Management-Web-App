@@ -530,11 +530,11 @@
                                                         <button class="btn btn-action-dots d-inline-flex align-items-center justify-content-center shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                                             <i class="mdi mdi-dots-vertical"></i>
                                                         </button>
-                                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" style="font-size: 0.82rem; border-radius: 8px;">
+                                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border" style="font-size: 0.82rem; border-radius: 6px; border-color: #e2e8f0 !important;">
                                                             <li>
                                                                 <a class="dropdown-item d-flex align-items-center gap-2 py-1.5" href="{{ route('perizinan.tugas.edit', $task->id) }}">
-                                                                    <i class="mdi mdi-account-switch-outline text-warning"></i>
-                                                                    <span>Edit Penugasan / Reassign</span>
+                                                                    <i class="mdi mdi-pencil-outline text-warning"></i>
+                                                                    <span>Edit</span>
                                                                 </a>
                                                             </li>
                                                             <li><hr class="dropdown-divider my-1"></li>
@@ -544,7 +544,7 @@
                                                                     @method('DELETE')
                                                                     <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2 py-1.5">
                                                                         <i class="mdi mdi-trash-can-outline"></i>
-                                                                        <span>Hapus Tugas</span>
+                                                                        <span>Hapus</span>
                                                                     </button>
                                                                 </form>
                                                             </li>
