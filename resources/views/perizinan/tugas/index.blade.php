@@ -427,12 +427,7 @@
                                             $pColor = '#94a3b8';
                                         }
 
-                                        // Inisial Staf
                                         $staffName = $task->employee->name ?? 'Staf';
-                                        $words = explode(' ', trim($staffName));
-                                        $initials = count($words) >= 2 
-                                            ? strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1))
-                                            : strtoupper(substr($staffName, 0, 2));
                                     @endphp
                                     <tr>
                                         <td class="col-no fw-bold text-center text-muted">
@@ -465,18 +460,8 @@
 
                                         <!-- Staf Pelaksana -->
                                         <td>
-                                            <div class="task-user-badge">
-                                                <div class="user-avatar-circle" title="{{ $staffName }}">
-                                                    {{ $initials }}
-                                                </div>
-                                                <div class="overflow-hidden">
-                                                    <div class="fw-bold text-dark text-truncate" style="font-size: 0.84rem; line-height: 1.2;">
-                                                        {{ $staffName }}
-                                                    </div>
-                                                    <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;">
-                                                        {{ $task->employee->position->name ?? 'Staff Legal' }}
-                                                    </small>
-                                                </div>
+                                            <div class="fw-semibold text-dark" style="font-size: 0.85rem;">
+                                                {{ $staffName }}
                                             </div>
                                         </td>
 
