@@ -364,6 +364,20 @@ Route::middleware(['auth'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | ========================= PEMBAGIAN TUGAS PERIZINAN (LEGAL) =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('perizinan-tugas')->name('perizinan.tugas.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'index'])->name('index');
+        Route::post('/store', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'store'])->name('store');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'update'])->name('update');
+        Route::patch('/{id}/progress', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'updateProgress'])->name('progress');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'destroy'])->name('destroy');
+        Route::get('/{id}/logs', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'getLogs'])->name('logs');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
     | ========================= PROYEK: PENGOLAHAN LAHAN & UNIT =========================
     |--------------------------------------------------------------------------
     */

@@ -1,12 +1,10 @@
-@extends('layouts.partial.app')
+<?php $__env->startSection('title', 'Monitoring Perizinan Proyek - Property Management App'); ?>
 
-@section('title', 'Monitoring Perizinan Proyek - Property Management App')
+<?php $__env->startPush('styles'); ?>
+    <link rel="stylesheet" href="<?php echo e(asset('css/dashboard-clean.css')); ?>?v=<?php echo e(time()); ?>">
+<?php $__env->stopPush(); ?>
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
-@endpush
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <style>
     /* Styling Persis Screenshot Monitoring Perizinan Proyek */
@@ -146,100 +144,6 @@
         border-color: #00b395 !important;
         color: #ffffff !important;
     }
-
-    /* Table Responsive & Text Wrapping persis show.blade.php */
-    .table-perizinan {
-        width: 100% !important;
-        margin-bottom: 0;
-    }
-    .table-perizinan thead th {
-        background: #f8fafc !important;
-        color: #4b5563 !important;
-        font-weight: 700;
-        font-size: 0.78rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        border-bottom: 2px solid #e2e8f0 !important;
-        padding: 0.75rem 0.6rem !important;
-        vertical-align: middle;
-        white-space: nowrap;
-    }
-    .table-perizinan tbody td {
-        padding: 0.75rem 0.6rem !important;
-        vertical-align: middle;
-        font-size: 0.83rem;
-        border-bottom: 1px solid #f1f5f9;
-        white-space: normal !important;
-    }
-    .table-perizinan .col-no {
-        width: 45px;
-        text-align: center;
-        white-space: nowrap !important;
-    }
-    .table-perizinan .col-status {
-        width: 95px;
-        text-align: center;
-        white-space: nowrap !important;
-    }
-    .table-perizinan .col-aksi {
-        width: 105px;
-        text-align: center;
-        white-space: nowrap !important;
-    }
-
-    .status-badge.aktif {
-        background-color: #ecfdf5;
-        color: #059669;
-        border: 1px solid #a7f3d0;
-        font-weight: 600;
-        border-radius: 6px;
-    }
-    .badge-development-progress {
-        background-color: #fffbeb;
-        color: #d97706;
-        border: 1px solid #fde68a;
-        font-weight: 600;
-        border-radius: 6px;
-    }
-    .badge-development-belum {
-        font-weight: 600;
-        border-radius: 6px;
-    }
-
-    /* Styling Card Tabel Meniru Persis Card Total (.dash-kpi-card) */
-    .card.compact-table-card,
-    .compact-table-card {
-        background: #ffffff !important;
-        border: 1px solid #e2e8f0 !important;
-        border-radius: 8px !important;
-        box-shadow: none !important;
-        transition: border-color 0.2s ease;
-        overflow: hidden;
-    }
-    .card.compact-table-card:hover,
-    .compact-table-card:hover {
-        border-color: #cbd5e1 !important;
-        box-shadow: none !important;
-    }
-    .compact-table-card .card-header {
-        background: #ffffff !important;
-        border-bottom: 1px solid #e2e8f0 !important;
-        padding: 0.65rem 1.25rem !important;
-        border-top-left-radius: 8px !important;
-        border-top-right-radius: 8px !important;
-    }
-    .compact-table-card .card-body,
-    .card.compact-table-card .card-body {
-        padding: 0.75rem 1.25rem 1.15rem 1.25rem !important;
-        background: #ffffff !important;
-    }
-    .compact-table-card .filter-card {
-        margin-top: 0 !important;
-        margin-bottom: 0.6rem !important;
-    }
-    .compact-table-card .filter-card form {
-        margin-bottom: 0 !important;
-    }
     .nav-tabs-clean {
         border-bottom: 2px solid #e2e8f0;
         display: flex;
@@ -272,19 +176,19 @@
 
 <div class="container-fluid px-2 px-md-4 py-3">
 
-    <!-- Page Title & Subtitle + Navigasi Staf Legal -->
+    <!-- Page Title & Subtitle (Persis Screenshot) -->
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
         <div>
             <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
-                Perizinan Proyek
+                Monitoring Perizinan Proyek
             </h2>
             <p class="text-muted mb-0" style="font-size: 0.88rem;">
-                Daftar dan kelengkapan berkas izin kawasan per proyek properti serta pembagian tugas staf legal.
+                Manajemen & Monitoring Perizinan Proyek Kawasan serta Pembagian Tugas Staf Legal.
             </p>
         </div>
 
         <div class="d-flex align-items-center gap-2">
-            <a href="{{ route('perizinan.tugas.index') }}" class="btn btn-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 fw-semibold shadow-sm" style="border-radius: 8px; font-size: 0.86rem;">
+            <a href="<?php echo e(route('perizinan.tugas.index')); ?>" class="btn btn-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 fw-semibold shadow-sm" style="border-radius: 8px; font-size: 0.86rem;">
                 <i class="mdi mdi-clipboard-account-outline fs-6"></i>
                 <span>Pembagian Tugas Staf</span>
             </a>
@@ -293,16 +197,16 @@
 
     <!-- Navigasi Tab Modul Perizinan -->
     <div class="nav-tabs-clean">
-        <a href="{{ route('perizinan.index', ['stay' => 1]) }}" class="nav-tab-item active">
+        <a href="<?php echo e(route('perizinan.index', ['stay' => 1])); ?>" class="nav-tab-item active">
             <i class="mdi mdi-domain"></i>
-            <span>Kawasan Proyek</span>
+            <span>Monitoring Kawasan Proyek</span>
         </a>
-        <a href="{{ route('perizinan.tugas.index') }}" class="nav-tab-item">
+        <a href="<?php echo e(route('perizinan.tugas.index')); ?>" class="nav-tab-item">
             <i class="mdi mdi-clipboard-account-outline"></i>
             <span>Pembagian Tugas Staf Legal</span>
-            @if(!empty($totalTugasPerizinan) && $totalTugasPerizinan > 0)
-                <span class="badge rounded-pill" style="background: #4f46e5; color: #ffffff; font-size: 0.72rem;">{{ $totalTugasPerizinan }}</span>
-            @endif
+            <?php if(!empty($totalTugasPerizinan) && $totalTugasPerizinan > 0): ?>
+                <span class="badge rounded-pill" style="background: #4f46e5; color: #ffffff; font-size: 0.72rem;"><?php echo e($totalTugasPerizinan); ?></span>
+            <?php endif; ?>
         </a>
     </div>
 
@@ -317,7 +221,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Total Izin</div>
-                    <div class="dash-kpi-val">{{ $totalIzin ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalIzin ?? 0); ?></div>
                     <div class="dash-kpi-sub">Seluruh Izin Terdaftar</div>
                 </div>
             </div>
@@ -334,7 +238,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Izin Selesai</div>
-                    <div class="dash-kpi-val">{{ $totalSelesai ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalSelesai ?? 0); ?></div>
                     <div class="dash-kpi-sub">Dokumen Terbit / Final</div>
                 </div>
             </div>
@@ -351,7 +255,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Dalam Proses</div>
-                    <div class="dash-kpi-val">{{ $dalamProses ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($dalamProses ?? 0); ?></div>
                     <div class="dash-kpi-sub">Sedang Diproses Instansi</div>
                 </div>
             </div>
@@ -368,7 +272,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Tertunda / Kendala</div>
-                    <div class="dash-kpi-val">{{ $tertunda ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($tertunda ?? 0); ?></div>
                     <div class="dash-kpi-sub">Perlu Tindak Lanjut / Revisi</div>
                 </div>
             </div>
@@ -379,171 +283,157 @@
 
     </div>
 
-    <!-- Main Container: Table & Filters (Sama Persis Format Rincian show.blade.php) -->
-    <div class="row mt-2 mt-sm-2 mt-md-3">
-        <div class="col-12">
-            <div class="card compact-table-card" style="background: #ffffff !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; box-shadow: none !important;">
-                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2" style="padding: 0.65rem 1.25rem !important; border-bottom: 1px solid #e2e8f0 !important;">
-                    <div class="d-flex align-items-center gap-2">
-                        <div style="width: 32px; height: 32px; border-radius: 6px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
-                            <i class="mdi mdi-format-list-bulleted"></i>
-                        </div>
-                        <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Daftar Tanah / Proyek Kawasan</span>
-                    </div>
+    <!-- Main Container: Table & Filters (Card Panel Gaya Dashboard) -->
+    <div class="dash-panel">
+        
+        <!-- Panel Header -->
+        <div class="dash-panel-header mb-3 flex-wrap gap-2">
+            <div class="dash-panel-title-wrap">
+                <div class="dash-panel-icon">
+                    <i class="mdi mdi-office-building"></i>
                 </div>
-
-                <div class="card-body" style="padding: 0.75rem 1.25rem 1.15rem 1.25rem !important;">
-                    <!-- Filter Toolbar -->
-                    <div class="filter-card" style="margin-top: 0 !important; margin-bottom: 0.6rem !important;">
-                        <form id="filterForm" method="GET" action="{{ route('perizinan.index') }}" style="margin-bottom: 0 !important;">
-                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
-                                <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
-                                    <!-- Search Input -->
-                                    <div style="min-width: 240px; max-width: 360px; flex: 1;">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="search" id="liveSearchInput"
-                                                placeholder="Cari nama proyek, lokasi, status tanah..."
-                                                value="{{ request('search') }}"
-                                                onkeyup="applyLiveSearch(this.value)"
-                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
-                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
-                                                type="submit" title="Cari"
-                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
-                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <!-- Filter Status -->
-                                    <div style="width: 160px;">
-                                        <select class="form-control" name="status" id="statusFilterSelect" onchange="document.getElementById('filterForm').submit()">
-                                            <option value="all">Semua Status</option>
-                                            <option value="Selesai" {{ request('status') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                                            <option value="Berjalan" {{ request('status') == 'Berjalan' ? 'selected' : '' }}>Berjalan</option>
-                                            <option value="Tertunda" {{ request('status') == 'Tertunda' ? 'selected' : '' }}>Tertunda</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- Reset Button -->
-                                <div class="d-flex align-items-center gap-2 ms-auto">
-                                    <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Terapkan Filter">
-                                        <i class="mdi mdi-filter"></i>
-                                    </button>
-                                    <a href="{{ route('perizinan.index') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset Filter">
-                                        <i class="mdi mdi-refresh"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- TABEL DATA BANK BERSIH (MURNI TABEL PERSIS SHOW) -->
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle table-perizinan">
-                            <thead>
-                                <tr>
-                                    <th class="col-no">No</th>
-                                    <th>Nama Proyek & Perusahaan</th>
-                                    <th>Status Tanah</th>
-                                    <th>Lokasi</th>
-                                    <th>Luas Lahan</th>
-                                    <th style="width: 130px;">Progres</th>
-                                    <th class="col-status text-center">Status</th>
-                                    <th class="col-aksi text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($projects as $index => $proj)
-                                    @php
-                                        $pVal = $proj['progress'] ?? 0;
-                                        $st = $proj['status'] ?? 'Belum';
-                                        if ($st == 'Selesai' || $st == 'Terbit') {
-                                            $stLabel = 'Selesai';
-                                        } elseif ($st == 'Berjalan' || $st == 'Proses') {
-                                            $stLabel = 'Berjalan';
-                                        } elseif ($st == 'Tertunda' || $st == 'Revisi') {
-                                            $stLabel = 'Tertunda';
-                                        } else {
-                                            $stLabel = 'Belum';
-                                        }
-
-                                        if ($pVal >= 100) {
-                                            $pColor = '#10b981';
-                                        } elseif ($pVal >= 70) {
-                                            $pColor = '#7c3aed';
-                                        } elseif ($pVal >= 40) {
-                                            $pColor = '#0284c7';
-                                        } else {
-                                            $pColor = '#e11d48';
-                                        }
-                                    @endphp
-                                    <tr class="project-table-row" id="row_project_{{ $proj['id'] }}" data-search="{{ strtolower($proj['nama'] . ' ' . ($proj['lokasi'] ?? '') . ' ' . ($proj['ownership_status'] ?? '')) }}">
-                                        <td class="col-no fw-bold text-center">{{ $loop->iteration }}</td>
-                                        <td>
-                                            <div class="fw-bold text-dark" style="line-height: 1.35; font-size: 0.85rem;">
-                                                {{ $proj['nama'] }}
-                                            </div>
-                                            <div class="text-secondary mt-0.5" style="font-size: 0.78rem; line-height: 1.3;">
-                                                {{ $proj['pt'] ?? 'PT Graha Cipta Sejahtera' }}
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-light text-primary border font-monospace fw-bold" style="font-size: 0.76rem;">
-                                                {{ $proj['ownership_status'] ?? 'SHGB Induk' }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="text-muted" style="font-size: 0.82rem;">
-                                                {{ $proj['lokasi'] }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-light text-dark border fw-medium" style="font-size: 0.78rem;">
-                                                {{ $proj['luas'] }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex align-items-center gap-2" style="width: 100%;">
-                                                <div style="flex-grow: 1; background-color: #f1f5f9; border-radius: 9999px; height: 6px; overflow: hidden;">
-                                                    <div style="width: {{ $pVal }}%; background-color: {{ $pColor }}; height: 100%; border-radius: 9999px;"></div>
-                                                </div>
-                                                <span style="font-size: 0.75rem; font-weight: 700; color: #334155;">{{ $pVal }}%</span>
-                                            </div>
-                                        </td>
-                                        <td class="col-status text-center">
-                                            @if($stLabel == 'Selesai')
-                                                <span class="status-badge aktif" style="padding: 3px 8px; font-size: 0.75rem;">Selesai</span>
-                                            @elseif($stLabel == 'Berjalan')
-                                                <span class="badge-development-progress" style="padding: 3px 8px; font-size: 0.75rem;">Berjalan</span>
-                                            @elseif($stLabel == 'Tertunda')
-                                                <span class="badge-development-belum" style="background-color: #fee2e2; color: #b91c1c; border-color: #fecdd3; padding: 3px 8px; font-size: 0.75rem;">Tertunda</span>
-                                            @else
-                                                <span class="badge-development-belum" style="background-color: #f1f5f9; color: #64748b; border-color: #e2e8f0; padding: 3px 8px; font-size: 0.75rem;">Belum</span>
-                                            @endif
-                                        </td>
-                                        <td class="col-aksi text-center">
-                                            <!-- Tombol Tunggal Aksi Langsung: Kelola -->
-                                            <a href="{{ route('perizinan.show', $proj['id']) }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center py-1 px-2.5 fw-semibold shadow-sm text-decoration-none" style="font-size: 0.76rem; border-radius: 5px;">
-                                                <i class="mdi mdi-file-document-edit-outline" style="margin-right: 6px !important; font-size: 0.85rem;"></i>
-                                                <span>Kelola</span>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="8" class="text-center text-muted py-4">
-                                            <i class="mdi mdi-domain-off me-2" style="font-size: 1.5rem;"></i>
-                                            Tidak ada data proyek kawasan.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-
+                <div>
+                    <h2 class="dash-panel-title">Daftar Tanah / Proyek</h2>
+                    <p class="dash-panel-subtitle">Monitoring status dan progres perizinan proyek kawasan</p>
                 </div>
             </div>
+
+            <!-- Filter Toolbar Form -->
+            <form id="filterForm" method="GET" action="<?php echo e(route('perizinan.index')); ?>" class="m-0">
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    
+                    <!-- Proyek Dropdown -->
+                    <div class="d-flex align-items-center gap-1.5">
+                        <label class="mb-0 text-secondary fw-semibold" style="font-size: 0.8rem; white-space: nowrap;">Proyek:</label>
+                        <select name="proyek_id" class="form-select form-select-sm" onchange="document.getElementById('filterForm').submit()" style="font-size: 0.82rem; border-radius: 6px; min-width: 170px;">
+                            <option value="all">Semua Proyek</option>
+                            <?php $__currentLoopData = $projects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($p['id']); ?>" <?php echo e(request('proyek_id') == $p['id'] ? 'selected' : ''); ?>>
+                                    <?php echo e($p['nama']); ?>
+
+                                </option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </select>
+                    </div>
+
+                    <!-- Status Dropdown -->
+                    <div class="d-flex align-items-center gap-1.5">
+                        <label class="mb-0 text-secondary fw-semibold" style="font-size: 0.8rem; white-space: nowrap;">Status:</label>
+                        <select name="status" class="form-select form-select-sm" onchange="document.getElementById('filterForm').submit()" style="font-size: 0.82rem; border-radius: 6px; min-width: 95px;">
+                            <option value="all" <?php echo e(request('status') == 'all' ? 'selected' : ''); ?>>All</option>
+                            <option value="Selesai" <?php echo e(request('status') == 'Selesai' ? 'selected' : ''); ?>>Selesai</option>
+                            <option value="Berjalan" <?php echo e(request('status') == 'Berjalan' ? 'selected' : ''); ?>>Berjalan</option>
+                            <option value="Tertunda" <?php echo e(request('status') == 'Tertunda' ? 'selected' : ''); ?>>Tertunda</option>
+                        </select>
+                    </div>
+
+                    <?php if(request()->hasAny(['proyek_id', 'status'])): ?>
+                        <a href="<?php echo e(route('perizinan.index')); ?>" class="btn btn-sm btn-light border py-1 px-2" title="Reset Filter" style="border-radius: 6px;">
+                            <i class="mdi mdi-refresh"></i>
+                        </a>
+                    <?php endif; ?>
+
+                </div>
+            </form>
+        </div>
+
+        <!-- Table: Daftar Proyek Kawasan (Format Dash Table) -->
+        <div class="dash-table-wrap">
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th style="width: 36px; text-align: center;">No</th>
+                        <th>Nama Proyek</th>
+                        <th>Status Tanah</th>
+                        <th>Lokasi</th>
+                        <th>Luas Lahan</th>
+                        <th>Target Selesai</th>
+                        <th style="width: 150px;">Progress</th>
+                        <th style="width: 100px;">Status</th>
+                        <th class="text-center" style="width: 120px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php $__empty_1 = true; $__currentLoopData = $projects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $proj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <?php
+                            $pVal = $proj['progress'] ?? 75;
+                            $st = $proj['status'] ?? 'Berjalan';
+                            if ($st == 'Selesai' || $st == 'Terbit') {
+                                $stLabel = 'Selesai';
+                            } elseif ($st == 'Berjalan' || $st == 'Proses') {
+                                $stLabel = 'Berjalan';
+                            } elseif ($st == 'Tertunda' || $st == 'Revisi') {
+                                $stLabel = 'Tertunda';
+                            } else {
+                                $stLabel = 'Belum';
+                            }
+                        ?>
+                        <tr>
+                            <td style="font-weight: 700; text-align: center; color: #64748b;"><?php echo e($loop->iteration); ?></td>
+                            <td>
+                                <div style="font-weight: 700; color: #0f172a; font-size: 0.86rem;"><?php echo e($proj['nama']); ?></div>
+                                <small style="color: #94a3b8; font-size: 0.74rem;"><?php echo e($proj['pt'] ?? 'PT Graha Cipta Sejahtera'); ?></small>
+                            </td>
+                            <td>
+                                <span class="dash-badge" style="background-color: #f3e8ff; color: #7e22ce; font-family: monospace; font-weight: 700; border: 1px solid #e9d5ff;">
+                                    <?php echo e($proj['ownership_status'] ?? 'SHGB Induk'); ?>
+
+                                </span>
+                            </td>
+                            <td>
+                                <span style="color: #475569; font-weight: 500;">
+                                    <i class="mdi mdi-map-marker-outline text-danger me-0.5"></i><?php echo e($proj['lokasi']); ?>
+
+                                </span>
+                            </td>
+                            <td>
+                                <span class="dash-badge gray" style="font-weight: 600;">
+                                    <?php echo e($proj['luas']); ?>
+
+                                </span>
+                            </td>
+                            <td>
+                                <span style="color: #64748b; font-size: 0.8rem;"><?php echo e($proj['target_selesai'] ?? '30 Jul 2026'); ?></span>
+                            </td>
+                            <td>
+                                <div class="dash-progress-wrap">
+                                    <div class="dash-progress-bar-bg" style="width: 80px;">
+                                        <div class="dash-progress-bar-fill" style="width: <?php echo e($pVal); ?>%; background-color: <?php echo e($pVal == 100 ? '#16a34a' : '#4f46e5'); ?>;"></div>
+                                    </div>
+                                    <span style="font-size: 0.72rem; font-weight: 700; color: #334155;"><?php echo e($pVal); ?>%</span>
+                                </div>
+                                <small class="text-muted d-block mt-0.5" style="font-size: 0.68rem; font-weight: 500;">
+                                    <?php echo e($proj['terbit'] ?? 0); ?>/<?php echo e($proj['total'] ?? 0); ?> Izin Selesai
+                                </small>
+                            </td>
+                            <td>
+                                <?php if($stLabel == 'Selesai'): ?>
+                                    <span class="dash-status-pill on-track"><span class="dot"></span>Selesai</span>
+                                <?php elseif($stLabel == 'Berjalan'): ?>
+                                    <span class="dash-status-pill" style="background-color: #e0f2fe; color: #0284c7; border-color: #bae6fd;"><span class="dot" style="background-color: #0284c7;"></span>Berjalan</span>
+                                <?php elseif($stLabel == 'Tertunda'): ?>
+                                    <span class="dash-status-pill danger"><span class="dot"></span>Tertunda</span>
+                                <?php else: ?>
+                                    <span class="dash-status-pill" style="background-color: #f1f5f9; color: #64748b; border-color: #e2e8f0;"><span class="dot" style="background-color: #94a3b8;"></span>Belum</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="text-center">
+                                <a href="<?php echo e(route('perizinan.show', $proj['id'])); ?>" class="btn btn-sm text-white fw-semibold d-inline-flex align-items-center px-3 py-1.5 shadow-sm text-decoration-none" style="background-color: #5046e5; border-radius: 6px; font-size: 0.82rem;">
+                                    <i class="mdi mdi-tools" style="margin-right: 6px !important; font-size: 0.9rem;"></i>
+                                    <span>Kelola</span>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <tr>
+                            <td colspan="9" class="text-center text-muted py-4">
+                                <i class="mdi mdi-domain-off me-2" style="font-size: 1.5rem;"></i>
+                                Tidak ada data proyek kawasan.
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
 
     </div>
@@ -720,7 +610,7 @@
     </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     let activePermitData = null;
     let modalInstance = null;
@@ -1033,20 +923,9 @@
             }
         }
     }
-    // Live Search Filter Tabel Proyek
-    function applyLiveSearch(query) {
-        var filter = query.toLowerCase();
-        var rows = document.querySelectorAll('.project-table-row');
-        rows.forEach(function(row) {
-            var text = row.getAttribute('data-search') || row.innerText.toLowerCase();
-            if (text.toLowerCase().indexOf(filter) > -1) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-    }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.partial.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Property-Management-Web-App\resources\views/perizinan/index.blade.php ENDPATH**/ ?>
