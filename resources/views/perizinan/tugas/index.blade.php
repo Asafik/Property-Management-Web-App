@@ -81,7 +81,7 @@
         .timeline-box {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-radius: 10px;
+            border-radius: 6px;
             padding: 12px 16px;
         }
 
@@ -632,7 +632,7 @@
 
 <!-- ================= MODAL: AUDIT TRAIL / RIWAYAT AKTIVITAS (HANYA LOG YANG TETAP MODAL) ================= -->
 <div class="modal fade" id="modalRiwayatLog" tabindex="-1" aria-labelledby="modalRiwayatLogLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 580px; width: 95%;">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 6px !important; overflow: hidden; border: 1px solid #e2e8f0;">
             <div class="modal-header px-4 py-3 bg-white border-bottom">
                 <div class="d-flex align-items-center gap-2">
