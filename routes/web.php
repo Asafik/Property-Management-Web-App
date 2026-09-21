@@ -369,6 +369,7 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::prefix('perizinan-tugas')->name('perizinan.tugas.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'index'])->name('index');
+        Route::get('/tambah', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'create'])->name('create');
         Route::post('/store', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'store'])->name('store');
         Route::put('/{id}', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'update'])->name('update');
         Route::patch('/{id}/progress', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'updateProgress'])->name('progress');

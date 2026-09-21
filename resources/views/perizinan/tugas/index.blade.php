@@ -207,11 +207,11 @@
 
         <div class="d-flex align-items-center gap-2">
             @if($canManage)
-                <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 fw-semibold shadow-sm"
-                    data-bs-toggle="modal" data-bs-target="#modalTambahTugas" style="border-radius: 8px; font-size: 0.86rem;">
+                <a href="{{ route('perizinan.tugas.create') }}" class="btn btn-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 fw-semibold shadow-sm"
+                    style="border-radius: 8px; font-size: 0.86rem;">
                     <i class="mdi mdi-plus-circle-outline fs-6"></i>
                     <span>Tugaskan Staf Legal</span>
-                </button>
+                </a>
             @endif
         </div>
     </div>
@@ -317,11 +317,10 @@
                         <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Daftar Delegasi Tugas Perizinan</span>
                     </div>
                     @if($canManage)
-                        <button type="button" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm"
-                            data-bs-toggle="modal" data-bs-target="#modalTambahTugas">
+                        <a href="{{ route('perizinan.tugas.create') }}" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm">
                             <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
                             <span>Tugaskan Staf Legal</span>
-                        </button>
+                        </a>
                     @endif
                 </div>
 
@@ -637,130 +636,6 @@
 
 </div>
 
-<!-- ================= MODAL 1: TUGASKAN STAF LEGAL BARU ================= -->
-@if($canManage)
-<div class="modal fade" id="modalTambahTugas" tabindex="-1" aria-labelledby="modalTambahTugasLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header px-4 py-3 bg-white border-bottom">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="p-2 rounded-2" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5;">
-                        <i class="mdi mdi-clipboard-plus-outline fs-5"></i>
-                    </div>
-                    <div>
-                        <h5 class="fw-bold text-dark mb-0" style="font-size: 1rem;">Tugaskan Staf Legal Baru</h5>
-                        <small class="text-muted" style="font-size: 0.78rem;">Pemberian tugas pengurusan berkas izin & delegasi wewenang</small>
-                    </div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <form action="{{ route('perizinan.tugas.store') }}" method="POST" onsubmit="return validateTambahTugasForm()">
-                @csrf
-                <div class="modal-body px-4 py-3 bg-white">
-                    
-                    <div class="row g-3">
-                        <!-- Nama Tugas Perizinan (Pilihan Dropdown Master Izin + Ketik Manual) -->
-                        <div class="col-md-7">
-                            <div class="d-flex align-items-center justify-content-between mb-1">
-                                <label class="form-label mb-0 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                    Nama Dokumen / Tugas Perizinan <span class="text-danger">*</span>
-                                </label>
-                                <button type="button" class="btn btn-link p-0 text-primary text-decoration-none fw-semibold" id="btnToggleManualTugas" onclick="toggleManualNamaTugas()" style="font-size: 0.75rem;">
-                                    <i class="mdi mdi-keyboard-outline me-0.5"></i>Ketik Manual
-                                </button>
-                            </div>
-
-                            <!-- Dropdown Pilihan Dokumen Perizinan (Default) -->
-                            <div id="wrapperSelectNamaTugas">
-                                <select class="form-select form-select-sm" id="selectNamaTugas" onchange="onSelectNamaTugasChange(this)">
-                                    <option value="">-- Pilih Dokumen / Tugas Perizinan --</option>
-                                    @foreach($masterDocs as $md)
-                                        <option value="{{ $md->nama_dokumen }}" 
-                                            data-instansi="{{ $md->instansi_terkait }}"
-                                            data-catatan="{{ $md->deskripsi }}">
-                                            {{ $md->kode_dokumen ? '[' . $md->kode_dokumen . '] ' : '' }}{{ $md->nama_dokumen }}
-                                        </option>
-                                    @endforeach
-                                    <option value="__custom__">✍️ + Ketik Manual / Izin Lainnya...</option>
-                                </select>
-                            </div>
-
-                            <!-- Input Ketik Manual (Jika memilih custom atau klik toggle) -->
-                            <div id="wrapperInputNamaTugas" style="display: none;" class="mt-1.5">
-                                <input type="text" id="inputManualNamaTugas" class="form-control form-control-sm" placeholder="Contoh: Pengurusan Izin Reklame / Amdal Khusus" oninput="onManualInputNamaTugas(this.value)">
-                            </div>
-
-                            <!-- Hidden field yang dikirim ke controller -->
-                            <input type="hidden" name="nama_tugas" id="tambahNamaTugas" required>
-                        </div>
-
-                        <!-- Instansi Terkait -->
-                        <div class="col-md-5">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Instansi / Dinas Terkait
-                            </label>
-                            <input type="text" name="instansi" id="tambahInstansi" class="form-control form-control-sm" placeholder="Otomatis terisi dari master / sesuaikan">
-                        </div>
-
-                        <!-- Proyek Kawasan -->
-                        <div class="col-md-6">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Proyek Kawasan Tanah
-                            </label>
-                            <select name="proyek_id" class="form-select form-select-sm">
-                                <option value="">-- Pilih Proyek Tanah / Bebas --</option>
-                                @foreach($projects as $proj)
-                                    <option value="{{ $proj['id'] }}">{{ $proj['nama'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <!-- Ditugaskan Kepada (Staf Legal) -->
-                        <div class="col-md-6">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Ditugaskan Kepada (Staf Legal) <span class="text-danger">*</span>
-                            </label>
-                            <select name="employee_id" class="form-select form-select-sm" required>
-                                <option value="">-- Pilih Staf Legal Pelaksana --</option>
-                                @foreach($legalStaffs as $staf)
-                                    <option value="{{ $staf->id }}">
-                                        {{ $staf->name }} ({{ $staf->position->name ?? 'Staff Legal' }})
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <!-- Deadline Selesai -->
-                        <div class="col-md-6">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Tenggat Waktu (Deadline)
-                            </label>
-                            <input type="date" name="deadline" class="form-control form-control-sm" min="{{ date('Y-m-d') }}">
-                        </div>
-
-                        <!-- Instruksi & Catatan Khusus -->
-                        <div class="col-12">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Instruksi / Catatan Khusus Kepala Legal
-                            </label>
-                            <textarea name="catatan" id="tambahCatatan" rows="3" class="form-control form-control-sm" placeholder="Instruksi spesifik pengurusan berkas, persyaratan yang wajib dibawa, kontak dinas, dll."></textarea>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="modal-footer px-4 py-2.5 bg-white border-top d-flex justify-content-between">
-                    <button type="button" class="btn btn-light border btn-sm px-3" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary btn-sm px-4 fw-semibold shadow-sm">
-                        <i class="mdi mdi-send-check me-1"></i> Simpan & Delegasikan Tugas
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endif
 
 <!-- ================= MODAL 2: UPDATE PROGRES & STATUS (STAF LEGAL & KEPALA) ================= -->
 <div class="modal fade" id="modalUpdateProgres" tabindex="-1" aria-labelledby="modalUpdateProgresLabel" aria-hidden="true">
@@ -1046,97 +921,6 @@
 
 @push('scripts')
 <script>
-    // TOGGLE & PILIHAN NAMA DOKUMEN / TUGAS PERIZINAN
-    var isManualNamaTugasMode = false;
-
-    function toggleManualNamaTugas(forceManual = null) {
-        if (forceManual !== null) {
-            isManualNamaTugasMode = forceManual;
-        } else {
-            isManualNamaTugasMode = !isManualNamaTugasMode;
-        }
-
-        var wrapperSelect = document.getElementById('wrapperSelectNamaTugas');
-        var wrapperInput = document.getElementById('wrapperInputNamaTugas');
-        var btnToggle = document.getElementById('btnToggleManualTugas');
-        var selectEl = document.getElementById('selectNamaTugas');
-        var inputManual = document.getElementById('inputManualNamaTugas');
-        var hiddenInput = document.getElementById('tambahNamaTugas');
-
-        if (isManualNamaTugasMode) {
-            wrapperSelect.style.display = 'none';
-            wrapperInput.style.display = 'block';
-            btnToggle.innerHTML = '<i class="mdi mdi-format-list-bulleted me-0.5"></i>Pilih dari Daftar';
-            hiddenInput.value = inputManual.value.trim();
-            setTimeout(function() { inputManual.focus(); }, 100);
-        } else {
-            wrapperSelect.style.display = 'block';
-            wrapperInput.style.display = 'none';
-            btnToggle.innerHTML = '<i class="mdi mdi-keyboard-outline me-0.5"></i>Ketik Manual';
-            if (selectEl.value && selectEl.value !== '__custom__') {
-                hiddenInput.value = selectEl.value;
-            } else {
-                selectEl.value = '';
-                hiddenInput.value = '';
-            }
-        }
-    }
-
-    function onSelectNamaTugasChange(selectEl) {
-        var val = selectEl.value;
-        var hiddenInput = document.getElementById('tambahNamaTugas');
-
-        if (val === '__custom__') {
-            toggleManualNamaTugas(true);
-            return;
-        }
-
-        hiddenInput.value = val;
-
-        // Auto-fill instansi & catatan jika dipilih dari master
-        var selectedOpt = selectEl.options[selectEl.selectedIndex];
-        if (selectedOpt && val) {
-            var instansi = selectedOpt.getAttribute('data-instansi') || '';
-            var catatan = selectedOpt.getAttribute('data-catatan') || '';
-
-            var instansiInput = document.getElementById('tambahInstansi');
-            var catatanInput = document.getElementById('tambahCatatan');
-
-            if (instansi) {
-                instansiInput.value = instansi;
-            }
-            if (catatan && (!catatanInput.value || catatanInput.value.trim() === '')) {
-                catatanInput.value = catatan;
-            }
-        }
-    }
-
-    function onManualInputNamaTugas(val) {
-        document.getElementById('tambahNamaTugas').value = val.trim();
-    }
-
-    function validateTambahTugasForm() {
-        var hiddenInput = document.getElementById('tambahNamaTugas');
-        if (isManualNamaTugasMode) {
-            hiddenInput.value = document.getElementById('inputManualNamaTugas').value.trim();
-        } else {
-            var selectVal = document.getElementById('selectNamaTugas').value;
-            if (selectVal && selectVal !== '__custom__') {
-                hiddenInput.value = selectVal;
-            }
-        }
-
-        if (!hiddenInput.value || hiddenInput.value.trim() === '') {
-            alert('Silakan pilih salah satu dokumen perizinan dari daftar atau ketik nama tugas manual.');
-            if (isManualNamaTugasMode) {
-                document.getElementById('inputManualNamaTugas').focus();
-            } else {
-                document.getElementById('selectNamaTugas').focus();
-            }
-            return false;
-        }
-        return true;
-    }
 
     // HELPER UNTUK SET NILAI PROGRES (RANGE, NUMBER, & DISPLAY)
     function setProgressValues(val) {
