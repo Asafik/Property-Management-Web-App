@@ -248,16 +248,6 @@
                 Delegasi tugas perizinan staf legal, update progres lapangan, serta pelacakan riwayat aktivitas pembaruan.
             </p>
         </div>
-
-        <div class="d-flex align-items-center gap-2">
-            @if($canManage)
-                <a href="{{ route('perizinan.tugas.create') }}" class="btn btn-primary d-inline-flex align-items-center px-3 py-2 fw-semibold shadow-sm"
-                    style="border-radius: 5px; font-size: 0.86rem;">
-                    <i class="mdi mdi-plus-circle-outline fs-6" style="margin-right: 6px !important;"></i>
-                    <span>Tugaskan Staf Legal</span>
-                </a>
-            @endif
-        </div>
     </div>
 
     <!-- Alert Notifikasi -->
@@ -355,11 +345,18 @@
             <div class="card compact-table-card">
                 <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
                     <div class="d-flex align-items-center gap-2">
-                        <div style="width: 32px; height: 32px; border-radius: 5px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items-center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
+                        <div style="width: 32px; height: 32px; border-radius: 5px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
                             <i class="mdi mdi-format-list-checks"></i>
                         </div>
                         <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Daftar Delegasi Tugas Perizinan</span>
                     </div>
+
+                    @if($canManage)
+                        <a href="{{ route('perizinan.tugas.create') }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center px-3 py-1.5 fw-semibold shadow-sm" style="border-radius: 5px; font-size: 0.84rem;">
+                            <i class="mdi mdi-plus-circle-outline fs-6" style="margin-right: 6px !important;"></i>
+                            <span>Tugaskan Staf Legal</span>
+                        </a>
+                    @endif
                 </div>
 
                 <div class="card-body">
