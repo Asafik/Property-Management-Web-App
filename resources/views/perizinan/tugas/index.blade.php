@@ -122,7 +122,7 @@
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
         <div>
             <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
-                Pembagian Tugas & Monitoring Perizinan
+                Pembagian Tugas Perizinan
             </h2>
             <p class="text-muted mb-0" style="font-size: 0.88rem;">
                 Delegasi tugas perizinan staf legal, update progres lapangan, serta pelacakan riwayat aktivitas pembaruan.
@@ -161,7 +161,7 @@
     <div class="nav-tabs-clean">
         <a href="{{ route('perizinan.index') }}" class="nav-tab-item">
             <i class="mdi mdi-domain"></i>
-            <span>Monitoring Kawasan Proyek</span>
+            <span>Kawasan Proyek</span>
         </a>
         <a href="{{ route('perizinan.tugas.index') }}" class="nav-tab-item active">
             <i class="mdi mdi-clipboard-account-outline"></i>
