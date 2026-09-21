@@ -65,7 +65,26 @@ class PropertyController extends Controller
         ->orderBy('zoning')
         ->pluck('zoning');
 
-    return view('properti.index', compact('landBanks', 'companies', 'categories'));
+    // 4 KPI Metrics
+    $allLands = LandBank::with('infrastructures')->get();
+    $totalLandBank = $allLands->count();
+    $legalVerified = $allLands->filter(function($item) {
+        return $item->legal_status === 'verified' || $item->isFromPraLandbank();
+    })->count();
+    $devSelesai = $allLands->filter(function($item) {
+        return in_array(strtolower($item->development_status ?? ''), ['selesai', 'done']) || $item->overall_infrastructure_progress >= 100;
+    })->count();
+    $devProses = max(0, $totalLandBank - $devSelesai);
+
+    return view('properti.index', compact(
+        'landBanks',
+        'companies',
+        'categories',
+        'totalLandBank',
+        'legalVerified',
+        'devSelesai',
+        'devProses'
+    ));
 }
 
 
@@ -76,14 +95,13 @@ public function kavlingindex(Request $request)
           ->orWhereIn('name', \App\Models\PraLandbank::pluck('land_name'));
     });
 
-    // Filter Search Nama
+    // Filter Search Nama & Lokasi
     if ($request->filled('search')) {
-        $query->where('name', 'like', '%' . $request->search . '%');
-    }
-
-    // Filter Type (zoning)
-    if ($request->filled('type')) {
-        $query->where('zoning', $request->type);
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('name', 'like', '%' . $search . '%')
+              ->orWhere('address', 'like', '%' . $search . '%');
+        });
     }
 
     // Filter Status
@@ -94,27 +112,18 @@ public function kavlingindex(Request $request)
             $query->where('status', 'booking');
         } elseif ($request->status == 'available') {
             $query->whereNotIn('status', ['sold', 'booking'])
-                  ->where(function($sub) {
-                      $sub->where('development_status', 'Selesai')
-                          ->orWhere('overall_infrastructure_progress', '>=', 100);
-                  });
+                  ->whereIn('development_status', ['Selesai', 'done']);
         } elseif ($request->status == 'processing') {
             $query->whereNotIn('status', ['sold', 'booking'])
-                  ->where(function($sub) {
-                      $sub->where(function($sq) {
-                          $sq->whereNull('development_status')
-                             ->orWhere('development_status', '!=', 'Selesai');
-                      })
-                      ->where(function($sq) {
-                          $sq->whereNull('overall_infrastructure_progress')
-                             ->orWhere('overall_infrastructure_progress', '<', 100);
-                      });
+                  ->where(function($sq) {
+                      $sq->whereNull('development_status')
+                         ->orWhereNotIn('development_status', ['Selesai', 'done']);
                   });
         }
     }
 
     // Sort
-    $allowedSorts = ['name', 'zoning', 'acquisition_price', 'area', 'status', 'created_at'];
+    $allowedSorts = ['name', 'acquisition_price', 'area', 'status', 'created_at'];
     $sort = $request->input('sort', 'created_at');
     $direction = $request->input('direction', 'desc');
 
@@ -128,25 +137,32 @@ public function kavlingindex(Request $request)
 
     $query->orderBy($sort, $direction);
 
-    // Show per page - UPDATED to 10, 15, 20
+    // Show per page (10, 25, 50, 100)
     $perPage = (int) $request->input('per_page', 10);
-    if (!in_array($perPage, [10, 15, 20])) {
+    if (!in_array($perPage, [10, 25, 50, 100])) {
         $perPage = 10;
     }
 
     $lands = $query->paginate($perPage)->withQueryString();
 
-    // Untuk dropdown filter
-    $types = LandBank::where(function($q) {
-            $q->where('legal_status', 'verified')
-              ->orWhereIn('name', \App\Models\PraLandbank::pluck('land_name'));
-        })
-        ->whereNotNull('zoning')
-        ->distinct()
-        ->orderBy('zoning')
-        ->pluck('zoning');
+    // 4 KPI Metrics
+    $allLands = LandBank::where(function($q) {
+        $q->where('legal_status', 'verified')
+          ->orWhereIn('name', \App\Models\PraLandbank::pluck('land_name'));
+    })->with(['units', 'infrastructures'])->get();
 
-    return view('properti.kavling', compact('lands', 'types'));
+    $totalVerified = $allLands->count();
+    $readyKavling = $allLands->filter(fn($l) => $l->canCreateKavling())->count();
+    $processingLahan = max(0, $totalVerified - $readyKavling);
+    $totalLuasLahan = $allLands->sum('area');
+
+    return view('properti.kavling', compact(
+        'lands',
+        'totalVerified',
+        'readyKavling',
+        'processingLahan',
+        'totalLuasLahan'
+    ));
 }
 
 public function updateCompanyAjax(Request $request, $id)

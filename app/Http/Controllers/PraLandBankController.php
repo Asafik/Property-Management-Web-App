@@ -26,7 +26,12 @@ class PraLandBankController extends Controller
         }
     }
 
-    return view('land_bank.all_pra_land_bank', compact('praLandBank', 'documentTypes', 'landsWithPendingDocsCount'));
+    $totalPraTanah = PraLandbank::count();
+    $totalFase1 = PraLandbank::where('status', 'fase1')->count();
+    $totalFase2 = PraLandbank::where('status', 'fase2')->count();
+    $totalFase3 = PraLandbank::whereIn('status', ['fase3', 'approved'])->count();
+
+    return view('land_bank.all_pra_land_bank', compact('praLandBank', 'documentTypes', 'landsWithPendingDocsCount', 'totalPraTanah', 'totalFase1', 'totalFase2', 'totalFase3'));
 }
 
 public function store(Request $request)
@@ -688,7 +693,20 @@ public function store(Request $request)
             }
         }
 
-        return view('land_bank.all_pra_land_bank', compact('praLandBank', 'documentTypes', 'landsWithPendingDocsCount'));
+        $totalPraTanah = PraLandbank::count();
+        $totalFase1 = PraLandbank::where('status', 'fase1')->count();
+        $totalFase2 = PraLandbank::where('status', 'fase2')->count();
+        $totalFase3 = PraLandbank::whereIn('status', ['fase3', 'approved'])->count();
+
+        return view('land_bank.all_pra_land_bank', compact(
+            'praLandBank',
+            'documentTypes',
+            'landsWithPendingDocsCount',
+            'totalPraTanah',
+            'totalFase1',
+            'totalFase2',
+            'totalFase3'
+        ));
     }
     public function proses(Request $request, $id = null)
     {

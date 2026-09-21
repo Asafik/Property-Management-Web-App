@@ -2,6 +2,10 @@
 
 @section('title', 'Kelola Perizinan: ' . $project['nama'] . ' - Property Management App')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
+@endpush
+
 @section('content')
 
 <style>
@@ -96,95 +100,136 @@
         text-align: center;
         white-space: nowrap !important;
     }
+
+    /* Styling Card Tabel Meniru Persis Card Total */
+    .card.compact-table-card,
+    .compact-table-card {
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        box-shadow: none !important;
+        transition: border-color 0.2s ease;
+        overflow: hidden;
+    }
+    .card.compact-table-card:hover,
+    .compact-table-card:hover {
+        border-color: #cbd5e1 !important;
+        box-shadow: none !important;
+    }
+    .compact-table-card .card-header {
+        background: #ffffff !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        padding: 0.65rem 1.25rem !important;
+        border-top-left-radius: 8px !important;
+        border-top-right-radius: 8px !important;
+    }
+    .compact-table-card .card-body,
+    .card.compact-table-card .card-body {
+        padding: 0.75rem 1.25rem 1.15rem 1.25rem !important;
+        background: #ffffff !important;
+    }
+    .compact-table-card .filter-card {
+        margin-top: 0 !important;
+        margin-bottom: 0.6rem !important;
+    }
+    .compact-table-card .filter-card form {
+        margin-bottom: 0 !important;
+    }
+    .btn-kembali-proyek:hover {
+        background-color: #f8fafc !important;
+        border-color: #94a3b8 !important;
+        color: #0f172a !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+    }
 </style>
 
-<div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
+<div class="container-fluid px-2 px-md-4 py-3">
 
-    <!-- Top Navigation: Kembali ke Daftar Proyek -->
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <a href="{{ route('perizinan.index') }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 shadow-sm" style="border-radius: 6px; font-weight: 600;">
-            <i class="mdi mdi-arrow-left"></i>
-            <span>Kembali ke Daftar Proyek</span>
-        </a>
-
-        <span class="badge bg-light text-primary border px-2.5 py-1.5 fw-bold" style="font-size: 0.8rem;">
-            <i class="mdi mdi-domain me-1"></i>{{ $project['nama'] }}
-        </span>
-    </div>
-
-    <!-- Header Card Banner Kawasan -->
-    <div class="row mb-3 mb-md-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0 header-card">
-                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
-                            Perizinan Kawasan: {{ $project['nama'] }}
-                        </h3>
-                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                            {{ $project['pt'] }} &bull; {{ $project['lokasi'] }} &bull; Luas: {{ $project['luas'] }} ({{ $project['ownership_status'] }})
-                        </p>
-                    </div>
-                    <div class="d-none d-sm-block pe-2">
-                        <i class="mdi mdi-file-certificate-outline" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
-                    </div>
-                </div>
-            </div>
+    <!-- Top Navigation & Page Title -->
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+        <div>
+            <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                Perizinan Kawasan: {{ $project['nama'] }}
+            </h2>
+            <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                {{ $project['pt'] }} &bull; {{ $project['lokasi'] }} &bull; Luas: {{ $project['luas'] }} ({{ $project['ownership_status'] }})
+            </p>
+        </div>
+        <div>
+            <a href="{{ route('perizinan.index') }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm btn-kembali-proyek" style="border: 1px solid #cbd5e1; background-color: #ffffff; color: #1e293b; border-radius: 8px; font-weight: 600; font-size: 0.85rem; transition: all 0.2s ease;">
+                <i class="mdi mdi-arrow-left text-primary" style="font-size: 1.1rem; line-height: 1;"></i>
+                <span>Kembali</span>
+            </a>
         </div>
     </div>
 
-    <!-- 4 KPI Metrics Card Proyek Ini -->
-    <div class="row g-2 g-md-3 mb-3">
-        <div class="col-6 col-md-3">
-            <div class="card shadow-sm border-0 h-100 p-3 bg-white" style="border-radius: 8px;">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.68rem;">Total Dokumen Izin</small>
-                        <h4 class="fw-bold text-dark mb-0 mt-1">{{ $totalIzin }}</h4>
-                    </div>
-                    <div class="p-2 rounded-2" style="background: #eff6ff; color: #2563eb;">
-                        <i class="mdi mdi-file-document-multiple-outline fs-4"></i>
-                    </div>
+    <!-- 4 KPI Metrics Card Proyek Ini (Sama Persis Halaman Index) -->
+    <div class="dash-kpi-grid mb-4">
+        <!-- Card 1: Total Izin (Ungu) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon purple">
+                    <i class="mdi mdi-file-document-outline"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Total Dokumen Izin</div>
+                    <div class="dash-kpi-val">{{ $totalIzin ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Seluruh Dokumen Proyek</div>
                 </div>
             </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="card shadow-sm border-0 h-100 p-3 bg-white" style="border-radius: 8px;">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.68rem;">Izin Terbit & Sah</small>
-                        <h4 class="fw-bold text-success mb-0 mt-1">{{ $totalTerbit }}</h4>
-                    </div>
-                    <div class="p-2 rounded-2" style="background: #ecfdf5; color: #059669;">
-                        <i class="mdi mdi-check-decagram-outline fs-4"></i>
-                    </div>
-                </div>
+            <div class="dash-kpi-action purple">
+                <i class="mdi mdi-arrow-right"></i>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="card shadow-sm border-0 h-100 p-3 bg-white" style="border-radius: 8px;">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.68rem;">Sedang Proses Dinas</small>
-                        <h4 class="fw-bold text-warning mb-0 mt-1">{{ $totalProses }}</h4>
-                    </div>
-                    <div class="p-2 rounded-2" style="background: #fffbeb; color: #d97706;">
-                        <i class="mdi mdi-clock-outline fs-4"></i>
-                    </div>
+
+        <!-- Card 2: Izin Selesai (Hijau) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon green">
+                    <i class="mdi mdi-check-circle-outline"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Izin Terbit & Sah</div>
+                    <div class="dash-kpi-val">{{ $totalTerbit ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Dokumen Terbit / Final</div>
                 </div>
             </div>
+            <div class="dash-kpi-action green">
+                <i class="mdi mdi-arrow-right"></i>
+            </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="card shadow-sm border-0 h-100 p-3 bg-white" style="border-radius: 8px;">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.68rem;">Perlu Revisi / Kendala</small>
-                        <h4 class="fw-bold text-danger mb-0 mt-1">{{ $totalRevisi }}</h4>
-                    </div>
-                    <div class="p-2 rounded-2" style="background: #fef2f2; color: #dc2626;">
-                        <i class="mdi mdi-alert-circle-outline fs-4"></i>
-                    </div>
+
+        <!-- Card 3: Dalam Proses (Biru) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon blue">
+                    <i class="mdi mdi-progress-clock"></i>
                 </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Sedang Proses Dinas</div>
+                    <div class="dash-kpi-val">{{ $totalProses ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Sedang Diproses Instansi</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action blue">
+                <i class="mdi mdi-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- Card 4: Tertunda / Kendala (Rose / Merah) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon rose">
+                    <i class="mdi mdi-alert-circle-outline"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Perlu Revisi / Kendala</div>
+                    <div class="dash-kpi-val">{{ $totalRevisi ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Perlu Tindak Lanjut / Revisi</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action rose">
+                <i class="mdi mdi-arrow-right"></i>
             </div>
         </div>
     </div>
@@ -192,21 +237,24 @@
     <!-- Main Container: Dokumen Perizinan Proyek (MURNI TABEL GAYA DATA BANK) -->
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 py-3">
-                    <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2"></i>Rincian Dokumen Perizinan Kawasan
-                    </h5>
+            <div class="card compact-table-card" style="background: #ffffff !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; box-shadow: none !important;">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2" style="padding: 0.65rem 1.25rem !important; border-bottom: 1px solid #e2e8f0 !important;">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 32px; height: 32px; border-radius: 6px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
+                            <i class="mdi mdi-format-list-bulleted"></i>
+                        </div>
+                        <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Rincian Dokumen Perizinan Kawasan</span>
+                    </div>
                     <button type="button" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm" onclick="bukaModalKelola(null)">
                         <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
                         <span>Tambah Dokumen Izin</span>
                     </button>
                 </div>
 
-                <div class="card-body">
+                <div class="card-body" style="padding: 0.75rem 1.25rem 1.15rem 1.25rem !important;">
                     <!-- Filter Toolbar -->
-                    <div class="filter-card mb-3">
-                        <form id="filterForm" method="GET" action="{{ route('perizinan.show', $project['id']) }}">
+                    <div class="filter-card" style="margin-top: 0 !important; margin-bottom: 0.6rem !important;">
+                        <form id="filterForm" method="GET" action="{{ route('perizinan.show', $project['id']) }}" style="margin-bottom: 0 !important;">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
                                 <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                                     <!-- Search Input -->

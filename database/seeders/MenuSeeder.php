@@ -65,13 +65,13 @@ class MenuSeeder extends Seeder
         $properti->positions()->attach($landbankRoles);
 
         Menu::create([
-            'name'      => 'Semua Tanah Pra Land Bank',
+            'name'      => 'Tanah Pra Land Bank',
             'route'     => 'pralandbank.all',
             'parent_id' => $properti->id
         ])->positions()->attach($landbankRoles);
 
         Menu::create([
-            'name'      => 'Semua Tanah Pasca Land Bank',
+            'name'      => 'Tanah Pasca Land Bank',
             'route'     => 'properti-all',
             'parent_id' => $properti->id
         ])->positions()->attach($landbankRoles);
@@ -110,6 +110,15 @@ class MenuSeeder extends Seeder
                 'parent_id' => $document->id
             ])->positions()->attach($legalRoles);
         }
+
+        // ================= 4.1 LEGAL UNIT =================
+        $legalUnitMenu = Menu::create([
+            'name'  => 'Unit',
+            'route' => 'legal.unit.index',
+            'icon'  => 'mdi-home-city-outline',
+            'order' => 4
+        ]);
+        $legalUnitMenu->positions()->attach($legalRoles);
 
         // ================= 5. PROYEK: PENGOLAHAN LAHAN =================
         $proyekMenu = Menu::create([
@@ -203,6 +212,12 @@ class MenuSeeder extends Seeder
             'order' => 10
         ]);
         $keuangan->positions()->attach($keuanganRoles);
+
+        Menu::create([
+            'name'      => 'Master Aturan Fee',
+            'route'     => 'keuangan.pembayaran.index',
+            'parent_id' => $keuangan->id
+        ])->positions()->attach($keuanganRoles);
 
         Menu::create([
             'name'      => 'Master HPP & Project Accounting',

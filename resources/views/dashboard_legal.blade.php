@@ -426,7 +426,7 @@
                                     <i class="mdi mdi-map-marker-path"></i>
                                 </div>
                                 <div>
-                                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.92rem;">Semua Tanah Pra Land Bank</h6>
+                                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.92rem;">Tanah Pra Land Bank</h6>
                                     <small class="text-muted" style="font-size: 0.75rem;">Prospek & Inisiasi Lahan</small>
                                 </div>
                             </div>
@@ -493,12 +493,12 @@
                     </div>
                 </div>
 
-                <!-- Modul 3: Semua Tanah Pasca Land Bank -->
+                <!-- Modul 3: Tanah Pasca Land Bank -->
                 <div class="col-12 col-md-6 col-xl-4">
                     <div class="legal-module-card">
                         <div>
                             <div class="mb-2.5">
-                                <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.92rem;">Semua Tanah Pasca Land Bank</h6>
+                                <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.92rem;">Tanah Pasca Land Bank</h6>
                                 <small class="text-muted" style="font-size: 0.75rem;">Aset Tanah Induk Perusahaan</small>
                             </div>
                             <p class="text-muted mb-3" style="font-size: 0.8rem; line-height: 1.45;">

@@ -85,12 +85,16 @@
             'rab.deadline.index' => 'mdi-calendar-clock',
             'master.data.division.index' => 'mdi-domain-plus',
             'master.data.posisi' => 'mdi-badge-account-outline',
+            'master.biaya-legalitas.index' => 'mdi-cash-multiple',
             // Keuangan
             'keuangan.project-accounting.index' => 'mdi-finance',
+            'keuangan.pembayaran.index' => 'mdi-cash-multiple',
             'keuangan.master-invoice.index' => 'mdi-receipt-text-outline',
             'marketing.commission-rules.index' => 'mdi-cash-cog',
             // Perizinan
             'perizinan.index' => 'mdi-file-certificate-outline',
+            // Legal Unit
+            'legal.unit.index' => 'mdi-home-city-outline',
             // Proyek
             'proyek.pengolahan-lahan.index' => 'mdi-hard-hat',
             'proyek.unit.index' => 'mdi-home-city-outline',
@@ -102,9 +106,12 @@
         $routeActivePatterns = [
             'dashboard' => ['dashboard', 'dashboard.*'],
             'perizinan.index' => ['perizinan*'],
+            'legal.unit.index' => ['legal.unit.*', 'legal-unit*'],
             'proyek.pengolahan-lahan.index' => ['proyek.pengolahan-lahan.*'],
             'proyek.unit.index' => ['proyek.unit.*'],
+            'master.biaya-legalitas.index' => ['master.biaya-legalitas.*'],
             'keuangan.project-accounting.index' => ['keuangan.project-accounting.*'],
+            'keuangan.pembayaran.index' => ['keuangan.pembayaran.*'],
             'finance.kpr-disbursement.index' => ['finance.kpr-disbursement.*'],
             'keuangan.master-invoice.index' => ['keuangan.master-invoice.*'],
             'marketing.commission-rules.index' => ['marketing.commission-rules.*'],
@@ -212,6 +219,9 @@
 
         // Pastikan urutan menu selalu rapi sesuai kelompok domain
         $mainMenus = $mainMenus->sortBy(function($m) use ($menuSortWeight) {
+            if ($m->route === 'legal.unit.index') {
+                return 4.5;
+            }
             return $menuSortWeight[$m->name] ?? $m->order ?? 99;
         });
 
@@ -261,13 +271,19 @@
                 if ($mainDisplayName === 'Tanah Induk (Land Bank)') {
                     $mainDisplayName = 'Tanah Induk';
                 }
-                $mainIcon = $main->icon;
-                if ($main->icon === 'mdi-file-document-box-multiple-outline' || empty($main->icon)) {
+                $mainIcon = $iconMap[$main->route] ?? $main->icon;
+                if ($mainIcon === 'mdi-file-document-box-multiple-outline' || empty($mainIcon)) {
                     $mainIcon = ($mainDisplayName === 'Dokumen') ? 'mdi-file-document-multiple-outline' : ($main->icon ?: 'mdi-folder-outline');
                 }
 
                 // Label Kategori / Section Header
-                $sectionName = $categoryMap[$main->name] ?? ($categoryMap[$mainDisplayName] ?? $mainDisplayName);
+                if ($main->route === 'legal.unit.index') {
+                    $sectionName = 'Legal';
+                } elseif ($main->route === 'proyek.unit.index') {
+                    $sectionName = 'Proyek';
+                } else {
+                    $sectionName = $categoryMap[$main->name] ?? ($categoryMap[$mainDisplayName] ?? $mainDisplayName);
+                }
             @endphp
 
             {{-- Label Kategori / Header Section per Kelompok Menu Role --}}

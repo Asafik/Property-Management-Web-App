@@ -369,6 +369,7 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::get('/pengolahan-lahan', [\App\Http\Controllers\Admin\ProjectPengolahanLahanController::class, 'index'])->name('proyek.pengolahan-lahan.index');
     Route::get('/proyek-unit', [\App\Http\Controllers\Admin\ProjectUnitController::class, 'index'])->name('proyek.unit.index');
+    Route::get('/legal-unit', [\App\Http\Controllers\Legal\LegalUnitController::class, 'index'])->name('legal.unit.index');
 
     /*
     |--------------------------------------------------------------------------
@@ -450,6 +451,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/keuangan/pencairan-kpr', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'index'])->name('finance.kpr-disbursement.index');
     Route::post('/keuangan/pencairan-kpr/store', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'store'])->name('finance.kpr-disbursement.store');
     Route::delete('/keuangan/pencairan-kpr/{id}', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'destroy'])->name('finance.kpr-disbursement.destroy');
+
+    // Pembayaran Fee Legalitas, IJB, AJB, Notaris, BPHTB, Komisi
+    Route::get('/keuangan/pembayaran', [\App\Http\Controllers\Finance\PembayaranFeeController::class, 'index'])->name('keuangan.pembayaran.index');
+    Route::get('/keuangan/pembayaran/simulasi', [\App\Http\Controllers\Finance\PembayaranFeeController::class, 'simulasi'])->name('keuangan.pembayaran.simulasi');
 
 
     Route::resource('dokument', LandBankDocumentController::class);

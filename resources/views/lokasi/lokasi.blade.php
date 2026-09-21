@@ -2,105 +2,234 @@
 
 @section('title', 'Lokasi Properti - Property Management App')
 
+@push('styles')
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
+    <style>
+        /* Table Responsive & Text Wrapping persis Perizinan */
+        .table-lahan {
+            width: 100% !important;
+            margin-bottom: 0;
+        }
+        .table-lahan thead th {
+            background: #f8fafc !important;
+            color: #4b5563 !important;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0 !important;
+            padding: 0.75rem 0.65rem !important;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .table-lahan tbody td {
+            padding: 0.75rem 0.65rem !important;
+            vertical-align: middle;
+            font-size: 0.83rem;
+            border-bottom: 1px solid #f1f5f9;
+            white-space: normal !important;
+        }
+        .table-lahan .col-no {
+            width: 45px;
+            text-align: center;
+            white-space: nowrap !important;
+        }
+        .table-lahan .col-aksi {
+            width: 80px;
+            text-align: center;
+            white-space: nowrap !important;
+        }
+
+        /* Compact Table Card persis Perizinan */
+        .card.compact-table-card,
+        .compact-table-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+            transition: border-color 0.2s ease;
+            overflow: hidden;
+        }
+        .card.compact-table-card:hover,
+        .compact-table-card:hover {
+            border-color: #cbd5e1 !important;
+            box-shadow: none !important;
+        }
+        .compact-table-card .card-header {
+            background: #ffffff !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            padding: 0.75rem 1.25rem !important;
+            border-top-left-radius: 8px !important;
+            border-top-right-radius: 8px !important;
+        }
+        .compact-table-card .card-body,
+        .card.compact-table-card .card-body {
+            padding: 0 !important;
+            background: #ffffff !important;
+        }
+
+        /* Badge Status */
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0.32rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        .badge-status.available {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+        .badge-status.booking {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
+        .badge-status.sold {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: none;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-action.fase2 {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #ffffff !important;
+            box-shadow: 0 2px 5px rgba(2, 132, 199, 0.25);
+        }
+        .btn-action.fase2 i {
+            color: #ffffff !important;
+            font-size: 1.05rem;
+        }
+        .btn-action.fase2:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.4);
+            color: #ffffff !important;
+        }
+    </style>
+@endpush
+
 @section('content')
 
-<!-- Leaflet CSS & JS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<div class="container-fluid px-2 px-md-4 py-3">
 
-<div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
-
-    <!-- Header Card Banner -->
-    <div class="row mb-3 mb-md-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0 header-card">
-                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
-                            Peta Lokasi Properti
-                        </h3>
-                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                            Pemetaan geografis dan status seluruh properti dan landbank
-                        </p>
-                    </div>
-                    <div class="d-none d-sm-block pe-2">
-                        <i class="mdi mdi-map-marker-radius" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
-                    </div>
-                </div>
-            </div>
+    <!-- Page Title & Subtitle (Persis Perizinan) -->
+    <div class="row align-items-center mb-4">
+        <div class="col">
+            <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                Peta Lokasi Properti
+            </h2>
+            <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                Pemetaan geografis dan status seluruh properti dan landbank
+            </p>
         </div>
     </div>
 
-    <!-- Statistic Cards (Sesuai Desain Dashboard) -->
-    <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3">
-            <div class="card shadow-sm border-0 h-100 mb-0">
-                <div class="card-body d-flex justify-content-between align-items-center p-3">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold">{{ $totalLandBanks }}</h3>
-                        <p class="text-muted mb-0">Total Properti</p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-home-city-outline" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                    </div>
+    <!-- 4 KPI Metrics Card Grid (Persis Perizinan / Pra Tanah) -->
+    <div class="dash-kpi-grid mb-4">
+        
+        <!-- Card 1: Total Properti (Ungu) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon purple">
+                    <i class="mdi mdi-home-city-outline"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Total Properti</div>
+                    <div class="dash-kpi-val">{{ $totalLandBanks ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Proyek Terdaftar</div>
                 </div>
             </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="card shadow-sm border-0 h-100 mb-0">
-                <div class="card-body d-flex justify-content-between align-items-center p-3">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold">{{ $totalReady }}</h3>
-                        <p class="text-muted mb-0">Unit Tersedia</p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-check-circle-outline" style="font-size: 2.5rem; color: #28a745; opacity: 0.2;"></i>
-                    </div>
-                </div>
+            <div class="dash-kpi-action purple">
+                <i class="mdi mdi-arrow-right"></i>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="card shadow-sm border-0 h-100 mb-0">
-                <div class="card-body d-flex justify-content-between align-items-center p-3">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold">{{ $totalBooked }}</h3>
-                        <p class="text-muted mb-0">Unit Booking</p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-clock-outline" style="font-size: 2.5rem; color: #ffc107; opacity: 0.2;"></i>
-                    </div>
+
+        <!-- Card 2: Unit Tersedia (Hijau) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon green">
+                    <i class="mdi mdi-check-decagram-outline"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Unit Tersedia</div>
+                    <div class="dash-kpi-val">{{ $totalReady ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Siap Dipasarkan</div>
                 </div>
             </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="card shadow-sm border-0 h-100 mb-0">
-                <div class="card-body d-flex justify-content-between align-items-center p-3">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold">{{ $totalSold }}</h3>
-                        <p class="text-muted mb-0">Unit Terjual</p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-close-circle-outline" style="font-size: 2.5rem; color: #dc3545; opacity: 0.2;"></i>
-                    </div>
-                </div>
+            <div class="dash-kpi-action green">
+                <i class="mdi mdi-arrow-right"></i>
             </div>
         </div>
+
+        <!-- Card 3: Unit Booking (Kuning / Amber) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon amber">
+                    <i class="mdi mdi-clock-outline"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Unit Booking</div>
+                    <div class="dash-kpi-val">{{ $totalBooked ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Proses Pemesanan</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action amber">
+                <i class="mdi mdi-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- Card 4: Unit Terjual (Biru) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon blue">
+                    <i class="mdi mdi-handshake-outline"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Unit Terjual</div>
+                    <div class="dash-kpi-val">{{ $totalSold ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Penjualan Selesai</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action blue">
+                <i class="mdi mdi-arrow-right"></i>
+            </div>
+        </div>
+
     </div>
 
     <!-- Peta Lokasi Google Maps Card -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">
-                        <i class="mdi mdi-google-maps me-2"></i>Google Maps View
+            <div class="card compact-table-card shadow-sm border-0">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center py-3 border-bottom">
+                    <h5 class="card-title mb-0" style="font-weight: 700; color: #1e293b; font-size: 1.05rem;">
+                        <i class="mdi mdi-google-maps me-2" style="color: #9a55ff;"></i>Google Maps View
                     </h5>
-                    <span class="badge bg-light text-muted fw-normal" style="font-size: 0.75rem;">
+                    <span class="badge bg-light text-muted fw-normal" style="font-size: 0.78rem;">
                         <i class="mdi mdi-information-outline me-1"></i>Klik pin lokasi untuk melihat detail
                     </span>
                 </div>
                 <div class="card-body p-0">
-                    <div id="map" style="height: 480px; width: 100%; border-radius: 0 0 12px 12px; z-index: 1;"></div>
+                    <div id="map" style="height: 480px; width: 100%; z-index: 1;"></div>
                 </div>
             </div>
         </div>
@@ -109,27 +238,30 @@
     <!-- Daftar Properti & Filter Section -->
     <div class="row">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
-                    <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Properti Terdekat
-                    </h5>
+            <div class="card compact-table-card shadow-sm border-0">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 py-3 border-bottom">
+                    <div>
+                        <h5 class="card-title mb-0" style="font-weight: 700; color: #1e293b; font-size: 1.05rem;">
+                            <i class="mdi mdi-format-list-bulleted me-2" style="color: #9a55ff;"></i>Daftar Properti Terdekat
+                        </h5>
+                    </div>
                 </div>
 
-                <div class="card-body">
-                    <!-- Filter Section -->
-                    <div class="filter-card mb-3">
+                <div class="card-body p-0">
+                    <!-- Filter Toolbar -->
+                    <div class="card-toolbar-box p-3 border-bottom bg-white">
                         <!-- Desktop Filter -->
-                        <div class="filter-row-desktop d-none d-md-block">
+                        <div class="d-none d-md-block">
                             <form method="GET" action="{{ route('lokasi.index') }}">
                                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
                                     <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
-                                        <div style="min-width: 240px; max-width: 320px; flex: 1;">
+                                        <div style="min-width: 240px; max-width: 360px; flex: 1;">
                                             <div class="input-group">
-                                                <input type="text" class="form-control" name="search" id="searchInput"
+                                                <input type="text" class="form-control" name="search" id="liveSearchInput"
                                                     placeholder="Cari nama properti / alamat..."
                                                     value="{{ request('search') }}"
-                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                    onkeyup="applyLiveSearch(this.value)"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
                                                 <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
                                                     type="submit" title="Cari"
                                                     style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
@@ -137,22 +269,11 @@
                                                 </button>
                                             </div>
                                         </div>
-
-                                        <div style="width: 180px;">
-                                            <select name="kategori" class="form-control" id="categorySelect">
-                                                <option value="">Semua Kategori</option>
-                                                @foreach ($zonings as $zoning)
-                                                    <option value="{{ $zoning }}" {{ request('kategori') == $zoning ? 'selected' : '' }}>
-                                                        {{ $zoning }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
                                     </div>
 
                                     <div class="d-flex align-items-center gap-2 ms-auto">
                                         <div style="width: 115px;">
-                                            <select name="tampil" class="form-control" id="showSelect">
+                                            <select name="tampil" class="form-select" id="showSelect" onchange="this.form.submit()" style="height: 38px;">
                                                 <option value="10" {{ request('tampil', 10) == 10 ? 'selected' : '' }}>10 data</option>
                                                 <option value="25" {{ request('tampil') == 25 ? 'selected' : '' }}>25 data</option>
                                                 <option value="50" {{ request('tampil') == 50 ? 'selected' : '' }}>50 data</option>
@@ -160,10 +281,10 @@
                                             </select>
                                         </div>
 
-                                        <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Filter">
+                                        <button type="submit" class="btn btn-gradient-primary d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0;" title="Filter">
                                             <i class="mdi mdi-filter"></i>
                                         </button>
-                                        <a href="{{ route('lokasi.index') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset">
+                                        <a href="{{ route('lokasi.index') }}" class="btn btn-gradient-secondary d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0;" title="Reset">
                                             <i class="mdi mdi-refresh"></i>
                                         </a>
                                     </div>
@@ -172,7 +293,7 @@
                         </div>
 
                         <!-- Mobile Filter -->
-                        <div class="filter-row-mobile d-block d-md-none">
+                        <div class="d-block d-md-none">
                             <form method="GET" action="{{ route('lokasi.index') }}">
                                 <div class="row g-2">
                                     <div class="col-12 mb-2">
@@ -180,7 +301,8 @@
                                             <input type="text" class="form-control" name="search" id="searchInputMobile"
                                                 placeholder="Cari nama properti..."
                                                 value="{{ request('search') }}"
-                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                onkeyup="applyLiveSearch(this.value)"
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
                                             <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
                                                 type="submit" title="Cari"
                                                 style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
@@ -189,35 +311,24 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-12 mb-2">
-                                        <select name="kategori" class="form-control" id="categorySelectMobile">
-                                            <option value="">Semua Kategori</option>
-                                            @foreach ($zonings as $zoning)
-                                                <option value="{{ $zoning }}" {{ request('kategori') == $zoning ? 'selected' : '' }}>
-                                                    {{ $zoning }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="col-12 mb-2">
-                                        <select name="tampil" class="form-control" id="showSelectMobile">
-                                            <option value="10" {{ request('tampil') == 10 ? 'selected' : '' }}>10 data</option>
+                                    <div class="col-4">
+                                        <select name="tampil" class="form-select" id="showSelectMobile" onchange="this.form.submit()" style="height: 38px;">
+                                            <option value="10" {{ request('tampil', 10) == 10 ? 'selected' : '' }}>10 data</option>
                                             <option value="25" {{ request('tampil') == 25 ? 'selected' : '' }}>25 data</option>
                                             <option value="50" {{ request('tampil') == 50 ? 'selected' : '' }}>50 data</option>
                                             <option value="100" {{ request('tampil') == 100 ? 'selected' : '' }}>100 data</option>
                                         </select>
                                     </div>
 
-                                    <div class="col-6">
-                                        <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center gap-1">
-                                            <i class="mdi mdi-filter"></i> Filter
+                                    <div class="col-4">
+                                        <button type="submit" class="btn btn-gradient-primary w-100" style="height: 38px;" title="Filter">
+                                            <i class="mdi mdi-filter"></i>
                                         </button>
                                     </div>
 
-                                    <div class="col-6">
-                                        <a href="{{ route('lokasi.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center gap-1">
-                                            <i class="mdi mdi-refresh"></i> Reset
+                                    <div class="col-4">
+                                        <a href="{{ route('lokasi.index') }}" class="btn btn-gradient-secondary w-100 d-inline-flex align-items-center justify-content-center" style="height: 38px;" title="Reset">
+                                            <i class="mdi mdi-refresh"></i>
                                         </a>
                                     </div>
                                 </div>
@@ -227,36 +338,32 @@
 
                     <!-- Tabel Data Properti -->
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
+                        <table class="table table-lahan table-hover align-middle mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-center">No</th>
-                                    <th>Nama Properti</th>
-                                    <th>Kategori</th>
-                                    <th>Lokasi</th>
-                                    <th>Jarak</th>
-                                    <th>Status</th>
-                                    <th class="text-center">Aksi</th>
+                                    <th class="col-no text-center">NO</th>
+                                    <th>NAMA PROPERTI</th>
+                                    <th>LOKASI</th>
+                                    <th>JARAK</th>
+                                    <th>STATUS</th>
+                                    <th class="col-aksi text-center">AKSI</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($landBanks as $item)
-                                    <tr>
-                                        <td class="text-center fw-bold">{{ $loop->iteration + ($landBanks->currentPage() - 1) * $landBanks->perPage() }}</td>
+                                    @php
+                                        $searchKeywords = strtolower(($item->name ?? '') . ' ' . ($item->address ?? ''));
+                                    @endphp
+                                    <tr class="project-table-row" data-search="{{ $searchKeywords }}">
+                                        <td class="col-no text-center fw-bold text-muted">{{ $loop->iteration + ($landBanks->currentPage() - 1) * $landBanks->perPage() }}</td>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-home-city text-primary me-2" style="font-size: 1.2rem;"></i>
-                                                <span class="fw-bold">{{ $item->name }}</span>
+                                                <i class="mdi mdi-home-city text-primary me-2" style="font-size: 1.15rem;"></i>
+                                                <span class="fw-bold text-dark" style="font-size: 0.88rem;">{{ $item->name }}</span>
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge-category">
-                                                <i class="mdi mdi-shape-outline"></i>
-                                                {{ $item->zoning ?? 'Tanah' }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="d-inline-flex align-items-center gap-1" title="{{ $item->address }}">
+                                            <span class="d-inline-flex align-items-center gap-1 text-muted" title="{{ $item->address }}">
                                                 <i class="mdi mdi-map-marker text-danger"></i>
                                                 <span>{{ Str::limit($item->address, 35) }}</span>
                                             </span>
@@ -284,7 +391,7 @@
                                                 </span>
                                             @endif
                                         </td>
-                                        <td class="text-center">
+                                        <td class="col-aksi text-center">
                                             <button type="button" class="btn-action fase2" title="Lihat Lokasi di Google Maps"
                                                 onclick="flyToLocation({{ $item->lat ?? 0 }}, {{ $item->lng ?? 0 }}, '{{ addslashes($item->name) }}')">
                                                 <i class="mdi mdi-crosshairs-gps"></i>
@@ -293,7 +400,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted py-4">
+                                        <td colspan="6" class="text-center text-muted py-4">
                                             <i class="mdi mdi-information-outline me-2"></i> Tidak ada properti ditemukan.
                                         </td>
                                     </tr>
@@ -303,37 +410,16 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                        <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.82rem;">
-                            Menampilkan {{ $landBanks->firstItem() ?? 0 }} - {{ $landBanks->lastItem() ?? 0 }} dari {{ $landBanks->total() }} data
+                    @if ($landBanks instanceof \Illuminate\Pagination\LengthAwarePaginator && $landBanks->total() > 0)
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-white">
+                            <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.84rem;">
+                                Menampilkan {{ $landBanks->firstItem() ?? 0 }} - {{ $landBanks->lastItem() ?? 0 }} dari {{ $landBanks->total() }} data
+                            </div>
+                            <div>
+                                {{ $landBanks->appends(request()->query())->links('pagination::bootstrap-5') }}
+                            </div>
                         </div>
-
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
-                                <li class="page-item {{ $landBanks->onFirstPage() ? 'disabled' : '' }}">
-                                    <a class="page-link" href="{{ $landBanks->previousPageUrl() }}">
-                                        <i class="mdi mdi-chevron-left"></i>
-                                    </a>
-                                </li>
-
-                                @for($page = 1; $page <= $landBanks->lastPage(); $page++)
-                                    <li class="page-item {{ $page == $landBanks->currentPage() ? 'active' : '' }}">
-                                        @if($page == $landBanks->currentPage())
-                                            <span class="page-link">{{ $page }}</span>
-                                        @else
-                                            <a class="page-link" href="{{ $landBanks->appends(request()->query())->url($page) }}">{{ $page }}</a>
-                                        @endif
-                                    </li>
-                                @endfor
-
-                                <li class="page-item {{ $landBanks->hasMorePages() ? '' : 'disabled' }}">
-                                    <a class="page-link" href="{{ $landBanks->nextPageUrl() }}">
-                                        <i class="mdi mdi-chevron-right"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+                    @endif
 
                 </div>
             </div>
@@ -345,7 +431,22 @@
 @endsection
 
 @push('scripts')
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+    function applyLiveSearch(query) {
+        var filter = (query || '').toLowerCase().trim();
+        var rows = document.querySelectorAll('.project-table-row');
+        rows.forEach(function(row) {
+            var text = row.getAttribute('data-search') || row.innerText.toLowerCase();
+            if (!filter || text.indexOf(filter) > -1) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
     $(document).ready(function() {
         // Google Maps Tile Layers
         var googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {

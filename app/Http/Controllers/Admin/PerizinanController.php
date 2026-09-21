@@ -26,21 +26,27 @@ class PerizinanController extends Controller
             $terbit = $pList->whereIn('status', ['Selesai', 'Terbit'])->count();
             $proses = $pList->whereIn('status', ['Berjalan', 'Proses'])->count();
             $revisi = $pList->whereIn('status', ['Tertunda', 'Revisi', 'Belum'])->count();
-            $progress = $total > 0 ? round(($terbit / $total) * 100) : 75;
+            $progress = $total > 0 ? round(($terbit / $total) * 100) : 0;
 
             $proj['total'] = $total;
             $proj['terbit'] = $terbit;
             $proj['proses'] = $proses;
             $proj['revisi'] = $revisi;
             $proj['progress'] = $progress;
-            $proj['status'] = $terbit == $total && $total > 0 ? 'Selesai' : ($revisi > 0 ? 'Tertunda' : 'Berjalan');
+            $proj['status'] = $terbit == $total && $total > 0 ? 'Selesai' : ($proses > 0 ? 'Berjalan' : ($revisi > 0 ? 'Tertunda' : 'Belum'));
             return $proj;
         });
 
-        // Filter Proyek
-        $proyekId = $request->get('proyek_id');
-        if (!empty($proyekId) && $proyekId !== 'all') {
-            $projects = $projects->where('id', (int) $proyekId);
+        // Filter Pencarian
+        $search = trim($request->get('search', ''));
+        if (!empty($search)) {
+            $searchLower = strtolower($search);
+            $projects = $projects->filter(function ($proj) use ($searchLower) {
+                return str_contains(strtolower($proj['nama']), $searchLower)
+                    || str_contains(strtolower($proj['lokasi'] ?? ''), $searchLower)
+                    || str_contains(strtolower($proj['ownership_status'] ?? ''), $searchLower)
+                    || str_contains(strtolower($proj['pt'] ?? ''), $searchLower);
+            });
         }
 
         // Filter Status
@@ -53,12 +59,12 @@ class PerizinanController extends Controller
         $totalIzin    = $allPermits->count();
         $totalSelesai = $allPermits->whereIn('status', ['Selesai', 'Terbit'])->count();
         $dalamProses  = $allPermits->whereIn('status', ['Berjalan', 'Proses'])->count();
-        $tertunda     = $allPermits->whereIn('status', ['Tertunda', 'Revisi', 'Belum'])->count();
+        $tertunda     = $allPermits->whereIn('status', ['Tertunda', 'Revisi'])->count();
 
         return view('perizinan.index', compact(
             'projects',
-            'proyekId',
             'filterStatus',
+            'search',
             'totalIzin',
             'totalSelesai',
             'dalamProses',
@@ -136,7 +142,9 @@ class PerizinanController extends Controller
         // 1. Ambil data dari PraLandbank yang berstatus 'approved' / sudah deal sidang
         try {
             $approvedPraLands = PraLandbank::where('status', 'approved')
+                ->orWhere('status', 'fase3')
                 ->orWhereNotNull('deal_price')
+                ->orWhereIn('payment_method', ['cash', 'termin'])
                 ->get();
 
             foreach ($approvedPraLands as $pra) {

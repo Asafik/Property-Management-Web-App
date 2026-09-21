@@ -2,21 +2,86 @@
 
 @section('title', 'Semua Properti Proyek')
 
-@section('content')
-
-    @php
-        function sortIcon($column)
-        {
-            if (request('sort_by') !== $column) {
-                return 'mdi-swap-vertical text-muted';
-            }
-            return request('sort_order', 'asc') === 'desc'
-                ? 'mdi-arrow-down text-primary fw-bold'
-                : 'mdi-arrow-up text-primary fw-bold';
-        }
-    @endphp
-
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
     <style>
+        /* Table Responsive & Text Wrapping persis Perizinan */
+        .table-lahan {
+            width: 100% !important;
+            margin-bottom: 0;
+        }
+        .table-lahan thead th {
+            background: #f8fafc !important;
+            color: #4b5563 !important;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0 !important;
+            padding: 0.75rem 0.65rem !important;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .table-lahan tbody td {
+            padding: 0.75rem 0.65rem !important;
+            vertical-align: middle;
+            font-size: 0.83rem;
+            border-bottom: 1px solid #f1f5f9;
+            white-space: normal !important;
+        }
+        .table-lahan .col-no {
+            width: 45px;
+            text-align: center;
+            white-space: nowrap !important;
+        }
+        .table-lahan .col-aksi {
+            width: 100px;
+            text-align: center;
+            white-space: nowrap !important;
+        }
+
+        /* Compact Table Card persis Perizinan */
+        .card.compact-table-card,
+        .compact-table-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+            transition: border-color 0.2s ease;
+            overflow: hidden;
+        }
+        .card.compact-table-card:hover,
+        .compact-table-card:hover {
+            border-color: #cbd5e1 !important;
+            box-shadow: none !important;
+        }
+        .compact-table-card .card-header {
+            background: #ffffff !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            padding: 0.75rem 1.25rem !important;
+            border-top-left-radius: 8px !important;
+            border-top-right-radius: 8px !important;
+        }
+        .compact-table-card .card-body,
+        .card.compact-table-card .card-body {
+            padding: 0 !important;
+            background: #ffffff !important;
+        }
+
+        /* Category badge */
+        .badge-category {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.3rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(154, 85, 255, 0.1);
+            color: #9a55ff;
+            border: 1px solid rgba(154, 85, 255, 0.2);
+            text-transform: capitalize;
+        }
+
         .btn-modal-continue-dev {
             background: #fff8eb !important;
             color: #b45309 !important;
@@ -45,59 +110,155 @@
             color: #1e293b !important;
             border-color: #94a3b8 !important;
         }
-    </style>
 
-    <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
-        <!-- Header Card Banner -->
-        <div class="row mb-3 mb-md-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-0 header-card">
-                    <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
-                        <div>
-                            <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
-                                Semua Tanah Pasca Land Bank
-                            </h3>
-                            <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                                Daftar seluruh properti proyek yang terdaftar dalam sistem
-                            </p>
-                        </div>
-                        <div class="d-none d-sm-block pe-2">
-                            <i class="mdi mdi-home-city-outline" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
-                        </div>
-                    </div>
-                </div>
+        .sort-th {
+            cursor: pointer;
+            user-select: none;
+        }
+        .sort-th:hover {
+            background: #f1f5f9 !important;
+        }
+    </style>
+@endpush
+
+@section('content')
+
+    @php
+        if (!function_exists('sortIcon')) {
+            function sortIcon($column)
+            {
+                if (request('sort_by') !== $column) {
+                    return 'mdi-swap-vertical text-muted';
+                }
+                return request('sort_order', 'asc') === 'desc'
+                    ? 'mdi-arrow-down text-primary fw-bold'
+                    : 'mdi-arrow-up text-primary fw-bold';
+            }
+        }
+    @endphp
+
+    <div class="container-fluid px-2 px-md-4 py-3">
+
+        <!-- Page Title & Subtitle (Persis Perizinan) -->
+        <div class="row align-items-center mb-4">
+            <div class="col">
+                <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                    Tanah Pasca Land Bank
+                </h2>
+                <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                    Daftar seluruh properti proyek yang terdaftar dalam sistem
+                </p>
             </div>
         </div>
 
-        <div class="row mt-2 mt-sm-2 mt-md-3">
+        <!-- 4 KPI Metrics Card Grid (Persis Perizinan / Pra Tanah) -->
+        <div class="dash-kpi-grid mb-4">
+            
+            <!-- Card 1: Total Properti Pasca (Ungu) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon purple">
+                        <i class="mdi mdi-office-building"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Total Properti Pasca</div>
+                        <div class="dash-kpi-val">{{ $totalLandBank ?? $landBanks->total() }}</div>
+                        <div class="dash-kpi-sub">Seluruh Properti Terdaftar</div>
+                    </div>
+                </div>
+                <div class="dash-kpi-action purple">
+                    <i class="mdi mdi-arrow-right"></i>
+                </div>
+            </div>
+
+            <!-- Card 2: Legalitas Terverifikasi (Hijau) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon green">
+                        <i class="mdi mdi-check-decagram-outline"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Legalitas Terverifikasi</div>
+                        <div class="dash-kpi-val">{{ $legalVerified ?? 0 }}</div>
+                        <div class="dash-kpi-sub">Dokumen Sah & Lengkap</div>
+                    </div>
+                </div>
+                <div class="dash-kpi-action green">
+                    <i class="mdi mdi-arrow-right"></i>
+                </div>
+            </div>
+
+            <!-- Card 3: Pembangunan Selesai (Biru) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon blue">
+                        <i class="mdi mdi-progress-check"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Pembangunan Selesai</div>
+                        <div class="dash-kpi-val">{{ $devSelesai ?? 0 }}</div>
+                        <div class="dash-kpi-sub">Fisik 100% Rampung</div>
+                    </div>
+                </div>
+                <div class="dash-kpi-action blue">
+                    <i class="mdi mdi-arrow-right"></i>
+                </div>
+            </div>
+
+            <!-- Card 4: Dalam Pengerjaan (Kuning / Amber) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon amber">
+                        <i class="mdi mdi-progress-wrench"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Dalam Pengerjaan</div>
+                        <div class="dash-kpi-val">{{ $devProses ?? 0 }}</div>
+                        <div class="dash-kpi-sub">Proses Infrastruktur Lahan</div>
+                    </div>
+                </div>
+                <div class="dash-kpi-action amber">
+                    <i class="mdi mdi-arrow-right"></i>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Main Container: Table Card -->
+        <div class="row">
             <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 py-3">
-                        <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
-                            Daftar Properti
-                        </h5>
-                        <a href="{{ route('properti') }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center" style="gap: 5px;">
-                            <i class="mdi mdi-plus me-1"></i> Tambah Pasca Landbank
+                <div class="card compact-table-card shadow-sm border-0">
+                    
+                    <!-- Card Header -->
+                    <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3 border-bottom">
+                        <div>
+                            <h5 class="card-title mb-0" style="font-weight: 700; color: #1e293b; font-size: 1.05rem;">
+                                <i class="mdi mdi-office-building-marker-outline me-2" style="color: #9a55ff;"></i>Daftar Properti
+                            </h5>
+                        </div>
+                        <a href="{{ route('properti') }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm fw-semibold" style="border-radius: 6px; font-size: 0.84rem;">
+                            <i class="mdi mdi-plus"></i> Tambah Pasca Landbank
                         </a>
                     </div>
 
-                    <div class="card-body">
-                        <!-- Filter Section -->
-                        <div class="filter-card mb-3">
+                    <div class="card-body p-0">
+                        
+                        <!-- Search & Filter Toolbar -->
+                        <div class="card-toolbar-box p-3 border-bottom bg-white">
                             <form id="filterForm" method="GET" action="{{ route('properti-all') }}">
                                 <input type="hidden" name="sort_by" id="sort_by" value="{{ request('sort_by') }}">
-                                <input type="hidden" name="sort_order" id="sort_order"
-                                    value="{{ request('sort_order', 'asc') }}">
+                                <input type="hidden" name="sort_order" id="sort_order" value="{{ request('sort_order', 'asc') }}">
 
                                 <!-- DESKTOP VERSION -->
-                                <div class="filter-row-desktop d-none d-md-block">
+                                <div class="d-none d-md-block">
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
                                         <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
-                                            <!-- Search -->
+                                            <!-- Search Input -->
                                             <div style="min-width: 180px; max-width: 240px; flex: 1;">
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control" name="search" id="searchInput"
+                                                    <input type="text" class="form-control" name="search" id="liveSearchInput"
                                                         placeholder="Nama Properti..." value="{{ request('search') }}"
+                                                        onkeyup="applyLiveSearch(this.value)"
                                                         style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
                                                     <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
                                                         type="submit" title="Cari"
@@ -115,19 +276,6 @@
                                                         <option value="{{ $company->id }}"
                                                             {{ request('company_profile_id') == $company->id ? 'selected' : '' }}>
                                                             {{ $company->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                            <!-- Kategori -->
-                                            <div style="min-width: 140px;">
-                                                <select name="kategori" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
-                                                    <option value="">Semua Kategori</option>
-                                                    @foreach ($categories as $cat)
-                                                        <option value="{{ $cat }}"
-                                                            {{ request('kategori') == $cat ? 'selected' : '' }}>
-                                                            {{ $cat }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -154,7 +302,7 @@
                                             </div>
                                         </div>
 
-                                        <!-- Right Side: Limit Dropdown + Filter & Reset Buttons -->
+                                        <!-- Right: Limit + Action Buttons -->
                                         <div class="d-flex align-items-center gap-2 ms-auto">
                                             <div style="width: 85px;">
                                                 <select name="show" id="showSelect" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
@@ -175,12 +323,13 @@
                                 </div>
 
                                 <!-- MOBILE VERSION -->
-                                <div class="filter-row-mobile d-block d-md-none">
+                                <div class="d-block d-md-none">
                                     <div class="row g-2">
                                         <div class="col-12 mb-2">
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="searchInputMobile" name="search"
                                                     placeholder="Nama Properti..." value="{{ request('search') }}"
+                                                    onkeyup="applyLiveSearch(this.value)"
                                                     style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
                                                 <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
                                                     type="submit" title="Cari"
@@ -201,17 +350,6 @@
                                             </select>
                                         </div>
                                         <div class="col-6 mb-2">
-                                            <select name="kategori" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
-                                                <option value="">Semua Kategori</option>
-                                                @foreach ($categories as $cat)
-                                                    <option value="{{ $cat }}"
-                                                        {{ request('kategori') == $cat ? 'selected' : '' }}>
-                                                        {{ $cat }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-6 mb-2">
                                             <select name="legalitas" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
                                                 <option value="">Semua Legalitas</option>
                                                 <option value="verified" {{ request('legalitas') == 'verified' ? 'selected' : '' }}>Terverifikasi</option>
@@ -227,7 +365,7 @@
                                                 <option value="Belum" {{ request('pembangunan') == 'Belum' ? 'selected' : '' }}>Belum</option>
                                             </select>
                                         </div>
-                                        <div class="col-6 mb-2">
+                                        <div class="col-4">
                                             <select name="show" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
                                                 <option value="10" {{ request('show', 10) == 10 ? 'selected' : '' }}>10</option>
                                                 <option value="25" {{ request('show', 10) == 25 ? 'selected' : '' }}>25</option>
@@ -235,14 +373,14 @@
                                                 <option value="100" {{ request('show', 10) == 100 ? 'selected' : '' }}>100</option>
                                             </select>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-4">
                                             <button type="submit" class="btn btn-gradient-primary w-100" style="height: 38px;" title="Filter">
-                                                <i class="mdi mdi-filter"></i> Filter
+                                                <i class="mdi mdi-filter"></i>
                                             </button>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-4">
                                             <a href="{{ route('properti-all') }}" class="btn btn-gradient-secondary w-100 d-inline-flex align-items-center justify-content-center" style="height: 38px;" title="Reset">
-                                                <i class="mdi mdi-refresh"></i> Reset
+                                                <i class="mdi mdi-refresh"></i>
                                             </a>
                                         </div>
                                     </div>
@@ -250,26 +388,30 @@
                             </form>
                         </div>
 
+                        <!-- Table Responsive -->
                         <div class="table-responsive">
-                            <table class="table table-hover align-middle">
+                            <table class="table table-lahan table-hover align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" width="5%">No</th>
-                                        <th class="sort-th" onclick="handleSort('name')">Nama Properti <i class="mdi {{ sortIcon('name') }}"></i></th>
-                                        <th class="sort-th" onclick="handleSort('company_profile_id')">Nama Perusahaan <i class="mdi {{ sortIcon('company_profile_id') }}"></i></th>
-                                        <th class="sort-th" onclick="handleSort('zoning')">Kategori <i class="mdi {{ sortIcon('zoning') }}"></i></th>
-                                        <th class="d-none d-md-table-cell sort-th" onclick="handleSort('address')">Lokasi <i class="mdi {{ sortIcon('address') }}"></i></th>
-                                        <th class="sort-th" onclick="handleSort('acquisition_price')">Harga Beli <i class="mdi {{ sortIcon('acquisition_price') }}"></i></th>
-                                        <th class="sort-th" onclick="handleSort('legal_status')">Legalitas <i class="mdi {{ sortIcon('legal_status') }}"></i></th>
-                                        <th class="sort-th" onclick="handleSort('development_status')">Pembangunan <i class="mdi {{ sortIcon('development_status') }}"></i></th>
-                                        <th class="text-center" width="8%">Dokumen</th>
-                                        <th class="text-center" width="10%">Aksi</th>
+                                        <th class="col-no text-center">NO</th>
+                                        <th class="sort-th" onclick="handleSort('name')">NAMA PROPERTI <i class="mdi {{ sortIcon('name') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('company_profile_id')">NAMA PERUSAHAAN <i class="mdi {{ sortIcon('company_profile_id') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('zoning')">KATEGORI <i class="mdi {{ sortIcon('zoning') }}"></i></th>
+                                        <th class="d-none d-md-table-cell sort-th" onclick="handleSort('address')">LOKASI <i class="mdi {{ sortIcon('address') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('acquisition_price')">HARGA BELI <i class="mdi {{ sortIcon('acquisition_price') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('legal_status')">LEGALITAS <i class="mdi {{ sortIcon('legal_status') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('development_status')">PEMBANGUNAN <i class="mdi {{ sortIcon('development_status') }}"></i></th>
+                                        <th class="text-center" width="8%">DOKUMEN</th>
+                                        <th class="text-center col-aksi" width="10%">AKSI</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($landBanks as $index => $item)
-                                        <tr>
-                                            <td class="text-center fw-bold text-muted">{{ $landBanks->firstItem() + $index }}</td>
+                                        @php
+                                            $searchKeywords = strtolower($item->name . ' ' . ($item->companyProfile->name ?? '') . ' ' . ($item->address ?? '') . ' ' . ($item->zoning ?? ''));
+                                        @endphp
+                                        <tr class="project-table-row" data-search="{{ $searchKeywords }}">
+                                            <td class="col-no text-center fw-bold text-muted">{{ $landBanks->firstItem() + $index }}</td>
                                             <td>
                                                 <div class="fw-bold text-dark" style="font-size: 0.88rem;">
                                                     {{ $item->name }}
@@ -412,8 +554,7 @@
                                             <td class="text-center">
                                                 <button type="button" class="document-trigger" data-bs-toggle="modal"
                                                     data-bs-target="#modalDokumen{{ $item->id }}">
-                                                    <i
-                                                        class="mdi mdi-file-document-multiple-outline"></i>{{ $item->merged_documents->count() }}
+                                                    <i class="mdi mdi-file-document-multiple-outline"></i>{{ $item->merged_documents->count() }}
                                                 </button>
                                             </td>
                                             <td class="text-center" style="white-space: nowrap;">
@@ -451,64 +592,16 @@
                             </table>
                         </div>
 
-                        <!-- PAGINATION - PERSIS DASHBOARD -->
+                        <!-- PAGINATION FOOTER -->
                         @if ($landBanks instanceof \Illuminate\Pagination\LengthAwarePaginator && $landBanks->total() > 0)
-                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                                <div class="pagination-info mb-2 mb-sm-0">
+                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-white">
+                                <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.84rem;">
                                     Menampilkan {{ $landBanks->firstItem() }} - {{ $landBanks->lastItem() }} dari
                                     {{ $landBanks->total() }} data
                                 </div>
-                                <nav aria-label="Page navigation">
-                                    <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
-                                        {{-- Previous Page Link --}}
-                                        @if ($landBanks->onFirstPage())
-                                            <li class="page-item disabled" aria-disabled="true">
-                                                <span class="page-link" aria-label="Previous">
-                                                    <i class="mdi mdi-chevron-left"></i>
-                                                </span>
-                                            </li>
-                                        @else
-                                            <li class="page-item">
-                                                <a class="page-link"
-                                                    href="{{ $landBanks->appends(request()->query())->previousPageUrl() }}"
-                                                    rel="prev" aria-label="Previous">
-                                                    <i class="mdi mdi-chevron-left"></i>
-                                                </a>
-                                            </li>
-                                        @endif
-
-                                        {{-- Pagination Elements --}}
-                                        @foreach ($landBanks->getUrlRange(max(1, $landBanks->currentPage() - 2), min($landBanks->lastPage(), $landBanks->currentPage() + 2)) as $page => $url)
-                                            @if ($page == $landBanks->currentPage())
-                                                <li class="page-item active" aria-current="page">
-                                                    <span class="page-link">{{ $page }}</span>
-                                                </li>
-                                            @else
-                                                <li class="page-item">
-                                                    <a class="page-link"
-                                                        href="{{ $landBanks->appends(request()->query())->url($page) }}">{{ $page }}</a>
-                                                </li>
-                                            @endif
-                                        @endforeach
-
-                                        {{-- Next Page Link --}}
-                                        @if ($landBanks->hasMorePages())
-                                            <li class="page-item">
-                                                <a class="page-link"
-                                                    href="{{ $landBanks->appends(request()->query())->nextPageUrl() }}"
-                                                    rel="next" aria-label="Next">
-                                                    <i class="mdi mdi-chevron-right"></i>
-                                                </a>
-                                            </li>
-                                        @else
-                                            <li class="page-item disabled" aria-disabled="true">
-                                                <span class="page-link" aria-label="Next">
-                                                    <i class="mdi mdi-chevron-right"></i>
-                                                </span>
-                                            </li>
-                                        @endif
-                                    </ul>
-                                </nav>
+                                <div>
+                                    {{ $landBanks->appends(request()->query())->links('pagination::bootstrap-5') }}
+                                </div>
                             </div>
                         @endif
 
@@ -785,6 +878,19 @@
             $('#filterForm').submit();
         }
 
+        function applyLiveSearch(query) {
+            var filter = (query || '').toLowerCase().trim();
+            var rows = document.querySelectorAll('.project-table-row');
+            rows.forEach(function(row) {
+                var text = row.getAttribute('data-search') || row.innerText.toLowerCase();
+                if (!filter || text.indexOf(filter) > -1) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
         $(document).ready(function() {
             // Handle pagination clicks
             $('.page-click, .prev-next-btn').on('click', function(e) {
@@ -812,7 +918,7 @@
             // Handle form submission for filter and search
             $('#filterForm').on('submit', function(e) {
                 // Get search values from both inputs
-                let searchDesktop = $('#searchInput').val();
+                let searchDesktop = $('#liveSearchInput').val() || $('#searchInput').val();
                 let searchMobile = $('#searchInputMobile').val();
 
                 // Use the non-empty search value
@@ -820,11 +926,10 @@
 
                 // Set the search input value to the combined value
                 if (searchValue) {
-                    $('#searchInput').val(searchValue);
+                    $('#liveSearchInput').val(searchValue);
                     $('#searchInputMobile').val(searchValue);
                 } else {
-                    // If empty, remove the search parameter
-                    $('#searchInput').val('');
+                    $('#liveSearchInput').val('');
                     $('#searchInputMobile').val('');
                 }
 
@@ -841,12 +946,12 @@
             });
 
             // Sync search inputs between desktop and mobile
-            $('#searchInput').on('input', function() {
+            $('#liveSearchInput, #searchInput').on('input', function() {
                 $('#searchInputMobile').val($(this).val());
             });
 
             $('#searchInputMobile').on('input', function() {
-                $('#searchInput').val($(this).val());
+                $('#liveSearchInput, #searchInput').val($(this).val());
             });
 
             // Initialize Select2 for desktop
