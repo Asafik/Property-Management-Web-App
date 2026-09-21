@@ -232,7 +232,7 @@ class MenuSeeder extends Seeder
             'route'     => 'marketing.commission-rules.index',
             'parent_id' => $keuangan->id,
             'order'     => 3
-        ])->positions()->attach($marketingRoles);
+        ])->positions()->attach($keuanganRoles);
 
         Menu::create([
             'name'      => 'Master HPP & Project Accounting',
@@ -253,7 +253,7 @@ class MenuSeeder extends Seeder
             'route'     => 'keuangan.master-invoice.index',
             'parent_id' => $keuangan->id,
             'order'     => 6
-        ])->positions()->attach($marketingRoles);
+        ])->positions()->attach($keuanganRoles);
 
         // ================= 11. MASTER DATA =================
         $kepalaLegalAndAdmin = array_values(array_filter([$admin?->id, $legal?->id]));
