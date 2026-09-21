@@ -2,9 +2,9 @@
 <aside class="custom-sidebar" id="customSidebar">
     <!-- Sidebar Brand Header (Top of Sidebar - Desktop & Mobile) -->
     <div class="sidebar-brand-header">
-        <a class="sidebar-brand-box" href="{{ route('dashboard') }}">
+        <a class="sidebar-brand-box" href="<?php echo e(route('dashboard')); ?>">
             <div class="brand-badge-icon">
-                <img src="{{ asset('images/logo.jpeg') }}" alt="GCS Logo" class="brand-logo-img">
+                <img src="<?php echo e(asset('images/logo.jpeg')); ?>" alt="GCS Logo" class="brand-logo-img">
             </div>
             <span class="brand-text-full">Graha <span>Cipta Sejahtera</span></span>
         </a>
@@ -14,7 +14,7 @@
         </button>
     </div>
 
-    @php
+    <?php
         // 1. Ambil ID Posisi user yang sedang login
         $positionId = auth()->user()->position_id ?? null;
 
@@ -214,12 +214,12 @@
         });
 
         $currentSection = null;
-    @endphp
+    ?>
 
     <!-- Menu List -->
     <ul class="sidebar-menu" id="sidebarMenuAccordion">
-        @foreach ($mainMenus as $main)
-            @php
+        <?php $__currentLoopData = $mainMenus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $main): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <?php
                 // Ambil Sub-Menu yang boleh diakses
                 $subMenus = \App\Models\Menu::where('parent_id', $main->id)
                     ->whereHas('positions', function($query) use ($positionId) {
@@ -266,51 +266,51 @@
 
                 // Label Kategori / Section Header
                 $sectionName = $categoryMap[$main->name] ?? ($categoryMap[$mainDisplayName] ?? $mainDisplayName);
-            @endphp
+            ?>
 
-            {{-- Label Kategori / Header Section per Kelompok Menu Role --}}
-            @if ($currentSection !== $sectionName)
-                @php $currentSection = $sectionName; @endphp
+            
+            <?php if($currentSection !== $sectionName): ?>
+                <?php $currentSection = $sectionName; ?>
                 <li class="sidebar-section-header">
-                    <span class="section-title">{{ $sectionName }}</span>
+                    <span class="section-title"><?php echo e($sectionName); ?></span>
                 </li>
-            @endif
+            <?php endif; ?>
 
-            @if ($subMenus->isEmpty())
-                {{-- Single Top-Level Menu (e.g. Dashboard, Laporan, Pengaturan) --}}
+            <?php if($subMenus->isEmpty()): ?>
+                
                 <li class="sidebar-menu-item">
-                    <a class="sidebar-menu-link {{ $isMainActive ? 'active' : '' }}"
-                       href="{{ ($main->route && Route::has($main->route)) ? route($main->route) : '#' }}"
-                       title="{{ $mainDisplayName }}">
-                        @if($mainIcon)
+                    <a class="sidebar-menu-link <?php echo e($isMainActive ? 'active' : ''); ?>"
+                       href="<?php echo e(($main->route && Route::has($main->route)) ? route($main->route) : '#'); ?>"
+                       title="<?php echo e($mainDisplayName); ?>">
+                        <?php if($mainIcon): ?>
                             <span class="menu-icon-wrap">
-                                <i class="mdi {{ $mainIcon }}"></i>
+                                <i class="mdi <?php echo e($mainIcon); ?>"></i>
                             </span>
-                        @endif
-                        <span class="menu-title-text">{{ $mainDisplayName }}</span>
+                        <?php endif; ?>
+                        <span class="menu-title-text"><?php echo e($mainDisplayName); ?></span>
                     </a>
                 </li>
-            @else
-                {{-- Collapsible Dropdown Parent Menu (Buka Tutup Accordion) --}}
-                <li class="sidebar-menu-item has-submenu {{ $isAnyChildActive ? 'open' : '' }}">
-                    <a class="sidebar-menu-link sidebar-dropdown-toggle {{ $isAnyChildActive ? 'parent-active' : '' }}"
-                       href="#submenu-{{ $main->id }}"
+            <?php else: ?>
+                
+                <li class="sidebar-menu-item has-submenu <?php echo e($isAnyChildActive ? 'open' : ''); ?>">
+                    <a class="sidebar-menu-link sidebar-dropdown-toggle <?php echo e($isAnyChildActive ? 'parent-active' : ''); ?>"
+                       href="#submenu-<?php echo e($main->id); ?>"
                        role="button"
-                       aria-expanded="{{ $isAnyChildActive ? 'true' : 'false' }}"
-                       aria-controls="submenu-{{ $main->id }}"
-                       title="{{ $mainDisplayName }}">
+                       aria-expanded="<?php echo e($isAnyChildActive ? 'true' : 'false'); ?>"
+                       aria-controls="submenu-<?php echo e($main->id); ?>"
+                       title="<?php echo e($mainDisplayName); ?>">
                         <span class="menu-icon-wrap">
-                            <i class="mdi {{ $mainIcon }}"></i>
+                            <i class="mdi <?php echo e($mainIcon); ?>"></i>
                         </span>
-                        <span class="menu-title-text">{{ $mainDisplayName }}</span>
+                        <span class="menu-title-text"><?php echo e($mainDisplayName); ?></span>
                         <i class="mdi mdi-chevron-down submenu-arrow"></i>
                     </a>
 
-                    {{-- Collapsible Sub-Menu List --}}
-                    <div class="sidebar-submenu {{ $isAnyChildActive ? 'show' : '' }}" id="submenu-{{ $main->id }}" style="{{ $isAnyChildActive ? 'display: block;' : 'display: none;' }}">
+                    
+                    <div class="sidebar-submenu <?php echo e($isAnyChildActive ? 'show' : ''); ?>" id="submenu-<?php echo e($main->id); ?>" style="<?php echo e($isAnyChildActive ? 'display: block;' : 'display: none;'); ?>">
                         <ul class="sidebar-submenu-list">
-                            @foreach ($subMenus as $sub)
-                                @php
+                            <?php $__currentLoopData = $subMenus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sub): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
                                     $isSubActive = false;
                                     if ($sub->route) {
                                         $patterns = $routeActivePatterns[$sub->route] ?? [$sub->route];
@@ -321,35 +321,36 @@
                                             }
                                         }
                                     }
-                                @endphp
+                                ?>
                                 <li class="sidebar-submenu-item">
-                                    <a class="sidebar-submenu-link {{ $isSubActive ? 'active' : '' }}"
-                                       href="{{ ($sub->route && Route::has($sub->route)) ? route($sub->route) : '#' }}"
-                                       title="{{ $sub->name }}">
+                                    <a class="sidebar-submenu-link <?php echo e($isSubActive ? 'active' : ''); ?>"
+                                       href="<?php echo e(($sub->route && Route::has($sub->route)) ? route($sub->route) : '#'); ?>"
+                                       title="<?php echo e($sub->name); ?>">
                                         <span class="submenu-bullet"></span>
-                                        <span class="submenu-title-text">{{ $sub->name }}</span>
+                                        <span class="submenu-title-text"><?php echo e($sub->name); ?></span>
                                     </a>
                                 </li>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </ul>
                     </div>
                 </li>
-            @endif
-        @endforeach
+            <?php endif; ?>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </ul>
 
     <!-- Sidebar Bottom User Profile (Inisial & Email) -->
     <div class="sidebar-footer">
         <div class="sidebar-user-bottom">
             <div class="sidebar-bottom-initial">
-                {{ $initials }}
+                <?php echo e($initials); ?>
+
             </div>
             <div class="sidebar-bottom-details">
-                <h6 class="sidebar-bottom-name" title="{{ auth()->user()->name }}">{{ auth()->user()->name }}</h6>
-                <span class="sidebar-bottom-email" title="{{ auth()->user()->email }}">{{ auth()->user()->email }}</span>
+                <h6 class="sidebar-bottom-name" title="<?php echo e(auth()->user()->name); ?>"><?php echo e(auth()->user()->name); ?></h6>
+                <span class="sidebar-bottom-email" title="<?php echo e(auth()->user()->email); ?>"><?php echo e(auth()->user()->email); ?></span>
             </div>
-            <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
-                @csrf
+            <form action="<?php echo e(route('logout')); ?>" method="POST" class="m-0 p-0">
+                <?php echo csrf_field(); ?>
                 <button type="submit" class="sidebar-bottom-logout" title="Sign Out">
                     <i class="mdi mdi-logout"></i>
                 </button>
@@ -357,3 +358,4 @@
         </div>
     </div>
 </aside>
+<?php /**PATH F:\Property-Management-Web-App\resources\views/layouts/sidebar.blade.php ENDPATH**/ ?>

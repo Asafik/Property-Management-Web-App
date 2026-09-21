@@ -37,7 +37,9 @@ public function store(Request $request)
         // CLEAN NUMBER
         // =========================
         $cleanNumber = function ($value) {
-            return $value ? preg_replace('/[^0-9]/', '', $value) : null;
+            if ($value === null || $value === '') return null;
+            $cleaned = preg_replace('/[^0-9]/', '', (string)$value);
+            return $cleaned !== '' ? $cleaned : null;
         };
 
         // =========================
@@ -527,7 +529,7 @@ public function store(Request $request)
                 'city'              => $record->city,
                 'province'          => $record->province,
                 'zoning'            => $record->zoning,
-                'road_width'        => $record->road_width,
+                'road_width'        => (isset($record->road_width) && is_numeric($record->road_width)) ? (int)$record->road_width : null,
                 'road_type'         => $record->road_type,
                 'ownership_status'  => $record->ownership_status ?? 'SHM',
                 'certificate_owner' => $record->certificate_owner ?? $record->owner_name ?? $record->land_owner,
@@ -1816,7 +1818,7 @@ public function store(Request $request)
             'city'                      => $record->city ?: '-',
             'province'                  => $record->province ?: '-',
             'zoning'                    => $record->zoning ?: '-',
-            'road_width'                => $record->road_width ?: '-',
+            'road_width'                => (isset($record->road_width) && is_numeric($record->road_width)) ? (int)$record->road_width : null,
             'road_type'                 => $record->road_type ?: '-',
             'lat'                       => $record->lat,
             'lng'                       => $record->lng,

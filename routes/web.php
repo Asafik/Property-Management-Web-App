@@ -340,6 +340,22 @@ Route::middleware(['auth'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | ========================= PERIZINAN PROYEK =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/perizinan', [\App\Http\Controllers\Admin\PerizinanController::class, 'index'])->name('perizinan.index');
+    Route::get('/perizinan/{id}', [\App\Http\Controllers\Admin\PerizinanController::class, 'show'])->name('perizinan.show');
+
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= PROYEK: PENGOLAHAN LAHAN & UNIT =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/pengolahan-lahan', [\App\Http\Controllers\Admin\ProjectPengolahanLahanController::class, 'index'])->name('proyek.pengolahan-lahan.index');
+    Route::get('/proyek-unit', [\App\Http\Controllers\Admin\ProjectUnitController::class, 'index'])->name('proyek.unit.index');
+
+    /*
+    |--------------------------------------------------------------------------
     | ========================= AGENCY / SALES =========================
     |--------------------------------------------------------------------------
     */

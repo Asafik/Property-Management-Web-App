@@ -47,31 +47,14 @@ class MenuSeeder extends Seeder
         ]);
         $dashboard->positions()->attach($allRoles);
 
-        // ================= 2. MARKETING =================
-        $marketingMenu = Menu::create([
-            'name'  => 'Marketing',
-            'icon'  => 'mdi-bullhorn',
+        // ================= 2. PERIZINAN =================
+        $perizinanMenu = Menu::create([
+            'name'  => 'Perizinan',
+            'route' => 'perizinan.index',
+            'icon'  => 'mdi-file-certificate-outline',
             'order' => 2
         ]);
-        $marketingMenu->positions()->attach($marketingRoles);
-
-        Menu::create([
-            'name'      => 'Catalog Unit',
-            'route'     => 'marketing.jual-unit',
-            'parent_id' => $marketingMenu->id
-        ])->positions()->attach($marketingRoles);
-
-        Menu::create([
-            'name'      => 'User Booking',
-            'route'     => 'marketing.list_pengajuan',
-            'parent_id' => $marketingMenu->id
-        ])->positions()->attach($marketingRoles);
-
-        Menu::create([
-            'name'      => 'Tugas Marketing',
-            'route'     => 'master.data.tugas-staff-marketing',
-            'parent_id' => $marketingMenu->id
-        ])->positions()->attach($adminOnly);
+        $perizinanMenu->positions()->attach($allRoles);
 
         // ================= 3. TANAH INDUK (LAND BANK) =================
         $properti = Menu::create([
@@ -105,56 +88,11 @@ class MenuSeeder extends Seeder
             'parent_id' => $properti->id
         ])->positions()->attach($legalRoles);
 
-        // ================= 4. USER =================
-        $userMenu = Menu::create([
-            'name'  => 'User',
-            'icon'  => 'mdi-account-group',
-            'order' => 4
-        ]);
-        $userMenu->positions()->attach($marketingRoles);
-
-        Menu::create([
-            'name'      => 'Data User',
-            'route'     => 'customer.data',
-            'parent_id' => $userMenu->id
-        ])->positions()->attach($marketingRoles);
-
-        Menu::create([
-            'name'      => 'Data User Proyeksi',
-            'route'     => 'customer.tamu',
-            'parent_id' => $userMenu->id
-        ])->positions()->attach($marketingRoles);
-
-        // ================= 5. TRANSAKSI =================
-        $transaksi = Menu::create([
-            'name'  => 'Transaksi',
-            'icon'  => 'mdi-cash-multiple',
-            'order' => 5
-        ]);
-        $transaksi->positions()->attach($kprTransaksiRoles);
-
-        $transaksiMenus = [
-            'customer.kpr'          => ['name' => 'KPR', 'roles' => $kprTransaksiRoles],
-            'kpr.customer-verified' => ['name' => 'User verifikasi dokumen kpr', 'roles' => $kprTransaksiRoles],
-            'customer.kpr.survey'   => ['name' => 'User Acc kpr', 'roles' => $kprTransaksiRoles],
-            'customer.kpr.rijected' => ['name' => 'User Rijected kpr', 'roles' => $marketingRoles],
-            'cash-tempo.timeline'   => ['name' => 'User Cash Tempo', 'roles' => $marketingRoles],
-            'analisa.kpr.komersil'  => ['name' => 'User KPR Komersil', 'roles' => $marketingRoles],
-        ];
-
-        foreach ($transaksiMenus as $route => $config) {
-            Menu::create([
-                'name'      => $config['name'],
-                'route'     => $route,
-                'parent_id' => $transaksi->id
-            ])->positions()->attach($config['roles']);
-        }
-
-        // ================= 6. DOCUMENT =================
+        // ================= 4. DOKUMEN (LEGALITAS) =================
         $document = Menu::create([
-            'name'  => 'Document',
-            'icon'  => 'mdi-file-document-box-multiple-outline',
-            'order' => 6
+            'name'  => 'Dokumen',
+            'icon'  => 'mdi-file-document-multiple-outline',
+            'order' => 4
         ]);
         $document->positions()->attach($legalRoles);
 
@@ -173,35 +111,130 @@ class MenuSeeder extends Seeder
             ])->positions()->attach($legalRoles);
         }
 
-        // ================= 7. PENGGUNA =================
-        $penggunaRoles = array_values(array_filter([$admin?->id, $marketing?->id]));
+        // ================= 5. PROYEK: PENGOLAHAN LAHAN =================
+        $proyekMenu = Menu::create([
+            'name'  => 'Pengolahan Lahan',
+            'route' => 'proyek.pengolahan-lahan.index',
+            'icon'  => 'mdi-hard-hat',
+            'order' => 5
+        ]);
+        $proyekMenu->positions()->attach($allRoles);
 
-        $pengguna = Menu::create([
-            'name'  => 'Pengguna',
-            'icon'  => 'mdi-account-tie',
+        $unitMenu = Menu::create([
+            'name'  => 'Unit',
+            'route' => 'proyek.unit.index',
+            'icon'  => 'mdi-home-city-outline',
+            'order' => 6
+        ]);
+        $unitMenu->positions()->attach($allRoles);
+
+        // ================= 7. MARKETING =================
+        $marketingMenu = Menu::create([
+            'name'  => 'Marketing',
+            'icon'  => 'mdi-bullhorn',
             'order' => 7
         ]);
-        $pengguna->positions()->attach($penggunaRoles);
+        $marketingMenu->positions()->attach($marketingRoles);
 
         Menu::create([
-            'name'      => 'Buat Pengguna',
-            'route'     => 'agency.create',
-            'parent_id' => $pengguna->id
-        ])->positions()->attach($penggunaRoles);
+            'name'      => 'Catalog Unit',
+            'route'     => 'marketing.jual-unit',
+            'parent_id' => $marketingMenu->id
+        ])->positions()->attach($marketingRoles);
 
         Menu::create([
-            'name'      => 'Data Pengguna',
-            'route'     => 'agency.index',
-            'parent_id' => $pengguna->id
-        ])->positions()->attach($penggunaRoles);
+            'name'      => 'Tugas Marketing',
+            'route'     => 'master.data.tugas-staff-marketing',
+            'parent_id' => $marketingMenu->id
+        ])->positions()->attach($adminOnly);
 
-        // ================= 8. MASTER DATA =================
+        // ================= 8. USER =================
+        $userMenu = Menu::create([
+            'name'  => 'User',
+            'icon'  => 'mdi-account-group',
+            'order' => 8
+        ]);
+        $userMenu->positions()->attach($marketingRoles);
+
+        Menu::create([
+            'name'      => 'Data User',
+            'route'     => 'customer.data',
+            'parent_id' => $userMenu->id
+        ])->positions()->attach($marketingRoles);
+
+        Menu::create([
+            'name'      => 'Data User Proyeksi',
+            'route'     => 'customer.tamu',
+            'parent_id' => $userMenu->id
+        ])->positions()->attach($marketingRoles);
+
+        // ================= 9. TRANSAKSI (KPR) =================
+        $transaksi = Menu::create([
+            'name'  => 'Transaksi',
+            'icon'  => 'mdi-cash-multiple',
+            'order' => 9
+        ]);
+        $transaksi->positions()->attach($kprTransaksiRoles);
+
+        $transaksiMenus = [
+            'marketing.list_pengajuan' => ['name' => 'User Booking', 'roles' => $kprTransaksiRoles],
+            'customer.kpr'             => ['name' => 'KPR', 'roles' => $kprTransaksiRoles],
+            'kpr.customer-verified'    => ['name' => 'User verifikasi dokumen kpr', 'roles' => $kprTransaksiRoles],
+            'customer.kpr.survey'      => ['name' => 'User Acc kpr', 'roles' => $kprTransaksiRoles],
+            'customer.kpr.rijected'    => ['name' => 'User Rijected kpr', 'roles' => $marketingRoles],
+            'cash-tempo.timeline'      => ['name' => 'User Cash Tempo', 'roles' => $marketingRoles],
+            'analisa.kpr.komersil'     => ['name' => 'User KPR Komersil', 'roles' => $marketingRoles],
+        ];
+
+        foreach ($transaksiMenus as $route => $config) {
+            Menu::create([
+                'name'      => $config['name'],
+                'route'     => $route,
+                'parent_id' => $transaksi->id
+            ])->positions()->attach($config['roles']);
+        }
+
+        // ================= 10. KEUANGAN =================
+        $keuanganRoles = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $legal?->id, $keuanganStaff?->id]));
+
+        $keuangan = Menu::create([
+            'name'  => 'Keuangan',
+            'icon'  => 'mdi-cash-register',
+            'order' => 10
+        ]);
+        $keuangan->positions()->attach($keuanganRoles);
+
+        Menu::create([
+            'name'      => 'Master HPP & Project Accounting',
+            'route'     => 'keuangan.project-accounting.index',
+            'parent_id' => $keuangan->id
+        ])->positions()->attach($keuanganRoles);
+
+        Menu::create([
+            'name'      => 'Pencairan Dana KPR',
+            'route'     => 'finance.kpr-disbursement.index',
+            'parent_id' => $keuangan->id
+        ])->positions()->attach($keuanganRoles);
+
+        Menu::create([
+            'name'      => 'Master Invoice',
+            'route'     => 'keuangan.master-invoice.index',
+            'parent_id' => $keuangan->id
+        ])->positions()->attach($marketingRoles);
+
+        Menu::create([
+            'name'      => 'Master Fee Agency',
+            'route'     => 'marketing.commission-rules.index',
+            'parent_id' => $keuangan->id
+        ])->positions()->attach($marketingRoles);
+
+        // ================= 11. MASTER DATA =================
         $kepalaLegalAndAdmin = array_values(array_filter([$admin?->id, $legal?->id]));
 
         $master = Menu::create([
             'name'  => 'Master Data',
             'icon'  => 'mdi-wrench',
-            'order' => 8
+            'order' => 11
         ]);
         $master->positions()->attach($kepalaLegalAndAdmin);
 
@@ -253,53 +286,41 @@ class MenuSeeder extends Seeder
             ])->positions()->attach($adminOnly);
         }
 
-        // ================= 9. KEUANGAN =================
-        $keuanganRoles = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $legal?->id, $keuanganStaff?->id]));
+        // ================= 12. PENGGUNA =================
+        $penggunaRoles = array_values(array_filter([$admin?->id, $marketing?->id]));
 
-        $keuangan = Menu::create([
-            'name'  => 'Keuangan',
-            'icon'  => 'mdi-cash-register',
-            'order' => 9
+        $pengguna = Menu::create([
+            'name'  => 'Pengguna',
+            'icon'  => 'mdi-account-tie',
+            'order' => 12
         ]);
-        $keuangan->positions()->attach($keuanganRoles);
+        $pengguna->positions()->attach($penggunaRoles);
 
         Menu::create([
-            'name'      => 'Master HPP & Project Accounting',
-            'route'     => 'keuangan.project-accounting.index',
-            'parent_id' => $keuangan->id
-        ])->positions()->attach($keuanganRoles);
+            'name'      => 'Buat Pengguna',
+            'route'     => 'agency.create',
+            'parent_id' => $pengguna->id
+        ])->positions()->attach($penggunaRoles);
 
         Menu::create([
-            'name'      => 'Pencairan Dana KPR',
-            'route'     => 'finance.kpr-disbursement.index',
-            'parent_id' => $keuangan->id
-        ])->positions()->attach($keuanganRoles);
+            'name'      => 'Data Pengguna',
+            'route'     => 'agency.index',
+            'parent_id' => $pengguna->id
+        ])->positions()->attach($penggunaRoles);
 
-        Menu::create([
-            'name'      => 'Master Invoice',
-            'route'     => 'keuangan.master-invoice.index',
-            'parent_id' => $keuangan->id
-        ])->positions()->attach($marketingRoles);
-
-        Menu::create([
-            'name'      => 'Master Fee Agency',
-            'route'     => 'marketing.commission-rules.index',
-            'parent_id' => $keuangan->id
-        ])->positions()->attach($marketingRoles);
-
-        // ================= 10. LAPORAN =================
+        // ================= 13. LAPORAN =================
         Menu::create([
             'name'  => 'Laporan',
             'icon'  => 'mdi-chart-bar',
-            'order' => 10
+            'order' => 13
         ])->positions()->attach($adminOnly);
 
-        // ================= 11. PENGATURAN =================
+        // ================= 14. PENGATURAN =================
         Menu::create([
             'name'  => 'Pengaturan',
             'route' => 'setting.index',
             'icon'  => 'mdi-cog',
-            'order' => 11
+            'order' => 14
         ])->positions()->attach($adminOnly);
     }
 }

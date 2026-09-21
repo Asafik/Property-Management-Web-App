@@ -1,4 +1,4 @@
-@php
+<?php
     $navUserName = auth()->user()->name ?? 'User';
     $navWords = explode(' ', trim($navUserName));
     $navInitials = count($navWords) >= 2 
@@ -12,7 +12,7 @@
         $parts = explode(' - ', $rawTitle);
         $pageTitle = trim($parts[0]);
     }
-@endphp
+?>
 
 <!-- CUSTOM TOP NAVBAR -->
 <nav class="custom-navbar">
@@ -25,16 +25,16 @@
 
         <!-- Mobile Brand Logo (Hanya tampil di Mobile ketika sidebar offcanvas tertutup) -->
         <div class="d-flex d-lg-none align-items-center me-2">
-            <a href="{{ route('dashboard') }}" class="d-flex align-items-center text-decoration-none">
+            <a href="<?php echo e(route('dashboard')); ?>" class="d-flex align-items-center text-decoration-none">
                 <div class="brand-badge-icon" style="width: 32px; height: 32px;">
-                    <img src="{{ asset('images/logo.jpeg') }}" alt="GCS Logo" class="brand-logo-img">
+                    <img src="<?php echo e(asset('images/logo.jpeg')); ?>" alt="GCS Logo" class="brand-logo-img">
                 </div>
             </a>
         </div>
 
         <!-- Dynamic Page Title Text (Clean & Bold) -->
         <div class="navbar-page-title ms-1 ms-sm-2">
-            <span class="page-title-text">{{ $pageTitle }}</span>
+            <span class="page-title-text"><?php echo e($pageTitle); ?></span>
         </div>
     </div>
 
@@ -51,46 +51,48 @@
         <li class="nav-action-item">
             <button class="nav-action-btn" type="button" data-custom-toggle="dropdown" data-custom-target="dropdownNotification" title="Notifikasi">
                 <i class="mdi mdi-bell-outline"></i>
-                @if ($countNotif > 0)
+                <?php if($countNotif > 0): ?>
                     <span class="badge-pulse-danger"></span>
-                @endif
+                <?php endif; ?>
             </button>
 
             <!-- Custom Notification Dropdown Menu -->
             <div class="custom-dropdown-menu" id="dropdownNotification" style="width: 320px;">
                 <div class="custom-dropdown-header">
                     <span>Notifikasi</span>
-                    @if ($countNotif > 0)
-                        <span class="badge bg-danger rounded-pill" style="font-size: 0.75rem;">{{ $countNotif }} Baru</span>
-                    @endif
+                    <?php if($countNotif > 0): ?>
+                        <span class="badge bg-danger rounded-pill" style="font-size: 0.75rem;"><?php echo e($countNotif); ?> Baru</span>
+                    <?php endif; ?>
                 </div>
 
                 <div style="max-height: 300px; overflow-y: auto;">
-                    @forelse($notifications as $notif)
-                        <a class="custom-dropdown-item d-flex align-items-start {{ $notif->read_at == null ? 'bg-light' : 'opacity-75' }}"
-                           href="{{ route('notifications.read', $notif->id) }}">
+                    <?php $__empty_1 = true; $__currentLoopData = $notifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notif): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <a class="custom-dropdown-item d-flex align-items-start <?php echo e($notif->read_at == null ? 'bg-light' : 'opacity-75'); ?>"
+                           href="<?php echo e(route('notifications.read', $notif->id)); ?>">
                             <div class="me-2 mt-1">
-                                <i class="mdi {{ $notif->type === 'App\Notifications\NewTaskNotification' ? 'mdi-clipboard-text text-warning' : 'mdi-bell text-info' }}" style="font-size: 1.3rem;"></i>
+                                <i class="mdi <?php echo e($notif->type === 'App\Notifications\NewTaskNotification' ? 'mdi-clipboard-text text-warning' : 'mdi-bell text-info'); ?>" style="font-size: 1.3rem;"></i>
                             </div>
                             <div class="flex-grow-1">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
                                     <strong style="font-size: 0.85rem; color: #2c2e3f;">
-                                        {{ $notif->type === 'App\Notifications\NewTaskNotification' ? 'Tugas Baru' : $notif->data['title'] ?? 'Notifikasi' }}
+                                        <?php echo e($notif->type === 'App\Notifications\NewTaskNotification' ? 'Tugas Baru' : $notif->data['title'] ?? 'Notifikasi'); ?>
+
                                     </strong>
-                                    @if ($notif->read_at == null)
+                                    <?php if($notif->read_at == null): ?>
                                         <span class="badge bg-danger" style="font-size: 0.65rem;">NEW</span>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                                 <p class="mb-0 text-muted" style="font-size: 0.78rem; line-height: 1.3;">
-                                    {{ $notif->data['message'] ?? '-' }}
+                                    <?php echo e($notif->data['message'] ?? '-'); ?>
+
                                 </p>
                             </div>
                         </a>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <div class="p-3 text-center text-muted" style="font-size: 0.85rem;">
                             <i class="mdi mdi-bell-off-outline me-1"></i> Tidak ada notifikasi
                         </div>
-                    @endforelse
+                    <?php endif; ?>
                 </div>
             </div>
         </li>
@@ -99,10 +101,12 @@
         <li class="nav-action-item">
             <button class="user-profile-btn" type="button" data-custom-toggle="dropdown" data-custom-target="dropdownUserProfile">
                 <div class="user-avatar-initial">
-                    {{ $navInitials }}
+                    <?php echo e($navInitials); ?>
+
                 </div>
                 <div class="user-meta-name">
-                    {{ auth()->user()->name ?? 'User' }}
+                    <?php echo e(auth()->user()->name ?? 'User'); ?>
+
                 </div>
                 <i class="mdi mdi-chevron-down text-muted" style="font-size: 0.85rem;"></i>
             </button>
@@ -111,16 +115,17 @@
             <div class="custom-dropdown-menu" id="dropdownUserProfile" style="min-width: 220px;">
                 <div class="px-3 py-2 border-bottom d-flex align-items-center gap-2">
                     <div class="user-avatar-initial" style="width: 32px; height: 32px; font-size: 0.75rem;">
-                        {{ $navInitials }}
+                        <?php echo e($navInitials); ?>
+
                     </div>
                     <div class="overflow-hidden">
-                        <div class="fw-bold text-truncate" style="font-size: 0.86rem; color: #2c2e3f;">{{ auth()->user()->name ?? 'User' }}</div>
-                        <div class="text-muted text-truncate" style="font-size: 0.72rem;">{{ auth()->user()->email ?? '' }}</div>
+                        <div class="fw-bold text-truncate" style="font-size: 0.86rem; color: #2c2e3f;"><?php echo e(auth()->user()->name ?? 'User'); ?></div>
+                        <div class="text-muted text-truncate" style="font-size: 0.72rem;"><?php echo e(auth()->user()->email ?? ''); ?></div>
                     </div>
                 </div>
 
-                <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
-                    @csrf
+                <form action="<?php echo e(route('logout')); ?>" method="POST" class="m-0 p-0">
+                    <?php echo csrf_field(); ?>
                     <button type="submit" class="custom-dropdown-item text-danger">
                         <i class="mdi mdi-logout text-danger"></i> Keluar (Sign Out)
                     </button>
@@ -132,12 +137,12 @@
 
 <!-- Audio Notifikasi -->
 <audio id="notifSound">
-    <source src="{{ asset('sound/notif.wav') }}" type="audio/mpeg">
+    <source src="<?php echo e(asset('sound/notif.wav')); ?>" type="audio/mpeg">
 </audio>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        let notifCount = {{ $countNotif ?? 0 }};
+        let notifCount = <?php echo e($countNotif ?? 0); ?>;
         let lastNotifCount = localStorage.getItem("last_notif_count");
         let sound = document.getElementById("notifSound");
 
@@ -157,3 +162,4 @@
         localStorage.setItem("last_notif_count", notifCount);
     });
 </script>
+<?php /**PATH F:\Property-Management-Web-App\resources\views/layouts/navbar.blade.php ENDPATH**/ ?>

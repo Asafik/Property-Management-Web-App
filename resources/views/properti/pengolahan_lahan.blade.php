@@ -473,8 +473,8 @@
                 </div>
             </div>
             <div class="d-flex flex-wrap gap-2 align-items-center">
-                <a href="{{ route('properti-all') }}" class="btn btn-outline-secondary btn-sm px-3 rounded-2 d-flex align-items-center gap-1 shadow-sm">
-                    Kembali
+                <a href="{{ url()->previous() && url()->previous() !== url()->current() ? url()->previous() : route('proyek.pengolahan-lahan.index') }}" class="btn btn-outline-secondary btn-sm px-3 rounded-2 d-flex align-items-center gap-1 shadow-sm">
+                    <i class="mdi mdi-arrow-left"></i> Kembali
                 </a>
                 <!-- Validasi Legalitas Status Trigger -->
                 @if($land->legal_status == 'verified' || $land->isFromPraLandbank())
