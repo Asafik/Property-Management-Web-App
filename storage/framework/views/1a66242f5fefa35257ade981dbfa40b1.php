@@ -1,12 +1,10 @@
-@extends('layouts.partial.app')
+<?php $__env->startSection('title', 'Monitoring Perizinan Proyek - Property Management App'); ?>
 
-@section('title', 'Monitoring Perizinan Proyek - Property Management App')
+<?php $__env->startPush('styles'); ?>
+    <link rel="stylesheet" href="<?php echo e(asset('css/dashboard-clean.css')); ?>?v=<?php echo e(time()); ?>">
+<?php $__env->stopPush(); ?>
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
-@endpush
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <style>
     /* Styling Persis Screenshot Monitoring Perizinan Proyek */
@@ -190,7 +188,7 @@
         </div>
 
         <div class="d-flex align-items-center gap-2">
-            <a href="{{ route('perizinan.tugas.index') }}" class="btn btn-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 fw-semibold shadow-sm" style="border-radius: 8px; font-size: 0.86rem;">
+            <a href="<?php echo e(route('perizinan.tugas.index')); ?>" class="btn btn-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 fw-semibold shadow-sm" style="border-radius: 8px; font-size: 0.86rem;">
                 <i class="mdi mdi-clipboard-account-outline fs-6"></i>
                 <span>Pembagian Tugas Staf</span>
             </a>
@@ -199,16 +197,16 @@
 
     <!-- Navigasi Tab Modul Perizinan -->
     <div class="nav-tabs-clean">
-        <a href="{{ route('perizinan.index', ['stay' => 1]) }}" class="nav-tab-item active">
+        <a href="<?php echo e(route('perizinan.index', ['stay' => 1])); ?>" class="nav-tab-item active">
             <i class="mdi mdi-domain"></i>
             <span>Monitoring Kawasan Proyek</span>
         </a>
-        <a href="{{ route('perizinan.tugas.index') }}" class="nav-tab-item">
+        <a href="<?php echo e(route('perizinan.tugas.index')); ?>" class="nav-tab-item">
             <i class="mdi mdi-clipboard-account-outline"></i>
             <span>Pembagian Tugas Staf Legal</span>
-            @if(!empty($totalTugasPerizinan) && $totalTugasPerizinan > 0)
-                <span class="badge rounded-pill" style="background: #4f46e5; color: #ffffff; font-size: 0.72rem;">{{ $totalTugasPerizinan }}</span>
-            @endif
+            <?php if(!empty($totalTugasPerizinan) && $totalTugasPerizinan > 0): ?>
+                <span class="badge rounded-pill" style="background: #4f46e5; color: #ffffff; font-size: 0.72rem;"><?php echo e($totalTugasPerizinan); ?></span>
+            <?php endif; ?>
         </a>
     </div>
 
@@ -223,7 +221,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Total Izin</div>
-                    <div class="dash-kpi-val">{{ $totalIzin ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalIzin ?? 0); ?></div>
                     <div class="dash-kpi-sub">Seluruh Izin Terdaftar</div>
                 </div>
             </div>
@@ -240,7 +238,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Izin Selesai</div>
-                    <div class="dash-kpi-val">{{ $totalSelesai ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalSelesai ?? 0); ?></div>
                     <div class="dash-kpi-sub">Dokumen Terbit / Final</div>
                 </div>
             </div>
@@ -257,7 +255,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Dalam Proses</div>
-                    <div class="dash-kpi-val">{{ $dalamProses ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($dalamProses ?? 0); ?></div>
                     <div class="dash-kpi-sub">Sedang Diproses Instansi</div>
                 </div>
             </div>
@@ -274,7 +272,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Tertunda / Kendala</div>
-                    <div class="dash-kpi-val">{{ $tertunda ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($tertunda ?? 0); ?></div>
                     <div class="dash-kpi-sub">Perlu Tindak Lanjut / Revisi</div>
                 </div>
             </div>
@@ -301,7 +299,7 @@
             </div>
 
             <!-- Filter Toolbar Form -->
-            <form id="filterForm" method="GET" action="{{ route('perizinan.index') }}" class="m-0">
+            <form id="filterForm" method="GET" action="<?php echo e(route('perizinan.index')); ?>" class="m-0">
                 <div class="d-flex flex-wrap align-items-center gap-2">
                     
                     <!-- Proyek Dropdown -->
@@ -309,11 +307,12 @@
                         <label class="mb-0 text-secondary fw-semibold" style="font-size: 0.8rem; white-space: nowrap;">Proyek:</label>
                         <select name="proyek_id" class="form-select form-select-sm" onchange="document.getElementById('filterForm').submit()" style="font-size: 0.82rem; border-radius: 6px; min-width: 170px;">
                             <option value="all">Semua Proyek</option>
-                            @foreach($projects as $p)
-                                <option value="{{ $p['id'] }}" {{ request('proyek_id') == $p['id'] ? 'selected' : '' }}>
-                                    {{ $p['nama'] }}
+                            <?php $__currentLoopData = $projects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($p['id']); ?>" <?php echo e(request('proyek_id') == $p['id'] ? 'selected' : ''); ?>>
+                                    <?php echo e($p['nama']); ?>
+
                                 </option>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
                     </div>
 
@@ -321,18 +320,18 @@
                     <div class="d-flex align-items-center gap-1.5">
                         <label class="mb-0 text-secondary fw-semibold" style="font-size: 0.8rem; white-space: nowrap;">Status:</label>
                         <select name="status" class="form-select form-select-sm" onchange="document.getElementById('filterForm').submit()" style="font-size: 0.82rem; border-radius: 6px; min-width: 95px;">
-                            <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>All</option>
-                            <option value="Selesai" {{ request('status') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                            <option value="Berjalan" {{ request('status') == 'Berjalan' ? 'selected' : '' }}>Berjalan</option>
-                            <option value="Tertunda" {{ request('status') == 'Tertunda' ? 'selected' : '' }}>Tertunda</option>
+                            <option value="all" <?php echo e(request('status') == 'all' ? 'selected' : ''); ?>>All</option>
+                            <option value="Selesai" <?php echo e(request('status') == 'Selesai' ? 'selected' : ''); ?>>Selesai</option>
+                            <option value="Berjalan" <?php echo e(request('status') == 'Berjalan' ? 'selected' : ''); ?>>Berjalan</option>
+                            <option value="Tertunda" <?php echo e(request('status') == 'Tertunda' ? 'selected' : ''); ?>>Tertunda</option>
                         </select>
                     </div>
 
-                    @if(request()->hasAny(['proyek_id', 'status']))
-                        <a href="{{ route('perizinan.index') }}" class="btn btn-sm btn-light border py-1 px-2" title="Reset Filter" style="border-radius: 6px;">
+                    <?php if(request()->hasAny(['proyek_id', 'status'])): ?>
+                        <a href="<?php echo e(route('perizinan.index')); ?>" class="btn btn-sm btn-light border py-1 px-2" title="Reset Filter" style="border-radius: 6px;">
                             <i class="mdi mdi-refresh"></i>
                         </a>
-                    @endif
+                    <?php endif; ?>
 
                 </div>
             </form>
@@ -355,8 +354,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($projects as $index => $proj)
-                        @php
+                    <?php $__empty_1 = true; $__currentLoopData = $projects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $proj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <?php
                             $pVal = $proj['progress'] ?? 75;
                             $st = $proj['status'] ?? 'Berjalan';
                             if ($st == 'Selesai' || $st == 'Terbit') {
@@ -368,68 +367,71 @@
                             } else {
                                 $stLabel = 'Belum';
                             }
-                        @endphp
+                        ?>
                         <tr>
-                            <td style="font-weight: 700; text-align: center; color: #64748b;">{{ $loop->iteration }}</td>
+                            <td style="font-weight: 700; text-align: center; color: #64748b;"><?php echo e($loop->iteration); ?></td>
                             <td>
-                                <div style="font-weight: 700; color: #0f172a; font-size: 0.86rem;">{{ $proj['nama'] }}</div>
-                                <small style="color: #94a3b8; font-size: 0.74rem;">{{ $proj['pt'] ?? 'PT Graha Cipta Sejahtera' }}</small>
+                                <div style="font-weight: 700; color: #0f172a; font-size: 0.86rem;"><?php echo e($proj['nama']); ?></div>
+                                <small style="color: #94a3b8; font-size: 0.74rem;"><?php echo e($proj['pt'] ?? 'PT Graha Cipta Sejahtera'); ?></small>
                             </td>
                             <td>
                                 <span class="dash-badge" style="background-color: #f3e8ff; color: #7e22ce; font-family: monospace; font-weight: 700; border: 1px solid #e9d5ff;">
-                                    {{ $proj['ownership_status'] ?? 'SHGB Induk' }}
+                                    <?php echo e($proj['ownership_status'] ?? 'SHGB Induk'); ?>
+
                                 </span>
                             </td>
                             <td>
                                 <span style="color: #475569; font-weight: 500;">
-                                    <i class="mdi mdi-map-marker-outline text-danger me-0.5"></i>{{ $proj['lokasi'] }}
+                                    <i class="mdi mdi-map-marker-outline text-danger me-0.5"></i><?php echo e($proj['lokasi']); ?>
+
                                 </span>
                             </td>
                             <td>
                                 <span class="dash-badge gray" style="font-weight: 600;">
-                                    {{ $proj['luas'] }}
+                                    <?php echo e($proj['luas']); ?>
+
                                 </span>
                             </td>
                             <td>
-                                <span style="color: #64748b; font-size: 0.8rem;">{{ $proj['target_selesai'] ?? '30 Jul 2026' }}</span>
+                                <span style="color: #64748b; font-size: 0.8rem;"><?php echo e($proj['target_selesai'] ?? '30 Jul 2026'); ?></span>
                             </td>
                             <td>
                                 <div class="dash-progress-wrap">
                                     <div class="dash-progress-bar-bg" style="width: 80px;">
-                                        <div class="dash-progress-bar-fill" style="width: {{ $pVal }}%; background-color: {{ $pVal == 100 ? '#16a34a' : '#4f46e5' }};"></div>
+                                        <div class="dash-progress-bar-fill" style="width: <?php echo e($pVal); ?>%; background-color: <?php echo e($pVal == 100 ? '#16a34a' : '#4f46e5'); ?>;"></div>
                                     </div>
-                                    <span style="font-size: 0.72rem; font-weight: 700; color: #334155;">{{ $pVal }}%</span>
+                                    <span style="font-size: 0.72rem; font-weight: 700; color: #334155;"><?php echo e($pVal); ?>%</span>
                                 </div>
                                 <small class="text-muted d-block mt-0.5" style="font-size: 0.68rem; font-weight: 500;">
-                                    {{ $proj['terbit'] ?? 0 }}/{{ $proj['total'] ?? 0 }} Izin Selesai
+                                    <?php echo e($proj['terbit'] ?? 0); ?>/<?php echo e($proj['total'] ?? 0); ?> Izin Selesai
                                 </small>
                             </td>
                             <td>
-                                @if($stLabel == 'Selesai')
+                                <?php if($stLabel == 'Selesai'): ?>
                                     <span class="dash-status-pill on-track"><span class="dot"></span>Selesai</span>
-                                @elseif($stLabel == 'Berjalan')
+                                <?php elseif($stLabel == 'Berjalan'): ?>
                                     <span class="dash-status-pill" style="background-color: #e0f2fe; color: #0284c7; border-color: #bae6fd;"><span class="dot" style="background-color: #0284c7;"></span>Berjalan</span>
-                                @elseif($stLabel == 'Tertunda')
+                                <?php elseif($stLabel == 'Tertunda'): ?>
                                     <span class="dash-status-pill danger"><span class="dot"></span>Tertunda</span>
-                                @else
+                                <?php else: ?>
                                     <span class="dash-status-pill" style="background-color: #f1f5f9; color: #64748b; border-color: #e2e8f0;"><span class="dot" style="background-color: #94a3b8;"></span>Belum</span>
-                                @endif
+                                <?php endif; ?>
                             </td>
                             <td class="text-center">
-                                <a href="{{ route('perizinan.show', $proj['id']) }}" class="btn btn-sm text-white fw-semibold d-inline-flex align-items-center px-3 py-1.5 shadow-sm text-decoration-none" style="background-color: #5046e5; border-radius: 6px; font-size: 0.82rem;">
+                                <a href="<?php echo e(route('perizinan.show', $proj['id'])); ?>" class="btn btn-sm text-white fw-semibold d-inline-flex align-items-center px-3 py-1.5 shadow-sm text-decoration-none" style="background-color: #5046e5; border-radius: 6px; font-size: 0.82rem;">
                                     <i class="mdi mdi-tools" style="margin-right: 6px !important; font-size: 0.9rem;"></i>
                                     <span>Kelola</span>
                                 </a>
                             </td>
                         </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="9" class="text-center text-muted py-4">
                                 <i class="mdi mdi-domain-off me-2" style="font-size: 1.5rem;"></i>
                                 Tidak ada data proyek kawasan.
                             </td>
                         </tr>
-                    @endforelse
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -608,7 +610,7 @@
     </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     let activePermitData = null;
     let modalInstance = null;
@@ -922,6 +924,8 @@
         }
     }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.partial.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Property-Management-Web-App\resources\views/perizinan/index.blade.php ENDPATH**/ ?>

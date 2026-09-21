@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\LandBank;
 use App\Models\PraLandbank;
+use App\Models\MasterDokumenPerizinan;
+use App\Models\PerizinanTask;
 use Illuminate\Http\Request;
 
 class PerizinanController extends Controller
@@ -16,24 +18,47 @@ class PerizinanController extends Controller
      */
     public function index(Request $request)
     {
+        $user = auth()->user();
+        if ($user) {
+            $pos = strtolower($user->position->name ?? '');
+            $isStaffLegal = str_contains($pos, 'staff') && str_contains($pos, 'legal');
+            $canManage = str_contains($pos, 'kepala') || str_contains($pos, 'admin') || str_contains($pos, 'owner') || str_contains($pos, 'direktur') || ($user->division_id == 4);
+            if ($isStaffLegal && !$canManage && !$request->has('stay')) {
+                return redirect()->route('perizinan.tugas.index');
+            }
+        }
+
         $projects = $this->getProjectsList();
         $allPermits = $this->getAllPermits($projects);
 
-        // Map progress & status perizinan dari daftar izin
+        // Map progress & status perizinan dari daftar izin aktual
         $projects = $projects->map(function ($proj) use ($allPermits) {
             $pList = $allPermits->where('proyek_id', $proj['id']);
             $total = $pList->count();
             $terbit = $pList->whereIn('status', ['Selesai', 'Terbit'])->count();
             $proses = $pList->whereIn('status', ['Berjalan', 'Proses'])->count();
-            $revisi = $pList->whereIn('status', ['Tertunda', 'Revisi', 'Belum'])->count();
-            $progress = $total > 0 ? round(($terbit / $total) * 100) : 75;
+            $revisi = $pList->whereIn('status', ['Tertunda', 'Revisi'])->count();
 
-            $proj['total'] = $total;
-            $proj['terbit'] = $terbit;
-            $proj['proses'] = $proses;
-            $proj['revisi'] = $revisi;
+            // Progress rata-rata seluruh dokumen perizinan proyek
+            $progress = $total > 0 ? round($pList->avg('progress')) : 0;
+
+            // Status proyek kawasan
+            if ($total > 0 && $terbit === $total) {
+                $status = 'Selesai';
+            } elseif ($revisi > 0) {
+                $status = 'Tertunda';
+            } elseif ($proses > 0 || $terbit > 0 || $progress > 0) {
+                $status = 'Berjalan';
+            } else {
+                $status = 'Belum';
+            }
+
+            $proj['total']    = $total;
+            $proj['terbit']   = $terbit;
+            $proj['proses']   = $proses;
+            $proj['revisi']   = $revisi;
             $proj['progress'] = $progress;
-            $proj['status'] = $terbit == $total && $total > 0 ? 'Selesai' : ($revisi > 0 ? 'Tertunda' : 'Berjalan');
+            $proj['status']   = $status;
             return $proj;
         });
 
@@ -53,7 +78,12 @@ class PerizinanController extends Controller
         $totalIzin    = $allPermits->count();
         $totalSelesai = $allPermits->whereIn('status', ['Selesai', 'Terbit'])->count();
         $dalamProses  = $allPermits->whereIn('status', ['Berjalan', 'Proses'])->count();
-        $tertunda     = $allPermits->whereIn('status', ['Tertunda', 'Revisi', 'Belum'])->count();
+        $tertunda     = $allPermits->whereIn('status', ['Tertunda', 'Revisi'])->count();
+
+        $totalTugasPerizinan = 0;
+        try {
+            $totalTugasPerizinan = PerizinanTask::count();
+        } catch (\Throwable $e) {}
 
         return view('perizinan.index', compact(
             'projects',
@@ -62,7 +92,8 @@ class PerizinanController extends Controller
             'totalIzin',
             'totalSelesai',
             'dalamProses',
-            'tertunda'
+            'tertunda',
+            'totalTugasPerizinan'
         ));
     }
 
@@ -192,30 +223,49 @@ class PerizinanController extends Controller
 
     /**
      * Sumber Data Perizinan Lapangan & Legalitas per Proyek.
-     * Mengambil langsung dari tabel Master Dokumen Perizinan (MasterDokumenPerizinan).
+     * Mengambil dari tabel Master Dokumen Perizinan dan disinkronkan dengan data aktual PerizinanTask.
      */
     private function getAllPermits($projects)
     {
         $permits = collect();
 
-        // Ambil data dari Master Dokumen Perizinan di database
+        // 1. Ambil data Master Dokumen Perizinan
         try {
-            $masterDocs = \App\Models\MasterDokumenPerizinan::orderBy('urutan', 'asc')->get();
+            $masterDocs = MasterDokumenPerizinan::orderBy('urutan', 'asc')->get();
         } catch (\Throwable $e) {
             $masterDocs = collect();
         }
 
+        // 2. Ambil data tugas perizinan aktual dari tim legal (PerizinanTask)
+        try {
+            $tasks = PerizinanTask::with('employee')->get();
+        } catch (\Throwable $e) {
+            $tasks = collect();
+        }
+
         $globalId = 1;
         foreach ($projects as $proj) {
+            // Ambil semua task yang terkait proyek ini (berdasarkan id atau nama kawasan)
+            $projTasks = $tasks->filter(function ($t) use ($proj) {
+                if (!empty($t->proyek_id) && $t->proyek_id == $proj['id']) {
+                    return true;
+                }
+                if (!empty($t->proyek_nama) && strtolower(trim($t->proyek_nama)) === strtolower(trim($proj['nama']))) {
+                    return true;
+                }
+                return false;
+            });
+
+            $matchedTaskIds = [];
+
             if ($masterDocs->isNotEmpty()) {
                 foreach ($masterDocs as $idx => $m) {
-                    // Poin label (misal: POIN-07 -> Poin 7)
                     $poinLabel = str_replace('-', ' ', ucwords(strtolower($m->kode_dokumen ?? '')));
                     if (empty($poinLabel) || $poinLabel === 'Poin') {
                         $poinLabel = 'Poin ' . ($m->urutan ?? ($idx + 7));
                     }
 
-                    // Pecah syarat_dokumen menjadi list
+                    // Pecah syarat dokumen
                     $syaratItems = [];
                     if (!empty($m->syarat_dokumen)) {
                         $rawLines = preg_split('/\r\n|\r|\n/', $m->syarat_dokumen);
@@ -230,70 +280,106 @@ class PerizinanController extends Controller
                         $syaratItems = ['Salinan Akta Pelepasan Hak dari Notaris', 'Berkas Kepemilikan Tanah Asli', 'Legalitas Perusahaan PT'];
                     }
 
-                    // Default status perizinan bersih & kosong (Belum Dimulai)
-                    $status   = 'Belum';
-                    $progress = 0;
-                    $noIzin   = null;
-                    $tanggal  = '-';
+                    // Cari apakah ada task penugasan yang cocok untuk izin ini
+                    $matchedTask = $projTasks->first(function ($t) use ($m, $matchedTaskIds) {
+                        if (in_array($t->id, $matchedTaskIds)) return false;
+                        if (!empty($t->master_dokumen_id) && $t->master_dokumen_id == $m->id) {
+                            return true;
+                        }
+                        $tName = strtolower(trim($t->nama_tugas ?? ''));
+                        $mName = strtolower(trim($m->nama_dokumen ?? ''));
+                        return $tName === $mName || str_contains($mName, $tName) || str_contains($tName, $mName);
+                    });
+
+                    // Default jika belum ada task pengerjaan
+                    $status      = 'Belum';
+                    $progress    = 0;
+                    $noIzin      = null;
+                    $tanggal     = '-';
+                    $fileDokumen = null;
+                    $catatan     = $m->deskripsi ?: 'Kajian dan proses administrasi penerbitan dokumen izin kawasan.';
+                    $pelaksana   = null;
+                    $taskId      = null;
+
+                    if ($matchedTask) {
+                        $matchedTaskIds[] = $matchedTask->id;
+                        $taskId      = $matchedTask->id;
+                        $progress    = (int) $matchedTask->progress;
+                        $noIzin      = $matchedTask->nomor_dokumen;
+                        $tanggal     = $matchedTask->tanggal_terbit ? date('d/m/Y', strtotime($matchedTask->tanggal_terbit)) : '-';
+                        $fileDokumen = $matchedTask->file_dokumen;
+                        $catatan     = $matchedTask->kendala ?: ($matchedTask->catatan ?: $catatan);
+                        $pelaksana   = $matchedTask->employee ? $matchedTask->employee->name : null;
+
+                        if ($matchedTask->status === 'Selesai' || $progress >= 100) {
+                            $status = 'Terbit';
+                        } elseif ($matchedTask->status === 'Terkendala') {
+                            $status = 'Revisi';
+                        } elseif ($matchedTask->status === 'Dalam Proses' || $progress > 0) {
+                            $status = 'Proses';
+                        } else {
+                            $status = 'Belum';
+                        }
+                    }
 
                     $permits->push([
                         'id'              => $globalId++,
                         'master_id'       => $m->id,
+                        'task_id'         => $taskId,
                         'proyek_id'       => $proj['id'],
                         'proyek_nama'     => $proj['nama'],
                         'poin_label'      => $poinLabel,
                         'nama_izin'       => $m->nama_dokumen,
-                        'instansi'        => $m->instansi_terkait ?: 'Kantor Pertanahan (ATR/BPN)',
-                        'target_selesai'  => '-',
-                        'no_izin'         => null,
-                        'tanggal'         => '-',
-                        'status'          => 'Belum',
-                        'progress'        => 0,
-                        'catatan'         => $m->deskripsi ?: 'Kajian dan proses administrasi penerbitan dokumen izin kawasan.',
-                        'file_dokumen'    => null,
+                        'instansi'        => ($matchedTask && $matchedTask->instansi) ? $matchedTask->instansi : ($m->instansi_terkait ?: 'Kantor Pertanahan (ATR/BPN)'),
+                        'target_selesai'  => ($matchedTask && $matchedTask->deadline) ? date('d/m/Y', strtotime($matchedTask->deadline)) : '-',
+                        'no_izin'         => $noIzin,
+                        'tanggal'         => $tanggal,
+                        'status'          => $status,
+                        'progress'        => $progress,
+                        'catatan'         => $catatan,
+                        'file_dokumen'    => $fileDokumen,
+                        'pelaksana'       => $pelaksana,
                         'syarat_items'    => $syaratItems,
                         'estimasi_hari'   => $m->estimasi_hari,
                         'estimasi_biaya'  => $m->estimasi_biaya,
                     ]);
                 }
-            } else {
-                // Fallback default jika master dokumen kosong
-                $defaultList = [
-                    ['poin_label' => 'Poin 7', 'nama_izin' => 'Blangko Permohonan Kelurahan & Kecamatan', 'instansi' => 'Pihak Kelurahan & Kantor Kecamatan'],
-                    ['poin_label' => 'Poin 8', 'nama_izin' => 'Pertimbangan Teknis Pertanahan (PERTEK BPN)', 'instansi' => 'Kantor Pertanahan (ATR/BPN)'],
-                    ['poin_label' => 'Poin 9', 'nama_izin' => 'Peta Bidang dan Pengukuran Tanah (NIB)', 'instansi' => 'Seksi Survei & Pemetaan ATR/BPN'],
-                    ['poin_label' => 'Poin 10', 'nama_izin' => 'Kesesuaian Tata Ruang (PKKPR Darat)', 'instansi' => 'Dinas PUPR / PTSP & OSS-RBA'],
-                    ['poin_label' => 'Poin 11', 'nama_izin' => 'Rekomendasi Peil Banjir Kawasan', 'instansi' => 'Dinas SDA / Pekerjaan Umum SDA'],
-                    ['poin_label' => 'Poin 12', 'nama_izin' => 'Pertimbangan Teknis Andalalin (Lalu Lintas)', 'instansi' => 'Dinas Perhubungan (Dishub)'],
-                    ['poin_label' => 'Poin 13', 'nama_izin' => 'Dokumen Lingkungan Hidup (SPPL / UKL-UPL)', 'instansi' => 'Dinas Lingkungan Hidup (DLH)'],
-                    ['poin_label' => 'Poin 14', 'nama_izin' => 'Pengesahan Rencana Tapak (Siteplan Pemda)', 'instansi' => 'Dinas Perumahan Rakyat & CK'],
-                    ['poin_label' => 'Poin 15', 'nama_izin' => 'SK Pemberian Hak Guna Bangunan (SK HGB BPN)', 'instansi' => 'Kanwil / Kantor Pertanahan ATR/BPN'],
-                    ['poin_label' => 'Poin 16', 'nama_izin' => 'Validasi & Pembayaran Pajak BPHTB', 'instansi' => 'Badan Pendapatan Daerah (Bapenda)'],
-                    ['poin_label' => 'Poin 17', 'nama_izin' => 'Penerbitan Buku SHGB Induk an. PT', 'instansi' => 'Kantor Pertanahan ATR/BPN'],
-                    ['poin_label' => 'Poin 18', 'nama_izin' => 'PBG Induk Kawasan (SIMBG)', 'instansi' => 'DPMPTSP melalui Sistem SIMBG'],
-                    ['poin_label' => 'Poin 19', 'nama_izin' => 'Pemecahan Sertifikat SHGB per Kavling/Unit', 'instansi' => 'Seksi Penetapan Hak ATR/BPN'],
-                ];
-                foreach ($defaultList as $idx => $def) {
-                    $permits->push([
-                        'id'              => $globalId++,
-                        'master_id'       => $idx + 1,
-                        'proyek_id'       => $proj['id'],
-                        'proyek_nama'     => $proj['nama'],
-                        'poin_label'      => $def['poin_label'],
-                        'nama_izin'       => $def['nama_izin'],
-                        'instansi'        => $def['instansi'],
-                        'target_selesai'  => '-',
-                        'no_izin'         => null,
-                        'tanggal'         => '-',
-                        'status'          => 'Belum',
-                        'progress'        => 0,
-                        'catatan'         => 'Pengurusan dokumen izin kawasan.',
-                        'file_dokumen'    => null,
-                        'syarat_items'    => ['Salinan Akta Pelepasan Notaris', 'Berkas Kepemilikan Asli'],
-                        'estimasi_hari'   => 14,
-                        'estimasi_biaya'  => 0,
-                    ]);
+            }
+
+            // Tambahkan juga task perizinan custom proyek ini yang belum ada di master docs
+            $customTasks = $projTasks->whereNotIn('id', $matchedTaskIds);
+            foreach ($customTasks as $ct) {
+                $status   = 'Belum';
+                $progress = (int) $ct->progress;
+                if ($ct->status === 'Selesai' || $progress >= 100) {
+                    $status = 'Terbit';
+                } elseif ($ct->status === 'Terkendala') {
+                    $status = 'Revisi';
+                } elseif ($ct->status === 'Dalam Proses' || $progress > 0) {
+                    $status = 'Proses';
                 }
+
+                $permits->push([
+                    'id'              => $globalId++,
+                    'master_id'       => null,
+                    'task_id'         => $ct->id,
+                    'proyek_id'       => $proj['id'],
+                    'proyek_nama'     => $proj['nama'],
+                    'poin_label'      => 'Tugas Khusus',
+                    'nama_izin'       => $ct->nama_tugas,
+                    'instansi'        => $ct->instansi ?: 'Dinas Terkait',
+                    'target_selesai'  => $ct->deadline ? date('d/m/Y', strtotime($ct->deadline)) : '-',
+                    'no_izin'         => $ct->nomor_dokumen,
+                    'tanggal'         => $ct->tanggal_terbit ? date('d/m/Y', strtotime($ct->tanggal_terbit)) : '-',
+                    'status'          => $status,
+                    'progress'        => $progress,
+                    'catatan'         => $ct->kendala ?: ($ct->catatan ?: 'Tugas perizinan khusus staf legal.'),
+                    'file_dokumen'    => $ct->file_dokumen,
+                    'pelaksana'       => $ct->employee ? $ct->employee->name : null,
+                    'syarat_items'    => ['Berkas Kelengkapan Permohonan'],
+                    'estimasi_hari'   => 7,
+                    'estimasi_biaya'  => 0,
+                ]);
             }
         }
 
