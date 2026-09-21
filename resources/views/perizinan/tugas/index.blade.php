@@ -557,12 +557,11 @@
                                         <td class="col-aksi text-center">
                                             <div class="d-flex align-items-center justify-content-center gap-1">
                                                 @if($canManage || ($isStaffLegal && $task->employee_id == auth()->id()))
-                                                    <button type="button" class="btn btn-action-edit d-inline-flex align-items-center gap-1 shadow-none"
-                                                        title="Update Progres & Dokumen"
-                                                        onclick='bukaModalUpdateProgres(@json($task))'>
+                                                    <a href="{{ route('perizinan.tugas.progres', $task->id) }}" class="btn btn-action-edit d-inline-flex align-items-center gap-1 shadow-none"
+                                                        title="Update Progres & Dokumen">
                                                         <i class="mdi mdi-pencil text-primary"></i>
                                                         <span>Progres</span>
-                                                    </button>
+                                                    </a>
                                                 @endif
 
                                                 <button type="button" class="btn btn-action-edit d-inline-flex align-items-center gap-1 shadow-none"
@@ -579,7 +578,7 @@
                                                         </button>
                                                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" style="font-size: 0.82rem; border-radius: 8px;">
                                                             <li>
-                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-1.5" href="javascript:void(0)" onclick='bukaModalEditTugas(@json($task))'>
+                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-1.5" href="{{ route('perizinan.tugas.edit', $task->id) }}">
                                                                     <i class="mdi mdi-account-switch-outline text-warning"></i>
                                                                     <span>Edit Penugasan / Reassign</span>
                                                                 </a>
@@ -637,121 +636,10 @@
 </div>
 
 
-<!-- ================= MODAL 2: UPDATE PROGRES & STATUS (STAF LEGAL & KEPALA) ================= -->
-<div class="modal fade" id="modalUpdateProgres" tabindex="-1" aria-labelledby="modalUpdateProgresLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header px-4 py-3 bg-white border-bottom d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="p-2 rounded-2" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
-                        <i class="mdi mdi-progress-check fs-5"></i>
-                    </div>
-                    <div>
-                        <h5 class="fw-bold text-dark mb-0" style="font-size: 1rem;" id="modalProgresTitle">
-                            Update Progres Tugas Perizinan
-                        </h5>
-                        <small class="text-muted" style="font-size: 0.78rem;" id="modalProgresSubtitle">
-                            Perbarui status penyelesaian, kendala lapangan, atau unggah dokumen izin resmi
-                        </small>
-                    </div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <form id="formUpdateProgres" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PATCH')
-                <div class="modal-body px-4 py-3 bg-white">
-                    
-                    <!-- Alert Peringatan Audit Trail -->
-                    <div class="p-2.5 rounded-3 mb-3 d-flex align-items-center gap-2" style="background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; font-size: 0.8rem;">
-                        <i class="mdi mdi-shield-account fs-5"></i>
-                        <div>
-                            Pembaruan data ini akan dicatat atas nama <strong>{{ auth()->user()->name }} ({{ auth()->user()->position->name ?? 'Staff' }})</strong> ke dalam Audit Trail / Riwayat Aktivitas.
-                        </div>
-                    </div>
-
-                    <div class="row g-3">
-                        <!-- Status Pengerjaan -->
-                        <div class="col-md-6">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Status Pengerjaan <span class="text-danger">*</span>
-                            </label>
-                            <select name="status" id="updStatus" class="form-select form-select-sm fw-bold" required onchange="handleStatusChange(this.value)">
-                                <option value="Pending">Pending (Belum Berjalan)</option>
-                                <option value="Dalam Proses">Dalam Proses (Sedang di Instansi)</option>
-                                <option value="Terkendala">Terkendala (Ada Masalah / Butuh Revisi)</option>
-                                <option value="Selesai">Selesai (Izin Terbit & Sah)</option>
-                            </select>
-                        </div>
-
-                        <!-- Persentase Progres (Slider + Input) -->
-                        <div class="col-md-6">
-                            <label class="form-label mb-1 fw-semibold text-dark d-flex justify-content-between" style="font-size: 0.8rem;">
-                                <span>Persentase Progres (%)</span>
-                                <span class="fw-bold text-primary" id="progressValDisplay">0%</span>
-                            </label>
-                            <div class="d-flex align-items-center gap-2">
-                                <input type="range" class="form-range flex-grow-1" id="updProgressRange" min="0" max="100" step="5" oninput="syncProgressInput(this.value)">
-                                <input type="number" name="progress" id="updProgressNum" class="form-control form-control-sm text-center fw-bold" min="0" max="100" style="width: 70px;" oninput="syncProgressRange(this.value)">
-                            </div>
-                        </div>
-
-                        <!-- Nomor SK & Tanggal Terbit (Tampil Jika Selesai / Terbit) -->
-                        <div class="col-md-7">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Nomor Izin / SK Resmi
-                            </label>
-                            <input type="text" name="nomor_dokumen" id="updNomorDokumen" class="form-control form-control-sm font-monospace" placeholder="Contoh: 503/123/PUPR/2026">
-                        </div>
-
-                        <div class="col-md-5">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Tanggal Terbit SK
-                            </label>
-                            <input type="date" name="tanggal_terbit" id="updTanggalTerbit" class="form-control form-control-sm">
-                        </div>
-
-                        <!-- Upload Berkas SK / Izin -->
-                        <div class="col-12">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Unggah Dokumen Bukti / File SK (PDF / Gambar)
-                            </label>
-                            <input type="file" name="file_dokumen" class="form-control form-control-sm" accept=".pdf,.jpg,.jpeg,.png">
-                            <small class="text-muted" style="font-size: 0.72rem;">Format didukung: PDF, JPG, PNG. Maksimal 15 MB.</small>
-                            <div id="fileExistingContainer" class="mt-1" style="display: none;">
-                                <a href="#" id="fileExistingLink" target="_blank" class="btn btn-sm btn-outline-success py-0.5 px-2" style="font-size: 0.74rem;">
-                                    <i class="mdi mdi-file-check me-1"></i>Lihat Berkas Terunggah
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Catatan Progres / Kendala Lapangan -->
-                        <div class="col-12">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Catatan Progres / Kendala Lapangan
-                            </label>
-                            <textarea name="kendala" id="updKendala" rows="3" class="form-control form-control-sm" placeholder="Jelaskan progres hari ini, kendala di instansi, berkas yang kurang, atau arahan tindak lanjut..."></textarea>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="modal-footer px-4 py-2.5 bg-white border-top d-flex justify-content-between">
-                    <button type="button" class="btn btn-light border btn-sm px-3" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-success btn-sm px-4 fw-semibold shadow-sm text-white">
-                        <i class="mdi mdi-content-save-check me-1"></i> Simpan Pembaruan Progres
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- ================= MODAL 3: AUDIT TRAIL / RIWAYAT AKTIVITAS ================= -->
+<!-- ================= MODAL: AUDIT TRAIL / RIWAYAT AKTIVITAS (HANYA LOG YANG TETAP MODAL) ================= -->
 <div class="modal fade" id="modalRiwayatLog" tabindex="-1" aria-labelledby="modalRiwayatLogLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 6px !important; overflow: hidden; border: 1px solid #e2e8f0;">
             <div class="modal-header px-4 py-3 bg-white border-bottom">
                 <div class="d-flex align-items-center gap-2">
                     <div class="p-2 rounded-2" style="background: rgba(14, 165, 233, 0.1); color: #0ea5e9;">
@@ -771,7 +659,7 @@
 
             <div class="modal-body px-4 py-3 bg-white">
                 <!-- Header Ringkasan Tugas -->
-                <div class="p-3 rounded-3 mb-4" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                <div class="p-3 mb-4" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 5px;">
                     <div class="row g-2">
                         <div class="col-sm-6">
                             <span class="text-muted small d-block" style="font-size: 0.72rem;">NAMA TUGAS</span>
@@ -806,232 +694,14 @@
             </div>
 
             <div class="modal-footer px-4 py-2.5 bg-white border-top">
-                <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal" style="border-radius: 5px;">Tutup</button>
             </div>
         </div>
     </div>
 </div>
-
-<!-- ================= MODAL 4: EDIT PENUGASAN / REASSIGN (KEPALA & OWNER) ================= -->
-@if($canManage)
-<div class="modal fade" id="modalEditTugas" tabindex="-1" aria-labelledby="modalEditTugasLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header px-4 py-3 bg-white border-bottom">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="p-2 rounded-2" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
-                        <i class="mdi mdi-account-switch-outline fs-5"></i>
-                    </div>
-                    <div>
-                        <h5 class="fw-bold text-dark mb-0" style="font-size: 1rem;">Edit Penugasan / Reassign Staf</h5>
-                        <small class="text-muted" style="font-size: 0.78rem;">Alihkan tugas perizinan ke staf legal lain atau perpanjang deadline</small>
-                    </div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <form id="formEditTugas" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="modal-body px-4 py-3 bg-white">
-                    <div class="row g-3">
-                        <div class="col-md-7">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Nama Tugas Perizinan <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" name="nama_tugas" id="editNamaTugas" class="form-control form-control-sm" required list="masterDocsListEdit" placeholder="Pilih atau ketik nama tugas...">
-                            <datalist id="masterDocsListEdit">
-                                @foreach($masterDocs as $md)
-                                    <option value="{{ $md->nama_dokumen }}">
-                                @endforeach
-                            </datalist>
-                        </div>
-
-                        <div class="col-md-5">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Instansi Terkait
-                            </label>
-                            <input type="text" name="instansi" id="editInstansi" class="form-control form-control-sm">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Proyek Kawasan
-                            </label>
-                            <select name="proyek_id" id="editProyekId" class="form-select form-select-sm">
-                                <option value="">-- Bebas / Tanpa Proyek --</option>
-                                @foreach($projects as $proj)
-                                    <option value="{{ $proj['id'] }}">{{ $proj['nama'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Alihkan Tugas Kepada (Staf Legal) <span class="text-danger">*</span>
-                            </label>
-                            <select name="employee_id" id="editEmployeeId" class="form-select form-select-sm" required>
-                                @foreach($legalStaffs as $staf)
-                                    <option value="{{ $staf->id }}">
-                                        {{ $staf->name }} ({{ $staf->position->name ?? 'Staff Legal' }})
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Batas Waktu (Deadline)
-                            </label>
-                            <input type="date" name="deadline" id="editDeadline" class="form-control form-control-sm">
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Status Tugas
-                            </label>
-                            <select name="status" id="editStatus" class="form-select form-select-sm">
-                                <option value="Pending">Pending</option>
-                                <option value="Dalam Proses">Dalam Proses</option>
-                                <option value="Terkendala">Terkendala</option>
-                                <option value="Selesai">Selesai</option>
-                            </select>
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label mb-1 fw-semibold text-dark" style="font-size: 0.8rem;">
-                                Catatan / Instruksi Tambahan
-                            </label>
-                            <textarea name="catatan" id="editCatatan" rows="3" class="form-control form-control-sm"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer px-4 py-2.5 bg-white border-top d-flex justify-content-between">
-                    <button type="button" class="btn btn-light border btn-sm px-3" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-warning btn-sm px-4 fw-semibold shadow-sm">
-                        <i class="mdi mdi-content-save-edit me-1"></i> Simpan Perubahan Penugasan
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@endif
 
 @push('scripts')
 <script>
-
-    // HELPER UNTUK SET NILAI PROGRES (RANGE, NUMBER, & DISPLAY)
-    function setProgressValues(val) {
-        var n = Math.min(100, Math.max(0, parseInt(val) || 0));
-        document.getElementById('updProgressRange').value = n;
-        document.getElementById('updProgressNum').value = n;
-        document.getElementById('progressValDisplay').textContent = n + '%';
-        return n;
-    }
-
-    // KETIKA SLIDER ATAU INPUT ANGKA PROGRES DIUBAH
-    function syncProgressInput(val) {
-        var n = setProgressValues(val);
-        var statusEl = document.getElementById('updStatus');
-        
-        if (n === 100) {
-            statusEl.value = 'Selesai';
-        } else if (n === 0) {
-            if (statusEl.value !== 'Terkendala') {
-                statusEl.value = 'Pending';
-            }
-        } else { // 1% - 99%
-            if (statusEl.value === 'Pending' || statusEl.value === 'Selesai') {
-                statusEl.value = 'Dalam Proses';
-            }
-        }
-    }
-
-    function syncProgressRange(val) {
-        syncProgressInput(val);
-    }
-
-    // KETIKA PILIHAN STATUS PENGERJAAN DIUBAH
-    function handleStatusChange(status) {
-        var currentProg = parseInt(document.getElementById('updProgressNum').value) || 0;
-
-        if (status === 'Selesai') {
-            setProgressValues(100);
-        } else if (status === 'Pending') {
-            setProgressValues(0);
-        } else if (status === 'Dalam Proses') {
-            // Jika sebelumnya 0% atau 100%, beri progres aktif wajar (misal 50%)
-            if (currentProg === 0 || currentProg === 100) {
-                setProgressValues(50);
-            }
-        } else if (status === 'Terkendala') {
-            // Status Terkendala tidak boleh 100% (selesai)
-            if (currentProg >= 100) {
-                setProgressValues(50);
-            } else if (currentProg === 0) {
-                setProgressValues(25);
-            }
-        }
-    }
-
-    // BUKA MODAL UPDATE PROGRES
-    function bukaModalUpdateProgres(task) {
-        document.getElementById('modalProgresTitle').textContent = 'Update Progres: ' + task.nama_tugas;
-        document.getElementById('modalProgresSubtitle').textContent = 'Proyek: ' + (task.proyek_nama || 'Umum') + ' • Pelaksana: ' + (task.employee ? task.employee.name : '-');
-        
-        var form = document.getElementById('formUpdateProgres');
-        form.action = '/perizinan-tugas/' + task.id + '/progress';
-
-        var st = task.status || 'Pending';
-        var prog = parseInt(task.progress) || 0;
-
-        // Pastikan status & progres awal selaras
-        if (st === 'Selesai') {
-            prog = 100;
-        } else if (st === 'Pending' && prog !== 0) {
-            prog = 0;
-        } else if (st === 'Terkendala' && prog >= 100) {
-            prog = 50;
-        }
-
-        document.getElementById('updStatus').value = st;
-        setProgressValues(prog);
-
-        document.getElementById('updNomorDokumen').value = task.nomor_dokumen || '';
-        document.getElementById('updTanggalTerbit').value = task.tanggal_terbit ? task.tanggal_terbit.substring(0, 10) : '';
-        document.getElementById('updKendala').value = task.kendala || '';
-
-        var fileBox = document.getElementById('fileExistingContainer');
-        var fileLink = document.getElementById('fileExistingLink');
-        if (task.file_dokumen) {
-            fileBox.style.display = 'block';
-            fileLink.href = '/storage/' + task.file_dokumen;
-        } else {
-            fileBox.style.display = 'none';
-        }
-
-        var modal = new bootstrap.Modal(document.getElementById('modalUpdateProgres'));
-        modal.show();
-    }
-
-    // BUKA MODAL EDIT TUGAS / REASSIGN
-    function bukaModalEditTugas(task) {
-        var form = document.getElementById('formEditTugas');
-        form.action = '/perizinan-tugas/' + task.id;
-
-        document.getElementById('editNamaTugas').value = task.nama_tugas || '';
-        document.getElementById('editInstansi').value = task.instansi || '';
-        document.getElementById('editProyekId').value = task.proyek_id || '';
-        document.getElementById('editEmployeeId').value = task.employee_id || '';
-        document.getElementById('editDeadline').value = task.deadline ? task.deadline.substring(0, 10) : '';
-        document.getElementById('editStatus').value = task.status || 'Pending';
-        document.getElementById('editCatatan').value = task.catatan || '';
-
-        var modal = new bootstrap.Modal(document.getElementById('modalEditTugas'));
-        modal.show();
-    }
 
     // BUKA MODAL RIWAYAT AUDIT TRAIL LOG
     function bukaModalRiwayatLog(taskId) {

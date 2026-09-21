@@ -371,7 +371,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'index'])->name('index');
         Route::get('/tambah', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'create'])->name('create');
         Route::post('/store', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'edit'])->name('edit');
         Route::put('/{id}', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'update'])->name('update');
+        Route::get('/{id}/progres', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'showProgress'])->name('progres');
         Route::patch('/{id}/progress', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'updateProgress'])->name('progress');
         Route::delete('/{id}', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'destroy'])->name('destroy');
         Route::get('/{id}/logs', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'getLogs'])->name('logs');
