@@ -5,34 +5,6 @@
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
     <style>
-        .nav-tabs-clean {
-            border-bottom: 2px solid #e2e8f0;
-            display: flex;
-            gap: 8px;
-            margin-bottom: 1.5rem;
-        }
-        .nav-tab-item {
-            padding: 10px 18px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: #64748b;
-            text-decoration: none;
-            border-radius: 8px 8px 0 0;
-            border-bottom: 2px solid transparent;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-        }
-        .nav-tab-item:hover {
-            color: #4f46e5;
-            background: rgba(79, 70, 229, 0.04);
-        }
-        .nav-tab-item.active {
-            color: #4f46e5;
-            border-bottom: 2px solid #4f46e5;
-            background: rgba(79, 70, 229, 0.06);
-        }
         .task-user-badge {
             display: inline-flex;
             align-items: center;
@@ -157,18 +129,6 @@
         </div>
     @endif
 
-    <!-- Navigasi Tab Modul Perizinan -->
-    <div class="nav-tabs-clean">
-        <a href="{{ route('perizinan.index') }}" class="nav-tab-item">
-            <i class="mdi mdi-domain"></i>
-            <span>Kawasan Proyek</span>
-        </a>
-        <a href="{{ route('perizinan.tugas.index') }}" class="nav-tab-item active">
-            <i class="mdi mdi-clipboard-account-outline"></i>
-            <span>{{ $isStaffLegal && !$canManage ? 'Tugas Saya (Staf Legal)' : 'Pembagian Tugas Staf Legal' }}</span>
-            <span class="badge rounded-pill" style="background: #4f46e5; color: #ffffff; font-size: 0.72rem;">{{ $totalTugas }}</span>
-        </a>
-    </div>
 
     <!-- 4 KPI Metrics Card -->
     <div class="dash-kpi-grid mb-4">
