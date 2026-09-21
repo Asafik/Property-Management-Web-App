@@ -340,7 +340,7 @@ class PerizinanTaskController extends Controller
             $masterDocs = MasterDokumenPerizinan::orderBy('urutan', 'asc')->get();
         } catch (\Throwable $e) {}
 
-        return view('perizinan.tugas.edit', compact('task', 'legalStaffs', 'projects', 'masterDocs', 'canManage', 'ctx'));
+        return view('perizinan.tugas.create', compact('task', 'legalStaffs', 'projects', 'masterDocs', 'canManage', 'ctx'));
     }
 
     /**

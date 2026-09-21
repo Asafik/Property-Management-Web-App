@@ -1,6 +1,10 @@
+@php
+    $isEdit = isset($task);
+@endphp
+
 @extends('layouts.partial.app')
 
-@section('title', 'Tugaskan Staf Legal - Property Management App')
+@section('title', ($isEdit ? 'Edit Penugasan Staf Legal' : 'Tugaskan Staf Legal') . ' - Property Management App')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
@@ -150,10 +154,10 @@
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
         <div>
             <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
-                Tugaskan Staf Legal
+                {{ $isEdit ? 'Edit Penugasan Staf Legal' : 'Tugaskan Staf Legal' }}
             </h2>
             <p class="text-muted mb-0" style="font-size: 0.88rem;">
-                Delegasi penugasan pengurusan izin kawasan, penentuan tenggat waktu, dan pembagian wewenang staf legal.
+                {{ $isEdit ? 'Perbarui rincian berkas izin, alihkan penugasan staf (reassign), atau sesuaikan tenggat waktu.' : 'Delegasi penugasan pengurusan izin kawasan, penentuan tenggat waktu, dan pembagian wewenang staf legal.' }}
             </p>
         </div>
 
@@ -194,20 +198,47 @@
                 <!-- Card Header -->
                 <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
                     <div class="d-flex align-items-center gap-2">
-                        <div style="width: 32px; height: 32px; border-radius: 5px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0; margin-right: 8px;">
-                            <i class="mdi mdi-clipboard-plus-outline"></i>
-                        </div>
-                        <div>
-                            <h5 class="fw-bold text-dark mb-0" style="font-size: 0.98rem;">Formulir Penugasan Staf Legal Baru</h5>
-                            <small class="text-muted" style="font-size: 0.78rem;">Lengkapi rincian berkas izin kawasan yang akan didelegasikan</small>
-                        </div>
+                        @if($isEdit)
+                            <div style="width: 32px; height: 32px; border-radius: 5px; background-color: #fef3c7; color: #d97706; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0; margin-right: 8px;">
+                                <i class="mdi mdi-account-edit-outline"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold text-dark mb-0" style="font-size: 0.98rem;">Formulir Perubahan Data Penugasan</h5>
+                                <small class="text-muted" style="font-size: 0.78rem;">ID Tugas #{{ $task->id }} &bull; Dibuat {{ $task->created_at->format('d M Y, H:i') }}</small>
+                            </div>
+                        @else
+                            <div style="width: 32px; height: 32px; border-radius: 5px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0; margin-right: 8px;">
+                                <i class="mdi mdi-clipboard-plus-outline"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold text-dark mb-0" style="font-size: 0.98rem;">Formulir Penugasan Staf Legal Baru</h5>
+                                <small class="text-muted" style="font-size: 0.78rem;">Lengkapi rincian berkas izin kawasan yang akan didelegasikan</small>
+                            </div>
+                        @endif
                     </div>
+
+                    @if($isEdit)
+                        <div>
+                            @if($task->status == 'Selesai')
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1" style="font-size: 0.78rem;">Status: Selesai</span>
+                            @elseif($task->status == 'Dalam Proses')
+                                <span class="badge bg-info-subtle text-info border border-info-subtle px-2.5 py-1" style="font-size: 0.78rem;">Status: Dalam Proses</span>
+                            @elseif($task->status == 'Terkendala')
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2.5 py-1" style="font-size: 0.78rem;">Status: Terkendala</span>
+                            @else
+                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2.5 py-1" style="font-size: 0.78rem;">Status: Pending</span>
+                            @endif
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Form Body -->
                 <div class="card-body">
-                    <form action="{{ route('perizinan.tugas.store') }}" method="POST" id="formTugaskanLegal" onsubmit="return validateFormTugaskan()">
+                    <form action="{{ $isEdit ? route('perizinan.tugas.update', $task->id) : route('perizinan.tugas.store') }}" method="POST" id="formTugaskanLegal" onsubmit="return validateFormTugaskan()">
                         @csrf
+                        @if($isEdit)
+                            @method('PUT')
+                        @endif
 
                         <div class="row g-3">
 
@@ -249,7 +280,7 @@
                                 </div>
 
                                 <!-- Hidden field yang dikirim ke controller -->
-                                <input type="hidden" name="nama_tugas" id="tambahNamaTugas" required>
+                                <input type="hidden" name="nama_tugas" id="tambahNamaTugas" value="{{ old('nama_tugas', $isEdit ? $task->nama_tugas : '') }}" required>
                                 <small class="text-muted d-block mt-1" id="keteranganMode" style="font-size: 0.74rem;">
                                     Ketik kata kunci untuk mencari dokumen izin dari master secara live.
                                 </small>
@@ -260,7 +291,7 @@
                                 <label class="form-label-custom">
                                     Instansi / Dinas Terkait
                                 </label>
-                                <input type="text" name="instansi" id="tambahInstansi" class="form-control form-control-custom" placeholder="Contoh: DPMPTSP / BPN / DLH" value="{{ old('instansi') }}">
+                                <input type="text" name="instansi" id="tambahInstansi" class="form-control form-control-custom" placeholder="Contoh: DPMPTSP / BPN / DLH" value="{{ old('instansi', $isEdit ? $task->instansi : '') }}">
                                 <small class="text-muted d-block mt-1" style="font-size: 0.74rem;">
                                     Otomatis terisi saat memilih master dokumen atau dapat diisi manual.
                                 </small>
@@ -274,7 +305,7 @@
                                 <select name="proyek_id" id="selectProyekId" class="form-select form-select-custom">
                                     <option value="">-- Bebas / Kawasan Umum --</option>
                                     @foreach($projects as $proj)
-                                        <option value="{{ $proj['id'] }}" {{ old('proyek_id') == $proj['id'] ? 'selected' : '' }}>
+                                        <option value="{{ $proj['id'] }}" {{ (old('proyek_id', $isEdit ? $task->proyek_id : '') == $proj['id']) ? 'selected' : '' }}>
                                             {{ $proj['nama'] }}
                                         </option>
                                     @endforeach
@@ -292,13 +323,13 @@
                                 <select name="employee_id" id="selectEmployeeId" class="form-select form-select-custom" required>
                                     <option value="">-- Cari & Pilih Staf Legal Pelaksana --</option>
                                     @foreach($legalStaffs as $staf)
-                                        <option value="{{ $staf->id }}" {{ old('employee_id') == $staf->id ? 'selected' : '' }}>
+                                        <option value="{{ $staf->id }}" {{ (old('employee_id', $isEdit ? $task->employee_id : '') == $staf->id) ? 'selected' : '' }}>
                                             {{ $staf->name }} &bull; {{ $staf->position->name ?? 'Staff Legal' }}
                                         </option>
                                     @endforeach
                                 </select>
                                 <small class="text-muted d-block mt-1" style="font-size: 0.74rem;">
-                                    Staf yang ditugaskan akan melihat tugas ini pada dashboard kerjanya.
+                                    {{ $isEdit ? 'Ganti staf jika ingin mengalihkan tanggung jawab tugas (reassign).' : 'Staf yang ditugaskan akan melihat tugas ini pada dashboard kerjanya.' }}
                                 </small>
                             </div>
 
@@ -307,18 +338,36 @@
                                 <label class="form-label-custom">
                                     Tenggat Waktu Selesai (Deadline)
                                 </label>
-                                <input type="date" name="deadline" class="form-control form-control-custom" min="{{ date('Y-m-d') }}" value="{{ old('deadline') }}">
+                                <input type="date" name="deadline" class="form-control form-control-custom" value="{{ old('deadline', ($isEdit && $task->deadline) ? $task->deadline->format('Y-m-d') : '') }}">
                                 <small class="text-muted d-block mt-1" style="font-size: 0.74rem;">
                                     Sistem akan menandai status "Terlambat" jika melewati tanggal ini.
                                 </small>
                             </div>
 
-                            <!-- 6. Instruksi & Catatan Khusus -->
+                            <!-- 6. Status Tugas (Khusus Mode Edit) -->
+                            @if($isEdit)
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">
+                                        Status Tugas
+                                    </label>
+                                    <select name="status" class="form-select form-select-custom">
+                                        <option value="Pending" {{ old('status', $task->status) == 'Pending' ? 'selected' : '' }}>Pending (Menunggu Dimulai)</option>
+                                        <option value="Dalam Proses" {{ old('status', $task->status) == 'Dalam Proses' ? 'selected' : '' }}>Dalam Proses (Sedang Dikerjakan)</option>
+                                        <option value="Selesai" {{ old('status', $task->status) == 'Selesai' ? 'selected' : '' }}>Selesai (Izin Terbit/Final)</option>
+                                        <option value="Terkendala" {{ old('status', $task->status) == 'Terkendala' ? 'selected' : '' }}>Terkendala (Ada Hambatan Lapangan)</option>
+                                    </select>
+                                    <small class="text-muted d-block mt-1" style="font-size: 0.74rem;">
+                                        Status penanganan tugas saat ini.
+                                    </small>
+                                </div>
+                            @endif
+
+                            <!-- 7. Instruksi & Catatan Khusus -->
                             <div class="col-12">
                                 <label class="form-label-custom">
                                     Instruksi / Catatan Khusus Penugasan
                                 </label>
-                                <textarea name="catatan" id="tambahCatatan" rows="4" class="form-control form-control-custom" placeholder="Tuliskan arahan spesifik pengurusan berkas, persyaratan wajib yang harus dibawa staf, kontak dinas terkait, dll.">{{ old('catatan') }}</textarea>
+                                <textarea name="catatan" id="tambahCatatan" rows="4" class="form-control form-control-custom" placeholder="Tuliskan arahan spesifik pengurusan berkas, persyaratan wajib yang harus dibawa staf, kontak dinas terkait, dll.">{{ old('catatan', $isEdit ? $task->catatan : '') }}</textarea>
                             </div>
 
                         </div>
@@ -330,10 +379,17 @@
                                 <span>Batal</span>
                             </a>
 
-                            <button type="submit" class="btn btn-gradient-primary px-4 py-2 fw-semibold shadow-sm d-inline-flex align-items-center" style="border-radius: 5px; font-size: 0.88rem;">
-                                <i class="mdi mdi-send-check" style="font-size: 1.1rem; margin-right: 8px !important;"></i>
-                                <span>Simpan & Delegasikan Tugas</span>
-                            </button>
+                            @if($isEdit)
+                                <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold shadow-sm d-inline-flex align-items-center" style="border-radius: 5px; font-size: 0.88rem; background-color: #4f46e5; border-color: #4f46e5;">
+                                    <i class="mdi mdi-content-save-check-outline" style="font-size: 1.1rem; margin-right: 8px !important;"></i>
+                                    <span>Simpan Perubahan Penugasan</span>
+                                </button>
+                            @else
+                                <button type="submit" class="btn btn-gradient-primary px-4 py-2 fw-semibold shadow-sm d-inline-flex align-items-center" style="border-radius: 5px; font-size: 0.88rem;">
+                                    <i class="mdi mdi-send-check" style="font-size: 1.1rem; margin-right: 8px !important;"></i>
+                                    <span>Simpan & Delegasikan Tugas</span>
+                                </button>
+                            @endif
                         </div>
 
                     </form>
@@ -392,6 +448,29 @@
             allowClear: true,
             width: '100%'
         });
+
+        @if($isEdit)
+            // Deteksi apakah nama tugas di mode edit ada di master atau merupakan teks manual
+            var initialTaskName = @json($task->nama_tugas ?? '');
+            if (initialTaskName) {
+                var matched = false;
+                $('#selectNamaTugas option').each(function() {
+                    if ($(this).val() === initialTaskName) {
+                        matched = true;
+                        return false;
+                    }
+                });
+
+                if (matched) {
+                    $('#selectNamaTugas').val(initialTaskName).trigger('change');
+                    switchModeTugas('master');
+                } else {
+                    document.getElementById('inputManualNamaTugas').value = initialTaskName;
+                    document.getElementById('tambahNamaTugas').value = initialTaskName;
+                    switchModeTugas('manual');
+                }
+            }
+        @endif
     });
 
     // Switch Mode: Master vs Manual
