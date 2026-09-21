@@ -47,12 +47,21 @@ class MenuSeeder extends Seeder
         ]);
         $dashboard->positions()->attach($allRoles);
 
-        // ================= 2. PERIZINAN =================
+        // ================= 2. TUGAS PERIZINAN (PALING ATAS LEGAL) =================
+        $tugasPerizinanMenu = Menu::create([
+            'name'  => 'Tugas Perizinan',
+            'route' => 'perizinan.tugas.index',
+            'icon'  => 'mdi-clipboard-account-outline',
+            'order' => 2
+        ]);
+        $tugasPerizinanMenu->positions()->attach($allRoles);
+
+        // ================= 3. PERIZINAN =================
         $perizinanMenu = Menu::create([
             'name'  => 'Perizinan',
             'route' => 'perizinan.index',
             'icon'  => 'mdi-file-certificate-outline',
-            'order' => 2
+            'order' => 3
         ]);
         $perizinanMenu->positions()->attach($allRoles);
 

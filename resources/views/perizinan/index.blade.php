@@ -1,6 +1,6 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Monitoring Perizinan Proyek - Property Management App')
+@section('title', 'Perizinan Proyek - Property Management App')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
