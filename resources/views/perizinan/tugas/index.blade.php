@@ -84,6 +84,110 @@
             border-radius: 10px;
             padding: 12px 16px;
         }
+
+        /* Table Responsive & Text Wrapping persis Perizinan */
+        .table-perizinan {
+            width: 100% !important;
+            margin-bottom: 0;
+        }
+        .table-perizinan thead th {
+            background: #f8fafc !important;
+            color: #4b5563 !important;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0 !important;
+            padding: 0.75rem 0.6rem !important;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .table-perizinan tbody td {
+            padding: 0.75rem 0.6rem !important;
+            vertical-align: middle;
+            font-size: 0.83rem;
+            border-bottom: 1px solid #f1f5f9;
+            white-space: normal !important;
+        }
+        .table-perizinan .col-no {
+            width: 45px;
+            text-align: center;
+            white-space: nowrap !important;
+        }
+        .table-perizinan .col-status {
+            width: 105px;
+            text-align: center;
+            white-space: nowrap !important;
+        }
+        .table-perizinan .col-aksi {
+            width: 130px;
+            text-align: center;
+            white-space: nowrap !important;
+        }
+
+        /* Styling Card Tabel Meniru Persis Card Perizinan (.compact-table-card) */
+        .card.compact-table-card,
+        .compact-table-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+            transition: border-color 0.2s ease;
+            overflow: hidden;
+        }
+        .card.compact-table-card:hover,
+        .compact-table-card:hover {
+            border-color: #cbd5e1 !important;
+            box-shadow: none !important;
+        }
+        .compact-table-card .card-header {
+            background: #ffffff !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            padding: 0.65rem 1.25rem !important;
+            border-top-left-radius: 8px !important;
+            border-top-right-radius: 8px !important;
+        }
+        .compact-table-card .card-body,
+        .card.compact-table-card .card-body {
+            padding: 0.75rem 1.25rem 1.15rem 1.25rem !important;
+            background: #ffffff !important;
+        }
+        .compact-table-card .filter-card {
+            margin-top: 0 !important;
+            margin-bottom: 0.6rem !important;
+        }
+        .compact-table-card .filter-card form {
+            margin-bottom: 0 !important;
+        }
+
+        /* Button Action styling persis Perizinan */
+        .btn-action-edit {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: #1e293b;
+            border-radius: 6px;
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
+        }
+        .btn-action-edit:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+        .btn-action-dots {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+            border-radius: 6px;
+            padding: 4px 9px;
+            font-size: 0.85rem;
+        }
+        .btn-action-dots:hover {
+            background: #f8fafc;
+            color: #1e293b;
+        }
     </style>
 @endpush
 
@@ -201,313 +305,334 @@
         </div>
     </div>
 
-    <!-- Main Panel: Tabel Tugas Perizinan -->
-    <div class="dash-panel">
-        <div class="dash-panel-header mb-3 flex-wrap gap-2">
-            <div class="dash-panel-title-wrap">
-                <div class="dash-panel-icon">
-                    <i class="mdi mdi-file-check-outline"></i>
+    <!-- Main Container: Table & Filters (Sama Persis Format Perizinan) -->
+    <div class="row mt-2 mt-sm-2 mt-md-3">
+        <div class="col-12">
+            <div class="card compact-table-card">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 32px; height: 32px; border-radius: 6px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items-center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
+                            <i class="mdi mdi-format-list-checks"></i>
+                        </div>
+                        <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Daftar Delegasi Tugas Perizinan</span>
+                    </div>
+                    @if($canManage)
+                        <button type="button" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm"
+                            data-bs-toggle="modal" data-bs-target="#modalTambahTugas">
+                            <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
+                            <span>Tugaskan Staf Legal</span>
+                        </button>
+                    @endif
                 </div>
-                <div>
-                    <h2 class="dash-panel-title">Daftar Penugasan Perizinan</h2>
-                    <p class="dash-panel-subtitle">
-                        {{ $isStaffLegal && !$canManage ? 'Daftar berkas perizinan yang didelegasikan kepada Anda' : 'Monitoring seluruh penugasan staf legal dan transparansi pengubah status' }}
-                    </p>
-                </div>
-            </div>
 
-            <!-- Toolbar Filter -->
-            <form id="filterForm" method="GET" action="{{ route('perizinan.tugas.index') }}" class="m-0">
-                <div class="d-flex flex-wrap align-items-center gap-2">
-                    <!-- Search Input -->
-                    <div style="min-width: 180px;">
-                        <input type="text" name="search" class="form-control form-control-sm" placeholder="Cari tugas / proyek..."
-                            value="{{ request('search') }}" style="font-size: 0.82rem; border-radius: 6px;">
+                <div class="card-body">
+                    <!-- Filter Toolbar -->
+                    <div class="filter-card">
+                        <form id="filterForm" method="GET" action="{{ route('perizinan.tugas.index') }}">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                    <!-- Search Input -->
+                                    <div style="min-width: 220px; max-width: 320px; flex: 1;">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="search" id="liveSearchInput"
+                                                placeholder="Cari tugas, instansi, proyek..."
+                                                value="{{ request('search') }}"
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                type="submit" title="Cari"
+                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    @if($canManage)
+                                        <!-- Filter Staf Legal -->
+                                        <div style="width: 170px;">
+                                            <select name="employee_id" class="form-control" onchange="document.getElementById('filterForm').submit()">
+                                                <option value="all">Semua Staf Legal</option>
+                                                @foreach($legalStaffs as $staf)
+                                                    <option value="{{ $staf->id }}" {{ request('employee_id') == $staf->id ? 'selected' : '' }}>
+                                                        {{ $staf->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    @endif
+
+                                    <!-- Filter Proyek -->
+                                    <div style="width: 170px;">
+                                        <select name="proyek_id" class="form-control" onchange="document.getElementById('filterForm').submit()">
+                                            <option value="all">Semua Proyek</option>
+                                            @foreach($projects as $p)
+                                                <option value="{{ $p['id'] }}" {{ request('proyek_id') == $p['id'] ? 'selected' : '' }}>
+                                                    {{ $p['nama'] }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <!-- Filter Status -->
+                                    <div style="width: 150px;">
+                                        <select name="status" class="form-control" onchange="document.getElementById('filterForm').submit()">
+                                            <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Semua Status</option>
+                                            <option value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="Dalam Proses" {{ request('status') == 'Dalam Proses' ? 'selected' : '' }}>Dalam Proses</option>
+                                            <option value="Selesai" {{ request('status') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                            <option value="Terkendala" {{ request('status') == 'Terkendala' ? 'selected' : '' }}>Terkendala</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Filter Buttons -->
+                                <div class="d-flex align-items-center gap-2 ms-auto">
+                                    <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Terapkan Filter">
+                                        <i class="mdi mdi-filter"></i>
+                                    </button>
+                                    @if(request()->hasAny(['search', 'employee_id', 'proyek_id', 'status']))
+                                        <a href="{{ route('perizinan.tugas.index') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset Filter">
+                                            <i class="mdi mdi-refresh"></i>
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
+                        </form>
                     </div>
 
-                    <!-- Filter Staf Legal (Hanya Kepala/Owner/Admin) -->
-                    @if($canManage)
-                        <div class="d-flex align-items-center gap-1">
-                            <select name="employee_id" class="form-select form-select-sm" onchange="document.getElementById('filterForm').submit()" style="font-size: 0.82rem; border-radius: 6px; min-width: 150px;">
-                                <option value="all">Semua Staf Legal</option>
-                                @foreach($legalStaffs as $staf)
-                                    <option value="{{ $staf->id }}" {{ request('employee_id') == $staf->id ? 'selected' : '' }}>
-                                        {{ $staf->name }}
-                                    </option>
-                                @endforeach
-                            </select>
+                    <!-- TABEL DATA (PERSIS PERIZINAN) -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle table-perizinan">
+                            <thead>
+                                <tr>
+                                    <th class="col-no">No</th>
+                                    <th>Tugas Perizinan & Instansi</th>
+                                    <th>Proyek Kawasan</th>
+                                    <th>Staf Pelaksana</th>
+                                    <th style="width: 110px;">Deadline</th>
+                                    <th style="width: 120px;">Progres</th>
+                                    <th class="col-status text-center">Status</th>
+                                    <th>Terakhir Diupdate</th>
+                                    <th class="col-aksi text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($tasks as $task)
+                                    @php
+                                        $st = $task->status;
+                                        if ($st === 'Selesai') {
+                                            $pColor = '#10b981';
+                                        } elseif ($st === 'Dalam Proses') {
+                                            $pColor = '#4f46e5';
+                                        } elseif ($st === 'Terkendala') {
+                                            $pColor = '#dc2626';
+                                        } else {
+                                            $pColor = '#94a3b8';
+                                        }
+
+                                        // Inisial Staf
+                                        $staffName = $task->employee->name ?? 'Staf';
+                                        $words = explode(' ', trim($staffName));
+                                        $initials = count($words) >= 2 
+                                            ? strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1))
+                                            : strtoupper(substr($staffName, 0, 2));
+
+                                        // Inisial Updater
+                                        $updaterName = $task->updater->name ?? ($task->assigner->name ?? '-');
+                                        $updaterPos  = $task->updater->position->name ?? ($task->assigner->position->name ?? 'Staff');
+                                        $upWords = explode(' ', trim($updaterName));
+                                        $upInitials = count($upWords) >= 2 
+                                            ? strtoupper(substr($upWords[0], 0, 1) . substr($upWords[1], 0, 1))
+                                            : strtoupper(substr($updaterName, 0, 2));
+                                    @endphp
+                                    <tr>
+                                        <td class="col-no fw-bold text-center text-muted">
+                                            {{ $loop->iteration + ($tasks->currentPage() - 1) * $tasks->perPage() }}
+                                        </td>
+
+                                        <!-- Tugas & Instansi -->
+                                        <td>
+                                            <div class="fw-bold text-dark" style="font-size: 0.86rem; line-height: 1.35;">
+                                                {{ $task->nama_tugas }}
+                                            </div>
+                                            <div class="text-secondary small mt-0.5" style="font-size: 0.76rem;">
+                                                <i class="mdi mdi-bank-outline me-1"></i>{{ $task->instansi ?: 'Instansi Pemda / BPN' }}
+                                            </div>
+                                            @if($task->nomor_dokumen)
+                                                <div class="mt-1">
+                                                    <span class="badge bg-light text-dark border font-monospace" style="font-size: 0.7rem;">
+                                                        <i class="mdi mdi-certificate-outline me-0.5 text-primary"></i>{{ $task->nomor_dokumen }}
+                                                    </span>
+                                                </div>
+                                            @endif
+                                        </td>
+
+                                        <!-- Proyek Kawasan -->
+                                        <td>
+                                            <span class="badge px-2 py-1 text-wrap text-start" style="background-color: #f1f5f9; color: #334155; font-size: 0.78rem; font-weight: 600; border: 1px solid #e2e8f0;">
+                                                <i class="mdi mdi-map-marker-outline text-danger me-0.5"></i>{{ $task->proyek_nama ?: 'Kawasan Umum' }}
+                                            </span>
+                                        </td>
+
+                                        <!-- Staf Pelaksana -->
+                                        <td>
+                                            <div class="task-user-badge">
+                                                <div class="user-avatar-circle" title="{{ $staffName }}">
+                                                    {{ $initials }}
+                                                </div>
+                                                <div class="overflow-hidden">
+                                                    <div class="fw-bold text-dark text-truncate" style="font-size: 0.84rem; line-height: 1.2;">
+                                                        {{ $staffName }}
+                                                    </div>
+                                                    <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;">
+                                                        {{ $task->employee->position->name ?? 'Staff Legal' }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Deadline -->
+                                        <td>
+                                            @if($task->deadline)
+                                                @php
+                                                    $isOverdue = $task->deadline->isPast() && $task->status !== 'Selesai';
+                                                @endphp
+                                                <div style="font-size: 0.8rem; font-weight: 600; color: {{ $isOverdue ? '#dc2626' : '#475569' }};">
+                                                    <i class="mdi mdi-calendar-clock me-0.5"></i>{{ $task->deadline->format('d M Y') }}
+                                                </div>
+                                                @if($isOverdue)
+                                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle mt-0.5" style="font-size: 0.68rem;">Terlambat</span>
+                                                @else
+                                                    <small class="text-muted d-block" style="font-size: 0.7rem;">{{ $task->deadline->diffForHumans() }}</small>
+                                                @endif
+                                            @else
+                                                <span class="text-muted" style="font-size: 0.8rem;">-</span>
+                                            @endif
+                                        </td>
+
+                                        <!-- Progres -->
+                                        <td>
+                                            <div class="dash-progress-wrap">
+                                                <div class="dash-progress-bar-bg" style="width: 75px;">
+                                                    <div class="dash-progress-bar-fill" style="width: {{ $task->progress }}%; background-color: {{ $pColor }};"></div>
+                                                </div>
+                                                <span style="font-size: 0.75rem; font-weight: 700; color: #334155;">{{ $task->progress }}%</span>
+                                            </div>
+                                        </td>
+
+                                        <!-- Status -->
+                                        <td class="col-status text-center">
+                                            @if($task->status == 'Selesai')
+                                                <span class="dash-status-pill on-track"><span class="dot"></span>Selesai</span>
+                                            @elseif($task->status == 'Dalam Proses')
+                                                <span class="dash-status-pill" style="background-color: #e0f2fe; color: #0284c7; border-color: #bae6fd;"><span class="dot" style="background-color: #0284c7;"></span>Proses</span>
+                                            @elseif($task->status == 'Terkendala')
+                                                <span class="dash-status-pill danger"><span class="dot"></span>Kendala</span>
+                                            @else
+                                                <span class="dash-status-pill" style="background-color: #f1f5f9; color: #64748b; border-color: #e2e8f0;"><span class="dot" style="background-color: #94a3b8;"></span>Pending</span>
+                                            @endif
+                                        </td>
+
+                                        <!-- Terakhir Diupdate Oleh -->
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="user-avatar-circle updater" title="{{ $updaterName }}">
+                                                    {{ $upInitials }}
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold text-dark text-truncate" style="font-size: 0.82rem; line-height: 1.2;">
+                                                        {{ $updaterName }}
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-1">
+                                                        <span class="badge" style="background: #e0f2fe; color: #0284c7; font-size: 0.65rem; padding: 1px 5px; font-weight: 600;">
+                                                            {{ $updaterPos }}
+                                                        </span>
+                                                        <small class="text-muted" style="font-size: 0.7rem;">
+                                                            {{ $task->last_activity_at ? $task->last_activity_at->diffForHumans() : $task->updated_at->diffForHumans() }}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Aksi -->
+                                        <td class="col-aksi text-center">
+                                            <div class="d-flex align-items-center justify-content-center gap-1">
+                                                @if($canManage || ($isStaffLegal && $task->employee_id == auth()->id()))
+                                                    <button type="button" class="btn btn-action-edit d-inline-flex align-items-center gap-1 shadow-none"
+                                                        title="Update Progres & Dokumen"
+                                                        onclick='bukaModalUpdateProgres(@json($task))'>
+                                                        <i class="mdi mdi-pencil text-primary"></i>
+                                                        <span>Progres</span>
+                                                    </button>
+                                                @endif
+
+                                                <button type="button" class="btn btn-action-edit d-inline-flex align-items-center gap-1 shadow-none"
+                                                    title="Lihat Riwayat & Audit Trail"
+                                                    onclick="bukaModalRiwayatLog({{ $task->id }})">
+                                                    <i class="mdi mdi-history text-info"></i>
+                                                    <span>Log</span>
+                                                </button>
+
+                                                @if($canManage)
+                                                    <div class="dropdown d-inline-block">
+                                                        <button class="btn btn-action-dots d-inline-flex align-items-center justify-content-center shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <i class="mdi mdi-dots-vertical"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" style="font-size: 0.82rem; border-radius: 8px;">
+                                                            <li>
+                                                                <a class="dropdown-item d-flex align-items-center gap-2 py-1.5" href="javascript:void(0)" onclick='bukaModalEditTugas(@json($task))'>
+                                                                    <i class="mdi mdi-account-switch-outline text-warning"></i>
+                                                                    <span>Edit Penugasan / Reassign</span>
+                                                                </a>
+                                                            </li>
+                                                            <li><hr class="dropdown-divider my-1"></li>
+                                                            <li>
+                                                                <form action="{{ route('perizinan.tugas.destroy', $task->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tugas ini? Riwayat log tugas juga akan terhapus.');">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2 py-1.5">
+                                                                        <i class="mdi mdi-trash-can-outline"></i>
+                                                                        <span>Hapus Tugas</span>
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="9" class="text-center text-muted py-5">
+                                            <div class="p-3">
+                                                <i class="mdi mdi-clipboard-text-off-outline text-secondary" style="font-size: 2.8rem; opacity: 0.5;"></i>
+                                                <h5 class="fw-bold text-dark mt-2 mb-1" style="font-size: 1rem;">Belum Ada Tugas Perizinan</h5>
+                                                <p class="text-muted mb-0" style="font-size: 0.82rem;">
+                                                    {{ $isStaffLegal && !$canManage ? 'Saat ini belum ada tugas perizinan yang didelegasikan kepada Anda.' : 'Silakan klik tombol "Tugaskan Staf Legal" untuk membagi tugas baru.' }}
+                                                </p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    @if($tasks->hasPages())
+                        <div class="p-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <small class="text-muted" style="font-size: 0.82rem;">
+                                Menampilkan {{ $tasks->firstItem() }} - {{ $tasks->lastItem() }} dari {{ $tasks->total() }} tugas
+                            </small>
+                            <div>
+                                {{ $tasks->links('pagination::bootstrap-4') }}
+                            </div>
                         </div>
                     @endif
-
-                    <!-- Filter Proyek -->
-                    <div class="d-flex align-items-center gap-1">
-                        <select name="proyek_id" class="form-select form-select-sm" onchange="document.getElementById('filterForm').submit()" style="font-size: 0.82rem; border-radius: 6px; min-width: 140px;">
-                            <option value="all">Semua Proyek</option>
-                            @foreach($projects as $p)
-                                <option value="{{ $p['id'] }}" {{ request('proyek_id') == $p['id'] ? 'selected' : '' }}>
-                                    {{ $p['nama'] }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Filter Status -->
-                    <div class="d-flex align-items-center gap-1">
-                        <select name="status" class="form-select form-select-sm" onchange="document.getElementById('filterForm').submit()" style="font-size: 0.82rem; border-radius: 6px; min-width: 110px;">
-                            <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Semua Status</option>
-                            <option value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="Dalam Proses" {{ request('status') == 'Dalam Proses' ? 'selected' : '' }}>Dalam Proses</option>
-                            <option value="Selesai" {{ request('status') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                            <option value="Terkendala" {{ request('status') == 'Terkendala' ? 'selected' : '' }}>Terkendala</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn btn-sm btn-primary py-1 px-2.5" style="border-radius: 6px;">
-                        <i class="mdi mdi-magnify"></i>
-                    </button>
-
-                    @if(request()->hasAny(['search', 'employee_id', 'proyek_id', 'status']))
-                        <a href="{{ route('perizinan.tugas.index') }}" class="btn btn-sm btn-light border py-1 px-2" title="Reset Filter" style="border-radius: 6px;">
-                            <i class="mdi mdi-refresh"></i>
-                        </a>
-                    @endif
-                </div>
-            </form>
-        </div>
-
-        <!-- Tabel Data Tugas -->
-        <div class="dash-table-wrap">
-            <table class="dash-table align-middle">
-                <thead>
-                    <tr>
-                        <th style="width: 36px; text-align: center;">No</th>
-                        <th style="min-width: 220px;">Tugas Perizinan & Instansi</th>
-                        <th style="min-width: 140px;">Proyek Kawasan</th>
-                        <th style="min-width: 160px;">Staf Pelaksana</th>
-                        <th style="min-width: 110px;">Deadline</th>
-                        <th style="min-width: 140px;">Status & Progres</th>
-                        <th style="min-width: 180px;">Terakhir Diupdate Oleh</th>
-                        <th class="text-center" style="width: 140px;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($tasks as $task)
-                        @php
-                            $st = $task->status;
-                            if ($st === 'Selesai') {
-                                $badgeClass = 'bg-success text-white';
-                                $pColor = '#16a34a';
-                            } elseif ($st === 'Dalam Proses') {
-                                $badgeClass = 'bg-primary text-white';
-                                $pColor = '#4f46e5';
-                            } elseif ($st === 'Terkendala') {
-                                $badgeClass = 'bg-danger text-white';
-                                $pColor = '#dc2626';
-                            } else {
-                                $badgeClass = 'bg-secondary text-white';
-                                $pColor = '#94a3b8';
-                            }
-
-                            // Inisial Staf
-                            $staffName = $task->employee->name ?? 'Staf';
-                            $words = explode(' ', trim($staffName));
-                            $initials = count($words) >= 2 
-                                ? strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1))
-                                : strtoupper(substr($staffName, 0, 2));
-
-                            // Inisial Updater
-                            $updaterName = $task->updater->name ?? ($task->assigner->name ?? '-');
-                            $updaterPos  = $task->updater->position->name ?? ($task->assigner->position->name ?? 'Staff');
-                            $upWords = explode(' ', trim($updaterName));
-                            $upInitials = count($upWords) >= 2 
-                                ? strtoupper(substr($upWords[0], 0, 1) . substr($upWords[1], 0, 1))
-                                : strtoupper(substr($updaterName, 0, 2));
-                        @endphp
-                        <tr>
-                            <td style="font-weight: 700; text-align: center; color: #64748b;">
-                                {{ $loop->iteration + ($tasks->currentPage() - 1) * $tasks->perPage() }}
-                            </td>
-
-                            <!-- Tugas & Instansi -->
-                            <td>
-                                <div class="fw-bold text-dark" style="font-size: 0.88rem; line-height: 1.3;">
-                                    {{ $task->nama_tugas }}
-                                </div>
-                                <div class="text-secondary small mt-0.5" style="font-size: 0.76rem;">
-                                    <i class="mdi mdi-bank-outline me-1"></i>{{ $task->instansi ?: 'Instansi Pemda / BPN' }}
-                                </div>
-                                @if($task->nomor_dokumen)
-                                    <div class="mt-1">
-                                        <span class="badge bg-light text-dark border font-monospace" style="font-size: 0.7rem;">
-                                            <i class="mdi mdi-certificate-outline me-0.5 text-primary"></i>{{ $task->nomor_dokumen }}
-                                        </span>
-                                    </div>
-                                @endif
-                            </td>
-
-                            <!-- Proyek Kawasan -->
-                            <td>
-                                <span class="badge px-2 py-1 text-wrap text-start" style="background-color: #f1f5f9; color: #334155; font-size: 0.78rem; font-weight: 600; border: 1px solid #e2e8f0;">
-                                    <i class="mdi mdi-map-marker-outline text-danger me-0.5"></i>{{ $task->proyek_nama ?: 'Kawasan Umum' }}
-                                </span>
-                            </td>
-
-                            <!-- Staf Pelaksana -->
-                            <td>
-                                <div class="task-user-badge">
-                                    <div class="user-avatar-circle" title="{{ $staffName }}">
-                                        {{ $initials }}
-                                    </div>
-                                    <div class="overflow-hidden">
-                                        <div class="fw-bold text-dark text-truncate" style="font-size: 0.84rem; line-height: 1.2;">
-                                            {{ $staffName }}
-                                        </div>
-                                        <small class="text-muted d-block text-truncate" style="font-size: 0.72rem;">
-                                            {{ $task->employee->position->name ?? 'Staff Legal' }}
-                                        </small>
-                                    </div>
-                                </div>
-                            </td>
-
-                            <!-- Deadline -->
-                            <td>
-                                @if($task->deadline)
-                                    @php
-                                        $isOverdue = $task->deadline->isPast() && $task->status !== 'Selesai';
-                                    @endphp
-                                    <div style="font-size: 0.8rem; font-weight: 600; color: {{ $isOverdue ? '#dc2626' : '#475569' }};">
-                                        <i class="mdi mdi-calendar-clock me-0.5"></i>{{ $task->deadline->format('d M Y') }}
-                                    </div>
-                                    @if($isOverdue)
-                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle" style="font-size: 0.68rem;">Terlambat</span>
-                                    @else
-                                        <small class="text-muted" style="font-size: 0.7rem;">{{ $task->deadline->diffForHumans() }}</small>
-                                    @endif
-                                @else
-                                    <span class="text-muted" style="font-size: 0.8rem;">-</span>
-                                @endif
-                            </td>
-
-                            <!-- Status & Progres -->
-                            <td>
-                                <div class="mb-1">
-                                    <span class="badge {{ $badgeClass }}" style="font-size: 0.74rem; padding: 4px 8px; border-radius: 4px;">
-                                        {{ $task->status }}
-                                    </span>
-                                </div>
-                                <div class="dash-progress-wrap" style="gap: 6px;">
-                                    <div class="dash-progress-bar-bg" style="width: 75px; height: 6px;">
-                                        <div class="dash-progress-bar-fill" style="width: {{ $task->progress }}%; background-color: {{ $pColor }};"></div>
-                                    </div>
-                                    <span style="font-size: 0.72rem; font-weight: 700; color: #334155;">{{ $task->progress }}%</span>
-                                </div>
-                            </td>
-
-                            <!-- TERAKHIR DIUPDATE OLEH (AUDIT TRAIL TRACKING) -->
-                            <td>
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="user-avatar-circle updater" title="{{ $updaterName }}">
-                                        {{ $upInitials }}
-                                    </div>
-                                    <div>
-                                        <div class="fw-bold text-dark text-truncate" style="font-size: 0.82rem; line-height: 1.2;">
-                                            {{ $updaterName }}
-                                        </div>
-                                        <div class="d-flex align-items-center gap-1">
-                                            <span class="badge" style="background: #e0f2fe; color: #0284c7; font-size: 0.65rem; padding: 1px 5px; font-weight: 600;">
-                                                {{ $updaterPos }}
-                                            </span>
-                                            <small class="text-muted" style="font-size: 0.7rem;">
-                                                {{ $task->last_activity_at ? $task->last_activity_at->diffForHumans() : $task->updated_at->diffForHumans() }}
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-
-                            <!-- Aksi -->
-                            <td class="text-center">
-                                <div class="d-flex align-items-center justify-content-center gap-1">
-                                    
-                                    <!-- 1. Tombol Update Progres (Staf Legal atau Kepala Legal) -->
-                                    @if($canManage || ($isStaffLegal && $task->employee_id == auth()->id()))
-                                        <button type="button" class="btn btn-sm btn-outline-primary py-1 px-2"
-                                            title="Update Progres & Dokumen"
-                                            onclick='bukaModalUpdateProgres(@json($task))'
-                                            style="border-radius: 6px; font-size: 0.78rem;">
-                                            <i class="mdi mdi-pencil-outline"></i>
-                                            <span class="d-none d-md-inline ms-0.5">Progres</span>
-                                        </button>
-                                    @endif
-
-                                    <!-- 2. Tombol Riwayat Log (Audit Trail) -->
-                                    <button type="button" class="btn btn-sm btn-outline-info py-1 px-2"
-                                        title="Lihat Riwayat & Audit Trail"
-                                        onclick="bukaModalRiwayatLog({{ $task->id }})"
-                                        style="border-radius: 6px; font-size: 0.78rem;">
-                                        <i class="mdi mdi-history"></i>
-                                        <span class="d-none d-md-inline ms-0.5">Log</span>
-                                    </button>
-
-                                    <!-- 3. Tombol Edit Penugasan / Reassign (Kepala Legal & Owner) -->
-                                    @if($canManage)
-                                        <div class="dropdown">
-                                            <button class="btn btn-sm btn-light border py-1 px-1.5" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 6px;">
-                                                <i class="mdi mdi-dots-vertical"></i>
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" style="font-size: 0.82rem; border-radius: 8px;">
-                                                <li>
-                                                    <a class="dropdown-item d-flex align-items-center gap-2 py-1.5" href="javascript:void(0)" onclick='bukaModalEditTugas(@json($task))'>
-                                                        <i class="mdi mdi-account-switch-outline text-warning"></i>
-                                                        <span>Edit Penugasan / Reassign</span>
-                                                    </a>
-                                                </li>
-                                                <li><hr class="dropdown-divider my-1"></li>
-                                                <li>
-                                                    <form action="{{ route('perizinan.tugas.destroy', $task->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tugas ini? Riwayat log tugas juga akan terhapus.');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2 py-1.5">
-                                                            <i class="mdi mdi-trash-can-outline"></i>
-                                                            <span>Hapus Tugas</span>
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    @endif
-
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="text-center text-muted py-5">
-                                <div class="p-3">
-                                    <i class="mdi mdi-clipboard-text-off-outline text-secondary" style="font-size: 2.8rem; opacity: 0.5;"></i>
-                                    <h5 class="fw-bold text-dark mt-2 mb-1" style="font-size: 1rem;">Belum Ada Tugas Perizinan</h5>
-                                    <p class="text-muted mb-0" style="font-size: 0.82rem;">
-                                        {{ $isStaffLegal && !$canManage ? 'Saat ini belum ada tugas perizinan yang didelegasikan kepada Anda.' : 'Silakan klik tombol "Tugaskan Staf Legal" untuk membagi tugas baru.' }}
-                                    </p>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Pagination -->
-        @if($tasks->hasPages())
-            <div class="p-3 border-top d-flex justify-content-between align-items-center">
-                <small class="text-muted">
-                    Menampilkan {{ $tasks->firstItem() }} - {{ $tasks->lastItem() }} dari {{ $tasks->total() }} tugas
-                </small>
-                <div>
-                    {{ $tasks->links('pagination::bootstrap-4') }}
                 </div>
             </div>
-        @endif
+        </div>
     </div>
 
 </div>
