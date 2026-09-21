@@ -410,7 +410,6 @@
                                     <th style="width: 110px;">Deadline</th>
                                     <th style="width: 120px;">Progres</th>
                                     <th class="col-status text-center">Status</th>
-                                    <th>Terakhir Diupdate</th>
                                     <th class="col-aksi text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -434,14 +433,6 @@
                                         $initials = count($words) >= 2 
                                             ? strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1))
                                             : strtoupper(substr($staffName, 0, 2));
-
-                                        // Inisial Updater
-                                        $updaterName = $task->updater->name ?? ($task->assigner->name ?? '-');
-                                        $updaterPos  = $task->updater->position->name ?? ($task->assigner->position->name ?? 'Staff');
-                                        $upWords = explode(' ', trim($updaterName));
-                                        $upInitials = count($upWords) >= 2 
-                                            ? strtoupper(substr($upWords[0], 0, 1) . substr($upWords[1], 0, 1))
-                                            : strtoupper(substr($updaterName, 0, 2));
                                     @endphp
                                     <tr>
                                         <td class="col-no fw-bold text-center text-muted">
@@ -531,28 +522,6 @@
                                             @endif
                                         </td>
 
-                                        <!-- Terakhir Diupdate Oleh -->
-                                        <td>
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="user-avatar-circle updater" title="{{ $updaterName }}">
-                                                    {{ $upInitials }}
-                                                </div>
-                                                <div>
-                                                    <div class="fw-bold text-dark text-truncate" style="font-size: 0.82rem; line-height: 1.2;">
-                                                        {{ $updaterName }}
-                                                    </div>
-                                                    <div class="d-flex align-items-center gap-1">
-                                                        <span class="badge" style="background: #e0f2fe; color: #0284c7; font-size: 0.65rem; padding: 1px 5px; font-weight: 600;">
-                                                            {{ $updaterPos }}
-                                                        </span>
-                                                        <small class="text-muted" style="font-size: 0.7rem;">
-                                                            {{ $task->last_activity_at ? $task->last_activity_at->diffForHumans() : $task->updated_at->diffForHumans() }}
-                                                        </small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-
                                         <!-- Aksi -->
                                         <td class="col-aksi text-center">
                                             <div class="d-flex align-items-center justify-content-center gap-1">
@@ -602,7 +571,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="9" class="text-center text-muted py-5">
+                                        <td colspan="8" class="text-center text-muted py-5">
                                             <div class="p-3">
                                                 <i class="mdi mdi-clipboard-text-off-outline text-secondary" style="font-size: 2.8rem; opacity: 0.5;"></i>
                                                 <h5 class="fw-bold text-dark mt-2 mb-1" style="font-size: 1rem;">Belum Ada Tugas Perizinan</h5>
