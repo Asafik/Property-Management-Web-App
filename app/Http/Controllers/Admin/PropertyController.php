@@ -15,7 +15,7 @@ class PropertyController extends Controller
     //
    public function index(Request $request)
 {
-    $query = LandBank::with('companyProfile');
+    $query = LandBank::with(['companyProfile', 'documents.documentType']);
 
     // Filter Search Nama
     if ($request->search) {

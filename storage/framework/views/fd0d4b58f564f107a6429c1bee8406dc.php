@@ -1,9 +1,7 @@
-@extends('layouts.partial.app')
+<?php $__env->startSection('title', 'Pra Tanah - Property Management App'); ?>
 
-@section('title', 'Pra Tanah - Property Management App')
-
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
+<?php $__env->startPush('styles'); ?>
+    <link rel="stylesheet" href="<?php echo e(asset('css/dashboard-clean.css')); ?>?v=<?php echo e(time()); ?>">
     <style>
         /* Table Responsive & Text Wrapping persis Perizinan */
         .table-lahan {
@@ -207,11 +205,11 @@
             border: 1px solid #e2e8f0;
         }
     </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
-@php
+<?php
     $praLandBank = $praLandBank ?? ($praLandbank ?? ($lands ?? collect()));
     $documentTypes = $documentTypes ?? \App\Models\DocumentTypes::all();
     $landsWithPendingDocsCount = $landsWithPendingDocsCount ?? 0;
@@ -222,7 +220,7 @@
     $userPositionId = $currentUser->position_id ?? null;
     $isAdmin = ($userPositionId == 5) || str_contains($userPositionName, 'admin');
     $isKeuangan = ($userPositionId == 7) || str_contains($userPositionName, 'keuangan') || str_contains($userPositionName, 'finance') || str_contains($userDivisionName, 'keuangan') || str_contains($userDivisionName, 'finance');
-@endphp
+?>
 
 <div class="container-fluid px-2 px-md-4 py-3">
 
@@ -249,7 +247,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Total Pra Tanah</div>
-                    <div class="dash-kpi-val">{{ $totalPraTanah ?? $praLandBank->total() }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalPraTanah ?? $praLandBank->total()); ?></div>
                     <div class="dash-kpi-sub">Seluruh Tanah Terdaftar</div>
                 </div>
             </div>
@@ -266,7 +264,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Fase 1: Survei & Legal</div>
-                    <div class="dash-kpi-val">{{ $totalFase1 ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalFase1 ?? 0); ?></div>
                     <div class="dash-kpi-sub">Pemeriksaan Awal & Berkas</div>
                 </div>
             </div>
@@ -283,7 +281,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Fase 2: Negosiasi</div>
-                    <div class="dash-kpi-val">{{ $totalFase2 ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalFase2 ?? 0); ?></div>
                     <div class="dash-kpi-sub">Penawaran & Kesepakatan</div>
                 </div>
             </div>
@@ -300,7 +298,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Fase 3: Sidang & Deal</div>
-                    <div class="dash-kpi-val">{{ $totalFase3 ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalFase3 ?? 0); ?></div>
                     <div class="dash-kpi-sub">Disetujui / Deal Pembayaran</div>
                 </div>
             </div>
@@ -322,19 +320,19 @@
                             <i class="mdi mdi-format-list-bulleted me-2" style="color: #6366f1;"></i>Daftar Pra Tanah
                         </h5>
                     </div>
-                    @if(!$isKeuangan || $isAdmin)
+                    <?php if(!$isKeuangan || $isAdmin): ?>
                         <a class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm fw-semibold" style="border-radius: 6px; font-size: 0.84rem;"
-                            href="{{ route('pra-landbank.proses') }}">
+                            href="<?php echo e(route('pra-landbank.proses')); ?>">
                             <i class="mdi mdi-plus"></i>Tambah Pra Tanah
                         </a>
-                    @endif
+                    <?php endif; ?>
                 </div>
 
                 <div class="card-body p-0">
                     
                     <!-- Search & Filter Toolbar -->
                     <div class="card-toolbar-box p-3 border-bottom bg-white">
-                        <form id="filterForm" method="GET" action="{{ route('pralandbank.all') }}">
+                        <form id="filterForm" method="GET" action="<?php echo e(route('pralandbank.all')); ?>">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                                 
                                 <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
@@ -343,7 +341,7 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="search" id="liveSearchInput"
                                                 placeholder="Cari nama tanah, pemilik, atau makelar..."
-                                                value="{{ request('search') }}"
+                                                value="<?php echo e(request('search')); ?>"
                                                 onkeyup="applyLiveSearch(this.value)"
                                                 style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
                                             <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
@@ -357,10 +355,10 @@
                                     <!-- Filter Limit Dropdown -->
                                     <div style="width: 130px;">
                                         <select class="form-control" name="perPage" onchange="document.getElementById('filterForm').submit()">
-                                            <option value="5" {{ request('perPage') == 5 ? 'selected' : '' }}>5 Data</option>
-                                            <option value="10" {{ request('perPage', 10) == 10 ? 'selected' : '' }}>10 Data</option>
-                                            <option value="15" {{ request('perPage') == 15 ? 'selected' : '' }}>15 Data</option>
-                                            <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25 Data</option>
+                                            <option value="5" <?php echo e(request('perPage') == 5 ? 'selected' : ''); ?>>5 Data</option>
+                                            <option value="10" <?php echo e(request('perPage', 10) == 10 ? 'selected' : ''); ?>>10 Data</option>
+                                            <option value="15" <?php echo e(request('perPage') == 15 ? 'selected' : ''); ?>>15 Data</option>
+                                            <option value="25" <?php echo e(request('perPage') == 25 ? 'selected' : ''); ?>>25 Data</option>
                                         </select>
                                     </div>
                                 </div>
@@ -370,7 +368,7 @@
                                     <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Terapkan Filter">
                                         <i class="mdi mdi-filter"></i>
                                     </button>
-                                    <a href="{{ route('pralandbank.all') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset Filter">
+                                    <a href="<?php echo e(route('pralandbank.all')); ?>" class="btn btn-gradient-secondary btn-icon-only" title="Reset Filter">
                                         <i class="mdi mdi-refresh"></i>
                                     </a>
                                 </div>
@@ -378,19 +376,19 @@
                         </form>
                     </div>
 
-                    @if(!empty($landsWithPendingDocsCount) && $landsWithPendingDocsCount > 0)
+                    <?php if(!empty($landsWithPendingDocsCount) && $landsWithPendingDocsCount > 0): ?>
                         <div class="m-3 mb-0 alert alert-warning border-0 shadow-sm rounded-3 d-flex align-items-center justify-content-between p-3" style="background: #fffbeb; border-left: 4px solid #f59e0b !important;">
                             <div class="d-flex align-items-center gap-2">
                                 <i class="mdi mdi-alert-decagram text-warning fs-4"></i>
                                 <div>
                                     <span class="fw-bold text-dark d-block" style="font-size: 13px;">Pemberitahuan Dokumen & Capaian Legalitas:</span>
                                     <small class="text-muted" style="font-size: 12px;">
-                                        Terdapat <strong>{{ $landsWithPendingDocsCount }} tanah</strong> dengan dokumen baru yang menunggu verifikasi Kepala Legal.
+                                        Terdapat <strong><?php echo e($landsWithPendingDocsCount); ?> tanah</strong> dengan dokumen baru yang menunggu verifikasi Kepala Legal.
                                     </small>
                                 </div>
                             </div>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- Pure Clean Table: Daftar Pra Tanah -->
                     <div class="table-responsive">
@@ -409,8 +407,8 @@
                                 </tr>
                             </thead>
                             <tbody id="tableBody">
-                                @forelse ($praLandBank as $index => $land)
-                                    @php
+                                <?php $__empty_1 = true; $__currentLoopData = $praLandBank; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $land): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                    <?php
                                         $priorityClass = match (strtolower($land->priority ?? 'normal')) {
                                             'urgent' => 'badge-priority-urgent',
                                             'high', 'tinggi' => 'badge-priority-high',
@@ -506,201 +504,208 @@
                                         $isFase2Done = !empty($land->survey_date) && !empty($land->survey_by);
                                         $canAccessFase2 = $isLandLegalSah || $land->status === 'approved' || $land->status === 'rejected';
                                         $canAccessFase3 = ($isLandLegalSah && $isFase2Done) || $land->status === 'approved' || $land->status === 'rejected' || $isTerminActive;
-                                    @endphp
+                                    ?>
 
-                                    <tr class="pra-table-row" id="row-{{ $land->id }}"
-                                        data-search="{{ strtolower($land->land_name . ' ' . ($land->land_owner ?? '') . ' ' . ($land->ownership_status ?? '') . ' ' . $land->status) }}">
+                                    <tr class="pra-table-row" id="row-<?php echo e($land->id); ?>"
+                                        data-search="<?php echo e(strtolower($land->land_name . ' ' . ($land->land_owner ?? '') . ' ' . ($land->ownership_status ?? '') . ' ' . $land->status)); ?>">
                                         
                                         <td class="col-no fw-bold text-center">
-                                            {{ $praLandBank->firstItem() + $index }}
+                                            <?php echo e($praLandBank->firstItem() + $index); ?>
+
                                         </td>
 
                                         <td>
                                             <div class="fw-bold text-dark" style="font-size: 0.88rem; line-height: 1.3;">
-                                                <i class="mdi mdi-map-marker text-primary me-0.5"></i>{{ $land->land_name }}
+                                                <i class="mdi mdi-map-marker text-primary me-0.5"></i><?php echo e($land->land_name); ?>
+
                                             </div>
-                                            @if(!empty($land->ownership_status))
+                                            <?php if(!empty($land->ownership_status)): ?>
                                                 <span class="badge py-0.5 px-2 mt-1" 
                                                     style="background-color: #f3e8ff; color: #7e22ce; font-size: 0.73rem; font-weight: 700; border-radius: 4px; border: 1px solid #e9d5ff;">
-                                                    {{ $land->ownership_status }}
+                                                    <?php echo e($land->ownership_status); ?>
+
                                                 </span>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
 
                                         <td>
                                             <span class="text-dark fw-semibold" style="font-size: 0.83rem;">
-                                                <i class="mdi mdi-account-tie me-1 text-secondary"></i>{{ $land->land_owner ?? '-' }}
+                                                <i class="mdi mdi-account-tie me-1 text-secondary"></i><?php echo e($land->land_owner ?? '-'); ?>
+
                                             </span>
                                         </td>
 
                                         <td>
                                             <span class="badge bg-light text-dark px-2 py-1 border font-monospace fw-bold" style="font-size: 0.78rem;">
-                                                Rp {{ number_format($land->deal_price ?: ($land->estimated_price ?? 0), 0, ',', '.') }}
+                                                Rp <?php echo e(number_format($land->deal_price ?: ($land->estimated_price ?? 0), 0, ',', '.')); ?>
+
                                             </span>
                                         </td>
 
                                         <td>
                                             <div class="d-flex justify-content-between align-items-center mb-1">
                                                 <span class="fw-bold" style="font-size: 0.74rem; color: #334155;">
-                                                    @if ($land->status == 'rejected')
+                                                    <?php if($land->status == 'rejected'): ?>
                                                         <span class="text-danger">REJECTED</span>
-                                                    @elseif($isTerminActive)
-                                                        <span class="text-warning">CICILAN ({{ $paidCount }}/{{ $totalPayments }})</span>
-                                                    @elseif($land->status == 'approved')
+                                                    <?php elseif($isTerminActive): ?>
+                                                        <span class="text-warning">CICILAN (<?php echo e($paidCount); ?>/<?php echo e($totalPayments); ?>)</span>
+                                                    <?php elseif($land->status == 'approved'): ?>
                                                         <span class="text-success">APPROVED</span>
-                                                    @else
-                                                        FASE {{ $fase }}/3
-                                                    @endif
+                                                    <?php else: ?>
+                                                        FASE <?php echo e($fase); ?>/3
+                                                    <?php endif; ?>
                                                 </span>
-                                                <span class="fw-bold" style="font-size: 0.74rem; color: #334155;">{{ $percent }}%</span>
+                                                <span class="fw-bold" style="font-size: 0.74rem; color: #334155;"><?php echo e($percent); ?>%</span>
                                             </div>
                                             <div class="progress" style="height: 6px; background-color: #e2e8f0; border-radius: 9999px;">
-                                                <div class="progress-bar rounded-pill" role="progressbar" style="width: {{ $percent }}%; background-color: {{ $faseColor }};"></div>
+                                                <div class="progress-bar rounded-pill" role="progressbar" style="width: <?php echo e($percent); ?>%; background-color: <?php echo e($faseColor); ?>;"></div>
                                             </div>
                                         </td>
 
                                         <td>
-                                            @if($totalRequired == 0)
+                                            <?php if($totalRequired == 0): ?>
                                                 <span class="badge bg-light text-muted border py-1 px-2" style="font-size: 10px;">
                                                     Belum Ada Berkas
                                                 </span>
-                                            @else
+                                            <?php else: ?>
                                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                                    @if($verifiedDocs == $totalRequired)
+                                                    <?php if($verifiedDocs == $totalRequired): ?>
                                                         <span class="fw-bold text-success" style="font-size: 10.5px;">
                                                             <i class="mdi mdi-shield-check me-0.5"></i>100% Sah
                                                         </span>
-                                                    @elseif($rejectedDocs > 0)
+                                                    <?php elseif($rejectedDocs > 0): ?>
                                                         <span class="fw-bold text-danger" style="font-size: 10.5px;">
                                                             <i class="mdi mdi-alert-circle me-0.5"></i>Perlu Revisi
                                                         </span>
-                                                    @else
+                                                    <?php else: ?>
                                                         <span class="fw-bold" style="font-size: 10.5px; color: #b45309;">
-                                                            {{ $verifiedDocs }}/{{ $totalRequired }} Sah
+                                                            <?php echo e($verifiedDocs); ?>/<?php echo e($totalRequired); ?> Sah
                                                         </span>
-                                                    @endif
-                                                    <span class="fw-bold" style="font-size: 10.5px; color: #334155;">{{ $legalPercent }}%</span>
+                                                    <?php endif; ?>
+                                                    <span class="fw-bold" style="font-size: 10.5px; color: #334155;"><?php echo e($legalPercent); ?>%</span>
                                                 </div>
                                                 <div class="progress" style="height: 6px; background-color: #e2e8f0; border-radius: 9999px;">
-                                                    <div class="progress-bar rounded-pill" role="progressbar" style="width: {{ $legalPercent }}%; background-color: {{ $verifiedDocs == $totalRequired ? '#10b981' : ($rejectedDocs > 0 ? '#ef4444' : '#f59e0b') }};"></div>
+                                                    <div class="progress-bar rounded-pill" role="progressbar" style="width: <?php echo e($legalPercent); ?>%; background-color: <?php echo e($verifiedDocs == $totalRequired ? '#10b981' : ($rejectedDocs > 0 ? '#ef4444' : '#f59e0b')); ?>;"></div>
                                                 </div>
 
-                                                @if($processDocs->isNotEmpty())
+                                                <?php if($processDocs->isNotEmpty()): ?>
                                                     <div class="mt-1.5 d-flex flex-column gap-1">
-                                                        @foreach($processDocs as $pDoc)
+                                                        <?php $__currentLoopData = $processDocs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pDoc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                             <div class="process-doc-pill d-flex align-items-center justify-content-between p-1 px-1.5 rounded-2" style="font-size: 9.5px;">
                                                                 <div class="d-flex align-items-center gap-1 text-truncate">
                                                                     <i class="mdi mdi-progress-clock text-warning"></i>
-                                                                    <span class="fw-bold text-dark text-truncate" style="max-width: 75px;">{{ $pDoc->documentType->name ?? 'Dokumen' }}</span>
+                                                                    <span class="fw-bold text-dark text-truncate" style="max-width: 75px;"><?php echo e($pDoc->documentType->name ?? 'Dokumen'); ?></span>
                                                                 </div>
-                                                                <button type="button" class="btn-upload-doc-pill d-inline-flex align-items-center gap-0.5" onclick="openUploadDocModal({{ $pDoc->id }}, '{{ addslashes($pDoc->documentType->name ?? 'Dokumen') }}', '{{ addslashes($land->land_name) }}', '{{ $pDoc->document_number ?? '' }}')">
+                                                                <button type="button" class="btn-upload-doc-pill d-inline-flex align-items-center gap-0.5" onclick="openUploadDocModal(<?php echo e($pDoc->id); ?>, '<?php echo e(addslashes($pDoc->documentType->name ?? 'Dokumen')); ?>', '<?php echo e(addslashes($land->land_name)); ?>', '<?php echo e($pDoc->document_number ?? ''); ?>')">
                                                                     <i class="mdi mdi-cloud-upload"></i>
                                                                     <span>Upload</span>
                                                                 </button>
                                                             </div>
-                                                        @endforeach
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     </div>
-                                                @endif
-                                            @endif
+                                                <?php endif; ?>
+                                            <?php endif; ?>
                                         </td>
 
                                         <td class="col-status text-center">
-                                            @if($isTerminActive)
+                                            <?php if($isTerminActive): ?>
                                                 <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a;">
                                                     Cicilan Aktif
                                                 </span>
-                                            @elseif($land->status == 'approved')
+                                            <?php elseif($land->status == 'approved'): ?>
                                                 <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
                                                     Approved
                                                 </span>
-                                            @elseif($land->status == 'rejected')
+                                            <?php elseif($land->status == 'rejected'): ?>
                                                 <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca;">
                                                     Rejected
                                                 </span>
-                                            @else
+                                            <?php else: ?>
                                                 <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
-                                                    {{ ucfirst($land->status) }}
+                                                    <?php echo e(ucfirst($land->status)); ?>
+
                                                 </span>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
 
                                         <td class="text-center">
-                                            <span class="badge-priority {{ $priorityClass }}">
-                                                {{ ucfirst($land->priority ?? 'Normal') }}
+                                            <span class="badge-priority <?php echo e($priorityClass); ?>">
+                                                <?php echo e(ucfirst($land->priority ?? 'Normal')); ?>
+
                                             </span>
                                         </td>
 
                                         <td class="col-aksi text-center">
                                             <div class="d-inline-flex align-items-center gap-1">
                                                 <!-- Fase 1 -->
-                                                <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 1]) }}" 
+                                                <a href="<?php echo e(route('pra-landbank.proses', ['id' => $land->id, 'step' => 1])); ?>" 
                                                     class="btn-fase-action btn-fase-1" title="FASE 1: Dokumen Legalitas">
                                                     <i class="mdi mdi-file-document-check"></i>
                                                     <span>Fase 1</span>
                                                 </a>
 
                                                 <!-- Fase 2 -->
-                                                @if($canAccessFase2)
-                                                    <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 2]) }}" 
+                                                <?php if($canAccessFase2): ?>
+                                                    <a href="<?php echo e(route('pra-landbank.proses', ['id' => $land->id, 'step' => 2])); ?>" 
                                                         class="btn-fase-action btn-fase-2" title="FASE 2: Survey & Teknis">
                                                         <i class="mdi mdi-map-search"></i>
                                                         <span>Fase 2</span>
                                                     </a>
-                                                @else
+                                                <?php else: ?>
                                                     <button type="button" class="btn-fase-action btn-fase-2" 
-                                                        onclick="alertFase2Locked({{ $land->id }})" 
+                                                        onclick="alertFase2Locked(<?php echo e($land->id); ?>)" 
                                                         style="opacity: 0.75;" title="Terkunci: Menunggu Validasi Legalitas Fase 1">
                                                         <i class="mdi mdi-lock"></i>
                                                         <span>Fase 2</span>
                                                     </button>
-                                                @endif
+                                                <?php endif; ?>
 
                                                 <!-- Fase 3 / Cicilan -->
-                                                @if($canAccessFase3)
-                                                    <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" 
-                                                        class="btn-fase-action btn-fase-3" title="{{ $isTerminActive ? 'Kelola Pembayaran Cicilan' : 'FASE 3: Sidang & Deal' }}">
-                                                        <i class="mdi {{ $isTerminActive ? 'mdi-cash-check' : 'mdi-check-decagram' }}"></i>
-                                                        <span>{{ $isTerminActive ? 'Cicilan' : 'Fase 3' }}</span>
+                                                <?php if($canAccessFase3): ?>
+                                                    <a href="<?php echo e(route('pra-landbank.proses', ['id' => $land->id, 'step' => 3])); ?>" 
+                                                        class="btn-fase-action btn-fase-3" title="<?php echo e($isTerminActive ? 'Kelola Pembayaran Cicilan' : 'FASE 3: Sidang & Deal'); ?>">
+                                                        <i class="mdi <?php echo e($isTerminActive ? 'mdi-cash-check' : 'mdi-check-decagram'); ?>"></i>
+                                                        <span><?php echo e($isTerminActive ? 'Cicilan' : 'Fase 3'); ?></span>
                                                     </a>
-                                                @else
+                                                <?php else: ?>
                                                     <button type="button" class="btn-fase-action btn-fase-3" 
-                                                        onclick="alertFase3Locked({{ $land->id }}, {{ $isLandLegalSah ? 'true' : 'false' }}, {{ $isFase2Done ? 'true' : 'false' }})" 
+                                                        onclick="alertFase3Locked(<?php echo e($land->id); ?>, <?php echo e($isLandLegalSah ? 'true' : 'false'); ?>, <?php echo e($isFase2Done ? 'true' : 'false'); ?>)" 
                                                         style="opacity: 0.75;" title="Terkunci">
                                                         <i class="mdi mdi-lock"></i>
                                                         <span>Fase 3</span>
                                                     </button>
-                                                @endif
+                                                <?php endif; ?>
 
                                                 <!-- Perizinan (Saat Deal / Fase 3 Selesai) -->
-                                                @if($land->status === 'approved' || !empty($land->deal_price) || $land->status === 'fase3')
-                                                    <a href="{{ route('perizinan.show', $land->id) }}" 
+                                                <?php if($land->status === 'approved' || !empty($land->deal_price) || $land->status === 'fase3'): ?>
+                                                    <a href="<?php echo e(route('perizinan.show', $land->id)); ?>" 
                                                         class="btn-fase-action btn-fase-perizinan" title="Lanjut ke Modul Perizinan Proyek">
                                                         <i class="mdi mdi-file-certificate-outline"></i>
                                                         <span>Izin</span>
                                                     </a>
-                                                @endif
+                                                <?php endif; ?>
 
                                                 <!-- Delete Button -->
-                                                @if(!$isKeuangan || $isAdmin)
-                                                    <form action="{{ route('pra-landbanks.destroy', $land->id) }}" method="POST" class="d-inline delete-form">
-                                                        @csrf
-                                                        @method('DELETE')
+                                                <?php if(!$isKeuangan || $isAdmin): ?>
+                                                    <form action="<?php echo e(route('pra-landbanks.destroy', $land->id)); ?>" method="POST" class="d-inline delete-form">
+                                                        <?php echo csrf_field(); ?>
+                                                        <?php echo method_field('DELETE'); ?>
                                                         <button type="button" class="btn-fase-action btn-fase-delete delete-btn" title="Hapus Data">
                                                             <i class="mdi mdi-trash-can-outline"></i>
                                                         </button>
                                                     </form>
-                                                @endif
+                                                <?php endif; ?>
                                             </div>
                                         </td>
                                     </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                     <tr>
                                         <td colspan="9" class="text-center text-muted py-4">
                                             <i class="mdi mdi-alert-circle-outline me-2" style="font-size: 1.5rem;"></i>
                                             Tidak ada data pra tanah yang terdaftar.
                                         </td>
                                     </tr>
-                                @endforelse
+                                <?php endif; ?>
 
                                 <tr id="noResultsRow" style="display: none;">
                                     <td colspan="9" class="text-center text-muted py-4">
@@ -713,16 +718,17 @@
                     </div>
 
                     <!-- Pagination Footer (Bootstrap 5) -->
-                    @if($praLandBank->hasPages())
+                    <?php if($praLandBank->hasPages()): ?>
                         <div class="px-3 py-3 border-top d-flex flex-wrap justify-content-between align-items-center bg-white">
                             <div class="text-muted" style="font-size: 0.82rem;">
-                                Menampilkan <span class="fw-semibold text-dark">{{ $praLandBank->firstItem() ?? 0 }}</span> - <span class="fw-semibold text-dark">{{ $praLandBank->lastItem() ?? 0 }}</span> dari <span class="fw-semibold text-dark">{{ $praLandBank->total() }}</span> data pra tanah
+                                Menampilkan <span class="fw-semibold text-dark"><?php echo e($praLandBank->firstItem() ?? 0); ?></span> - <span class="fw-semibold text-dark"><?php echo e($praLandBank->lastItem() ?? 0); ?></span> dari <span class="fw-semibold text-dark"><?php echo e($praLandBank->total()); ?></span> data pra tanah
                             </div>
                             <div>
-                                {{ $praLandBank->links('pagination::bootstrap-5') }}
+                                <?php echo e($praLandBank->links('pagination::bootstrap-5')); ?>
+
                             </div>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
                 </div>
             </div>
@@ -749,7 +755,7 @@
             </div>
 
             <form id="formUploadCompletedDoc" method="POST" enctype="multipart/form-data">
-                @csrf
+                <?php echo csrf_field(); ?>
                 <input type="hidden" id="uploadDocId" name="doc_id">
 
                 <div class="modal-body p-4 pt-2">
@@ -809,7 +815,7 @@
     </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function applyLiveSearch(keyword) {
@@ -928,7 +934,7 @@
                 cancelButtonText: 'Tutup'
             }).then((result) => {
                 if (result.isConfirmed && landId) {
-                    window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + landId + "?step=1";
+                    window.location.href = "<?php echo e(url('/properti/pra-landbank/proses')); ?>/" + landId + "?step=1";
                 }
             });
         }
@@ -993,7 +999,7 @@
                 cancelButtonText: 'Tutup'
             }).then((result) => {
                 if (result.isConfirmed && landId) {
-                    window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + landId + "?step=" + targetStep;
+                    window.location.href = "<?php echo e(url('/properti/pra-landbank/proses')); ?>/" + landId + "?step=" + targetStep;
                 }
             });
         }
@@ -1007,7 +1013,7 @@
             document.getElementById('modalUploadFileLabelText').innerText = 'Pilih Berkas Dokumen Fisik';
             document.getElementById('modalUploadFileSize').classList.add('d-none');
             document.getElementById('uploadDocNotes').value = '';
-            document.getElementById('formUploadCompletedDoc').action = "{{ url('/pra-landbank/dokumen') }}/" + docId + "/upload-completed";
+            document.getElementById('formUploadCompletedDoc').action = "<?php echo e(url('/pra-landbank/dokumen')); ?>/" + docId + "/upload-completed";
 
             const modal = new bootstrap.Modal(document.getElementById('modalUploadCompletedDoc'));
             modal.show();
@@ -1025,6 +1031,8 @@
             }
         }
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.partial.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Property-Management-Web-App\resources\views/land_bank/all_pra_land_bank.blade.php ENDPATH**/ ?>

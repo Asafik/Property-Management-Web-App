@@ -1,12 +1,10 @@
-@extends('layouts.partial.app')
+<?php $__env->startSection('title', 'Kelola Perizinan: ' . $project['nama'] . ' - Property Management App'); ?>
 
-@section('title', 'Kelola Perizinan: ' . $project['nama'] . ' - Property Management App')
+<?php $__env->startPush('styles'); ?>
+    <link rel="stylesheet" href="<?php echo e(asset('css/dashboard-clean.css')); ?>?v=<?php echo e(time()); ?>">
+<?php $__env->stopPush(); ?>
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
-@endpush
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <style>
     /* Styling Modal Kelola Dokumen & Persyaratan (Lebar Nyaman & Body Scrollable) */
@@ -149,25 +147,26 @@
     <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
         <div>
             <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
-                Perizinan Kawasan: {{ $project['nama'] }}
+                Perizinan Kawasan: <?php echo e($project['nama']); ?>
+
             </h2>
             <p class="text-muted mb-0" style="font-size: 0.88rem;">
-                {{ $project['pt'] }} &bull; {{ $project['lokasi'] }} &bull; Luas: {{ $project['luas'] }} ({{ $project['ownership_status'] }})
+                <?php echo e($project['pt']); ?> &bull; <?php echo e($project['lokasi']); ?> &bull; Luas: <?php echo e($project['luas']); ?> (<?php echo e($project['ownership_status']); ?>)
             </p>
         </div>
         <div class="d-flex align-items-center gap-2">
-            @if(!empty($project['is_finalized_to_pasca']) && !empty($project['land_bank_id']))
-                <a href="{{ route('properti.edit', $project['land_bank_id']) }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-semibold" style="background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; font-size: 0.85rem;" title="Buka data kawasan ini di Pasca Land Bank">
+            <?php if(!empty($project['is_finalized_to_pasca']) && !empty($project['land_bank_id'])): ?>
+                <a href="<?php echo e(route('properti.edit', $project['land_bank_id'])); ?>" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-semibold" style="background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; font-size: 0.85rem;" title="Buka data kawasan ini di Pasca Land Bank">
                     <i class="mdi mdi-shield-check" style="font-size: 1.1rem; line-height: 1;"></i>
                     <span>Buka di Pasca Land Bank</span>
                 </a>
-            @else
-                <button type="button" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-semibold" onclick="confirmFinalizeToPasca({{ $project['id'] }}, '{{ addslashes($project['nama']) }}', {{ $projectProgress ?? 0 }}, {{ $totalTerbit ?? 0 }}, {{ $totalIzin ?? 0 }})" style="background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; font-size: 0.85rem;" title="Alihkan kawasan ini ke Pasca Land Bank untuk pengolahan lahan & kavling">
+            <?php else: ?>
+                <button type="button" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-semibold" onclick="confirmFinalizeToPasca(<?php echo e($project['id']); ?>, '<?php echo e(addslashes($project['nama'])); ?>', <?php echo e($projectProgress ?? 0); ?>, <?php echo e($totalTerbit ?? 0); ?>, <?php echo e($totalIzin ?? 0); ?>)" style="background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; font-size: 0.85rem;" title="Alihkan kawasan ini ke Pasca Land Bank untuk pengolahan lahan & kavling">
                     <i class="mdi mdi-shield-crown" style="font-size: 1.1rem; line-height: 1;"></i>
                     <span>Finalisasi ke Pasca Land Bank</span>
                 </button>
-            @endif
-            <a href="{{ route('perizinan.index') }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm btn-kembali-proyek" style="border: 1px solid #cbd5e1; background-color: #ffffff; color: #1e293b; border-radius: 8px; font-weight: 600; font-size: 0.85rem; transition: all 0.2s ease;">
+            <?php endif; ?>
+            <a href="<?php echo e(route('perizinan.index')); ?>" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm btn-kembali-proyek" style="border: 1px solid #cbd5e1; background-color: #ffffff; color: #1e293b; border-radius: 8px; font-weight: 600; font-size: 0.85rem; transition: all 0.2s ease;">
                 <i class="mdi mdi-arrow-left text-primary" style="font-size: 1.1rem; line-height: 1;"></i>
                 <span>Kembali</span>
             </a>
@@ -184,7 +183,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Total Dokumen Izin</div>
-                    <div class="dash-kpi-val">{{ $totalIzin ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalIzin ?? 0); ?></div>
                     <div class="dash-kpi-sub">Seluruh Dokumen Proyek</div>
                 </div>
             </div>
@@ -201,7 +200,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Izin Terbit & Sah</div>
-                    <div class="dash-kpi-val">{{ $totalTerbit ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalTerbit ?? 0); ?></div>
                     <div class="dash-kpi-sub">Dokumen Terbit / Final</div>
                 </div>
             </div>
@@ -218,7 +217,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Sedang Proses Dinas</div>
-                    <div class="dash-kpi-val">{{ $totalProses ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalProses ?? 0); ?></div>
                     <div class="dash-kpi-sub">Sedang Diproses Instansi</div>
                 </div>
             </div>
@@ -235,7 +234,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Perlu Revisi / Kendala</div>
-                    <div class="dash-kpi-val">{{ $totalRevisi ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalRevisi ?? 0); ?></div>
                     <div class="dash-kpi-sub">Perlu Tindak Lanjut / Revisi</div>
                 </div>
             </div>
@@ -265,7 +264,7 @@
                 <div class="card-body" style="padding: 0.75rem 1.25rem 1.15rem 1.25rem !important;">
                     <!-- Filter Toolbar -->
                     <div class="filter-card" style="margin-top: 0 !important; margin-bottom: 0.6rem !important;">
-                        <form id="filterForm" method="GET" action="{{ route('perizinan.show', $project['id']) }}" style="margin-bottom: 0 !important;">
+                        <form id="filterForm" method="GET" action="<?php echo e(route('perizinan.show', $project['id'])); ?>" style="margin-bottom: 0 !important;">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
                                 <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                                     <!-- Search Input -->
@@ -273,7 +272,7 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="search" id="liveSearchInput"
                                                 placeholder="Cari nama izin, instansi, nomor SK..."
-                                                value="{{ request('search') }}"
+                                                value="<?php echo e(request('search')); ?>"
                                                 onkeyup="applyLiveSearch(this.value)"
                                                 style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
                                             <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
@@ -288,9 +287,9 @@
                                     <div style="width: 160px;">
                                         <select class="form-control" name="status" id="statusFilterSelect" onchange="document.getElementById('filterForm').submit()">
                                             <option value="all">Semua Status</option>
-                                            <option value="Terbit" {{ request('status') == 'Terbit' ? 'selected' : '' }}>Terbit</option>
-                                            <option value="Proses" {{ request('status') == 'Proses' ? 'selected' : '' }}>Proses</option>
-                                            <option value="Revisi" {{ request('status') == 'Revisi' ? 'selected' : '' }}>Revisi</option>
+                                            <option value="Terbit" <?php echo e(request('status') == 'Terbit' ? 'selected' : ''); ?>>Terbit</option>
+                                            <option value="Proses" <?php echo e(request('status') == 'Proses' ? 'selected' : ''); ?>>Proses</option>
+                                            <option value="Revisi" <?php echo e(request('status') == 'Revisi' ? 'selected' : ''); ?>>Revisi</option>
                                         </select>
                                     </div>
                                 </div>
@@ -300,7 +299,7 @@
                                     <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Terapkan Filter">
                                         <i class="mdi mdi-filter"></i>
                                     </button>
-                                    <a href="{{ route('perizinan.show', $project['id']) }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset Filter">
+                                    <a href="<?php echo e(route('perizinan.show', $project['id'])); ?>" class="btn btn-gradient-secondary btn-icon-only" title="Reset Filter">
                                         <i class="mdi mdi-refresh"></i>
                                     </a>
                                 </div>
@@ -323,8 +322,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($permits as $index => $item)
-                                    @php
+                                <?php $__empty_1 = true; $__currentLoopData = $permits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                    <?php
                                         $pVal = $item['progress'];
                                         if ($pVal >= 100) {
                                             $pColor = '#10b981'; // Green
@@ -335,67 +334,71 @@
                                         } else {
                                             $pColor = '#e11d48'; // Rose
                                         }
-                                    @endphp
-                                    <tr class="permit-table-row" id="row_permit_{{ $item['id'] }}" data-search="{{ strtolower($item['nama_izin'] . ' ' . $item['instansi'] . ' ' . $item['no_izin']) }}">
-                                        <td class="col-no fw-bold text-center">{{ $loop->iteration }}</td>
+                                    ?>
+                                    <tr class="permit-table-row" id="row_permit_<?php echo e($item['id']); ?>" data-search="<?php echo e(strtolower($item['nama_izin'] . ' ' . $item['instansi'] . ' ' . $item['no_izin'])); ?>">
+                                        <td class="col-no fw-bold text-center"><?php echo e($loop->iteration); ?></td>
                                         <td class="col-nama">
                                             <div class="fw-bold text-dark" style="line-height: 1.35; font-size: 0.85rem;">
-                                                {{ $item['nama_izin'] }}
+                                                <?php echo e($item['nama_izin']); ?>
+
                                             </div>
                                             <div class="text-secondary mt-0.5" style="font-size: 0.78rem; line-height: 1.3;">
-                                                {{ $item['instansi'] }}
+                                                <?php echo e($item['instansi']); ?>
+
                                             </div>
                                         </td>
                                         <td class="col-no-sk">
-                                            @if($item['no_izin'])
+                                            <?php if($item['no_izin']): ?>
                                                 <span class="badge bg-light text-dark px-2 py-1 border font-monospace text-wrap" style="font-size: 0.75rem; word-break: break-all; line-height: 1.25;">
-                                                    {{ $item['no_izin'] }}
+                                                    <?php echo e($item['no_izin']); ?>
+
                                                 </span>
-                                            @else
+                                            <?php else: ?>
                                                 <span class="text-muted" style="font-size: 0.78rem;">-</span>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
                                         <td class="col-tgl">
                                             <span class="text-muted" style="font-size: 0.8rem;">
-                                                {{ $item['tanggal'] }}
+                                                <?php echo e($item['tanggal']); ?>
+
                                             </span>
                                         </td>
                                         <td class="col-status text-center">
-                                            @if($item['status'] == 'Terbit' || $item['status'] == 'Selesai')
+                                            <?php if($item['status'] == 'Terbit' || $item['status'] == 'Selesai'): ?>
                                                 <span class="status-badge aktif" style="padding: 3px 8px; font-size: 0.75rem;">Terbit</span>
-                                            @elseif($item['status'] == 'Proses' || $item['status'] == 'Berjalan')
+                                            <?php elseif($item['status'] == 'Proses' || $item['status'] == 'Berjalan'): ?>
                                                 <span class="badge-development-progress" style="padding: 3px 8px; font-size: 0.75rem;">Proses</span>
-                                            @elseif($item['status'] == 'Tertunda' || $item['status'] == 'Revisi')
+                                            <?php elseif($item['status'] == 'Tertunda' || $item['status'] == 'Revisi'): ?>
                                                 <span class="badge-development-belum" style="background-color: #fee2e2; color: #b91c1c; border-color: #fecdd3; padding: 3px 8px; font-size: 0.75rem;">Revisi</span>
-                                            @else
+                                            <?php else: ?>
                                                 <span class="badge-development-belum" style="background-color: #f1f5f9; color: #64748b; border-color: #e2e8f0; padding: 3px 8px; font-size: 0.75rem;">Belum</span>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
                                         <td class="col-progres">
                                             <div class="d-flex align-items-center gap-2" style="width: 100%;">
                                                 <div style="flex-grow: 1; background-color: #f1f5f9; border-radius: 9999px; height: 6px; overflow: hidden;">
-                                                    <div style="width: {{ $pVal }}%; background-color: {{ $pColor }}; height: 100%; border-radius: 9999px;"></div>
+                                                    <div style="width: <?php echo e($pVal); ?>%; background-color: <?php echo e($pColor); ?>; height: 100%; border-radius: 9999px;"></div>
                                                 </div>
-                                                <span style="font-size: 0.75rem; font-weight: 700; color: #334155;">{{ $pVal }}%</span>
+                                                <span style="font-size: 0.75rem; font-weight: 700; color: #334155;"><?php echo e($pVal); ?>%</span>
                                             </div>
                                         </td>
                                         <td class="col-aksi text-center">
                                             <!-- Tombol Tunggal Aksi Langsung: Kelola -->
                                             <button type="button" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center py-1 px-2.5 fw-semibold shadow-sm" 
-                                                    onclick='bukaModalKelola(@json($item))' title="Kelola Dokumen & Persyaratan" style="font-size: 0.76rem; border-radius: 5px;">
+                                                    onclick='bukaModalKelola(<?php echo json_encode($item, 15, 512) ?>)' title="Kelola Dokumen & Persyaratan" style="font-size: 0.76rem; border-radius: 5px;">
                                                 <i class="mdi mdi-file-document-edit-outline" style="margin-right: 6px !important; font-size: 0.85rem;"></i>
                                                 <span>Kelola</span>
                                             </button>
                                         </td>
                                     </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                     <tr>
                                         <td colspan="7" class="text-center text-muted py-4">
                                             <i class="mdi mdi-file-question-outline me-2" style="font-size: 1.5rem;"></i>
                                             Tidak ada dokumen perizinan yang sesuai dengan filter.
                                         </td>
                                     </tr>
-                                @endforelse
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -578,7 +581,7 @@
     </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     // LIVE SEARCH TABLE
     function applyLiveSearch(keyword) {
@@ -1017,11 +1020,11 @@
                     }
                 });
 
-                fetch(`{{ route('perizinan.finalize-pasca', ':id') }}`.replace(':id', id), {
+                fetch(`<?php echo e(route('perizinan.finalize-pasca', ':id')); ?>`.replace(':id', id), {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>',
                         'Accept': 'application/json'
                     }
                 })
@@ -1071,6 +1074,8 @@
         });
     }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.partial.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Property-Management-Web-App\resources\views/perizinan/show.blade.php ENDPATH**/ ?>

@@ -1,9 +1,7 @@
-@extends('layouts.partial.app')
+<?php $__env->startSection('title', 'Monitoring Pengolahan Lahan Proyek - Property Management App'); ?>
 
-@section('title', 'Monitoring Pengolahan Lahan Proyek - Property Management App')
-
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
+<?php $__env->startPush('styles'); ?>
+    <link rel="stylesheet" href="<?php echo e(asset('css/dashboard-clean.css')); ?>?v=<?php echo e(time()); ?>">
     <style>
         /* Table Responsive & Text Wrapping persis perizinan */
         .table-lahan {
@@ -80,9 +78,9 @@
             margin-bottom: 0 !important;
         }
     </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <div class="container-fluid px-2 px-md-4 py-3">
 
@@ -97,7 +95,7 @@
             </p>
         </div>
         <div>
-            <a href="{{ route('proyek.index') }}" class="btn btn-outline-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 fw-semibold shadow-sm" style="border-radius: 6px; font-size: 0.86rem;">
+            <a href="<?php echo e(route('proyek.index')); ?>" class="btn btn-outline-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 fw-semibold shadow-sm" style="border-radius: 6px; font-size: 0.86rem;">
                 <i class="mdi mdi-city-variant-outline"></i>
                 <span>Menu Proyek (Profil & Dokumen)</span>
             </a>
@@ -115,7 +113,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Total Proyek Lahan</div>
-                    <div class="dash-kpi-val">{{ $totalProyek ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalProyek ?? 0); ?></div>
                     <div class="dash-kpi-sub">Seluruh Kawasan Proyek</div>
                 </div>
             </div>
@@ -132,7 +130,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Lahan Selesai Diolah</div>
-                    <div class="dash-kpi-val">{{ $totalSelesai ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalSelesai ?? 0); ?></div>
                     <div class="dash-kpi-sub">Infrastruktur 100% Selesai</div>
                 </div>
             </div>
@@ -149,7 +147,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Dalam Pengerjaan Fisik</div>
-                    <div class="dash-kpi-val">{{ $dalamProses ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($dalamProses ?? 0); ?></div>
                     <div class="dash-kpi-sub">Pengerjaan Aktif Lapangan</div>
                 </div>
             </div>
@@ -166,7 +164,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Tertunda / Kendala</div>
-                    <div class="dash-kpi-val">{{ $tertunda ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($tertunda ?? 0); ?></div>
                     <div class="dash-kpi-sub">Perlu Tindak Lanjut / Evaluasi</div>
                 </div>
             </div>
@@ -193,7 +191,7 @@
                 <div class="card-body">
                     <!-- Filter Toolbar -->
                     <div class="filter-card">
-                        <form id="filterForm" method="GET" action="{{ route('proyek.pengolahan-lahan.index') }}" style="margin-bottom: 0 !important;">
+                        <form id="filterForm" method="GET" action="<?php echo e(route('proyek.pengolahan-lahan.index')); ?>" style="margin-bottom: 0 !important;">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
                                 <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                                     <!-- Search Input -->
@@ -201,7 +199,7 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="search" id="liveSearchInput"
                                                 placeholder="Cari nama proyek, lokasi, status tanah..."
-                                                value="{{ request('search') }}"
+                                                value="<?php echo e(request('search')); ?>"
                                                 onkeyup="applyLiveSearch(this.value)"
                                                 style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
                                             <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
@@ -216,21 +214,22 @@
                                     <div style="min-width: 180px;">
                                         <select name="proyek_id" class="form-control" onchange="document.getElementById('filterForm').submit()">
                                             <option value="all">Semua Proyek Kawasan</option>
-                                            @foreach($allProjects ?? $projects as $p)
-                                                <option value="{{ $p['id'] }}" {{ request('proyek_id') == $p['id'] ? 'selected' : '' }}>
-                                                    {{ $p['nama'] }}
+                                            <?php $__currentLoopData = $allProjects ?? $projects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($p['id']); ?>" <?php echo e(request('proyek_id') == $p['id'] ? 'selected' : ''); ?>>
+                                                    <?php echo e($p['nama']); ?>
+
                                                 </option>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
 
                                     <!-- Filter Status -->
                                     <div style="width: 160px;">
                                         <select class="form-control" name="status" id="statusFilterSelect" onchange="document.getElementById('filterForm').submit()">
-                                            <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Semua Status</option>
-                                            <option value="Selesai" {{ request('status') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                                            <option value="Berjalan" {{ request('status') == 'Berjalan' ? 'selected' : '' }}>Berjalan</option>
-                                            <option value="Tertunda" {{ request('status') == 'Tertunda' ? 'selected' : '' }}>Tertunda</option>
+                                            <option value="all" <?php echo e(request('status') == 'all' ? 'selected' : ''); ?>>Semua Status</option>
+                                            <option value="Selesai" <?php echo e(request('status') == 'Selesai' ? 'selected' : ''); ?>>Selesai</option>
+                                            <option value="Berjalan" <?php echo e(request('status') == 'Berjalan' ? 'selected' : ''); ?>>Berjalan</option>
+                                            <option value="Tertunda" <?php echo e(request('status') == 'Tertunda' ? 'selected' : ''); ?>>Tertunda</option>
                                         </select>
                                     </div>
                                 </div>
@@ -240,7 +239,7 @@
                                     <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Terapkan Filter">
                                         <i class="mdi mdi-filter"></i>
                                     </button>
-                                    <a href="{{ route('proyek.pengolahan-lahan.index') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset Filter">
+                                    <a href="<?php echo e(route('proyek.pengolahan-lahan.index')); ?>" class="btn btn-gradient-secondary btn-icon-only" title="Reset Filter">
                                         <i class="mdi mdi-refresh"></i>
                                     </a>
                                 </div>
@@ -266,8 +265,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($projects as $index => $proj)
-                                    @php
+                                <?php $__empty_1 = true; $__currentLoopData = $projects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $proj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                    <?php
                                         $pVal = (int) ($proj['progress'] ?? 65);
                                         $st = $proj['status'] ?? 'Berjalan';
                                         if ($st == 'Selesai') {
@@ -296,70 +295,77 @@
                                         } else {
                                             $pColor = '#f59e0b';
                                         }
-                                    @endphp
-                                    <tr class="lahan-table-row" id="row_lahan_{{ $proj['id'] }}" data-search="{{ strtolower($proj['nama'] . ' ' . ($proj['pt'] ?? '') . ' ' . ($proj['lokasi'] ?? '') . ' ' . ($proj['ownership_status'] ?? '') . ' ' . ($proj['fase_aktif'] ?? '')) }}">
-                                        <td class="col-no fw-bold text-center">{{ $loop->iteration }}</td>
+                                    ?>
+                                    <tr class="lahan-table-row" id="row_lahan_<?php echo e($proj['id']); ?>" data-search="<?php echo e(strtolower($proj['nama'] . ' ' . ($proj['pt'] ?? '') . ' ' . ($proj['lokasi'] ?? '') . ' ' . ($proj['ownership_status'] ?? '') . ' ' . ($proj['fase_aktif'] ?? ''))); ?>">
+                                        <td class="col-no fw-bold text-center"><?php echo e($loop->iteration); ?></td>
                                         <td>
                                             <div class="fw-bold text-dark" style="line-height: 1.35; font-size: 0.86rem;">
-                                                {{ $proj['nama'] }}
+                                                <?php echo e($proj['nama']); ?>
+
                                             </div>
                                             <div class="text-secondary mt-0.5" style="font-size: 0.77rem; line-height: 1.3;">
-                                                {{ $proj['pt'] ?? 'PT Graha Cipta Sejahtera' }}
+                                                <?php echo e($proj['pt'] ?? 'PT Graha Cipta Sejahtera'); ?>
+
                                             </div>
                                         </td>
                                         <td>
                                             <span class="badge py-1 px-2.5 font-monospace"
                                                 style="background-color: #f3e8ff; color: #7e22ce; font-size: 0.75rem; font-weight: 700; border-radius: 6px; border: 1px solid #e9d5ff;">
-                                                {{ $proj['ownership_status'] ?? 'SHGB Induk' }}
+                                                <?php echo e($proj['ownership_status'] ?? 'SHGB Induk'); ?>
+
                                             </span>
                                         </td>
                                         <td>
                                             <span class="badge py-1 px-2.5"
                                                 style="background-color: #fef3c7; color: #92400e; font-size: 0.75rem; font-weight: 600; border-radius: 6px; border: 1px solid #fde68a;">
-                                                <i class="mdi mdi-hammer-wrench me-1"></i>{{ $proj['fase_aktif'] ?? 'Fase 1' }}
+                                                <i class="mdi mdi-hammer-wrench me-1"></i><?php echo e($proj['fase_aktif'] ?? 'Fase 1'); ?>
+
                                             </span>
                                         </td>
                                         <td>
                                             <span class="text-secondary" style="font-size: 0.82rem;">
-                                                <i class="mdi mdi-map-marker-outline text-danger me-0.5"></i>{{ $proj['lokasi'] }}
+                                                <i class="mdi mdi-map-marker-outline text-danger me-0.5"></i><?php echo e($proj['lokasi']); ?>
+
                                             </span>
                                         </td>
                                         <td>
                                             <span class="badge bg-light text-dark px-2 py-1 border font-monospace" style="font-size: 0.76rem;">
-                                                {{ $proj['luas'] }}
+                                                <?php echo e($proj['luas']); ?>
+
                                             </span>
                                         </td>
                                         <td>
-                                            <span class="text-secondary" style="font-size: 0.82rem;">{{ $proj['target_selesai'] ?? '30 Jul 2026' }}</span>
+                                            <span class="text-secondary" style="font-size: 0.82rem;"><?php echo e($proj['target_selesai'] ?? '30 Jul 2026'); ?></span>
                                         </td>
                                         <td>
                                             <div class="d-flex align-items-center gap-2" style="min-width: 120px;">
                                                 <div class="progress flex-grow-1" style="height: 6px; background-color: #e2e8f0; border-radius: 9999px;">
-                                                    <div class="progress-bar rounded-pill" role="progressbar" style="width: {{ $pVal }}%; background-color: {{ $pColor }};"></div>
+                                                    <div class="progress-bar rounded-pill" role="progressbar" style="width: <?php echo e($pVal); ?>%; background-color: <?php echo e($pColor); ?>;"></div>
                                                 </div>
-                                                <span style="font-size: 0.75rem; font-weight: 700; color: #334155; min-width: 32px; text-align: right;">{{ $pVal }}%</span>
+                                                <span style="font-size: 0.75rem; font-weight: 700; color: #334155; min-width: 32px; text-align: right;"><?php echo e($pVal); ?>%</span>
                                             </div>
                                         </td>
                                         <td class="col-status text-center">
-                                            <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: {{ $badgeBg }}; color: {{ $badgeColor }}; border: 1px solid {{ $badgeBorder }};">
-                                                {{ $stLabel }}
+                                            <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: <?php echo e($badgeBg); ?>; color: <?php echo e($badgeColor); ?>; border: 1px solid <?php echo e($badgeBorder); ?>;">
+                                                <?php echo e($stLabel); ?>
+
                                             </span>
                                         </td>
                                         <td class="col-aksi text-center">
-                                            <a href="{{ route('properti.pengolahanLahan', $proj['id']) }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 shadow-sm text-decoration-none fw-semibold" style="border-radius: 6px; font-size: 0.82rem;">
+                                            <a href="<?php echo e(route('properti.pengolahanLahan', $proj['id'])); ?>" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 shadow-sm text-decoration-none fw-semibold" style="border-radius: 6px; font-size: 0.82rem;">
                                                 <i class="mdi mdi-tools" style="font-size: 0.95rem;"></i>
                                                 <span>Kelola</span>
                                             </a>
                                         </td>
                                     </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                     <tr>
                                         <td colspan="10" class="text-center text-muted py-4">
                                             <i class="mdi mdi-domain-off me-2" style="font-size: 1.5rem;"></i>
                                             Tidak ada data proyek pengolahan lahan.
                                         </td>
                                     </tr>
-                                @endforelse
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -371,7 +377,7 @@
 
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     function applyLiveSearch(keyword) {
         keyword = (keyword || '').toLowerCase().trim();
@@ -386,6 +392,8 @@
         });
     }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.partial.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Property-Management-Web-App\resources\views/pengolahan_lahan/index.blade.php ENDPATH**/ ?>

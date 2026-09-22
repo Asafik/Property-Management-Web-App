@@ -162,4 +162,4 @@
         localStorage.setItem("last_notif_count", notifCount);
     });
 </script>
-<?php /**PATH F:\Property-Management-Web-App\resources\views/layouts/navbar.blade.php ENDPATH**/ ?>
+<?php /**PATH D:\Property-Management-Web-App\resources\views/layouts/navbar.blade.php ENDPATH**/ ?>

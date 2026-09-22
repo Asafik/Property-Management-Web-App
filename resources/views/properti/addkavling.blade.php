@@ -903,6 +903,11 @@ body.modal-open .page-body-wrapper {
     height: 100%;
     opacity: 0;
     cursor: pointer;
+    z-index: 10;
+}
+
+.spk-upload-box > div {
+    pointer-events: none;
 }
 
 /* Unit Selection Grid */
@@ -994,7 +999,7 @@ body.modal-open .page-body-wrapper {
     <!-- 1. Statistic Cards (Cards Sendiri-Sendiri seperti di Dashboard - Paling Atas) -->
     <div class="row g-3 mb-3 mb-md-4">
         <!-- 1. Total Unit -->
-        <div class="col-12 col-sm-6 col-md-4 col-xl">
+        <div class="col-12 col-sm-6 col-xl-3">
             <div class="card shadow-sm border-0 h-100 mb-0" style="border-radius: 12px;">
                 <div class="card-body d-flex justify-content-between align-items-center p-3">
                     <div>
@@ -1009,7 +1014,7 @@ body.modal-open .page-body-wrapper {
         </div>
 
         <!-- 2. Luas Total Tanah -->
-        <div class="col-12 col-sm-6 col-md-4 col-xl">
+        <div class="col-12 col-sm-6 col-xl-3">
             <div class="card shadow-sm border-0 h-100 mb-0" style="border-radius: 12px;">
                 <div class="card-body d-flex justify-content-between align-items-center p-3">
                     <div>
@@ -1024,7 +1029,7 @@ body.modal-open .page-body-wrapper {
         </div>
 
         <!-- 3. Sisa Luas Tanah -->
-        <div class="col-12 col-sm-6 col-md-4 col-xl">
+        <div class="col-12 col-sm-6 col-xl-3">
             <div class="card shadow-sm border-0 h-100 mb-0" style="border-radius: 12px;">
                 <div class="card-body d-flex justify-content-between align-items-center p-3">
                     <div>
@@ -1039,7 +1044,7 @@ body.modal-open .page-body-wrapper {
         </div>
 
         <!-- 4. Total Luas Unit -->
-        <div class="col-12 col-sm-6 col-md-6 col-xl">
+        <div class="col-12 col-sm-6 col-xl-3">
             <div class="card shadow-sm border-0 h-100 mb-0" style="border-radius: 12px;">
                 <div class="card-body d-flex justify-content-between align-items-center p-3">
                     <div>
@@ -1048,21 +1053,6 @@ body.modal-open .page-body-wrapper {
                     </div>
                     <div class="d-none d-sm-block">
                         <i class="mdi mdi-ruler-square" style="font-size: 2.2rem; color: #0d6efd; opacity: 0.25;"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 5. Nilai Total Unit -->
-        <div class="col-12 col-sm-6 col-md-6 col-xl">
-            <div class="card shadow-sm border-0 h-100 mb-0" style="border-radius: 12px;">
-                <div class="card-body d-flex justify-content-between align-items-center p-3">
-                    <div>
-                        <h4 class="text-success mb-1 fw-bold" style="font-size: 1.05rem;">Rp {{ number_format($totalNilai, 0, ',', '.') }}</h4>
-                        <p class="text-muted mb-0" style="font-size: 0.82rem;">Nilai Total Kavling</p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-cash-multiple" style="font-size: 2.2rem; color: #28a745; opacity: 0.3;"></i>
                     </div>
                 </div>
             </div>
@@ -1167,30 +1157,6 @@ body.modal-open .page-body-wrapper {
                                                 @endforeach
                                             </select>
                                         </div>
-
-                                        <!-- Posisi Filter -->
-                                        <div style="width: 140px;">
-                                            <select class="form-control" name="position" id="filterPosisi">
-                                                <option value="">Semua Posisi</option>
-                                                @foreach ($land->units->pluck('position')->unique() as $position)
-                                                    @if ($position)
-                                                        <option value="{{ $position }}" {{ request('position') == $position ? 'selected' : '' }}>{{ $position }}</option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <!-- Hadap Filter -->
-                                        <div style="width: 140px;">
-                                            <select class="form-control" name="facing" id="filterHadap">
-                                                <option value="">Semua Hadap</option>
-                                                @foreach ($land->units->pluck('facing')->unique() as $facing)
-                                                    @if ($facing)
-                                                        <option value="{{ $facing }}" {{ request('facing') == $facing ? 'selected' : '' }}>{{ $facing }}</option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                        </div>
                                     </div>
 
                                     <!-- Right Limit & Buttons (Mentok Kanan) -->
@@ -1244,26 +1210,7 @@ body.modal-open .page-body-wrapper {
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-6 mb-2">
-                                        <select class="form-control" name="position" id="filterPosisiMobile">
-                                            <option value="">Semua Posisi</option>
-                                            @foreach ($land->units->pluck('position')->unique() as $position)
-                                                @if ($position)
-                                                    <option value="{{ $position }}" {{ request('position') == $position ? 'selected' : '' }}>{{ $position }}</option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-6 mb-2">
-                                        <select class="form-control" name="facing" id="filterHadapMobile">
-                                            <option value="">Semua Hadap</option>
-                                            @foreach ($land->units->pluck('facing')->unique() as $facing)
-                                                @if ($facing)
-                                                    <option value="{{ $facing }}" {{ request('facing') == $facing ? 'selected' : '' }}>{{ $facing }}</option>
-                                                @endif
-                                            @endforeach
-                                        </select>
-                                    </div>
+
                                     <div class="col-6 mb-2">
                                         <select class="form-control" name="per_page" id="perPageMobile">
                                             <option value="5" {{ request('per_page', 5) == 5 ? 'selected' : '' }}>5 data</option>
@@ -1291,19 +1238,16 @@ body.modal-open .page-body-wrapper {
 
                     <!-- Table Data Kavling -->
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0" style="min-width: 1100px;">
+                        <table class="table table-hover align-middle mb-0" style="min-width: 950px;">
                             <thead>
                                 <tr>
                                     <th class="text-center" style="width: 50px;">No</th>
-                                    <th>Nama - Unit</th>
+                                    <th>Nama Unit</th>
+                                    <th>Kode Unit</th>
                                     <th>Luas Tanah</th>
-                                    <th>Luas Bangunan</th>
                                     <th>Jenis & Tipe</th>
-                                    <th>Harga</th>
-                                    <th>Harga IJB</th>
-                                    <th>Harga AJB</th>
-                                    <th>Hadap</th>
-                                    <th>Posisi</th>
+                                    <th>No. Sertifikat</th>
+                                    <th class="text-center" style="width: 120px;">Dokumen</th>
                                     <th class="text-center" style="width: 130px;">SPK</th>
                                     <th class="text-center" style="width: 100px;">Status</th>
                                     <th class="text-center" style="width: 120px;">Aksi</th>
@@ -1315,26 +1259,23 @@ body.modal-open .page-body-wrapper {
                                         <td class="text-center fw-bold text-muted">{{ $units->firstItem() + $i }}</td>
 
                                         <td>
+                                            <span class="fw-bold text-dark">{{ $unit->unit_name ?? '-' }}</span>
+                                        </td>
+
+                                        <td>
                                             @php
                                                 $blok = $unit->block ?? (explode('.', $unit->unit_code)[0] ?? '-');
                                                 $nomor = $unit->unit_number ?? (explode('.', $unit->unit_code)[1] ?? '-');
                                                 $kodeTampil = $unit->unit_code ?? ($blok . '.' . $nomor);
                                             @endphp
-                                            <div>
-                                                <span class="fw-bold text-dark d-block">{{ $unit->unit_name ?? '-' }}</span>
-                                                <small class="text-muted">Kode: {{ $kodeTampil }}</small>
-                                            </div>
-                                        </td>
-
-                                        <td>
-                                            <span class="fw-semibold text-dark">
-                                                {{ number_format($unit->area, 0, ',', '.') }} m²
+                                            <span class="badge bg-light text-dark border px-2 py-1 fw-bold" style="font-size: 0.8rem;">
+                                                {{ $kodeTampil }}
                                             </span>
                                         </td>
 
                                         <td>
                                             <span class="fw-semibold text-dark">
-                                                {{ number_format($unit->building_area ?? 0, 0, ',', '.') }} m²
+                                                {{ number_format($unit->area, 0, ',', '.') }} m²
                                             </span>
                                         </td>
 
@@ -1351,29 +1292,23 @@ body.modal-open .page-body-wrapper {
                                         </td>
 
                                         <td>
-                                            <span class="fw-bold text-success">
-                                                Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}
-                                            </span>
+                                            @if($unit->certificate_no)
+                                                <span class="fw-semibold text-dark" style="font-size: 0.82rem;">
+                                                    <i class="mdi mdi-certificate text-warning me-1"></i>{{ $unit->certificate_no }}
+                                                </span>
+                                            @else
+                                                <span class="text-muted small">-</span>
+                                            @endif
                                         </td>
 
-                                        <td>
-                                            <span class="fw-bold text-success">
-                                                Rp {{ number_format($unit->ijb_price ?? 0, 0, ',', '.') }}
-                                            </span>
-                                        </td>
-
-                                        <td>
-                                            <span class="fw-bold text-success">
-                                                Rp {{ number_format($unit->ajb_price ?? 0, 0, ',', '.') }}
-                                            </span>
-                                        </td>
-
-                                        <td>
-                                            <span class="text-dark">{{ $unit->facing ?? '-' }}</span>
-                                        </td>
-
-                                        <td>
-                                            <span class="text-dark">{{ $unit->position ?? '-' }}</span>
+                                        <td class="text-center">
+                                            @if($unit->file_certificate)
+                                                <a href="{{ asset($unit->file_certificate) }}" target="_blank" class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 py-1 px-2 text-decoration-none d-inline-flex align-items-center gap-1" style="font-size: 0.75rem;" title="Buka Dokumen Sertifikat">
+                                                    <i class="mdi mdi-file-document-outline"></i>Lihat Berkas
+                                                </a>
+                                            @else
+                                                <span class="text-muted small">-</span>
+                                            @endif
                                         </td>
 
                                         <td class="text-center">
@@ -1503,7 +1438,7 @@ body.modal-open .page-body-wrapper {
                                                                         </select>
                                                                     </div>
 
-                                                                    <!-- Baris 3: 2 Kolom Sejajar -->
+                                                                    <!-- Baris 3: Type Bangunan & Luas Tanah -->
                                                                     <div class="col-12 col-md-6">
                                                                         <label class="form-label fw-bold small mb-1">Type Bangunan <span class="text-danger">*</span></label>
                                                                         <input type="text" name="type" class="form-control" value="{{ $unit->type }}" placeholder="Contoh: 36/60" required>
@@ -1513,49 +1448,41 @@ body.modal-open .page-body-wrapper {
                                                                         <input type="number" name="area" class="form-control" value="{{ $unit->area }}" placeholder="60" min="1" step="any" required>
                                                                     </div>
 
-                                                                    <!-- Baris 4: 2 Kolom Sejajar -->
+                                                                    <!-- Baris 4: Sertifikat Unit -->
                                                                     <div class="col-12 col-md-6">
-                                                                        <label class="form-label fw-bold small mb-1">Luas Bangunan (m²) <span class="text-danger">*</span></label>
-                                                                        <input type="number" name="building_area" class="form-control" value="{{ $unit->building_area }}" placeholder="36" min="1" step="any" required>
+                                                                        <label class="form-label fw-bold small mb-1">Nomor Sertifikat</label>
+                                                                        <input type="text" name="certificate_no" class="form-control" value="{{ $unit->certificate_no }}" placeholder="Contoh: SHGB No. 1234">
                                                                     </div>
                                                                     <div class="col-12 col-md-6">
-                                                                        <label class="form-label fw-bold small mb-1">Harga Unit (Rp) <span class="text-danger">*</span></label>
-                                                                        <input type="text" name="price" class="form-control price-format" value="{{ number_format($unit->price ?? 0, 0, ',', '.') }}" placeholder="150.000.000" required>
-                                                                    </div>
-
-                                                                    <!-- Baris 5: 2 Kolom Sejajar -->
-                                                                    <div class="col-12 col-md-6">
-                                                                        <label class="form-label fw-bold small mb-1">Harga IJB (Rp)</label>
-                                                                        <input type="text" name="ijb_price" class="form-control price-format" value="{{ number_format($unit->ijb_price ?? 0, 0, ',', '.') }}" placeholder="150.000.000">
-                                                                    </div>
-                                                                    <div class="col-12 col-md-6">
-                                                                        <label class="form-label fw-bold small mb-1">Harga AJB (Rp)</label>
-                                                                        <input type="text" name="ajb_price" class="form-control price-format" value="{{ number_format($unit->ajb_price ?? 0, 0, ',', '.') }}" placeholder="150.000.000">
-                                                                    </div>
-
-                                                                    <!-- Baris 6: 2 Kolom Sejajar -->
-                                                                    <div class="col-12 col-md-6">
-                                                                        <label class="form-label fw-bold small mb-1">Hadap</label>
-                                                                        <select name="facing" class="form-control">
-                                                                            <option value="Utara" {{ $unit->facing == 'Utara' ? 'selected' : '' }}>Utara</option>
-                                                                            <option value="Selatan" {{ $unit->facing == 'Selatan' ? 'selected' : '' }}>Selatan</option>
-                                                                            <option value="Timur" {{ $unit->facing == 'Timur' ? 'selected' : '' }}>Timur</option>
-                                                                            <option value="Barat" {{ $unit->facing == 'Barat' ? 'selected' : '' }}>Barat</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-12 col-md-6">
-                                                                        <label class="form-label fw-bold small mb-1">Posisi</label>
-                                                                        <select name="position" class="form-control">
-                                                                            <option value="Hook" {{ $unit->position == 'Hook' ? 'selected' : '' }}>Hook</option>
-                                                                            <option value="Tengah" {{ $unit->position == 'Tengah' ? 'selected' : '' }}>Tengah</option>
-                                                                            <option value="Sudut" {{ $unit->position == 'Sudut' ? 'selected' : '' }}>Sudut</option>
-                                                                        </select>
+                                                                        <label class="form-label fw-bold small mb-1">Dokumen Sertifikat</label>
+                                                                        <div class="spk-upload-box py-2 px-3">
+                                                                            <input type="file" name="file_certificate" accept=".pdf,image/*" onchange="updateCertFileName(this, 'certFileNameEdit{{ $unit->id }}')">
+                                                                            <div class="d-flex align-items-center justify-content-start gap-2.5">
+                                                                                <div class="rounded-circle p-1.5 bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+                                                                                    <i class="mdi mdi-file-certificate fs-5"></i>
+                                                                                </div>
+                                                                                <div class="text-start overflow-hidden">
+                                                                                    <span class="fw-bold text-dark d-block text-truncate" id="certFileNameEdit{{ $unit->id }}" style="font-size: 0.8rem;">
+                                                                                        {{ $unit->file_certificate ? 'Ganti: ' . basename($unit->file_certificate) : 'Pilih berkas sertifikat atau seret ke sini' }}
+                                                                                    </span>
+                                                                                    <small class="text-muted" style="font-size: 0.7rem;">PDF / Scan Gambar (Maks 5MB)</small>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        @if($unit->file_certificate)
+                                                                            <div class="mt-1.5 d-flex align-items-center justify-content-between px-1">
+                                                                                <a href="{{ asset($unit->file_certificate) }}" target="_blank" class="small text-primary text-decoration-none fw-bold d-inline-flex align-items-center gap-1">
+                                                                                    <i class="mdi mdi-open-in-new"></i>Buka Berkas Saat Ini
+                                                                                </a>
+                                                                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25" style="font-size: 0.68rem;"><i class="mdi mdi-check-circle-outline me-0.5"></i>Tersimpan</span>
+                                                                            </div>
+                                                                        @endif
                                                                     </div>
 
-                                                                    <!-- Baris 7: Full Width -->
+                                                                    <!-- Baris 5: Keterangan Tambahan (Textarea) -->
                                                                     <div class="col-12">
                                                                         <label class="form-label fw-bold small mb-1">Keterangan Tambahan</label>
-                                                                        <input type="text" name="description" class="form-control" value="{{ $unit->description }}" placeholder="Catatan tambahan (opsional)">
+                                                                        <textarea name="description" class="form-control" rows="3" placeholder="Catatan tambahan (opsional)..." style="min-height: 80px; resize: vertical;">{{ $unit->description }}</textarea>
                                                                     </div>
                                                                 </div>
                                                             </form>
@@ -1575,7 +1502,7 @@ body.modal-open .page-body-wrapper {
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="12" class="text-center text-muted py-4">
+                                        <td colspan="10" class="text-center text-muted py-4">
                                             <i class="mdi mdi-alert-circle-outline d-block mb-1" style="font-size: 2rem; color: #da8cff;"></i>
                                             Belum ada data unit kavling untuk tanah induk ini.
                                         </td>
@@ -2085,7 +2012,7 @@ body.modal-open .page-body-wrapper {
                         <form action="{{ route('properti.storeKavling', $land->id) }}" method="POST" id="formTambahUnitManual" enctype="multipart/form-data">
                             @csrf
                             <div class="row g-3">
-                                <!-- Baris 1: 2 Kolom Sejajar -->
+                                <!-- Baris 1: Blok & Nomor Unit -->
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-bold small mb-1">Blok / Kode <span class="text-danger">*</span></label>
                                     <input type="text" name="block" class="form-control" placeholder="Contoh: A" required>
@@ -2095,7 +2022,7 @@ body.modal-open .page-body-wrapper {
                                     <input type="text" name="unit_number" class="form-control" placeholder="Contoh: 1" required>
                                 </div>
 
-                                <!-- Baris 2: 2 Kolom Sejajar -->
+                                <!-- Baris 2: Nama Unit & Jenis Unit -->
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-bold small mb-1">Nama Unit</label>
                                     <input type="text" name="unit_name" class="form-control" placeholder="Contoh: Cluster A">
@@ -2109,7 +2036,7 @@ body.modal-open .page-body-wrapper {
                                     </select>
                                 </div>
 
-                                <!-- Baris 3: 2 Kolom Sejajar -->
+                                <!-- Baris 3: Type Bangunan & Luas Tanah -->
                                 <div class="col-12 col-md-6">
                                     <label class="form-label fw-bold small mb-1">Type Bangunan <span class="text-danger">*</span></label>
                                     <input type="text" name="type" class="form-control" placeholder="Contoh: 36/60" required>
@@ -2119,49 +2046,31 @@ body.modal-open .page-body-wrapper {
                                     <input type="number" name="area" class="form-control" placeholder="60" min="1" step="any" required>
                                 </div>
 
-                                <!-- Baris 4: 2 Kolom Sejajar -->
+                                <!-- Baris 4: Sertifikat Unit -->
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label fw-bold small mb-1">Luas Bangunan (m²) <span class="text-danger">*</span></label>
-                                    <input type="number" name="building_area" class="form-control" placeholder="36" min="1" step="any" required>
+                                    <label class="form-label fw-bold small mb-1">Nomor Sertifikat</label>
+                                    <input type="text" name="certificate_no" class="form-control" placeholder="Contoh: SHGB No. 1234">
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label fw-bold small mb-1">Harga Unit (Rp) <span class="text-danger">*</span></label>
-                                    <input type="text" name="price" class="form-control price-format" placeholder="150.000.000" required>
-                                </div>
-
-                                <!-- Baris 5: 2 Kolom Sejajar -->
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label fw-bold small mb-1">Harga IJB (Rp)</label>
-                                    <input type="text" name="ijb_price" class="form-control price-format" placeholder="150.000.000">
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label fw-bold small mb-1">Harga AJB (Rp)</label>
-                                    <input type="text" name="ajb_price" class="form-control price-format" placeholder="150.000.000">
-                                </div>
-
-                                <!-- Baris 6: 2 Kolom Sejajar -->
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label fw-bold small mb-1">Hadap</label>
-                                    <select name="facing" class="form-control">
-                                        <option value="Utara">Utara</option>
-                                        <option value="Selatan">Selatan</option>
-                                        <option value="Timur">Timur</option>
-                                        <option value="Barat">Barat</option>
-                                    </select>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label fw-bold small mb-1">Posisi</label>
-                                    <select name="position" class="form-control">
-                                        <option value="Hook">Hook</option>
-                                        <option value="Tengah" selected>Tengah</option>
-                                        <option value="Sudut">Sudut</option>
-                                    </select>
+                                    <label class="form-label fw-bold small mb-1">Dokumen Sertifikat</label>
+                                    <div class="spk-upload-box py-2 px-3">
+                                        <input type="file" name="file_certificate" accept=".pdf,image/*" onchange="updateCertFileName(this, 'certFileNameTambah')">
+                                        <div class="d-flex align-items-center justify-content-start gap-2.5">
+                                            <div class="rounded-circle p-1.5 bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+                                                <i class="mdi mdi-file-certificate fs-5"></i>
+                                            </div>
+                                            <div class="text-start overflow-hidden">
+                                                <span class="fw-bold text-dark d-block text-truncate" id="certFileNameTambah" style="font-size: 0.8rem;">Pilih berkas sertifikat atau seret ke sini</span>
+                                                <small class="text-muted" style="font-size: 0.7rem;">PDF / Scan Gambar (Maks 5MB)</small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <!-- Baris 7: Full Width -->
+                                <!-- Baris 5: Keterangan Tambahan (Textarea) -->
                                 <div class="col-12">
                                     <label class="form-label fw-bold small mb-1">Keterangan Tambahan</label>
-                                    <input type="text" name="description" class="form-control" placeholder="Catatan tambahan (opsional)">
+                                    <textarea name="description" class="form-control" rows="3" placeholder="Catatan tambahan (opsional)..." style="min-height: 80px; resize: vertical;"></textarea>
                                 </div>
                             </div>
                         </form>
@@ -2470,20 +2379,15 @@ body.modal-open .page-body-wrapper {
                         </div>
                         <div class="col-md-4">
                             <div class="timeline-detail-item">
-                                <div class="timeline-detail-label"><i class="mdi mdi-home-city-outline"></i>Luas Bangunan</div>
-                                <div class="timeline-detail-value" id="leg_building">-</div>
+                                <div class="timeline-detail-label"><i class="mdi mdi-certificate-outline"></i>Nomor Sertifikat</div>
+                                <div class="timeline-detail-value" id="leg_certificate_no">-</div>
                             </div>
                         </div>
+
                         <div class="col-md-4">
                             <div class="timeline-detail-item">
-                                <div class="timeline-detail-label"><i class="mdi mdi-cash-outline"></i>Harga</div>
-                                <div class="timeline-detail-value price" id="leg_price">-</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="timeline-detail-item">
-                                <div class="timeline-detail-label"><i class="mdi mdi-compass-outline"></i>Arah Hadap</div>
-                                <div class="timeline-detail-value" id="leg_direction">-</div>
+                                <div class="timeline-detail-label"><i class="mdi mdi-file-certificate-outline"></i>Dokumen Sertifikat</div>
+                                <div class="timeline-detail-value" id="leg_certificate_doc">-</div>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -2593,6 +2497,43 @@ body.modal-open .page-body-wrapper {
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+// Global File change preview for Dokumen Sertifikat
+function updateCertFileName(input, targetId) {
+    const file = input.files ? input.files[0] : null;
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    if (file) {
+        if (file.size > 10 * 1024 * 1024) {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire('Peringatan', 'Ukuran berkas dokumen sertifikat maksimal 10MB!', 'warning');
+            } else {
+                alert('Ukuran berkas dokumen sertifikat maksimal 10MB!');
+            }
+            input.value = '';
+            target.innerText = 'Pilih berkas sertifikat atau seret ke sini';
+            const box = input.closest('.spk-upload-box');
+            if (box) {
+                box.style.borderColor = '';
+                box.style.backgroundColor = '';
+            }
+            return;
+        }
+        target.innerHTML = '<span class="text-primary fw-bold d-inline-flex align-items-center"><i class="mdi mdi-file-check me-1 text-success fs-6"></i>' + file.name + '</span>';
+        const box = input.closest('.spk-upload-box');
+        if (box) {
+            box.style.borderColor = '#28a745';
+            box.style.backgroundColor = '#f0fff4';
+        }
+    } else {
+        target.innerText = 'Pilih berkas sertifikat atau seret ke sini';
+        const box = input.closest('.spk-upload-box');
+        if (box) {
+            box.style.borderColor = '';
+            box.style.backgroundColor = '';
+        }
+    }
+}
+
 // Switch Siteplan vs Matriks Grid View vs Progress Bangunan
 function switchSiteplanView(view) {
     // Reset all tab button active states
@@ -2650,6 +2591,8 @@ const legalUnitsData = [
         building: "{{ $unit->building_area ?? '-' }}",
         price: {{ $unit->price ?? 0 }},
         direction: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->facing ?? ($unit->direction ?? '-'))) }}",
+        certificateNo: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->certificate_no ?? '')) }}",
+        fileCertificate: "{{ $unit->file_certificate ? asset($unit->file_certificate) : '' }}",
         statusRaw: "{{ $unit->status ?? 'ready' }}",
         statusText: "{{ ucfirst($unit->status ?? 'ready') }}",
         construction: "{{ $unit->construction_progress ?? 'belum_mulai' }}",
@@ -2675,9 +2618,25 @@ function populateModalLegal(data) {
     document.getElementById('leg_jenis').innerText = data.jenis ? (data.jenis.charAt(0).toUpperCase() + data.jenis.slice(1)) : '-';
     document.getElementById('leg_type').innerText = data.type || '-';
     document.getElementById('leg_area').innerText = data.area ? data.area + ' m²' : '-';
-    document.getElementById('leg_building').innerText = data.building ? data.building + ' m²' : '-';
-    document.getElementById('leg_price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.price || 0);
-    document.getElementById('leg_direction').innerText = data.direction || '-';
+    if (document.getElementById('leg_building')) {
+        document.getElementById('leg_building').innerText = data.building ? data.building + ' m²' : '-';
+    }
+    if (document.getElementById('leg_direction')) {
+        document.getElementById('leg_direction').innerText = data.direction || '-';
+    }
+    if (document.getElementById('leg_certificate_no')) {
+        document.getElementById('leg_certificate_no').innerText = data.certificateNo ? data.certificateNo : '-';
+    }
+    if (document.getElementById('leg_certificate_doc')) {
+        if (data.fileCertificate) {
+            document.getElementById('leg_certificate_doc').innerHTML = `<a href="${data.fileCertificate}" target="_blank" class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 py-1 px-2 text-decoration-none d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;"><i class="mdi mdi-file-document-outline"></i>Lihat Dokumen</a>`;
+        } else {
+            document.getElementById('leg_certificate_doc').innerHTML = `<span class="text-muted small">-</span>`;
+        }
+    }
+    if (document.getElementById('leg_price')) {
+        document.getElementById('leg_price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.price || 0);
+    }
     document.getElementById('leg_address').innerText = data.address || '-';
 
     // Status Penjualan (Jelas & Kontras Tinggi)

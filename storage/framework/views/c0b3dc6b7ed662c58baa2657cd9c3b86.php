@@ -1,12 +1,10 @@
-@extends('layouts.partial.app')
+<?php $__env->startSection('title', 'Dashboard - Property Management App'); ?>
 
-@section('title', 'Dashboard - Property Management App')
+<?php $__env->startPush('styles'); ?>
+    <link rel="stylesheet" href="<?php echo e(asset('css/dashboard-clean.css')); ?>?v=<?php echo e(time()); ?>">
+<?php $__env->stopPush(); ?>
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
-@endpush
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="dash-wrapper">
 
     <!-- 1. HEADER SECTION -->
@@ -14,7 +12,8 @@
         <!-- Kiri: Greeting Title & Subtitle -->
         <div>
             <h1 class="dash-header-title">
-                Selamat datang, {{ auth()->user()->name ?? 'Admin' }}
+                Selamat datang, <?php echo e(auth()->user()->name ?? 'Admin'); ?>
+
             </h1>
             <p class="dash-header-sub">
                 Berikut ringkasan aset, progres, penjualan dan keuangan perusahaan.
@@ -28,10 +27,11 @@
             </div>
             <div>
                 <div class="dash-header-date-text">
-                    {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}
+                    <?php echo e(\Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y')); ?>
+
                 </div>
                 <div class="dash-header-date-sub">
-                    Selamat bekerja, {{ auth()->user()->name ?? 'Admin' }}!
+                    Selamat bekerja, <?php echo e(auth()->user()->name ?? 'Admin'); ?>!
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Total Tanah / Proyek</div>
-                    <div class="dash-kpi-val">{{ $totalProperty ?? 0 }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalProperty ?? 0); ?></div>
                     <div class="dash-kpi-sub">Tanah Induk Terdaftar</div>
                 </div>
             </div>
@@ -65,11 +65,11 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Total Unit</div>
-                    <div class="dash-kpi-val">{{ number_format($totalUnit ?? 0, 0, ',', '.') }}</div>
+                    <div class="dash-kpi-val"><?php echo e(number_format($totalUnit ?? 0, 0, ',', '.')); ?></div>
                     <div class="dash-kpi-sub">Kavling & Unit Bangunan</div>
                 </div>
             </div>
-            <a href="{{ route('marketing.jual-unit') }}" class="dash-kpi-action blue" title="Lihat Unit">
+            <a href="<?php echo e(route('marketing.jual-unit')); ?>" class="dash-kpi-action blue" title="Lihat Unit">
                 <i class="mdi mdi-arrow-right"></i>
             </a>
         </div>
@@ -82,7 +82,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Total Pendapatan</div>
-                    <div class="dash-kpi-val">Rp {{ number_format($totalPendapatan ?? 0, 0, ',', '.') }}</div>
+                    <div class="dash-kpi-val">Rp <?php echo e(number_format($totalPendapatan ?? 0, 0, ',', '.')); ?></div>
                     <div class="dash-kpi-sub">Penerimaan Dana Masuk</div>
                 </div>
             </div>
@@ -99,7 +99,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Total Piutang</div>
-                    <div class="dash-kpi-val">Rp {{ number_format($totalPiutang ?? 0, 0, ',', '.') }}</div>
+                    <div class="dash-kpi-val">Rp <?php echo e(number_format($totalPiutang ?? 0, 0, ',', '.')); ?></div>
                     <div class="dash-kpi-sub">Tagihan & Belanja Lahan</div>
                 </div>
             </div>
@@ -125,7 +125,7 @@
                         <p class="dash-panel-subtitle">5 proyek terbaru yang sedang dikelola</p>
                     </div>
                 </div>
-                <a href="{{ route('proyek.index') }}" class="dash-link-all">
+                <a href="<?php echo e(route('proyek.index')); ?>" class="dash-link-all">
                     Lihat Semua <i class="mdi mdi-arrow-right"></i>
                 </a>
             </div>
@@ -146,8 +146,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($recentProjects as $index => $proj)
-                            @php
+                        <?php $__empty_1 = true; $__currentLoopData = $recentProjects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $proj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <?php
                                 $tahap = $proj->development_status ?: 'Perencanaan';
                                 $badgeClass = match(strtolower($tahap)) {
                                     'selesai' => 'green',
@@ -158,43 +158,43 @@
                                     default => 'gray'
                                 };
                                 $progress = $proj->overall_progress_percentage;
-                            @endphp
+                            ?>
                             <tr>
-                                <td style="font-weight: 700; text-align: center;">{{ $index + 1 }}</td>
-                                <td style="font-weight: 700; color: #0f172a;">{{ $proj->name }}</td>
-                                <td style="color: #64748b;">{{ $proj->city ?? ($proj->district ?? 'Jember') }}</td>
+                                <td style="font-weight: 700; text-align: center;"><?php echo e($index + 1); ?></td>
+                                <td style="font-weight: 700; color: #0f172a;"><?php echo e($proj->name); ?></td>
+                                <td style="color: #64748b;"><?php echo e($proj->city ?? ($proj->district ?? 'Jember')); ?></td>
                                 <td style="color: #475569; font-weight: 500;">
-                                    @if($proj->area >= 10000)
-                                        {{ number_format($proj->area / 10000, 1, ',', '.') }} Ha
-                                    @else
-                                        {{ number_format($proj->area, 0, ',', '.') }} m²
-                                    @endif
+                                    <?php if($proj->area >= 10000): ?>
+                                        <?php echo e(number_format($proj->area / 10000, 1, ',', '.')); ?> Ha
+                                    <?php else: ?>
+                                        <?php echo e(number_format($proj->area, 0, ',', '.')); ?> m²
+                                    <?php endif; ?>
                                 </td>
                                 <td style="text-align: center;">
-                                    <span class="dash-badge gray" style="font-weight: 700;">{{ $proj->units_count ?? $proj->units->count() }}</span>
+                                    <span class="dash-badge gray" style="font-weight: 700;"><?php echo e($proj->units_count ?? $proj->units->count()); ?></span>
                                 </td>
                                 <td>
-                                    <span class="dash-badge {{ $badgeClass }}">{{ $tahap }}</span>
+                                    <span class="dash-badge <?php echo e($badgeClass); ?>"><?php echo e($tahap); ?></span>
                                 </td>
                                 <td>
                                     <div class="dash-progress-wrap">
                                         <div class="dash-progress-bar-bg">
-                                            <div class="dash-progress-bar-fill" style="width: {{ $progress }}%; background-color: {{ $progress >= 70 ? '#7c3aed' : ($progress >= 40 ? '#0284c7' : '#ea580c') }};"></div>
+                                            <div class="dash-progress-bar-fill" style="width: <?php echo e($progress); ?>%; background-color: <?php echo e($progress >= 70 ? '#7c3aed' : ($progress >= 40 ? '#0284c7' : '#ea580c')); ?>;"></div>
                                         </div>
-                                        <span style="font-size: 0.68rem; font-weight: 700; color: #334155;">{{ $progress }}%</span>
+                                        <span style="font-size: 0.68rem; font-weight: 700; color: #334155;"><?php echo e($progress); ?>%</span>
                                     </div>
                                 </td>
                                 <td style="text-align: center;">
-                                    <a href="{{ route('proyek.index') }}" class="dash-action-btn" title="Kelola Proyek">
+                                    <a href="<?php echo e(route('proyek.index')); ?>" class="dash-action-btn" title="Kelola Proyek">
                                         <i class="mdi mdi-dots-horizontal"></i>
                                     </a>
                                 </td>
                             </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
                                 <td colspan="8" style="text-align: center; color: #94a3b8; padding: 24px;">Belum ada data proyek lahan aktif</td>
                             </tr>
-                        @endforelse
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -212,7 +212,7 @@
                         <p class="dash-panel-subtitle">Ringkasan pengurusan izin di semua proyek</p>
                     </div>
                 </div>
-                <a href="{{ route('perizinan.index') }}" class="dash-link-all">
+                <a href="<?php echo e(route('perizinan.index')); ?>" class="dash-link-all">
                     Lihat Semua <i class="mdi mdi-arrow-right"></i>
                 </a>
             </div>
@@ -221,19 +221,19 @@
             <div class="dash-perizinan-summary">
                 <div class="dash-perizinan-box gray">
                     <div class="label">Total Izin</div>
-                    <div class="num">{{ $perizinanSummary['total'] ?? 0 }}</div>
+                    <div class="num"><?php echo e($perizinanSummary['total'] ?? 0); ?></div>
                 </div>
                 <div class="dash-perizinan-box green">
                     <div class="label">Selesai</div>
-                    <div class="num">{{ $perizinanSummary['selesai'] ?? 0 }}</div>
+                    <div class="num"><?php echo e($perizinanSummary['selesai'] ?? 0); ?></div>
                 </div>
                 <div class="dash-perizinan-box blue">
                     <div class="label">Berjalan</div>
-                    <div class="num">{{ $perizinanSummary['berjalan'] ?? 0 }}</div>
+                    <div class="num"><?php echo e($perizinanSummary['berjalan'] ?? 0); ?></div>
                 </div>
                 <div class="dash-perizinan-box rose">
                     <div class="label">Tertunda</div>
-                    <div class="num">{{ $perizinanSummary['tertunda'] ?? 0 }}</div>
+                    <div class="num"><?php echo e($perizinanSummary['tertunda'] ?? 0); ?></div>
                 </div>
             </div>
 
@@ -252,31 +252,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($perizinanRows as $idx => $pz)
+                        <?php $__empty_1 = true; $__currentLoopData = $perizinanRows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idx => $pz): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr>
-                                <td style="font-weight: 700; text-align: center;">{{ $idx + 1 }}</td>
-                                <td style="font-weight: 700; color: #0f172a;">{{ $pz['nama'] }}</td>
-                                <td style="text-align: center; font-weight: 700; color: #334155;">{{ $pz['total'] }}</td>
+                                <td style="font-weight: 700; text-align: center;"><?php echo e($idx + 1); ?></td>
+                                <td style="font-weight: 700; color: #0f172a;"><?php echo e($pz['nama']); ?></td>
+                                <td style="text-align: center; font-weight: 700; color: #334155;"><?php echo e($pz['total']); ?></td>
                                 <td style="text-align: center;">
-                                    <span class="dash-pill-count {{ $pz['selesai'] > 0 ? 'green' : 'gray' }}">{{ $pz['selesai'] }}</span>
+                                    <span class="dash-pill-count <?php echo e($pz['selesai'] > 0 ? 'green' : 'gray'); ?>"><?php echo e($pz['selesai']); ?></span>
                                 </td>
                                 <td style="text-align: center;">
-                                    <span class="dash-pill-count {{ $pz['berjalan'] > 0 ? 'blue' : 'gray' }}">{{ $pz['berjalan'] }}</span>
+                                    <span class="dash-pill-count <?php echo e($pz['berjalan'] > 0 ? 'blue' : 'gray'); ?>"><?php echo e($pz['berjalan']); ?></span>
                                 </td>
                                 <td style="text-align: center;">
-                                    <span class="dash-pill-count {{ $pz['tertunda'] > 0 ? 'rose' : 'gray' }}">{{ $pz['tertunda'] }}</span>
+                                    <span class="dash-pill-count <?php echo e($pz['tertunda'] > 0 ? 'rose' : 'gray'); ?>"><?php echo e($pz['tertunda']); ?></span>
                                 </td>
                                 <td style="text-align: center;">
-                                    <a href="{{ route('perizinan.index') }}" class="dash-action-btn" title="Detail Perizinan">
+                                    <a href="<?php echo e(route('perizinan.index')); ?>" class="dash-action-btn" title="Detail Perizinan">
                                         <i class="mdi mdi-dots-horizontal"></i>
                                     </a>
                                 </td>
                             </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
                                 <td colspan="7" style="text-align: center; color: #94a3b8; padding: 24px;">Belum ada data status perizinan</td>
                             </tr>
-                        @endforelse
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -299,7 +299,7 @@
                         <p class="dash-panel-subtitle">Ringkasan status unit di seluruh proyek</p>
                     </div>
                 </div>
-                <a href="{{ route('marketing.jual-unit') }}" class="dash-link-all">
+                <a href="<?php echo e(route('marketing.jual-unit')); ?>" class="dash-link-all">
                     Lihat Semua <i class="mdi mdi-arrow-right"></i>
                 </a>
             </div>
@@ -315,9 +315,9 @@
                         </div>
                         <span class="dash-unit-name">Tersedia</span>
                     </div>
-                    <div class="dash-unit-val">{{ number_format($unitStats['ready']) }}</div>
+                    <div class="dash-unit-val"><?php echo e(number_format($unitStats['ready'])); ?></div>
                     <div class="dash-unit-pct green">
-                        ● {{ $unitStats['ready_pct'] }}%
+                        ● <?php echo e($unitStats['ready_pct']); ?>%
                     </div>
                 </div>
 
@@ -329,9 +329,9 @@
                         </div>
                         <span class="dash-unit-name">Booking</span>
                     </div>
-                    <div class="dash-unit-val">{{ number_format($unitStats['booking']) }}</div>
+                    <div class="dash-unit-val"><?php echo e(number_format($unitStats['booking'])); ?></div>
                     <div class="dash-unit-pct blue">
-                        ● {{ $unitStats['booking_pct'] }}%
+                        ● <?php echo e($unitStats['booking_pct']); ?>%
                     </div>
                 </div>
 
@@ -343,9 +343,9 @@
                         </div>
                         <span class="dash-unit-name">Terjual</span>
                     </div>
-                    <div class="dash-unit-val">{{ number_format($unitStats['sold']) }}</div>
+                    <div class="dash-unit-val"><?php echo e(number_format($unitStats['sold'])); ?></div>
                     <div class="dash-unit-pct purple">
-                        ● {{ $unitStats['sold_pct'] }}%
+                        ● <?php echo e($unitStats['sold_pct']); ?>%
                     </div>
                 </div>
 
@@ -357,9 +357,9 @@
                         </div>
                         <span class="dash-unit-name">KPR</span>
                     </div>
-                    <div class="dash-unit-val">{{ number_format($unitStats['kpr']) }}</div>
+                    <div class="dash-unit-val"><?php echo e(number_format($unitStats['kpr'])); ?></div>
                     <div class="dash-unit-pct amber">
-                        ● {{ $unitStats['kpr_pct'] }}%
+                        ● <?php echo e($unitStats['kpr_pct']); ?>%
                     </div>
                 </div>
 
@@ -369,12 +369,12 @@
             <div class="dash-unit-ratio">
                 <span>Rasio Komposisi Unit:</span>
                 <div class="dash-ratio-bar">
-                    <div class="dash-ratio-segment" style="width: {{ $unitStats['ready_pct'] }}%; background-color: #10b981;" title="Tersedia {{ $unitStats['ready_pct'] }}%"></div>
-                    <div class="dash-ratio-segment" style="width: {{ $unitStats['booking_pct'] }}%; background-color: #3b82f6;" title="Booking {{ $unitStats['booking_pct'] }}%"></div>
-                    <div class="dash-ratio-segment" style="width: {{ $unitStats['sold_pct'] }}%; background-color: #a855f7;" title="Terjual {{ $unitStats['sold_pct'] }}%"></div>
-                    <div class="dash-ratio-segment" style="width: {{ $unitStats['kpr_pct'] }}%; background-color: #f59e0b;" title="KPR {{ $unitStats['kpr_pct'] }}%"></div>
+                    <div class="dash-ratio-segment" style="width: <?php echo e($unitStats['ready_pct']); ?>%; background-color: #10b981;" title="Tersedia <?php echo e($unitStats['ready_pct']); ?>%"></div>
+                    <div class="dash-ratio-segment" style="width: <?php echo e($unitStats['booking_pct']); ?>%; background-color: #3b82f6;" title="Booking <?php echo e($unitStats['booking_pct']); ?>%"></div>
+                    <div class="dash-ratio-segment" style="width: <?php echo e($unitStats['sold_pct']); ?>%; background-color: #a855f7;" title="Terjual <?php echo e($unitStats['sold_pct']); ?>%"></div>
+                    <div class="dash-ratio-segment" style="width: <?php echo e($unitStats['kpr_pct']); ?>%; background-color: #f59e0b;" title="KPR <?php echo e($unitStats['kpr_pct']); ?>%"></div>
                 </div>
-                <span style="font-weight: 700; color: #334155;">Total {{ number_format($unitStats['total']) }}</span>
+                <span style="font-weight: 700; color: #334155;">Total <?php echo e(number_format($unitStats['total'])); ?></span>
             </div>
         </div>
 
@@ -390,7 +390,7 @@
                         <p class="dash-panel-subtitle">Progress pembangunan per unit properti</p>
                     </div>
                 </div>
-                <a href="{{ route('marketing.jual-unit') }}" class="dash-link-all">
+                <a href="<?php echo e(route('marketing.jual-unit')); ?>" class="dash-link-all">
                     Lihat Semua <i class="mdi mdi-arrow-right"></i>
                 </a>
             </div>
@@ -409,57 +409,58 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($recentUnitProgress as $uIdx => $u)
-                            @php
+                        <?php $__empty_1 = true; $__currentLoopData = $recentUnitProgress; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $uIdx => $u): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <?php
                                 $progressPct = $u->construction_progress_percentage;
-                            @endphp
+                            ?>
                             <tr>
-                                <td style="font-weight: 700; text-align: center;">{{ $uIdx + 1 }}</td>
+                                <td style="font-weight: 700; text-align: center;"><?php echo e($uIdx + 1); ?></td>
                                 <td>
-                                    <div style="font-weight: 700; color: #0f172a;">Blok {{ $u->block }}.{{ $u->unit_number }} {{ $u->unit_name }}</div>
-                                    <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 1px;">{{ $u->landBank?->name ?? 'Proyek' }}</div>
+                                    <div style="font-weight: 700; color: #0f172a;">Blok <?php echo e($u->block); ?>.<?php echo e($u->unit_number); ?> <?php echo e($u->unit_name); ?></div>
+                                    <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 1px;"><?php echo e($u->landBank?->name ?? 'Proyek'); ?></div>
                                 </td>
                                 <td style="color: #64748b; font-weight: 500;">
-                                    {{ $u->created_at ? $u->created_at->addMonths(4)->translatedFormat('M Y') : 'Des 2025' }}
+                                    <?php echo e($u->created_at ? $u->created_at->addMonths(4)->translatedFormat('M Y') : 'Des 2025'); ?>
+
                                 </td>
                                 <td>
                                     <div class="dash-progress-wrap">
                                         <div class="dash-progress-bar-bg" style="width: 80px;">
-                                            <div class="dash-progress-bar-fill" style="width: {{ $progressPct }}%; background-color: {{ $progressPct >= 80 ? '#7c3aed' : ($progressPct >= 40 ? '#0284c7' : '#ea580c') }};"></div>
+                                            <div class="dash-progress-bar-fill" style="width: <?php echo e($progressPct); ?>%; background-color: <?php echo e($progressPct >= 80 ? '#7c3aed' : ($progressPct >= 40 ? '#0284c7' : '#ea580c')); ?>;"></div>
                                         </div>
-                                        <span style="font-size: 0.75rem; font-weight: 800; color: #0f172a; width: 30px; text-align: right;">{{ $progressPct }}%</span>
+                                        <span style="font-size: 0.75rem; font-weight: 800; color: #0f172a; width: 30px; text-align: right;"><?php echo e($progressPct); ?>%</span>
                                     </div>
                                 </td>
                                 <td style="text-align: center;">
-                                    @if($progressPct >= 100)
+                                    <?php if($progressPct >= 100): ?>
                                         <span class="dash-status-pill on-track">
                                             <span class="dot"></span> Selesai
                                         </span>
-                                    @elseif($progressPct >= 50)
+                                    <?php elseif($progressPct >= 50): ?>
                                         <span class="dash-status-pill on-track">
                                             <span class="dot"></span> On Track
                                         </span>
-                                    @elseif($progressPct > 0)
+                                    <?php elseif($progressPct > 0): ?>
                                         <span class="dash-status-pill warning">
                                             <span class="dot"></span> Perhatian
                                         </span>
-                                    @else
+                                    <?php else: ?>
                                         <span class="dash-status-pill" style="background:#f1f5f9; color:#64748b;">
                                             <span class="dot" style="background:#94a3b8;"></span> Belum Mulai
                                         </span>
-                                    @endif
+                                    <?php endif; ?>
                                 </td>
                                 <td style="text-align: center;">
-                                    <a href="{{ route('marketing.jual-unit') }}" class="dash-action-btn" title="Detail Unit">
+                                    <a href="<?php echo e(route('marketing.jual-unit')); ?>" class="dash-action-btn" title="Detail Unit">
                                         <i class="mdi mdi-dots-horizontal"></i>
                                     </a>
                                 </td>
                             </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
                                 <td colspan="6" style="text-align: center; color: #94a3b8; padding: 24px;">Belum ada progres unit yang tercatat</td>
                             </tr>
-                        @endforelse
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -483,7 +484,7 @@
                             <p class="dash-panel-subtitle">5 tugas terbaru dari seluruh divisi</p>
                         </div>
                     </div>
-                    <a href="{{ route('perizinan.tugas.index') }}" class="dash-link-all">
+                    <a href="<?php echo e(route('perizinan.tugas.index')); ?>" class="dash-link-all">
                         Lihat Semua <i class="mdi mdi-arrow-right"></i>
                     </a>
                 </div>
@@ -504,8 +505,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($recentTeamTasks as $tIdx => $t)
-                                @php
+                            <?php $__empty_1 = true; $__currentLoopData = $recentTeamTasks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tIdx => $t): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                <?php
                                     $taskStatus = strtolower($t->status ?? '');
                                     $taskBadge = match(true) {
                                         str_contains($taskStatus, 'selesai') => 'green',
@@ -513,37 +514,38 @@
                                         str_contains($taskStatus, 'proses') || str_contains($taskStatus, 'berjalan') => 'yellow',
                                         default => 'blue'
                                     };
-                                @endphp
+                                ?>
                                 <tr>
-                                    <td style="font-weight: 700; text-align: center;">{{ $tIdx + 1 }}</td>
-                                    <td style="font-weight: 700; color: #0f172a;">{{ $t->nama_tugas }}</td>
-                                    <td style="color: #475569;">{{ $t->proyek_nama ?? ($t->proyek?->name ?? 'Semua Proyek') }}</td>
+                                    <td style="font-weight: 700; text-align: center;"><?php echo e($tIdx + 1); ?></td>
+                                    <td style="font-weight: 700; color: #0f172a;"><?php echo e($t->nama_tugas); ?></td>
+                                    <td style="color: #475569;"><?php echo e($t->proyek_nama ?? ($t->proyek?->name ?? 'Semua Proyek')); ?></td>
                                     <td>
                                         <div style="display: flex; align-items: center; gap: 6px;">
                                             <div style="width: 22px; height: 22px; border-radius: 50%; background: #ede9fe; color: #7c3aed; font-size: 0.65rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                                                 <i class="mdi mdi-account" style="font-size: 0.75rem;"></i>
                                             </div>
                                             <span style="font-weight: 600; color: #1e293b; font-size: 0.76rem; white-space: nowrap;">
-                                                {{ $t->employee?->name ?? 'Belum Ditugaskan' }}
+                                                <?php echo e($t->employee?->name ?? 'Belum Ditugaskan'); ?>
+
                                             </span>
                                         </div>
                                     </td>
-                                    <td style="color: #64748b;">{{ $t->employee?->division?->name ?? 'Legal' }}</td>
-                                    <td style="color: #64748b;">{{ $t->deadline ? $t->deadline->translatedFormat('d M Y') : '-' }}</td>
+                                    <td style="color: #64748b;"><?php echo e($t->employee?->division?->name ?? 'Legal'); ?></td>
+                                    <td style="color: #64748b;"><?php echo e($t->deadline ? $t->deadline->translatedFormat('d M Y') : '-'); ?></td>
                                     <td style="text-align: center;">
-                                        <span class="dash-badge {{ $taskBadge }}">{{ $t->status ?: 'Menunggu' }}</span>
+                                        <span class="dash-badge <?php echo e($taskBadge); ?>"><?php echo e($t->status ?: 'Menunggu'); ?></span>
                                     </td>
                                     <td style="text-align: center;">
-                                        <a href="{{ route('perizinan.tugas.index') }}" class="dash-action-btn" title="Detail Tugas">
+                                        <a href="<?php echo e(route('perizinan.tugas.index')); ?>" class="dash-action-btn" title="Detail Tugas">
                                             <i class="mdi mdi-dots-horizontal"></i>
                                         </a>
                                     </td>
                                 </tr>
-                            @empty
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
                                     <td colspan="8" style="text-align: center; color: #94a3b8; padding: 24px;">Belum ada tugas tim yang aktif</td>
                                 </tr>
-                            @endforelse
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -563,7 +565,7 @@
                             <p class="dash-panel-subtitle">Rekap penjualan unit dan posisi keuangan</p>
                         </div>
                     </div>
-                    <a href="{{ route('marketing.list_pengajuan') }}" class="dash-link-all">
+                    <a href="<?php echo e(route('marketing.list_pengajuan')); ?>" class="dash-link-all">
                         Lihat Semua <i class="mdi mdi-arrow-right"></i>
                     </a>
                 </div>
@@ -578,7 +580,7 @@
                         </div>
                         <div class="dash-finance-mini-info">
                             <div class="dash-finance-mini-label">Unit Terjual</div>
-                            <div class="dash-finance-mini-val">{{ number_format($financeSummary['unit_terjual']) }}</div>
+                            <div class="dash-finance-mini-val"><?php echo e(number_format($financeSummary['unit_terjual'])); ?></div>
                         </div>
                     </div>
 
@@ -590,13 +592,14 @@
                         <div class="dash-finance-mini-info">
                             <div class="dash-finance-mini-label">Nilai Penjualan</div>
                             <div class="dash-finance-mini-val">
-                                @if($financeSummary['nilai_penjualan'] >= 1000000000)
-                                    {{ number_format($financeSummary['nilai_penjualan'] / 1000000000, 1, ',', '.') }} M
-                                @elseif($financeSummary['nilai_penjualan'] >= 1000000)
-                                    {{ number_format($financeSummary['nilai_penjualan'] / 1000000, 1, ',', '.') }} Jt
-                                @else
-                                    {{ number_format($financeSummary['nilai_penjualan'], 0, ',', '.') }}
-                                @endif
+                                <?php if($financeSummary['nilai_penjualan'] >= 1000000000): ?>
+                                    <?php echo e(number_format($financeSummary['nilai_penjualan'] / 1000000000, 1, ',', '.')); ?> M
+                                <?php elseif($financeSummary['nilai_penjualan'] >= 1000000): ?>
+                                    <?php echo e(number_format($financeSummary['nilai_penjualan'] / 1000000, 1, ',', '.')); ?> Jt
+                                <?php else: ?>
+                                    <?php echo e(number_format($financeSummary['nilai_penjualan'], 0, ',', '.')); ?>
+
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -609,13 +612,14 @@
                         <div class="dash-finance-mini-info">
                             <div class="dash-finance-mini-label">Uang Diterima</div>
                             <div class="dash-finance-mini-val">
-                                @if($financeSummary['uang_diterima'] >= 1000000000)
-                                    {{ number_format($financeSummary['uang_diterima'] / 1000000000, 1, ',', '.') }} M
-                                @elseif($financeSummary['uang_diterima'] >= 1000000)
-                                    {{ number_format($financeSummary['uang_diterima'] / 1000000, 1, ',', '.') }} Jt
-                                @else
-                                    {{ number_format($financeSummary['uang_diterima'], 0, ',', '.') }}
-                                @endif
+                                <?php if($financeSummary['uang_diterima'] >= 1000000000): ?>
+                                    <?php echo e(number_format($financeSummary['uang_diterima'] / 1000000000, 1, ',', '.')); ?> M
+                                <?php elseif($financeSummary['uang_diterima'] >= 1000000): ?>
+                                    <?php echo e(number_format($financeSummary['uang_diterima'] / 1000000, 1, ',', '.')); ?> Jt
+                                <?php else: ?>
+                                    <?php echo e(number_format($financeSummary['uang_diterima'], 0, ',', '.')); ?>
+
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -628,13 +632,14 @@
                         <div class="dash-finance-mini-info">
                             <div class="dash-finance-mini-label">Piutang</div>
                             <div class="dash-finance-mini-val">
-                                @if($financeSummary['piutang'] >= 1000000000)
-                                    {{ number_format($financeSummary['piutang'] / 1000000000, 1, ',', '.') }} M
-                                @elseif($financeSummary['piutang'] >= 1000000)
-                                    {{ number_format($financeSummary['piutang'] / 1000000, 1, ',', '.') }} Jt
-                                @else
-                                    {{ number_format($financeSummary['piutang'], 0, ',', '.') }}
-                                @endif
+                                <?php if($financeSummary['piutang'] >= 1000000000): ?>
+                                    <?php echo e(number_format($financeSummary['piutang'] / 1000000000, 1, ',', '.')); ?> M
+                                <?php elseif($financeSummary['piutang'] >= 1000000): ?>
+                                    <?php echo e(number_format($financeSummary['piutang'] / 1000000, 1, ',', '.')); ?> Jt
+                                <?php else: ?>
+                                    <?php echo e(number_format($financeSummary['piutang'], 0, ',', '.')); ?>
+
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -651,7 +656,7 @@
                         </div>
                         <div style="min-width: 0;">
                             <div style="font-size: 0.68rem; color: #64748b; font-weight: 500;">Total Pengeluaran</div>
-                            <div style="font-size: 1rem; font-weight: 800; color: #0f172a; margin-top: 2px;">Rp {{ number_format($financeSummary['total_pengeluaran'], 0, ',', '.') }}</div>
+                            <div style="font-size: 1rem; font-weight: 800; color: #0f172a; margin-top: 2px;">Rp <?php echo e(number_format($financeSummary['total_pengeluaran'], 0, ',', '.')); ?></div>
                             <div style="font-size: 0.65rem; color: #94a3b8;">Tanah, pengolahan, operasional</div>
                         </div>
                     </div>
@@ -663,7 +668,7 @@
                         </div>
                         <div style="min-width: 0;">
                             <div style="font-size: 0.68rem; color: #64748b; font-weight: 500;">Saldo Keuangan</div>
-                            <div style="font-size: 1rem; font-weight: 800; color: {{ $financeSummary['saldo_keuangan'] >= 0 ? '#15803d' : '#e11d48' }}; margin-top: 2px;">Rp {{ number_format($financeSummary['saldo_keuangan'], 0, ',', '.') }}</div>
+                            <div style="font-size: 1rem; font-weight: 800; color: <?php echo e($financeSummary['saldo_keuangan'] >= 0 ? '#15803d' : '#e11d48'); ?>; margin-top: 2px;">Rp <?php echo e(number_format($financeSummary['saldo_keuangan'], 0, ',', '.')); ?></div>
                             <div style="font-size: 0.65rem; color: #94a3b8;">Kas masuk - kas keluar</div>
                     </div>
 
@@ -675,4 +680,6 @@
     </div>
 
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.partial.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Property-Management-Web-App\resources\views/dashboard.blade.php ENDPATH**/ ?>

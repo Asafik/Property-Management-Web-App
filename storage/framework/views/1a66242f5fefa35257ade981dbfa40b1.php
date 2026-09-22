@@ -474,13 +474,26 @@
                                             <?php else: ?>
                                                 <span class="badge-development-belum" style="background-color: #f1f5f9; color: #64748b; border-color: #e2e8f0; padding: 3px 8px; font-size: 0.75rem;">Belum</span>
                                             <?php endif; ?>
+                                            <?php if(!empty($proj['is_finalized_to_pasca'])): ?>
+                                                <div class="mt-1">
+                                                    <span class="badge text-success border border-success" style="background: #ecfdf5; font-size: 0.68rem; padding: 2px 5px; border-radius: 4px;" title="Sudah dialihkan ke Pasca Land Bank">
+                                                        <i class="mdi mdi-shield-check"></i> Pasca
+                                                    </span>
+                                                </div>
+                                            <?php endif; ?>
                                         </td>
                                         <td class="col-aksi text-center">
-                                            <!-- Tombol Tunggal Aksi Langsung: Kelola -->
-                                            <a href="<?php echo e(route('perizinan.show', $proj['id'])); ?>" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center py-1 px-2.5 fw-semibold shadow-sm text-decoration-none" style="font-size: 0.76rem; border-radius: 5px;">
-                                                <i class="mdi mdi-file-document-edit-outline" style="margin-right: 6px !important; font-size: 0.85rem;"></i>
-                                                <span>Kelola</span>
-                                            </a>
+                                            <div class="d-inline-flex align-items-center gap-1">
+                                                <a href="<?php echo e(route('perizinan.show', $proj['id'])); ?>" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center py-1 px-2.5 fw-semibold shadow-sm text-decoration-none" style="font-size: 0.76rem; border-radius: 5px;">
+                                                    <i class="mdi mdi-file-document-edit-outline" style="margin-right: 4px !important; font-size: 0.85rem;"></i>
+                                                    <span>Kelola</span>
+                                                </a>
+                                                <?php if(!empty($proj['is_finalized_to_pasca']) && !empty($proj['land_bank_id'])): ?>
+                                                    <a href="<?php echo e(route('properti.edit', $proj['land_bank_id'])); ?>" class="btn btn-sm btn-outline-success d-inline-flex align-items-center py-1 px-2 fw-semibold shadow-sm text-decoration-none" style="font-size: 0.76rem; border-radius: 5px;" title="Buka di Pasca Land Bank">
+                                                        <i class="mdi mdi-shield-check" style="font-size: 0.85rem;"></i>
+                                                    </a>
+                                                <?php endif; ?>
+                                            </div>
                                         </td>
                                     </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
@@ -1004,4 +1017,4 @@
 
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.partial.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH F:\Property-Management-Web-App\resources\views/perizinan/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.partial.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Property-Management-Web-App\resources\views/perizinan/index.blade.php ENDPATH**/ ?>

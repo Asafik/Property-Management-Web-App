@@ -362,6 +362,7 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::get('/perizinan', [\App\Http\Controllers\Admin\PerizinanController::class, 'index'])->name('perizinan.index');
     Route::get('/perizinan/{id}', [\App\Http\Controllers\Admin\PerizinanController::class, 'show'])->name('perizinan.show');
+    Route::post('/perizinan/{id}/finalize-pasca', [\App\Http\Controllers\Admin\PerizinanController::class, 'finalizeToPasca'])->name('perizinan.finalize-pasca');
 
     /*
     |--------------------------------------------------------------------------
@@ -382,9 +383,10 @@ Route::middleware(['auth'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | ========================= PROYEK: PENGOLAHAN LAHAN & UNIT =========================
+    | ========================= PROYEK: PROYEK, PENGOLAHAN LAHAN & UNIT =========================
     |--------------------------------------------------------------------------
     */
+    Route::get('/proyek', [\App\Http\Controllers\Admin\ProjectController::class, 'index'])->name('proyek.index');
     Route::get('/pengolahan-lahan', [\App\Http\Controllers\Admin\ProjectPengolahanLahanController::class, 'index'])->name('proyek.pengolahan-lahan.index');
     Route::get('/proyek-unit', [\App\Http\Controllers\Admin\ProjectUnitController::class, 'index'])->name('proyek.unit.index');
     Route::get('/legal-unit', [\App\Http\Controllers\Legal\LegalUnitController::class, 'index'])->name('legal.unit.index');

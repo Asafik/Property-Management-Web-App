@@ -148,6 +148,7 @@ class PerizinanController extends Controller
         $totalTerbit = $projectAllPermits->where('status', 'Terbit')->count();
         $totalProses = $projectAllPermits->where('status', 'Proses')->count();
         $totalRevisi = $projectAllPermits->where('status', 'Revisi')->count();
+        $projectProgress = $totalIzin > 0 ? round($projectAllPermits->avg('progress')) : 0;
 
         return view('perizinan.show', compact(
             'project',
@@ -157,8 +158,105 @@ class PerizinanController extends Controller
             'totalIzin',
             'totalTerbit',
             'totalProses',
-            'totalRevisi'
+            'totalRevisi',
+            'projectProgress'
         ));
+    }
+
+    /**
+     * Finalisasi Lahan dari Perizinan ke Pasca Land Bank
+     */
+    public function finalizeToPasca(Request $request, $id)
+    {
+        // 1. Cari data PraLandbank berdasarkan ID atau nama proyek
+        $record = PraLandbank::find($id);
+
+        if (!$record) {
+            // Jika ID yang dikirim adalah ID bentukan (misal $dbl->id + 100) atau langsung LandBank
+            $landBank = LandBank::find($id) ?? LandBank::find($id - 100);
+            if ($landBank) {
+                return response()->json([
+                    'success'      => true,
+                    'message'      => 'Kawasan ' . $landBank->name . ' sudah berada di Pasca Land Bank.',
+                    'land_bank_id' => $landBank->id,
+                    'redirect_url' => route('properti.edit', ['id' => $landBank->id]),
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Data proyek kawasan tidak ditemukan.'
+            ], 404);
+        }
+
+        // Ambil ID profil perusahaan default
+        $companyId = \App\Models\CompanyProfile::first()->id ?? 1;
+        $totalArea = $record->area ?: 0;
+
+        // Buat atau update data di LandBank (Pasca Land Bank)
+        $landBank = null;
+        if ($record->land_bank_id) {
+            $landBank = LandBank::find($record->land_bank_id);
+        }
+        if (!$landBank) {
+            $landBank = LandBank::where('name', $record->land_name)->first();
+        }
+
+        // Alur kerja dokumen pengindukan (custom_workflow_docs)
+        $workflowDocs = $record->custom_workflow_docs;
+        if (empty($workflowDocs)) {
+            $workflowDocs = \App\Http\Controllers\Admin\PropertyController::getDefaultFase4Templates($record);
+        }
+
+        $landBankData = [
+            'name'                      => $record->land_name,
+            'company_profile_id'        => $companyId,
+            'certificate_no'            => $record->certificate_no ?: ($record->land_name . ' (' . ($record->ownership_status ?? 'SHM') . ')'),
+            'ownership_status'          => $record->ownership_status ?: 'SHM',
+            'certificate_owner'         => $record->certificate_owner ?: ($record->owner_name ?: '-'),
+            'custom_workflow_docs'      => $workflowDocs,
+            'area'                      => $totalArea,
+            'remaining_area'            => $totalArea,
+            'acquisition_price'         => $record->deal_price ?: ($record->offer_price ?: 0),
+            'acquisition_date'          => $record->survey_date ?: now()->toDateString(),
+            'address'                   => $record->address ?: '-',
+            'village'                   => $record->village ?: '-',
+            'district'                  => $record->district ?: '-',
+            'city'                      => $record->city ?: '-',
+            'province'                  => $record->province ?: '-',
+            'zoning'                    => $record->zoning ?: '-',
+            'road_width'                => (isset($record->road_width) && is_numeric($record->road_width)) ? (int)$record->road_width : null,
+            'road_type'                 => $record->road_type ?: '-',
+            'lat'                       => $record->lat,
+            'lng'                       => $record->lng,
+            'file_certificate'          => $record->file_certificate,
+            'file_pbb'                  => $record->pbb_mutasi_file,
+            'photo'                     => $record->photo,
+            'denah'                     => $record->peta_bidang_file,
+            'status'                    => 'aktif',
+            'legal_status'              => 'aman',
+            'development_status'        => 'Belum',
+            'description'               => 'Tanah Induk dialihkan dari Perizinan Proyek #' . $record->id . ' (' . $record->land_name . ')',
+        ];
+
+        if ($landBank) {
+            $landBank->update($landBankData);
+        } else {
+            $landBank = LandBank::create($landBankData);
+        }
+
+        // Hubungkan pra_landbank ke land_bank
+        $record->update([
+            'land_bank_id' => $landBank->id,
+            'status'       => 'approved',
+        ]);
+
+        return response()->json([
+            'success'      => true,
+            'message'      => 'Kawasan ' . $record->land_name . ' berhasil dialihkan ke Pasca Land Bank!',
+            'land_bank_id' => $landBank->id,
+            'redirect_url' => route('properti.edit', ['id' => $landBank->id]),
+        ]);
     }
 
     /**
@@ -172,7 +270,8 @@ class PerizinanController extends Controller
 
         // 1. Ambil data dari PraLandbank yang berstatus 'approved' / sudah deal sidang
         try {
-            $approvedPraLands = PraLandbank::where('status', 'approved')
+            $approvedPraLands = PraLandbank::with('landBank')
+                ->where('status', 'approved')
                 ->orWhere('status', 'fase3')
                 ->orWhereNotNull('deal_price')
                 ->orWhereIn('payment_method', ['cash', 'termin'])
@@ -182,19 +281,29 @@ class PerizinanController extends Controller
                 $lokasi = $pra->city ?? ($pra->district ?? ($pra->address ?: 'Jember'));
                 $paymentMethod = $pra->payment_method ? ucwords($pra->payment_method) : 'Termin / Cash';
                 
+                $landBankId = $pra->land_bank_id;
+                if (!$landBankId) {
+                    $foundLb = LandBank::where('name', $pra->land_name)->first();
+                    if ($foundLb) {
+                        $landBankId = $foundLb->id;
+                    }
+                }
+
                 $projects->push([
-                    'id'               => $pra->id,
-                    'pra_id'           => $pra->id,
-                    'nama'             => $pra->land_name,
-                    'pt'               => 'PT Graha Cipta Sejahtera',
-                    'lokasi'           => $lokasi,
-                    'luas'             => number_format($pra->area ?? 0, 0, ',', '.') . ' m²',
-                    'ownership_status' => $pra->ownership_status ?: 'SHGB Induk',
-                    'payment_method'   => $paymentMethod,
-                    'deal_price'       => $pra->deal_price,
-                    'target_selesai'   => '-',
-                    'progress'         => 0,
-                    'status'           => 'Belum',
+                    'id'                     => $pra->id,
+                    'pra_id'                 => $pra->id,
+                    'land_bank_id'           => $landBankId,
+                    'is_finalized_to_pasca'  => !empty($landBankId),
+                    'nama'                   => $pra->land_name,
+                    'pt'                     => 'PT Graha Cipta Sejahtera',
+                    'lokasi'                 => $lokasi,
+                    'luas'                   => number_format($pra->area ?? 0, 0, ',', '.') . ' m²',
+                    'ownership_status'       => $pra->ownership_status ?: 'SHGB Induk',
+                    'payment_method'         => $paymentMethod,
+                    'deal_price'             => $pra->deal_price,
+                    'target_selesai'         => '-',
+                    'progress'               => 0,
+                    'status'                 => 'Belum',
                 ]);
             }
         } catch (\Throwable $e) {
@@ -207,18 +316,20 @@ class PerizinanController extends Controller
             foreach ($dbLands as $dbl) {
                 if (!$projects->contains('nama', $dbl->name)) {
                     $projects->push([
-                        'id'               => $dbl->id + 100,
-                        'pra_id'           => null,
-                        'nama'             => $dbl->name,
-                        'pt'               => 'PT Graha Cipta Sejahtera',
-                        'lokasi'           => $dbl->city ?? ($dbl->address ?: 'Kaliwates, Jember'),
-                        'luas'             => number_format($dbl->area ?? 0, 0, ',', '.') . ' m²',
-                        'ownership_status' => $dbl->ownership_status ?: 'SHGB Induk',
-                        'payment_method'   => 'Cash / Termin',
-                        'deal_price'       => null,
-                        'target_selesai'   => '-',
-                        'progress'         => 0,
-                        'status'           => 'Belum',
+                        'id'                     => $dbl->id + 100,
+                        'pra_id'                 => null,
+                        'land_bank_id'           => $dbl->id,
+                        'is_finalized_to_pasca'  => true,
+                        'nama'                   => $dbl->name,
+                        'pt'                     => 'PT Graha Cipta Sejahtera',
+                        'lokasi'                 => $dbl->city ?? ($dbl->address ?: 'Kaliwates, Jember'),
+                        'luas'                   => number_format($dbl->area ?? 0, 0, ',', '.') . ' m²',
+                        'ownership_status'       => $dbl->ownership_status ?: 'SHGB Induk',
+                        'payment_method'         => 'Cash / Termin',
+                        'deal_price'             => null,
+                        'target_selesai'         => '-',
+                        'progress'               => 0,
+                        'status'                 => 'Belum',
                     ]);
                 }
             }

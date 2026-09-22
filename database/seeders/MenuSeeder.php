@@ -129,7 +129,7 @@ class MenuSeeder extends Seeder
         ]);
         $legalUnitMenu->positions()->attach($legalRoles);
 
-        // ================= 5. PROYEK: PENGOLAHAN LAHAN =================
+        // ================= 5. PENGOLAHAN LAHAN & UNIT =================
         $proyekMenu = Menu::create([
             'name'  => 'Pengolahan Lahan',
             'route' => 'proyek.pengolahan-lahan.index',
