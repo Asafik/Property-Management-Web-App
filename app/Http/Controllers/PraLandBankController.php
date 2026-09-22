@@ -658,18 +658,25 @@ public function store(Request $request)
 
     public function indexpra(Request $request)
     {
+        $currentFase = $request->get('fase');
+        if (empty($currentFase)) {
+            return redirect()->route('pralandbank.fase1');
+        }
+
         $query = PraLandbank::with(['payments', 'documents.documentType']);
 
         // Filter: fase (fase1, fase2, fase3)
-        $currentFase = $request->get('fase');
-        if (!empty($currentFase)) {
-            if ($currentFase === '1' || $currentFase === 'fase1') {
-                $query->where('status', 'fase1');
-            } elseif ($currentFase === '2' || $currentFase === 'fase2') {
-                $query->where('status', 'fase2');
-            } elseif ($currentFase === '3' || $currentFase === 'fase3') {
-                $query->whereIn('status', ['fase3', 'approved']);
-            }
+        if ($currentFase === '1' || $currentFase === 'fase1') {
+            $query->where(function($q) {
+                $q->where('status', 'fase1')
+                  ->orWhere('status', 'pending')
+                  ->orWhereNull('status')
+                  ->orWhere('status', '');
+            });
+        } elseif ($currentFase === '2' || $currentFase === 'fase2') {
+            $query->where('status', 'fase2');
+        } elseif ($currentFase === '3' || $currentFase === 'fase3') {
+            $query->whereIn('status', ['fase3', 'approved']);
         }
 
         // Search: nama tanah

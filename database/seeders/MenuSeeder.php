@@ -56,12 +56,6 @@ class MenuSeeder extends Seeder
         $praLandbankMenu->positions()->attach($landbankRoles);
 
         Menu::create([
-            'name'      => 'Semua Data Pra',
-            'route'     => 'pralandbank.all',
-            'parent_id' => $praLandbankMenu->id
-        ])->positions()->attach($landbankRoles);
-
-        Menu::create([
             'name'      => 'Fase 1: Legalitas & Berkas',
             'route'     => 'pralandbank.fase1',
             'parent_id' => $praLandbankMenu->id
