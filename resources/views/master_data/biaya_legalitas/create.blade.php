@@ -92,19 +92,56 @@
             border-radius: 4px !important;
             accent-color: #7c3aed;
             cursor: pointer;
-            margin-right: 8px;
+            margin: 2px 10px 0 0 !important;
+            position: static !important;
+            float: none !important;
+            flex-shrink: 0;
         }
-        .custom-switch-clean .form-check-input {
+        /* Custom Modern Toggle Switch (No Bootstrap Glitches) */
+        .custom-toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            min-width: 44px;
+            flex-shrink: 0;
+            margin: 1px 12px 0 0;
             cursor: pointer;
-            width: 40px !important;
-            height: 22px !important;
-            min-width: 40px !important;
-            margin-right: 8px;
-            border: 1.5px solid #cbd5e1;
         }
-        .custom-switch-clean .form-check-input:checked {
-            background-color: #10b981 !important;
-            border-color: #10b981 !important;
+        .custom-toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .25s ease;
+            border-radius: 24px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #ffffff;
+            transition: .25s ease;
+            border-radius: 50%;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        }
+        .custom-toggle-switch input:checked + .toggle-slider {
+            background-color: #10b981;
+        }
+        .custom-toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(20px);
         }
     </style>
 @endpush
@@ -339,10 +376,11 @@
                                     <div class="col-md-4">
                                         <div class="setting-option-card" onclick="document.getElementById('is_active').click()">
                                             <div class="d-flex align-items-start">
-                                                <div class="form-check form-switch custom-switch-clean m-0 p-0" onclick="event.stopPropagation()">
-                                                    <input class="form-check-input mt-1" type="checkbox" name="is_active" id="is_active" value="1"
+                                                <label class="custom-toggle-switch mb-0" onclick="event.stopPropagation()">
+                                                    <input type="checkbox" name="is_active" id="is_active" value="1"
                                                         {{ old('is_active', $biaya->is_active ?? true) ? 'checked' : '' }}>
-                                                </div>
+                                                    <span class="toggle-slider"></span>
+                                                </label>
                                                 <div>
                                                     <label class="fw-bold text-success mb-0 d-block" for="is_active" style="font-size: 0.88rem; cursor: pointer;">
                                                         Status Aktif
