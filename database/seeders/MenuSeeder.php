@@ -223,13 +223,6 @@ class MenuSeeder extends Seeder
         $keuangan->positions()->attach($keuanganRoles);
 
         Menu::create([
-            'name'      => 'Master Aturan Fee',
-            'route'     => 'keuangan.pembayaran.index',
-            'parent_id' => $keuangan->id,
-            'order'     => 1
-        ])->positions()->attach($keuanganRoles);
-
-        Menu::create([
             'name'      => 'Master Biaya Legalitas & Admin',
             'route'     => 'master.biaya-legalitas.index',
             'parent_id' => $keuangan->id,

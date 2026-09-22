@@ -88,7 +88,6 @@
             'master.biaya-legalitas.index' => 'mdi-cash-multiple',
             // Keuangan
             'keuangan.project-accounting.index' => 'mdi-finance',
-            'keuangan.pembayaran.index' => 'mdi-cash-multiple',
             'keuangan.master-invoice.index' => 'mdi-receipt-text-outline',
             'marketing.commission-rules.index' => 'mdi-cash-cog',
             // Perizinan & Tugas Staf
@@ -113,7 +112,6 @@
             'proyek.unit.index' => ['proyek.unit.*'],
             'master.biaya-legalitas.index' => ['master.biaya-legalitas.*'],
             'keuangan.project-accounting.index' => ['keuangan.project-accounting.*'],
-            'keuangan.pembayaran.index' => ['keuangan.pembayaran.*'],
             'finance.kpr-disbursement.index' => ['finance.kpr-disbursement.*'],
             'keuangan.master-invoice.index' => ['keuangan.master-invoice.*'],
             'marketing.commission-rules.index' => ['marketing.commission-rules.*'],
