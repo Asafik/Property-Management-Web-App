@@ -10,7 +10,7 @@ class EmployeeSeeder extends Seeder
 {
     public function run(): void
     {
-        Employee::insert([
+        $employees = [
             [
                 'name' => 'Kepala Marketing',
                 'username' => 'Kepala Marketing',
@@ -64,7 +64,11 @@ class EmployeeSeeder extends Seeder
                 'position_id' => 7,
                 'phone' => '08123456781',
                 'address' => 'Jember'
-            ]
-        ]);
+            ],
+        ];
+
+        foreach ($employees as $emp) {
+            Employee::updateOrCreate(['username' => $emp['username']], $emp);
+        }
     }
 }

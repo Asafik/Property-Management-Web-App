@@ -1,4 +1,4 @@
-<?php $__env->startSection('title', 'Monitoring Perizinan Proyek - Property Management App'); ?>
+<?php $__env->startSection('title', 'Perizinan Proyek - Property Management App'); ?>
 
 <?php $__env->startPush('styles'); ?>
     <link rel="stylesheet" href="<?php echo e(asset('css/dashboard-clean.css')); ?>?v=<?php echo e(time()); ?>">
@@ -238,70 +238,20 @@
     .compact-table-card .filter-card form {
         margin-bottom: 0 !important;
     }
-    .nav-tabs-clean {
-        border-bottom: 2px solid #e2e8f0;
-        display: flex;
-        gap: 8px;
-        margin-bottom: 1.5rem;
-    }
-    .nav-tab-item {
-        padding: 10px 18px;
-        font-size: 0.88rem;
-        font-weight: 600;
-        color: #64748b;
-        text-decoration: none;
-        border-radius: 8px 8px 0 0;
-        border-bottom: 2px solid transparent;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        transition: all 0.2s ease;
-    }
-    .nav-tab-item:hover {
-        color: #4f46e5;
-        background: rgba(79, 70, 229, 0.04);
-    }
-    .nav-tab-item.active {
-        color: #4f46e5;
-        border-bottom: 2px solid #4f46e5;
-        background: rgba(79, 70, 229, 0.06);
-    }
 </style>
 
 <div class="container-fluid px-2 px-md-4 py-3">
 
-    <!-- Page Title & Subtitle + Navigasi Staf Legal -->
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+    <!-- Page Title & Subtitle -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div>
             <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
                 Perizinan Proyek
             </h2>
             <p class="text-muted mb-0" style="font-size: 0.88rem;">
-                Daftar dan kelengkapan berkas izin kawasan per proyek properti serta pembagian tugas staf legal.
+                Daftar dan kelengkapan berkas izin kawasan per proyek properti.
             </p>
         </div>
-
-        <div class="d-flex align-items-center gap-2">
-            <a href="<?php echo e(route('perizinan.tugas.index')); ?>" class="btn btn-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 fw-semibold shadow-sm" style="border-radius: 8px; font-size: 0.86rem;">
-                <i class="mdi mdi-clipboard-account-outline fs-6"></i>
-                <span>Pembagian Tugas Staf</span>
-            </a>
-        </div>
-    </div>
-
-    <!-- Navigasi Tab Modul Perizinan -->
-    <div class="nav-tabs-clean">
-        <a href="<?php echo e(route('perizinan.index', ['stay' => 1])); ?>" class="nav-tab-item active">
-            <i class="mdi mdi-domain"></i>
-            <span>Kawasan Proyek</span>
-        </a>
-        <a href="<?php echo e(route('perizinan.tugas.index')); ?>" class="nav-tab-item">
-            <i class="mdi mdi-clipboard-account-outline"></i>
-            <span>Pembagian Tugas Staf Legal</span>
-            <?php if(!empty($totalTugasPerizinan) && $totalTugasPerizinan > 0): ?>
-                <span class="badge rounded-pill" style="background: #4f46e5; color: #ffffff; font-size: 0.72rem;"><?php echo e($totalTugasPerizinan); ?></span>
-            <?php endif; ?>
-        </a>
     </div>
 
     <!-- 4 KPI Metrics Card Grid (Sama Persis Dashboard) -->
@@ -1054,4 +1004,4 @@
 
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.partial.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Property-Management-Web-App\resources\views/perizinan/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.partial.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH F:\Property-Management-Web-App\resources\views/perizinan/index.blade.php ENDPATH**/ ?>

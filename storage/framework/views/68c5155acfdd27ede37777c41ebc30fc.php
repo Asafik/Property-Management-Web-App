@@ -1,9 +1,7 @@
-@extends('layouts.partial.app')
+<?php $__env->startSection('title', 'Pembagian Tugas Perizinan - Property Management App'); ?>
 
-@section('title', 'Pembagian Tugas Perizinan - Property Management App')
-
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
+<?php $__env->startPush('styles'); ?>
+    <link rel="stylesheet" href="<?php echo e(asset('css/dashboard-clean.css')); ?>?v=<?php echo e(time()); ?>">
     <style>
         .task-user-badge {
             display: inline-flex;
@@ -233,9 +231,9 @@
             color: #1e293b;
         }
     </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid px-2 px-md-4 py-3">
 
     <!-- Header Judul & Navigasi Tab -->
@@ -251,21 +249,21 @@
     </div>
 
     <!-- Alert Notifikasi -->
-    @if(session('success'))
+    <?php if(session('success')): ?>
         <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm d-flex align-items-center gap-2 mb-4" role="alert" style="border-radius: 8px; background: #ecfdf5; color: #065f46;">
             <i class="mdi mdi-check-circle fs-5 text-success"></i>
-            <div>{{ session('success') }}</div>
+            <div><?php echo e(session('success')); ?></div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    @endif
+    <?php endif; ?>
 
-    @if(session('error'))
+    <?php if(session('error')): ?>
         <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm d-flex align-items-center gap-2 mb-4" role="alert" style="border-radius: 8px; background: #fef2f2; color: #991b1b;">
             <i class="mdi mdi-alert-circle fs-5 text-danger"></i>
-            <div>{{ session('error') }}</div>
+            <div><?php echo e(session('error')); ?></div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    @endif
+    <?php endif; ?>
 
 
     <!-- 4 KPI Metrics Card -->
@@ -278,8 +276,8 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Total Tugas</div>
-                    <div class="dash-kpi-val">{{ $totalTugas }}</div>
-                    <div class="dash-kpi-sub">{{ $isStaffLegal && !$canManage ? 'Tugas Saya' : 'Semua Staf Legal' }}</div>
+                    <div class="dash-kpi-val"><?php echo e($totalTugas); ?></div>
+                    <div class="dash-kpi-sub"><?php echo e($isStaffLegal && !$canManage ? 'Tugas Saya' : 'Semua Staf Legal'); ?></div>
                 </div>
             </div>
             <div class="dash-kpi-action purple">
@@ -295,7 +293,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Dalam Proses</div>
-                    <div class="dash-kpi-val">{{ $tugasProses }}</div>
+                    <div class="dash-kpi-val"><?php echo e($tugasProses); ?></div>
                     <div class="dash-kpi-sub">Sedang Dikerjakan Lapangan</div>
                 </div>
             </div>
@@ -312,7 +310,7 @@
                 </div>
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Izin Selesai</div>
-                    <div class="dash-kpi-val">{{ $tugasSelesai }}</div>
+                    <div class="dash-kpi-val"><?php echo e($tugasSelesai); ?></div>
                     <div class="dash-kpi-sub">Dokumen Terbit Resmi</div>
                 </div>
             </div>
@@ -324,16 +322,16 @@
         <!-- Terkendala / Pending -->
         <div class="dash-kpi-card">
             <div class="dash-kpi-left">
-                <div class="dash-kpi-icon {{ $tugasTerkendala > 0 ? 'rose' : 'orange' }}">
-                    <i class="mdi {{ $tugasTerkendala > 0 ? 'mdi-alert-circle-outline' : 'mdi-clock-outline' }}"></i>
+                <div class="dash-kpi-icon <?php echo e($tugasTerkendala > 0 ? 'rose' : 'orange'); ?>">
+                    <i class="mdi <?php echo e($tugasTerkendala > 0 ? 'mdi-alert-circle-outline' : 'mdi-clock-outline'); ?>"></i>
                 </div>
                 <div class="dash-kpi-info">
-                    <div class="dash-kpi-label">{{ $tugasTerkendala > 0 ? 'Terkendala' : 'Pending' }}</div>
-                    <div class="dash-kpi-val">{{ $tugasTerkendala > 0 ? $tugasTerkendala : $tugasPending }}</div>
-                    <div class="dash-kpi-sub">{{ $tugasTerkendala > 0 ? 'Butuh Tindak Lanjut' : 'Menunggu Pengerjaan' }}</div>
+                    <div class="dash-kpi-label"><?php echo e($tugasTerkendala > 0 ? 'Terkendala' : 'Pending'); ?></div>
+                    <div class="dash-kpi-val"><?php echo e($tugasTerkendala > 0 ? $tugasTerkendala : $tugasPending); ?></div>
+                    <div class="dash-kpi-sub"><?php echo e($tugasTerkendala > 0 ? 'Butuh Tindak Lanjut' : 'Menunggu Pengerjaan'); ?></div>
                 </div>
             </div>
-            <div class="dash-kpi-action {{ $tugasTerkendala > 0 ? 'rose' : 'orange' }}">
+            <div class="dash-kpi-action <?php echo e($tugasTerkendala > 0 ? 'rose' : 'orange'); ?>">
                 <i class="mdi mdi-arrow-right"></i>
             </div>
         </div>
@@ -351,18 +349,18 @@
                         <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Daftar Delegasi Tugas Perizinan</span>
                     </div>
 
-                    @if($canManage)
-                        <a href="{{ route('perizinan.tugas.create') }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center px-3 py-1.5 fw-semibold shadow-sm" style="border-radius: 5px; font-size: 0.84rem;">
+                    <?php if($canManage): ?>
+                        <a href="<?php echo e(route('perizinan.tugas.create')); ?>" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center px-3 py-1.5 fw-semibold shadow-sm" style="border-radius: 5px; font-size: 0.84rem;">
                             <i class="mdi mdi-plus-circle-outline fs-6" style="margin-right: 6px !important;"></i>
                             <span>Tugaskan Staf Legal</span>
                         </a>
-                    @endif
+                    <?php endif; ?>
                 </div>
 
                 <div class="card-body">
                     <!-- Filter Toolbar -->
                     <div class="filter-card">
-                        <form id="filterForm" method="GET" action="{{ route('perizinan.tugas.index') }}">
+                        <form id="filterForm" method="GET" action="<?php echo e(route('perizinan.tugas.index')); ?>">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
                                 <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                                     <!-- Search Input -->
@@ -370,7 +368,7 @@
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="search" id="liveSearchInput"
                                                 placeholder="Cari tugas, instansi, proyek..."
-                                                value="{{ request('search') }}"
+                                                value="<?php echo e(request('search')); ?>"
                                                 style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
                                             <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
                                                 type="submit" title="Cari"
@@ -380,40 +378,42 @@
                                         </div>
                                     </div>
 
-                                    @if($canManage)
+                                    <?php if($canManage): ?>
                                         <!-- Filter Staf Legal -->
                                         <div style="width: 170px;">
                                             <select name="employee_id" class="form-control" onchange="document.getElementById('filterForm').submit()">
                                                 <option value="all">Semua Staf Legal</option>
-                                                @foreach($legalStaffs as $staf)
-                                                    <option value="{{ $staf->id }}" {{ request('employee_id') == $staf->id ? 'selected' : '' }}>
-                                                        {{ $staf->name }}
+                                                <?php $__currentLoopData = $legalStaffs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $staf): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($staf->id); ?>" <?php echo e(request('employee_id') == $staf->id ? 'selected' : ''); ?>>
+                                                        <?php echo e($staf->name); ?>
+
                                                     </option>
-                                                @endforeach
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                         </div>
-                                    @endif
+                                    <?php endif; ?>
 
                                     <!-- Filter Proyek -->
                                     <div style="width: 170px;">
                                         <select name="proyek_id" class="form-control" onchange="document.getElementById('filterForm').submit()">
                                             <option value="all">Semua Proyek</option>
-                                            @foreach($projects as $p)
-                                                <option value="{{ $p['id'] }}" {{ request('proyek_id') == $p['id'] ? 'selected' : '' }}>
-                                                    {{ $p['nama'] }}
+                                            <?php $__currentLoopData = $projects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($p['id']); ?>" <?php echo e(request('proyek_id') == $p['id'] ? 'selected' : ''); ?>>
+                                                    <?php echo e($p['nama']); ?>
+
                                                 </option>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
 
                                     <!-- Filter Status -->
                                     <div style="width: 150px;">
                                         <select name="status" class="form-control" onchange="document.getElementById('filterForm').submit()">
-                                            <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Semua Status</option>
-                                            <option value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                            <option value="Dalam Proses" {{ request('status') == 'Dalam Proses' ? 'selected' : '' }}>Dalam Proses</option>
-                                            <option value="Selesai" {{ request('status') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                                            <option value="Terkendala" {{ request('status') == 'Terkendala' ? 'selected' : '' }}>Terkendala</option>
+                                            <option value="all" <?php echo e(request('status') == 'all' ? 'selected' : ''); ?>>Semua Status</option>
+                                            <option value="Pending" <?php echo e(request('status') == 'Pending' ? 'selected' : ''); ?>>Pending</option>
+                                            <option value="Dalam Proses" <?php echo e(request('status') == 'Dalam Proses' ? 'selected' : ''); ?>>Dalam Proses</option>
+                                            <option value="Selesai" <?php echo e(request('status') == 'Selesai' ? 'selected' : ''); ?>>Selesai</option>
+                                            <option value="Terkendala" <?php echo e(request('status') == 'Terkendala' ? 'selected' : ''); ?>>Terkendala</option>
                                         </select>
                                     </div>
                                 </div>
@@ -423,11 +423,11 @@
                                     <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Terapkan Filter">
                                         <i class="mdi mdi-filter"></i>
                                     </button>
-                                    @if(request()->hasAny(['search', 'employee_id', 'proyek_id', 'status']))
-                                        <a href="{{ route('perizinan.tugas.index') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset Filter">
+                                    <?php if(request()->hasAny(['search', 'employee_id', 'proyek_id', 'status'])): ?>
+                                        <a href="<?php echo e(route('perizinan.tugas.index')); ?>" class="btn btn-gradient-secondary btn-icon-only" title="Reset Filter">
                                             <i class="mdi mdi-refresh"></i>
                                         </a>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </form>
@@ -449,8 +449,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($tasks as $task)
-                                    @php
+                                <?php $__empty_1 = true; $__currentLoopData = $tasks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $task): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                    <?php
                                         $st = $task->status;
                                         if ($st === 'Selesai') {
                                             $pColor = '#10b981';
@@ -463,104 +463,111 @@
                                         }
 
                                         $staffName = $task->employee->name ?? 'Staf';
-                                    @endphp
+                                    ?>
                                     <tr>
                                         <td class="col-no fw-bold text-center text-muted">
-                                            {{ $loop->iteration + ($tasks->currentPage() - 1) * $tasks->perPage() }}
+                                            <?php echo e($loop->iteration + ($tasks->currentPage() - 1) * $tasks->perPage()); ?>
+
                                         </td>
 
                                         <!-- Tugas & Instansi -->
                                         <td>
                                             <div class="fw-bold text-dark" style="font-size: 0.86rem; line-height: 1.35;">
-                                                {{ $task->nama_tugas }}
+                                                <?php echo e($task->nama_tugas); ?>
+
                                             </div>
                                             <div class="text-secondary small mt-0.5" style="font-size: 0.76rem;">
-                                                <i class="mdi mdi-bank-outline me-1"></i>{{ $task->instansi ?: 'Instansi Pemda / BPN' }}
+                                                <i class="mdi mdi-bank-outline me-1"></i><?php echo e($task->instansi ?: 'Instansi Pemda / BPN'); ?>
+
                                             </div>
-                                            @if($task->nomor_dokumen)
+                                            <?php if($task->nomor_dokumen): ?>
                                                 <div class="mt-1">
                                                     <span class="badge bg-light text-dark border font-monospace" style="font-size: 0.7rem;">
-                                                        <i class="mdi mdi-certificate-outline me-0.5 text-primary"></i>{{ $task->nomor_dokumen }}
+                                                        <i class="mdi mdi-certificate-outline me-0.5 text-primary"></i><?php echo e($task->nomor_dokumen); ?>
+
                                                     </span>
                                                 </div>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
 
                                         <!-- Proyek Kawasan -->
                                         <td>
                                             <span class="badge px-2 py-1 text-wrap text-start" style="background-color: #f1f5f9; color: #334155; font-size: 0.78rem; font-weight: 600; border: 1px solid #e2e8f0;">
-                                                <i class="mdi mdi-map-marker-outline text-danger me-0.5"></i>{{ $task->proyek_nama ?: 'Kawasan Umum' }}
+                                                <i class="mdi mdi-map-marker-outline text-danger me-0.5"></i><?php echo e($task->proyek_nama ?: 'Kawasan Umum'); ?>
+
                                             </span>
                                         </td>
 
                                         <!-- Staf Pelaksana -->
                                         <td>
                                             <div class="fw-semibold text-dark" style="font-size: 0.85rem;">
-                                                {{ $staffName }}
+                                                <?php echo e($staffName); ?>
+
                                             </div>
                                         </td>
 
                                         <!-- Deadline -->
                                         <td>
-                                            @if($task->deadline)
-                                                @php
+                                            <?php if($task->deadline): ?>
+                                                <?php
                                                     $isOverdue = $task->deadline->isPast() && $task->status !== 'Selesai';
-                                                @endphp
-                                                <div style="font-size: 0.8rem; font-weight: 600; color: {{ $isOverdue ? '#dc2626' : '#475569' }};">
-                                                    <i class="mdi mdi-calendar-clock me-0.5"></i>{{ $task->deadline->format('d M Y') }}
+                                                ?>
+                                                <div style="font-size: 0.8rem; font-weight: 600; color: <?php echo e($isOverdue ? '#dc2626' : '#475569'); ?>;">
+                                                    <i class="mdi mdi-calendar-clock me-0.5"></i><?php echo e($task->deadline->format('d M Y')); ?>
+
                                                 </div>
-                                                @if($isOverdue)
+                                                <?php if($isOverdue): ?>
                                                     <span class="badge bg-danger-subtle text-danger border border-danger-subtle mt-0.5" style="font-size: 0.68rem;">Terlambat</span>
-                                                @else
-                                                    <small class="text-muted d-block" style="font-size: 0.7rem;">{{ $task->deadline->diffForHumans() }}</small>
-                                                @endif
-                                            @else
+                                                <?php else: ?>
+                                                    <small class="text-muted d-block" style="font-size: 0.7rem;"><?php echo e($task->deadline->diffForHumans()); ?></small>
+                                                <?php endif; ?>
+                                            <?php else: ?>
                                                 <span class="text-muted" style="font-size: 0.8rem;">-</span>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
 
                                         <!-- Progres -->
                                         <td>
                                             <div class="dash-progress-wrap">
                                                 <div class="dash-progress-bar-bg" style="width: 75px;">
-                                                    <div class="dash-progress-bar-fill" style="width: {{ $task->progress }}%; background-color: {{ $pColor }};"></div>
+                                                    <div class="dash-progress-bar-fill" style="width: <?php echo e($task->progress); ?>%; background-color: <?php echo e($pColor); ?>;"></div>
                                                 </div>
-                                                <span style="font-size: 0.75rem; font-weight: 700; color: #334155;">{{ $task->progress }}%</span>
+                                                <span style="font-size: 0.75rem; font-weight: 700; color: #334155;"><?php echo e($task->progress); ?>%</span>
                                             </div>
                                         </td>
 
                                         <!-- Status -->
                                         <td class="col-status text-center">
-                                            @if($task->status == 'Selesai')
+                                            <?php if($task->status == 'Selesai'): ?>
                                                 <span class="dash-status-pill on-track"><span class="dot"></span>Selesai</span>
-                                            @elseif($task->status == 'Dalam Proses')
+                                            <?php elseif($task->status == 'Dalam Proses'): ?>
                                                 <span class="dash-status-pill" style="background-color: #e0f2fe; color: #0284c7; border-color: #bae6fd;"><span class="dot" style="background-color: #0284c7;"></span>Proses</span>
-                                            @elseif($task->status == 'Terkendala')
+                                            <?php elseif($task->status == 'Terkendala'): ?>
                                                 <span class="dash-status-pill danger"><span class="dot"></span>Kendala</span>
-                                            @else
+                                            <?php else: ?>
                                                 <span class="dash-status-pill" style="background-color: #f1f5f9; color: #64748b; border-color: #e2e8f0;"><span class="dot" style="background-color: #94a3b8;"></span>Pending</span>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
 
                                         <!-- Aksi -->
                                         <td class="col-aksi text-center">
                                             <div class="d-flex align-items-center justify-content-center gap-1">
-                                                @if($canManage || ($isStaffLegal && $task->employee_id == auth()->id()))
-                                                    <a href="{{ route('perizinan.tugas.progres', $task->id) }}" class="btn btn-action-edit d-inline-flex align-items-center gap-1 shadow-none"
+                                                <?php if($canManage || ($isStaffLegal && $task->employee_id == auth()->id())): ?>
+                                                    <a href="<?php echo e(route('perizinan.tugas.progres', $task->id)); ?>" class="btn btn-action-edit d-inline-flex align-items-center gap-1 shadow-none"
                                                         title="Update Progres & Dokumen">
                                                         <i class="mdi mdi-pencil text-primary"></i>
                                                         <span>Progres</span>
                                                     </a>
-                                                @endif
+                                                <?php endif; ?>
 
                                                 <button type="button" class="btn btn-action-edit d-inline-flex align-items-center gap-1 shadow-none"
                                                     title="Lihat Riwayat & Audit Trail"
-                                                    onclick="bukaModalRiwayatLog({{ $task->id }})">
+                                                    onclick="bukaModalRiwayatLog(<?php echo e($task->id); ?>)">
                                                     <i class="mdi mdi-history text-info"></i>
                                                     <span>Log</span>
                                                 </button>
 
-                                                @if($canManage)
+                                                <?php if($canManage): ?>
                                                     <div class="dropdown d-inline-block position-relative">
                                                         <button class="btn btn-action-dots d-inline-flex align-items-center justify-content-center shadow-none" 
                                                             type="button" 
@@ -572,14 +579,14 @@
                                                             <i class="mdi mdi-dots-vertical"></i>
                                                         </button>
                                                         <div class="dropdown-menu dropdown-menu-right dropdown-menu-end dropdown-menu-action shadow-sm border">
-                                                            <a class="dropdown-item py-1.5" href="{{ route('perizinan.tugas.edit', $task->id) }}">
+                                                            <a class="dropdown-item py-1.5" href="<?php echo e(route('perizinan.tugas.edit', $task->id)); ?>">
                                                                 <i class="mdi mdi-pencil-outline text-warning" style="margin-right: 6px !important; font-size: 0.95rem;"></i>
                                                                 <span>Edit</span>
                                                             </a>
                                                             <div class="dropdown-divider my-1"></div>
-                                                            <form action="{{ route('perizinan.tugas.destroy', $task->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tugas ini? Riwayat log tugas juga akan terhapus.');" class="m-0 p-0">
-                                                                @csrf
-                                                                @method('DELETE')
+                                                            <form action="<?php echo e(route('perizinan.tugas.destroy', $task->id)); ?>" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tugas ini? Riwayat log tugas juga akan terhapus.');" class="m-0 p-0">
+                                                                <?php echo csrf_field(); ?>
+                                                                <?php echo method_field('DELETE'); ?>
                                                                 <button type="submit" class="dropdown-item text-danger py-1.5">
                                                                     <i class="mdi mdi-trash-can-outline" style="margin-right: 6px !important; font-size: 0.95rem;"></i>
                                                                     <span>Hapus</span>
@@ -587,38 +594,40 @@
                                                             </form>
                                                         </div>
                                                     </div>
-                                                @endif
+                                                <?php endif; ?>
                                             </div>
                                         </td>
                                     </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                     <tr>
                                         <td colspan="8" class="text-center text-muted py-5">
                                             <div class="p-3">
                                                 <i class="mdi mdi-clipboard-text-off-outline text-secondary" style="font-size: 2.8rem; opacity: 0.5;"></i>
                                                 <h5 class="fw-bold text-dark mt-2 mb-1" style="font-size: 1rem;">Belum Ada Tugas Perizinan</h5>
                                                 <p class="text-muted mb-0" style="font-size: 0.82rem;">
-                                                    {{ $isStaffLegal && !$canManage ? 'Saat ini belum ada tugas perizinan yang didelegasikan kepada Anda.' : 'Silakan klik tombol "Tugaskan Staf Legal" untuk membagi tugas baru.' }}
+                                                    <?php echo e($isStaffLegal && !$canManage ? 'Saat ini belum ada tugas perizinan yang didelegasikan kepada Anda.' : 'Silakan klik tombol "Tugaskan Staf Legal" untuk membagi tugas baru.'); ?>
+
                                                 </p>
                                             </div>
                                         </td>
                                     </tr>
-                                @endforelse
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
 
                     <!-- Pagination -->
-                    @if($tasks->hasPages())
+                    <?php if($tasks->hasPages()): ?>
                         <div class="p-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
                             <small class="text-muted" style="font-size: 0.82rem;">
-                                Menampilkan {{ $tasks->firstItem() }} - {{ $tasks->lastItem() }} dari {{ $tasks->total() }} tugas
+                                Menampilkan <?php echo e($tasks->firstItem()); ?> - <?php echo e($tasks->lastItem()); ?> dari <?php echo e($tasks->total()); ?> tugas
                             </small>
                             <div>
-                                {{ $tasks->links('pagination::bootstrap-4') }}
+                                <?php echo e($tasks->links('pagination::bootstrap-4')); ?>
+
                             </div>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -691,7 +700,7 @@
     </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     $(document).ready(function() {
         if (typeof $.fn.dropdown !== 'undefined') {
@@ -811,6 +820,8 @@
             });
     }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.partial.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH F:\Property-Management-Web-App\resources\views/perizinan/tugas/index.blade.php ENDPATH**/ ?>

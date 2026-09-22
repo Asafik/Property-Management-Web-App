@@ -47,12 +47,21 @@ class MenuSeeder extends Seeder
         ]);
         $dashboard->positions()->attach($allRoles);
 
-        // ================= 2. PERIZINAN =================
+        // ================= 2. TUGAS PERIZINAN (PALING ATAS LEGAL) =================
+        $tugasPerizinanMenu = Menu::create([
+            'name'  => 'Tugas Perizinan',
+            'route' => 'perizinan.tugas.index',
+            'icon'  => 'mdi-clipboard-account-outline',
+            'order' => 2
+        ]);
+        $tugasPerizinanMenu->positions()->attach($allRoles);
+
+        // ================= 3. PERIZINAN =================
         $perizinanMenu = Menu::create([
             'name'  => 'Perizinan',
             'route' => 'perizinan.index',
             'icon'  => 'mdi-file-certificate-outline',
-            'order' => 2
+            'order' => 3
         ]);
         $perizinanMenu->positions()->attach($allRoles);
 
@@ -216,32 +225,44 @@ class MenuSeeder extends Seeder
         Menu::create([
             'name'      => 'Master Aturan Fee',
             'route'     => 'keuangan.pembayaran.index',
-            'parent_id' => $keuangan->id
+            'parent_id' => $keuangan->id,
+            'order'     => 1
+        ])->positions()->attach($keuanganRoles);
+
+        Menu::create([
+            'name'      => 'Master Biaya Legalitas & Admin',
+            'route'     => 'master.biaya-legalitas.index',
+            'parent_id' => $keuangan->id,
+            'order'     => 2
+        ])->positions()->attach($keuanganRoles);
+
+        Menu::create([
+            'name'      => 'Master Fee Agency',
+            'route'     => 'marketing.commission-rules.index',
+            'parent_id' => $keuangan->id,
+            'order'     => 3
         ])->positions()->attach($keuanganRoles);
 
         Menu::create([
             'name'      => 'Master HPP & Project Accounting',
             'route'     => 'keuangan.project-accounting.index',
-            'parent_id' => $keuangan->id
+            'parent_id' => $keuangan->id,
+            'order'     => 4
         ])->positions()->attach($keuanganRoles);
 
         Menu::create([
             'name'      => 'Pencairan Dana KPR',
             'route'     => 'finance.kpr-disbursement.index',
-            'parent_id' => $keuangan->id
+            'parent_id' => $keuangan->id,
+            'order'     => 5
         ])->positions()->attach($keuanganRoles);
 
         Menu::create([
             'name'      => 'Master Invoice',
             'route'     => 'keuangan.master-invoice.index',
-            'parent_id' => $keuangan->id
-        ])->positions()->attach($marketingRoles);
-
-        Menu::create([
-            'name'      => 'Master Fee Agency',
-            'route'     => 'marketing.commission-rules.index',
-            'parent_id' => $keuangan->id
-        ])->positions()->attach($marketingRoles);
+            'parent_id' => $keuangan->id,
+            'order'     => 6
+        ])->positions()->attach($keuanganRoles);
 
         // ================= 11. MASTER DATA =================
         $kepalaLegalAndAdmin = array_values(array_filter([$admin?->id, $legal?->id]));

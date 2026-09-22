@@ -91,7 +91,8 @@
             'keuangan.pembayaran.index' => 'mdi-cash-multiple',
             'keuangan.master-invoice.index' => 'mdi-receipt-text-outline',
             'marketing.commission-rules.index' => 'mdi-cash-cog',
-            // Perizinan
+            // Perizinan & Tugas Staf
+            'perizinan.tugas.index' => 'mdi-clipboard-account-outline',
             'perizinan.index' => 'mdi-file-certificate-outline',
             // Legal Unit
             'legal.unit.index' => 'mdi-home-city-outline',
@@ -105,7 +106,8 @@
         // 5. Mapping Pola Route Aktif (agar saat buka sub-halaman/action, menu terkait tetap AKTIF / HIGHLIGHT)
         $routeActivePatterns = [
             'dashboard' => ['dashboard', 'dashboard.*'],
-            'perizinan.index' => ['perizinan*'],
+            'perizinan.tugas.index' => ['perizinan.tugas.*', 'perizinan-tugas*'],
+            'perizinan.index' => ['perizinan.index', 'perizinan.show', 'perizinan.cards', 'perizinan.project'],
             'legal.unit.index' => ['legal.unit.*', 'legal-unit*'],
             'proyek.pengolahan-lahan.index' => ['proyek.pengolahan-lahan.*'],
             'proyek.unit.index' => ['proyek.unit.*'],
@@ -157,6 +159,8 @@
             'Dashboard'               => 1,
             
             // Kelompok Legalitas & Perizinan
+            'Tugas Perizinan'         => 1.8,
+            'Pembagian Tugas'         => 1.8,
             'Perizinan'               => 2,
             'Tanah Induk (Land Bank)' => 3,
             'Tanah Induk'             => 3,
@@ -189,6 +193,8 @@
             'Dashboard'               => 'Menu Utama',
 
             // Legal
+            'Tugas Perizinan'         => 'Legal',
+            'Pembagian Tugas'         => 'Legal',
             'Perizinan'               => 'Legal',
             'Tanah Induk (Land Bank)' => 'Legal',
             'Tanah Induk'             => 'Legal',
@@ -219,6 +225,9 @@
 
         // Pastikan urutan menu selalu rapi sesuai kelompok domain
         $mainMenus = $mainMenus->sortBy(function($m) use ($menuSortWeight) {
+            if ($m->route === 'perizinan.tugas.index') {
+                return 1.8;
+            }
             if ($m->route === 'legal.unit.index') {
                 return 4.5;
             }
@@ -277,7 +286,9 @@
                 }
 
                 // Label Kategori / Section Header
-                if ($main->route === 'legal.unit.index') {
+                if ($main->route === 'perizinan.tugas.index') {
+                    $sectionName = 'Legal';
+                } elseif ($main->route === 'legal.unit.index') {
                     $sectionName = 'Legal';
                 } elseif ($main->route === 'proyek.unit.index') {
                     $sectionName = 'Proyek';

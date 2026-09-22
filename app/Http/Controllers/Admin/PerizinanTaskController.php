@@ -165,6 +165,65 @@ class PerizinanTaskController extends Controller
     }
 
     /**
+     * Halaman Khusus: Form Tugaskan Staf Legal Baru
+     */
+    public function create()
+    {
+        $ctx = $this->getUserRoleContext();
+        if (!$ctx['canManage']) {
+            return redirect()->route('perizinan.tugas.index')->with('error', 'Anda tidak memiliki hak akses untuk membagi tugas.');
+        }
+
+        $canManage = $ctx['canManage'];
+
+        // Data Staf Legal
+        $legalStaffs = Employee::where(function ($q) {
+            $q->whereHas('position', function ($pq) {
+                $pq->where('name', 'like', '%legal%');
+            })->orWhere('division_id', 2);
+        })->orderBy('name', 'asc')->get();
+
+        if ($legalStaffs->isEmpty()) {
+            $legalStaffs = Employee::orderBy('name', 'asc')->get();
+        }
+
+        // Ambil daftar Proyek Kawasan
+        $projects = collect();
+        try {
+            $praList = PraLandbank::where('status', 'approved')
+                ->orWhereNotNull('deal_price')
+                ->orderBy('land_name', 'asc')
+                ->get();
+            foreach ($praList as $p) {
+                $projects->push([
+                    'id'   => $p->id,
+                    'nama' => $p->land_name,
+                ]);
+            }
+        } catch (\Throwable $e) {}
+
+        if ($projects->isEmpty()) {
+            try {
+                $dbLands = LandBank::orderBy('name', 'asc')->get();
+                foreach ($dbLands as $dbl) {
+                    $projects->push([
+                        'id'   => $dbl->id,
+                        'nama' => $dbl->name,
+                    ]);
+                }
+            } catch (\Throwable $e) {}
+        }
+
+        // Template Master Dokumen Perizinan
+        $masterDocs = collect();
+        try {
+            $masterDocs = MasterDokumenPerizinan::orderBy('urutan', 'asc')->get();
+        } catch (\Throwable $e) {}
+
+        return view('perizinan.tugas.create', compact('legalStaffs', 'projects', 'masterDocs', 'canManage', 'ctx'));
+    }
+
+    /**
      * Simpan Penugasan Tugas Baru (Kepala Legal / Owner / Admin)
      */
     public function store(Request $request)
@@ -222,6 +281,66 @@ class PerizinanTaskController extends Controller
         ]);
 
         return redirect()->route('perizinan.tugas.index')->with('success', 'Tugas perizinan berhasil ditugaskan kepada ' . ($assignedStaff->name ?? 'Staf') . '.');
+    }
+
+    /**
+     * Halaman Edit Penugasan / Reassign (Kepala Legal / Owner / Admin)
+     */
+    public function edit($id)
+    {
+        $ctx = $this->getUserRoleContext();
+        if (!$ctx['canManage']) {
+            return redirect()->route('perizinan.tugas.index')->with('error', 'Anda tidak memiliki hak akses untuk mengubah penugasan ini.');
+        }
+
+        $task = PerizinanTask::findOrFail($id);
+        $canManage = $ctx['canManage'];
+
+        // Data Staf Legal
+        $legalStaffs = Employee::where(function ($q) {
+            $q->whereHas('position', function ($pq) {
+                $pq->where('name', 'like', '%legal%');
+            })->orWhere('division_id', 2);
+        })->orderBy('name', 'asc')->get();
+
+        if ($legalStaffs->isEmpty()) {
+            $legalStaffs = Employee::orderBy('name', 'asc')->get();
+        }
+
+        // Ambil daftar Proyek Kawasan
+        $projects = collect();
+        try {
+            $praList = PraLandbank::where('status', 'approved')
+                ->orWhereNotNull('deal_price')
+                ->orderBy('land_name', 'asc')
+                ->get();
+            foreach ($praList as $p) {
+                $projects->push([
+                    'id'   => $p->id,
+                    'nama' => $p->land_name,
+                ]);
+            }
+        } catch (\Throwable $e) {}
+
+        if ($projects->isEmpty()) {
+            try {
+                $dbLands = LandBank::orderBy('name', 'asc')->get();
+                foreach ($dbLands as $dbl) {
+                    $projects->push([
+                        'id'   => $dbl->id,
+                        'nama' => $dbl->name,
+                    ]);
+                }
+            } catch (\Throwable $e) {}
+        }
+
+        // Template Master Dokumen Perizinan
+        $masterDocs = collect();
+        try {
+            $masterDocs = MasterDokumenPerizinan::orderBy('urutan', 'asc')->get();
+        } catch (\Throwable $e) {}
+
+        return view('perizinan.tugas.create', compact('task', 'legalStaffs', 'projects', 'masterDocs', 'canManage', 'ctx'));
     }
 
     /**
@@ -301,6 +420,30 @@ class PerizinanTaskController extends Controller
         ]);
 
         return redirect()->route('perizinan.tugas.index')->with('success', 'Data penugasan perizinan berhasil diperbarui.');
+    }
+
+    /**
+     * Halaman Khusus: Update Progres & Status Tugas (Staf Legal & Manajemen)
+     */
+    public function showProgress($id)
+    {
+        $ctx = $this->getUserRoleContext();
+        $user = $ctx['user'];
+        $task = PerizinanTask::with(['employee.position', 'assigner.position', 'updater.position', 'proyek'])->findOrFail($id);
+
+        // Jika staf legal biasa, pastikan hanya boleh update tugasnya sendiri
+        if ($ctx['isStaffLegal'] && !$ctx['canManage'] && $task->employee_id !== $user->id) {
+            return redirect()->route('perizinan.tugas.index')->with('error', 'Anda hanya dapat memperbarui tugas yang ditugaskan kepada Anda.');
+        }
+
+        // Ambil riwayat log terakhir untuk referensi saat mengupdate
+        $recentLogs = PerizinanTaskLog::with('user.position')
+            ->where('perizinan_task_id', $task->id)
+            ->latest()
+            ->take(8)
+            ->get();
+
+        return view('perizinan.tugas.progres', compact('task', 'recentLogs', 'ctx', 'user'));
     }
 
     /**
@@ -407,7 +550,7 @@ class PerizinanTaskController extends Controller
             'file_dokumen'      => $filePath,
         ]);
 
-        return redirect()->back()->with('success', 'Progres dan status perizinan berhasil diperbarui oleh ' . $user->name . '.');
+        return redirect()->route('perizinan.tugas.index')->with('success', 'Progres dan status perizinan berhasil diperbarui oleh ' . $user->name . '.');
     }
 
     /**
