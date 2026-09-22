@@ -563,6 +563,12 @@
                                                     style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
                                                     <i class="mdi mdi-eye"></i> Detail
                                                 </button>
+                                                <a href="{{ route('properti.edit', $item->id) }}" 
+                                                    class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 px-2.5 py-1.5 ms-1 shadow-sm text-decoration-none fw-semibold" 
+                                                    title="Edit Properti & Dokumen Pengindukan"
+                                                    style="border-radius: 6px; font-size: 0.78rem;">
+                                                    <i class="mdi mdi-pencil"></i> Edit
+                                                </a>
                                             </td>
                                         </tr>
                                     @empty
@@ -1182,7 +1188,10 @@
                     </div>
 
                     <!-- Modal Footer -->
-                    <div class="modal-footer bg-white border-top py-2.5 px-4 d-flex justify-content-end">
+                    <div class="modal-footer bg-white border-top py-2.5 px-4 d-flex justify-content-between">
+                        <a href="{{ route('properti.edit', $item->id) }}" class="btn btn-gradient-primary btn-sm px-3 d-inline-flex align-items-center gap-1 fw-semibold" style="border-radius: 6px;">
+                            <i class="mdi mdi-pencil"></i> Edit Data Properti
+                        </a>
                         <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal" style="border-radius: 6px;">
                             <i class="mdi mdi-close me-1"></i>Tutup
                         </button>
