@@ -131,26 +131,43 @@
         white-space: nowrap !important;
     }
 
-    /* Action Buttons */
-    .btn-action-edit {
-        background: #ffffff;
-        border: 1px solid var(--border-color);
-        color: #1e293b;
-        border-radius: 5px;
-        padding: 4px 10px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        transition: all 0.15s ease;
+    /* Standard Action Buttons persis Halaman Bank */
+    .btn-action {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        margin: 0 2px;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 0.95rem;
+        text-decoration: none;
+        vertical-align: middle;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
     }
-    .btn-action-edit:hover {
-        background: #f8fafc;
-        border-color: #cbd5e1;
-        color: #0f172a;
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
-    .btn-action-edit.text-danger:hover {
-        background: #fef2f2 !important;
-        border-color: #fecaca !important;
-        color: #dc2626 !important;
+    .btn-action.edit {
+        background: #f59e0b !important;
+        color: #ffffff !important;
+    }
+    .btn-action.edit:hover {
+        background: #d97706 !important;
+        color: #ffffff !important;
+    }
+    .btn-action.delete {
+        background: #ef4444 !important;
+        color: #ffffff !important;
+    }
+    .btn-action.delete:hover {
+        background: #dc2626 !important;
+        color: #ffffff !important;
     }
 
     /* Category Badges */
@@ -607,16 +624,12 @@
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            <div class="d-inline-flex align-items-center justify-content-center gap-1">
-                                                <button type="button" class="btn btn-action-edit d-inline-flex align-items-center justify-content-center shadow-none"
-                                                    title="Edit Data" style="padding: 4px 8px;"
-                                                    onclick="editBiaya({{ $item->id }})">
-                                                    <i class="mdi mdi-pencil text-primary" style="font-size: 0.95rem;"></i>
+                                            <div class="d-inline-flex align-items-center gap-1">
+                                                <button type="button" class="btn-action edit" title="Edit Biaya" onclick="editBiaya({{ $item->id }})">
+                                                    <i class="mdi mdi-pencil"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-action-edit d-inline-flex align-items-center justify-content-center shadow-none text-danger"
-                                                    title="Hapus Data" style="padding: 4px 8px;"
-                                                    onclick="deleteBiaya({{ $item->id }}, '{{ addslashes($item->nama_biaya) }}')">
-                                                    <i class="mdi mdi-trash-can-outline" style="font-size: 0.95rem;"></i>
+                                                <button type="button" class="btn-action delete" title="Hapus Biaya" onclick="deleteBiaya({{ $item->id }}, '{{ addslashes($item->nama_biaya) }}')">
+                                                    <i class="mdi mdi-trash-can-outline"></i>
                                                 </button>
                                             </div>
                                         </td>
