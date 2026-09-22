@@ -159,9 +159,9 @@
         </div>
 
         <div>
-            <a href="{{ route('perizinan.tugas.index') }}" class="btn btn-sm d-inline-flex align-items-center px-3 py-2 shadow-sm btn-kembali-proyek">
+            <a href="{{ route('perizinan.show', $task->proyek_id) }}" class="btn btn-sm d-inline-flex align-items-center px-3 py-2 shadow-sm btn-kembali-proyek">
                 <i class="mdi mdi-arrow-left text-primary" style="font-size: 1.05rem; line-height: 1; margin-right: 6px !important;"></i>
-                <span>Kembali ke Daftar Tugas</span>
+                <span>Kembali ke Perizinan Proyek</span>
             </a>
         </div>
     </div>
@@ -340,7 +340,7 @@
 
                         <!-- Action Buttons -->
                         <div class="d-flex align-items-center justify-content-between pt-4 mt-4 border-top">
-                            <a href="{{ route('perizinan.tugas.index') }}" class="btn btn-light border px-4 py-2 fw-semibold d-inline-flex align-items-center" style="border-radius: 5px; font-size: 0.86rem; color: #475569;">
+                            <a href="{{ route('perizinan.show', $task->proyek_id) }}" class="btn btn-light border px-4 py-2 fw-semibold d-inline-flex align-items-center" style="border-radius: 5px; font-size: 0.86rem; color: #475569;">
                                 <i class="mdi mdi-close" style="font-size: 1rem; margin-right: 6px !important;"></i>
                                 <span>Batal</span>
                             </a>

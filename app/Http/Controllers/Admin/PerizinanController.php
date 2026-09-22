@@ -164,6 +164,196 @@ class PerizinanController extends Controller
     }
 
     /**
+     * Halaman Khusus: Kelola Dokumen Perizinan & Prasyarat (Dedicated Page)
+     */
+    public function kelolaDokumen(Request $request, $id, $item_id)
+    {
+        $projects = $this->getProjectsList();
+        $project = $projects->firstWhere('id', (int) $id) ?? $projects->first();
+        if (!$project) {
+            return redirect()->route('perizinan.index')->with('error', 'Proyek kawasan tidak ditemukan.');
+        }
+
+        $allPermits = $this->getAllPermits($projects);
+        $permits = $allPermits->where('proyek_id', $project['id']);
+
+        if ($item_id === 'baru') {
+            $item = [
+                'id'             => 'baru',
+                'master_id'      => null,
+                'task_id'        => null,
+                'proyek_id'      => $project['id'],
+                'proyek_nama'    => $project['nama'],
+                'poin_label'     => 'Poin Baru',
+                'nama_izin'      => '',
+                'instansi'       => '',
+                'target_selesai' => '-',
+                'no_izin'        => '',
+                'tanggal'        => date('d/m/Y'),
+                'status'         => 'Belum',
+                'progress'       => 0,
+                'catatan'        => '',
+                'file_dokumen'   => null,
+                'pelaksana'      => null,
+                'syarat_items'   => [
+                    'Salinan KTP & NPWP Direksi PT Developer',
+                    'Akta Pendirian & Legalitas PT Perusahaan',
+                    'Surat Permohonan Resmi ke Dinas Terkait',
+                ],
+                'estimasi_hari'  => 14,
+                'estimasi_biaya' => 0,
+            ];
+        } else {
+            $item = $permits->firstWhere('id', (int) $item_id)
+                ?? $permits->firstWhere('master_id', (int) $item_id)
+                ?? $permits->firstWhere('task_id', (int) $item_id);
+
+            if (!$item) {
+                return redirect()->route('perizinan.show', $id)->with('error', 'Dokumen perizinan tidak ditemukan.');
+            }
+        }
+
+        return view('perizinan.kelola', compact('project', 'item', 'item_id'));
+    }
+
+    /**
+     * Simpan Data Kelola Dokumen Perizinan
+     */
+    public function simpanKelolaDokumen(Request $request, $id, $item_id)
+    {
+        $projects = $this->getProjectsList();
+        $project = $projects->firstWhere('id', (int) $id) ?? $projects->first();
+        if (!$project) {
+            return redirect()->route('perizinan.index')->with('error', 'Proyek kawasan tidak ditemukan.');
+        }
+
+        $allPermits = $this->getAllPermits($projects);
+        $permits = $allPermits->where('proyek_id', $project['id']);
+
+        $item = null;
+        if ($item_id !== 'baru') {
+            $item = $permits->firstWhere('id', (int) $item_id)
+                ?? $permits->firstWhere('master_id', (int) $item_id)
+                ?? $permits->firstWhere('task_id', (int) $item_id);
+        }
+
+        $request->validate([
+            'nama_izin'      => 'nullable|string|max:255',
+            'status'         => 'required|string',
+            'progress'       => 'nullable|integer|min:0|max:100',
+            'no_izin'        => 'nullable|string|max:255',
+            'tanggal'        => 'nullable|string',
+            'instansi'       => 'nullable|string|max:255',
+            'target_selesai' => 'nullable|string',
+            'catatan'        => 'nullable|string',
+            'file_dokumen'   => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:20480',
+        ]);
+
+        // Cari atau inisialisasi PerizinanTask
+        $task = null;
+        if ($item && !empty($item['task_id'])) {
+            $task = PerizinanTask::find($item['task_id']);
+        }
+
+        if (!$task && $item && !empty($item['master_id'])) {
+            $task = PerizinanTask::where('proyek_id', $project['id'])
+                ->where('master_dokumen_id', $item['master_id'])
+                ->first();
+        }
+
+        $namaTugas = $request->filled('nama_izin') 
+            ? $request->nama_izin 
+            : ($item['nama_izin'] ?? 'Dokumen Perizinan Kawasan');
+
+        if (!$task) {
+            $task = PerizinanTask::where('proyek_id', $project['id'])
+                ->where('nama_tugas', $namaTugas)
+                ->first();
+        }
+
+        // Default employee
+        $authUserId = auth()->id() ?? 2;
+        $employeeId = 2; // Default Kepala Legal
+        try {
+            $emp = \App\Models\Employee::find($authUserId);
+            if ($emp) {
+                $employeeId = $emp->id;
+            } else {
+                $firstLegal = \App\Models\Employee::whereHas('position', function($q) {
+                    $q->where('name', 'like', '%legal%');
+                })->first();
+                if ($firstLegal) $employeeId = $firstLegal->id;
+            }
+        } catch (\Throwable $e) {}
+
+        // Map status
+        $inputStatus = $request->status; // 'Belum', 'Proses', 'Terbit', 'Revisi'
+        $progress = (int) ($request->progress ?? 0);
+
+        if ($inputStatus === 'Terbit' || $inputStatus === 'Selesai') {
+            $dbStatus = 'Selesai';
+            $progress = 100;
+        } elseif ($inputStatus === 'Revisi' || $inputStatus === 'Tertunda') {
+            $dbStatus = 'Terkendala';
+        } elseif ($inputStatus === 'Belum') {
+            $dbStatus = 'Pending';
+            $progress = 0;
+        } else {
+            $dbStatus = 'Dalam Proses';
+            if ($progress <= 0) $progress = 50;
+        }
+
+        if (!$task) {
+            $task = new PerizinanTask();
+            $task->proyek_id          = $project['id'];
+            $task->proyek_nama        = $project['nama'];
+            $task->master_dokumen_id  = $item['master_id'] ?? null;
+            $task->nama_tugas         = $namaTugas;
+            $task->instansi           = $request->instansi ?: ($item['instansi'] ?? 'Instansi Terkait');
+            $task->employee_id        = $employeeId;
+            $task->assigned_by        = $employeeId;
+        }
+
+        // Upload file
+        if ($request->hasFile('file_dokumen')) {
+            $file = $request->file('file_dokumen');
+            $filename = 'izin_' . ($task->id ?? time()) . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('public/perizinan_dokumen', $filename);
+            $task->file_dokumen = 'perizinan_dokumen/' . $filename;
+        }
+
+        // Format tanggal jika dikirim YYYY-MM-DD
+        $tglTerbit = null;
+        if ($request->filled('tanggal')) {
+            try {
+                $tglTerbit = date('Y-m-d', strtotime($request->tanggal));
+            } catch (\Throwable $e) {}
+        }
+
+        $deadline = null;
+        if ($request->filled('target_selesai')) {
+            try {
+                $deadline = date('Y-m-d', strtotime($request->target_selesai));
+            } catch (\Throwable $e) {}
+        }
+
+        $task->status           = $dbStatus;
+        $task->progress         = $progress;
+        $task->nomor_dokumen    = $request->no_izin ?: $task->nomor_dokumen;
+        $task->tanggal_terbit   = $tglTerbit ?: $task->tanggal_terbit;
+        $task->deadline         = $deadline ?: $task->deadline;
+        $task->instansi         = $request->instansi ?: $task->instansi;
+        $task->catatan          = $request->catatan;
+        $task->kendala          = ($dbStatus === 'Terkendala') ? $request->catatan : null;
+        $task->updated_by       = $employeeId;
+        $task->last_activity_at = now();
+        $task->save();
+
+        return redirect()->route('perizinan.show', $project['id'])
+            ->with('success', 'Dokumen perizinan "' . $task->nama_tugas . '" berhasil diperbarui!');
+    }
+
+    /**
      * Finalisasi Lahan dari Perizinan ke Pasca Land Bank
      */
     public function finalizeToPasca(Request $request, $id)

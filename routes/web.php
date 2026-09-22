@@ -362,6 +362,8 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::get('/perizinan', [\App\Http\Controllers\Admin\PerizinanController::class, 'index'])->name('perizinan.index');
     Route::get('/perizinan/{id}', [\App\Http\Controllers\Admin\PerizinanController::class, 'show'])->name('perizinan.show');
+    Route::get('/perizinan/{id}/dokumen/{item_id}', [\App\Http\Controllers\Admin\PerizinanController::class, 'kelolaDokumen'])->name('perizinan.dokumen.kelola');
+    Route::post('/perizinan/{id}/dokumen/{item_id}', [\App\Http\Controllers\Admin\PerizinanController::class, 'simpanKelolaDokumen'])->name('perizinan.dokumen.simpan');
     Route::post('/perizinan/{id}/finalize-pasca', [\App\Http\Controllers\Admin\PerizinanController::class, 'finalizeToPasca'])->name('perizinan.finalize-pasca');
 
     /*
