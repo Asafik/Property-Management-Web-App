@@ -137,4 +137,68 @@ public function kprDisbursements()
     return $this->hasMany(KprDisbursement::class, 'land_bank_unit_id')->orderBy('tanggal_cair', 'desc');
 }
 
+/**
+ * Aksesor Legalitas Unit untuk Monitoring Legal
+ */
+public function getLegalStatusKeyAttribute()
+{
+    if ($this->status === 'sold') {
+        return 'selesai';
+    }
+    if ($this->status === 'booked') {
+        return 'bpn';
+    }
+    if ($this->status === 'ready') {
+        return 'notaris';
+    }
+    return 'persiapan';
+}
+
+public function getLegalStatusLabelAttribute()
+{
+    $map = [
+        'selesai'   => 'SHM Terbit',
+        'bpn'       => 'Proses BPN',
+        'notaris'   => 'Validasi Notaris',
+        'persiapan' => 'Persiapan Berkas',
+    ];
+    return $map[$this->legal_status_key] ?? 'Persiapan Berkas';
+}
+
+public function getLegalProgressPercentageAttribute()
+{
+    $map = [
+        'selesai'   => 100,
+        'bpn'       => 70,
+        'notaris'   => 40,
+        'persiapan' => 15,
+    ];
+    return $map[$this->legal_status_key] ?? 15;
+}
+
+public function getNoSertifikatAttribute()
+{
+    $district = $this->landBank->district ?? 'Kawasan';
+    $padId = str_pad($this->id, 4, '0', STR_PAD_LEFT);
+    return "SHM No. 0{$padId}/{$district}";
+}
+
+public function getNoPbbAttribute()
+{
+    $padId = str_pad($this->id, 4, '0', STR_PAD_LEFT);
+    return "35.09.010.004-{$padId}.0";
+}
+
+public function getNoPbgAttribute()
+{
+    $year = date('Y');
+    $padId = str_pad($this->id, 4, '0', STR_PAD_LEFT);
+    return "SK-PBG-3509-{$year}-{$padId}";
+}
+
+public function getStatusPajakAttribute()
+{
+    return 'Lunas ' . date('Y');
+}
+
 }

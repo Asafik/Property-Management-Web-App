@@ -219,9 +219,66 @@ public function isFromPraLandbank()
     return \App\Models\PraLandbank::where('land_name', $this->name)->exists();
 }
 
+public function getProfileScoreAttribute(): int
+{
+    $checklist = $this->core_profile_checklist;
+    $total = count($checklist);
+    if ($total === 0) return 100;
+    $filled = collect($checklist)->where('is_filled', true)->count();
+    return (int) round(($filled / $total) * 100);
+}
+
+public function getCoreProfileChecklistAttribute(): array
+{
+    return [
+        [
+            'field' => 'company_profile_id',
+            'label' => 'PT Mitra Pengembang',
+            'icon'  => 'mdi-city-variant-outline',
+            'is_filled' => !empty($this->company_profile_id),
+            'val'   => $this->companyProfile->name ?? null,
+        ],
+        [
+            'field' => 'name',
+            'label' => 'Nama Proyek Kawasan',
+            'icon'  => 'mdi-office-building',
+            'is_filled' => !empty($this->name),
+            'val'   => $this->name,
+        ],
+        [
+            'field' => 'area',
+            'label' => 'Luas Lahan Kawasan',
+            'icon'  => 'mdi-texture-box',
+            'is_filled' => !empty($this->area) && $this->area > 0,
+            'val'   => $this->area ? number_format($this->area, 0, ',', '.') . ' m²' : null,
+        ],
+        [
+            'field' => 'address',
+            'label' => 'Alamat / Lokasi Lengkap',
+            'icon'  => 'mdi-map-marker-outline',
+            'is_filled' => !empty($this->address),
+            'val'   => $this->address,
+        ],
+        [
+            'field' => 'denah',
+            'label' => 'Berkas Denah / Siteplan',
+            'icon'  => 'mdi-floor-plan',
+            'is_filled' => !empty($this->denah),
+            'val'   => $this->denah ? basename($this->denah) : null,
+        ],
+        [
+            'field' => 'coordinates',
+            'label' => 'Koordinat Google Maps',
+            'icon'  => 'mdi-crosshairs-gps',
+            'is_filled' => !empty($this->lat) && !empty($this->lng),
+            'val'   => (!empty($this->lat) && !empty($this->lng)) ? "{$this->lat}, {$this->lng}" : null,
+        ],
+    ];
+}
+
 public function isProfileComplete(): bool
 {
-    // Cek apakah data profil penting sudah dilengkapi
+    // Cek apakah seluruh data profil penting sudah dilengkapi
     return !empty($this->company_profile_id) 
         && !empty($this->name) 
         && !empty($this->area) 
@@ -233,9 +290,11 @@ public function getMissingProfileFields(): array
 {
     $missing = [];
     if (empty($this->company_profile_id)) $missing[] = 'PT Mitra Pengembang';
+    if (empty($this->name)) $missing[] = 'Nama Proyek';
+    if (empty($this->area)) $missing[] = 'Luas Lahan';
     if (empty($this->denah)) $missing[] = 'Berkas Denah / Siteplan';
     if (empty($this->address)) $missing[] = 'Alamat / Lokasi Lengkap';
-    if (empty($this->lat) || empty($this->lng)) $missing[] = 'Koordinat Peta';
+    if (empty($this->lat) || empty($this->lng)) $missing[] = 'Koordinat Peta (Lat & Lng)';
     return $missing;
 }
 
@@ -255,4 +314,17 @@ public function getGrandTotalAcquisitionPriceAttribute(): float
 
     return (float) ($this->acquisition_price ?? 0);
 }
+
+public function getOverallProgressPercentageAttribute(): int
+{
+    if ($this->relationLoaded('units') ? $this->units->isNotEmpty() : $this->units()->exists()) {
+        $units = $this->relationLoaded('units') ? $this->units : $this->units()->get();
+        $avg = $units->avg(function ($u) {
+            return $u->construction_progress_percentage;
+        });
+        return (int) round($avg);
+    }
+    return (int) ($this->profile_score ?? 35);
 }
+}
+

@@ -45,6 +45,8 @@ class DatabaseSeeder extends Seeder
             MasterBiayaLegalitasSeeder::class,
             PraLandbankDocumentSeeder::class,
             DevelopmentProgressItemsSeeder::class,
+            LandBankUnitSeeder::class,
+            PerizinanTaskSeeder::class,
         ]);
     }
 }

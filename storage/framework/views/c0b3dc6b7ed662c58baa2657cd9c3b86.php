@@ -125,7 +125,7 @@
                         <p class="dash-panel-subtitle">5 proyek terbaru yang sedang dikelola</p>
                     </div>
                 </div>
-                <a href="#" class="dash-link-all">
+                <a href="<?php echo e(route('proyek.index')); ?>" class="dash-link-all">
                     Lihat Semua <i class="mdi mdi-arrow-right"></i>
                 </a>
             </div>
@@ -146,140 +146,55 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Row 1 -->
-                        <tr>
-                            <td style="font-weight: 700; text-align: center;">1</td>
-                            <td style="font-weight: 700; color: #0f172a;">Perumahan Jember Indah</td>
-                            <td style="color: #64748b;">Jember</td>
-                            <td style="color: #475569; font-weight: 500;">5.2 Ha</td>
-                            <td style="text-align: center;">
-                                <span class="dash-badge gray" style="font-weight: 700;">120</span>
-                            </td>
-                            <td>
-                                <span class="dash-badge blue">Pembangunan</span>
-                            </td>
-                            <td>
-                                <div class="dash-progress-wrap">
-                                    <div class="dash-progress-bar-bg">
-                                        <div class="dash-progress-bar-fill" style="width: 78%; background-color: #7c3aed;"></div>
+                        <?php $__empty_1 = true; $__currentLoopData = $recentProjects; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $proj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <?php
+                                $tahap = $proj->development_status ?: 'Perencanaan';
+                                $badgeClass = match(strtolower($tahap)) {
+                                    'selesai' => 'green',
+                                    'sedang dibangun', 'pembangunan' => 'blue',
+                                    'perizinan' => 'sky',
+                                    'legal' => 'teal',
+                                    'pemasaran' => 'orange',
+                                    default => 'gray'
+                                };
+                                $progress = $proj->overall_progress_percentage;
+                            ?>
+                            <tr>
+                                <td style="font-weight: 700; text-align: center;"><?php echo e($index + 1); ?></td>
+                                <td style="font-weight: 700; color: #0f172a;"><?php echo e($proj->name); ?></td>
+                                <td style="color: #64748b;"><?php echo e($proj->city ?? ($proj->district ?? 'Jember')); ?></td>
+                                <td style="color: #475569; font-weight: 500;">
+                                    <?php if($proj->area >= 10000): ?>
+                                        <?php echo e(number_format($proj->area / 10000, 1, ',', '.')); ?> Ha
+                                    <?php else: ?>
+                                        <?php echo e(number_format($proj->area, 0, ',', '.')); ?> m²
+                                    <?php endif; ?>
+                                </td>
+                                <td style="text-align: center;">
+                                    <span class="dash-badge gray" style="font-weight: 700;"><?php echo e($proj->units_count ?? $proj->units->count()); ?></span>
+                                </td>
+                                <td>
+                                    <span class="dash-badge <?php echo e($badgeClass); ?>"><?php echo e($tahap); ?></span>
+                                </td>
+                                <td>
+                                    <div class="dash-progress-wrap">
+                                        <div class="dash-progress-bar-bg">
+                                            <div class="dash-progress-bar-fill" style="width: <?php echo e($progress); ?>%; background-color: <?php echo e($progress >= 70 ? '#7c3aed' : ($progress >= 40 ? '#0284c7' : '#ea580c')); ?>;"></div>
+                                        </div>
+                                        <span style="font-size: 0.68rem; font-weight: 700; color: #334155;"><?php echo e($progress); ?>%</span>
                                     </div>
-                                    <span style="font-size: 0.68rem; font-weight: 700; color: #334155;">78%</span>
-                                </div>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="dash-action-btn">
-                                    <i class="mdi mdi-dots-horizontal"></i>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- Row 2 -->
-                        <tr>
-                            <td style="font-weight: 700; text-align: center;">2</td>
-                            <td style="font-weight: 700; color: #0f172a;">Kebonsari Village</td>
-                            <td style="color: #64748b;">Jember</td>
-                            <td style="color: #475569; font-weight: 500;">3.1 Ha</td>
-                            <td style="text-align: center;">
-                                <span class="dash-badge gray" style="font-weight: 700;">200</span>
-                            </td>
-                            <td>
-                                <span class="dash-badge sky">Perizinan</span>
-                            </td>
-                            <td>
-                                <div class="dash-progress-wrap">
-                                    <div class="dash-progress-bar-bg">
-                                        <div class="dash-progress-bar-fill" style="width: 62%; background-color: #0284c7;"></div>
-                                    </div>
-                                    <span style="font-size: 0.68rem; font-weight: 700; color: #334155;">62%</span>
-                                </div>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="dash-action-btn">
-                                    <i class="mdi mdi-dots-horizontal"></i>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- Row 3 -->
-                        <tr>
-                            <td style="font-weight: 700; text-align: center;">3</td>
-                            <td style="font-weight: 700; color: #0f172a;">Tanah Perumahan Kota</td>
-                            <td style="color: #64748b;">Jember</td>
-                            <td style="color: #475569; font-weight: 500;">4.8 Ha</td>
-                            <td style="text-align: center;">
-                                <span class="dash-badge gray" style="font-weight: 700;">150</span>
-                            </td>
-                            <td>
-                                <span class="dash-badge teal">Legal</span>
-                            </td>
-                            <td>
-                                <div class="dash-progress-wrap">
-                                    <div class="dash-progress-bar-bg">
-                                        <div class="dash-progress-bar-fill" style="width: 45%; background-color: #0d9488;"></div>
-                                    </div>
-                                    <span style="font-size: 0.68rem; font-weight: 700; color: #334155;">45%</span>
-                                </div>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="dash-action-btn">
-                                    <i class="mdi mdi-dots-horizontal"></i>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- Row 4 -->
-                        <tr>
-                            <td style="font-weight: 700; text-align: center;">4</td>
-                            <td style="font-weight: 700; color: #0f172a;">Jember Residence</td>
-                            <td style="color: #64748b;">Jember</td>
-                            <td style="color: #475569; font-weight: 500;">2.5 Ha</td>
-                            <td style="text-align: center;">
-                                <span class="dash-badge gray" style="font-weight: 700;">80</span>
-                            </td>
-                            <td>
-                                <span class="dash-badge orange">Pemasaran</span>
-                            </td>
-                            <td>
-                                <div class="dash-progress-wrap">
-                                    <div class="dash-progress-bar-bg">
-                                        <div class="dash-progress-bar-fill" style="width: 20%; background-color: #ea580c;"></div>
-                                    </div>
-                                    <span style="font-size: 0.68rem; font-weight: 700; color: #334155;">20%</span>
-                                </div>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="dash-action-btn">
-                                    <i class="mdi mdi-dots-horizontal"></i>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- Row 5 -->
-                        <tr>
-                            <td style="font-weight: 700; text-align: center;">5</td>
-                            <td style="font-weight: 700; color: #0f172a;">Tanah Sumbersari</td>
-                            <td style="color: #64748b;">Jember</td>
-                            <td style="color: #475569; font-weight: 500;">6.0 Ha</td>
-                            <td style="text-align: center;">
-                                <span class="dash-badge gray" style="font-weight: 700;">300</span>
-                            </td>
-                            <td>
-                                <span class="dash-badge gray">Perencanaan</span>
-                            </td>
-                            <td>
-                                <div class="dash-progress-wrap">
-                                    <div class="dash-progress-bar-bg">
-                                        <div class="dash-progress-bar-fill" style="width: 35%; background-color: #64748b;"></div>
-                                    </div>
-                                    <span style="font-size: 0.68rem; font-weight: 700; color: #334155;">35%</span>
-                                </div>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="dash-action-btn">
-                                    <i class="mdi mdi-dots-horizontal"></i>
-                                </button>
-                            </td>
-                        </tr>
+                                </td>
+                                <td style="text-align: center;">
+                                    <a href="<?php echo e(route('proyek.index')); ?>" class="dash-action-btn" title="Kelola Proyek">
+                                        <i class="mdi mdi-dots-horizontal"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                            <tr>
+                                <td colspan="8" style="text-align: center; color: #94a3b8; padding: 24px;">Belum ada data proyek lahan aktif</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -297,7 +212,7 @@
                         <p class="dash-panel-subtitle">Ringkasan pengurusan izin di semua proyek</p>
                     </div>
                 </div>
-                <a href="#" class="dash-link-all">
+                <a href="<?php echo e(route('perizinan.index')); ?>" class="dash-link-all">
                     Lihat Semua <i class="mdi mdi-arrow-right"></i>
                 </a>
             </div>
@@ -306,19 +221,19 @@
             <div class="dash-perizinan-summary">
                 <div class="dash-perizinan-box gray">
                     <div class="label">Total Izin</div>
-                    <div class="num">15</div>
+                    <div class="num"><?php echo e($perizinanSummary['total'] ?? 0); ?></div>
                 </div>
                 <div class="dash-perizinan-box green">
                     <div class="label">Selesai</div>
-                    <div class="num">6</div>
+                    <div class="num"><?php echo e($perizinanSummary['selesai'] ?? 0); ?></div>
                 </div>
                 <div class="dash-perizinan-box blue">
                     <div class="label">Berjalan</div>
-                    <div class="num">8</div>
+                    <div class="num"><?php echo e($perizinanSummary['berjalan'] ?? 0); ?></div>
                 </div>
                 <div class="dash-perizinan-box rose">
                     <div class="label">Tertunda</div>
-                    <div class="num">1</div>
+                    <div class="num"><?php echo e($perizinanSummary['tertunda'] ?? 0); ?></div>
                 </div>
             </div>
 
@@ -337,110 +252,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Row 1 -->
-                        <tr>
-                            <td style="font-weight: 700; text-align: center;">1</td>
-                            <td style="font-weight: 700; color: #0f172a;">PERTEK</td>
-                            <td style="text-align: center; font-weight: 700; color: #334155;">4</td>
-                            <td style="text-align: center;">
-                                <span class="dash-pill-count green">2</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <span class="dash-pill-count blue">2</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <span class="dash-pill-count gray">0</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="dash-action-btn">
-                                    <i class="mdi mdi-dots-horizontal"></i>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- Row 2 -->
-                        <tr>
-                            <td style="font-weight: 700; text-align: center;">2</td>
-                            <td style="font-weight: 700; color: #0f172a;">PKKPR</td>
-                            <td style="text-align: center; font-weight: 700; color: #334155;">3</td>
-                            <td style="text-align: center;">
-                                <span class="dash-pill-count green">2</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <span class="dash-pill-count blue">1</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <span class="dash-pill-count gray">0</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="dash-action-btn">
-                                    <i class="mdi mdi-dots-horizontal"></i>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- Row 3 -->
-                        <tr>
-                            <td style="font-weight: 700; text-align: center;">3</td>
-                            <td style="font-weight: 700; color: #0f172a;">PBG (IMB)</td>
-                            <td style="text-align: center; font-weight: 700; color: #334155;">5</td>
-                            <td style="text-align: center;">
-                                <span class="dash-pill-count green">1</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <span class="dash-pill-count blue">3</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <span class="dash-pill-count rose">1</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="dash-action-btn">
-                                    <i class="mdi mdi-dots-horizontal"></i>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- Row 4 -->
-                        <tr>
-                            <td style="font-weight: 700; text-align: center;">4</td>
-                            <td style="font-weight: 700; color: #0f172a;">SLF</td>
-                            <td style="text-align: center; font-weight: 700; color: #334155;">2</td>
-                            <td style="text-align: center;">
-                                <span class="dash-pill-count green">1</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <span class="dash-pill-count blue">1</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <span class="dash-pill-count gray">0</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="dash-action-btn">
-                                    <i class="mdi mdi-dots-horizontal"></i>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- Row 5 -->
-                        <tr>
-                            <td style="font-weight: 700; text-align: center;">5</td>
-                            <td style="font-weight: 700; color: #0f172a;">Perubahan Tata Ruang</td>
-                            <td style="text-align: center; font-weight: 700; color: #334155;">1</td>
-                            <td style="text-align: center;">
-                                <span class="dash-pill-count gray">0</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <span class="dash-pill-count blue">1</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <span class="dash-pill-count gray">0</span>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="dash-action-btn">
-                                    <i class="mdi mdi-dots-horizontal"></i>
-                                </button>
-                            </td>
-                        </tr>
+                        <?php $__empty_1 = true; $__currentLoopData = $perizinanRows; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idx => $pz): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <tr>
+                                <td style="font-weight: 700; text-align: center;"><?php echo e($idx + 1); ?></td>
+                                <td style="font-weight: 700; color: #0f172a;"><?php echo e($pz['nama']); ?></td>
+                                <td style="text-align: center; font-weight: 700; color: #334155;"><?php echo e($pz['total']); ?></td>
+                                <td style="text-align: center;">
+                                    <span class="dash-pill-count <?php echo e($pz['selesai'] > 0 ? 'green' : 'gray'); ?>"><?php echo e($pz['selesai']); ?></span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <span class="dash-pill-count <?php echo e($pz['berjalan'] > 0 ? 'blue' : 'gray'); ?>"><?php echo e($pz['berjalan']); ?></span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <span class="dash-pill-count <?php echo e($pz['tertunda'] > 0 ? 'rose' : 'gray'); ?>"><?php echo e($pz['tertunda']); ?></span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <a href="<?php echo e(route('perizinan.index')); ?>" class="dash-action-btn" title="Detail Perizinan">
+                                        <i class="mdi mdi-dots-horizontal"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: #94a3b8; padding: 24px;">Belum ada data status perizinan</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -475,13 +311,13 @@
                 <div class="dash-unit-card green">
                     <div class="dash-unit-card-head">
                         <div class="dash-unit-icon green">
-                            <i class="mdi mdi-home-check"></i>
+                            <i class="mdi mdi-home-circle"></i>
                         </div>
                         <span class="dash-unit-name">Tersedia</span>
                     </div>
-                    <div class="dash-unit-val">620</div>
+                    <div class="dash-unit-val"><?php echo e(number_format($unitStats['ready'])); ?></div>
                     <div class="dash-unit-pct green">
-                        ● 49.7%
+                        ● <?php echo e($unitStats['ready_pct']); ?>%
                     </div>
                 </div>
 
@@ -493,9 +329,9 @@
                         </div>
                         <span class="dash-unit-name">Booking</span>
                     </div>
-                    <div class="dash-unit-val">180</div>
+                    <div class="dash-unit-val"><?php echo e(number_format($unitStats['booking'])); ?></div>
                     <div class="dash-unit-pct blue">
-                        ● 14.4%
+                        ● <?php echo e($unitStats['booking_pct']); ?>%
                     </div>
                 </div>
 
@@ -507,9 +343,9 @@
                         </div>
                         <span class="dash-unit-name">Terjual</span>
                     </div>
-                    <div class="dash-unit-val">420</div>
+                    <div class="dash-unit-val"><?php echo e(number_format($unitStats['sold'])); ?></div>
                     <div class="dash-unit-pct purple">
-                        ● 33.7%
+                        ● <?php echo e($unitStats['sold_pct']); ?>%
                     </div>
                 </div>
 
@@ -521,9 +357,9 @@
                         </div>
                         <span class="dash-unit-name">KPR</span>
                     </div>
-                    <div class="dash-unit-val">28</div>
+                    <div class="dash-unit-val"><?php echo e(number_format($unitStats['kpr'])); ?></div>
                     <div class="dash-unit-pct amber">
-                        ● 2.2%
+                        ● <?php echo e($unitStats['kpr_pct']); ?>%
                     </div>
                 </div>
 
@@ -533,12 +369,12 @@
             <div class="dash-unit-ratio">
                 <span>Rasio Komposisi Unit:</span>
                 <div class="dash-ratio-bar">
-                    <div class="dash-ratio-segment" style="width: 49.7%; background-color: #10b981;" title="Tersedia 49.7%"></div>
-                    <div class="dash-ratio-segment" style="width: 14.4%; background-color: #3b82f6;" title="Booking 14.4%"></div>
-                    <div class="dash-ratio-segment" style="width: 33.7%; background-color: #a855f7;" title="Terjual 33.7%"></div>
-                    <div class="dash-ratio-segment" style="width: 2.2%; background-color: #f59e0b;" title="KPR 2.2%"></div>
+                    <div class="dash-ratio-segment" style="width: <?php echo e($unitStats['ready_pct']); ?>%; background-color: #10b981;" title="Tersedia <?php echo e($unitStats['ready_pct']); ?>%"></div>
+                    <div class="dash-ratio-segment" style="width: <?php echo e($unitStats['booking_pct']); ?>%; background-color: #3b82f6;" title="Booking <?php echo e($unitStats['booking_pct']); ?>%"></div>
+                    <div class="dash-ratio-segment" style="width: <?php echo e($unitStats['sold_pct']); ?>%; background-color: #a855f7;" title="Terjual <?php echo e($unitStats['sold_pct']); ?>%"></div>
+                    <div class="dash-ratio-segment" style="width: <?php echo e($unitStats['kpr_pct']); ?>%; background-color: #f59e0b;" title="KPR <?php echo e($unitStats['kpr_pct']); ?>%"></div>
                 </div>
-                <span style="font-weight: 700; color: #334155;">Total 1.248</span>
+                <span style="font-weight: 700; color: #334155;">Total <?php echo e(number_format($unitStats['total'])); ?></span>
             </div>
         </div>
 
@@ -554,7 +390,7 @@
                         <p class="dash-panel-subtitle">Progress pembangunan per unit properti</p>
                     </div>
                 </div>
-                <a href="#" class="dash-link-all">
+                <a href="<?php echo e(route('marketing.jual-unit')); ?>" class="dash-link-all">
                     Lihat Semua <i class="mdi mdi-arrow-right"></i>
                 </a>
             </div>
@@ -573,117 +409,58 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Row 1 -->
-                        <tr>
-                            <td style="font-weight: 700; text-align: center;">1</td>
-                            <td>
-                                <div style="font-weight: 700; color: #0f172a;">Blok A.1 Mawar</div>
-                                <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 1px;">Perumahan Jember Indah</div>
-                            </td>
-                            <td style="color: #64748b; font-weight: 500;">Des 2025</td>
-                            <td>
-                                <div class="dash-progress-wrap">
-                                    <div class="dash-progress-bar-bg" style="width: 80px;">
-                                        <div class="dash-progress-bar-fill" style="width: 78%; background-color: #7c3aed;"></div>
-                                    </div>
-                                    <span style="font-size: 0.75rem; font-weight: 800; color: #0f172a; width: 30px; text-align: right;">78%</span>
-                                </div>
-                            </td>
-                            <td style="text-align: center;">
-                                <span class="dash-status-pill on-track">
-                                    <span class="dot"></span> On Track
-                                </span>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="dash-action-btn">
-                                    <i class="mdi mdi-dots-horizontal"></i>
-                                </button>
-                            </td>
-                        </tr>
+                        <?php $__empty_1 = true; $__currentLoopData = $recentUnitProgress; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $uIdx => $u): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <?php
+                                $progressPct = $u->construction_progress_percentage;
+                            ?>
+                            <tr>
+                                <td style="font-weight: 700; text-align: center;"><?php echo e($uIdx + 1); ?></td>
+                                <td>
+                                    <div style="font-weight: 700; color: #0f172a;">Blok <?php echo e($u->block); ?>.<?php echo e($u->unit_number); ?> <?php echo e($u->unit_name); ?></div>
+                                    <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 1px;"><?php echo e($u->landBank?->name ?? 'Proyek'); ?></div>
+                                </td>
+                                <td style="color: #64748b; font-weight: 500;">
+                                    <?php echo e($u->created_at ? $u->created_at->addMonths(4)->translatedFormat('M Y') : 'Des 2025'); ?>
 
-                        <!-- Row 2 -->
-                        <tr>
-                            <td style="font-weight: 700; text-align: center;">2</td>
-                            <td>
-                                <div style="font-weight: 700; color: #0f172a;">Blok B.3 Melati</div>
-                                <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 1px;">Kebonsari Village</div>
-                            </td>
-                            <td style="color: #64748b; font-weight: 500;">Mar 2026</td>
-                            <td>
-                                <div class="dash-progress-wrap">
-                                    <div class="dash-progress-bar-bg" style="width: 80px;">
-                                        <div class="dash-progress-bar-fill" style="width: 62%; background-color: #0284c7;"></div>
+                                </td>
+                                <td>
+                                    <div class="dash-progress-wrap">
+                                        <div class="dash-progress-bar-bg" style="width: 80px;">
+                                            <div class="dash-progress-bar-fill" style="width: <?php echo e($progressPct); ?>%; background-color: <?php echo e($progressPct >= 80 ? '#7c3aed' : ($progressPct >= 40 ? '#0284c7' : '#ea580c')); ?>;"></div>
+                                        </div>
+                                        <span style="font-size: 0.75rem; font-weight: 800; color: #0f172a; width: 30px; text-align: right;"><?php echo e($progressPct); ?>%</span>
                                     </div>
-                                    <span style="font-size: 0.75rem; font-weight: 800; color: #0f172a; width: 30px; text-align: right;">62%</span>
-                                </div>
-                            </td>
-                            <td style="text-align: center;">
-                                <span class="dash-status-pill on-track">
-                                    <span class="dot"></span> On Track
-                                </span>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="dash-action-btn">
-                                    <i class="mdi mdi-dots-horizontal"></i>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- Row 3 -->
-                        <tr>
-                            <td style="font-weight: 700; text-align: center;">3</td>
-                            <td>
-                                <div style="font-weight: 700; color: #0f172a;">Blok C.5 Anggrek</div>
-                                <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 1px;">Jember Residence</div>
-                            </td>
-                            <td style="color: #64748b; font-weight: 500;">Des 2025</td>
-                            <td>
-                                <div class="dash-progress-wrap">
-                                    <div class="dash-progress-bar-bg" style="width: 80px;">
-                                        <div class="dash-progress-bar-fill" style="width: 45%; background-color: #ea580c;"></div>
-                                    </div>
-                                    <span style="font-size: 0.75rem; font-weight: 800; color: #0f172a; width: 30px; text-align: right;">45%</span>
-                                </div>
-                            </td>
-                            <td style="text-align: center;">
-                                <span class="dash-status-pill warning">
-                                    <span class="dot"></span> Perhatian
-                                </span>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="dash-action-btn">
-                                    <i class="mdi mdi-dots-horizontal"></i>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <!-- Row 4 -->
-                        <tr>
-                            <td style="font-weight: 700; text-align: center;">4</td>
-                            <td>
-                                <div style="font-weight: 700; color: #0f172a;">Blok D.2 Kenanga</div>
-                                <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 1px;">Taman Asri</div>
-                            </td>
-                            <td style="color: #64748b; font-weight: 500;">Jun 2025</td>
-                            <td>
-                                <div class="dash-progress-wrap">
-                                    <div class="dash-progress-bar-bg" style="width: 80px;">
-                                        <div class="dash-progress-bar-fill" style="width: 20%; background-color: #64748b;"></div>
-                                    </div>
-                                    <span style="font-size: 0.75rem; font-weight: 800; color: #0f172a; width: 30px; text-align: right;">20%</span>
-                                </div>
-                            </td>
-                            <td style="text-align: center;">
-                                <span class="dash-status-pill danger">
-                                    <span class="dot"></span> Terlambat
-                                </span>
-                            </td>
-                            <td style="text-align: center;">
-                                <button type="button" class="dash-action-btn">
-                                    <i class="mdi mdi-dots-horizontal"></i>
-                                </button>
-                            </td>
-                        </tr>
+                                </td>
+                                <td style="text-align: center;">
+                                    <?php if($progressPct >= 100): ?>
+                                        <span class="dash-status-pill on-track">
+                                            <span class="dot"></span> Selesai
+                                        </span>
+                                    <?php elseif($progressPct >= 50): ?>
+                                        <span class="dash-status-pill on-track">
+                                            <span class="dot"></span> On Track
+                                        </span>
+                                    <?php elseif($progressPct > 0): ?>
+                                        <span class="dash-status-pill warning">
+                                            <span class="dot"></span> Perhatian
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="dash-status-pill" style="background:#f1f5f9; color:#64748b;">
+                                            <span class="dot" style="background:#94a3b8;"></span> Belum Mulai
+                                        </span>
+                                    <?php endif; ?>
+                                </td>
+                                <td style="text-align: center;">
+                                    <a href="<?php echo e(route('marketing.jual-unit')); ?>" class="dash-action-btn" title="Detail Unit">
+                                        <i class="mdi mdi-dots-horizontal"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #94a3b8; padding: 24px;">Belum ada progres unit yang tercatat</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -707,7 +484,7 @@
                             <p class="dash-panel-subtitle">5 tugas terbaru dari seluruh divisi</p>
                         </div>
                     </div>
-                    <a href="#" class="dash-link-all">
+                    <a href="<?php echo e(route('perizinan.tugas.index')); ?>" class="dash-link-all">
                         Lihat Semua <i class="mdi mdi-arrow-right"></i>
                     </a>
                 </div>
@@ -720,6 +497,7 @@
                                 <th style="width: 28px; text-align: center;">No</th>
                                 <th>Tugas</th>
                                 <th>Proyek</th>
+                                <th>Ditugaskan Ke</th>
                                 <th>Divisi</th>
                                 <th>Deadline</th>
                                 <th style="text-align: center;">Status</th>
@@ -727,90 +505,47 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Row 1 -->
-                            <tr>
-                                <td style="font-weight: 700; text-align: center;">1</td>
-                                <td style="font-weight: 700; color: #0f172a;">Verifikasi dokumen KPR</td>
-                                <td style="color: #475569;">Tanah Jember</td>
-                                <td style="color: #64748b;">Marketing</td>
-                                <td style="color: #64748b;">15 Sep 2025</td>
-                                <td style="text-align: center;">
-                                    <span class="dash-badge blue">Menunggu</span>
-                                </td>
-                                <td style="text-align: center;">
-                                    <button type="button" class="dash-action-btn">
-                                        <i class="mdi mdi-dots-horizontal"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                            <?php $__empty_1 = true; $__currentLoopData = $recentTeamTasks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tIdx => $t): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                <?php
+                                    $taskStatus = strtolower($t->status ?? '');
+                                    $taskBadge = match(true) {
+                                        str_contains($taskStatus, 'selesai') => 'green',
+                                        str_contains($taskStatus, 'kendala') || str_contains($taskStatus, 'terlambat') => 'red',
+                                        str_contains($taskStatus, 'proses') || str_contains($taskStatus, 'berjalan') => 'yellow',
+                                        default => 'blue'
+                                    };
+                                ?>
+                                <tr>
+                                    <td style="font-weight: 700; text-align: center;"><?php echo e($tIdx + 1); ?></td>
+                                    <td style="font-weight: 700; color: #0f172a;"><?php echo e($t->nama_tugas); ?></td>
+                                    <td style="color: #475569;"><?php echo e($t->proyek_nama ?? ($t->proyek?->name ?? 'Semua Proyek')); ?></td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 6px;">
+                                            <div style="width: 22px; height: 22px; border-radius: 50%; background: #ede9fe; color: #7c3aed; font-size: 0.65rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                                <i class="mdi mdi-account" style="font-size: 0.75rem;"></i>
+                                            </div>
+                                            <span style="font-weight: 600; color: #1e293b; font-size: 0.76rem; white-space: nowrap;">
+                                                <?php echo e($t->employee?->name ?? 'Belum Ditugaskan'); ?>
 
-                            <!-- Row 2 -->
-                            <tr>
-                                <td style="font-weight: 700; text-align: center;">2</td>
-                                <td style="font-weight: 700; color: #0f172a;">Upload akta tanah</td>
-                                <td style="color: #475569;">Kebonsari Village</td>
-                                <td style="color: #64748b;">Legal</td>
-                                <td style="color: #64748b;">16 Sep 2025</td>
-                                <td style="text-align: center;">
-                                    <span class="dash-badge red">Terlambat</span>
-                                </td>
-                                <td style="text-align: center;">
-                                    <button type="button" class="dash-action-btn">
-                                        <i class="mdi mdi-dots-horizontal"></i>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <!-- Row 3 -->
-                            <tr>
-                                <td style="font-weight: 700; text-align: center;">3</td>
-                                <td style="font-weight: 700; color: #0f172a;">Progress pembangunan Blok A</td>
-                                <td style="color: #475569;">Jember Residence</td>
-                                <td style="color: #64748b;">Proyek</td>
-                                <td style="color: #64748b;">16 Sep 2025</td>
-                                <td style="text-align: center;">
-                                    <span class="dash-badge green">Berjalan</span>
-                                </td>
-                                <td style="text-align: center;">
-                                    <button type="button" class="dash-action-btn">
-                                        <i class="mdi mdi-dots-horizontal"></i>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <!-- Row 4 -->
-                            <tr>
-                                <td style="font-weight: 700; text-align: center;">4</td>
-                                <td style="font-weight: 700; color: #0f172a;">Follow up pembayaran</td>
-                                <td style="color: #475569;">Tanah Jember</td>
-                                <td style="color: #64748b;">Keuangan</td>
-                                <td style="color: #64748b;">16 Sep 2025</td>
-                                <td style="text-align: center;">
-                                    <span class="dash-badge yellow">Proses</span>
-                                </td>
-                                <td style="text-align: center;">
-                                    <button type="button" class="dash-action-btn">
-                                        <i class="mdi mdi-dots-horizontal"></i>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <!-- Row 5 -->
-                            <tr>
-                                <td style="font-weight: 700; text-align: center;">5</td>
-                                <td style="font-weight: 700; color: #0f172a;">Pengurusan PERTEK</td>
-                                <td style="color: #475569;">Jember Indah</td>
-                                <td style="color: #64748b;">Legal</td>
-                                <td style="color: #64748b;">17 Sep 2025</td>
-                                <td style="text-align: center;">
-                                    <span class="dash-badge yellow">Proses</span>
-                                </td>
-                                <td style="text-align: center;">
-                                    <button type="button" class="dash-action-btn">
-                                        <i class="mdi mdi-dots-horizontal"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td style="color: #64748b;"><?php echo e($t->employee?->division?->name ?? 'Legal'); ?></td>
+                                    <td style="color: #64748b;"><?php echo e($t->deadline ? $t->deadline->translatedFormat('d M Y') : '-'); ?></td>
+                                    <td style="text-align: center;">
+                                        <span class="dash-badge <?php echo e($taskBadge); ?>"><?php echo e($t->status ?: 'Menunggu'); ?></span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <a href="<?php echo e(route('perizinan.tugas.index')); ?>" class="dash-action-btn" title="Detail Tugas">
+                                            <i class="mdi mdi-dots-horizontal"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                <tr>
+                                    <td colspan="8" style="text-align: center; color: #94a3b8; padding: 24px;">Belum ada tugas tim yang aktif</td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -830,7 +565,7 @@
                             <p class="dash-panel-subtitle">Rekap penjualan unit dan posisi keuangan</p>
                         </div>
                     </div>
-                    <a href="#" class="dash-link-all">
+                    <a href="<?php echo e(route('marketing.list_pengajuan')); ?>" class="dash-link-all">
                         Lihat Semua <i class="mdi mdi-arrow-right"></i>
                     </a>
                 </div>
@@ -845,7 +580,7 @@
                         </div>
                         <div class="dash-finance-mini-info">
                             <div class="dash-finance-mini-label">Unit Terjual</div>
-                            <div class="dash-finance-mini-val">420</div>
+                            <div class="dash-finance-mini-val"><?php echo e(number_format($financeSummary['unit_terjual'])); ?></div>
                         </div>
                     </div>
 
@@ -856,7 +591,16 @@
                         </div>
                         <div class="dash-finance-mini-info">
                             <div class="dash-finance-mini-label">Nilai Penjualan</div>
-                            <div class="dash-finance-mini-val">62.4 M</div>
+                            <div class="dash-finance-mini-val">
+                                <?php if($financeSummary['nilai_penjualan'] >= 1000000000): ?>
+                                    <?php echo e(number_format($financeSummary['nilai_penjualan'] / 1000000000, 1, ',', '.')); ?> M
+                                <?php elseif($financeSummary['nilai_penjualan'] >= 1000000): ?>
+                                    <?php echo e(number_format($financeSummary['nilai_penjualan'] / 1000000, 1, ',', '.')); ?> Jt
+                                <?php else: ?>
+                                    <?php echo e(number_format($financeSummary['nilai_penjualan'], 0, ',', '.')); ?>
+
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
 
@@ -867,7 +611,16 @@
                         </div>
                         <div class="dash-finance-mini-info">
                             <div class="dash-finance-mini-label">Uang Diterima</div>
-                            <div class="dash-finance-mini-val">58.0 M</div>
+                            <div class="dash-finance-mini-val">
+                                <?php if($financeSummary['uang_diterima'] >= 1000000000): ?>
+                                    <?php echo e(number_format($financeSummary['uang_diterima'] / 1000000000, 1, ',', '.')); ?> M
+                                <?php elseif($financeSummary['uang_diterima'] >= 1000000): ?>
+                                    <?php echo e(number_format($financeSummary['uang_diterima'] / 1000000, 1, ',', '.')); ?> Jt
+                                <?php else: ?>
+                                    <?php echo e(number_format($financeSummary['uang_diterima'], 0, ',', '.')); ?>
+
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
 
@@ -878,7 +631,16 @@
                         </div>
                         <div class="dash-finance-mini-info">
                             <div class="dash-finance-mini-label">Piutang</div>
-                            <div class="dash-finance-mini-val">4.3 M</div>
+                            <div class="dash-finance-mini-val">
+                                <?php if($financeSummary['piutang'] >= 1000000000): ?>
+                                    <?php echo e(number_format($financeSummary['piutang'] / 1000000000, 1, ',', '.')); ?> M
+                                <?php elseif($financeSummary['piutang'] >= 1000000): ?>
+                                    <?php echo e(number_format($financeSummary['piutang'] / 1000000, 1, ',', '.')); ?> Jt
+                                <?php else: ?>
+                                    <?php echo e(number_format($financeSummary['piutang'], 0, ',', '.')); ?>
+
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
 
@@ -894,7 +656,7 @@
                         </div>
                         <div style="min-width: 0;">
                             <div style="font-size: 0.68rem; color: #64748b; font-weight: 500;">Total Pengeluaran</div>
-                            <div style="font-size: 1rem; font-weight: 800; color: #0f172a; margin-top: 2px;">Rp 28.750.000.000</div>
+                            <div style="font-size: 1rem; font-weight: 800; color: #0f172a; margin-top: 2px;">Rp <?php echo e(number_format($financeSummary['total_pengeluaran'], 0, ',', '.')); ?></div>
                             <div style="font-size: 0.65rem; color: #94a3b8;">Tanah, pengolahan, operasional</div>
                         </div>
                     </div>
@@ -906,9 +668,8 @@
                         </div>
                         <div style="min-width: 0;">
                             <div style="font-size: 0.68rem; color: #64748b; font-weight: 500;">Saldo Keuangan</div>
-                            <div style="font-size: 1rem; font-weight: 800; color: #15803d; margin-top: 2px;">Rp 29.330.000.000</div>
+                            <div style="font-size: 1rem; font-weight: 800; color: <?php echo e($financeSummary['saldo_keuangan'] >= 0 ? '#15803d' : '#e11d48'); ?>; margin-top: 2px;">Rp <?php echo e(number_format($financeSummary['saldo_keuangan'], 0, ',', '.')); ?></div>
                             <div style="font-size: 0.65rem; color: #94a3b8;">Kas masuk - kas keluar</div>
-                        </div>
                     </div>
 
                 </div>

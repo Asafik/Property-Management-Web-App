@@ -1,9 +1,7 @@
-@extends('layouts.partial.app')
+<?php $__env->startSection('title', 'Semua Properti Proyek'); ?>
 
-@section('title', 'Semua Properti Proyek')
-
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
+<?php $__env->startPush('styles'); ?>
+    <link rel="stylesheet" href="<?php echo e(asset('css/dashboard-clean.css')); ?>?v=<?php echo e(time()); ?>">
     <style>
         /* Table Responsive & Text Wrapping persis Perizinan */
         .table-lahan {
@@ -141,11 +139,11 @@
             background: transparent !important;
         }
     </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
-    @php
+    <?php
         if (!function_exists('sortIcon')) {
             function sortIcon($column)
             {
@@ -157,7 +155,7 @@
                     : 'mdi-arrow-up text-primary fw-bold';
             }
         }
-    @endphp
+    ?>
 
     <div class="container-fluid px-2 px-md-4 py-3">
 
@@ -184,7 +182,7 @@
                     </div>
                     <div class="dash-kpi-info">
                         <div class="dash-kpi-label">Total Properti Pasca</div>
-                        <div class="dash-kpi-val">{{ $totalLandBank ?? $landBanks->total() }}</div>
+                        <div class="dash-kpi-val"><?php echo e($totalLandBank ?? $landBanks->total()); ?></div>
                         <div class="dash-kpi-sub">Seluruh Properti Terdaftar</div>
                     </div>
                 </div>
@@ -201,7 +199,7 @@
                     </div>
                     <div class="dash-kpi-info">
                         <div class="dash-kpi-label">Legalitas Terverifikasi</div>
-                        <div class="dash-kpi-val">{{ $legalVerified ?? 0 }}</div>
+                        <div class="dash-kpi-val"><?php echo e($legalVerified ?? 0); ?></div>
                         <div class="dash-kpi-sub">Dokumen Sah & Lengkap</div>
                     </div>
                 </div>
@@ -218,7 +216,7 @@
                     </div>
                     <div class="dash-kpi-info">
                         <div class="dash-kpi-label">Pembangunan Selesai</div>
-                        <div class="dash-kpi-val">{{ $devSelesai ?? 0 }}</div>
+                        <div class="dash-kpi-val"><?php echo e($devSelesai ?? 0); ?></div>
                         <div class="dash-kpi-sub">Fisik 100% Rampung</div>
                     </div>
                 </div>
@@ -235,7 +233,7 @@
                     </div>
                     <div class="dash-kpi-info">
                         <div class="dash-kpi-label">Dalam Pengerjaan</div>
-                        <div class="dash-kpi-val">{{ $devProses ?? 0 }}</div>
+                        <div class="dash-kpi-val"><?php echo e($devProses ?? 0); ?></div>
                         <div class="dash-kpi-sub">Proses Infrastruktur Lahan</div>
                     </div>
                 </div>
@@ -258,7 +256,7 @@
                                 <i class="mdi mdi-office-building-marker-outline me-2" style="color: #9a55ff;"></i>Daftar Tanah Pasca Land Bank
                             </h5>
                         </div>
-                        <a href="{{ route('properti') }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm fw-semibold" style="border-radius: 6px; font-size: 0.84rem;">
+                        <a href="<?php echo e(route('properti')); ?>" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm fw-semibold" style="border-radius: 6px; font-size: 0.84rem;">
                             <i class="mdi mdi-plus"></i> Tambah Pasca Landbank
                         </a>
                     </div>
@@ -267,9 +265,9 @@
                         
                         <!-- Search & Filter Toolbar -->
                         <div class="card-toolbar-box p-3 border-bottom bg-white">
-                            <form id="filterForm" method="GET" action="{{ route('properti-all') }}">
-                                <input type="hidden" name="sort_by" id="sort_by" value="{{ request('sort_by') }}">
-                                <input type="hidden" name="sort_order" id="sort_order" value="{{ request('sort_order', 'asc') }}">
+                            <form id="filterForm" method="GET" action="<?php echo e(route('properti-all')); ?>">
+                                <input type="hidden" name="sort_by" id="sort_by" value="<?php echo e(request('sort_by')); ?>">
+                                <input type="hidden" name="sort_order" id="sort_order" value="<?php echo e(request('sort_order', 'asc')); ?>">
 
                                 <!-- DESKTOP VERSION -->
                                 <div class="d-none d-md-block">
@@ -279,7 +277,7 @@
                                             <div style="min-width: 180px; max-width: 240px; flex: 1;">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" name="search" id="liveSearchInput"
-                                                        placeholder="Nama Properti..." value="{{ request('search') }}"
+                                                        placeholder="Nama Properti..." value="<?php echo e(request('search')); ?>"
                                                         onkeyup="applyLiveSearch(this.value)"
                                                         style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
                                                     <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
@@ -294,12 +292,13 @@
                                             <div style="min-width: 170px;">
                                                 <select name="company_profile_id" id="filterCompany" class="form-control select2" onchange="document.getElementById('filterForm').submit()" style="width: 100%;">
                                                     <option value="">Semua Perusahaan</option>
-                                                    @foreach ($companies as $company)
-                                                        <option value="{{ $company->id }}"
-                                                            {{ request('company_profile_id') == $company->id ? 'selected' : '' }}>
-                                                            {{ $company->name }}
+                                                    <?php $__currentLoopData = $companies; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $company): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <option value="<?php echo e($company->id); ?>"
+                                                            <?php echo e(request('company_profile_id') == $company->id ? 'selected' : ''); ?>>
+                                                            <?php echo e($company->name); ?>
+
                                                         </option>
-                                                    @endforeach
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 </select>
                                             </div>
 
@@ -307,9 +306,9 @@
                                             <div style="min-width: 165px;">
                                                 <select name="legalitas" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px; font-size: 0.84rem;">
                                                     <option value="">Semua Legalitas</option>
-                                                    <option value="verified" {{ request('legalitas') == 'verified' ? 'selected' : '' }}>Terverifikasi</option>
-                                                    <option value="pending" {{ request('legalitas') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                                    <option value="rejected" {{ request('legalitas') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                                    <option value="verified" <?php echo e(request('legalitas') == 'verified' ? 'selected' : ''); ?>>Terverifikasi</option>
+                                                    <option value="pending" <?php echo e(request('legalitas') == 'pending' ? 'selected' : ''); ?>>Pending</option>
+                                                    <option value="rejected" <?php echo e(request('legalitas') == 'rejected' ? 'selected' : ''); ?>>Rejected</option>
                                                 </select>
                                             </div>
 
@@ -317,9 +316,9 @@
                                             <div style="min-width: 150px;">
                                                 <select name="pembangunan" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px; font-size: 0.84rem;">
                                                     <option value="">Semua Status</option>
-                                                    <option value="Selesai" {{ request('pembangunan') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                                                    <option value="progress" {{ request('pembangunan') == 'progress' ? 'selected' : '' }}>Progress</option>
-                                                    <option value="Belum" {{ request('pembangunan') == 'Belum' ? 'selected' : '' }}>Belum</option>
+                                                    <option value="Selesai" <?php echo e(request('pembangunan') == 'Selesai' ? 'selected' : ''); ?>>Selesai</option>
+                                                    <option value="progress" <?php echo e(request('pembangunan') == 'progress' ? 'selected' : ''); ?>>Progress</option>
+                                                    <option value="Belum" <?php echo e(request('pembangunan') == 'Belum' ? 'selected' : ''); ?>>Belum</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -328,16 +327,16 @@
                                         <div class="d-flex align-items-center gap-2 ms-auto">
                                             <div style="width: 85px;">
                                                 <select name="show" id="showSelect" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
-                                                    <option value="10" {{ request('show', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                    <option value="25" {{ request('show', 10) == 25 ? 'selected' : '' }}>25</option>
-                                                    <option value="50" {{ request('show', 10) == 50 ? 'selected' : '' }}>50</option>
-                                                    <option value="100" {{ request('show', 10) == 100 ? 'selected' : '' }}>100</option>
+                                                    <option value="10" <?php echo e(request('show', 10) == 10 ? 'selected' : ''); ?>>10</option>
+                                                    <option value="25" <?php echo e(request('show', 10) == 25 ? 'selected' : ''); ?>>25</option>
+                                                    <option value="50" <?php echo e(request('show', 10) == 50 ? 'selected' : ''); ?>>50</option>
+                                                    <option value="100" <?php echo e(request('show', 10) == 100 ? 'selected' : ''); ?>>100</option>
                                                 </select>
                                             </div>
                                             <button type="submit" class="btn btn-gradient-primary d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0;" title="Filter">
                                                 <i class="mdi mdi-filter"></i>
                                             </button>
-                                            <a href="{{ route('properti-all') }}" class="btn btn-gradient-secondary d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0;" title="Reset">
+                                            <a href="<?php echo e(route('properti-all')); ?>" class="btn btn-gradient-secondary d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0;" title="Reset">
                                                 <i class="mdi mdi-refresh"></i>
                                             </a>
                                         </div>
@@ -350,7 +349,7 @@
                                         <div class="col-12 mb-2">
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="searchInputMobile" name="search"
-                                                    placeholder="Nama Properti..." value="{{ request('search') }}"
+                                                    placeholder="Nama Properti..." value="<?php echo e(request('search')); ?>"
                                                     onkeyup="applyLiveSearch(this.value)"
                                                     style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
                                                 <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
@@ -363,36 +362,37 @@
                                         <div class="col-12 mb-2">
                                             <select name="company_profile_id" id="filterCompanyMobile" class="form-control select2" onchange="document.getElementById('filterForm').submit()" style="width: 100%;">
                                                 <option value="">Semua Perusahaan</option>
-                                                @foreach ($companies as $company)
-                                                    <option value="{{ $company->id }}"
-                                                        {{ request('company_profile_id') == $company->id ? 'selected' : '' }}>
-                                                        {{ $company->name }}
+                                                <?php $__currentLoopData = $companies; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $company): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($company->id); ?>"
+                                                        <?php echo e(request('company_profile_id') == $company->id ? 'selected' : ''); ?>>
+                                                        <?php echo e($company->name); ?>
+
                                                     </option>
-                                                @endforeach
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                         </div>
                                         <div class="col-6 mb-2">
                                             <select name="legalitas" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
                                                 <option value="">Semua Legalitas</option>
-                                                <option value="verified" {{ request('legalitas') == 'verified' ? 'selected' : '' }}>Terverifikasi</option>
-                                                <option value="pending" {{ request('legalitas') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                                <option value="rejected" {{ request('legalitas') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                                <option value="verified" <?php echo e(request('legalitas') == 'verified' ? 'selected' : ''); ?>>Terverifikasi</option>
+                                                <option value="pending" <?php echo e(request('legalitas') == 'pending' ? 'selected' : ''); ?>>Pending</option>
+                                                <option value="rejected" <?php echo e(request('legalitas') == 'rejected' ? 'selected' : ''); ?>>Rejected</option>
                                             </select>
                                         </div>
                                         <div class="col-6 mb-2">
                                             <select name="pembangunan" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
                                                 <option value="">Semua Status</option>
-                                                <option value="Selesai" {{ request('pembangunan') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                                                <option value="progress" {{ request('pembangunan') == 'progress' ? 'selected' : '' }}>Progress</option>
-                                                <option value="Belum" {{ request('pembangunan') == 'Belum' ? 'selected' : '' }}>Belum</option>
+                                                <option value="Selesai" <?php echo e(request('pembangunan') == 'Selesai' ? 'selected' : ''); ?>>Selesai</option>
+                                                <option value="progress" <?php echo e(request('pembangunan') == 'progress' ? 'selected' : ''); ?>>Progress</option>
+                                                <option value="Belum" <?php echo e(request('pembangunan') == 'Belum' ? 'selected' : ''); ?>>Belum</option>
                                             </select>
                                         </div>
                                         <div class="col-4">
                                             <select name="show" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
-                                                <option value="10" {{ request('show', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                <option value="25" {{ request('show', 10) == 25 ? 'selected' : '' }}>25</option>
-                                                <option value="50" {{ request('show', 10) == 50 ? 'selected' : '' }}>50</option>
-                                                <option value="100" {{ request('show', 10) == 100 ? 'selected' : '' }}>100</option>
+                                                <option value="10" <?php echo e(request('show', 10) == 10 ? 'selected' : ''); ?>>10</option>
+                                                <option value="25" <?php echo e(request('show', 10) == 25 ? 'selected' : ''); ?>>25</option>
+                                                <option value="50" <?php echo e(request('show', 10) == 50 ? 'selected' : ''); ?>>50</option>
+                                                <option value="100" <?php echo e(request('show', 10) == 100 ? 'selected' : ''); ?>>100</option>
                                             </select>
                                         </div>
                                         <div class="col-4">
@@ -401,7 +401,7 @@
                                             </button>
                                         </div>
                                         <div class="col-4">
-                                            <a href="{{ route('properti-all') }}" class="btn btn-gradient-secondary w-100 d-inline-flex align-items-center justify-content-center" style="height: 38px;" title="Reset">
+                                            <a href="<?php echo e(route('properti-all')); ?>" class="btn btn-gradient-secondary w-100 d-inline-flex align-items-center justify-content-center" style="height: 38px;" title="Reset">
                                                 <i class="mdi mdi-refresh"></i>
                                             </a>
                                         </div>
@@ -416,55 +416,60 @@
                                 <thead>
                                     <tr>
                                         <th class="col-no text-center">NO</th>
-                                        <th class="sort-th" onclick="handleSort('name')">NAMA PROPERTI <i class="mdi {{ sortIcon('name') }}"></i></th>
-                                        <th class="sort-th" onclick="handleSort('company_profile_id')">NAMA PERUSAHAAN <i class="mdi {{ sortIcon('company_profile_id') }}"></i></th>
-                                        <th class="sort-th" onclick="handleSort('zoning')">KATEGORI <i class="mdi {{ sortIcon('zoning') }}"></i></th>
-                                        <th class="d-none d-md-table-cell sort-th" onclick="handleSort('address')">LOKASI <i class="mdi {{ sortIcon('address') }}"></i></th>
-                                        <th class="sort-th" onclick="handleSort('acquisition_price')">HARGA BELI <i class="mdi {{ sortIcon('acquisition_price') }}"></i></th>
-                                        <th class="sort-th" onclick="handleSort('legal_status')">LEGALITAS <i class="mdi {{ sortIcon('legal_status') }}"></i></th>
-                                        <th class="sort-th" onclick="handleSort('development_status')">PEMBANGUNAN <i class="mdi {{ sortIcon('development_status') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('name')">NAMA PROPERTI <i class="mdi <?php echo e(sortIcon('name')); ?>"></i></th>
+                                        <th class="sort-th" onclick="handleSort('company_profile_id')">NAMA PERUSAHAAN <i class="mdi <?php echo e(sortIcon('company_profile_id')); ?>"></i></th>
+                                        <th class="sort-th" onclick="handleSort('zoning')">KATEGORI <i class="mdi <?php echo e(sortIcon('zoning')); ?>"></i></th>
+                                        <th class="d-none d-md-table-cell sort-th" onclick="handleSort('address')">LOKASI <i class="mdi <?php echo e(sortIcon('address')); ?>"></i></th>
+                                        <th class="sort-th" onclick="handleSort('acquisition_price')">HARGA BELI <i class="mdi <?php echo e(sortIcon('acquisition_price')); ?>"></i></th>
+                                        <th class="sort-th" onclick="handleSort('legal_status')">LEGALITAS <i class="mdi <?php echo e(sortIcon('legal_status')); ?>"></i></th>
+                                        <th class="sort-th" onclick="handleSort('development_status')">PEMBANGUNAN <i class="mdi <?php echo e(sortIcon('development_status')); ?>"></i></th>
                                         <th class="text-center col-dokumen">DOKUMEN</th>
                                         <th class="text-center col-aksi">AKSI</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse ($landBanks as $index => $item)
-                                        @php
+                                    <?php $__empty_1 = true; $__currentLoopData = $landBanks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                        <?php
                                             $searchKeywords = strtolower($item->name . ' ' . ($item->companyProfile->name ?? '') . ' ' . ($item->address ?? '') . ' ' . ($item->zoning ?? ''));
-                                        @endphp
-                                        <tr class="project-table-row" data-search="{{ $searchKeywords }}">
-                                            <td class="col-no text-center fw-bold text-muted">{{ $landBanks->firstItem() + $index }}</td>
+                                        ?>
+                                        <tr class="project-table-row" data-search="<?php echo e($searchKeywords); ?>">
+                                            <td class="col-no text-center fw-bold text-muted"><?php echo e($landBanks->firstItem() + $index); ?></td>
                                             <td>
                                                 <a href="javascript:void(0)" 
                                                    class="fw-bold text-dark text-decoration-none hover-primary d-inline-block" 
                                                    data-bs-toggle="modal" 
-                                                   data-bs-target="#modalDetail{{ $item->id }}" 
+                                                   data-bs-target="#modalDetail<?php echo e($item->id); ?>" 
                                                    title="Klik untuk melihat detail lengkap"
                                                    style="font-size: 0.88rem; transition: color 0.15s ease;">
-                                                    {{ $item->name }}
+                                                    <?php echo e($item->name); ?>
+
                                                 </a>
                                                 <small class="text-muted d-block d-md-none mt-1">
-                                                    {{ Str::limit($item->address ?? '-', 15) }}
+                                                    <?php echo e(Str::limit($item->address ?? '-', 15)); ?>
+
                                                 </small>
                                             </td>
                                             <td>
                                                 <div class="fw-semibold text-dark">
-                                                    {{ $item->companyProfile->name ?? '-' }}
+                                                    <?php echo e($item->companyProfile->name ?? '-'); ?>
+
                                                 </div>
                                             </td>
                                             <td>
-                                                <span class="badge-category">{{ $item->zoning ?? 'Tanah' }}</span>
+                                                <span class="badge-category"><?php echo e($item->zoning ?? 'Tanah'); ?></span>
                                             </td>
                                             <td class="d-none d-md-table-cell">
-                                                <span class="text-muted" title="{{ $item->address ?? '-' }}">
-                                                    {{ Str::limit($item->address ?? '-', 22) }}
+                                                <span class="text-muted" title="<?php echo e($item->address ?? '-'); ?>">
+                                                    <?php echo e(Str::limit($item->address ?? '-', 22)); ?>
+
                                                 </span>
                                             </td>
                                             <td class="fw-bold text-success">
-                                                Rp {{ number_format($item->grand_total_acquisition_price, 0, ',', '.') }}
+                                                Rp <?php echo e(number_format($item->grand_total_acquisition_price, 0, ',', '.')); ?>
+
                                             </td>
                                             <td>
-                                                @php
+                                                <?php
                                                     $docs = $item->merged_documents;
                                                     $totalDocs = $docs->count();
                                                     $verifiedDocs = $docs->where('status', 'verified')->count();
@@ -501,20 +506,21 @@
                                                         $legalIcon = 'mdi-close-circle';
                                                         $legalLabel = 'Belum';
                                                     }
-                                                @endphp
+                                                ?>
                                                 <div style="min-width: 110px;">
                                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                                        <small class="fw-bold {{ $legalTextClass }}" style="font-size: 0.75rem;">
-                                                            <i class="mdi {{ $legalIcon }} me-0.5"></i> {{ $legalLabel }}
+                                                        <small class="fw-bold <?php echo e($legalTextClass); ?>" style="font-size: 0.75rem;">
+                                                            <i class="mdi <?php echo e($legalIcon); ?> me-0.5"></i> <?php echo e($legalLabel); ?>
+
                                                         </small>
-                                                        <span class="fw-bold" style="font-size: 0.75rem; color: #374151;">{{ $legalPercent }}%</span>
+                                                        <span class="fw-bold" style="font-size: 0.75rem; color: #374151;"><?php echo e($legalPercent); ?>%</span>
                                                     </div>
                                                     <div class="progress" style="height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden;">
-                                                        <div class="progress-bar" role="progressbar" style="width: {{ $legalPercent }}%; {{ $legalBarColor }} border-radius: 4px;" aria-valuenow="{{ $legalPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div class="progress-bar" role="progressbar" style="width: <?php echo e($legalPercent); ?>%; <?php echo e($legalBarColor); ?> border-radius: 4px;" aria-valuenow="<?php echo e($legalPercent); ?>" aria-valuemin="0" aria-valuemax="100"></div>
                                                     </div>
                                                 </div>
                                             <td>
-                                                @php
+                                                <?php
                                                     $devPercent = (float) $item->overall_infrastructure_progress;
                                                     if (in_array(strtolower($item->development_status), ['selesai', 'done'])) {
                                                         $devPercent = 100;
@@ -535,59 +541,62 @@
                                                         $devIcon = 'mdi-close-circle';
                                                         $devLabel = 'Belum';
                                                     }
-                                                @endphp
+                                                ?>
                                                 <div style="min-width: 110px;">
                                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                                        <small class="fw-bold {{ $devTextClass }}" style="font-size: 0.75rem;">
-                                                            <i class="mdi {{ $devIcon }} me-0.5"></i> {{ $devLabel }}
+                                                        <small class="fw-bold <?php echo e($devTextClass); ?>" style="font-size: 0.75rem;">
+                                                            <i class="mdi <?php echo e($devIcon); ?> me-0.5"></i> <?php echo e($devLabel); ?>
+
                                                         </small>
-                                                        <span class="fw-bold" style="font-size: 0.75rem; color: #374151;">{{ $devPercent }}%</span>
+                                                        <span class="fw-bold" style="font-size: 0.75rem; color: #374151;"><?php echo e($devPercent); ?>%</span>
                                                     </div>
                                                     <div class="progress" style="height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden;">
-                                                        <div class="progress-bar" role="progressbar" style="width: {{ $devPercent }}%; {{ $devBarColor }} border-radius: 4px;" aria-valuenow="{{ $devPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div class="progress-bar" role="progressbar" style="width: <?php echo e($devPercent); ?>%; <?php echo e($devBarColor); ?> border-radius: 4px;" aria-valuenow="<?php echo e($devPercent); ?>" aria-valuemin="0" aria-valuemax="100"></div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td class="text-center">
                                                 <button type="button" class="document-trigger" data-bs-toggle="modal"
-                                                    data-bs-target="#modalDokumen{{ $item->id }}" title="Lihat Dokumen">
-                                                    <i class="mdi mdi-file-document-multiple-outline"></i>{{ $item->merged_documents->count() }}
+                                                    data-bs-target="#modalDokumen<?php echo e($item->id); ?>" title="Lihat Dokumen">
+                                                    <i class="mdi mdi-file-document-multiple-outline"></i><?php echo e($item->merged_documents->count()); ?>
+
                                                 </button>
                                             </td>
                                             <td class="text-center" style="white-space: nowrap;">
                                                 <button type="button" 
                                                     class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1.5 shadow-none" 
                                                     data-bs-toggle="modal" 
-                                                    data-bs-target="#modalDetail{{ $item->id }}" 
+                                                    data-bs-target="#modalDetail<?php echo e($item->id); ?>" 
                                                     title="Lihat Detail Properti"
                                                     style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
                                                     <i class="mdi mdi-eye"></i> Detail
                                                 </button>
                                             </td>
                                         </tr>
-                                    @empty
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <tr>
                                             <td colspan="10" class="text-center text-muted py-4">
                                                 <i class="mdi mdi-information-outline me-2"></i> Belum ada data properti
                                             </td>
                                         </tr>
-                                    @endforelse
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
 
                         <!-- PAGINATION FOOTER -->
-                        @if ($landBanks instanceof \Illuminate\Pagination\LengthAwarePaginator && $landBanks->total() > 0)
+                        <?php if($landBanks instanceof \Illuminate\Pagination\LengthAwarePaginator && $landBanks->total() > 0): ?>
                             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-white">
                                 <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.84rem;">
-                                    Menampilkan {{ $landBanks->firstItem() }} - {{ $landBanks->lastItem() }} dari
-                                    {{ $landBanks->total() }} data
+                                    Menampilkan <?php echo e($landBanks->firstItem()); ?> - <?php echo e($landBanks->lastItem()); ?> dari
+                                    <?php echo e($landBanks->total()); ?> data
                                 </div>
                                 <div>
-                                    {{ $landBanks->appends(request()->query())->links('pagination::bootstrap-5') }}
+                                    <?php echo e($landBanks->appends(request()->query())->links('pagination::bootstrap-5')); ?>
+
                                 </div>
                             </div>
-                        @endif
+                        <?php endif; ?>
 
                     </div>
                 </div>
@@ -595,8 +604,8 @@
         </div>
     </div>
 
-    @foreach ($landBanks as $item)
-        <div class="modal fade" id="modalDokumen{{ $item->id }}" tabindex="-1" aria-hidden="true">
+    <?php $__currentLoopData = $landBanks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <div class="modal fade" id="modalDokumen<?php echo e($item->id); ?>" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -605,7 +614,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        @if ($item->fee_document_verification)
+                        <?php if($item->fee_document_verification): ?>
                             <!-- FEE VERIFIKASI DOKUMEN -->
                             <div class="alert alert-success border-0 p-3 mb-4 d-flex align-items-center" 
                                  style="background-color: #ebfbee; border-radius: 12px; border-left: 4px solid #2e7d32 !important; margin: 0 4px 20px 4px;">
@@ -616,12 +625,13 @@
                                     <div>
                                         <div class="text-muted small fw-semibold" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Fee Dokumen Verifikasi Pasca</div>
                                         <div class="text-success fw-bold" style="font-size: 1.25rem; color: #2e7d32 !important; font-weight: 800;">
-                                            Rp {{ number_format($item->fee_document_verification, 0, ',', '.') }}
+                                            Rp <?php echo e(number_format($item->fee_document_verification, 0, ',', '.')); ?>
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        @endif
+                        <?php endif; ?>
 
                         <!-- DAFTAR DOKUMEN -->
                         <div class="card border-0 shadow-sm mb-4">
@@ -631,7 +641,7 @@
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive" style="max-height: unset;">
-                                    @if ($item->merged_documents->count() > 0)
+                                    <?php if($item->merged_documents->count() > 0): ?>
                                         <table class="table table-hover mb-0">
                                             <thead class="table-light">
                                                 <tr>
@@ -643,72 +653,72 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($item->merged_documents as $idx => $doc)
+                                                <?php $__currentLoopData = $item->merged_documents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idx => $doc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <tr>
-                                                        <td class="text-center">{{ $idx + 1 }}</td>
-                                                        <td class="fw-bold">{{ $doc->document_number ?? '-' }}</td>
+                                                        <td class="text-center"><?php echo e($idx + 1); ?></td>
+                                                        <td class="fw-bold"><?php echo e($doc->document_number ?? '-'); ?></td>
                                                         <td>
                                                             <div class="d-flex align-items-center gap-2">
-                                                                <i class="mdi mdi-file-{{ $doc->type == 'sertifikat' ? 'certificate' : 'document' }}-outline text-primary"
+                                                                <i class="mdi mdi-file-<?php echo e($doc->type == 'sertifikat' ? 'certificate' : 'document'); ?>-outline text-primary"
                                                                     style="font-size: 1.2rem;"></i>
-                                                                <span class="fw-semibold text-dark">{{ $doc->documentType->name ?? '-' }}</span>
+                                                                <span class="fw-semibold text-dark"><?php echo e($doc->documentType->name ?? '-'); ?></span>
                                                             </div>
-                                                            @if ($doc->status === 'rejected')
+                                                            <?php if($doc->status === 'rejected'): ?>
                                                                 <div class="alert alert-danger border-0 p-2 mt-2 mb-0 d-flex align-items-start gap-2 text-danger small" style="background-color: #fff5f5; border-radius: 8px; font-weight: 500;">
                                                                     <i class="mdi mdi-alert-circle text-danger mt-0.5" style="font-size: 1.1rem; line-height: 1;"></i>
                                                                     <div>
                                                                         <strong class="text-danger">Alasan Penolakan:</strong> 
-                                                                        <span class="text-muted d-block mt-0.5" style="font-weight: normal; line-height: 1.4;">{{ $doc->admin_notes ?? 'Tidak ada catatan khusus.' }}</span>
+                                                                        <span class="text-muted d-block mt-0.5" style="font-weight: normal; line-height: 1.4;"><?php echo e($doc->admin_notes ?? 'Tidak ada catatan khusus.'); ?></span>
                                                                     </div>
                                                                 </div>
-                                                            @endif
+                                                            <?php endif; ?>
                                                         </td>
                                                         <td class="text-center">
-                                                            @if ($item->isFromPraLandbank())
+                                                            <?php if($item->isFromPraLandbank()): ?>
                                                                 <span class="badge rounded-pill bg-success px-3 py-2"><i
                                                                         class="mdi mdi-check-circle me-1"></i>Terverifikasi</span>
-                                                            @elseif ($doc->status == 'pending')
+                                                            <?php elseif($doc->status == 'pending'): ?>
                                                                 <span
                                                                     class="badge rounded-pill bg-warning text-dark px-3 py-2"><i
                                                                         class="mdi mdi-clock-outline me-1"></i>Pending</span>
-                                                            @elseif($doc->status == 'rejected')
+                                                            <?php elseif($doc->status == 'rejected'): ?>
                                                                 <span class="badge rounded-pill bg-danger px-3 py-2"><i
                                                                         class="mdi mdi-close-circle me-1"></i>Ditolak</span>
-                                                            @elseif($doc->status == 'verified')
+                                                            <?php elseif($doc->status == 'verified'): ?>
                                                                 <span class="badge rounded-pill bg-success px-3 py-2"><i
                                                                         class="mdi mdi-check-circle me-1"></i>Terverifikasi</span>
-                                                            @endif
+                                                            <?php endif; ?>
                                                         </td>
                                                         <td class="text-center">
-                                                            <a href="{{ asset(str_starts_with($doc->file_path, 'uploads/') ? $doc->file_path : 'uploads/' . $doc->file_path) }}"
+                                                            <a href="<?php echo e(asset(str_starts_with($doc->file_path, 'uploads/') ? $doc->file_path : 'uploads/' . $doc->file_path)); ?>"
                                                                 target="_blank" class="btn-outline-purple px-2 py-1" title="Lihat">
                                                                 <i class="mdi mdi-eye m-0"></i>
                                                             </a>
-                                                             @php
+                                                             <?php
                                                                  $ext = pathinfo($doc->file_path, PATHINFO_EXTENSION);
                                                                  $cleanDocName = str_replace(' ', '_', $doc->documentType->name ?? 'Dokumen');
                                                                  $cleanPropName = str_replace(' ', '_', $item->name);
                                                                  $downloadName = $cleanDocName . '_' . $cleanPropName . '.' . $ext;
                                                                  $filePathUrl = asset(str_starts_with($doc->file_path, 'uploads/') ? $doc->file_path : 'uploads/' . $doc->file_path);
-                                                             @endphp
-                                                             @if($item->isFromPraLandbank() || $doc->status != 'rejected')
-                                                                 <a href="{{ $filePathUrl }}"
-                                                                     download="{{ $downloadName }}" class="btn-outline-green px-2 py-1 ms-1" title="Download">
+                                                             ?>
+                                                             <?php if($item->isFromPraLandbank() || $doc->status != 'rejected'): ?>
+                                                                 <a href="<?php echo e($filePathUrl); ?>"
+                                                                     download="<?php echo e($downloadName); ?>" class="btn-outline-green px-2 py-1 ms-1" title="Download">
                                                                      <i class="mdi mdi-download m-0"></i>
                                                                  </a>
-                                                             @endif
+                                                             <?php endif; ?>
                                                         </td>
                                                     </tr>
-                                                @endforeach
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </tbody>
                                         </table>
-                                    @else
+                                    <?php else: ?>
                                         <div class="text-center text-muted py-5">
                                             <i class="mdi mdi-file-document-outline"
                                                 style="font-size: 3rem; opacity: 0.3;"></i>
                                             <p class="mt-2 mb-0">Tidak ada dokumen.</p>
                                         </div>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -723,7 +733,7 @@
         </div>
 
         <!-- MODAL DETAIL TANAH PASCA LAND BANK -->
-        <div class="modal fade" id="modalDetail{{ $item->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="modalDetail<?php echo e($item->id); ?>" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
                     <!-- Modal Header -->
@@ -736,15 +746,17 @@
                             <div>
                                 <div class="d-flex align-items-center gap-2">
                                     <h5 class="modal-title fw-bold text-dark mb-0" style="font-size: 1.15rem;">
-                                        {{ $item->name }}
+                                        <?php echo e($item->name); ?>
+
                                     </h5>
-                                    <span class="badge-category">{{ $item->zoning ?? 'Tanah' }}</span>
-                                    @if ($item->isFromPraLandbank())
+                                    <span class="badge-category"><?php echo e($item->zoning ?? 'Tanah'); ?></span>
+                                    <?php if($item->isFromPraLandbank()): ?>
                                         <span class="badge bg-soft-info text-info border border-info px-2 py-0.5" style="font-size: 0.7rem; border-radius: 4px;">Dari Pra-Landbank</span>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                                 <small class="text-muted">
-                                    <i class="mdi mdi-office-building me-1"></i>{{ $item->companyProfile->name ?? 'Perusahaan Mitra Tidak Terdaftar' }}
+                                    <i class="mdi mdi-office-building me-1"></i><?php echo e($item->companyProfile->name ?? 'Perusahaan Mitra Tidak Terdaftar'); ?>
+
                                 </small>
                             </div>
                         </div>
@@ -764,10 +776,10 @@
                                         <i class="mdi mdi-texture-box text-primary" style="font-size: 1.2rem;"></i>
                                     </div>
                                     <div class="fw-bold text-dark fs-5">
-                                        {{ number_format($item->area ?? 0, 0, ',', '.') }} <span class="fs-6 text-muted font-normal">m²</span>
+                                        <?php echo e(number_format($item->area ?? 0, 0, ',', '.')); ?> <span class="fs-6 text-muted font-normal">m²</span>
                                     </div>
                                     <small class="text-muted" style="font-size: 0.75rem;">
-                                        Sisa: {{ number_format($item->remaining_area ?? 0, 0, ',', '.') }} m²
+                                        Sisa: <?php echo e(number_format($item->remaining_area ?? 0, 0, ',', '.')); ?> m²
                                     </small>
                                 </div>
                             </div>
@@ -780,10 +792,12 @@
                                         <i class="mdi mdi-cash-multiple text-success" style="font-size: 1.2rem;"></i>
                                     </div>
                                     <div class="fw-bold text-success fs-5">
-                                        Rp {{ number_format($item->grand_total_acquisition_price, 0, ',', '.') }}
+                                        Rp <?php echo e(number_format($item->grand_total_acquisition_price, 0, ',', '.')); ?>
+
                                     </div>
                                     <small class="text-muted" style="font-size: 0.75rem;">
-                                        Tgl: {{ $item->acquisition_date ? \Carbon\Carbon::parse($item->acquisition_date)->locale('id')->translatedFormat('d M Y') : '-' }}
+                                        Tgl: <?php echo e($item->acquisition_date ? \Carbon\Carbon::parse($item->acquisition_date)->locale('id')->translatedFormat('d M Y') : '-'); ?>
+
                                     </small>
                                 </div>
                             </div>
@@ -796,16 +810,16 @@
                                         <i class="mdi mdi-shield-check text-info" style="font-size: 1.2rem;"></i>
                                     </div>
                                     <div class="fw-bold text-dark fs-5">
-                                        @if ($item->isFromPraLandbank() || $item->legal_status === 'verified')
+                                        <?php if($item->isFromPraLandbank() || $item->legal_status === 'verified'): ?>
                                             <span class="text-success"><i class="mdi mdi-check-circle me-1"></i>Terverifikasi</span>
-                                        @elseif($item->legal_status === 'rejected')
+                                        <?php elseif($item->legal_status === 'rejected'): ?>
                                             <span class="text-danger"><i class="mdi mdi-close-circle me-1"></i>Ditolak</span>
-                                        @else
-                                            <span class="text-warning"><i class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($item->legal_status ?? 'Pending') }}</span>
-                                        @endif
+                                        <?php else: ?>
+                                            <span class="text-warning"><i class="mdi mdi-clock-outline me-1"></i><?php echo e(ucfirst($item->legal_status ?? 'Pending')); ?></span>
+                                        <?php endif; ?>
                                     </div>
                                     <small class="text-muted" style="font-size: 0.75rem;">
-                                        {{ $item->merged_documents->count() }} Dokumen Terlampir
+                                        <?php echo e($item->merged_documents->count()); ?> Dokumen Terlampir
                                     </small>
                                 </div>
                             </div>
@@ -818,10 +832,11 @@
                                         <i class="mdi mdi-progress-wrench text-warning" style="font-size: 1.2rem;"></i>
                                     </div>
                                     <div class="fw-bold text-dark fs-5">
-                                        {{ (float) $item->overall_infrastructure_progress }}%
+                                        <?php echo e((float) $item->overall_infrastructure_progress); ?>%
                                     </div>
                                     <small class="text-muted" style="font-size: 0.75rem;">
-                                        Status: {{ ucfirst($item->development_status ?? 'Belum Mulai') }}
+                                        Status: <?php echo e(ucfirst($item->development_status ?? 'Belum Mulai')); ?>
+
                                     </small>
                                 </div>
                             </div>
@@ -830,32 +845,32 @@
                         <!-- Detail Navigation Tabs -->
                         <div class="card border-0 shadow-sm mb-0" style="border-radius: 10px; overflow: hidden;">
                             <div class="card-header bg-white border-bottom p-0">
-                                <ul class="nav nav-tabs border-0 px-3 pt-2" id="detailTab{{ $item->id }}" role="tablist">
+                                <ul class="nav nav-tabs border-0 px-3 pt-2" id="detailTab<?php echo e($item->id); ?>" role="tablist">
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link active fw-semibold py-2.5 px-3 border-0" 
-                                            id="info-tab-{{ $item->id }}" data-bs-toggle="tab" 
-                                            data-bs-target="#info-pane-{{ $item->id }}" type="button" role="tab">
+                                            id="info-tab-<?php echo e($item->id); ?>" data-bs-toggle="tab" 
+                                            data-bs-target="#info-pane-<?php echo e($item->id); ?>" type="button" role="tab">
                                             <i class="mdi mdi-information-outline me-1 text-primary"></i> Data Tanah & Lokasi
                                         </button>
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link fw-semibold py-2.5 px-3 border-0" 
-                                            id="legal-tab-{{ $item->id }}" data-bs-toggle="tab" 
-                                            data-bs-target="#legal-pane-{{ $item->id }}" type="button" role="tab">
+                                            id="legal-tab-<?php echo e($item->id); ?>" data-bs-toggle="tab" 
+                                            data-bs-target="#legal-pane-<?php echo e($item->id); ?>" type="button" role="tab">
                                             <i class="mdi mdi-certificate-outline me-1 text-success"></i> Legalitas & Perizinan
                                         </button>
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link fw-semibold py-2.5 px-3 border-0" 
-                                            id="docs-tab-{{ $item->id }}" data-bs-toggle="tab" 
-                                            data-bs-target="#docs-pane-{{ $item->id }}" type="button" role="tab">
-                                            <i class="mdi mdi-file-document-multiple-outline me-1 text-info"></i> Berkas Dokumen ({{ $item->merged_documents->count() }})
+                                            id="docs-tab-<?php echo e($item->id); ?>" data-bs-toggle="tab" 
+                                            data-bs-target="#docs-pane-<?php echo e($item->id); ?>" type="button" role="tab">
+                                            <i class="mdi mdi-file-document-multiple-outline me-1 text-info"></i> Berkas Dokumen (<?php echo e($item->merged_documents->count()); ?>)
                                         </button>
                                     </li>
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link fw-semibold py-2.5 px-3 border-0" 
-                                            id="infra-tab-{{ $item->id }}" data-bs-toggle="tab" 
-                                            data-bs-target="#infra-pane-{{ $item->id }}" type="button" role="tab">
+                                            id="infra-tab-<?php echo e($item->id); ?>" data-bs-toggle="tab" 
+                                            data-bs-target="#infra-pane-<?php echo e($item->id); ?>" type="button" role="tab">
                                             <i class="mdi mdi-road-variant me-1 text-warning"></i> Lahan & Akses
                                         </button>
                                     </li>
@@ -863,10 +878,10 @@
                             </div>
 
                             <div class="card-body p-4 bg-white">
-                                <div class="tab-content" id="detailTabContent{{ $item->id }}">
+                                <div class="tab-content" id="detailTabContent<?php echo e($item->id); ?>">
                                     
                                     <!-- TAB 1: DATA TANAH & LOKASI -->
-                                    <div class="tab-pane fade show active" id="info-pane-{{ $item->id }}" role="tabpanel">
+                                    <div class="tab-pane fade show active" id="info-pane-<?php echo e($item->id); ?>" role="tabpanel">
                                         <div class="row g-4">
                                             <div class="col-md-6">
                                                 <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
@@ -875,39 +890,39 @@
                                                 <table class="table table-sm table-borderless mb-0">
                                                     <tr>
                                                         <td class="text-muted" width="40%">Alamat Lengkap</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->address ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->address ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Desa / Kelurahan</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->village ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->village ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Kecamatan</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->district ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->district ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Kota / Kabupaten</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->city ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->city ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Provinsi</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->province ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->province ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Kode Pos</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->postal_code ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->postal_code ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Koordinat Peta</td>
                                                         <td class="fw-semibold text-dark">
-                                                            : @if(!empty($item->lat) && !empty($item->lng))
-                                                                <span>{{ $item->lat }}, {{ $item->lng }}</span>
-                                                                <a href="https://www.google.com/maps?q={{ $item->lat }},{{ $item->lng }}" target="_blank" class="btn btn-xs btn-outline-primary ms-2 py-0 px-2" style="font-size: 0.75rem;">
+                                                            : <?php if(!empty($item->lat) && !empty($item->lng)): ?>
+                                                                <span><?php echo e($item->lat); ?>, <?php echo e($item->lng); ?></span>
+                                                                <a href="https://www.google.com/maps?q=<?php echo e($item->lat); ?>,<?php echo e($item->lng); ?>" target="_blank" class="btn btn-xs btn-outline-primary ms-2 py-0 px-2" style="font-size: 0.75rem;">
                                                                     <i class="mdi mdi-open-in-new me-1"></i>Maps
                                                                 </a>
-                                                              @else
+                                                              <?php else: ?>
                                                                 <span class="text-muted">Belum diset</span>
-                                                              @endif
+                                                              <?php endif; ?>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -920,48 +935,48 @@
                                                 <table class="table table-sm table-borderless mb-0">
                                                     <tr>
                                                         <td class="text-muted" width="40%">Perusahaan Pengembang</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->companyProfile->name ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->companyProfile->name ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Status Kepemilikan</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->ownership_status ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->ownership_status ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Kategori Peruntukan</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->zoning ?? 'Tanah Properti' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->zoning ?? 'Tanah Properti'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Luas Total Lahan</td>
-                                                        <td class="fw-semibold text-dark">: {{ number_format($item->area ?? 0, 0, ',', '.') }} m²</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e(number_format($item->area ?? 0, 0, ',', '.')); ?> m²</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Sisa Luas Belum Terpakai</td>
-                                                        <td class="fw-semibold text-dark">: {{ number_format($item->remaining_area ?? 0, 0, ',', '.') }} m²</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e(number_format($item->remaining_area ?? 0, 0, ',', '.')); ?> m²</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Nilai / Harga Perolehan</td>
-                                                        <td class="fw-bold text-success">: Rp {{ number_format($item->grand_total_acquisition_price, 0, ',', '.') }}</td>
+                                                        <td class="fw-bold text-success">: Rp <?php echo e(number_format($item->grand_total_acquisition_price, 0, ',', '.')); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Tanggal Akuisisi</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->acquisition_date ? \Carbon\Carbon::parse($item->acquisition_date)->locale('id')->translatedFormat('d F Y') : '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->acquisition_date ? \Carbon\Carbon::parse($item->acquisition_date)->locale('id')->translatedFormat('d F Y') : '-'); ?></td>
                                                     </tr>
                                                 </table>
                                             </div>
 
-                                            @if($item->description)
+                                            <?php if($item->description): ?>
                                                 <div class="col-12 mt-3">
                                                     <div class="p-3 rounded-2 bg-light border">
                                                         <small class="fw-bold text-muted d-block mb-1">Catatan / Deskripsi Tambahan:</small>
-                                                        <p class="mb-0 text-dark small" style="white-space: pre-line;">{{ $item->description }}</p>
+                                                        <p class="mb-0 text-dark small" style="white-space: pre-line;"><?php echo e($item->description); ?></p>
                                                     </div>
                                                 </div>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                     </div>
 
                                     <!-- TAB 2: LEGALITAS & PERIZINAN -->
-                                    <div class="tab-pane fade" id="legal-pane-{{ $item->id }}" role="tabpanel">
+                                    <div class="tab-pane fade" id="legal-pane-<?php echo e($item->id); ?>" role="tabpanel">
                                         <div class="row g-4">
                                             <div class="col-md-6">
                                                 <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
@@ -970,30 +985,30 @@
                                                 <table class="table table-sm table-borderless mb-0">
                                                     <tr>
                                                         <td class="text-muted" width="40%">Nomor Sertifikat</td>
-                                                        <td class="fw-bold text-dark">: {{ $item->certificate_no ?? '-' }}</td>
+                                                        <td class="fw-bold text-dark">: <?php echo e($item->certificate_no ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Atas Nama Pemilik</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->certificate_owner ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->certificate_owner ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Nomor IMB / PBG</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->imb_no ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->imb_no ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Nomor Objek Pajak (PBB)</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->pbb_no ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->pbb_no ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Status Verifikasi Legal</td>
                                                         <td>
-                                                            : @if ($item->isFromPraLandbank() || $item->legal_status === 'verified')
+                                                            : <?php if($item->isFromPraLandbank() || $item->legal_status === 'verified'): ?>
                                                                 <span class="badge bg-success">Terverifikasi Sah</span>
-                                                              @elseif($item->legal_status === 'rejected')
+                                                              <?php elseif($item->legal_status === 'rejected'): ?>
                                                                 <span class="badge bg-danger">Revisi / Ditolak</span>
-                                                              @else
+                                                              <?php else: ?>
                                                                 <span class="badge bg-warning text-dark">Dalam Proses</span>
-                                                             @endif
+                                                             <?php endif; ?>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -1006,27 +1021,27 @@
                                                 <table class="table table-sm table-borderless mb-0">
                                                     <tr>
                                                         <td class="text-muted" width="40%">Registrasi Desa</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->desa_reg_no ?? '-' }} {{ $item->desa_reg_date ? '(' . $item->desa_reg_date->format('d/m/Y') . ')' : '' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->desa_reg_no ?? '-'); ?> <?php echo e($item->desa_reg_date ? '(' . $item->desa_reg_date->format('d/m/Y') . ')' : ''); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Pertimbangan Teknis (Pertek)</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->pertek_no ?? '-' }} {{ $item->pertek_date ? '(' . $item->pertek_date->format('d/m/Y') . ')' : '' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->pertek_no ?? '-'); ?> <?php echo e($item->pertek_date ? '(' . $item->pertek_date->format('d/m/Y') . ')' : ''); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Peta Bidang BPN</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->peta_bidang_no ?? '-' }} {{ $item->peta_bidang_area ? '(' . number_format($item->peta_bidang_area, 0, ',', '.') . ' m²)' : '' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->peta_bidang_no ?? '-'); ?> <?php echo e($item->peta_bidang_area ? '(' . number_format($item->peta_bidang_area, 0, ',', '.') . ' m²)' : ''); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Kesesuaian Tata Ruang (PKKPR)</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->pkkpr_no ?? '-' }} {{ $item->pkkpr_status ? '[' . $item->pkkpr_status . ']' : '' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->pkkpr_no ?? '-'); ?> <?php echo e($item->pkkpr_status ? '[' . $item->pkkpr_status . ']' : ''); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">SK Pemberian HGB</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->sk_hgb_no ?? '-' }} {{ $item->sk_hgb_date ? '(' . $item->sk_hgb_date->format('d/m/Y') . ')' : '' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->sk_hgb_no ?? '-'); ?> <?php echo e($item->sk_hgb_date ? '(' . $item->sk_hgb_date->format('d/m/Y') . ')' : ''); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">SHGB Induk Kawasan</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->shgb_induk_no ?? '-' }} {{ $item->shgb_induk_area ? '(' . number_format($item->shgb_induk_area, 0, ',', '.') . ' m²)' : '' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->shgb_induk_no ?? '-'); ?> <?php echo e($item->shgb_induk_area ? '(' . number_format($item->shgb_induk_area, 0, ',', '.') . ' m²)' : ''); ?></td>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -1034,8 +1049,8 @@
                                     </div>
 
                                     <!-- TAB 3: BERKAS DOKUMEN TERLAMPIR -->
-                                    <div class="tab-pane fade" id="docs-pane-{{ $item->id }}" role="tabpanel">
-                                        @if ($item->merged_documents->count() > 0)
+                                    <div class="tab-pane fade" id="docs-pane-<?php echo e($item->id); ?>" role="tabpanel">
+                                        <?php if($item->merged_documents->count() > 0): ?>
                                             <div class="table-responsive">
                                                 <table class="table table-hover align-middle mb-0">
                                                     <thead class="table-light">
@@ -1048,65 +1063,65 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach ($item->merged_documents as $idx => $doc)
+                                                        <?php $__currentLoopData = $item->merged_documents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idx => $doc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                             <tr>
-                                                                <td class="text-center text-muted small">{{ $idx + 1 }}</td>
-                                                                <td class="fw-bold text-dark" style="font-size: 0.85rem;">{{ $doc->document_number ?? '-' }}</td>
+                                                                <td class="text-center text-muted small"><?php echo e($idx + 1); ?></td>
+                                                                <td class="fw-bold text-dark" style="font-size: 0.85rem;"><?php echo e($doc->document_number ?? '-'); ?></td>
                                                                 <td>
                                                                     <div class="d-flex align-items-center gap-2">
-                                                                        <i class="mdi mdi-file-{{ $doc->type == 'sertifikat' ? 'certificate' : 'document' }}-outline text-primary fs-5"></i>
-                                                                        <span class="fw-semibold text-dark" style="font-size: 0.85rem;">{{ $doc->documentType->name ?? '-' }}</span>
+                                                                        <i class="mdi mdi-file-<?php echo e($doc->type == 'sertifikat' ? 'certificate' : 'document'); ?>-outline text-primary fs-5"></i>
+                                                                        <span class="fw-semibold text-dark" style="font-size: 0.85rem;"><?php echo e($doc->documentType->name ?? '-'); ?></span>
                                                                     </div>
                                                                 </td>
                                                                 <td class="text-center">
-                                                                    @if ($item->isFromPraLandbank() || $doc->status == 'verified')
+                                                                    <?php if($item->isFromPraLandbank() || $doc->status == 'verified'): ?>
                                                                         <span class="badge rounded-pill bg-success px-2.5 py-1" style="font-size: 0.72rem;">
                                                                             <i class="mdi mdi-check-circle me-1"></i>Terverifikasi
                                                                         </span>
-                                                                    @elseif ($doc->status == 'pending')
+                                                                    <?php elseif($doc->status == 'pending'): ?>
                                                                         <span class="badge rounded-pill bg-warning text-dark px-2.5 py-1" style="font-size: 0.72rem;">
                                                                             <i class="mdi mdi-clock-outline me-1"></i>Pending
                                                                         </span>
-                                                                    @elseif($doc->status == 'rejected')
+                                                                    <?php elseif($doc->status == 'rejected'): ?>
                                                                         <span class="badge rounded-pill bg-danger px-2.5 py-1" style="font-size: 0.72rem;">
                                                                             <i class="mdi mdi-close-circle me-1"></i>Ditolak
                                                                         </span>
-                                                                    @endif
+                                                                    <?php endif; ?>
                                                                 </td>
                                                                 <td class="text-center" style="white-space: nowrap;">
-                                                                    @if($doc->file_path)
-                                                                        @php
+                                                                    <?php if($doc->file_path): ?>
+                                                                        <?php
                                                                             $docUrl = asset(str_starts_with($doc->file_path, 'uploads/') ? $doc->file_path : 'uploads/' . $doc->file_path);
                                                                             $ext = pathinfo($doc->file_path, PATHINFO_EXTENSION);
                                                                             $cleanDocName = str_replace(' ', '_', $doc->documentType->name ?? 'Dokumen');
                                                                             $cleanPropName = str_replace(' ', '_', $item->name);
                                                                             $dlName = $cleanDocName . '_' . $cleanPropName . '.' . $ext;
-                                                                        @endphp
-                                                                        <a href="{{ $docUrl }}" target="_blank" class="btn btn-xs btn-outline-primary px-2 py-1" title="Lihat Berkas">
+                                                                        ?>
+                                                                        <a href="<?php echo e($docUrl); ?>" target="_blank" class="btn btn-xs btn-outline-primary px-2 py-1" title="Lihat Berkas">
                                                                             <i class="mdi mdi-eye"></i>
                                                                         </a>
-                                                                        <a href="{{ $docUrl }}" download="{{ $dlName }}" class="btn btn-xs btn-outline-success px-2 py-1 ms-1" title="Download Berkas">
+                                                                        <a href="<?php echo e($docUrl); ?>" download="<?php echo e($dlName); ?>" class="btn btn-xs btn-outline-success px-2 py-1 ms-1" title="Download Berkas">
                                                                             <i class="mdi mdi-download"></i>
                                                                         </a>
-                                                                    @else
+                                                                    <?php else: ?>
                                                                         <span class="text-muted small">-</span>
-                                                                    @endif
+                                                                    <?php endif; ?>
                                                                 </td>
                                                             </tr>
-                                                        @endforeach
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     </tbody>
                                                 </table>
                                             </div>
-                                        @else
+                                        <?php else: ?>
                                             <div class="text-center text-muted py-5">
                                                 <i class="mdi mdi-file-document-outline" style="font-size: 2.8rem; opacity: 0.3;"></i>
                                                 <p class="mt-2 mb-0 small">Belum ada dokumen yang diunggah untuk properti ini.</p>
                                             </div>
-                                        @endif
+                                        <?php endif; ?>
                                     </div>
 
                                     <!-- TAB 4: LAHAN & AKSES / FASILITAS -->
-                                    <div class="tab-pane fade" id="infra-pane-{{ $item->id }}" role="tabpanel">
+                                    <div class="tab-pane fade" id="infra-pane-<?php echo e($item->id); ?>" role="tabpanel">
                                         <div class="row g-4">
                                             <div class="col-md-6">
                                                 <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
@@ -1115,27 +1130,27 @@
                                                 <table class="table table-sm table-borderless mb-0">
                                                     <tr>
                                                         <td class="text-muted" width="40%">Lebar Akses Jalan</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->road_width ? $item->road_width . ' Meter' : '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->road_width ? $item->road_width . ' Meter' : '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Tipe Perkerasan Jalan</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->road_type ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->road_type ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Elevasi Awal</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->elevasi_awal ? $item->elevasi_awal . ' m' : '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->elevasi_awal ? $item->elevasi_awal . ' m' : '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Elevasi Rencana</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->elevasi_rencana ? $item->elevasi_rencana . ' m' : '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->elevasi_rencana ? $item->elevasi_rencana . ' m' : '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Volume Cut (Galian)</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->volume_cut ? number_format($item->volume_cut, 0, ',', '.') . ' m³' : '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->volume_cut ? number_format($item->volume_cut, 0, ',', '.') . ' m³' : '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted">Volume Fill (Timbunan)</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->volume_fill ? number_format($item->volume_fill, 0, ',', '.') . ' m³' : '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->volume_fill ? number_format($item->volume_fill, 0, ',', '.') . ' m³' : '-'); ?></td>
                                                     </tr>
                                                 </table>
                                             </div>
@@ -1147,30 +1162,30 @@
                                                 <table class="table table-sm table-borderless mb-0">
                                                     <tr>
                                                         <td class="text-muted" width="40%"><i class="mdi mdi-school-outline me-1 text-primary"></i> Sekolah / Pendidikan</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->facility_school ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->facility_school ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted"><i class="mdi mdi-hospital-building me-1 text-danger"></i> Rumah Sakit / Faskes</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->facility_hospital ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->facility_hospital ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted"><i class="mdi mdi-cart-outline me-1 text-success"></i> Mall / Pasar / Swalayan</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->facility_mall ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->facility_mall ?? '-'); ?></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="text-muted"><i class="mdi mdi-bus me-1 text-info"></i> Akses Transportasi</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->facility_transport ?? '-' }}</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->facility_transport ?? '-'); ?></td>
                                                     </tr>
                                                 </table>
 
-                                                @if($item->denah)
+                                                <?php if($item->denah): ?>
                                                     <div class="mt-4 pt-2 border-top">
                                                         <span class="text-muted small d-block mb-1">Berkas Denah / Siteplan:</span>
-                                                        <a href="{{ asset(str_starts_with($item->denah, 'uploads/') ? $item->denah : 'uploads/' . $item->denah) }}" target="_blank" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+                                                        <a href="<?php echo e(asset(str_starts_with($item->denah, 'uploads/') ? $item->denah : 'uploads/' . $item->denah)); ?>" target="_blank" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
                                                             <i class="mdi mdi-floor-plan"></i> Buka Berkas Denah
                                                         </a>
                                                     </div>
-                                                @endif
+                                                <?php endif; ?>
                                             </div>
                                         </div>
                                     </div>
@@ -1190,11 +1205,11 @@
                 </div>
             </div>
         </div>
-    @endforeach
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script>
 
         function showLoading(message = 'Memproses data...') {
@@ -1354,23 +1369,25 @@
             });
 
             // Handle session flash messages with beautiful SweetAlert
-            @if (session('success'))
+            <?php if(session('success')): ?>
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: "{{ session('success') }}",
+                    text: "<?php echo e(session('success')); ?>",
                     confirmButtonColor: '#9a55ff'
                 });
-            @endif
+            <?php endif; ?>
 
-            @if (session('error'))
+            <?php if(session('error')): ?>
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal!',
-                    text: "{{ session('error') }}",
+                    text: "<?php echo e(session('error')); ?>",
                     confirmButtonColor: '#dc3545'
                 });
-            @endif
+            <?php endif; ?>
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.partial.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH D:\Property-Management-Web-App\resources\views/properti/index.blade.php ENDPATH**/ ?>

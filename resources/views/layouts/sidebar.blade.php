@@ -97,6 +97,7 @@
             // Legal Unit
             'legal.unit.index' => 'mdi-home-city-outline',
             // Proyek
+            'proyek.index' => 'mdi-city-variant-outline',
             'proyek.pengolahan-lahan.index' => 'mdi-hard-hat',
             'proyek.unit.index' => 'mdi-home-city-outline',
             // Pengaturan
@@ -109,6 +110,7 @@
             'perizinan.tugas.index' => ['perizinan.tugas.*', 'perizinan-tugas*'],
             'perizinan.index' => ['perizinan.index', 'perizinan.show', 'perizinan.cards', 'perizinan.project'],
             'legal.unit.index' => ['legal.unit.*', 'legal-unit*'],
+            'proyek.index' => ['proyek.index', 'properti.edit', 'properti.tambah', 'properti.store', 'properti.update'],
             'proyek.pengolahan-lahan.index' => ['proyek.pengolahan-lahan.*'],
             'proyek.unit.index' => ['proyek.unit.*'],
             'master.biaya-legalitas.index' => ['master.biaya-legalitas.*'],
@@ -168,6 +170,7 @@
             'Dokumen'                 => 4,
 
             // Kelompok Proyek
+            'Proyek'                  => 4.8,
             'Pengolahan Lahan'        => 5,
             'Unit'                    => 6,
 
@@ -202,6 +205,7 @@
             'Dokumen'                 => 'Legal',
 
             // Proyek
+            'Proyek'                  => 'Proyek',
             'Pengolahan Lahan'        => 'Proyek',
             'Unit'                    => 'Proyek',
 
@@ -230,6 +234,9 @@
             }
             if ($m->route === 'legal.unit.index') {
                 return 4.5;
+            }
+            if ($m->route === 'proyek.index') {
+                return 4.8;
             }
             return $menuSortWeight[$m->name] ?? $m->order ?? 99;
         });
@@ -290,7 +297,7 @@
                     $sectionName = 'Legal';
                 } elseif ($main->route === 'legal.unit.index') {
                     $sectionName = 'Legal';
-                } elseif ($main->route === 'proyek.unit.index') {
+                } elseif ($main->route === 'proyek.index' || $main->route === 'proyek.pengolahan-lahan.index' || $main->route === 'proyek.unit.index') {
                     $sectionName = 'Proyek';
                 } else {
                     $sectionName = $categoryMap[$main->name] ?? ($categoryMap[$mainDisplayName] ?? $mainDisplayName);

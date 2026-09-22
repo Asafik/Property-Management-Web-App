@@ -167,6 +167,108 @@ class DashboardController extends Controller
             ->orderBy('order')
             ->get();
 
+        // 1. Proyek Terbaru (5 proyek yang sedang dikelola)
+        $recentProjects = LandBank::with(['companyProfile', 'units'])->latest()->take(5)->get();
+
+        // 2. Status Unit (Real Metrik Kavling & Unit)
+        $unitReady   = LandBankUnit::whereIn('status', ['ready', 'tersedia', 'available'])->count();
+        $unitBooking = LandBankUnit::whereIn('status', ['booked', 'booking'])->count();
+        $unitSold    = LandBankUnit::whereIn('status', ['sold', 'terjual'])->count();
+        $unitKpr     = Booking::where('purchase_type', 'kpr')->count();
+        $totalAllUnits = LandBankUnit::count();
+
+        $unitStats = [
+            'total'       => $totalAllUnits,
+            'ready'       => $unitReady,
+            'booking'     => $unitBooking,
+            'sold'        => $unitSold,
+            'kpr'         => $unitKpr,
+            'ready_pct'   => $totalAllUnits > 0 ? round(($unitReady / $totalAllUnits) * 100, 1) : 0,
+            'booking_pct' => $totalAllUnits > 0 ? round(($unitBooking / $totalAllUnits) * 100, 1) : 0,
+            'sold_pct'    => $totalAllUnits > 0 ? round(($unitSold / $totalAllUnits) * 100, 1) : 0,
+            'kpr_pct'     => $totalAllUnits > 0 ? round(($unitKpr / $totalAllUnits) * 100, 1) : 0,
+        ];
+
+        // 3. Status Perizinan (Ringkasan perizinan proyek dari Master Dokumen & PerizinanTask)
+        $masterDocs = \App\Models\MasterDokumenPerizinan::orderBy('urutan', 'asc')->take(5)->get();
+        $allTasks   = \App\Models\PerizinanTask::all();
+
+        $perizinanSummary = [
+            'total'    => $allTasks->count() > 0 ? $allTasks->count() : \App\Models\MasterDokumenPerizinan::count(),
+            'selesai'  => $allTasks->whereIn('status', ['Selesai', 'Terbit'])->count(),
+            'berjalan' => $allTasks->whereIn('status', ['Dalam Proses', 'Proses', 'Menunggu'])->count(),
+            'tertunda' => $allTasks->whereIn('status', ['Terkendala', 'Tertunda', 'Revisi'])->count(),
+        ];
+
+        $perizinanRows = $masterDocs->map(function ($doc) use ($allTasks) {
+            $tasks = $allTasks->where('master_dokumen_id', $doc->id);
+            $total = $tasks->count();
+            $selesai = $tasks->whereIn('status', ['Selesai', 'Terbit'])->count();
+            $berjalan = $tasks->whereIn('status', ['Dalam Proses', 'Proses', 'Menunggu'])->count();
+            $tertunda = $tasks->whereIn('status', ['Terkendala', 'Tertunda', 'Revisi'])->count();
+
+            if ($total === 0) {
+                $total = LandBank::count();
+                $berjalan = $total;
+            }
+
+            $shortName = match($doc->kode_dokumen) {
+                'POIN-07' => 'PERTEK',
+                'POIN-08' => 'PETA BIDANG',
+                'POIN-09' => 'PKKPR',
+                'POIN-10' => 'PBG (IMB)',
+                'POIN-11', 'POIN-12' => 'SK HGB',
+                'POIN-13', 'POIN-14', 'POIN-15' => 'PBB & BPHTB',
+                'POIN-16', 'POIN-17' => 'HGB Induk',
+                'POIN-18', 'POIN-19' => 'Pemecahan Sertipikat',
+                default => preg_replace('/^.*?-\s*/', '', $doc->nama_dokumen)
+            };
+            if (strlen($shortName) > 25) {
+                $shortName = substr($shortName, 0, 22) . '...';
+            }
+
+            return [
+                'id'       => $doc->id,
+                'nama'     => $shortName,
+                'total'    => $total,
+                'selesai'  => $selesai,
+                'berjalan' => $berjalan,
+                'tertunda' => $tertunda,
+            ];
+        });
+
+        // 4. Progres Pembangunan (Berbasis Unit)
+        $recentUnitProgress = LandBankUnit::with('landBank')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // 5. Tugas Tim Terbaru
+        $recentTeamTasks = \App\Models\PerizinanTask::with(['employee.division', 'employee.position'])
+            ->latest('last_activity_at')
+            ->latest('created_at')
+            ->take(5)
+            ->get();
+
+        // 6. Ringkasan Penjualan & Keuangan
+        $salesVolume = (float) LandBankUnit::whereIn('status', ['sold', 'terjual'])->sum('price');
+        $uangDiterima = $totalPendapatan;
+        $totalPengeluaran = (float) (
+            \App\Models\PraLandbankPayment::where('status', 'lunas')->sum('amount') +
+            \App\Models\LandBankInfrastructureExpense::where('payment_status', 'Lunas')->sum('total_amount') +
+            (float) LandBank::sum('acquisition_price')
+        );
+        $saldoKeuangan = $uangDiterima - $totalPengeluaran;
+
+        $financeSummary = [
+            'unit_terjual'      => $unitSold,
+            'nilai_penjualan'   => $salesVolume,
+            'uang_diterima'     => $uangDiterima,
+            'piutang'           => $totalPiutang,
+            'total_pengeluaran' => $totalPengeluaran,
+            'saldo_keuangan'    => $saldoKeuangan,
+        ];
+
         return view('dashboard', compact(
             'totalProperty',
             'totalCustomer',
@@ -178,7 +280,14 @@ class DashboardController extends Controller
             'notifications',
             'countNotif',
             'filterOptions',
-            'menus'
+            'menus',
+            'recentProjects',
+            'unitStats',
+            'perizinanSummary',
+            'perizinanRows',
+            'recentUnitProgress',
+            'recentTeamTasks',
+            'financeSummary'
         ));
     }
     public function legalDashboard(Request $request)

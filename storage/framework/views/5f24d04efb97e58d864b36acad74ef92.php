@@ -85,13 +85,21 @@
 <div class="container-fluid px-2 px-md-4 py-3">
 
     <!-- Page Title & Subtitle -->
-    <div class="mb-4">
-        <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
-            Pengolahan Lahan Proyek
-        </h2>
-        <p class="text-muted mb-0" style="font-size: 0.88rem;">
-            Manajemen infrastruktur kawasan (Cut & Fill, Drainase, Jalan, PJU & Utilitas Proyek).
-        </p>
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+        <div>
+            <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                Pengolahan Lahan Proyek
+            </h2>
+            <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                Manajemen infrastruktur kawasan (Cut & Fill, Drainase, Jalan, PJU & Utilitas Proyek).
+            </p>
+        </div>
+        <div>
+            <a href="<?php echo e(route('proyek.index')); ?>" class="btn btn-outline-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 fw-semibold shadow-sm" style="border-radius: 6px; font-size: 0.86rem;">
+                <i class="mdi mdi-city-variant-outline"></i>
+                <span>Menu Proyek (Profil & Dokumen)</span>
+            </a>
+        </div>
     </div>
 
     <!-- 4 KPI Metrics Card Grid (Sama Persis Perizinan) -->
