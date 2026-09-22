@@ -14,22 +14,22 @@
     }
 
     .badge-gradient-primary {
-        background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+        background: #9a55ff !important;
         color: #ffffff !important;
     }
 
     .badge-gradient-info {
-        background: linear-gradient(135deg, #17a2b8, #00c0ef) !important;
+        background: #0284c7 !important;
         color: #ffffff !important;
     }
 
     .badge-gradient-success {
-        background: linear-gradient(135deg, #28a745, #5cb85c) !important;
+        background: #16a34a !important;
         color: #ffffff !important;
     }
 
     .btn-gradient-primary {
-        background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+        background: #9a55ff !important;
         color: #ffffff !important;
         border: none !important;
         display: inline-flex;
@@ -39,7 +39,7 @@
     }
 
     .btn-gradient-primary:hover {
-        background: linear-gradient(to right, #cc70f9, #883cf2) !important;
+        background: #7b3fcc !important;
         color: #ffffff !important;
     }
 
@@ -62,7 +62,7 @@
         background-color: #f5f3ff !important;
     }
     .btn-outline-primary:hover {
-        background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+        background: #9a55ff !important;
         color: #ffffff !important;
         border-color: #9a55ff !important;
         box-shadow: 0 2px 6px rgba(154, 85, 255, 0.25);
@@ -426,7 +426,7 @@
                                     <i class="mdi mdi-map-marker-path"></i>
                                 </div>
                                 <div>
-                                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.92rem;">Semua Tanah Pra Land Bank</h6>
+                                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.92rem;">Tanah Pra Land Bank</h6>
                                     <small class="text-muted" style="font-size: 0.75rem;">Prospek & Inisiasi Lahan</small>
                                 </div>
                             </div>
@@ -493,12 +493,12 @@
                     </div>
                 </div>
 
-                <!-- Modul 3: Semua Tanah Pasca Land Bank -->
+                <!-- Modul 3: Tanah Pasca Land Bank -->
                 <div class="col-12 col-md-6 col-xl-4">
                     <div class="legal-module-card">
                         <div>
                             <div class="mb-2.5">
-                                <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.92rem;">Semua Tanah Pasca Land Bank</h6>
+                                <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.92rem;">Tanah Pasca Land Bank</h6>
                                 <small class="text-muted" style="font-size: 0.75rem;">Aset Tanah Induk Perusahaan</small>
                             </div>
                             <p class="text-muted mb-3" style="font-size: 0.8rem; line-height: 1.45;">

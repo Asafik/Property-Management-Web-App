@@ -42,7 +42,11 @@ class DatabaseSeeder extends Seeder
             CompanySettingSeeder::class,
             NotarisSeeder::class,
             MasterDokumenPerizinanSeeder::class,
+            MasterBiayaLegalitasSeeder::class,
             PraLandbankDocumentSeeder::class,
+            DevelopmentProgressItemsSeeder::class,
+            LandBankUnitSeeder::class,
+            PerizinanTaskSeeder::class,
         ]);
     }
 }

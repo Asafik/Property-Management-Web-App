@@ -10,11 +10,11 @@
     <!-- ========================================================================= -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%); border-left: 5px solid #9a55ff !important; border-radius: 16px;">
+            <div class="card border-0 shadow-sm" style="background: #ffffff; border: 1px solid #ebedf2; border-left: 5px solid #9a55ff !important; border-radius: 12px;">
                 <div class="card-body p-3 p-md-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                     <div class="d-flex align-items-center gap-3">
                         <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm"
-                            style="width: 52px; height: 52px; background: linear-gradient(135deg, #da8cff, #9a55ff); color: #ffffff;">
+                            style="width: 52px; height: 52px; background: #9a55ff; color: #ffffff;">
                             <i class="mdi {{ $isKepalaMarketing ? 'mdi-shield-star' : 'mdi-account-tie' }} fs-3"></i>
                         </div>
                         <div>
@@ -42,7 +42,7 @@
 
                     <!-- Action Shortcut Buttons -->
                     <div class="d-flex flex-wrap align-items-center gap-2">
-                        <a href="{{ route('marketing.jual-unit') }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm" style="border-radius: 8px; font-weight: 600;">
+                        <a href="{{ route('marketing.jual-unit') }}" class="btn btn-sm text-white d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm" style="background: #9a55ff; border-radius: 6px; font-weight: 600;">
                             <i class="mdi mdi-view-grid-plus"></i>
                             <span>Catalog Unit</span>
                         </a>
@@ -507,7 +507,7 @@
                                     <span class="badge bg-primary bg-opacity-10 text-primary fw-bold" style="font-size: 0.74rem;">{{ $percentSold }}% Terjual</span>
                                 </div>
                                 <div class="progress mb-2" style="height: 6px; border-radius: 10px;">
-                                    <div class="progress-bar bg-gradient-primary" role="progressbar" style="width: {{ $percentSold }}%;" aria-valuenow="{{ $percentSold }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="progress-bar" role="progressbar" style="width: {{ $percentSold }}%; background: #9a55ff;" aria-valuenow="{{ $percentSold }}" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                                 <div class="d-flex justify-content-between small text-muted pt-1" style="font-size: 0.76rem;">
                                     <span>Tersedia: <strong class="text-success">{{ $p->ready_units }}</strong></span>
@@ -544,12 +544,12 @@
     .page-item .page-link {
         font-size: 0.74rem !important;
         padding: 3px 8px !important;
-        border-radius: 6px !important;
+        border-radius: 4px !important;
         color: #475569 !important;
         border: 1px solid #cbd5e1 !important;
     }
     .page-item.active .page-link {
-        background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+        background: #9a55ff !important;
         border-color: #9a55ff !important;
         color: #ffffff !important;
         font-weight: bold;

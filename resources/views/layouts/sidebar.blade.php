@@ -1,9 +1,15 @@
 <!-- CUSTOM SIDEBAR (FLAT CATEGORY LABEL SYSTEM) -->
 <aside class="custom-sidebar" id="customSidebar">
-    <!-- Header Mobile: Judul & Tombol Close (X) -->
-    <div class="d-flex justify-content-between align-items-center d-lg-none px-3 pt-3 pb-2 border-bottom mb-2">
-        <span class="fw-bold" style="font-size: 15px; color: #9a55ff;">Property Management</span>
-        <button type="button" class="btn btn-sm btn-link text-muted p-0 border-0" id="sidebarCloseBtn" style="font-size: 1.4rem; text-decoration: none; line-height: 1;">
+    <!-- Sidebar Brand Header (Top of Sidebar - Desktop & Mobile) -->
+    <div class="sidebar-brand-header">
+        <a class="sidebar-brand-box" href="{{ route('dashboard') }}">
+            <div class="brand-badge-icon">
+                <img src="{{ asset('images/logo.jpeg') }}" alt="GCS Logo" class="brand-logo-img">
+            </div>
+            <span class="brand-text-full">Graha <span>Cipta Sejahtera</span></span>
+        </a>
+        <!-- Close Button (Mobile Only) -->
+        <button type="button" class="btn btn-sm btn-link text-white-50 p-0 border-0 d-lg-none" id="sidebarCloseBtn" style="font-size: 1.4rem; text-decoration: none; line-height: 1;" title="Close Sidebar">
             <i class="mdi mdi-close"></i>
         </button>
     </div>
@@ -68,6 +74,7 @@
             // Master Data
             'master.data.menu' => 'mdi-shield-account-outline',
             'master.dokumen-perizinan.index' => 'mdi-file-certificate-outline',
+            'master.biaya-legalitas.index' => 'mdi-cash-multiple',
             'master.bahan.index' => 'mdi-package-variant-closed',
             'master.progress.index' => 'mdi-progress-check',
             'promo.index' => 'mdi-tag-outline',
@@ -78,10 +85,21 @@
             'rab.deadline.index' => 'mdi-calendar-clock',
             'master.data.division.index' => 'mdi-domain-plus',
             'master.data.posisi' => 'mdi-badge-account-outline',
+            'master.biaya-legalitas.index' => 'mdi-cash-multiple',
             // Keuangan
             'keuangan.project-accounting.index' => 'mdi-finance',
+            'keuangan.pembayaran.index' => 'mdi-cash-multiple',
             'keuangan.master-invoice.index' => 'mdi-receipt-text-outline',
             'marketing.commission-rules.index' => 'mdi-cash-cog',
+            // Perizinan & Tugas Staf
+            'perizinan.tugas.index' => 'mdi-clipboard-account-outline',
+            'perizinan.index' => 'mdi-file-certificate-outline',
+            // Legal Unit
+            'legal.unit.index' => 'mdi-home-city-outline',
+            // Proyek
+            'proyek.index' => 'mdi-city-variant-outline',
+            'proyek.pengolahan-lahan.index' => 'mdi-hard-hat',
+            'proyek.unit.index' => 'mdi-home-city-outline',
             // Pengaturan
             'setting.index' => 'mdi-cog-outline',
         ];
@@ -89,15 +107,27 @@
         // 5. Mapping Pola Route Aktif (agar saat buka sub-halaman/action, menu terkait tetap AKTIF / HIGHLIGHT)
         $routeActivePatterns = [
             'dashboard' => ['dashboard', 'dashboard.*'],
+            'perizinan.tugas.index' => ['perizinan.tugas.*', 'perizinan-tugas*'],
+            'perizinan.index' => ['perizinan.index', 'perizinan.show', 'perizinan.cards', 'perizinan.project'],
+            'legal.unit.index' => ['legal.unit.*', 'legal-unit*'],
+            'proyek.index' => ['proyek.index', 'properti.edit', 'properti.tambah', 'properti.store', 'properti.update'],
+            'proyek.pengolahan-lahan.index' => ['proyek.pengolahan-lahan.*'],
+            'proyek.unit.index' => ['proyek.unit.*'],
+            'master.biaya-legalitas.index' => ['master.biaya-legalitas.*'],
             'keuangan.project-accounting.index' => ['keuangan.project-accounting.*'],
+            'keuangan.pembayaran.index' => ['keuangan.pembayaran.*'],
+            'finance.kpr-disbursement.index' => ['finance.kpr-disbursement.*'],
             'keuangan.master-invoice.index' => ['keuangan.master-invoice.*'],
+            'marketing.commission-rules.index' => ['marketing.commission-rules.*'],
             'pralandbank.all' => ['pralandbank.all', 'pra-landbank*', 'properti.pra-landbank*'],
             'properti-all' => ['properti-all', 'properti', 'properti.tambah', 'properti.store', 'properti.edit', 'properti.update', 'properti.verifikasi', 'properti.revisi', 'properti.updateCompany', 'properti.pengolahanLahan*', 'properti.pengolahan-lahan*'],
             'kavling.index' => ['kavling.index', 'properti.buatKavling*', 'properti.storeKavling', 'kavling.*', 'properti.kavling.*'],
             'lokasi.index' => ['lokasi.index', 'lokasi.*'],
             'marketing.jual-unit' => ['marketing.jual-unit*', 'unit.save.position', 'marketing.setAgency', 'set.customer'],
             'marketing.list_pengajuan' => ['marketing.list_pengajuan*', 'marketing.cash*', 'pengajuan.*', 'bookings.*', 'cetak.*', 'dashboard.cetak.*'],
-            'marketing.commission-rules.index' => ['marketing.commission-rules.*'],
+            'master.data.tugas-staff-marketing' => ['master.data.tugas-staff-marketing*'],
+            'customer.data' => ['customer.data*'],
+            'customer.tamu' => ['customer.tamu*'],
             'customer.kpr' => ['customer.kpr'],
             'kpr.customer-verified' => ['kpr.customer-verified*', 'kpr.approve*', 'kpr.survey*'],
             'customer.kpr.survey' => ['customer.kpr.survey*', 'kpr.pecahlegal*'],
@@ -112,6 +142,7 @@
             'agency.index' => ['agency.index*', 'agency.edit*'],
             'master.data.menu' => ['master.data.menu*'],
             'master.dokumen-perizinan.index' => ['master.dokumen-perizinan.*', 'master-dokumen-perizinan*'],
+            'master.biaya-legalitas.index' => ['master.biaya-legalitas.*', 'master-biaya-legalitas*'],
             'master.bahan.index' => ['master.bahan.index*', 'master.data.bahan*'],
             'master.progress.index' => ['master.progress.*', 'master-progress-kategori*'],
             'promo.index' => ['promo.index*', 'promo.*'],
@@ -124,10 +155,97 @@
             'master.data.posisi' => ['master.data.posisi*'],
             'setting.index' => ['setting.index*', 'setting.*'],
         ];
+
+        // 6. Pengurutan & Mapping Label Kategori / Section per Menu untuk Pengelompokan Role
+        $menuSortWeight = [
+            'Dashboard'               => 1,
+            
+            // Kelompok Legalitas & Perizinan
+            'Tugas Perizinan'         => 1.8,
+            'Pembagian Tugas'         => 1.8,
+            'Perizinan'               => 2,
+            'Tanah Induk (Land Bank)' => 3,
+            'Tanah Induk'             => 3,
+            'Document'                => 4,
+            'Dokumen'                 => 4,
+
+            // Kelompok Proyek
+            'Proyek'                  => 4.8,
+            'Pengolahan Lahan'        => 5,
+            'Unit'                    => 6,
+
+            // Kelompok Marketing & Transaksi
+            'Marketing'               => 7,
+            'User'                    => 8,
+
+            // Kelompok KPR
+            'Transaksi'               => 9,
+
+            // Kelompok Keuangan
+            'Keuangan'                => 10,
+
+            // Kelompok Master Data & Sistem
+            'Master Data'             => 11,
+            'Pengguna'                => 12,
+            'Pengaturan'              => 13,
+            'Setting'                 => 13,
+            'Laporan'                 => 14,
+        ];
+
+        $categoryMap = [
+            'Dashboard'               => 'Menu Utama',
+
+            // Legal
+            'Tugas Perizinan'         => 'Legal',
+            'Pembagian Tugas'         => 'Legal',
+            'Perizinan'               => 'Legal',
+            'Tanah Induk (Land Bank)' => 'Legal',
+            'Tanah Induk'             => 'Legal',
+            'Document'                => 'Legal',
+            'Dokumen'                 => 'Legal',
+
+            // Proyek
+            'Proyek'                  => 'Proyek',
+            'Pengolahan Lahan'        => 'Proyek',
+            'Unit'                    => 'Proyek',
+
+            // Marketing
+            'Marketing'               => 'Marketing',
+            'User'                    => 'Marketing',
+
+            // KPR
+            'Transaksi'               => 'KPR',
+
+            // Keuangan
+            'Keuangan'                => 'Keuangan',
+
+            // Admin
+            'Master Data'             => 'Admin',
+            'Pengguna'                => 'Admin',
+            'Pengaturan'              => 'Admin',
+            'Setting'                 => 'Admin',
+            'Laporan'                 => 'Admin',
+        ];
+
+        // Pastikan urutan menu selalu rapi sesuai kelompok domain
+        $mainMenus = $mainMenus->sortBy(function($m) use ($menuSortWeight) {
+            if ($m->route === 'perizinan.tugas.index') {
+                return 1.8;
+            }
+            if ($m->route === 'legal.unit.index') {
+                return 4.5;
+            }
+            if ($m->route === 'proyek.index') {
+                return 4.8;
+            }
+            return $menuSortWeight[$m->name] ?? $m->order ?? 99;
+        });
+
+        $currentSection = null;
     @endphp
 
     <!-- Menu List -->
-    <ul class="sidebar-menu">
+    <ul class="sidebar-menu" id="sidebarMenuAccordion">
         @foreach ($mainMenus as $main)
             @php
                 // Ambil Sub-Menu yang boleh diakses
@@ -149,58 +267,109 @@
                         }
                     }
                 }
+
+                // Cek apakah ada Sub-Menu yang sedang aktif (untuk auto-expand accordion & highlight parent)
+                $isAnyChildActive = false;
+                foreach ($subMenus as $sub) {
+                    if ($sub->route) {
+                        $patterns = $routeActivePatterns[$sub->route] ?? [$sub->route];
+                        foreach ($patterns as $p) {
+                            if (request()->routeIs($p)) {
+                                $isAnyChildActive = true;
+                                break 2;
+                            }
+                        }
+                    }
+                }
+
+                // Nama & Ikon Tampilan (dengan penyesuaian Bahasa Indonesia & validasi icon)
+                $mainDisplayName = ($main->name === 'Document') ? 'Dokumen' : $main->name;
+                if ($mainDisplayName === 'Tanah Induk (Land Bank)') {
+                    $mainDisplayName = 'Tanah Induk';
+                }
+                $mainIcon = $iconMap[$main->route] ?? $main->icon;
+                if ($mainIcon === 'mdi-file-document-box-multiple-outline' || empty($mainIcon)) {
+                    $mainIcon = ($mainDisplayName === 'Dokumen') ? 'mdi-file-document-multiple-outline' : ($main->icon ?: 'mdi-folder-outline');
+                }
+
+                // Label Kategori / Section Header
+                if ($main->route === 'perizinan.tugas.index') {
+                    $sectionName = 'Legal';
+                } elseif ($main->route === 'legal.unit.index') {
+                    $sectionName = 'Legal';
+                } elseif ($main->route === 'proyek.index' || $main->route === 'proyek.pengolahan-lahan.index' || $main->route === 'proyek.unit.index') {
+                    $sectionName = 'Proyek';
+                } else {
+                    $sectionName = $categoryMap[$main->name] ?? ($categoryMap[$mainDisplayName] ?? $mainDisplayName);
+                }
             @endphp
 
+            {{-- Label Kategori / Header Section per Kelompok Menu Role --}}
+            @if ($currentSection !== $sectionName)
+                @php $currentSection = $sectionName; @endphp
+                <li class="sidebar-section-header">
+                    <span class="section-title">{{ $sectionName }}</span>
+                </li>
+            @endif
+
             @if ($subMenus->isEmpty())
-                {{-- Single Top-Level Menu (e.g. Dashboard) --}}
+                {{-- Single Top-Level Menu (e.g. Dashboard, Laporan, Pengaturan) --}}
                 <li class="sidebar-menu-item">
                     <a class="sidebar-menu-link {{ $isMainActive ? 'active' : '' }}"
-                       href="{{ $main->route ? route($main->route) : '#' }}"
-                       title="{{ $main->name }}">
-                        @if($main->icon)
+                       href="{{ ($main->route && Route::has($main->route)) ? route($main->route) : '#' }}"
+                       title="{{ $mainDisplayName }}">
+                        @if($mainIcon)
                             <span class="menu-icon-wrap">
-                                <i class="mdi {{ $main->icon }}"></i>
+                                <i class="mdi {{ $mainIcon }}"></i>
                             </span>
                         @endif
-                        <span class="menu-title-text">{{ $main->name }}</span>
+                        <span class="menu-title-text">{{ $mainDisplayName }}</span>
                     </a>
                 </li>
             @else
-                {{-- Category / Section Header (e.g. MARKETING, TANAH INDUK) --}}
-                <li class="sidebar-section-header">
-                    @if($main->icon)
-                        <i class="mdi {{ $main->icon }} section-icon"></i>
-                    @endif
-                    <span class="section-title">{{ $main->name }}</span>
-                </li>
+                {{-- Collapsible Dropdown Parent Menu (Buka Tutup Accordion) --}}
+                <li class="sidebar-menu-item has-submenu {{ $isAnyChildActive ? 'open' : '' }}">
+                    <a class="sidebar-menu-link sidebar-dropdown-toggle {{ $isAnyChildActive ? 'parent-active' : '' }}"
+                       href="#submenu-{{ $main->id }}"
+                       role="button"
+                       aria-expanded="{{ $isAnyChildActive ? 'true' : 'false' }}"
+                       aria-controls="submenu-{{ $main->id }}"
+                       title="{{ $mainDisplayName }}">
+                        <span class="menu-icon-wrap">
+                            <i class="mdi {{ $mainIcon }}"></i>
+                        </span>
+                        <span class="menu-title-text">{{ $mainDisplayName }}</span>
+                        <i class="mdi mdi-chevron-down submenu-arrow"></i>
+                    </a>
 
-                {{-- All Child Menus: Dot saat terbuka, Ikon saat diminimize --}}
-                @foreach ($subMenus as $sub)
-                    @php
-                        $subIcon = $sub->icon ?: ($iconMap[$sub->route] ?? 'mdi-checkbox-blank-circle-outline');
-                        $isSubActive = false;
-                        if ($sub->route) {
-                            $patterns = $routeActivePatterns[$sub->route] ?? [$sub->route];
-                            foreach ($patterns as $p) {
-                                if (request()->routeIs($p)) {
-                                    $isSubActive = true;
-                                    break;
-                                }
-                            }
-                        }
-                    @endphp
-                    <li class="sidebar-menu-item">
-                        <a class="sidebar-menu-link sidebar-child-link {{ $isSubActive ? 'active' : '' }}"
-                           href="{{ $sub->route ? route($sub->route) : '#' }}"
-                           title="{{ $sub->name }}">
-                            <span class="menu-icon-wrap">
-                                <span class="menu-dot-open"></span>
-                                <i class="mdi {{ $subIcon }} menu-icon-minimized"></i>
-                            </span>
-                            <span class="menu-title-text">{{ $sub->name }}</span>
-                        </a>
-                    </li>
-                @endforeach
+                    {{-- Collapsible Sub-Menu List --}}
+                    <div class="sidebar-submenu {{ $isAnyChildActive ? 'show' : '' }}" id="submenu-{{ $main->id }}" style="{{ $isAnyChildActive ? 'display: block;' : 'display: none;' }}">
+                        <ul class="sidebar-submenu-list">
+                            @foreach ($subMenus as $sub)
+                                @php
+                                    $isSubActive = false;
+                                    if ($sub->route) {
+                                        $patterns = $routeActivePatterns[$sub->route] ?? [$sub->route];
+                                        foreach ($patterns as $p) {
+                                            if (request()->routeIs($p)) {
+                                                $isSubActive = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                @endphp
+                                <li class="sidebar-submenu-item">
+                                    <a class="sidebar-submenu-link {{ $isSubActive ? 'active' : '' }}"
+                                       href="{{ ($sub->route && Route::has($sub->route)) ? route($sub->route) : '#' }}"
+                                       title="{{ $sub->name }}">
+                                        <span class="submenu-bullet"></span>
+                                        <span class="submenu-title-text">{{ $sub->name }}</span>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </li>
             @endif
         @endforeach
     </ul>

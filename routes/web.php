@@ -58,6 +58,7 @@ use App\Http\Controllers\SpkController;
 use App\Http\Controllers\Finance\InvoiceMasterController;
 use App\Http\Controllers\Finance\ProjectAccountingController;
 use App\Http\Controllers\MasterDokumenPerizinanController;
+use App\Http\Controllers\MasterBiayaLegalitasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -240,6 +241,21 @@ Route::middleware(['auth'])->group(function () {
         Route::match(['post', 'patch'], '/{id}/toggle-status', [MasterDokumenPerizinanController::class, 'toggleStatus'])->name('toggle-status');
         Route::get('/api/list', [MasterDokumenPerizinanController::class, 'apiList'])->name('api-list');
     });
+
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= MASTER BIAYA LEGALITAS & ADMIN =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('master-data/biaya-legalitas')->name('master.biaya-legalitas.')->group(function () {
+        Route::get('/', [MasterBiayaLegalitasController::class, 'index'])->name('index');
+        Route::get('/{id}/edit', [MasterBiayaLegalitasController::class, 'edit'])->name('edit');
+        Route::post('/store', [MasterBiayaLegalitasController::class, 'store'])->name('store');
+        Route::put('/{id}', [MasterBiayaLegalitasController::class, 'update'])->name('update');
+        Route::delete('/{id}', [MasterBiayaLegalitasController::class, 'destroy'])->name('destroy');
+        Route::match(['post', 'patch'], '/{id}/toggle-status', [MasterBiayaLegalitasController::class, 'toggleStatus'])->name('toggle-status');
+        Route::get('/api/list', [MasterBiayaLegalitasController::class, 'apiList'])->name('api-list');
+    });
     Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
     Route::get('/properti/verifikasi-legal/{id}', [LandBankController::class, 'verifikasiLegal'])->name('properti.verifikasi');
     Route::post('/properti/{id}/update-company', [PropertyController::class, 'updateCompanyAjax'])->name('properti.updateCompany');
@@ -340,6 +356,41 @@ Route::middleware(['auth'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | ========================= PERIZINAN PROYEK =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/perizinan', [\App\Http\Controllers\Admin\PerizinanController::class, 'index'])->name('perizinan.index');
+    Route::get('/perizinan/{id}', [\App\Http\Controllers\Admin\PerizinanController::class, 'show'])->name('perizinan.show');
+
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= PEMBAGIAN TUGAS PERIZINAN (LEGAL) =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('perizinan-tugas')->name('perizinan.tugas.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'index'])->name('index');
+        Route::get('/tambah', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'create'])->name('create');
+        Route::post('/store', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'update'])->name('update');
+        Route::get('/{id}/progres', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'showProgress'])->name('progres');
+        Route::patch('/{id}/progress', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'updateProgress'])->name('progress');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'destroy'])->name('destroy');
+        Route::get('/{id}/logs', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'getLogs'])->name('logs');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= PROYEK: PROYEK, PENGOLAHAN LAHAN & UNIT =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/proyek', [\App\Http\Controllers\Admin\ProjectController::class, 'index'])->name('proyek.index');
+    Route::get('/pengolahan-lahan', [\App\Http\Controllers\Admin\ProjectPengolahanLahanController::class, 'index'])->name('proyek.pengolahan-lahan.index');
+    Route::get('/proyek-unit', [\App\Http\Controllers\Admin\ProjectUnitController::class, 'index'])->name('proyek.unit.index');
+    Route::get('/legal-unit', [\App\Http\Controllers\Legal\LegalUnitController::class, 'index'])->name('legal.unit.index');
+
+    /*
+    |--------------------------------------------------------------------------
     | ========================= AGENCY / SALES =========================
     |--------------------------------------------------------------------------
     */
@@ -418,6 +469,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/keuangan/pencairan-kpr', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'index'])->name('finance.kpr-disbursement.index');
     Route::post('/keuangan/pencairan-kpr/store', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'store'])->name('finance.kpr-disbursement.store');
     Route::delete('/keuangan/pencairan-kpr/{id}', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'destroy'])->name('finance.kpr-disbursement.destroy');
+
+    // Pembayaran Fee Legalitas, IJB, AJB, Notaris, BPHTB, Komisi
+    Route::get('/keuangan/pembayaran', [\App\Http\Controllers\Finance\PembayaranFeeController::class, 'index'])->name('keuangan.pembayaran.index');
+    Route::get('/keuangan/pembayaran/simulasi', [\App\Http\Controllers\Finance\PembayaranFeeController::class, 'simulasi'])->name('keuangan.pembayaran.simulasi');
 
 
     Route::resource('dokument', LandBankDocumentController::class);

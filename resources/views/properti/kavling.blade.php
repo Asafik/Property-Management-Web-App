@@ -2,57 +2,105 @@
 
 @section('title', 'Tambah Kavling - Property Management App')
 
-@section('content')
-
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
     <style>
+        /* Table Responsive & Text Wrapping persis Perizinan */
+        .table-lahan {
+            width: 100% !important;
+            margin-bottom: 0;
+        }
+        .table-lahan thead th {
+            background: #f8fafc !important;
+            color: #4b5563 !important;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0 !important;
+            padding: 0.75rem 0.65rem !important;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .table-lahan tbody td {
+            padding: 0.75rem 0.65rem !important;
+            vertical-align: middle;
+            font-size: 0.83rem;
+            border-bottom: 1px solid #f1f5f9;
+            white-space: normal !important;
+        }
+        .table-lahan .col-no {
+            width: 45px;
+            text-align: center;
+            white-space: nowrap !important;
+        }
+        .table-lahan .col-aksi {
+            width: 90px;
+            text-align: center;
+            white-space: nowrap !important;
+        }
+
+        /* Compact Table Card persis Perizinan */
+        .card.compact-table-card,
+        .compact-table-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+            transition: border-color 0.2s ease;
+            overflow: hidden;
+        }
+        .card.compact-table-card:hover,
+        .compact-table-card:hover {
+            border-color: #cbd5e1 !important;
+            box-shadow: none !important;
+        }
+        .compact-table-card .card-header {
+            background: #ffffff !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            padding: 0.75rem 1.25rem !important;
+            border-top-left-radius: 8px !important;
+            border-top-right-radius: 8px !important;
+        }
+        .compact-table-card .card-body,
+        .card.compact-table-card .card-body {
+            padding: 0 !important;
+            background: #ffffff !important;
+        }
+
+        /* Badge Status */
         .badge-status {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            padding: 0.35rem 0.75rem;
-            border-radius: 30px;
-            font-size: 0.78rem;
+            padding: 0.32rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
             font-weight: 600;
             line-height: 1.2;
         }
-
         .badge-status.available {
-            background: rgba(40, 167, 69, 0.12);
-            color: #28a745;
-            border: 1px solid rgba(40, 167, 69, 0.25);
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.25);
         }
-
         .badge-status.booking {
-            background: rgba(255, 193, 7, 0.12);
-            color: #e67e22;
-            border: 1px solid rgba(255, 193, 7, 0.25);
-        }
-
-        .badge-status.processing {
-            background: rgba(255, 193, 7, 0.15);
+            background: rgba(245, 158, 11, 0.1);
             color: #d97706;
-            border: 1px solid rgba(255, 193, 7, 0.35);
+            border: 1px solid rgba(245, 158, 11, 0.25);
         }
-
+        .badge-status.processing {
+            background: rgba(245, 158, 11, 0.15);
+            color: #b45309;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
         .badge-status.sold {
-            background: rgba(220, 53, 69, 0.12);
-            color: #dc3545;
-            border: 1px solid rgba(220, 53, 69, 0.25);
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.25);
         }
 
-        .badge-category {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 0.35rem 0.75rem;
-            border-radius: 30px;
-            font-size: 0.78rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, rgba(154, 85, 255, 0.12), rgba(218, 140, 255, 0.12));
-            color: #9a55ff;
-            border: 1px solid rgba(154, 85, 255, 0.25);
-        }
-
+        /* Action Buttons */
         .btn-action {
             display: inline-flex;
             align-items: center;
@@ -65,88 +113,166 @@
             text-decoration: none;
             cursor: pointer;
         }
-
         .btn-action.create {
             background: linear-gradient(135deg, #da8cff, #9a55ff);
             color: #ffffff !important;
             box-shadow: 0 2px 5px rgba(154, 85, 255, 0.25);
         }
-
         .btn-action.create i {
             color: #ffffff !important;
             font-size: 1.05rem;
         }
-
         .btn-action.create:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(154, 85, 255, 0.4);
             color: #ffffff !important;
         }
-
         .btn-action.locked {
             background: linear-gradient(135deg, #f59e0b, #d97706);
             color: #ffffff !important;
             box-shadow: 0 2px 5px rgba(245, 158, 11, 0.25);
         }
-
         .btn-action.locked i {
             color: #ffffff !important;
             font-size: 1.05rem;
         }
-
         .btn-action.locked:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
             color: #ffffff !important;
         }
+
+        .sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+        .sortable:hover {
+            background: #f1f5f9 !important;
+        }
     </style>
+@endpush
 
-    <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
+@section('content')
 
-    <!-- Header Card Banner -->
-    <div class="row mb-3 mb-md-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0 header-card">
-                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
-                            Tambah Kavling
-                        </h3>
-                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                            Daftar tanah / landbank terverifikasi untuk pembuatan dan pemecahan unit kavling
-                        </p>
-                    </div>
-                    <div class="d-none d-sm-block pe-2">
-                        <i class="mdi mdi-vector-arrange-below" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
-                    </div>
-                </div>
-            </div>
+<div class="container-fluid px-2 px-md-4 py-3">
+
+    <!-- Page Title & Subtitle (Persis Perizinan) -->
+    <div class="row align-items-center mb-4">
+        <div class="col">
+            <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                Tambah Kavling
+            </h2>
+            <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                Daftar tanah / landbank terverifikasi untuk pembuatan dan pemecahan unit kavling
+            </p>
         </div>
     </div>
 
-    <div class="row mt-2 mt-sm-2 mt-md-3">
+    <!-- 4 KPI Metrics Card Grid (Persis Perizinan / Pra Tanah) -->
+    <div class="dash-kpi-grid mb-4">
+        
+        <!-- Card 1: Total Tanah Terverifikasi (Ungu) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon purple">
+                    <i class="mdi mdi-office-building-marker"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Tanah Terverifikasi</div>
+                    <div class="dash-kpi-val">{{ $totalVerified ?? $lands->total() }}</div>
+                    <div class="dash-kpi-sub">Siap Untuk Pemecahan</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action purple">
+                <i class="mdi mdi-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- Card 2: Siap Tambah Kavling (Hijau) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon green">
+                    <i class="mdi mdi-check-decagram-outline"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Siap Tambah Kavling</div>
+                    <div class="dash-kpi-val">{{ $readyKavling ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Infrastruktur 100% Selesai</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action green">
+                <i class="mdi mdi-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- Card 3: Dalam Pengolahan Fisik (Kuning / Amber) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon amber">
+                    <i class="mdi mdi-progress-wrench"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Dalam Pengolahan Fisik</div>
+                    <div class="dash-kpi-val">{{ $processingLahan ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Proses Infrastruktur Lahan</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action amber">
+                <i class="mdi mdi-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- Card 4: Total Luas Lahan (Biru) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon blue">
+                    <i class="mdi mdi-ruler-square"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Total Luas Lahan</div>
+                    <div class="dash-kpi-val" style="font-size: 1.15rem;">{{ number_format($totalLuasLahan ?? 0, 0, ',', '.') }} m²</div>
+                    <div class="dash-kpi-sub">Akumulasi Luas Tanah</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action blue">
+                <i class="mdi mdi-arrow-right"></i>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Main Container: Table Card -->
+    <div class="row">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
-                    <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Tanah / LandBank Terverifikasi
-                    </h5>
+            <div class="card compact-table-card shadow-sm border-0">
+                
+                <!-- Card Header -->
+                <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3 border-bottom">
+                    <div>
+                        <h5 class="card-title mb-0" style="font-weight: 700; color: #1e293b; font-size: 1.05rem;">
+                            <i class="mdi mdi-vector-arrange-below me-2" style="color: #9a55ff;"></i>Daftar Tanah / LandBank Terverifikasi
+                        </h5>
+                    </div>
                 </div>
 
-                <div class="card-body">
-                    <!-- Filter Section -->
-                    <div class="filter-card mb-3">
-                        <!-- Desktop Filter -->
-                        <div class="filter-row-desktop d-none d-md-block">
-                            <form method="GET" action="{{ route('kavling.index') }}" onsubmit="return showFilterLoading()">
+                <div class="card-body p-0">
+                    
+                    <!-- Search & Filter Toolbar (Kategori Dihapus Sesuai Permintaan) -->
+                    <div class="card-toolbar-box p-3 border-bottom bg-white">
+                        <form id="filterForm" method="GET" action="{{ route('kavling.index') }}" onsubmit="return showFilterLoading()">
+                            
+                            <!-- DESKTOP VERSION -->
+                            <div class="d-none d-md-block">
                                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
                                     <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
-                                        <div style="min-width: 220px; max-width: 280px; flex: 1;">
+                                        <!-- Search Input -->
+                                        <div style="min-width: 240px; max-width: 360px; flex: 1;">
                                             <div class="input-group">
-                                                <input type="text" class="form-control" name="search" id="searchInput"
+                                                <input type="text" class="form-control" name="search" id="liveSearchInput"
                                                     placeholder="Cari nama properti / lokasi..."
                                                     value="{{ request('search') }}"
-                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                    onkeyup="applyLiveSearch(this.value)"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
                                                 <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
                                                     type="submit" title="Cari"
                                                     style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
@@ -155,59 +281,48 @@
                                             </div>
                                         </div>
 
+                                        <!-- Status Filter -->
                                         <div style="width: 170px;">
-                                            <select class="form-control" name="type" id="categorySelect">
-                                                <option value="">Semua Kategori</option>
-                                                @foreach($types as $type)
-                                                    <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>
-                                                        {{ $type }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <div style="width: 150px;">
-                                            <select class="form-control" name="status" id="statusSelect">
+                                            <select class="form-select" name="status" id="statusSelect" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
                                                 <option value="">Semua Status</option>
-                                                <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>Terjual</option>
-                                                <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
-                                                <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Dalam Pengolahan</option>
                                                 <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Tersedia</option>
+                                                <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Dalam Pengolahan</option>
+                                                <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
+                                                <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>Terjual</option>
                                             </select>
                                         </div>
                                     </div>
 
+                                    <!-- Right: Limit + Action Buttons -->
                                     <div class="d-flex align-items-center gap-2 ms-auto">
-                                        <div style="width: 115px;">
-                                            <select class="form-control" name="per_page" id="showSelect">
+                                        <div style="width: 110px;">
+                                            <select class="form-select" name="per_page" id="showSelect" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
                                                 <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 data</option>
                                                 <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25 data</option>
                                                 <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50 data</option>
                                                 <option value="100" {{ request('per_page', 100) == 100 ? 'selected' : '' }}>100 data</option>
                                             </select>
                                         </div>
-
-                                        <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Filter">
+                                        <button type="submit" class="btn btn-gradient-primary d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0;" title="Filter">
                                             <i class="mdi mdi-filter"></i>
                                         </button>
-                                        <a href="{{ route('kavling.index') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset" onclick="showResetLoading(event)">
+                                        <a href="{{ route('kavling.index') }}" class="btn btn-gradient-secondary d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0;" title="Reset" onclick="showResetLoading(event)">
                                             <i class="mdi mdi-refresh"></i>
                                         </a>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
 
-                        <!-- Mobile Filter -->
-                        <div class="filter-row-mobile d-block d-md-none">
-                            <form method="GET" action="{{ route('kavling.index') }}" onsubmit="return showFilterLoading()">
+                            <!-- MOBILE VERSION -->
+                            <div class="d-block d-md-none">
                                 <div class="row g-2">
                                     <div class="col-12 mb-2">
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="search" id="searchInputMobile"
                                                 placeholder="Cari properti / lokasi..."
                                                 value="{{ request('search') }}"
-                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                onkeyup="applyLiveSearch(this.value)"
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
                                             <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
                                                 type="submit" title="Cari"
                                                 style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
@@ -215,77 +330,55 @@
                                             </button>
                                         </div>
                                     </div>
-
-                                    <div class="col-12 mb-2">
-                                        <select class="form-control" name="type" id="categorySelectMobile">
-                                            <option value="">Semua Kategori</option>
-                                            @foreach($types as $type)
-                                                <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>
-                                                    {{ $type }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
                                     <div class="col-6 mb-2">
-                                        <select class="form-control" name="status" id="statusSelectMobile">
+                                        <select class="form-select" name="status" id="statusSelectMobile" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
                                             <option value="">Semua Status</option>
-                                            <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>Terjual</option>
-                                            <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
-                                            <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Dalam Pengolahan</option>
                                             <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Tersedia</option>
+                                            <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Dalam Pengolahan</option>
+                                            <option value="booking" {{ request('status') == 'booking' ? 'selected' : '' }}>Booking</option>
+                                            <option value="sold" {{ request('status') == 'sold' ? 'selected' : '' }}>Terjual</option>
                                         </select>
                                     </div>
-
                                     <div class="col-6 mb-2">
-                                        <select class="form-control" name="per_page" id="showSelectMobile">
+                                        <select class="form-select" name="per_page" id="showSelectMobile" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
                                             <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 data</option>
                                             <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25 data</option>
                                             <option value="50" {{ request('per_page', 50) == 50 ? 'selected' : '' }}>50 data</option>
                                             <option value="100" {{ request('per_page', 100) == 100 ? 'selected' : '' }}>100 data</option>
                                         </select>
                                     </div>
-
                                     <div class="col-6">
-                                        <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center gap-1">
+                                        <button type="submit" class="btn btn-gradient-primary w-100" style="height: 38px;" title="Filter">
                                             <i class="mdi mdi-filter"></i> Filter
                                         </button>
                                     </div>
-
                                     <div class="col-6">
-                                        <a href="{{ route('kavling.index') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center gap-1" onclick="showResetLoading(event)">
+                                        <a href="{{ route('kavling.index') }}" class="btn btn-gradient-secondary w-100 d-inline-flex align-items-center justify-content-center" style="height: 38px;" title="Reset" onclick="showResetLoading(event)">
                                             <i class="mdi mdi-refresh"></i> Reset
                                         </a>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
 
+                    <!-- Table Responsive -->
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
+                        <table class="table table-lahan table-hover align-middle mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-center">No</th>
+                                    <th class="col-no text-center">NO</th>
                                     <th class="sortable {{ request('sort') == 'name' ? 'active-sort' : '' }}" data-field="name" data-direction="{{ request('sort') == 'name' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
-                                        Nama Properti
+                                        NAMA PROPERTI
                                         @if(request('sort') == 'name')
                                             <i class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
                                         @else
                                             <i class="mdi mdi-swap-vertical text-muted"></i>
                                         @endif
                                     </th>
-                                    <th class="sortable {{ request('sort') == 'zoning' ? 'active-sort' : '' }}" data-field="zoning" data-direction="{{ request('sort') == 'zoning' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
-                                        Kategori
-                                        @if(request('sort') == 'zoning')
-                                            <i class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
-                                        @else
-                                            <i class="mdi mdi-swap-vertical text-muted"></i>
-                                        @endif
-                                    </th>
-                                    <th class="no-sort">Lokasi</th>
+                                    <th class="no-sort">LOKASI</th>
                                     <th class="sortable {{ request('sort') == 'acquisition_price' ? 'active-sort' : '' }}" data-field="acquisition_price" data-direction="{{ request('sort') == 'acquisition_price' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
-                                        Harga
+                                        HARGA
                                         @if(request('sort') == 'acquisition_price')
                                             <i class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
                                         @else
@@ -293,24 +386,24 @@
                                         @endif
                                     </th>
                                     <th class="sortable {{ request('sort') == 'area' ? 'active-sort' : '' }}" data-field="area" data-direction="{{ request('sort') == 'area' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
-                                        Luas Tanah
+                                        LUAS TANAH
                                         @if(request('sort') == 'area')
                                             <i class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
                                         @else
                                             <i class="mdi mdi-swap-vertical text-muted"></i>
                                         @endif
                                     </th>
-                                    <th class="no-sort">Sisa Tanah</th>
-                                    <th class="no-sort text-center">Pengolahan Lahan</th>
-                                    <th class="sortable {{ request('sort') == 'status' ? 'active-sort' : '' }}" data-field="status" data-direction="{{ request('sort') == 'status' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
-                                        Status
+                                    <th class="no-sort">SISA TANAH</th>
+                                    <th class="no-sort text-center">PENGOLAHAN LAHAN</th>
+                                    <th class="sortable text-center {{ request('sort') == 'status' ? 'active-sort' : '' }}" data-field="status" data-direction="{{ request('sort') == 'status' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                        STATUS
                                         @if(request('sort') == 'status')
                                             <i class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
                                         @else
                                             <i class="mdi mdi-swap-vertical text-muted"></i>
                                         @endif
                                     </th>
-                                    <th class="text-center action-cell">Aksi</th>
+                                    <th class="col-aksi text-center">AKSI</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -320,38 +413,22 @@
                                         $remainingArea = ($land->area ?? 0) - $totalUnitArea;
                                         $canCreateKavling = $land->canCreateKavling();
                                         $devProgress = $land->overall_infrastructure_progress;
+                                        $searchKeywords = strtolower(($land->name ?? '') . ' ' . ($land->address ?? ''));
                                     @endphp
-                                    <tr>
-                                        <td class="text-center fw-bold">{{ $index + $lands->firstItem() }}</td>
+                                    <tr class="project-table-row" data-search="{{ $searchKeywords }}">
+                                        <td class="col-no text-center fw-bold text-muted">{{ $index + $lands->firstItem() }}</td>
 
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-home-city text-primary me-2" style="font-size: 1.2rem;"></i>
-                                                <span class="fw-bold">{{ $land->name ?? '-' }}</span>
+                                                <i class="mdi mdi-home-city text-primary me-2" style="font-size: 1.15rem;"></i>
+                                                <span class="fw-bold text-dark" style="font-size: 0.88rem;">{{ $land->name ?? '-' }}</span>
                                             </div>
                                         </td>
 
                                         <td>
-                                            <span class="badge-category">
-                                                @if(($land->zoning ?? 'Tanah') == 'Rumah')
-                                                    <i class="mdi mdi-home-city"></i>
-                                                @elseif(($land->zoning ?? 'Tanah') == 'Apartemen')
-                                                    <i class="mdi mdi-office-building"></i>
-                                                @elseif(($land->zoning ?? 'Tanah') == 'Ruko')
-                                                    <i class="mdi mdi-store"></i>
-                                                @elseif(($land->zoning ?? 'Tanah') == 'Tanah')
-                                                    <i class="mdi mdi-terrain"></i>
-                                                @else
-                                                    <i class="mdi mdi-shape-outline"></i>
-                                                @endif
-                                                {{ $land->zoning ?? 'Tanah' }}
-                                            </span>
-                                        </td>
-
-                                        <td>
-                                            <span class="d-inline-flex align-items-center gap-1" title="{{ $land->address ?? '-' }}">
+                                            <span class="d-inline-flex align-items-center gap-1 text-muted" title="{{ $land->address ?? '-' }}">
                                                 <i class="mdi mdi-map-marker text-danger"></i>
-                                                <span>{{ Str::limit($land->address ?? '-', 22) }}</span>
+                                                <span>{{ Str::limit($land->address ?? '-', 24) }}</span>
                                             </span>
                                         </td>
 
@@ -359,22 +436,22 @@
                                             Rp {{ number_format($land->grand_total_acquisition_price, 0, ',', '.') }}
                                         </td>
 
-                                        <td>{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</td>
-                                        <td>{{ number_format($remainingArea, 0, ',', '.') }} m²</td>
+                                        <td class="fw-semibold text-dark">{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</td>
+                                        <td class="fw-semibold text-secondary">{{ number_format($remainingArea, 0, ',', '.') }} m²</td>
 
                                         <td class="text-center">
                                             @if($canCreateKavling)
-                                                <span class="badge bg-success text-white py-1 px-2 rounded-pill" style="font-size: 0.75rem;">
+                                                <span class="badge bg-success text-white py-1 px-2.5 rounded-pill" style="font-size: 0.74rem;">
                                                     <i class="mdi mdi-check-circle me-1"></i>Selesai (100%)
                                                 </span>
                                             @else
-                                                <span class="badge bg-warning text-dark py-1 px-2 rounded-pill" style="font-size: 0.75rem;">
-                                                    <i class="mdi mdi-progress-wrench me-1"></i>{{ $land->development_status }} ({{ $devProgress }}%)
+                                                <span class="badge bg-warning text-dark py-1 px-2.5 rounded-pill" style="font-size: 0.74rem;">
+                                                    <i class="mdi mdi-progress-wrench me-1"></i>{{ $land->development_status ?? 'Proses' }} ({{ $devProgress }}%)
                                                 </span>
                                             @endif
                                         </td>
 
-                                        <td>
+                                        <td class="text-center">
                                             @if ($land->status == 'sold')
                                                 <span class="badge-status sold">
                                                     <i class="mdi mdi-close-circle-outline me-1"></i>Terjual
@@ -394,7 +471,7 @@
                                             @endif
                                         </td>
 
-                                        <td class="text-center">
+                                        <td class="col-aksi text-center">
                                             @if($canCreateKavling)
                                                 <a href="{{ route('properti.buatKavling', ['land_bank_id' => $land->id]) }}"
                                                    class="btn-action create"
@@ -415,7 +492,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="10" class="text-center text-muted py-4">
+                                        <td colspan="9" class="text-center text-muted py-4">
                                             <i class="mdi mdi-information-outline me-2"></i> Tidak ada data tanah / landbank terverifikasi
                                         </td>
                                     </tr>
@@ -424,37 +501,17 @@
                         </table>
                     </div>
 
-                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                        <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.82rem;">
-                            Menampilkan {{ $lands->firstItem() ?? 0 }} - {{ $lands->lastItem() ?? 0 }} dari {{ $lands->total() }} data
+                    <!-- PAGINATION FOOTER -->
+                    @if ($lands instanceof \Illuminate\Pagination\LengthAwarePaginator && $lands->total() > 0)
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-white">
+                            <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.84rem;">
+                                Menampilkan {{ $lands->firstItem() ?? 0 }} - {{ $lands->lastItem() ?? 0 }} dari {{ $lands->total() }} data
+                            </div>
+                            <div>
+                                {{ $lands->appends(request()->query())->links('pagination::bootstrap-5') }}
+                            </div>
                         </div>
-
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
-                                <li class="page-item {{ $lands->onFirstPage() ? 'disabled' : '' }}">
-                                    <a class="page-link" href="{{ $lands->previousPageUrl() }}" {{ !$lands->onFirstPage() ? 'onclick=showPaginationLoading(event)' : '' }}>
-                                        <i class="mdi mdi-chevron-left"></i>
-                                    </a>
-                                </li>
-
-                                @for($page = 1; $page <= $lands->lastPage(); $page++)
-                                    <li class="page-item {{ $page == $lands->currentPage() ? 'active' : '' }}">
-                                        @if($page == $lands->currentPage())
-                                            <span class="page-link">{{ $page }}</span>
-                                        @else
-                                            <a class="page-link" href="{{ $lands->appends(request()->query())->url($page) }}" onclick="showPaginationLoading(event)">{{ $page }}</a>
-                                        @endif
-                                    </li>
-                                @endfor
-
-                                <li class="page-item {{ $lands->hasMorePages() ? '' : 'disabled' }}">
-                                    <a class="page-link" href="{{ $lands->nextPageUrl() }}" {{ $lands->hasMorePages() ? 'onclick=showPaginationLoading(event)' : '' }}>
-                                        <i class="mdi mdi-chevron-right"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+                    @endif
 
                 </div>
             </div>
@@ -495,6 +552,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+function applyLiveSearch(query) {
+    var filter = (query || '').toLowerCase().trim();
+    var rows = document.querySelectorAll('.project-table-row');
+    rows.forEach(function(row) {
+        var text = row.getAttribute('data-search') || row.innerText.toLowerCase();
+        if (!filter || text.indexOf(filter) > -1) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
 
 function showFilterLoading() {
     Swal.fire({
@@ -538,7 +608,7 @@ function showLockedKavlingAlert(landName, landId, status, progress) {
             <div class="p-3 bg-light rounded border mb-3">
                 <div class="d-flex justify-content-between mb-1 small">
                     <span class="text-muted">Status Pembangunan:</span>
-                    <span class="badge bg-warning text-dark">${status}</span>
+                    <span class="badge bg-warning text-dark">${status || 'Proses'}</span>
                 </div>
                 <div class="d-flex justify-content-between mb-2 small">
                     <span class="text-muted">Progres Pekerjaan:</span>

@@ -16,20 +16,24 @@
 
 <!-- CUSTOM TOP NAVBAR -->
 <nav class="custom-navbar">
-    <!-- Brand Logo & Page Title Section -->
+    <!-- Toggle Button & Page Title Section -->
     <div class="d-flex align-items-center overflow-hidden">
-        <a class="navbar-brand-box" href="{{ route('dashboard') }}">
-            <span class="brand-text-full">Property <span>Management</span></span>
-            <span class="brand-text-mini">PM</span>
-        </a>
-
         <!-- Toggle Button (Desktop: Minimize, Mobile/Tablet: Offcanvas) -->
-        <button class="btn-nav-toggle ms-2" type="button" id="sidebarToggleBtn" title="Toggle Sidebar">
+        <button class="btn-nav-toggle me-2" type="button" id="sidebarToggleBtn" title="Toggle Sidebar">
             <i class="mdi mdi-menu"></i>
         </button>
 
+        <!-- Mobile Brand Logo (Hanya tampil di Mobile ketika sidebar offcanvas tertutup) -->
+        <div class="d-flex d-lg-none align-items-center me-2">
+            <a href="{{ route('dashboard') }}" class="d-flex align-items-center text-decoration-none">
+                <div class="brand-badge-icon" style="width: 32px; height: 32px;">
+                    <img src="{{ asset('images/logo.jpeg') }}" alt="GCS Logo" class="brand-logo-img">
+                </div>
+            </a>
+        </div>
+
         <!-- Dynamic Page Title Text (Clean & Bold) -->
-        <div class="navbar-page-title ms-2 ms-sm-3">
+        <div class="navbar-page-title ms-1 ms-sm-2">
             <span class="page-title-text">{{ $pageTitle }}</span>
         </div>
     </div>

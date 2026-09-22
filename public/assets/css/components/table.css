@@ -36,7 +36,7 @@
 }
 
 .table thead th {
-    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+    background: #f8f9fa;
     color: #9a55ff;
     font-weight: 700;
     font-size: 0.8rem;
@@ -109,23 +109,23 @@
 }
 
 .status-badge-gradient.success {
-    background: linear-gradient(135deg, #28a745, #5cb85c);
+    background: var(--leaf-green, #16a34a);
     color: #fff;
 }
 
 .status-badge-gradient.danger {
-    background: linear-gradient(135deg, #dc3545, #e4606d);
+    background: var(--theme-red, #ef4444);
     color: #fff;
 }
 
 .status-badge-gradient.warning {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d);
-    color: #2c2e3f;
+    background: #f59e0b;
+    color: #ffffff;
 }
 
 /* Type badge */
 .type-badge {
-    background: linear-gradient(135deg, #9a55ff, #da8cff);
+    background: var(--primary-purple, #9a55ff);
     color: white;
     padding: 0.25rem 0.65rem;
     border-radius: 4px;
@@ -136,8 +136,8 @@
 
 /* Unit badge */
 .unit-badge {
-    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-    color: #1976d2;
+    background: #e0f2fe;
+    color: #0284c7;
     padding: 0.25rem 0.65rem;
     border-radius: 4px;
     font-weight: 700;
@@ -156,17 +156,17 @@
 }
 
 .badge-priority-urgent {
-    background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+    background: var(--theme-red, #ef4444) !important;
     color: #fff !important;
 }
 
 .badge-priority-high {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-    color: #2c2e3f !important;
+    background: #f59e0b !important;
+    color: #ffffff !important;
 }
 
 .badge-priority-normal {
-    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+    background: var(--primary-purple, #9a55ff) !important;
     color: #fff !important;
 }
 
@@ -199,32 +199,32 @@
 }
 
 .btn-action.fase1 {
-    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+    background: var(--primary-purple, #9a55ff) !important;
     color: #fff !important;
 }
 
 .btn-action.fase2 {
-    background: linear-gradient(135deg, #17a2b8, #56c6d8) !important;
+    background: #0284c7 !important;
     color: #fff !important;
 }
 
 .btn-action.fase3 {
-    background: linear-gradient(135deg, #28a745, #5dd879) !important;
+    background: var(--leaf-green, #16a34a) !important;
     color: #fff !important;
 }
 
 .btn-action.edit {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-    color: #2c2e3f !important;
+    background: #f59e0b !important;
+    color: #ffffff !important;
 }
 
 .btn-action.delete {
-    background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+    background: var(--theme-red, #ef4444) !important;
     color: #fff !important;
 }
 
 .btn-action.view {
-    background: linear-gradient(135deg, #6c757d, #8a8f97) !important;
+    background: #6c757d !important;
     color: #fff !important;
 }
 
@@ -239,7 +239,7 @@
 }
 
 .status-badge.aktif, .status-badge.wajib {
-    background: linear-gradient(135deg, #28a745, #5dd879);
+    background: var(--leaf-green, #16a34a);
     color: #fff;
 }
 
@@ -258,7 +258,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    background: var(--primary-purple, #9a55ff);
     color: #fff;
 }
 
@@ -268,7 +268,7 @@
     font-weight: 600;
     font-size: 0.78rem;
     display: inline-block;
-    background: linear-gradient(135deg, #28a745, #5dd879);
+    background: var(--leaf-green, #16a34a);
     color: #fff;
 }
 
@@ -278,8 +278,8 @@
     font-weight: 600;
     font-size: 0.78rem;
     display: inline-block;
-    background: linear-gradient(135deg, #ffc107, #ffdb6d);
-    color: #2c2e3f;
+    background: #f59e0b;
+    color: #ffffff;
 }
 
 .badge-legalitas-rejected, .badge-development-belum {
@@ -288,7 +288,7 @@
     font-weight: 600;
     font-size: 0.78rem;
     display: inline-block;
-    background: linear-gradient(135deg, #dc3545, #e4606d);
+    background: var(--theme-red, #ef4444);
     color: #fff;
 }
 
@@ -331,7 +331,7 @@
 }
 
 .action-text-verify {
-    background: linear-gradient(135deg, #198754, #4dd48a) !important;
+    background: var(--leaf-green, #16a34a) !important;
     color: white !important;
 }
 

@@ -56,43 +56,54 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // =========================================================================
-  // 2. SIDEBAR SUB-MENU ACCORDION
+  // 2. SIDEBAR SUB-MENU ACCORDION (SMOOTH SLIDE ANIMATION)
   // =========================================================================
-  const subMenuToggles = document.querySelectorAll('.has-submenu > .sidebar-menu-link');
-
-  subMenuToggles.forEach(toggle => {
-    toggle.addEventListener('click', function (e) {
+  if (typeof jQuery !== 'undefined') {
+    jQuery(document).on('click', '.sidebar-dropdown-toggle', function (e) {
       e.preventDefault();
-      const parentItem = this.closest('.has-submenu');
-      const submenu = parentItem.querySelector('.sidebar-submenu');
-      const isExpanded = this.getAttribute('aria-expanded') === 'true';
+      e.stopPropagation();
 
-      // If sidebar is minimized in desktop, expand it first
-      if (body.classList.contains('sidebar-icon-only') && window.innerWidth >= 1200) {
-        body.classList.remove('sidebar-icon-only');
+      var $toggle = jQuery(this);
+      var targetId = $toggle.attr('href') || $toggle.data('target') || $toggle.data('bs-target');
+      var $submenu = jQuery(targetId);
+      if (!$submenu.length) {
+        $submenu = $toggle.siblings('.sidebar-submenu');
+      }
+      if (!$submenu.length) return;
+
+      var $parent = $toggle.closest('.has-submenu');
+      var isOpening = !$submenu.is(':visible');
+
+      // Expand sidebar if minimized in desktop
+      if (jQuery('body').hasClass('sidebar-icon-only') && window.innerWidth >= 1200) {
+        jQuery('body').removeClass('sidebar-icon-only');
         localStorage.setItem('sidebar_icon_only', '0');
       }
 
-      // Close other submenus if accordion behavior desired
-      document.querySelectorAll('.has-submenu').forEach(otherItem => {
-        if (otherItem !== parentItem) {
-          const otherLink = otherItem.querySelector('.sidebar-menu-link');
-          const otherSub = otherItem.querySelector('.sidebar-submenu');
-          if (otherLink) otherLink.setAttribute('aria-expanded', 'false');
-          if (otherSub) otherSub.classList.remove('show');
-        }
+      // Close other open submenus smoothly (true accordion)
+      jQuery('#customSidebar .has-submenu.open').not($parent).each(function () {
+        var $other = jQuery(this);
+        $other.removeClass('open');
+        $other.find('.sidebar-dropdown-toggle').attr('aria-expanded', 'false');
+        $other.find('.sidebar-submenu').stop(true, true).slideUp(220, function () {
+          jQuery(this).removeClass('show');
+        });
       });
 
-      // Toggle current submenu
-      if (isExpanded) {
-        this.setAttribute('aria-expanded', 'false');
-        if (submenu) submenu.classList.remove('show');
+      // Toggle current submenu smoothly with slide animation
+      if (isOpening) {
+        $parent.addClass('open');
+        $toggle.attr('aria-expanded', 'true');
+        $submenu.addClass('show').stop(true, true).slideDown(220);
       } else {
-        this.setAttribute('aria-expanded', 'true');
-        if (submenu) submenu.classList.add('show');
+        $parent.removeClass('open');
+        $toggle.attr('aria-expanded', 'false');
+        $submenu.stop(true, true).slideUp(220, function () {
+          jQuery(this).removeClass('show');
+        });
       }
     });
-  });
+  }
 
   // =========================================================================
   // 3. NAVBAR DROPDOWNS (NOTIFICATION & USER PROFILE)

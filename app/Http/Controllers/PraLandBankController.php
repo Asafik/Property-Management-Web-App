@@ -26,7 +26,12 @@ class PraLandBankController extends Controller
         }
     }
 
-    return view('land_bank.all_pra_land_bank', compact('praLandBank', 'documentTypes', 'landsWithPendingDocsCount'));
+    $totalPraTanah = PraLandbank::count();
+    $totalFase1 = PraLandbank::where('status', 'fase1')->count();
+    $totalFase2 = PraLandbank::where('status', 'fase2')->count();
+    $totalFase3 = PraLandbank::whereIn('status', ['fase3', 'approved'])->count();
+
+    return view('land_bank.all_pra_land_bank', compact('praLandBank', 'documentTypes', 'landsWithPendingDocsCount', 'totalPraTanah', 'totalFase1', 'totalFase2', 'totalFase3'));
 }
 
 public function store(Request $request)
@@ -37,7 +42,9 @@ public function store(Request $request)
         // CLEAN NUMBER
         // =========================
         $cleanNumber = function ($value) {
-            return $value ? preg_replace('/[^0-9]/', '', $value) : null;
+            if ($value === null || $value === '') return null;
+            $cleaned = preg_replace('/[^0-9]/', '', (string)$value);
+            return $cleaned !== '' ? $cleaned : null;
         };
 
         // =========================
@@ -269,19 +276,30 @@ public function store(Request $request)
 
             if ($request->has('biaya_lain_temp') || ($request->has('custom_costs') && is_array($request->custom_costs))) {
                 $otherCost = 0;
+                $savedCustomCosts = [];
                 if ($request->filled('biaya_lain_temp')) {
                     $otherCost += (float)$cleanNumber($request->biaya_lain_temp);
                 }
                 if ($request->has('custom_costs') && is_array($request->custom_costs)) {
                     foreach ($request->custom_costs as $cCost) {
-                        if (!empty($cCost['amount'])) {
-                            $otherCost += (float)$cleanNumber($cCost['amount']);
+                        $amt = !empty($cCost['amount']) ? (float)$cleanNumber($cCost['amount']) : 0;
+                        $costName = trim($cCost['name'] ?? '');
+                        if (!empty($costName) || $amt > 0) {
+                            $otherCost += $amt;
+                            $savedCustomCosts[] = [
+                                'master_id' => $cCost['master_id'] ?? null,
+                                'name'      => $costName ?: 'Biaya Tambahan Lainnya',
+                                'amount'    => $amt,
+                                'category'  => $cCost['category'] ?? null,
+                            ];
                         }
                     }
                 }
                 $data['cost_other'] = $otherCost;
+                $data['custom_costs'] = $savedCustomCosts;
             } elseif (!$record->exists) {
                 $data['cost_other'] = 0;
+                $data['custom_costs'] = [];
             }
 
             // Ensure payment_method is correctly detected
@@ -527,7 +545,7 @@ public function store(Request $request)
                 'city'              => $record->city,
                 'province'          => $record->province,
                 'zoning'            => $record->zoning,
-                'road_width'        => $record->road_width,
+                'road_width'        => (isset($record->road_width) && is_numeric($record->road_width)) ? (int)$record->road_width : null,
                 'road_type'         => $record->road_type,
                 'ownership_status'  => $record->ownership_status ?? 'SHM',
                 'certificate_owner' => $record->certificate_owner ?? $record->owner_name ?? $record->land_owner,
@@ -675,7 +693,20 @@ public function store(Request $request)
             }
         }
 
-        return view('land_bank.all_pra_land_bank', compact('praLandBank', 'documentTypes', 'landsWithPendingDocsCount'));
+        $totalPraTanah = PraLandbank::count();
+        $totalFase1 = PraLandbank::where('status', 'fase1')->count();
+        $totalFase2 = PraLandbank::where('status', 'fase2')->count();
+        $totalFase3 = PraLandbank::whereIn('status', ['fase3', 'approved'])->count();
+
+        return view('land_bank.all_pra_land_bank', compact(
+            'praLandBank',
+            'documentTypes',
+            'landsWithPendingDocsCount',
+            'totalPraTanah',
+            'totalFase1',
+            'totalFase2',
+            'totalFase3'
+        ));
     }
     public function proses(Request $request, $id = null)
     {
@@ -724,8 +755,9 @@ public function store(Request $request)
         }
         $documentTypes    = DocumentTypes::all();
         $notarisList      = \App\Models\Notaris::where('is_active', true)->orderBy('nama_notaris', 'asc')->get();
-        $masterPerizinans = \App\Models\MasterDokumenPerizinan::active()->get();
-        return view('land_bank.proses_pra_land_bank', compact('land', 'documentTypes', 'notarisList', 'masterPerizinans'));
+        $masterPerizinans     = \App\Models\MasterDokumenPerizinan::active()->get();
+        $masterBiayaLegalitas = \App\Models\MasterBiayaLegalitas::active()->get();
+        return view('land_bank.proses_pra_land_bank', compact('land', 'documentTypes', 'notarisList', 'masterPerizinans', 'masterBiayaLegalitas'));
     }
     public function destroy($id)
     {
@@ -1816,7 +1848,7 @@ public function store(Request $request)
             'city'                      => $record->city ?: '-',
             'province'                  => $record->province ?: '-',
             'zoning'                    => $record->zoning ?: '-',
-            'road_width'                => $record->road_width ?: '-',
+            'road_width'                => (isset($record->road_width) && is_numeric($record->road_width)) ? (int)$record->road_width : null,
             'road_type'                 => $record->road_type ?: '-',
             'lat'                       => $record->lat,
             'lng'                       => $record->lng,

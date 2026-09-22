@@ -2,21 +2,91 @@
 
 @section('title', 'Semua Properti Proyek')
 
-@section('content')
-
-    @php
-        function sortIcon($column)
-        {
-            if (request('sort_by') !== $column) {
-                return 'mdi-swap-vertical text-muted';
-            }
-            return request('sort_order', 'asc') === 'desc'
-                ? 'mdi-arrow-down text-primary fw-bold'
-                : 'mdi-arrow-up text-primary fw-bold';
-        }
-    @endphp
-
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
     <style>
+        /* Table Responsive & Text Wrapping persis Perizinan */
+        .table-lahan {
+            width: 100% !important;
+            margin-bottom: 0;
+        }
+        .table-lahan thead th {
+            background: #f8fafc !important;
+            color: #4b5563 !important;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0 !important;
+            padding: 0.75rem 0.65rem !important;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .table-lahan tbody td {
+            padding: 0.75rem 0.65rem !important;
+            vertical-align: middle;
+            font-size: 0.83rem;
+            border-bottom: 1px solid #f1f5f9;
+            white-space: normal !important;
+        }
+        .table-lahan .col-no {
+            width: 45px;
+            text-align: center;
+            white-space: nowrap !important;
+        }
+        .table-lahan .col-dokumen {
+            width: 75px;
+            text-align: center;
+            white-space: nowrap !important;
+        }
+        .table-lahan .col-aksi {
+            width: 90px;
+            text-align: center;
+            white-space: nowrap !important;
+        }
+
+        /* Compact Table Card persis Perizinan */
+        .card.compact-table-card,
+        .compact-table-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+            transition: border-color 0.2s ease;
+            overflow: hidden;
+        }
+        .card.compact-table-card:hover,
+        .compact-table-card:hover {
+            border-color: #cbd5e1 !important;
+            box-shadow: none !important;
+        }
+        .compact-table-card .card-header {
+            background: #ffffff !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            padding: 0.75rem 1.25rem !important;
+            border-top-left-radius: 8px !important;
+            border-top-right-radius: 8px !important;
+        }
+        .compact-table-card .card-body,
+        .card.compact-table-card .card-body {
+            padding: 0 !important;
+            background: #ffffff !important;
+        }
+
+        /* Category badge */
+        .badge-category {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.3rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(154, 85, 255, 0.1);
+            color: #9a55ff;
+            border: 1px solid rgba(154, 85, 255, 0.2);
+            text-transform: capitalize;
+        }
+
         .btn-modal-continue-dev {
             background: #fff8eb !important;
             color: #b45309 !important;
@@ -45,59 +115,172 @@
             color: #1e293b !important;
             border-color: #94a3b8 !important;
         }
-    </style>
 
-    <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
-        <!-- Header Card Banner -->
-        <div class="row mb-3 mb-md-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-0 header-card">
-                    <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
-                        <div>
-                            <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
-                                Semua Tanah Pasca Land Bank
-                            </h3>
-                            <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                                Daftar seluruh properti proyek yang terdaftar dalam sistem
-                            </p>
-                        </div>
-                        <div class="d-none d-sm-block pe-2">
-                            <i class="mdi mdi-home-city-outline" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
-                        </div>
-                    </div>
-                </div>
+        .sort-th {
+            cursor: pointer;
+            user-select: none;
+        }
+        .sort-th:hover {
+            background: #f1f5f9 !important;
+        }
+        .hover-primary:hover {
+            color: #9a55ff !important;
+        }
+        .nav-tabs .nav-link {
+            color: #64748b;
+            font-size: 0.85rem;
+            border-bottom: 2px solid transparent !important;
+            transition: all 0.2s ease;
+        }
+        .nav-tabs .nav-link:hover {
+            color: #9a55ff;
+        }
+        .nav-tabs .nav-link.active {
+            color: #9a55ff !important;
+            border-bottom: 2px solid #9a55ff !important;
+            background: transparent !important;
+        }
+    </style>
+@endpush
+
+@section('content')
+
+    @php
+        if (!function_exists('sortIcon')) {
+            function sortIcon($column)
+            {
+                if (request('sort_by') !== $column) {
+                    return 'mdi-swap-vertical text-muted';
+                }
+                return request('sort_order', 'asc') === 'desc'
+                    ? 'mdi-arrow-down text-primary fw-bold'
+                    : 'mdi-arrow-up text-primary fw-bold';
+            }
+        }
+    @endphp
+
+    <div class="container-fluid px-2 px-md-4 py-3">
+
+        <!-- Page Title & Subtitle (Persis Perizinan) -->
+        <div class="row align-items-center mb-4">
+            <div class="col">
+                <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                    Tanah Pasca Land Bank
+                </h2>
+                <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                    Daftar seluruh properti proyek yang terdaftar dalam sistem
+                </p>
             </div>
         </div>
 
-        <div class="row mt-2 mt-sm-2 mt-md-3">
+        <!-- 4 KPI Metrics Card Grid (Persis Perizinan / Pra Tanah) -->
+        <div class="dash-kpi-grid mb-4">
+            
+            <!-- Card 1: Total Properti Pasca (Ungu) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon purple">
+                        <i class="mdi mdi-office-building"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Total Properti Pasca</div>
+                        <div class="dash-kpi-val">{{ $totalLandBank ?? $landBanks->total() }}</div>
+                        <div class="dash-kpi-sub">Seluruh Properti Terdaftar</div>
+                    </div>
+                </div>
+                <div class="dash-kpi-action purple">
+                    <i class="mdi mdi-arrow-right"></i>
+                </div>
+            </div>
+
+            <!-- Card 2: Legalitas Terverifikasi (Hijau) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon green">
+                        <i class="mdi mdi-check-decagram-outline"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Legalitas Terverifikasi</div>
+                        <div class="dash-kpi-val">{{ $legalVerified ?? 0 }}</div>
+                        <div class="dash-kpi-sub">Dokumen Sah & Lengkap</div>
+                    </div>
+                </div>
+                <div class="dash-kpi-action green">
+                    <i class="mdi mdi-arrow-right"></i>
+                </div>
+            </div>
+
+            <!-- Card 3: Pembangunan Selesai (Biru) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon blue">
+                        <i class="mdi mdi-progress-check"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Pembangunan Selesai</div>
+                        <div class="dash-kpi-val">{{ $devSelesai ?? 0 }}</div>
+                        <div class="dash-kpi-sub">Fisik 100% Rampung</div>
+                    </div>
+                </div>
+                <div class="dash-kpi-action blue">
+                    <i class="mdi mdi-arrow-right"></i>
+                </div>
+            </div>
+
+            <!-- Card 4: Dalam Pengerjaan (Kuning / Amber) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon amber">
+                        <i class="mdi mdi-progress-wrench"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Dalam Pengerjaan</div>
+                        <div class="dash-kpi-val">{{ $devProses ?? 0 }}</div>
+                        <div class="dash-kpi-sub">Proses Infrastruktur Lahan</div>
+                    </div>
+                </div>
+                <div class="dash-kpi-action amber">
+                    <i class="mdi mdi-arrow-right"></i>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Main Container: Table Card -->
+        <div class="row">
             <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 py-3">
-                        <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
-                            Daftar Properti
-                        </h5>
-                        <a href="{{ route('properti') }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center" style="gap: 5px;">
-                            <i class="mdi mdi-plus me-1"></i> Tambah Pasca Landbank
+                <div class="card compact-table-card shadow-sm border-0">
+                    
+                    <!-- Card Header -->
+                    <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3 border-bottom">
+                        <div>
+                            <h5 class="card-title mb-0" style="font-weight: 700; color: #1e293b; font-size: 1.05rem;">
+                                <i class="mdi mdi-office-building-marker-outline me-2" style="color: #9a55ff;"></i>Daftar Tanah Pasca Land Bank
+                            </h5>
+                        </div>
+                        <a href="{{ route('properti') }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm fw-semibold" style="border-radius: 6px; font-size: 0.84rem;">
+                            <i class="mdi mdi-plus"></i> Tambah Pasca Landbank
                         </a>
                     </div>
 
-                    <div class="card-body">
-                        <!-- Filter Section -->
-                        <div class="filter-card mb-3">
+                    <div class="card-body p-0">
+                        
+                        <!-- Search & Filter Toolbar -->
+                        <div class="card-toolbar-box p-3 border-bottom bg-white">
                             <form id="filterForm" method="GET" action="{{ route('properti-all') }}">
                                 <input type="hidden" name="sort_by" id="sort_by" value="{{ request('sort_by') }}">
-                                <input type="hidden" name="sort_order" id="sort_order"
-                                    value="{{ request('sort_order', 'asc') }}">
+                                <input type="hidden" name="sort_order" id="sort_order" value="{{ request('sort_order', 'asc') }}">
 
                                 <!-- DESKTOP VERSION -->
-                                <div class="filter-row-desktop d-none d-md-block">
+                                <div class="d-none d-md-block">
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
                                         <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
-                                            <!-- Search -->
+                                            <!-- Search Input -->
                                             <div style="min-width: 180px; max-width: 240px; flex: 1;">
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control" name="search" id="searchInput"
+                                                    <input type="text" class="form-control" name="search" id="liveSearchInput"
                                                         placeholder="Nama Properti..." value="{{ request('search') }}"
+                                                        onkeyup="applyLiveSearch(this.value)"
                                                         style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
                                                     <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
                                                         type="submit" title="Cari"
@@ -120,22 +303,9 @@
                                                 </select>
                                             </div>
 
-                                            <!-- Kategori -->
-                                            <div style="min-width: 140px;">
-                                                <select name="kategori" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
-                                                    <option value="">Semua Kategori</option>
-                                                    @foreach ($categories as $cat)
-                                                        <option value="{{ $cat }}"
-                                                            {{ request('kategori') == $cat ? 'selected' : '' }}>
-                                                            {{ $cat }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
                                             <!-- Legalitas -->
-                                            <div style="min-width: 140px;">
-                                                <select name="legalitas" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
+                                            <div style="min-width: 165px;">
+                                                <select name="legalitas" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px; font-size: 0.84rem;">
                                                     <option value="">Semua Legalitas</option>
                                                     <option value="verified" {{ request('legalitas') == 'verified' ? 'selected' : '' }}>Terverifikasi</option>
                                                     <option value="pending" {{ request('legalitas') == 'pending' ? 'selected' : '' }}>Pending</option>
@@ -144,8 +314,8 @@
                                             </div>
 
                                             <!-- Pembangunan -->
-                                            <div style="min-width: 140px;">
-                                                <select name="pembangunan" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
+                                            <div style="min-width: 150px;">
+                                                <select name="pembangunan" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px; font-size: 0.84rem;">
                                                     <option value="">Semua Status</option>
                                                     <option value="Selesai" {{ request('pembangunan') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
                                                     <option value="progress" {{ request('pembangunan') == 'progress' ? 'selected' : '' }}>Progress</option>
@@ -154,7 +324,7 @@
                                             </div>
                                         </div>
 
-                                        <!-- Right Side: Limit Dropdown + Filter & Reset Buttons -->
+                                        <!-- Right: Limit + Action Buttons -->
                                         <div class="d-flex align-items-center gap-2 ms-auto">
                                             <div style="width: 85px;">
                                                 <select name="show" id="showSelect" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
@@ -175,12 +345,13 @@
                                 </div>
 
                                 <!-- MOBILE VERSION -->
-                                <div class="filter-row-mobile d-block d-md-none">
+                                <div class="d-block d-md-none">
                                     <div class="row g-2">
                                         <div class="col-12 mb-2">
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="searchInputMobile" name="search"
                                                     placeholder="Nama Properti..." value="{{ request('search') }}"
+                                                    onkeyup="applyLiveSearch(this.value)"
                                                     style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
                                                 <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
                                                     type="submit" title="Cari"
@@ -201,17 +372,6 @@
                                             </select>
                                         </div>
                                         <div class="col-6 mb-2">
-                                            <select name="kategori" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
-                                                <option value="">Semua Kategori</option>
-                                                @foreach ($categories as $cat)
-                                                    <option value="{{ $cat }}"
-                                                        {{ request('kategori') == $cat ? 'selected' : '' }}>
-                                                        {{ $cat }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-6 mb-2">
                                             <select name="legalitas" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
                                                 <option value="">Semua Legalitas</option>
                                                 <option value="verified" {{ request('legalitas') == 'verified' ? 'selected' : '' }}>Terverifikasi</option>
@@ -227,7 +387,7 @@
                                                 <option value="Belum" {{ request('pembangunan') == 'Belum' ? 'selected' : '' }}>Belum</option>
                                             </select>
                                         </div>
-                                        <div class="col-6 mb-2">
+                                        <div class="col-4">
                                             <select name="show" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
                                                 <option value="10" {{ request('show', 10) == 10 ? 'selected' : '' }}>10</option>
                                                 <option value="25" {{ request('show', 10) == 25 ? 'selected' : '' }}>25</option>
@@ -235,14 +395,14 @@
                                                 <option value="100" {{ request('show', 10) == 100 ? 'selected' : '' }}>100</option>
                                             </select>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-4">
                                             <button type="submit" class="btn btn-gradient-primary w-100" style="height: 38px;" title="Filter">
-                                                <i class="mdi mdi-filter"></i> Filter
+                                                <i class="mdi mdi-filter"></i>
                                             </button>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-4">
                                             <a href="{{ route('properti-all') }}" class="btn btn-gradient-secondary w-100 d-inline-flex align-items-center justify-content-center" style="height: 38px;" title="Reset">
-                                                <i class="mdi mdi-refresh"></i> Reset
+                                                <i class="mdi mdi-refresh"></i>
                                             </a>
                                         </div>
                                     </div>
@@ -250,30 +410,39 @@
                             </form>
                         </div>
 
+                        <!-- Table Responsive -->
                         <div class="table-responsive">
-                            <table class="table table-hover align-middle">
+                            <table class="table table-lahan table-hover align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-center" width="5%">No</th>
-                                        <th class="sort-th" onclick="handleSort('name')">Nama Properti <i class="mdi {{ sortIcon('name') }}"></i></th>
-                                        <th class="sort-th" onclick="handleSort('company_profile_id')">Nama Perusahaan <i class="mdi {{ sortIcon('company_profile_id') }}"></i></th>
-                                        <th class="sort-th" onclick="handleSort('zoning')">Kategori <i class="mdi {{ sortIcon('zoning') }}"></i></th>
-                                        <th class="d-none d-md-table-cell sort-th" onclick="handleSort('address')">Lokasi <i class="mdi {{ sortIcon('address') }}"></i></th>
-                                        <th class="sort-th" onclick="handleSort('acquisition_price')">Harga Beli <i class="mdi {{ sortIcon('acquisition_price') }}"></i></th>
-                                        <th class="sort-th" onclick="handleSort('legal_status')">Legalitas <i class="mdi {{ sortIcon('legal_status') }}"></i></th>
-                                        <th class="sort-th" onclick="handleSort('development_status')">Pembangunan <i class="mdi {{ sortIcon('development_status') }}"></i></th>
-                                        <th class="text-center" width="8%">Dokumen</th>
-                                        <th class="text-center" width="10%">Aksi</th>
+                                        <th class="col-no text-center">NO</th>
+                                        <th class="sort-th" onclick="handleSort('name')">NAMA PROPERTI <i class="mdi {{ sortIcon('name') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('company_profile_id')">NAMA PERUSAHAAN <i class="mdi {{ sortIcon('company_profile_id') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('zoning')">KATEGORI <i class="mdi {{ sortIcon('zoning') }}"></i></th>
+                                        <th class="d-none d-md-table-cell sort-th" onclick="handleSort('address')">LOKASI <i class="mdi {{ sortIcon('address') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('acquisition_price')">HARGA BELI <i class="mdi {{ sortIcon('acquisition_price') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('legal_status')">LEGALITAS <i class="mdi {{ sortIcon('legal_status') }}"></i></th>
+                                        <th class="sort-th" onclick="handleSort('development_status')">PEMBANGUNAN <i class="mdi {{ sortIcon('development_status') }}"></i></th>
+                                        <th class="text-center col-dokumen">DOKUMEN</th>
+                                        <th class="text-center col-aksi">AKSI</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($landBanks as $index => $item)
-                                        <tr>
-                                            <td class="text-center fw-bold text-muted">{{ $landBanks->firstItem() + $index }}</td>
+                                        @php
+                                            $searchKeywords = strtolower($item->name . ' ' . ($item->companyProfile->name ?? '') . ' ' . ($item->address ?? '') . ' ' . ($item->zoning ?? ''));
+                                        @endphp
+                                        <tr class="project-table-row" data-search="{{ $searchKeywords }}">
+                                            <td class="col-no text-center fw-bold text-muted">{{ $landBanks->firstItem() + $index }}</td>
                                             <td>
-                                                <div class="fw-bold text-dark" style="font-size: 0.88rem;">
+                                                <a href="javascript:void(0)" 
+                                                   class="fw-bold text-dark text-decoration-none hover-primary d-inline-block" 
+                                                   data-bs-toggle="modal" 
+                                                   data-bs-target="#modalDetail{{ $item->id }}" 
+                                                   title="Klik untuk melihat detail lengkap"
+                                                   style="font-size: 0.88rem; transition: color 0.15s ease;">
                                                     {{ $item->name }}
-                                                </div>
+                                                </a>
                                                 <small class="text-muted d-block d-md-none mt-1">
                                                     {{ Str::limit($item->address ?? '-', 15) }}
                                                 </small>
@@ -344,7 +513,6 @@
                                                         <div class="progress-bar" role="progressbar" style="width: {{ $legalPercent }}%; {{ $legalBarColor }} border-radius: 4px;" aria-valuenow="{{ $legalPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
                                                     </div>
                                                 </div>
-                                            </td>
                                             <td>
                                                 @php
                                                     $devPercent = (float) $item->overall_infrastructure_progress;
@@ -368,76 +536,33 @@
                                                         $devLabel = 'Belum';
                                                     }
                                                 @endphp
-                                                 @php
-                                                     $isProfileOk = $item->isProfileComplete();
-                                                     $missingFields = $item->getMissingProfileFields();
-                                                 @endphp
-                                                 @if($isProfileOk)
-                                                     <a href="{{ route('properti.pengolahanLahan', $item->id) }}" 
-                                                        class="text-decoration-none d-block" 
-                                                        style="min-width: 115px;" 
-                                                        title="Buka Halaman Pengolahan Lahan ({{ $devPercent }}%)">
-                                                         <div class="d-flex justify-content-between align-items-center mb-1">
-                                                             <small class="fw-bold {{ $devTextClass }}" style="font-size: 0.75rem;">
-                                                                 <i class="mdi {{ $devIcon }} me-0.5"></i> {{ $devLabel }}
-                                                             </small>
-                                                             <span class="fw-bold" style="font-size: 0.75rem; color: #374151;">{{ $devPercent }}%</span>
-                                                         </div>
-                                                         <div class="progress" style="height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden;">
-                                                             <div class="progress-bar" role="progressbar" style="width: {{ $devPercent }}%; {{ $devBarColor }} border-radius: 4px;" aria-valuenow="{{ $devPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                                         </div>
-                                                     </a>
-                                                 @else
-                                                     <a href="javascript:void(0)" 
-                                                        class="text-decoration-none d-block btn-pengolahan-alert" 
-                                                        style="min-width: 115px;" 
-                                                        data-id="{{ $item->id }}"
-                                                        data-name="{{ $item->name }}"
-                                                        data-missing="{{ implode(', ', $missingFields) }}"
-                                                        data-url="{{ route('properti.pengolahanLahan', $item->id) }}"
-                                                        data-edit-url="{{ route('properti.edit', $item->id) }}"
-                                                        title="Profil Belum Lengkap - Klik untuk Melihat">
-                                                         <div class="d-flex justify-content-between align-items-center mb-1">
-                                                             <small class="fw-bold text-warning" style="font-size: 0.75rem;">
-                                                                 <i class="mdi mdi-alert-circle me-0.5"></i> Profil Belum Lengkap
-                                                             </small>
-                                                             <span class="fw-bold" style="font-size: 0.75rem; color: #374151;">{{ $devPercent }}%</span>
-                                                         </div>
-                                                         <div class="progress" style="height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden;">
-                                                             <div class="progress-bar" role="progressbar" style="width: {{ $devPercent }}%; {{ $devBarColor }} border-radius: 4px;" aria-valuenow="{{ $devPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                                         </div>
-                                                     </a>
-                                                 @endif
+                                                <div style="min-width: 110px;">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <small class="fw-bold {{ $devTextClass }}" style="font-size: 0.75rem;">
+                                                            <i class="mdi {{ $devIcon }} me-0.5"></i> {{ $devLabel }}
+                                                        </small>
+                                                        <span class="fw-bold" style="font-size: 0.75rem; color: #374151;">{{ $devPercent }}%</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden;">
+                                                        <div class="progress-bar" role="progressbar" style="width: {{ $devPercent }}%; {{ $devBarColor }} border-radius: 4px;" aria-valuenow="{{ $devPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td class="text-center">
                                                 <button type="button" class="document-trigger" data-bs-toggle="modal"
-                                                    data-bs-target="#modalDokumen{{ $item->id }}">
-                                                    <i
-                                                        class="mdi mdi-file-document-multiple-outline"></i>{{ $item->merged_documents->count() }}
+                                                    data-bs-target="#modalDokumen{{ $item->id }}" title="Lihat Dokumen">
+                                                    <i class="mdi mdi-file-document-multiple-outline"></i>{{ $item->merged_documents->count() }}
                                                 </button>
                                             </td>
                                             <td class="text-center" style="white-space: nowrap;">
-                                                 @if($isProfileOk)
-                                                     <a href="{{ route('properti.pengolahanLahan', $item->id) }}" 
-                                                        class="btn-action fase1" 
-                                                        title="Kelola Pengolahan Lahan (PJU, Selokan, Jalan, dll)">
-                                                         <i class="mdi mdi-wrench"></i>
-                                                     </a>
-                                                 @else
-                                                     <a href="javascript:void(0)" 
-                                                        class="btn-action fase1 btn-pengolahan-alert" 
-                                                        data-id="{{ $item->id }}"
-                                                        data-name="{{ $item->name }}"
-                                                        data-missing="{{ implode(', ', $missingFields) }}"
-                                                        data-url="{{ route('properti.pengolahanLahan', $item->id) }}"
-                                                        data-edit-url="{{ route('properti.edit', $item->id) }}"
-                                                        title="Profil Belum Lengkap - Perbarui Data Landbank">
-                                                         <i class="mdi mdi-wrench text-warning"></i>
-                                                     </a>
-                                                 @endif
-                                                <a href="{{ route('properti.edit', $item->id) }}" class="btn-action edit ms-1" title="Edit Properti">
-                                                    <i class="mdi mdi-pencil"></i>
-                                                </a>
+                                                <button type="button" 
+                                                    class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1.5 shadow-none" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#modalDetail{{ $item->id }}" 
+                                                    title="Lihat Detail Properti"
+                                                    style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
+                                                    <i class="mdi mdi-eye"></i> Detail
+                                                </button>
                                             </td>
                                         </tr>
                                     @empty
@@ -451,64 +576,16 @@
                             </table>
                         </div>
 
-                        <!-- PAGINATION - PERSIS DASHBOARD -->
+                        <!-- PAGINATION FOOTER -->
                         @if ($landBanks instanceof \Illuminate\Pagination\LengthAwarePaginator && $landBanks->total() > 0)
-                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                                <div class="pagination-info mb-2 mb-sm-0">
+                            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-white">
+                                <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.84rem;">
                                     Menampilkan {{ $landBanks->firstItem() }} - {{ $landBanks->lastItem() }} dari
                                     {{ $landBanks->total() }} data
                                 </div>
-                                <nav aria-label="Page navigation">
-                                    <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
-                                        {{-- Previous Page Link --}}
-                                        @if ($landBanks->onFirstPage())
-                                            <li class="page-item disabled" aria-disabled="true">
-                                                <span class="page-link" aria-label="Previous">
-                                                    <i class="mdi mdi-chevron-left"></i>
-                                                </span>
-                                            </li>
-                                        @else
-                                            <li class="page-item">
-                                                <a class="page-link"
-                                                    href="{{ $landBanks->appends(request()->query())->previousPageUrl() }}"
-                                                    rel="prev" aria-label="Previous">
-                                                    <i class="mdi mdi-chevron-left"></i>
-                                                </a>
-                                            </li>
-                                        @endif
-
-                                        {{-- Pagination Elements --}}
-                                        @foreach ($landBanks->getUrlRange(max(1, $landBanks->currentPage() - 2), min($landBanks->lastPage(), $landBanks->currentPage() + 2)) as $page => $url)
-                                            @if ($page == $landBanks->currentPage())
-                                                <li class="page-item active" aria-current="page">
-                                                    <span class="page-link">{{ $page }}</span>
-                                                </li>
-                                            @else
-                                                <li class="page-item">
-                                                    <a class="page-link"
-                                                        href="{{ $landBanks->appends(request()->query())->url($page) }}">{{ $page }}</a>
-                                                </li>
-                                            @endif
-                                        @endforeach
-
-                                        {{-- Next Page Link --}}
-                                        @if ($landBanks->hasMorePages())
-                                            <li class="page-item">
-                                                <a class="page-link"
-                                                    href="{{ $landBanks->appends(request()->query())->nextPageUrl() }}"
-                                                    rel="next" aria-label="Next">
-                                                    <i class="mdi mdi-chevron-right"></i>
-                                                </a>
-                                            </li>
-                                        @else
-                                            <li class="page-item disabled" aria-disabled="true">
-                                                <span class="page-link" aria-label="Next">
-                                                    <i class="mdi mdi-chevron-right"></i>
-                                                </span>
-                                            </li>
-                                        @endif
-                                    </ul>
-                                </nav>
+                                <div>
+                                    {{ $landBanks->appends(request()->query())->links('pagination::bootstrap-5') }}
+                                </div>
                             </div>
                         @endif
 
@@ -620,17 +697,6 @@
                                                                      <i class="mdi mdi-download m-0"></i>
                                                                  </a>
                                                              @endif
-                                                             @if(!$item->isFromPraLandbank() && $doc->status == 'rejected')
-                                                                 <button type="button" 
-                                                                     class="btn-outline-red px-2 py-1 ms-1 btn-revisi-trigger" 
-                                                                     data-doc-id="{{ $doc->id }}" 
-                                                                     data-doc-name="{{ $doc->documentType->name ?? 'Dokumen' }}"
-                                                                     data-doc-reason="{{ $doc->admin_notes ?? 'Tidak ada catatan khusus.' }}"
-                                                                     data-property-id="{{ $item->id }}"
-                                                                     title="Upload Revisi">
-                                                                     <i class="mdi mdi-upload m-0"></i>
-                                                                 </button>
-                                                             @endif
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -646,51 +712,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- UPLOAD REVISI FORM (COLLAPSED BY DEFAULT) -->
-                        <div class="card border-0 shadow-sm mb-4 d-none" id="revisionCard{{ $item->id }}">
-                            <div class="card-header bg-soft-danger fw-bold text-danger d-flex align-items-center justify-content-between p-3" style="border-radius: 12px 12px 0 0;">
-                                <span>
-                                    <i class="mdi mdi-cloud-upload-outline me-2"></i>
-                                    Form Upload Revisi Dokumen: <span id="revisionDocName{{ $item->id }}" class="text-dark"></span>
-                                </span>
-                                <button type="button" class="btn-close-revision" data-target="#revisionCard{{ $item->id }}" style="background: none; border: none; font-size: 1.5rem; color: #dc3545; cursor: pointer; font-weight: bold;">&times;</button>
-                            </div>
-                            <div class="card-body p-4">
-                                <form action="#" method="POST" enctype="multipart/form-data" id="revisionForm{{ $item->id }}">
-                                    @csrf
-                                    <!-- Hidden input for document ID -->
-                                    <input type="hidden" name="document_id" id="revisionDocId{{ $item->id }}">
-                                    
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3 text-start">
-                                            <label class="form-label fw-bold text-muted small mb-2 d-block" style="color: #9a55ff !important;">Nomor Dokumen Baru <span class="text-danger">*</span></label>
-                                            <input type="text" name="document_number" class="form-control" placeholder="Masukkan nomor dokumen baru" required style="border-radius: 10px; padding: 0.7rem 0.8rem; font-size: 0.85rem; border: 1px solid #e9ecef; width: 100%;">
-                                        </div>
-                                        <div class="col-md-6 mb-3 text-start">
-                                            <label class="form-label fw-bold text-muted small mb-2 d-block" style="color: #9a55ff !important;">Pilih File Baru (PDF/Gambar) <span class="text-danger">*</span></label>
-                                            <div class="properti-file-upload-modern">
-                                                <input type="file" name="file_dokumen" id="fileRevision{{ $item->id }}" class="properti-file-input-modern" accept=".pdf,.jpg,.jpeg,.png" required>
-                                                <label for="fileRevision{{ $item->id }}" class="properti-file-label-modern w-100">
-                                                    <div class="properti-file-info-modern">
-                                                        <i class="mdi mdi-cloud-upload-outline properti-file-icon-modern" style="font-size: 1.8rem;"></i>
-                                                        <span class="d-block mt-1">Pilih File Revisi</span>
-                                                        <small class="properti-file-size d-block text-muted mt-1"></small>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-end gap-2 mt-3">
-                                        <button type="button" class="btn btn-gradient-secondary btn-sm px-4 btn-close-revision" data-target="#revisionCard{{ $item->id }}" style="border-radius: 8px;">Batal</button>
-                                        <button type="submit" class="btn btn-gradient-primary btn-sm px-4" style="border-radius: 8px;">
-                                            <i class="mdi mdi-check-circle-outline me-1"></i>Kirim Revisi
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
                     </div>
                     <div class="modal-footer border-0">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
@@ -700,60 +721,480 @@
                 </div>
             </div>
         </div>
-    @endforeach
 
-    <!-- Modal Peringatan Profil Landbank Belum Lengkap -->
-    <div class="modal fade" id="modalProfileIncomplete" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
-                <div class="modal-body p-4 text-center">
-                    <!-- Icon Header -->
-                    <div class="d-inline-flex align-items-center justify-content-center mb-3" 
-                         style="width: 70px; height: 70px; border-radius: 50%; background: #fff7ed; color: #f97316; box-shadow: 0 4px 14px rgba(249, 115, 22, 0.15);">
-                        <i class="mdi mdi-alert-circle-outline" style="font-size: 38px;"></i>
+        <!-- MODAL DETAIL TANAH PASCA LAND BANK -->
+        <div class="modal fade" id="modalDetail{{ $item->id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
+                    <!-- Modal Header -->
+                    <div class="modal-header bg-white border-bottom py-3 px-4 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                                 style="width: 44px; height: 44px; background: rgba(154, 85, 255, 0.12); color: #9a55ff;">
+                                <i class="mdi mdi-domain" style="font-size: 1.5rem;"></i>
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <h5 class="modal-title fw-bold text-dark mb-0" style="font-size: 1.15rem;">
+                                        {{ $item->name }}
+                                    </h5>
+                                    <span class="badge-category">{{ $item->zoning ?? 'Tanah' }}</span>
+                                    @if ($item->isFromPraLandbank())
+                                        <span class="badge bg-soft-info text-info border border-info px-2 py-0.5" style="font-size: 0.7rem; border-radius: 4px;">Dari Pra-Landbank</span>
+                                    @endif
+                                </div>
+                                <small class="text-muted">
+                                    <i class="mdi mdi-office-building me-1"></i>{{ $item->companyProfile->name ?? 'Perusahaan Mitra Tidak Terdaftar' }}
+                                </small>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <h4 class="fw-bold text-dark mb-2" style="font-size: 1.25rem;">Profil Landbank Belum Lengkap</h4>
-                    <p class="text-muted mb-3" style="font-size: 0.9rem;">
-                        Data profil tanah untuk <strong class="text-dark" id="modalPropName">Properti</strong> belum dilengkapi.
-                    </p>
+                    <!-- Modal Body -->
+                    <div class="modal-body p-4" style="background: #f8fafc;">
 
-                    <!-- Box Daftar Yang Belum Lengkap -->
-                    <div class="text-start p-3 mb-3" style="background: #fff8eb; border-radius: 10px; border-left: 4px solid #f59e0b;">
-                        <div class="fw-bold text-dark mb-1" style="font-size: 0.82rem;">
-                            <i class="mdi mdi-information-outline me-1 text-warning"></i> Belum diisi / belum diunggah:
+                        <!-- Top Quick Stats (4 Cards) -->
+                        <div class="row g-3 mb-4">
+                            <!-- Luas Lahan -->
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="bg-white p-3 rounded-3 border h-100 shadow-sm">
+                                    <div class="d-flex align-items-center justify-content-between text-muted small mb-1">
+                                        <span class="fw-semibold">Luas Lahan</span>
+                                        <i class="mdi mdi-texture-box text-primary" style="font-size: 1.2rem;"></i>
+                                    </div>
+                                    <div class="fw-bold text-dark fs-5">
+                                        {{ number_format($item->area ?? 0, 0, ',', '.') }} <span class="fs-6 text-muted font-normal">m²</span>
+                                    </div>
+                                    <small class="text-muted" style="font-size: 0.75rem;">
+                                        Sisa: {{ number_format($item->remaining_area ?? 0, 0, ',', '.') }} m²
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Total Harga Beli -->
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="bg-white p-3 rounded-3 border h-100 shadow-sm">
+                                    <div class="d-flex align-items-center justify-content-between text-muted small mb-1">
+                                        <span class="fw-semibold">Harga Akuisisi</span>
+                                        <i class="mdi mdi-cash-multiple text-success" style="font-size: 1.2rem;"></i>
+                                    </div>
+                                    <div class="fw-bold text-success fs-5">
+                                        Rp {{ number_format($item->grand_total_acquisition_price, 0, ',', '.') }}
+                                    </div>
+                                    <small class="text-muted" style="font-size: 0.75rem;">
+                                        Tgl: {{ $item->acquisition_date ? \Carbon\Carbon::parse($item->acquisition_date)->locale('id')->translatedFormat('d M Y') : '-' }}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Status Legalitas -->
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="bg-white p-3 rounded-3 border h-100 shadow-sm">
+                                    <div class="d-flex align-items-center justify-content-between text-muted small mb-1">
+                                        <span class="fw-semibold">Legalitas</span>
+                                        <i class="mdi mdi-shield-check text-info" style="font-size: 1.2rem;"></i>
+                                    </div>
+                                    <div class="fw-bold text-dark fs-5">
+                                        @if ($item->isFromPraLandbank() || $item->legal_status === 'verified')
+                                            <span class="text-success"><i class="mdi mdi-check-circle me-1"></i>Terverifikasi</span>
+                                        @elseif($item->legal_status === 'rejected')
+                                            <span class="text-danger"><i class="mdi mdi-close-circle me-1"></i>Ditolak</span>
+                                        @else
+                                            <span class="text-warning"><i class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($item->legal_status ?? 'Pending') }}</span>
+                                        @endif
+                                    </div>
+                                    <small class="text-muted" style="font-size: 0.75rem;">
+                                        {{ $item->merged_documents->count() }} Dokumen Terlampir
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Status Pembangunan -->
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="bg-white p-3 rounded-3 border h-100 shadow-sm">
+                                    <div class="d-flex align-items-center justify-content-between text-muted small mb-1">
+                                        <span class="fw-semibold">Pembangunan Fisik</span>
+                                        <i class="mdi mdi-progress-wrench text-warning" style="font-size: 1.2rem;"></i>
+                                    </div>
+                                    <div class="fw-bold text-dark fs-5">
+                                        {{ (float) $item->overall_infrastructure_progress }}%
+                                    </div>
+                                    <small class="text-muted" style="font-size: 0.75rem;">
+                                        Status: {{ ucfirst($item->development_status ?? 'Belum Mulai') }}
+                                    </small>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-danger fw-semibold" style="font-size: 0.85rem;" id="modalPropMissing">
-                            -
+
+                        <!-- Detail Navigation Tabs -->
+                        <div class="card border-0 shadow-sm mb-0" style="border-radius: 10px; overflow: hidden;">
+                            <div class="card-header bg-white border-bottom p-0">
+                                <ul class="nav nav-tabs border-0 px-3 pt-2" id="detailTab{{ $item->id }}" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active fw-semibold py-2.5 px-3 border-0" 
+                                            id="info-tab-{{ $item->id }}" data-bs-toggle="tab" 
+                                            data-bs-target="#info-pane-{{ $item->id }}" type="button" role="tab">
+                                            <i class="mdi mdi-information-outline me-1 text-primary"></i> Data Tanah & Lokasi
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link fw-semibold py-2.5 px-3 border-0" 
+                                            id="legal-tab-{{ $item->id }}" data-bs-toggle="tab" 
+                                            data-bs-target="#legal-pane-{{ $item->id }}" type="button" role="tab">
+                                            <i class="mdi mdi-certificate-outline me-1 text-success"></i> Legalitas & Perizinan
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link fw-semibold py-2.5 px-3 border-0" 
+                                            id="docs-tab-{{ $item->id }}" data-bs-toggle="tab" 
+                                            data-bs-target="#docs-pane-{{ $item->id }}" type="button" role="tab">
+                                            <i class="mdi mdi-file-document-multiple-outline me-1 text-info"></i> Berkas Dokumen ({{ $item->merged_documents->count() }})
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link fw-semibold py-2.5 px-3 border-0" 
+                                            id="infra-tab-{{ $item->id }}" data-bs-toggle="tab" 
+                                            data-bs-target="#infra-pane-{{ $item->id }}" type="button" role="tab">
+                                            <i class="mdi mdi-road-variant me-1 text-warning"></i> Lahan & Akses
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="card-body p-4 bg-white">
+                                <div class="tab-content" id="detailTabContent{{ $item->id }}">
+                                    
+                                    <!-- TAB 1: DATA TANAH & LOKASI -->
+                                    <div class="tab-pane fade show active" id="info-pane-{{ $item->id }}" role="tabpanel">
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                                                    <i class="mdi mdi-map-marker-radius me-1 text-primary"></i> Alamat & Lokasi
+                                                </h6>
+                                                <table class="table table-sm table-borderless mb-0">
+                                                    <tr>
+                                                        <td class="text-muted" width="40%">Alamat Lengkap</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->address ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Desa / Kelurahan</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->village ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Kecamatan</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->district ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Kota / Kabupaten</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->city ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Provinsi</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->province ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Kode Pos</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->postal_code ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Koordinat Peta</td>
+                                                        <td class="fw-semibold text-dark">
+                                                            : @if(!empty($item->lat) && !empty($item->lng))
+                                                                <span>{{ $item->lat }}, {{ $item->lng }}</span>
+                                                                <a href="https://www.google.com/maps?q={{ $item->lat }},{{ $item->lng }}" target="_blank" class="btn btn-xs btn-outline-primary ms-2 py-0 px-2" style="font-size: 0.75rem;">
+                                                                    <i class="mdi mdi-open-in-new me-1"></i>Maps
+                                                                </a>
+                                                              @else
+                                                                <span class="text-muted">Belum diset</span>
+                                                              @endif
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                                                    <i class="mdi mdi-card-account-details-outline me-1 text-primary"></i> Identitas Kepemilikan & Fisik
+                                                </h6>
+                                                <table class="table table-sm table-borderless mb-0">
+                                                    <tr>
+                                                        <td class="text-muted" width="40%">Perusahaan Pengembang</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->companyProfile->name ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Status Kepemilikan</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->ownership_status ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Kategori Peruntukan</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->zoning ?? 'Tanah Properti' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Luas Total Lahan</td>
+                                                        <td class="fw-semibold text-dark">: {{ number_format($item->area ?? 0, 0, ',', '.') }} m²</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Sisa Luas Belum Terpakai</td>
+                                                        <td class="fw-semibold text-dark">: {{ number_format($item->remaining_area ?? 0, 0, ',', '.') }} m²</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Nilai / Harga Perolehan</td>
+                                                        <td class="fw-bold text-success">: Rp {{ number_format($item->grand_total_acquisition_price, 0, ',', '.') }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Tanggal Akuisisi</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->acquisition_date ? \Carbon\Carbon::parse($item->acquisition_date)->locale('id')->translatedFormat('d F Y') : '-' }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            @if($item->description)
+                                                <div class="col-12 mt-3">
+                                                    <div class="p-3 rounded-2 bg-light border">
+                                                        <small class="fw-bold text-muted d-block mb-1">Catatan / Deskripsi Tambahan:</small>
+                                                        <p class="mb-0 text-dark small" style="white-space: pre-line;">{{ $item->description }}</p>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <!-- TAB 2: LEGALITAS & PERIZINAN -->
+                                    <div class="tab-pane fade" id="legal-pane-{{ $item->id }}" role="tabpanel">
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                                                    <i class="mdi mdi-certificate me-1 text-success"></i> Sertifikat & Pajak
+                                                </h6>
+                                                <table class="table table-sm table-borderless mb-0">
+                                                    <tr>
+                                                        <td class="text-muted" width="40%">Nomor Sertifikat</td>
+                                                        <td class="fw-bold text-dark">: {{ $item->certificate_no ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Atas Nama Pemilik</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->certificate_owner ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Nomor IMB / PBG</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->imb_no ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Nomor Objek Pajak (PBB)</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->pbb_no ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Status Verifikasi Legal</td>
+                                                        <td>
+                                                            : @if ($item->isFromPraLandbank() || $item->legal_status === 'verified')
+                                                                <span class="badge bg-success">Terverifikasi Sah</span>
+                                                              @elseif($item->legal_status === 'rejected')
+                                                                <span class="badge bg-danger">Revisi / Ditolak</span>
+                                                              @else
+                                                                <span class="badge bg-warning text-dark">Dalam Proses</span>
+                                                             @endif
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                                                    <i class="mdi mdi-file-check-outline me-1 text-success"></i> Perizinan & Tahapan Pasca
+                                                </h6>
+                                                <table class="table table-sm table-borderless mb-0">
+                                                    <tr>
+                                                        <td class="text-muted" width="40%">Registrasi Desa</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->desa_reg_no ?? '-' }} {{ $item->desa_reg_date ? '(' . $item->desa_reg_date->format('d/m/Y') . ')' : '' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Pertimbangan Teknis (Pertek)</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->pertek_no ?? '-' }} {{ $item->pertek_date ? '(' . $item->pertek_date->format('d/m/Y') . ')' : '' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Peta Bidang BPN</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->peta_bidang_no ?? '-' }} {{ $item->peta_bidang_area ? '(' . number_format($item->peta_bidang_area, 0, ',', '.') . ' m²)' : '' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Kesesuaian Tata Ruang (PKKPR)</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->pkkpr_no ?? '-' }} {{ $item->pkkpr_status ? '[' . $item->pkkpr_status . ']' : '' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">SK Pemberian HGB</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->sk_hgb_no ?? '-' }} {{ $item->sk_hgb_date ? '(' . $item->sk_hgb_date->format('d/m/Y') . ')' : '' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">SHGB Induk Kawasan</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->shgb_induk_no ?? '-' }} {{ $item->shgb_induk_area ? '(' . number_format($item->shgb_induk_area, 0, ',', '.') . ' m²)' : '' }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- TAB 3: BERKAS DOKUMEN TERLAMPIR -->
+                                    <div class="tab-pane fade" id="docs-pane-{{ $item->id }}" role="tabpanel">
+                                        @if ($item->merged_documents->count() > 0)
+                                            <div class="table-responsive">
+                                                <table class="table table-hover align-middle mb-0">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th width="5%" class="text-center">No</th>
+                                                            <th width="30%">Nomor Dokumen</th>
+                                                            <th>Jenis / Nama Dokumen</th>
+                                                            <th width="15%" class="text-center">Status</th>
+                                                            <th width="12%" class="text-center">Aksi</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($item->merged_documents as $idx => $doc)
+                                                            <tr>
+                                                                <td class="text-center text-muted small">{{ $idx + 1 }}</td>
+                                                                <td class="fw-bold text-dark" style="font-size: 0.85rem;">{{ $doc->document_number ?? '-' }}</td>
+                                                                <td>
+                                                                    <div class="d-flex align-items-center gap-2">
+                                                                        <i class="mdi mdi-file-{{ $doc->type == 'sertifikat' ? 'certificate' : 'document' }}-outline text-primary fs-5"></i>
+                                                                        <span class="fw-semibold text-dark" style="font-size: 0.85rem;">{{ $doc->documentType->name ?? '-' }}</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    @if ($item->isFromPraLandbank() || $doc->status == 'verified')
+                                                                        <span class="badge rounded-pill bg-success px-2.5 py-1" style="font-size: 0.72rem;">
+                                                                            <i class="mdi mdi-check-circle me-1"></i>Terverifikasi
+                                                                        </span>
+                                                                    @elseif ($doc->status == 'pending')
+                                                                        <span class="badge rounded-pill bg-warning text-dark px-2.5 py-1" style="font-size: 0.72rem;">
+                                                                            <i class="mdi mdi-clock-outline me-1"></i>Pending
+                                                                        </span>
+                                                                    @elseif($doc->status == 'rejected')
+                                                                        <span class="badge rounded-pill bg-danger px-2.5 py-1" style="font-size: 0.72rem;">
+                                                                            <i class="mdi mdi-close-circle me-1"></i>Ditolak
+                                                                        </span>
+                                                                    @endif
+                                                                </td>
+                                                                <td class="text-center" style="white-space: nowrap;">
+                                                                    @if($doc->file_path)
+                                                                        @php
+                                                                            $docUrl = asset(str_starts_with($doc->file_path, 'uploads/') ? $doc->file_path : 'uploads/' . $doc->file_path);
+                                                                            $ext = pathinfo($doc->file_path, PATHINFO_EXTENSION);
+                                                                            $cleanDocName = str_replace(' ', '_', $doc->documentType->name ?? 'Dokumen');
+                                                                            $cleanPropName = str_replace(' ', '_', $item->name);
+                                                                            $dlName = $cleanDocName . '_' . $cleanPropName . '.' . $ext;
+                                                                        @endphp
+                                                                        <a href="{{ $docUrl }}" target="_blank" class="btn btn-xs btn-outline-primary px-2 py-1" title="Lihat Berkas">
+                                                                            <i class="mdi mdi-eye"></i>
+                                                                        </a>
+                                                                        <a href="{{ $docUrl }}" download="{{ $dlName }}" class="btn btn-xs btn-outline-success px-2 py-1 ms-1" title="Download Berkas">
+                                                                            <i class="mdi mdi-download"></i>
+                                                                        </a>
+                                                                    @else
+                                                                        <span class="text-muted small">-</span>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        @else
+                                            <div class="text-center text-muted py-5">
+                                                <i class="mdi mdi-file-document-outline" style="font-size: 2.8rem; opacity: 0.3;"></i>
+                                                <p class="mt-2 mb-0 small">Belum ada dokumen yang diunggah untuk properti ini.</p>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <!-- TAB 4: LAHAN & AKSES / FASILITAS -->
+                                    <div class="tab-pane fade" id="infra-pane-{{ $item->id }}" role="tabpanel">
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                                                    <i class="mdi mdi-road me-1 text-warning"></i> Akses Jalan & Kontur Tanah
+                                                </h6>
+                                                <table class="table table-sm table-borderless mb-0">
+                                                    <tr>
+                                                        <td class="text-muted" width="40%">Lebar Akses Jalan</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->road_width ? $item->road_width . ' Meter' : '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Tipe Perkerasan Jalan</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->road_type ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Elevasi Awal</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->elevasi_awal ? $item->elevasi_awal . ' m' : '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Elevasi Rencana</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->elevasi_rencana ? $item->elevasi_rencana . ' m' : '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Volume Cut (Galian)</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->volume_cut ? number_format($item->volume_cut, 0, ',', '.') . ' m³' : '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Volume Fill (Timbunan)</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->volume_fill ? number_format($item->volume_fill, 0, ',', '.') . ' m³' : '-' }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                                                    <i class="mdi mdi-storefront-outline me-1 text-warning"></i> Fasilitas Sekitar Lahan
+                                                </h6>
+                                                <table class="table table-sm table-borderless mb-0">
+                                                    <tr>
+                                                        <td class="text-muted" width="40%"><i class="mdi mdi-school-outline me-1 text-primary"></i> Sekolah / Pendidikan</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->facility_school ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted"><i class="mdi mdi-hospital-building me-1 text-danger"></i> Rumah Sakit / Faskes</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->facility_hospital ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted"><i class="mdi mdi-cart-outline me-1 text-success"></i> Mall / Pasar / Swalayan</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->facility_mall ?? '-' }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted"><i class="mdi mdi-bus me-1 text-info"></i> Akses Transportasi</td>
+                                                        <td class="fw-semibold text-dark">: {{ $item->facility_transport ?? '-' }}</td>
+                                                    </tr>
+                                                </table>
+
+                                                @if($item->denah)
+                                                    <div class="mt-4 pt-2 border-top">
+                                                        <span class="text-muted small d-block mb-1">Berkas Denah / Siteplan:</span>
+                                                        <a href="{{ asset(str_starts_with($item->denah, 'uploads/') ? $item->denah : 'uploads/' . $item->denah) }}" target="_blank" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+                                                            <i class="mdi mdi-floor-plan"></i> Buka Berkas Denah
+                                                        </a>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
+
                     </div>
 
-                    <p class="text-muted mb-4" style="font-size: 0.82rem;">
-                        Silakan lengkapi data profil tanah terlebih dahulu atau tetap lanjut ke proses pengolahan lahan fisik.
-                    </p>
-
-                    <!-- Tombol Aksi Rapi, Jelas & Berkontras Tinggi -->
-                    <div class="d-grid gap-2">
-                        <a href="#" id="btnModalEditProfile" class="btn btn-gradient-primary py-2.5 fw-bold d-flex align-items-center justify-content-center shadow-sm" style="border-radius: 10px; font-size: 0.9rem; text-decoration: none;">
-                            <i class="mdi mdi-pencil me-1.5 fs-5"></i> Lengkapi Profil Tanah Sekarang
-                        </a>
-                        <a href="#" id="btnModalContinueDev" class="btn btn-modal-continue-dev py-2.5 d-flex align-items-center justify-content-center" style="border-radius: 10px; font-size: 0.9rem;">
-                            <i class="mdi mdi-tools me-1.5 fs-5"></i> Tetap Lanjut Pengolahan Lahan
-                        </a>
-                        <button type="button" class="btn btn-modal-cancel py-2.5 d-flex align-items-center justify-content-center gap-1" data-bs-dismiss="modal" style="border-radius: 10px; font-size: 0.85rem;">
-                            <i class="mdi mdi-close-circle-outline"></i> Batal
+                    <!-- Modal Footer -->
+                    <div class="modal-footer bg-white border-top py-2.5 px-4 d-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal" style="border-radius: 6px;">
+                            <i class="mdi mdi-close me-1"></i>Tutup
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endforeach
 
 @endsection
 
 @push('scripts')
-
-
     <script>
 
         function showLoading(message = 'Memproses data...') {
@@ -785,6 +1226,19 @@
             $('#filterForm').submit();
         }
 
+        function applyLiveSearch(query) {
+            var filter = (query || '').toLowerCase().trim();
+            var rows = document.querySelectorAll('.project-table-row');
+            rows.forEach(function(row) {
+                var text = row.getAttribute('data-search') || row.innerText.toLowerCase();
+                if (!filter || text.indexOf(filter) > -1) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
         $(document).ready(function() {
             // Handle pagination clicks
             $('.page-click, .prev-next-btn').on('click', function(e) {
@@ -812,7 +1266,7 @@
             // Handle form submission for filter and search
             $('#filterForm').on('submit', function(e) {
                 // Get search values from both inputs
-                let searchDesktop = $('#searchInput').val();
+                let searchDesktop = $('#liveSearchInput').val() || $('#searchInput').val();
                 let searchMobile = $('#searchInputMobile').val();
 
                 // Use the non-empty search value
@@ -820,11 +1274,10 @@
 
                 // Set the search input value to the combined value
                 if (searchValue) {
-                    $('#searchInput').val(searchValue);
+                    $('#liveSearchInput').val(searchValue);
                     $('#searchInputMobile').val(searchValue);
                 } else {
-                    // If empty, remove the search parameter
-                    $('#searchInput').val('');
+                    $('#liveSearchInput').val('');
                     $('#searchInputMobile').val('');
                 }
 
@@ -841,12 +1294,12 @@
             });
 
             // Sync search inputs between desktop and mobile
-            $('#searchInput').on('input', function() {
+            $('#liveSearchInput, #searchInput').on('input', function() {
                 $('#searchInputMobile').val($(this).val());
             });
 
             $('#searchInputMobile').on('input', function() {
-                $('#searchInput').val($(this).val());
+                $('#liveSearchInput, #searchInput').val($(this).val());
             });
 
             // Initialize Select2 for desktop
@@ -898,71 +1351,6 @@
             // Handle verification button (shows loader instantly upon click)
             $('.btn-verifikasi').on('click', function(e) {
                 showLoading('Memverifikasi properti...');
-            });
-
-            // Trigger Revision Form
-            $('.btn-revisi-trigger').on('click', function() {
-                let docId = $(this).data('doc-id');
-                let docName = $(this).data('doc-name');
-                let propertyId = $(this).data('property-id');
-                
-                let card = $('#revisionCard' + propertyId);
-                $('#revisionDocId' + propertyId).val(docId);
-                $('#revisionDocName' + propertyId).text(docName);
-                
-                // Set form action dynamically
-                let formAction = "{{ route('dokumen.update', ':id') }}".replace(':id', docId);
-                $('#revisionForm' + propertyId).attr('action', formAction);
-                
-                // Show revision card
-                card.removeClass('d-none');
-                
-                // Smooth scroll to the form card inside modal body
-                let modalBody = $(this).closest('.modal-body');
-                modalBody.animate({
-                    scrollTop: card.offset().top - modalBody.offset().top + modalBody.scrollTop()
-                }, 500);
-            });
-
-            // Close/Batal Revision Form
-            $('.btn-close-revision').on('click', function() {
-                let target = $(this).data('target');
-                $(target).addClass('d-none');
-            });
-
-            // Handle file input preview for revision files
-            $('.properti-file-input-modern').on('change', function(e) {
-                const fileName = e.target.files[0]?.name;
-                const fileSize = e.target.files[0]?.size;
-                const label = $(this).next('.properti-file-label-modern').find('.properti-file-info-modern span');
-                const sizeSpan = $(this).next('.properti-file-label-modern').find('.properti-file-info-modern .properti-file-size');
-
-                if (fileName) {
-                    label.text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
-                    if (fileSize) {
-                        const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                        sizeSpan.text(sizeInMB + ' MB');
-                    }
-                } else {
-                    label.text('Pilih File Revisi');
-                    sizeSpan.text('');
-                }
-            });
-
-            // Handle Alert Peringatan Profil Land Bank Belum Lengkap via Bootstrap Modal
-            $(document).on('click', '.btn-pengolahan-alert', function(e) {
-                e.preventDefault();
-                const name = $(this).data('name') || 'Properti';
-                const url = $(this).data('url');
-                const editUrl = $(this).data('edit-url');
-                const missing = $(this).data('missing') || 'Berkas profil penting';
-
-                $('#modalPropName').text(name);
-                $('#modalPropMissing').text(missing);
-                $('#btnModalEditProfile').attr('href', editUrl);
-                $('#btnModalContinueDev').attr('href', url);
-
-                $('#modalProfileIncomplete').modal('show');
             });
 
             // Handle session flash messages with beautiful SweetAlert
