@@ -298,17 +298,18 @@
     <!-- Header Judul Halaman -->
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
         <div>
-            <div class="d-flex align-items-center gap-2 mb-1">
-                <h2 class="text-dark mb-0 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
-                    Master Biaya Legalitas, Pajak & Administrasi
-                </h2>
-                <span class="badge px-2 py-1" style="background: rgba(124, 58, 237, 0.1); color: #7c3aed; font-size: 11px; font-weight: 700; border-radius: 4px;">
-                    Transaksi Tanah & Land Bank
-                </span>
-            </div>
+            <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                Master Biaya Legalitas, Pajak & Administrasi
+            </h2>
             <p class="text-muted mb-0" style="font-size: 0.88rem;">
                 Katalog acuan tarif baku IJB/PPJB Notaris, Estimasi Pajak PPh/BPHTB, Fee Makelar, Kompensasi Desa, hingga biaya operasional tanah.
             </p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ route('pralandbank.all') }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-none" style="border-radius: 5px; font-size: 0.84rem; font-weight: 500; background: #ffffff;">
+                <i class="mdi mdi-arrow-left" style="font-size: 0.95rem;"></i>
+                <span>Kembali ke Pra Land Bank</span>
+            </a>
         </div>
     </div>
 
@@ -402,11 +403,7 @@
                         </span>
                     </div>
 
-                    <div class="d-flex align-items-center gap-2">
-                        <a href="{{ route('pralandbank.all') }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 shadow-none" style="border-radius: 5px; font-size: 0.84rem; font-weight: 500; background: #ffffff;">
-                            <i class="mdi mdi-arrow-left" style="font-size: 0.95rem;"></i>
-                            <span>Kembali ke Pra Land Bank</span>
-                        </a>
+                    <div>
                         <button type="button" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 fw-semibold shadow-sm" style="border-radius: 5px; font-size: 0.84rem;" onclick="openModal('tambah')">
                             <i class="mdi mdi-plus-circle-outline fs-6" style="margin-right: 2px !important;"></i>
                             <span>Tambah Komponen Biaya</span>
