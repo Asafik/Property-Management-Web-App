@@ -578,34 +578,33 @@
                                                 <div class="fw-bold text-dark font-monospace" style="font-size: 0.88rem; letter-spacing: -0.01em;">
                                                     Rp {{ number_format($item->nominal_standar ?? 0, 0, ',', '.') }}
                                                 </div>
-                                                <div class="text-muted mt-0.5" style="font-size: 0.74rem;">
-                                                    Tarif Baku Tetap
+                                                <div class="text-muted" style="font-size: 0.73rem; line-height: 1.3;">
+                                                    Tarif Tetap Baku
                                                 </div>
                                             @elseif($item->tipe_perhitungan === 'persentase')
-                                                <div class="fw-bold font-monospace" style="font-size: 0.88rem; color: #4338ca; letter-spacing: -0.01em;">
-                                                    {{ number_format($item->persentase_standar, 2, ',', '.') }}%
-                                                    <span class="text-muted fw-normal font-sans-serif" style="font-size: 0.75rem;">dari Nilai Deal</span>
+                                                <div class="fw-bold text-dark" style="font-size: 0.88rem;">
+                                                    {{ $item->persentase_standar }}% <span class="fw-normal text-muted" style="font-size: 0.75rem;">dari Deal</span>
                                                 </div>
                                                 @if($item->nominal_standar)
-                                                    <div class="text-muted mt-0.5" style="font-size: 0.74rem;">
-                                                        Est. Acuan: Rp {{ number_format($item->nominal_standar, 0, ',', '.') }}
+                                                    <div class="text-muted font-monospace" style="font-size: 0.73rem; line-height: 1.3;">
+                                                        Est: Rp {{ number_format($item->nominal_standar, 0, ',', '.') }}
                                                     </div>
                                                 @else
-                                                    <div class="text-muted mt-0.5" style="font-size: 0.74rem;">
-                                                        Formula Proporsional Deal
+                                                    <div class="text-muted" style="font-size: 0.73rem; line-height: 1.3;">
+                                                        Formula Persentase
                                                     </div>
                                                 @endif
                                             @else
-                                                <div class="fw-semibold" style="font-size: 0.86rem; color: #334155;">
-                                                    Fleksibel / Sesuai Realisasi
+                                                <div class="fw-bold text-dark" style="font-size: 0.88rem;">
+                                                    Fleksibel
                                                 </div>
                                                 @if($item->nominal_standar)
-                                                    <div class="text-muted mt-0.5 font-monospace" style="font-size: 0.74rem;">
+                                                    <div class="text-muted font-monospace" style="font-size: 0.73rem; line-height: 1.3;">
                                                         Acuan: Rp {{ number_format($item->nominal_standar, 0, ',', '.') }}
                                                     </div>
                                                 @else
-                                                    <div class="text-muted mt-0.5" style="font-size: 0.74rem;">
-                                                        Input Bebas saat Transaksi
+                                                    <div class="text-muted" style="font-size: 0.73rem; line-height: 1.3;">
+                                                        Input bebas di form
                                                     </div>
                                                 @endif
                                             @endif
