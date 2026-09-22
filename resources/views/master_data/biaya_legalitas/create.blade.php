@@ -69,14 +69,42 @@
             color: #0f172a;
             border-color: #94a3b8;
         }
+        /* Setting Option Cards (High Visibility) */
+        .setting-option-card {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 1rem 1.15rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            height: 100%;
+        }
+        .setting-option-card:hover {
+            border-color: #7c3aed;
+            background: #faf5ff;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
+        }
+        .custom-checkbox-prominent {
+            width: 20px !important;
+            height: 20px !important;
+            min-width: 20px !important;
+            border: 2px solid #64748b !important;
+            border-radius: 4px !important;
+            accent-color: #7c3aed;
+            cursor: pointer;
+            margin-right: 8px;
+        }
         .custom-switch-clean .form-check-input {
             cursor: pointer;
-            width: 38px;
-            height: 20px;
+            width: 40px !important;
+            height: 22px !important;
+            min-width: 40px !important;
+            margin-right: 8px;
+            border: 1.5px solid #cbd5e1;
         }
         .custom-switch-clean .form-check-input:checked {
-            background-color: #10b981;
-            border-color: #10b981;
+            background-color: #10b981 !important;
+            border-color: #10b981 !important;
         }
     </style>
 @endpush
@@ -263,40 +291,66 @@
                                     placeholder="Catatan aturan hukum, peruntukan biaya, atau keterangan detail lainnya...">{{ old('deskripsi', $biaya->deskripsi ?? '') }}</textarea>
                             </div>
 
-                            <!-- Pengaturan Sifat & Status -->
+                            <!-- Pengaturan Sifat & Status (High Visibility Option Cards) -->
                             <div class="col-12">
-                                <div class="p-3 border" style="background: #f8fafc; border-radius: 6px; border-color: #e2e8f0 !important;">
-                                    <div class="row g-3">
-                                        <div class="col-sm-4">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="is_standard" id="is_standard" value="1"
+                                <label class="form-label-custom mb-2">
+                                    Pengaturan Sifat & Status Komponen
+                                </label>
+                                <div class="row g-3">
+                                    <!-- Opsi 1: Komponen Baku Form -->
+                                    <div class="col-md-4">
+                                        <div class="setting-option-card" onclick="document.getElementById('is_standard').click()">
+                                            <div class="d-flex align-items-start">
+                                                <input class="custom-checkbox-prominent mt-1" type="checkbox" name="is_standard" id="is_standard" value="1"
                                                     {{ old('is_standard', $biaya->is_standard ?? false) ? 'checked' : '' }}
-                                                    style="cursor: pointer; width: 18px; height: 18px; margin-top: 0.15rem;">
-                                                <label class="form-check-label fw-semibold text-dark ms-1" for="is_standard" style="font-size: 0.84rem; cursor: pointer;">
-                                                    Komponen Baku Form
-                                                </label>
-                                                <small class="text-muted d-block ms-1" style="font-size: 0.74rem;">Muncul otomatis sebagai baris standar di form</small>
+                                                    onclick="event.stopPropagation()">
+                                                <div>
+                                                    <label class="fw-bold text-dark mb-0 d-block" for="is_standard" style="font-size: 0.88rem; cursor: pointer;">
+                                                        Komponen Baku Form
+                                                    </label>
+                                                    <small class="text-muted d-block mt-1" style="font-size: 0.76rem; line-height: 1.35;">
+                                                        Otomatis tampil sebagai baris default di form transaksi tanah
+                                                    </small>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-4">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="is_required" id="is_required" value="1"
+                                    </div>
+
+                                    <!-- Opsi 2: Wajib Diisi (Required) -->
+                                    <div class="col-md-4">
+                                        <div class="setting-option-card" onclick="document.getElementById('is_required').click()">
+                                            <div class="d-flex align-items-start">
+                                                <input class="custom-checkbox-prominent mt-1" type="checkbox" name="is_required" id="is_required" value="1"
                                                     {{ old('is_required', $biaya->is_required ?? false) ? 'checked' : '' }}
-                                                    style="cursor: pointer; width: 18px; height: 18px; margin-top: 0.15rem;">
-                                                <label class="form-check-label fw-semibold text-dark ms-1" for="is_required" style="font-size: 0.84rem; cursor: pointer;">
-                                                    Wajib Diisi (Required)
-                                                </label>
-                                                <small class="text-muted d-block ms-1" style="font-size: 0.74rem;">Form transaksi wajib melengkapi nilai biaya ini</small>
+                                                    onclick="event.stopPropagation()">
+                                                <div>
+                                                    <label class="fw-bold text-dark mb-0 d-block" for="is_required" style="font-size: 0.88rem; cursor: pointer;">
+                                                        Wajib Diisi (Required)
+                                                    </label>
+                                                    <small class="text-muted d-block mt-1" style="font-size: 0.76rem; line-height: 1.35;">
+                                                        Form transaksi wajib melengkapi nilai nominal biaya ini
+                                                    </small>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-4">
-                                            <div class="form-check form-switch custom-switch-clean">
-                                                <input class="form-check-input" type="checkbox" name="is_active" id="is_active" value="1"
-                                                    {{ old('is_active', $biaya->is_active ?? true) ? 'checked' : '' }}>
-                                                <label class="form-check-label fw-semibold text-success ms-1" for="is_active" style="font-size: 0.84rem; cursor: pointer;">
-                                                    Status Aktif
-                                                </label>
-                                                <small class="text-muted d-block ms-1" style="font-size: 0.74rem;">Dapat dipilih & digunakan pada transaksi</small>
+                                    </div>
+
+                                    <!-- Opsi 3: Status Aktif -->
+                                    <div class="col-md-4">
+                                        <div class="setting-option-card" onclick="document.getElementById('is_active').click()">
+                                            <div class="d-flex align-items-start">
+                                                <div class="form-check form-switch custom-switch-clean m-0 p-0" onclick="event.stopPropagation()">
+                                                    <input class="form-check-input mt-1" type="checkbox" name="is_active" id="is_active" value="1"
+                                                        {{ old('is_active', $biaya->is_active ?? true) ? 'checked' : '' }}>
+                                                </div>
+                                                <div>
+                                                    <label class="fw-bold text-success mb-0 d-block" for="is_active" style="font-size: 0.88rem; cursor: pointer;">
+                                                        Status Aktif
+                                                    </label>
+                                                    <small class="text-muted d-block mt-1" style="font-size: 0.76rem; line-height: 1.35;">
+                                                        Dapat dipilih & dihitung pada modul transaksi tanah
+                                                    </small>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
