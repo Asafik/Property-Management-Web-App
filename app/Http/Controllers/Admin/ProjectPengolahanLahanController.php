@@ -89,7 +89,7 @@ class ProjectPengolahanLahanController extends Controller
                     $landBank = LandBank::where('name', $pra->land_name)->first();
                 }
                 if (!$landBank) {
-                    $companyId = $pra->company_profile_id ?? (CompanyProfile::first()->id ?? 1);
+                    $companyId = $pra->company_profile_id ?? (CompanyProfile::first()->id ?? null);
                     $landBank = LandBank::create([
                         'name'               => $pra->land_name,
                         'company_profile_id' => $companyId,

@@ -9,6 +9,7 @@ class PraLandbank extends Model
     protected $fillable = [
         'land_name',
         'area',
+        'field_area',
         'offer_price',
         'estimated_price',
         'deal_price',
@@ -33,7 +34,6 @@ class PraLandbank extends Model
         'survey_notes',
         'zoning',
         'road_width',
-        'road_type',
         'legal_status',
         'legal_issue_note',
         'permit_difficulty',

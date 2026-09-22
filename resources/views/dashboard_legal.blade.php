@@ -774,7 +774,7 @@
                     </div>
                     <div class="card-body p-3">
                         <p class="text-muted mb-3" style="font-size: 0.8rem; line-height: 1.45;">
-                            Pastikan berkas-berkas berikut telah diunggah dan terverifikasi sebelum diajukan ke sidang keputusan Kepala Legal:
+                            Pastikan berkas-berkas berikut telah diunggah dan terverifikasi sebelum diajukan ke sidang keputusan:
                         </p>
                         <div class="d-flex flex-column gap-2 mb-3">
                             @forelse($documentTypes as $index => $docType)
@@ -827,7 +827,7 @@
                 <div class="card shadow-sm border-0 h-100" style="border-radius: 8px;">
                     <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f; font-size: 0.95rem;">
-                            Antrean Validasi Berkas Legalitas (Kepala Legal)
+                            Antrean Validasi Berkas Legalitas (Admin)
                         </h5>
                         <span class="badge bg-danger text-white px-2 py-1" style="font-size: 0.72rem;">
                             {{ $totalPendingDocs }} Dokumen Menunggu
@@ -891,7 +891,7 @@
                                                 </div>
                                             </td>
                                             <td class="text-center">
-                                                <a href="{{ route('pra-landbank.proses', $land->id) }}?step=2" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center justify-content-center text-center px-3 py-1.5 fw-semibold" style="font-size: 0.78rem; white-space: nowrap;">
+                                                <a href="{{ route('pra-landbank.proses', $land->id) }}?step=1" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center justify-content-center text-center px-3 py-1.5 fw-semibold" style="font-size: 0.78rem; white-space: nowrap;">
                                                     Validasi ({{ $pendingDocs->count() }} Berkas)
                                                 </a>
                                             </td>
