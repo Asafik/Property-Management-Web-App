@@ -238,11 +238,11 @@
         </div>
     </div>
 
-    <!-- 4 KPI Metrics Card Grid (Sama Persis Perizinan) -->
+    <!-- 4 KPI Metrics Card Grid (Sama Persis Perizinan - Interaktif per Fase) -->
     <div class="dash-kpi-grid mb-4">
         
         <!-- Card 1: Total Pra Tanah (Ungu) -->
-        <div class="dash-kpi-card">
+        <div class="dash-kpi-card" onclick="window.location.href='{{ route('pralandbank.all') }}'" style="cursor: pointer; {{ empty($currentFase) ? 'border: 2px solid #6366f1 !important; background: #fdfcff;' : '' }}" title="Klik untuk melihat semua data pra tanah">
             <div class="dash-kpi-left">
                 <div class="dash-kpi-icon purple">
                     <i class="mdi mdi-hand-holding-usd"></i>
@@ -259,13 +259,13 @@
         </div>
 
         <!-- Card 2: Fase 1: Survei & Legal (Biru) -->
-        <div class="dash-kpi-card">
+        <div class="dash-kpi-card" onclick="window.location.href='{{ route('pralandbank.fase1') }}'" style="cursor: pointer; {{ ($currentFase === 'fase1' || $currentFase === '1') ? 'border: 2px solid #0284c7 !important; background: #f0f9ff;' : '' }}" title="Klik untuk filter Fase 1: Legalitas & Berkas">
             <div class="dash-kpi-left">
                 <div class="dash-kpi-icon blue">
                     <i class="mdi mdi-clipboard-text-search-outline"></i>
                 </div>
                 <div class="dash-kpi-info">
-                    <div class="dash-kpi-label">Fase 1: Survei & Legal</div>
+                    <div class="dash-kpi-label">Fase 1: Legalitas</div>
                     <div class="dash-kpi-val">{{ $totalFase1 ?? 0 }}</div>
                     <div class="dash-kpi-sub">Pemeriksaan Awal & Berkas</div>
                 </div>
@@ -275,16 +275,16 @@
             </div>
         </div>
 
-        <!-- Card 3: Fase 2: Negosiasi (Kuning / Amber) -->
-        <div class="dash-kpi-card">
+        <!-- Card 3: Fase 2: Survey & Teknis (Kuning / Amber) -->
+        <div class="dash-kpi-card" onclick="window.location.href='{{ route('pralandbank.fase2') }}'" style="cursor: pointer; {{ ($currentFase === 'fase2' || $currentFase === '2') ? 'border: 2px solid #f59e0b !important; background: #fffbeb;' : '' }}" title="Klik untuk filter Fase 2: Survey & Teknis">
             <div class="dash-kpi-left">
                 <div class="dash-kpi-icon amber">
                     <i class="mdi mdi-handshake-outline"></i>
                 </div>
                 <div class="dash-kpi-info">
-                    <div class="dash-kpi-label">Fase 2: Negosiasi</div>
+                    <div class="dash-kpi-label">Fase 2: Survey & Teknis</div>
                     <div class="dash-kpi-val">{{ $totalFase2 ?? 0 }}</div>
-                    <div class="dash-kpi-sub">Penawaran & Kesepakatan</div>
+                    <div class="dash-kpi-sub">Penawaran & Kelayakan</div>
                 </div>
             </div>
             <div class="dash-kpi-action amber">
@@ -293,7 +293,7 @@
         </div>
 
         <!-- Card 4: Fase 3: Sidang & Deal (Hijau) -->
-        <div class="dash-kpi-card">
+        <div class="dash-kpi-card" onclick="window.location.href='{{ route('pralandbank.fase3') }}'" style="cursor: pointer; {{ ($currentFase === 'fase3' || $currentFase === '3') ? 'border: 2px solid #10b981 !important; background: #f0fdf4;' : '' }}" title="Klik untuk filter Fase 3: Sidang & Deal">
             <div class="dash-kpi-left">
                 <div class="dash-kpi-icon green">
                     <i class="mdi mdi-check-decagram-outline"></i>
@@ -301,7 +301,7 @@
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Fase 3: Sidang & Deal</div>
                     <div class="dash-kpi-val">{{ $totalFase3 ?? 0 }}</div>
-                    <div class="dash-kpi-sub">Disetujui / Deal Pembayaran</div>
+                    <div class="dash-kpi-sub">Disetujui / Deal Transaksi</div>
                 </div>
             </div>
             <div class="dash-kpi-action green">
@@ -319,7 +319,16 @@
                 <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3 border-bottom">
                     <div>
                         <h5 class="card-title mb-0" style="font-weight: 700; color: #1e293b; font-size: 1.05rem;">
-                            <i class="mdi mdi-format-list-bulleted me-2" style="color: #6366f1;"></i>Daftar Pra Tanah
+                            <i class="mdi mdi-format-list-bulleted me-2" style="color: #6366f1;"></i>
+                            @if($currentFase === 'fase1' || $currentFase === '1')
+                                Daftar Pra Tanah &mdash; <span class="text-primary font-weight-bold">Fase 1: Legalitas & Berkas</span>
+                            @elseif($currentFase === 'fase2' || $currentFase === '2')
+                                Daftar Pra Tanah &mdash; <span class="text-warning font-weight-bold">Fase 2: Survey & Kelayakan</span>
+                            @elseif($currentFase === 'fase3' || $currentFase === '3')
+                                Daftar Pra Tanah &mdash; <span class="text-success font-weight-bold">Fase 3: Sidang & Deal</span>
+                            @else
+                                Daftar Pra Tanah (Semua Data)
+                            @endif
                         </h5>
                     </div>
                     @if(!$isKeuangan || $isAdmin)

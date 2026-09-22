@@ -638,9 +638,39 @@ public function store(Request $request)
         return view('cetak.invoice_pra_land_bank', compact('land', 'invoice', 'invoiceNumber'));
     }
 
+    public function fase1(Request $request)
+    {
+        $request->merge(['fase' => 'fase1']);
+        return $this->indexpra($request);
+    }
+
+    public function fase2(Request $request)
+    {
+        $request->merge(['fase' => 'fase2']);
+        return $this->indexpra($request);
+    }
+
+    public function fase3(Request $request)
+    {
+        $request->merge(['fase' => 'fase3']);
+        return $this->indexpra($request);
+    }
+
     public function indexpra(Request $request)
     {
         $query = PraLandbank::with(['payments', 'documents.documentType']);
+
+        // Filter: fase (fase1, fase2, fase3)
+        $currentFase = $request->get('fase');
+        if (!empty($currentFase)) {
+            if ($currentFase === '1' || $currentFase === 'fase1') {
+                $query->where('status', 'fase1');
+            } elseif ($currentFase === '2' || $currentFase === 'fase2') {
+                $query->where('status', 'fase2');
+            } elseif ($currentFase === '3' || $currentFase === 'fase3') {
+                $query->whereIn('status', ['fase3', 'approved']);
+            }
+        }
 
         // Search: nama tanah
         if ($request->filled('search')) {
@@ -708,7 +738,8 @@ public function store(Request $request)
             'totalPraTanah',
             'totalFase1',
             'totalFase2',
-            'totalFase3'
+            'totalFase3',
+            'currentFase'
         ));
     }
     public function proses(Request $request, $id = null)

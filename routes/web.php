@@ -207,6 +207,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/all-properti', [PropertyController::class, 'index'])->name('properti-all');
     Route::get('/properti/all', [PropertyController::class, 'index'])->name('properti.all');
     Route::get('/all-pra-landbank', [PraLandBankController::class, 'indexpra'])->name('pralandbank.all');
+    Route::get('/all-pra-landbank/fase-1', [PraLandBankController::class, 'fase1'])->name('pralandbank.fase1');
+    Route::get('/all-pra-landbank/fase-2', [PraLandBankController::class, 'fase2'])->name('pralandbank.fase2');
+    Route::get('/all-pra-landbank/fase-3', [PraLandBankController::class, 'fase3'])->name('pralandbank.fase3');
     Route::get('/properti/pra-landbank/proses/{id?}', [PraLandBankController::class, 'proses'])->name('pra-landbank.proses');
     Route::get('/properti/pra-landbank/invoice/{id}', [PraLandBankController::class, 'invoice'])->name('pra-landbank.invoice');
     // tambah properti

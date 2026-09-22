@@ -48,9 +48,13 @@
             // Marketing
             'marketing.jual-unit' => 'mdi-view-grid-outline',
             'marketing.list_pengajuan' => 'mdi-book-check-outline',
-            // Tanah Induk / Land Bank
-            'pralandbank.all' => 'mdi-map-clock-outline',
-            'properti-all' => 'mdi-domain',
+            // Pra Land Bank
+            'pralandbank.all' => 'mdi-format-list-bulleted',
+            'pralandbank.fase1' => 'mdi-file-document-check-outline',
+            'pralandbank.fase2' => 'mdi-map-marker-radius-outline',
+            'pralandbank.fase3' => 'mdi-gavel',
+            // Pasca Land Bank
+            'properti-all' => 'mdi-home-analytics',
             'kavling.index' => 'mdi-plus-box-multiple-outline',
             'lokasi.index' => 'mdi-map-marker-outline',
             // User
@@ -117,7 +121,10 @@
             'finance.kpr-disbursement.index' => ['finance.kpr-disbursement.*'],
             'keuangan.master-invoice.index' => ['keuangan.master-invoice.*'],
             'marketing.commission-rules.index' => ['marketing.commission-rules.*'],
-            'pralandbank.all' => ['pralandbank.all', 'pra-landbank*', 'properti.pra-landbank*'],
+            'pralandbank.all' => ['pralandbank.all'],
+            'pralandbank.fase1' => ['pralandbank.fase1'],
+            'pralandbank.fase2' => ['pralandbank.fase2'],
+            'pralandbank.fase3' => ['pralandbank.fase3'],
             'properti-all' => ['properti-all', 'properti', 'properti.tambah', 'properti.store', 'properti.edit', 'properti.update', 'properti.verifikasi', 'properti.revisi', 'properti.updateCompany', 'properti.pengolahanLahan*', 'properti.pengolahan-lahan*'],
             'kavling.index' => ['kavling.index', 'properti.buatKavling*', 'properti.storeKavling', 'kavling.*', 'properti.kavling.*'],
             'lokasi.index' => ['lokasi.index', 'lokasi.*'],
@@ -158,7 +165,9 @@
         $menuSortWeight = [
             'Dashboard'               => 1,
             
-            // Kelompok Legalitas & Land Bank (Di Atas)
+            // Kelompok Legal
+            'Pra Land Bank'           => 2,
+            'Pasca Land Bank'         => 2.5,
             'Tanah Induk (Land Bank)' => 2,
             'Tanah Induk'             => 2,
             'Document'                => 3,
@@ -197,6 +206,8 @@
             'Dashboard'               => 'Menu Utama',
 
             // Legal
+            'Pra Land Bank'           => 'Legal',
+            'Pasca Land Bank'         => 'Legal',
             'Tanah Induk (Land Bank)' => 'Legal',
             'Tanah Induk'             => 'Legal',
             'Document'                => 'Legal',
