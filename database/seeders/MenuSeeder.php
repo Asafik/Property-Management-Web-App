@@ -129,14 +129,22 @@ class MenuSeeder extends Seeder
         ]);
         $legalUnitMenu->positions()->attach($legalRoles);
 
-        // ================= 5. PENGOLAHAN LAHAN & UNIT =================
+        // ================= 5. PROYEK, PENGOLAHAN LAHAN & UNIT =================
+        $proyekMasterMenu = Menu::create([
+            'name'  => 'Proyek',
+            'route' => 'proyek.index',
+            'icon'  => 'mdi-city-variant-outline',
+            'order' => 4.8
+        ]);
+        $proyekMasterMenu->positions()->attach($adminOnly);
+
         $proyekMenu = Menu::create([
             'name'  => 'Pengolahan Lahan',
             'route' => 'proyek.pengolahan-lahan.index',
             'icon'  => 'mdi-hard-hat',
             'order' => 5
         ]);
-        $proyekMenu->positions()->attach($allRoles);
+        $proyekMenu->positions()->attach($adminOnly);
 
         $unitMenu = Menu::create([
             'name'  => 'Unit',
@@ -144,7 +152,7 @@ class MenuSeeder extends Seeder
             'icon'  => 'mdi-home-city-outline',
             'order' => 6
         ]);
-        $unitMenu->positions()->attach($allRoles);
+        $unitMenu->positions()->attach($adminOnly);
 
         // ================= 7. MARKETING =================
         $marketingMenu = Menu::create([
