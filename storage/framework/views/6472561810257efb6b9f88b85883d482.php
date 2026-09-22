@@ -85,12 +85,17 @@
             'rab.deadline.index' => 'mdi-calendar-clock',
             'master.data.division.index' => 'mdi-domain-plus',
             'master.data.posisi' => 'mdi-badge-account-outline',
+            'master.biaya-legalitas.index' => 'mdi-cash-multiple',
             // Keuangan
             'keuangan.project-accounting.index' => 'mdi-finance',
+            'keuangan.pembayaran.index' => 'mdi-cash-multiple',
             'keuangan.master-invoice.index' => 'mdi-receipt-text-outline',
             'marketing.commission-rules.index' => 'mdi-cash-cog',
-            // Perizinan
+            // Perizinan & Tugas Staf
+            'perizinan.tugas.index' => 'mdi-clipboard-account-outline',
             'perizinan.index' => 'mdi-file-certificate-outline',
+            // Legal Unit
+            'legal.unit.index' => 'mdi-home-city-outline',
             // Proyek
             'proyek.pengolahan-lahan.index' => 'mdi-hard-hat',
             'proyek.unit.index' => 'mdi-home-city-outline',
@@ -101,10 +106,14 @@
         // 5. Mapping Pola Route Aktif (agar saat buka sub-halaman/action, menu terkait tetap AKTIF / HIGHLIGHT)
         $routeActivePatterns = [
             'dashboard' => ['dashboard', 'dashboard.*'],
-            'perizinan.index' => ['perizinan*'],
+            'perizinan.tugas.index' => ['perizinan.tugas.*', 'perizinan-tugas*'],
+            'perizinan.index' => ['perizinan.index', 'perizinan.show', 'perizinan.cards', 'perizinan.project'],
+            'legal.unit.index' => ['legal.unit.*', 'legal-unit*'],
             'proyek.pengolahan-lahan.index' => ['proyek.pengolahan-lahan.*'],
             'proyek.unit.index' => ['proyek.unit.*'],
+            'master.biaya-legalitas.index' => ['master.biaya-legalitas.*'],
             'keuangan.project-accounting.index' => ['keuangan.project-accounting.*'],
+            'keuangan.pembayaran.index' => ['keuangan.pembayaran.*'],
             'finance.kpr-disbursement.index' => ['finance.kpr-disbursement.*'],
             'keuangan.master-invoice.index' => ['keuangan.master-invoice.*'],
             'marketing.commission-rules.index' => ['marketing.commission-rules.*'],
@@ -150,6 +159,8 @@
             'Dashboard'               => 1,
             
             // Kelompok Legalitas & Perizinan
+            'Tugas Perizinan'         => 1.8,
+            'Pembagian Tugas'         => 1.8,
             'Perizinan'               => 2,
             'Tanah Induk (Land Bank)' => 3,
             'Tanah Induk'             => 3,
@@ -182,6 +193,8 @@
             'Dashboard'               => 'Menu Utama',
 
             // Legal
+            'Tugas Perizinan'         => 'Legal',
+            'Pembagian Tugas'         => 'Legal',
             'Perizinan'               => 'Legal',
             'Tanah Induk (Land Bank)' => 'Legal',
             'Tanah Induk'             => 'Legal',
@@ -212,6 +225,12 @@
 
         // Pastikan urutan menu selalu rapi sesuai kelompok domain
         $mainMenus = $mainMenus->sortBy(function($m) use ($menuSortWeight) {
+            if ($m->route === 'perizinan.tugas.index') {
+                return 1.8;
+            }
+            if ($m->route === 'legal.unit.index') {
+                return 4.5;
+            }
             return $menuSortWeight[$m->name] ?? $m->order ?? 99;
         });
 
@@ -261,13 +280,21 @@
                 if ($mainDisplayName === 'Tanah Induk (Land Bank)') {
                     $mainDisplayName = 'Tanah Induk';
                 }
-                $mainIcon = $main->icon;
-                if ($main->icon === 'mdi-file-document-box-multiple-outline' || empty($main->icon)) {
+                $mainIcon = $iconMap[$main->route] ?? $main->icon;
+                if ($mainIcon === 'mdi-file-document-box-multiple-outline' || empty($mainIcon)) {
                     $mainIcon = ($mainDisplayName === 'Dokumen') ? 'mdi-file-document-multiple-outline' : ($main->icon ?: 'mdi-folder-outline');
                 }
 
                 // Label Kategori / Section Header
-                $sectionName = $categoryMap[$main->name] ?? ($categoryMap[$mainDisplayName] ?? $mainDisplayName);
+                if ($main->route === 'perizinan.tugas.index') {
+                    $sectionName = 'Legal';
+                } elseif ($main->route === 'legal.unit.index') {
+                    $sectionName = 'Legal';
+                } elseif ($main->route === 'proyek.unit.index') {
+                    $sectionName = 'Proyek';
+                } else {
+                    $sectionName = $categoryMap[$main->name] ?? ($categoryMap[$mainDisplayName] ?? $mainDisplayName);
+                }
             ?>
 
             
@@ -360,4 +387,4 @@
         </div>
     </div>
 </aside>
-<?php /**PATH D:\Property-Management-Web-App\resources\views/layouts/sidebar.blade.php ENDPATH**/ ?>
+<?php /**PATH F:\Property-Management-Web-App\resources\views/layouts/sidebar.blade.php ENDPATH**/ ?>
