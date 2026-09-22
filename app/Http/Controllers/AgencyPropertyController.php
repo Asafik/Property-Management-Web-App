@@ -66,7 +66,7 @@ class AgencyPropertyController extends Controller
         if ($isMarketing && !$isAdmin) {
             $divisions = Division::where('id', 1)->orWhere('name', 'Marketing')->get();
             $positions = Position::where('division_id', 1)->get();
-            $defaultDivisionId = $divisions->first()->id ?? 1;
+            $defaultDivisionId = $divisions->first()->id ?? null;
             
             // Default Posisi: Staff Marketing (ID 2)
             $staffPosition = Position::where('division_id', $defaultDivisionId)

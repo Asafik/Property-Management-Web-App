@@ -70,6 +70,7 @@ public function store(Request $request)
             $data['offer_price']     = $cleanNumber($request->offer_price);
             $data['estimated_price'] = $cleanNumber($request->estimated_price);
             $data['area']            = $cleanNumber($request->area);
+            $data['field_area']      = $cleanNumber($request->field_area);
             if ($request->has('pbb_nominal')) {
                 $data['pbb_nominal'] = $request->pbb_status === 'nunggak' ? $cleanNumber($request->pbb_nominal) : null;
             }
@@ -130,6 +131,10 @@ public function store(Request $request)
             $data['area'] = $cleanNumber($request->area);
         }
 
+        if ($request->has('field_area')) {
+            $data['field_area'] = $cleanNumber($request->field_area);
+        }
+
         if ($request->has('pbb_nominal')) {
             $data['pbb_nominal'] = ($request->pbb_status ?? $record->pbb_status) === 'nunggak' ? $cleanNumber($request->pbb_nominal) : null;
         }
@@ -172,7 +177,6 @@ public function store(Request $request)
 
             if ($request->has('zoning')) $data['zoning'] = $request->zoning;
             if ($request->has('road_width')) $data['road_width'] = $request->road_width ? $cleanNumber($request->road_width) : null;
-            if ($request->has('road_type')) $data['road_type'] = $request->road_type;
             if ($request->has('lat')) $data['lat'] = $request->lat;
             if ($request->has('lng')) $data['lng'] = $request->lng;
 
@@ -224,7 +228,7 @@ public function store(Request $request)
             if ($hasUnverified && ($request->status ?? 'fase3') === 'approved' && !$isAdmin) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Status Legalitas belum Sah! Kepala Legal wajib memvalidasi dan menyetujui seluruh berkas dokumen legalitas di Fase 1 terlebih dahulu sebelum tanah dapat disetujui (Approved).'
+                    'message' => 'Status Legalitas belum Sah! Admin wajib memvalidasi dan menyetujui seluruh berkas dokumen legalitas di Fase 1 terlebih dahulu sebelum tanah dapat disetujui (Approved).'
                 ], 422);
             }
 
@@ -530,7 +534,7 @@ public function store(Request $request)
                 $landBank = new \App\Models\LandBank(['name' => $record->land_name]);
             }
 
-            $companyId = $landBank->company_profile_id ?? (\App\Models\CompanyProfile::first()->id ?? 1);
+            $companyId = $landBank->company_profile_id ?? (\App\Models\CompanyProfile::first()->id ?? null);
 
             $landBank->fill([
                 'name'              => $record->land_name,
@@ -546,7 +550,6 @@ public function store(Request $request)
                 'province'          => $record->province,
                 'zoning'            => $record->zoning,
                 'road_width'        => (isset($record->road_width) && is_numeric($record->road_width)) ? (int)$record->road_width : null,
-                'road_type'         => $record->road_type,
                 'ownership_status'  => $record->ownership_status ?? 'SHM',
                 'certificate_owner' => $record->certificate_owner ?? $record->owner_name ?? $record->land_owner,
                 'facility_school'   => (bool)($record->facility_school ?? false),
@@ -749,7 +752,7 @@ public function store(Request $request)
 
                 if (!$isLegalSah && !$isAdmin && !$isKeuangan) {
                     return redirect()->route('pra-landbank.proses', ['id' => $id, 'step' => 1])
-                        ->with('warning', 'Akses ke Fase 2 belum dapat dibuka. Dokumen legalitas di Fase 1 harus diverifikasi dan disahkan terlebih dahulu oleh Kepala Legal.');
+                        ->with('warning', 'Akses ke Fase 2 belum dapat dibuka. Dokumen legalitas di Fase 1 harus diverifikasi dan disahkan terlebih dahulu oleh Admin.');
                 }
             }
         }
@@ -788,10 +791,24 @@ public function store(Request $request)
     }
 
     /**
-     * Validasi Dokumen Legalitas oleh Kepala Legal
+     * Validasi Dokumen Legalitas (Hanya Admin)
      */
     public function approveDocument($id)
     {
+        $currentUser = auth()->user();
+        $userPositionName = strtolower($currentUser->position->name ?? '');
+        $isAdmin = ($currentUser->position_id == 5) || str_contains($userPositionName, 'admin');
+
+        if (!$isAdmin) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Hanya Admin yang berwenang memvalidasi dan menyetujui dokumen legalitas.',
+                ], 403);
+            }
+            return back()->with('error', 'Hanya Admin yang berwenang memvalidasi dan menyetujui dokumen legalitas.');
+        }
+
         $doc = pra_landbank_documents::findOrFail($id);
         $doc->update([
             'status' => 'verified',
@@ -842,20 +859,34 @@ public function store(Request $request)
         if (request()->ajax() || request()->wantsJson()) {
             return response()->json([
                 'success'                => true,
-                'message'                => 'Dokumen berhasil disetujui & diverifikasi oleh Kepala Legal!',
+                'message'                => 'Dokumen berhasil disetujui & diverifikasi oleh Admin!',
                 'status'                 => 'verified',
                 'auto_advanced_to_fase2' => $autoAdvanced,
             ]);
         }
 
-        return back()->with('success', 'Dokumen berhasil disetujui & diverifikasi oleh Kepala Legal.');
+        return back()->with('success', 'Dokumen berhasil disetujui & diverifikasi oleh Admin.');
     }
 
     /**
-     * Penolakan / Revisi Dokumen oleh Kepala Legal
+     * Penolakan / Revisi Dokumen (Hanya Admin)
      */
     public function rejectDocument(Request $request, $id)
     {
+        $currentUser = auth()->user();
+        $userPositionName = strtolower($currentUser->position->name ?? '');
+        $isAdmin = ($currentUser->position_id == 5) || str_contains($userPositionName, 'admin');
+
+        if (!$isAdmin) {
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Hanya Admin yang berwenang menolak atau meminta revisi dokumen legalitas.',
+                ], 403);
+            }
+            return back()->with('error', 'Hanya Admin yang berwenang menolak atau meminta revisi dokumen legalitas.');
+        }
+
         $request->validate([
             'catatan_admin' => 'nullable|string|max:1000'
         ]);
@@ -1813,8 +1844,8 @@ public function store(Request $request)
         $record = PraLandbank::findOrFail($id);
 
         // Ambil ID profil perusahaan default
-        $companyId = \App\Models\CompanyProfile::first()->id ?? 1;
-        $totalArea = $record->area ?: 0;
+        $companyId = \App\Models\CompanyProfile::first()->id ?? null;
+        $totalArea = $record->field_area ?: ($record->area ?: 0);
 
         // Buat atau update data di LandBank (Pasca Land Bank)
         $landBank = null;
@@ -1849,7 +1880,6 @@ public function store(Request $request)
             'province'                  => $record->province ?: '-',
             'zoning'                    => $record->zoning ?: '-',
             'road_width'                => (isset($record->road_width) && is_numeric($record->road_width)) ? (int)$record->road_width : null,
-            'road_type'                 => $record->road_type ?: '-',
             'lat'                       => $record->lat,
             'lng'                       => $record->lng,
             'file_certificate'          => $record->file_certificate,

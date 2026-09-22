@@ -41,7 +41,7 @@ class DatabaseSeeder extends Seeder
             // BankSeeder::class,
             // CompanySettingSeeder::class,
             // NotarisSeeder::class,
-            // MasterDokumenPerizinanSeeder::class,
+            MasterDokumenPerizinanSeeder::class,
             // MasterBiayaLegalitasSeeder::class,
             // PraLandbankDocumentSeeder::class,
             // DevelopmentProgressItemsSeeder::class,

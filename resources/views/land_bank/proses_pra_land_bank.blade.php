@@ -1601,7 +1601,7 @@
                                 // Hak Akses Role
                                 $canEditGeneralInfo = ($isAdmin || !$isStaffLegal) && !$isKeuangan && !$land;
                                 $canEditFinancial   = $isAdmin || $isKeuangan;
-                                $canValidateDoc     = $isAdmin || $isKepalaLegal;
+                                $canValidateDoc     = $isAdmin;
                                 $canEditDecisions   = $isAdmin;
 
                                 $rawStatus = strtoupper((string)($land->ownership_status ?? ''));
@@ -1629,7 +1629,7 @@
                                 $totalUploadedDocs = $applicablePraDocs->whereNotNull('file_path')->count();
                                 $verifiedCount = $applicablePraDocs->where('status', 'verified')->count();
                                 $isLegalSah = $land && !empty($selectedCat) && ($totalUploadedDocs > 0) && ($verifiedCount === $totalUploadedDocs);
-                                $isFase2Done = $land && (!empty($land->survey_date) || in_array($land->status, ['fase3', 'fase4', 'approved', 'rejected']));
+                                $isFase2Done = $land && $isLegalSah && in_array($land->status, ['fase2', 'fase3', 'fase4', 'approved', 'rejected']) && (!empty($land->survey_date) || in_array($land->status, ['fase3', 'fase4', 'approved', 'rejected']));
                                 $canAccessFase3 = $isLegalSah && $isFase2Done;
                                 
                             @endphp
@@ -1765,23 +1765,13 @@
                                             <label class="form-label">Alamat Lengkap *</label>
                                             <input type="text" class="form-control" name="address" value="{{ $land->address ?? '' }}" placeholder="Alamat lengkap lokasi tanah" required {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label class="form-label">Luas Tanah (m²)</label>
-                                            <input type="number" class="form-control" name="area" value="{{ $land->area ?? '' }}" placeholder="Luas tanah" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Luas Tanah di Sertifikat (m²)</label>
+                                            <input type="number" class="form-control" name="area" value="{{ $land->area ?? '' }}" placeholder="Luas tanah di sertifikat" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label class="form-label">Lebar Jalan Depan (m)</label>
-                                            <input type="number" class="form-control" name="road_width" value="{{ $land->road_width ?? '' }}" placeholder="Lebar jalan" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                        </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label class="form-label">Jenis Konstruksi Jalan</label>
-                                            <select class="form-select select2-search" id="select_road_type" name="road_type" data-placeholder="Pilih Konstruksi Jalan" style="width: 100%;" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                                <option value="">Pilih</option>
-                                                <option value="aspal" {{ $land && $land->road_type == 'aspal' ? 'selected' : '' }}>Aspal</option>
-                                                <option value="beton" {{ $land && $land->road_type == 'beton' ? 'selected' : '' }}>Beton</option>
-                                                <option value="paving" {{ $land && $land->road_type == 'paving' ? 'selected' : '' }}>Paving</option>
-                                                <option value="tanah" {{ $land && $land->road_type == 'tanah' ? 'selected' : '' }}>Tanah</option>
-                                            </select>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Luas Tanah di Lapangan (m²)</label>
+                                            <input type="number" class="form-control" name="field_area" value="{{ $land->field_area ?? '' }}" placeholder="Luas tanah di lapangan" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-semibold">
@@ -1853,7 +1843,7 @@
                                                 Dokumen Legalitas & Verifikasi Berkas (Fase 1)
                                             </div>
                                             <small class="text-muted" style="font-size: 0.8rem;">
-                                                Unggah berkas fisik dokumen legalitas tanah (KTP Pemilik, PBB, Sertifikat, dll.) dan validasi keabsahan dokumen oleh Kepala Legal.
+                                                Unggah berkas fisik dokumen legalitas tanah (KTP Pemilik, PBB, Sertifikat, dll.) dan validasi keabsahan dokumen oleh Admin.
                                             </small>
                                         </div>
                                         <span class="badge bg-soft-primary text-primary border border-primary-subtle py-1.5 px-3" style="font-size: 0.82rem; font-weight: 600;">
@@ -2062,7 +2052,7 @@
                                                                 </div>
                                                             @endif
 
-                                                            <!-- Tombol Aksi Validasi Kepala Legal / Admin (FASE 1) -->
+                                                            <!-- Tombol Aksi Validasi Admin (FASE 1) -->
                                                             @if($canValidateDoc)
                                                                 <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-between gap-2 w-100" id="action-btns-doc-{{ $existingDoc->id }}">
                                                                     @if(($existingDoc->status ?? '') !== 'verified' && ($existingDoc->status ?? '') !== 'valid')
@@ -2242,8 +2232,12 @@
                                                         </span>
                                                     </div>
                                                     <div class="fase2-info-row">
-                                                        <span class="fase2-info-label">Luas Tanah:</span>
+                                                        <span class="fase2-info-label">Luas di Sertifikat:</span>
                                                         <span class="fase2-info-value">{{ $land && $land->area ? number_format($land->area, 0, ',', '.') . ' m²' : '-' }}</span>
+                                                    </div>
+                                                    <div class="fase2-info-row">
+                                                        <span class="fase2-info-label">Luas di Lapangan:</span>
+                                                        <span class="fase2-info-value">{{ $land && $land->field_area ? number_format($land->field_area, 0, ',', '.') . ' m²' : '-' }}</span>
                                                     </div>
                                                     <div class="fase2-info-row">
                                                         <span class="fase2-info-label">Harga Penawaran:</span>
@@ -2534,10 +2528,6 @@
                                             <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut Lihat Fase 3
                                         </button>
                                     @elseif (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                        <button type="button" class="btn btn-gradient-primary btn-action-mobile" id="btnSaveFase2" onclick="saveFase2()">
-                                            <i class="mdi mdi-content-save-all"></i> Simpan Data Fase 2
-                                        </button>
-
                                         <button type="button" class="btn btn-gradient-success btn-action-mobile" id="btnProceedFase3" onclick="saveFase2(true)">
                                             <i class="mdi mdi-arrow-right-circle me-1"></i> Simpan & Lanjut ke Fase 3
                                         </button>
@@ -2645,8 +2635,12 @@
                                                             </span>
                                                         </div>
                                                         <div class="fase2-info-row">
-                                                            <span class="fase2-info-label">Luas Tanah:</span>
+                                                            <span class="fase2-info-label">Luas di Sertifikat:</span>
                                                             <span class="fase2-info-value">{{ $land && $land->area ? number_format($land->area, 0, ',', '.') . ' m²' : '-' }}</span>
+                                                        </div>
+                                                        <div class="fase2-info-row">
+                                                            <span class="fase2-info-label">Luas di Lapangan:</span>
+                                                            <span class="fase2-info-value">{{ $land && $land->field_area ? number_format($land->field_area, 0, ',', '.') . ' m²' : '-' }}</span>
                                                         </div>
                                                         <div class="fase2-info-row">
                                                             <span class="fase2-info-label">Harga Penawaran:</span>
@@ -2759,7 +2753,7 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-bold">Hasil Keputusan Sidang Akhir <span class="text-danger">*</span></label>
-                                            <select class="form-select border-primary" id="fase3_status_akhir" name="status" {{ (!$isAdmin || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <select class="form-select border-primary" id="fase3_status_akhir" name="status" {{ ($land && ($land->status == 'approved' || $land->status == 'rejected')) ? 'disabled' : '' }}>
                                                 <option value="approved" {{ $land && $land->status == 'approved' ? 'selected' : '' }}>DIAMBIL - Deal untuk Diakuisisi (Masuk LandBank Utama)</option>
                                                 <option value="pending" {{ $land && $land->status == 'pending' ? 'selected' : '' }}>DIPENDING - Ditunda Sementara (Negosiasi / Evaluasi Lanjutan)</option>
                                                 <option value="rejected" {{ $land && $land->status == 'rejected' ? 'selected' : '' }}>DIBATALKAN - Gugur Prospeknya (Tidak Diambil)</option>
@@ -2767,7 +2761,7 @@
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-bold">Skala Prioritas Akuisisi</label>
-                                            <select class="form-select" name="prioritas" {{ (!$isAdmin || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                            <select class="form-select" name="prioritas" {{ ($land && ($land->status == 'approved' || $land->status == 'rejected')) ? 'disabled' : '' }}>
                                                 <option value="urgent" {{ $land && $land->priority == 'urgent' ? 'selected' : '' }}>Urgent (Sangat Prioritas / Segera Diproses)</option>
                                                 <option value="high" {{ $land && $land->priority == 'high' ? 'selected' : '' }}>High (Tinggi)</option>
                                                 <option value="normal" {{ $land && ($land->priority == 'normal' || !$land->priority) ? 'selected' : '' }}>Normal</option>
@@ -2776,7 +2770,7 @@
                                         </div>
                                         <div class="col-12 mb-3">
                                             <label class="form-label fw-bold">Catatan & Kesimpulan Keputusan Sidang</label>
-                                            <textarea class="form-control" name="catatan" rows="3" placeholder="Masukkan ringkasan pertimbangan keputusan rapat, kesepakatan notaris, tanggal rencana akta pelepasan..." {{ (!$isAdmin || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>{{ $land->notes ?? '' }}</textarea>
+                                            <textarea class="form-control" name="catatan" rows="3" placeholder="Masukkan ringkasan pertimbangan keputusan rapat, kesepakatan notaris, tanggal rencana akta pelepasan..." {{ ($land && ($land->status == 'approved' || $land->status == 'rejected')) ? 'disabled' : '' }}>{{ $land->notes ?? '' }}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -3621,20 +3615,20 @@
                                                 <i class="mdi mdi-printer me-1"></i> Cetak / Pratinjau Invoice
                                             </button>
                                         @endif
-                                        @if ($isAdmin)
+                                        @if ($isKeuangan)
+                                            <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="saveFase3()">
+                                                <i class="mdi mdi-cash-register me-1"></i> Simpan & Update Data Keuangan
+                                            </button>
+                                        @else
                                             @if ($land && $land->status == 'approved')
                                                 <button type="button" class="btn btn-gradient-warning py-2 px-4 shadow-sm" onclick="saveFase3()">
                                                     <i class="mdi mdi-cash-check me-1"></i> Update Keputusan & Transaksi
                                                 </button>
                                             @elseif (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
                                                 <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="saveFase3()">
-                                                    <i class="mdi mdi-content-save-all me-1"></i> Simpan Keputusan Sidang (Admin)
+                                                    <i class="mdi mdi-content-save-all me-1"></i> Simpan Keputusan Sidang
                                                 </button>
                                             @endif
-                                        @elseif ($isKeuangan)
-                                            <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="saveFase3()">
-                                                <i class="mdi mdi-cash-register me-1"></i> Simpan & Update Data Keuangan
-                                            </button>
                                         @endif
                                         @if($land)
                                             @if($land->land_bank_id)
@@ -3961,7 +3955,7 @@
                             </div>
                             <ul class="mb-0 ps-3 text-secondary" style="font-size: 0.82rem; line-height: 1.6;">
                                 <li>Berkas dokumen legalitas di <b>Fase 1</b> wajib diunggah lengkap.</li>
-                                <li>Seluruh dokumen wajib telah <b>Divalidasi Sah</b> oleh Kepala Legal.</li>
+                                <li>Seluruh dokumen wajib telah <b>Divalidasi Sah</b> oleh Admin.</li>
                             </ul>
                         </div>
                     `,
@@ -3979,7 +3973,7 @@
                     Swal.fire({
                         icon: 'warning',
                         title: 'Fase 3 Terkunci!',
-                        text: 'Fase 1 (Legalitas) belum divalidasi sah oleh Kepala Legal.'
+                        text: 'Fase 1 (Legalitas) belum divalidasi sah oleh Admin.'
                     }).then(() => switchStep(1));
                     return;
                 }
@@ -4028,13 +4022,13 @@
                 if (c1) c1.innerHTML = '<i class="mdi mdi-check"></i>';
             }
 
-            if (isEditMode && isFase2Done) {
+            if (isEditMode && isLegalSah && isFase2Done) {
                 document.getElementById('step2')?.classList.add('completed');
                 const c2 = document.querySelector('#step2 .step-circle');
                 if (c2) c2.innerHTML = '<i class="mdi mdi-check"></i>';
             }
 
-            if (isFase3Finished) {
+            if (isEditMode && isLegalSah && isFase2Done && isFase3Finished) {
                 document.getElementById('step3')?.classList.add('completed');
                 const c3 = document.querySelector('#step3 .step-circle');
                 if (c3) c3.innerHTML = '<i class="mdi mdi-check"></i>';
@@ -4312,9 +4306,9 @@
             }
         }
 
-        async function saveFase2(andProceed = false) {
+        async function saveFase2(andProceed = true) {
             try {
-                showLoading('Menyimpan data Fase 2 & Survey Kelayakan...');
+                showLoading('Menyimpan data Fase 2 & Menuju ke Fase 3...');
                 let form = document.getElementById('formFase2');
                 let formData = new FormData(form);
 
@@ -4326,11 +4320,9 @@
                     isFase2Done = true;
                     document.querySelector('#step3 .mdi-lock')?.remove();
                     document.getElementById('step3')?.classList.remove('disabled');
-                    sessionStorage.setItem('success_message', 'Data Fase 2 & Survey Kelayakan berhasil disimpan.');
-                    if (andProceed && targetId) {
+                    sessionStorage.setItem('success_message', 'Data Fase 2 berhasil disimpan.');
+                    if (targetId) {
                         window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=3";
-                    } else if (targetId) {
-                        window.location.href = "{{ url('/properti/pra-landbank/proses') }}/" + targetId + "?step=2";
                     } else {
                         window.location.href = "{{ route('pralandbank.all') }}";
                     }
@@ -5286,7 +5278,7 @@
         function approvePraDoc(docId, typeId) {
             Swal.fire({
                 title: 'Validasi Dokumen?',
-                text: 'Apakah Anda sebagai Kepala Legal menyetujui dan memverifikasi keabsahan dokumen ini?',
+                text: 'Apakah Anda sebagai Admin menyetujui dan memverifikasi keabsahan dokumen ini?',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#22c55e',
@@ -5332,7 +5324,7 @@
                                         title: 'Semua Berkas Berhasil Divalidasi!',
                                         html: `
                                             <p class="text-muted mb-3" style="font-size: 0.92rem;">
-                                                Seluruh berkas dokumen legalitas telah dinyatakan <b>Sah (Terverifikasi)</b> oleh Kepala Legal.
+                                                Seluruh berkas dokumen legalitas telah dinyatakan <b>Sah (Terverifikasi)</b> oleh Admin.
                                             </p>
                                             <div class="p-3 rounded-3 text-start mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
                                                 <div class="d-flex align-items-center gap-2 text-success fw-bold" style="font-size: 0.85rem;">

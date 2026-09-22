@@ -190,8 +190,8 @@ class PerizinanController extends Controller
         }
 
         // Ambil ID profil perusahaan default
-        $companyId = \App\Models\CompanyProfile::first()->id ?? 1;
-        $totalArea = $record->area ?: 0;
+        $companyId = \App\Models\CompanyProfile::first()->id ?? null;
+        $totalArea = $record->field_area ?: ($record->area ?: 0);
 
         // Buat atau update data di LandBank (Pasca Land Bank)
         $landBank = null;
