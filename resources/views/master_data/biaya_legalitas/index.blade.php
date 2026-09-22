@@ -305,12 +305,6 @@
                 Katalog acuan tarif baku IJB/PPJB Notaris, Estimasi Pajak PPh/BPHTB, Fee Makelar, Kompensasi Desa, hingga biaya operasional tanah.
             </p>
         </div>
-        <div class="d-flex align-items-center gap-2">
-            <a href="{{ route('pralandbank.all') }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-none" style="border-radius: 5px; font-size: 0.84rem; font-weight: 500; background: #ffffff;">
-                <i class="mdi mdi-arrow-left" style="font-size: 0.95rem;"></i>
-                <span>Kembali ke Pra Land Bank</span>
-            </a>
-        </div>
     </div>
 
     <!-- Alert Notifikasi -->
