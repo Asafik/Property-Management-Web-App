@@ -221,7 +221,7 @@ class MenuSeeder extends Seeder
         }
 
         // ================= 10. KEUANGAN =================
-        $keuanganRoles = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $legal?->id, $keuanganStaff?->id]));
+        $keuanganRoles = array_values(array_filter([$admin?->id, $keuanganStaff?->id]));
 
         $keuangan = Menu::create([
             'name'  => 'Keuangan',
