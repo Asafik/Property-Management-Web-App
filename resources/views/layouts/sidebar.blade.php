@@ -166,9 +166,10 @@
             'Unit'                    => 4,
 
             // Kelompok Perizinan (Di Bawah Legal)
-            'Tugas Perizinan'         => 5,
-            'Pembagian Tugas'         => 5,
-            'Perizinan'               => 6,
+            'Tugas Perizinan'          => 5,
+            'Pembagian Tugas'          => 5,
+            'Perizinan'                => 6,
+            'Master Dokumen Perizinan' => 6.5,
 
             // Kelompok Proyek
             'Proyek'                  => 7,
@@ -203,9 +204,10 @@
             'Unit'                    => 'Legal',
 
             // Perizinan (Label Sendiri di Bawah Legal)
-            'Tugas Perizinan'         => 'Perizinan',
-            'Pembagian Tugas'         => 'Perizinan',
-            'Perizinan'               => 'Perizinan',
+            'Tugas Perizinan'          => 'Perizinan',
+            'Pembagian Tugas'          => 'Perizinan',
+            'Perizinan'                => 'Perizinan',
+            'Master Dokumen Perizinan' => 'Perizinan',
 
             // Proyek
             'Proyek'                  => 'Proyek',
@@ -239,6 +241,9 @@
             }
             if ($m->route === 'perizinan.index') {
                 return 6;
+            }
+            if ($m->route === 'master.dokumen-perizinan.index') {
+                return 6.5;
             }
             if ($m->route === 'proyek.index') {
                 return 7;
@@ -304,7 +309,7 @@
                 }
 
                 // Label Kategori / Section Header
-                if ($main->route === 'perizinan.tugas.index' || $main->route === 'perizinan.index') {
+                if ($main->route === 'perizinan.tugas.index' || $main->route === 'perizinan.index' || $main->route === 'master.dokumen-perizinan.index') {
                     $sectionName = 'Perizinan';
                 } elseif ($main->route === 'legal.unit.index') {
                     $sectionName = 'Legal';

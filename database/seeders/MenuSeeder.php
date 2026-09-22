@@ -128,6 +128,14 @@ class MenuSeeder extends Seeder
         ]);
         $perizinanMenu->positions()->attach($legalRoles);
 
+        $masterDokumenMenu = Menu::create([
+            'name'  => 'Master Dokumen Perizinan',
+            'route' => 'master.dokumen-perizinan.index',
+            'icon'  => 'mdi-file-cog-outline',
+            'order' => 6.5
+        ]);
+        $masterDokumenMenu->positions()->attach($legalRoles);
+
         // ================= 6. PROYEK, PENGOLAHAN LAHAN & UNIT (ADMIN ONLY) =================
         $proyekMasterMenu = Menu::create([
             'name'  => 'Proyek',
@@ -264,15 +272,13 @@ class MenuSeeder extends Seeder
             'order'     => 6
         ])->positions()->attach($keuanganRoles);
 
-        // ================= 11. MASTER DATA =================
-        $kepalaLegalAndAdmin = array_values(array_filter([$admin?->id, $legal?->id]));
-
+        // ================= 11. MASTER DATA (ADMIN ONLY) =================
         $master = Menu::create([
             'name'  => 'Master Data',
             'icon'  => 'mdi-wrench',
             'order' => 11
         ]);
-        $master->positions()->attach($kepalaLegalAndAdmin);
+        $master->positions()->attach($adminOnly);
 
         Menu::create([
             'name'      => 'Role & Permission',
@@ -281,28 +287,22 @@ class MenuSeeder extends Seeder
         ])->positions()->attach($adminOnly);
 
         Menu::create([
-            'name'      => 'Master Dokumen Perizinan',
-            'route'     => 'master.dokumen-perizinan.index',
-            'parent_id' => $master->id
-        ])->positions()->attach($kepalaLegalAndAdmin);
-
-        Menu::create([
             'name'      => 'Master Barang / Bahan',
             'route'     => 'master.bahan.index',
             'parent_id' => $master->id
-        ])->positions()->attach($kepalaLegalAndAdmin);
+        ])->positions()->attach($adminOnly);
 
         Menu::create([
             'name'      => 'Master Tahapan Progress Unit',
             'route'     => 'master.progress.index',
             'parent_id' => $master->id
-        ])->positions()->attach($kepalaLegalAndAdmin);
+        ])->positions()->attach($adminOnly);
 
         Menu::create([
             'name'      => 'Data Notaris',
             'route'     => 'notaris.index',
             'parent_id' => $master->id
-        ])->positions()->attach(array_values(array_filter([$admin?->id, $marketing?->id, $legal?->id, $staffLegal?->id, $keuanganStaff?->id])));
+        ])->positions()->attach(array_values(array_filter([$admin?->id, $marketing?->id, $keuanganStaff?->id])));
 
         $masterMenus = [
             'promo.index'                => 'Promo',
