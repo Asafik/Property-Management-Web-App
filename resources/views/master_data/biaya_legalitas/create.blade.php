@@ -84,17 +84,11 @@
 @section('content')
 <div class="container-fluid px-2 px-md-4 py-3">
 
-    <!-- Header Judul & Tombol Kembali -->
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
         <div>
-            <div class="d-flex align-items-center gap-2 mb-1">
-                <a href="{{ route('master.biaya-legalitas.index') }}" class="btn btn-sm btn-link text-muted p-0 me-1" title="Kembali ke Daftar">
-                    <i class="mdi mdi-arrow-left fs-4"></i>
-                </a>
-                <h2 class="text-dark mb-0 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
-                    {{ $isEdit ? 'Edit Komponen Biaya Legalitas' : 'Tambah Komponen Biaya Legalitas' }}
-                </h2>
-            </div>
+            <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                {{ $isEdit ? 'Edit Komponen Biaya Legalitas' : 'Tambah Komponen Biaya Legalitas' }}
+            </h2>
             <p class="text-muted mb-0" style="font-size: 0.88rem;">
                 {{ $isEdit ? 'Perbarui informasi dan formula acuan tarif biaya transaksi tanah.' : 'Formulir input master tarif baku IJB/PPJB Notaris, Estimasi Pajak, Fee, dan komponen biaya tanah.' }}
             </p>
