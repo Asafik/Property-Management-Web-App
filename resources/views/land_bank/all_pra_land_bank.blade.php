@@ -671,15 +671,6 @@
                                                     </button>
                                                 @endif
 
-                                                <!-- Perizinan (Saat Deal / Fase 3 Selesai) -->
-                                                @if($land->status === 'approved' || !empty($land->deal_price) || $land->status === 'fase3')
-                                                    <a href="{{ route('perizinan.show', $land->id) }}" 
-                                                        class="btn-fase-action btn-fase-perizinan" title="Lanjut ke Modul Perizinan Proyek">
-                                                        <i class="mdi mdi-file-certificate-outline"></i>
-                                                        <span>Izin</span>
-                                                    </a>
-                                                @endif
-
                                                 <!-- Delete Button -->
                                                 @if(!$isKeuangan || $isAdmin)
                                                     <form action="{{ route('pra-landbanks.destroy', $land->id) }}" method="POST" class="d-inline delete-form">
