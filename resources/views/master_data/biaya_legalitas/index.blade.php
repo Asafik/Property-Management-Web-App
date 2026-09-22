@@ -516,7 +516,7 @@
                                     <th style="width: 140px;">Kode Biaya</th>
                                     <th>Nama Komponen Biaya & Keterangan</th>
                                     <th style="width: 160px;">Kategori</th>
-                                    <th style="width: 160px;">Tipe & Acuan</th>
+                                    <th style="width: 165px;">Tarif Acuan</th>
                                     <th style="width: 140px;">Penanggung</th>
                                     <th class="text-center" style="width: 95px;">Sifat</th>
                                     <th class="text-center" style="width: 85px;">Status</th>
@@ -575,37 +575,25 @@
                                         </td>
                                         <td>
                                             @if($item->tipe_perhitungan === 'nominal_tetap')
-                                                <div class="fw-bold text-dark font-monospace" style="font-size: 0.88rem; letter-spacing: -0.01em;">
-                                                    Rp {{ number_format($item->nominal_standar ?? 0, 0, ',', '.') }}
-                                                </div>
-                                                <div class="text-muted" style="font-size: 0.73rem; line-height: 1.3;">
-                                                    Tarif Tetap Baku
-                                                </div>
+                                                <span class="badge d-inline-flex align-items-center gap-1 font-monospace fw-bold" style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; font-size: 0.83rem; padding: 4px 8px; border-radius: 5px;">
+                                                    <i class="mdi mdi-cash" style="font-size: 0.95rem; color: #10b981;"></i>
+                                                    <span>Rp {{ number_format($item->nominal_standar ?? 0, 0, ',', '.') }}</span>
+                                                </span>
                                             @elseif($item->tipe_perhitungan === 'persentase')
-                                                <div class="fw-bold text-dark" style="font-size: 0.88rem;">
-                                                    {{ $item->persentase_standar }}% <span class="fw-normal text-muted" style="font-size: 0.75rem;">dari Deal</span>
-                                                </div>
+                                                <span class="badge d-inline-flex align-items-center gap-1 fw-bold" style="background: #fffbeb; color: #b45309; border: 1px solid #fde68a; font-size: 0.83rem; padding: 4px 8px; border-radius: 5px;">
+                                                    <i class="mdi mdi-percent-outline" style="font-size: 0.95rem; color: #f59e0b;"></i>
+                                                    <span>{{ $item->persentase_standar }}% Deal</span>
+                                                </span>
                                                 @if($item->nominal_standar)
-                                                    <div class="text-muted font-monospace" style="font-size: 0.73rem; line-height: 1.3;">
-                                                        Est: Rp {{ number_format($item->nominal_standar, 0, ',', '.') }}
-                                                    </div>
-                                                @else
-                                                    <div class="text-muted" style="font-size: 0.73rem; line-height: 1.3;">
-                                                        Formula Persentase
-                                                    </div>
+                                                    <small class="text-muted d-block mt-0.5" style="font-size: 0.72rem;">(Est: Rp {{ number_format($item->nominal_standar, 0, ',', '.') }})</small>
                                                 @endif
                                             @else
-                                                <div class="fw-bold text-dark" style="font-size: 0.88rem;">
-                                                    Fleksibel
-                                                </div>
+                                                <span class="badge d-inline-flex align-items-center gap-1 fw-semibold" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; font-size: 0.82rem; padding: 4px 8px; border-radius: 5px;">
+                                                    <i class="mdi mdi-tune-vertical" style="font-size: 0.95rem; color: #64748b;"></i>
+                                                    <span>Fleksibel</span>
+                                                </span>
                                                 @if($item->nominal_standar)
-                                                    <div class="text-muted font-monospace" style="font-size: 0.73rem; line-height: 1.3;">
-                                                        Acuan: Rp {{ number_format($item->nominal_standar, 0, ',', '.') }}
-                                                    </div>
-                                                @else
-                                                    <div class="text-muted" style="font-size: 0.73rem; line-height: 1.3;">
-                                                        Input bebas di form
-                                                    </div>
+                                                    <small class="text-muted d-block mt-0.5" style="font-size: 0.72rem;">Acuan: Rp {{ number_format($item->nominal_standar, 0, ',', '.') }}</small>
                                                 @endif
                                             @endif
                                         </td>
