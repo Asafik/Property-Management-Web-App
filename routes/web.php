@@ -249,8 +249,9 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::prefix('master-data/biaya-legalitas')->name('master.biaya-legalitas.')->group(function () {
         Route::get('/', [MasterBiayaLegalitasController::class, 'index'])->name('index');
-        Route::get('/{id}/edit', [MasterBiayaLegalitasController::class, 'edit'])->name('edit');
+        Route::get('/tambah', [MasterBiayaLegalitasController::class, 'create'])->name('create');
         Route::post('/store', [MasterBiayaLegalitasController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [MasterBiayaLegalitasController::class, 'edit'])->name('edit');
         Route::put('/{id}', [MasterBiayaLegalitasController::class, 'update'])->name('update');
         Route::delete('/{id}', [MasterBiayaLegalitasController::class, 'destroy'])->name('destroy');
         Route::match(['post', 'patch'], '/{id}/toggle-status', [MasterBiayaLegalitasController::class, 'toggleStatus'])->name('toggle-status');

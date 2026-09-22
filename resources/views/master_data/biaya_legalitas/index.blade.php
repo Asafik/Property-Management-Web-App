@@ -415,10 +415,10 @@
                     </div>
 
                     <div>
-                        <button type="button" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 fw-semibold shadow-sm" style="border-radius: 5px; font-size: 0.84rem;" onclick="openModal('tambah')">
+                        <a href="{{ route('master.biaya-legalitas.create') }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 fw-semibold shadow-sm" style="border-radius: 5px; font-size: 0.84rem;">
                             <i class="mdi mdi-plus-circle-outline fs-6" style="margin-right: 2px !important;"></i>
                             <span>Tambah Komponen Biaya</span>
-                        </button>
+                        </a>
                     </div>
                 </div>
 
@@ -625,9 +625,9 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="d-inline-flex align-items-center gap-1">
-                                                <button type="button" class="btn-action edit" title="Edit Biaya" onclick="editBiaya({{ $item->id }})">
+                                                <a href="{{ route('master.biaya-legalitas.edit', $item->id) }}" class="btn-action edit" title="Edit Biaya">
                                                     <i class="mdi mdi-pencil"></i>
-                                                </button>
+                                                </a>
                                                 <button type="button" class="btn-action delete" title="Hapus Biaya" onclick="deleteBiaya({{ $item->id }}, '{{ addslashes($item->nama_biaya) }}')">
                                                     <i class="mdi mdi-trash-can-outline"></i>
                                                 </button>
@@ -641,9 +641,9 @@
                                                 <i class="mdi mdi-cash-remove mb-2" style="font-size: 2.8rem; color: #94a3b8; opacity: 0.6;"></i>
                                                 <h6 class="fw-bold text-dark mb-1">Belum Ada Data Master Biaya Legalitas</h6>
                                                 <p class="text-muted mb-3" style="font-size: 0.84rem;">Silakan tambahkan komponen biaya baru atau reset filter.</p>
-                                                <button type="button" class="btn btn-sm btn-gradient-primary px-3 py-1.5" onclick="openModal('tambah')" style="border-radius: 5px;">
+                                                <a href="{{ route('master.biaya-legalitas.create') }}" class="btn btn-sm btn-gradient-primary px-3 py-1.5" style="border-radius: 5px;">
                                                     <i class="mdi mdi-plus-circle me-1"></i> Tambah Komponen Baru
-                                                </button>
+                                                </a>
                                             </div>
                                         </td>
                                     </tr>
@@ -669,170 +669,6 @@
     </div>
 </div>
 
-<!-- Modal Tambah/Edit Master Biaya Legalitas -->
-<div class="modal fade" id="modalBiayaLegalitas" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 680px; width: 95%;">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-white py-3 px-4 border-bottom">
-                <div class="d-flex align-items-center gap-2">
-                    <div style="width: 32px; height: 32px; border-radius: 5px; background: rgba(124, 58, 237, 0.1); color: #7c3aed; display: flex; align-items: center; justify-content: center; font-size: 1.15rem;">
-                        <i class="mdi mdi-cash-multiple"></i>
-                    </div>
-                    <div>
-                        <h5 class="modal-title fw-bold text-dark mb-0" id="modalTitle" style="font-size: 1rem;">
-                            <span id="modalTitleText">Tambah Master Biaya Legalitas</span>
-                        </h5>
-                        <small class="text-muted" style="font-size: 0.78rem;">Konfigurasi komponen tarif biaya transaksi tanah</small>
-                    </div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form id="formBiayaLegalitas" method="POST" action="{{ route('master.biaya-legalitas.store') }}">
-                @csrf
-                <div id="methodContainer"></div>
-
-                <div class="modal-body p-4" style="max-height: 75vh; overflow-y: auto;">
-                    <div class="row g-3">
-                        <!-- Kode Biaya -->
-                        <div class="col-md-5">
-                            <label class="form-label fw-semibold text-dark" style="font-size: 0.83rem;">
-                                Kode Biaya <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" name="kode_biaya" id="modal_kode_biaya" class="form-control font-monospace" placeholder="Contoh: BIAYA-IJB-PPJB" required style="text-transform: uppercase;">
-                            <small class="text-muted" style="font-size: 11px;">Unik, huruf kapital dan strip (A-Z, 0-9, -)</small>
-                        </div>
-
-                        <!-- Nama Biaya -->
-                        <div class="col-md-7">
-                            <label class="form-label fw-semibold text-dark" style="font-size: 0.83rem;">
-                                Nama Komponen Biaya <span class="text-danger">*</span>
-                            </label>
-                            <input type="text" name="nama_biaya" id="modal_nama_biaya" class="form-control" placeholder="Contoh: Biaya IJB / PPJB Notaris" required>
-                        </div>
-
-                        <!-- Kategori -->
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold text-dark" style="font-size: 0.83rem;">
-                                Kategori <span class="text-danger">*</span>
-                            </label>
-                            <select name="kategori" id="modal_kategori" class="form-control" required>
-                                <option value="">-- Pilih Kategori --</option>
-                                @foreach($categories as $catKey => $catLabel)
-                                    <option value="{{ $catKey }}">{{ $catKey }} ({{ $catLabel }})</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <!-- Tipe Perhitungan -->
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold text-dark" style="font-size: 0.83rem;">
-                                Tipe Perhitungan Biaya <span class="text-danger">*</span>
-                            </label>
-                            <select name="tipe_perhitungan" id="modal_tipe_perhitungan" class="form-control" required onchange="handleTipePerhitunganChange()">
-                                <option value="nominal_tetap">Nominal Tetap (Rp Acuan)</option>
-                                <option value="persentase">Persentase (% dari Deal Price)</option>
-                                <option value="fleksibel">Fleksibel / Input Bebas</option>
-                            </select>
-                        </div>
-
-                        <!-- Nominal Standar -->
-                        <div class="col-md-6" id="container_nominal_standar">
-                            <label class="form-label fw-semibold text-dark" style="font-size: 0.83rem;">
-                                Estimasi / Nominal Standar (Rp)
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light fw-bold text-muted">Rp</span>
-                                <input type="text" name="nominal_standar" id="modal_nominal_standar" class="form-control" placeholder="Contoh: 10.000.000" onkeyup="formatRupiah(this)">
-                            </div>
-                        </div>
-
-                        <!-- Persentase Standar -->
-                        <div class="col-md-6" id="container_persentase_standar" style="display: none;">
-                            <label class="form-label fw-semibold text-dark" style="font-size: 0.83rem;">
-                                Persentase Standar (%)
-                            </label>
-                            <div class="input-group">
-                                <input type="number" step="0.01" min="0" max="100" name="persentase_standar" id="modal_persentase_standar" class="form-control" placeholder="Contoh: 2.50 atau 5.00">
-                                <span class="input-group-text bg-light fw-bold text-muted">%</span>
-                            </div>
-                            <small class="text-muted" style="font-size: 11px;">Dihitung otomatis terhadap Deal Price saat di form Pra Land Bank</small>
-                        </div>
-
-                        <!-- Pihak Penanggung -->
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold text-dark" style="font-size: 0.83rem;">
-                                Pihak Penanggung Beban <span class="text-danger">*</span>
-                            </label>
-                            <select name="pihak_penanggung" id="modal_pihak_penanggung" class="form-control" required>
-                                @foreach($pihakPenanggung as $val => $label)
-                                    <option value="{{ $val }}">{{ $label }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <!-- Urutan -->
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold text-dark" style="font-size: 0.83rem;">
-                                Urutan Tampilan
-                            </label>
-                            <input type="number" name="urutan" id="modal_urutan" class="form-control" min="0" value="0">
-                        </div>
-
-                        <!-- Deskripsi / Acuan Perhitungan -->
-                        <div class="col-12">
-                            <label class="form-label fw-semibold text-dark" style="font-size: 0.83rem;">
-                                Deskripsi / Dasar Acuan Perhitungan
-                            </label>
-                            <textarea name="deskripsi" id="modal_deskripsi" class="form-control" rows="2" placeholder="Catatan aturan hukum, peruntukan biaya, atau keterangan lainnya..."></textarea>
-                        </div>
-
-                        <!-- Checkboxes & Switches -->
-                        <div class="col-12">
-                            <div class="p-3 border" style="background: #f8fafc; border-radius: 6px; border-color: #e2e8f0 !important;">
-                                <div class="row g-3">
-                                    <div class="col-sm-4">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="is_standard" id="modal_is_standard" value="1">
-                                            <label class="form-check-label fw-semibold text-dark" for="modal_is_standard" style="font-size: 0.83rem;">
-                                                Komponen Baku Form
-                                            </label>
-                                            <small class="text-muted d-block" style="font-size: 11px;">Muncul secara default di form utama</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="is_required" id="modal_is_required" value="1">
-                                            <label class="form-check-label fw-semibold text-dark" for="modal_is_required" style="font-size: 0.83rem;">
-                                                Wajib Diisi (Required)
-                                            </label>
-                                            <small class="text-muted d-block" style="font-size: 11px;">Form transaksi wajib mengisi ini</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <div class="form-check form-switch custom-switch-clean">
-                                            <input class="form-check-input" type="checkbox" name="is_active" id="modal_is_active" value="1" checked>
-                                            <label class="form-check-label fw-semibold text-success" for="modal_is_active" style="font-size: 0.83rem;">
-                                                Status Aktif
-                                            </label>
-                                            <small class="text-muted d-block" style="font-size: 11px;">Bisa dipilih di form transaksi</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer bg-white py-2.5 px-4 border-top">
-                    <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal" style="border-radius: 5px; font-size: 0.84rem;">Batal</button>
-                    <button type="submit" class="btn btn-gradient-primary px-4 fw-semibold shadow-sm" id="btnSubmitModal" style="border-radius: 5px; font-size: 0.84rem;">
-                        <i class="mdi mdi-content-save me-1"></i> Simpan Data
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 <!-- Hidden Delete Form -->
 <form id="deleteBiayaForm" method="POST" style="display: none;">
     @csrf
@@ -843,109 +679,6 @@
 
 @push('scripts')
 <script>
-    // Format Rupiah Input Helper
-    function formatRupiah(input) {
-        let value = input.value.replace(/[^0-9]/g, '');
-        if (value) {
-            input.value = new Intl.NumberFormat('id-ID').format(value);
-        } else {
-            input.value = '';
-        }
-    }
-
-    // Toggle Container Input berdasarkan Tipe Perhitungan
-    function handleTipePerhitunganChange() {
-        const tipe = document.getElementById('modal_tipe_perhitungan').value;
-        const containerNominal = document.getElementById('container_nominal_standar');
-        const containerPersen = document.getElementById('container_persentase_standar');
-
-        if (tipe === 'persentase') {
-            containerPersen.style.display = 'block';
-            containerNominal.style.display = 'block';
-            containerNominal.querySelector('label').textContent = 'Estimasi Nominal Awal (Opsional)';
-        } else if (tipe === 'nominal_tetap') {
-            containerPersen.style.display = 'none';
-            containerNominal.style.display = 'block';
-            containerNominal.querySelector('label').textContent = 'Estimasi / Nominal Standar (Rp)';
-        } else {
-            containerPersen.style.display = 'none';
-            containerNominal.style.display = 'block';
-            containerNominal.querySelector('label').textContent = 'Nominal Acuan Default (Opsional)';
-        }
-    }
-
-    // Buka Modal Tambah
-    function openModal(action) {
-        const form = document.getElementById('formBiayaLegalitas');
-        const modalTitle = document.getElementById('modalTitleText');
-        const methodContainer = document.getElementById('methodContainer');
-
-        form.reset();
-        methodContainer.innerHTML = '';
-
-        if (action === 'tambah') {
-            modalTitle.textContent = 'Tambah Master Biaya Legalitas & Admin';
-            form.action = "{{ route('master.biaya-legalitas.store') }}";
-            document.getElementById('modal_is_active').checked = true;
-            document.getElementById('modal_tipe_perhitungan').value = 'nominal_tetap';
-            handleTipePerhitunganChange();
-        }
-
-        const modal = new bootstrap.Modal(document.getElementById('modalBiayaLegalitas'));
-        modal.show();
-    }
-
-    // Buka Modal Edit
-    function editBiaya(id) {
-        fetch(`/master-data/biaya-legalitas/${id}/edit`)
-            .then(res => res.json())
-            .then(data => {
-                const form = document.getElementById('formBiayaLegalitas');
-                const modalTitle = document.getElementById('modalTitleText');
-                const methodContainer = document.getElementById('methodContainer');
-
-                form.reset();
-                methodContainer.innerHTML = '<input type="hidden" name="_method" value="PUT">';
-                form.action = `/master-data/biaya-legalitas/${id}`;
-                modalTitle.textContent = 'Edit Master Biaya Legalitas: ' + data.nama_biaya;
-
-                document.getElementById('modal_kode_biaya').value = data.kode_biaya;
-                document.getElementById('modal_nama_biaya').value = data.nama_biaya;
-                document.getElementById('modal_kategori').value = data.kategori;
-                document.getElementById('modal_tipe_perhitungan').value = data.tipe_perhitungan;
-                document.getElementById('modal_pihak_penanggung').value = data.pihak_penanggung;
-                document.getElementById('modal_urutan').value = data.urutan || 0;
-                document.getElementById('modal_deskripsi').value = data.deskripsi || '';
-
-                if (data.nominal_standar) {
-                    document.getElementById('modal_nominal_standar').value = new Intl.NumberFormat('id-ID').format(data.nominal_standar);
-                } else {
-                    document.getElementById('modal_nominal_standar').value = '';
-                }
-
-                document.getElementById('modal_persentase_standar').value = data.persentase_standar || '';
-
-                document.getElementById('modal_is_standard').checked = !!data.is_standard;
-                document.getElementById('modal_is_required').checked = !!data.is_required;
-                document.getElementById('modal_is_active').checked = !!data.is_active;
-
-                handleTipePerhitunganChange();
-
-                const modal = new bootstrap.Modal(document.getElementById('modalBiayaLegalitas'));
-                modal.show();
-            })
-            .catch(err => {
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal Memuat Data',
-                        text: 'Tidak dapat mengambil detail biaya: ' + err.message
-                    });
-                } else {
-                    alert('Gagal memuat data: ' + err.message);
-                }
-            });
-    }
 
     // Toggle Aktif Status via AJAX
     function toggleActiveStatus(id, checkbox) {

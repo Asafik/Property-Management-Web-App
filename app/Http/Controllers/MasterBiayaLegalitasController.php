@@ -83,12 +83,29 @@ class MasterBiayaLegalitasController extends Controller
     }
 
     /**
-     * Ambil data item untuk modal edit (JSON)
+     * Form Tambah Master Biaya Legalitas
+     */
+    public function create()
+    {
+        $categories = MasterBiayaLegalitas::getCategories();
+        $pihakPenanggung = MasterBiayaLegalitas::getPihakPenanggung();
+        return view('master_data.biaya_legalitas.create', compact('categories', 'pihakPenanggung'));
+    }
+
+    /**
+     * Form Edit Master Biaya Legalitas
      */
     public function edit($id)
     {
         $biaya = MasterBiayaLegalitas::findOrFail($id);
-        return response()->json($biaya);
+
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json($biaya);
+        }
+
+        $categories = MasterBiayaLegalitas::getCategories();
+        $pihakPenanggung = MasterBiayaLegalitas::getPihakPenanggung();
+        return view('master_data.biaya_legalitas.create', compact('biaya', 'categories', 'pihakPenanggung'));
     }
 
     /**
