@@ -155,7 +155,18 @@
                 {{ $project['pt'] }} &bull; {{ $project['lokasi'] }} &bull; Luas: {{ $project['luas'] }} ({{ $project['ownership_status'] }})
             </p>
         </div>
-        <div>
+        <div class="d-flex align-items-center gap-2">
+            @if(!empty($project['is_finalized_to_pasca']) && !empty($project['land_bank_id']))
+                <a href="{{ route('properti.edit', $project['land_bank_id']) }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-semibold" style="background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; font-size: 0.85rem;" title="Buka data kawasan ini di Pasca Land Bank">
+                    <i class="mdi mdi-shield-check" style="font-size: 1.1rem; line-height: 1;"></i>
+                    <span>Buka di Pasca Land Bank</span>
+                </a>
+            @else
+                <button type="button" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-semibold" onclick="confirmFinalizeToPasca({{ $project['id'] }}, '{{ addslashes($project['nama']) }}', {{ $projectProgress ?? 0 }}, {{ $totalTerbit ?? 0 }}, {{ $totalIzin ?? 0 }})" style="background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; font-size: 0.85rem;" title="Alihkan kawasan ini ke Pasca Land Bank untuk pengolahan lahan & kavling">
+                    <i class="mdi mdi-shield-crown" style="font-size: 1.1rem; line-height: 1;"></i>
+                    <span>Finalisasi ke Pasca Land Bank</span>
+                </button>
+            @endif
             <a href="{{ route('perizinan.index') }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm btn-kembali-proyek" style="border: 1px solid #cbd5e1; background-color: #ffffff; color: #1e293b; border-radius: 8px; font-weight: 600; font-size: 0.85rem; transition: all 0.2s ease;">
                 <i class="mdi mdi-arrow-left text-primary" style="font-size: 1.1rem; line-height: 1;"></i>
                 <span>Kembali</span>
@@ -950,6 +961,114 @@
         var modalEl = document.getElementById('modalKelolaDokumen');
         var modal = bootstrap.Modal.getInstance(modalEl);
         if (modal) modal.hide();
+    }
+
+    // FINALISASI KE PASCA LAND BANK
+    function confirmFinalizeToPasca(id, nama, progress, terbit, total) {
+        let noteText = '';
+        if (progress < 100) {
+            noteText = `<div class="p-2 mb-3 rounded" style="background:#fffbeb; border:1px solid #fde68a; font-size:0.83rem; text-align:left; color:#92400e;">
+                <i class="mdi mdi-alert-circle-outline me-1"></i>
+                <strong>Perhatian:</strong> Progres perizinan saat ini baru mencapai <strong>${progress}%</strong> (${terbit} dari ${total} izin terbit).
+                Pastikan dokumen esensial (seperti PKKPR, Pertek, atau Akta Pelepasan) telah memadai sebelum memulai pekerjaan fisik di Pasca Land Bank.
+            </div>`;
+        } else {
+            noteText = `<div class="p-2 mb-3 rounded" style="background:#ecfdf5; border:1px solid #a7f3d0; font-size:0.83rem; text-align:left; color:#065f46;">
+                <i class="mdi mdi-check-decagram me-1"></i>
+                <strong>Luar Biasa!</strong> Seluruh izin telah 100% tuntas. Kawasan ini siap dialihkan secara penuh ke Pasca Land Bank.
+            </div>`;
+        }
+
+        Swal.fire({
+            title: '<span style="font-size: 1.18rem; font-weight: 700; color: #1e293b;"><i class="mdi mdi-shield-crown text-success me-1.5"></i> Finalisasi ke Pasca Land Bank</span>',
+            html: `
+                <div style="font-size: 0.9rem; color: #475569; line-height: 1.5; text-align: center;" class="mb-3">
+                    Apakah Anda yakin ingin mengalihkan kawasan <strong>"${nama}"</strong> ke modul <strong>Pasca Land Bank</strong>?
+                </div>
+                ${noteText}
+                <div style="font-size: 0.82rem; color: #64748b; text-align: left; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <ul class="mb-0 ps-3">
+                        <li>Data kawasan, legalitas, koordinat peta, dan dokumen akan didaftarkan ke Pasca Land Bank.</li>
+                        <li>Tim operasional & teknik dapat mulai merancang <strong>Pengolahan Lahan</strong> & <strong>Pembuatan Kavling</strong>.</li>
+                    </ul>
+                </div>
+            `,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#10b981',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: '<i class="mdi mdi-check-circle me-1"></i> Ya, Alihkan ke Pasca',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+            focusConfirm: false,
+            customClass: {
+                popup: 'rounded-4 shadow-lg border-0',
+                confirmButton: 'px-4 py-2 rounded-3 fw-semibold',
+                cancelButton: 'px-4 py-2 rounded-3 fw-semibold'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Memproses Finalisasi...',
+                    text: 'Sedang mendaftarkan kawasan ke Pasca Land Bank',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                fetch(`{{ route('perizinan.finalize-pasca', ':id') }}`.replace(':id', id), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: '<span style="color: #059669; font-weight: 700;">Berhasil Dialihkan!</span>',
+                            html: `<p style="font-size:0.92rem; color:#475569;">${data.message}</p>`,
+                            icon: 'success',
+                            showCancelButton: true,
+                            confirmButtonColor: '#10b981',
+                            cancelButtonColor: '#6366f1',
+                            confirmButtonText: '<i class="mdi mdi-arrow-right me-1"></i> Buka di Pasca Land Bank',
+                            cancelButtonText: 'Tetap di Halaman Ini',
+                            reverseButtons: true,
+                            customClass: {
+                                popup: 'rounded-4 shadow-lg border-0',
+                                confirmButton: 'px-4 py-2 rounded-3 fw-semibold',
+                                cancelButton: 'px-4 py-2 rounded-3 fw-semibold'
+                            }
+                        }).then((choice) => {
+                            if (choice.isConfirmed && data.redirect_url) {
+                                window.location.href = data.redirect_url;
+                            } else {
+                                window.location.reload();
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal Mengalihkan',
+                            text: data.message || 'Terjadi kesalahan saat memproses data.',
+                            customClass: { popup: 'rounded-4' }
+                        });
+                    }
+                })
+                .catch(err => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Koneksi Terputus',
+                        text: 'Gagal menghubungi server. Silakan coba kembali.',
+                        customClass: { popup: 'rounded-4' }
+                    });
+                });
+            }
+        });
     }
 </script>
 @endpush

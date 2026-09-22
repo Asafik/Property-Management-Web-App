@@ -326,5 +326,10 @@ public function getOverallProgressPercentageAttribute(): int
     }
     return (int) ($this->profile_score ?? 35);
 }
+
+public function praLandbank()
+{
+    return $this->hasOne(PraLandbank::class, 'land_bank_id');
+}
 }
 

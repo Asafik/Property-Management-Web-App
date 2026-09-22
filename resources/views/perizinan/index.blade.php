@@ -471,13 +471,26 @@
                                             @else
                                                 <span class="badge-development-belum" style="background-color: #f1f5f9; color: #64748b; border-color: #e2e8f0; padding: 3px 8px; font-size: 0.75rem;">Belum</span>
                                             @endif
+                                            @if(!empty($proj['is_finalized_to_pasca']))
+                                                <div class="mt-1">
+                                                    <span class="badge text-success border border-success" style="background: #ecfdf5; font-size: 0.68rem; padding: 2px 5px; border-radius: 4px;" title="Sudah dialihkan ke Pasca Land Bank">
+                                                        <i class="mdi mdi-shield-check"></i> Pasca
+                                                    </span>
+                                                </div>
+                                            @endif
                                         </td>
                                         <td class="col-aksi text-center">
-                                            <!-- Tombol Tunggal Aksi Langsung: Kelola -->
-                                            <a href="{{ route('perizinan.show', $proj['id']) }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center py-1 px-2.5 fw-semibold shadow-sm text-decoration-none" style="font-size: 0.76rem; border-radius: 5px;">
-                                                <i class="mdi mdi-file-document-edit-outline" style="margin-right: 6px !important; font-size: 0.85rem;"></i>
-                                                <span>Kelola</span>
-                                            </a>
+                                            <div class="d-inline-flex align-items-center gap-1">
+                                                <a href="{{ route('perizinan.show', $proj['id']) }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center py-1 px-2.5 fw-semibold shadow-sm text-decoration-none" style="font-size: 0.76rem; border-radius: 5px;">
+                                                    <i class="mdi mdi-file-document-edit-outline" style="margin-right: 4px !important; font-size: 0.85rem;"></i>
+                                                    <span>Kelola</span>
+                                                </a>
+                                                @if(!empty($proj['is_finalized_to_pasca']) && !empty($proj['land_bank_id']))
+                                                    <a href="{{ route('properti.edit', $proj['land_bank_id']) }}" class="btn btn-sm btn-outline-success d-inline-flex align-items-center py-1 px-2 fw-semibold shadow-sm text-decoration-none" style="font-size: 0.76rem; border-radius: 5px;" title="Buka di Pasca Land Bank">
+                                                        <i class="mdi mdi-shield-check" style="font-size: 0.85rem;"></i>
+                                                    </a>
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty

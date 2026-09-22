@@ -103,6 +103,9 @@
         .btn-fase-3 {
             background: linear-gradient(135deg, #10b981, #059669);
         }
+        .btn-fase-perizinan {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+        }
         .btn-fase-delete {
             background: linear-gradient(135deg, #ef4444, #dc2626);
             padding: 0.32rem 0.55rem;
@@ -671,6 +674,15 @@
                                                         <i class="mdi mdi-lock"></i>
                                                         <span>Fase 3</span>
                                                     </button>
+                                                <?php endif; ?>
+
+                                                <!-- Perizinan (Saat Deal / Fase 3 Selesai) -->
+                                                <?php if($land->status === 'approved' || !empty($land->deal_price) || $land->status === 'fase3'): ?>
+                                                    <a href="<?php echo e(route('perizinan.show', $land->id)); ?>" 
+                                                        class="btn-fase-action btn-fase-perizinan" title="Lanjut ke Modul Perizinan Proyek">
+                                                        <i class="mdi mdi-file-certificate-outline"></i>
+                                                        <span>Izin</span>
+                                                    </a>
                                                 <?php endif; ?>
 
                                                 <!-- Delete Button -->
