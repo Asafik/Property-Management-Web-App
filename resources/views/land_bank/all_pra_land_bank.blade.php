@@ -112,15 +112,6 @@
             background: linear-gradient(135deg, #ef4444, #dc2626);
             padding: 0.32rem 0.55rem;
         }
-        .btn-fase-secondary {
-            background: #f8fafc !important;
-            color: #334155 !important;
-            border: 1px solid #cbd5e1 !important;
-        }
-        .btn-fase-secondary:hover {
-            background: #e2e8f0 !important;
-            color: #0f172a !important;
-        }
 
         /* Process Document Pill */
         .process-doc-pill {
@@ -247,6 +238,78 @@
         </div>
     </div>
 
+    <!-- 4 KPI Metrics Card Grid (Sama Persis Perizinan) -->
+    <div class="dash-kpi-grid mb-4">
+        
+        <!-- Card 1: Total Pra Tanah (Ungu) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon purple">
+                    <i class="mdi mdi-hand-holding-usd"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Total Pra Tanah</div>
+                    <div class="dash-kpi-val">{{ $totalPraTanah ?? $praLandBank->total() }}</div>
+                    <div class="dash-kpi-sub">Seluruh Tanah Terdaftar</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action purple">
+                <i class="mdi mdi-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- Card 2: Fase 1: Survei & Legal (Biru) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon blue">
+                    <i class="mdi mdi-clipboard-text-search-outline"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Fase 1: Survei & Legal</div>
+                    <div class="dash-kpi-val">{{ $totalFase1 ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Pemeriksaan Awal & Berkas</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action blue">
+                <i class="mdi mdi-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- Card 3: Fase 2: Negosiasi (Kuning / Amber) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon amber">
+                    <i class="mdi mdi-handshake-outline"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Fase 2: Negosiasi</div>
+                    <div class="dash-kpi-val">{{ $totalFase2 ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Penawaran & Kesepakatan</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action amber">
+                <i class="mdi mdi-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- Card 4: Fase 3: Sidang & Deal (Hijau) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon green">
+                    <i class="mdi mdi-check-decagram-outline"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Fase 3: Sidang & Deal</div>
+                    <div class="dash-kpi-val">{{ $totalFase3 ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Disetujui / Deal Pembayaran</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action green">
+                <i class="mdi mdi-arrow-right"></i>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Container: Table Card (Sama Persis Perizinan) -->
     <div class="row">
         <div class="col-12">
@@ -256,19 +319,10 @@
                 <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3 border-bottom">
                     <div>
                         <h5 class="card-title mb-0" style="font-weight: 700; color: #1e293b; font-size: 1.05rem;">
-                            <i class="mdi mdi-format-list-bulleted me-2" style="color: #6366f1;"></i>
-                            @if($currentFase === 'fase1' || $currentFase === '1')
-                                Daftar Pra Tanah &mdash; <span class="text-primary font-weight-bold">Fase 1: Legalitas & Berkas</span>
-                            @elseif($currentFase === 'fase2' || $currentFase === '2')
-                                Daftar Pra Tanah &mdash; <span class="text-warning font-weight-bold">Fase 2: Survey & Kelayakan</span>
-                            @elseif($currentFase === 'fase3' || $currentFase === '3')
-                                Daftar Pra Tanah &mdash; <span class="text-success font-weight-bold">Fase 3: Sidang & Deal</span>
-                            @else
-                                Daftar Pra Tanah &mdash; <span class="text-primary font-weight-bold">Fase 1: Legalitas & Berkas</span>
-                            @endif
+                            <i class="mdi mdi-format-list-bulleted me-2" style="color: #6366f1;"></i>Daftar Pra Tanah
                         </h5>
                     </div>
-                    @if(($currentFase === 'fase1' || $currentFase === '1' || empty($currentFase)) && (!$isKeuangan || $isAdmin))
+                    @if(!$isKeuangan || $isAdmin)
                         <a class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm fw-semibold" style="border-radius: 6px; font-size: 0.84rem;"
                             href="{{ route('pra-landbank.proses') }}">
                             <i class="mdi mdi-plus"></i>Tambah Pra Tanah
@@ -280,7 +334,7 @@
                     
                     <!-- Search & Filter Toolbar -->
                     <div class="card-toolbar-box p-3 border-bottom bg-white">
-                        <form id="filterForm" method="GET" action="{{ ($currentFase === 'fase2' || $currentFase === '2') ? route('pralandbank.fase2') : (($currentFase === 'fase3' || $currentFase === '3') ? route('pralandbank.fase3') : route('pralandbank.fase1')) }}">
+                        <form id="filterForm" method="GET" action="{{ route('pralandbank.all') }}">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                                 
                                 <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
@@ -316,7 +370,7 @@
                                     <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Terapkan Filter">
                                         <i class="mdi mdi-filter"></i>
                                     </button>
-                                    <a href="{{ ($currentFase === 'fase2' || $currentFase === '2') ? route('pralandbank.fase2') : (($currentFase === 'fase3' || $currentFase === '3') ? route('pralandbank.fase3') : route('pralandbank.fase1')) }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset Filter">
+                                    <a href="{{ route('pralandbank.all') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset Filter">
                                         <i class="mdi mdi-refresh"></i>
                                     </a>
                                 </div>
@@ -448,10 +502,10 @@
                                         $processDocs = $docs->where('document_status', 'proses');
                                         $unverifiedOrMissing = max(0, $totalRequired - $verifiedDocs);
                                         $legalPercent = $totalRequired > 0 ? round(($verifiedDocs / $totalRequired) * 100) : 0;
-                                        $isLandLegalSah = ($totalRequired > 0 && $verifiedDocs === $totalRequired) || $land->legal_status === 'clear' || in_array($land->status, ['fase2', 'fase3', 'approved']);
-                                        $isFase2Done = (!empty($land->survey_date) && !empty($land->survey_by)) || in_array($land->status, ['fase3', 'approved']);
-                                        $canAccessFase2 = $isAdmin || $isKeuangan || $isLandLegalSah || in_array($land->status, ['fase2', 'fase3', 'approved', 'rejected']);
-                                        $canAccessFase3 = $isAdmin || $isKeuangan || ($isLandLegalSah && $isFase2Done) || in_array($land->status, ['fase3', 'approved', 'rejected']) || $isTerminActive;
+                                        $isLandLegalSah = ($totalRequired > 0) && ($verifiedDocs === $totalRequired);
+                                        $isFase2Done = !empty($land->survey_date) && !empty($land->survey_by);
+                                        $canAccessFase2 = $isLandLegalSah || $land->status === 'approved' || $land->status === 'rejected';
+                                        $canAccessFase3 = ($isLandLegalSah && $isFase2Done) || $land->status === 'approved' || $land->status === 'rejected' || $isTerminActive;
                                     @endphp
 
                                     <tr class="pra-table-row" id="row-{{ $land->id }}"
@@ -578,79 +632,52 @@
 
                                         <td class="col-aksi text-center">
                                             <div class="d-inline-flex align-items-center gap-1">
-                                                @if($currentFase === 'fase2' || $currentFase === '2')
-                                                    <!-- FASE 2 ACTIONS -->
+                                                <!-- Fase 1 -->
+                                                <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 1]) }}" 
+                                                    class="btn-fase-action btn-fase-1" title="FASE 1: Dokumen Legalitas">
+                                                    <i class="mdi mdi-file-document-check"></i>
+                                                    <span>Fase 1</span>
+                                                </a>
+
+                                                <!-- Fase 2 -->
+                                                @if($canAccessFase2)
                                                     <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 2]) }}" 
-                                                        class="btn-fase-action btn-fase-2" title="Kelola Survey & Teknis Lahan">
+                                                        class="btn-fase-action btn-fase-2" title="FASE 2: Survey & Teknis">
                                                         <i class="mdi mdi-map-search"></i>
-                                                        <span>Input Survey</span>
+                                                        <span>Fase 2</span>
                                                     </a>
-
-                                                    <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 1]) }}" 
-                                                        class="btn-fase-action btn-fase-secondary" title="Lihat Berkas Legalitas Fase 1">
-                                                        <i class="mdi mdi-file-document-outline"></i>
-                                                        <span>Berkas Legal</span>
-                                                    </a>
-
-                                                    @if($canAccessFase3)
-                                                        <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" 
-                                                            class="btn-fase-action btn-fase-3" title="Lanjut ke Fase 3: Sidang & Deal">
-                                                            <i class="mdi mdi-arrow-right-circle"></i>
-                                                            <span>Ke Fase 3</span>
-                                                        </a>
-                                                    @else
-                                                        <button type="button" class="btn-fase-action btn-fase-3" 
-                                                            onclick="alertFase3Locked({{ $land->id }}, {{ $isLandLegalSah ? 'true' : 'false' }}, {{ $isFase2Done ? 'true' : 'false' }})" 
-                                                            style="opacity: 0.65;" title="Terkunci: Menunggu Pengisian Data Survey & Tim Teknis">
-                                                            <i class="mdi mdi-lock"></i>
-                                                            <span>Ke Fase 3</span>
-                                                        </button>
-                                                    @endif
-
-                                                @elseif($currentFase === 'fase3' || $currentFase === '3')
-                                                    <!-- FASE 3 ACTIONS -->
-                                                    <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" 
-                                                        class="btn-fase-action btn-fase-3" title="{{ $isTerminActive ? 'Kelola Jadwal & Pembayaran Cicilan' : 'Keputusan Sidang & Kesepakatan Deal' }}">
-                                                        <i class="mdi {{ $isTerminActive ? 'mdi-cash-check' : 'mdi-gavel' }}"></i>
-                                                        <span>{{ $isTerminActive ? 'Kelola Cicilan' : 'Sidang & Deal' }}</span>
-                                                    </a>
-
-                                                    <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 2]) }}" 
-                                                        class="btn-fase-action btn-fase-secondary" title="Lihat Hasil Survey Teknis Fase 2">
-                                                        <i class="mdi mdi-map-marker-check"></i>
-                                                        <span>Data Survey</span>
-                                                    </a>
-
-                                                    @if($land->status === 'approved' || !empty($land->deal_price) || $land->status === 'fase3')
-                                                        <a href="{{ route('perizinan.show', $land->id) }}" 
-                                                            class="btn-fase-action btn-fase-perizinan" title="Buka Modul Perizinan Proyek">
-                                                            <i class="mdi mdi-file-certificate-outline"></i>
-                                                            <span>Izin Proyek</span>
-                                                        </a>
-                                                    @endif
-
                                                 @else
-                                                    <!-- FASE 1 ACTIONS (Default) -->
-                                                    <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 1]) }}" 
-                                                        class="btn-fase-action btn-fase-1" title="Periksa & Kelola Dokumen Legalitas">
-                                                        <i class="mdi mdi-file-document-check"></i>
-                                                        <span>Kelola Legalitas</span>
-                                                    </a>
+                                                    <button type="button" class="btn-fase-action btn-fase-2" 
+                                                        onclick="alertFase2Locked({{ $land->id }})" 
+                                                        style="opacity: 0.75;" title="Terkunci: Menunggu Validasi Legalitas Fase 1">
+                                                        <i class="mdi mdi-lock"></i>
+                                                        <span>Fase 2</span>
+                                                    </button>
+                                                @endif
 
-                                                    @if($canAccessFase2)
-                                                        <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 2]) }}" 
-                                                            class="btn-fase-action btn-fase-2" title="Lanjut ke Fase 2: Survey & Teknis">
-                                                            <i class="mdi mdi-arrow-right-circle"></i>
-                                                            <span>Ke Fase 2</span>
-                                                        </a>
-                                                    @else
-                                                        <button type="button" class="btn-fase-action btn-fase-2" 
-                                                            onclick="alertFase2Locked({{ $land->id }})" 
-                                                            style="opacity: 0.65;" title="Terkunci: Menunggu Validasi Dokumen Legalitas 100% Sah">
-                                                            <i class="mdi mdi-lock"></i>
-                                                            <span>Ke Fase 2</span>
-                                                        </button>
-                                                    @endif
+                                                <!-- Fase 3 / Cicilan -->
+                                                @if($canAccessFase3)
+                                                    <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 3]) }}" 
+                                                        class="btn-fase-action btn-fase-3" title="{{ $isTerminActive ? 'Kelola Pembayaran Cicilan' : 'FASE 3: Sidang & Deal' }}">
+                                                        <i class="mdi {{ $isTerminActive ? 'mdi-cash-check' : 'mdi-check-decagram' }}"></i>
+                                                        <span>{{ $isTerminActive ? 'Cicilan' : 'Fase 3' }}</span>
+                                                    </a>
+                                                @else
+                                                    <button type="button" class="btn-fase-action btn-fase-3" 
+                                                        onclick="alertFase3Locked({{ $land->id }}, {{ $isLandLegalSah ? 'true' : 'false' }}, {{ $isFase2Done ? 'true' : 'false' }})" 
+                                                        style="opacity: 0.75;" title="Terkunci">
+                                                        <i class="mdi mdi-lock"></i>
+                                                        <span>Fase 3</span>
+                                                    </button>
+                                                @endif
+
+                                                <!-- Perizinan (Saat Deal / Fase 3 Selesai) -->
+                                                @if($land->status === 'approved' || !empty($land->deal_price) || $land->status === 'fase3')
+                                                    <a href="{{ route('perizinan.show', $land->id) }}" 
+                                                        class="btn-fase-action btn-fase-perizinan" title="Lanjut ke Modul Perizinan Proyek">
+                                                        <i class="mdi mdi-file-certificate-outline"></i>
+                                                        <span>Izin</span>
+                                                    </a>
                                                 @endif
 
                                                 <!-- Delete Button -->
@@ -670,13 +697,7 @@
                                     <tr>
                                         <td colspan="9" class="text-center text-muted py-4">
                                             <i class="mdi mdi-alert-circle-outline me-2" style="font-size: 1.5rem;"></i>
-                                            @if($currentFase === 'fase2' || $currentFase === '2')
-                                                Tidak ada data pra tanah pada <strong>Fase 2 (Survey & Teknis)</strong>.
-                                            @elseif($currentFase === 'fase3' || $currentFase === '3')
-                                                Tidak ada data pra tanah pada <strong>Fase 3 (Sidang & Deal)</strong>.
-                                            @else
-                                                Tidak ada data pra tanah pada <strong>Fase 1 (Legalitas & Berkas)</strong>.
-                                            @endif
+                                            Tidak ada data pra tanah yang terdaftar.
                                         </td>
                                     </tr>
                                 @endforelse

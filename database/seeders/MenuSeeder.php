@@ -47,56 +47,36 @@ class MenuSeeder extends Seeder
         ]);
         $dashboard->positions()->attach($allRoles);
 
-        // ================= 2. PRA LAND BANK =================
-        $praLandbankMenu = Menu::create([
-            'name'  => 'Pra Land Bank',
-            'icon'  => 'mdi-map-clock-outline',
+        // ================= 2. TANAH INDUK (LAND BANK) =================
+        $properti = Menu::create([
+            'name'  => 'Tanah Induk (Land Bank)',
+            'icon'  => 'mdi-office-building',
             'order' => 2
         ]);
-        $praLandbankMenu->positions()->attach($landbankRoles);
+        $properti->positions()->attach($landbankRoles);
 
         Menu::create([
-            'name'      => 'Fase 1: Legalitas & Berkas',
-            'route'     => 'pralandbank.fase1',
-            'parent_id' => $praLandbankMenu->id
+            'name'      => 'Tanah Pra Land Bank',
+            'route'     => 'pralandbank.all',
+            'parent_id' => $properti->id
         ])->positions()->attach($landbankRoles);
 
         Menu::create([
-            'name'      => 'Fase 2: Survey & Teknis',
-            'route'     => 'pralandbank.fase2',
-            'parent_id' => $praLandbankMenu->id
-        ])->positions()->attach($landbankRoles);
-
-        Menu::create([
-            'name'      => 'Fase 3: Sidang & Deal',
-            'route'     => 'pralandbank.fase3',
-            'parent_id' => $praLandbankMenu->id
-        ])->positions()->attach($landbankRoles);
-
-        // ================= 3. PASCA LAND BANK =================
-        $pascaLandbankMenu = Menu::create([
-            'name'  => 'Pasca Land Bank',
-            'icon'  => 'mdi-domain',
-            'order' => 3
-        ]);
-        $pascaLandbankMenu->positions()->attach($landbankRoles);
-
-        Menu::create([
-            'name'      => 'Semua Pasca Land Bank',
+            'name'      => 'Tanah Pasca Land Bank',
             'route'     => 'properti-all',
-            'parent_id' => $pascaLandbankMenu->id
+            'parent_id' => $properti->id
         ])->positions()->attach($landbankRoles);
 
         Menu::create([
             'name'      => 'Tambah Kavling',
             'route'     => 'kavling.index',
-            'parent_id' => $pascaLandbankMenu->id
+            'parent_id' => $properti->id
         ])->positions()->attach($legalRoles);
 
         Menu::create([
             'name'      => 'Lokasi',
             'route'     => 'lokasi.index',
-            'parent_id' => $pascaLandbankMenu->id
+            'parent_id' => $properti->id
         ])->positions()->attach($legalRoles);
 
         // ================= 3. DOKUMEN (LEGALITAS) =================
