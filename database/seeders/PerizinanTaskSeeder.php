@@ -10,10 +10,12 @@ use App\Models\Employee;
 
 class PerizinanTaskSeeder extends Seeder
 {
-    public function run(): void
-    {
         $lb1 = LandBank::find(1);
         $lb2 = LandBank::find(2);
+
+        if (!$lb1 && !$lb2) {
+            return;
+        }
 
         $mPertek = MasterDokumenPerizinan::where('nama_dokumen', 'like', '%PERTEK%')->first();
         $mPkkpr  = MasterDokumenPerizinan::where('nama_dokumen', 'like', '%PKKPR%')->first();
