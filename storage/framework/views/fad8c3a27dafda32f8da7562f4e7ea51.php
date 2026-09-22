@@ -10,7 +10,7 @@
     $pageTitle = 'Dashboard';
     if (!empty($rawTitle)) {
         $parts = explode(' - ', $rawTitle);
-        $pageTitle = trim($parts[0]);
+        $pageTitle = html_entity_decode(trim($parts[0]));
     }
 ?>
 
