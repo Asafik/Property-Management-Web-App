@@ -174,6 +174,7 @@
             // Kelompok Proyek
             'Proyek'                  => 7,
             'Pengolahan Lahan'        => 8,
+            'SPK Kontraktor'          => 8.5,
 
             // Kelompok Marketing & Transaksi
             'Marketing'               => 10,
@@ -212,6 +213,7 @@
             // Proyek
             'Proyek'                  => 'Proyek',
             'Pengolahan Lahan'        => 'Proyek',
+            'SPK Kontraktor'          => 'Proyek',
 
             // Marketing
             'Marketing'               => 'Marketing',
@@ -250,6 +252,9 @@
             }
             if ($m->route === 'proyek.pengolahan-lahan.index') {
                 return 8;
+            }
+            if ($m->route === 'spk.index') {
+                return 8.5;
             }
             if ($m->route === 'proyek.unit.index') {
                 return 9;

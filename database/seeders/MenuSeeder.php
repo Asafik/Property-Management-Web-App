@@ -91,7 +91,6 @@ class MenuSeeder extends Seeder
             'dokument.index'                => 'Tanah Induk (LandBank)',
             'dokument.persiapan'            => 'Pecah Tanah Induk Unit',
             'document.user.persiapan-legal' => 'Data User Persiapan Pecah Legal',
-            'spk.index'                     => 'SPK Kontraktor'
         ];
 
         foreach ($docMenus as $route => $name) {
@@ -152,6 +151,15 @@ class MenuSeeder extends Seeder
             'order' => 8
         ]);
         $proyekMenu->positions()->attach($adminOnly);
+
+        $spkMenu = Menu::create([
+            'name'  => 'SPK Kontraktor',
+            'route' => 'spk.index',
+            'icon'  => 'mdi-file-sign',
+            'order' => 8.5
+        ]);
+        $spkRoles = array_values(array_unique(array_merge($adminOnly, $legalRoles)));
+        $spkMenu->positions()->attach($spkRoles);
 
         $unitMenu = Menu::create([
             'name'  => 'Unit',
