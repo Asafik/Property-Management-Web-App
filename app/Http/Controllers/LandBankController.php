@@ -84,7 +84,7 @@ class LandBankController extends Controller
                 'lat' => $request->latitude,
                 'lng' => $request->longitude,
                 'description' => $request->deskripsi,
-                'status' => 'draft',
+                'status' => 'aktif',
                 'fee_document_verification' => $fee_verification,
             ]);
 

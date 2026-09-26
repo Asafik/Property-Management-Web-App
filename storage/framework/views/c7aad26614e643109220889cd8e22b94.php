@@ -32,8 +32,13 @@
             text-align: center;
             white-space: nowrap !important;
         }
+        .table-lahan .col-dokumen {
+            width: 75px;
+            text-align: center;
+            white-space: nowrap !important;
+        }
         .table-lahan .col-aksi {
-            width: 100px;
+            width: 90px;
             text-align: center;
             white-space: nowrap !important;
         }
@@ -115,6 +120,23 @@
         }
         .sort-th:hover {
             background: #f1f5f9 !important;
+        }
+        .hover-primary:hover {
+            color: #9a55ff !important;
+        }
+        .nav-tabs .nav-link {
+            color: #64748b;
+            font-size: 0.85rem;
+            border-bottom: 2px solid transparent !important;
+            transition: all 0.2s ease;
+        }
+        .nav-tabs .nav-link:hover {
+            color: #9a55ff;
+        }
+        .nav-tabs .nav-link.active {
+            color: #9a55ff !important;
+            border-bottom: 2px solid #9a55ff !important;
+            background: transparent !important;
         }
     </style>
 <?php $__env->stopPush(); ?>
@@ -231,7 +253,7 @@
                     <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3 border-bottom">
                         <div>
                             <h5 class="card-title mb-0" style="font-weight: 700; color: #1e293b; font-size: 1.05rem;">
-                                <i class="mdi mdi-office-building-marker-outline me-2" style="color: #9a55ff;"></i>Daftar Properti
+                                <i class="mdi mdi-office-building-marker-outline me-2" style="color: #9a55ff;"></i>Daftar Tanah Pasca Land Bank
                             </h5>
                         </div>
                         <a href="<?php echo e(route('properti')); ?>" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm fw-semibold" style="border-radius: 6px; font-size: 0.84rem;">
@@ -281,8 +303,8 @@
                                             </div>
 
                                             <!-- Legalitas -->
-                                            <div style="min-width: 140px;">
-                                                <select name="legalitas" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
+                                            <div style="min-width: 165px;">
+                                                <select name="legalitas" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px; font-size: 0.84rem;">
                                                     <option value="">Semua Legalitas</option>
                                                     <option value="verified" <?php echo e(request('legalitas') == 'verified' ? 'selected' : ''); ?>>Terverifikasi</option>
                                                     <option value="pending" <?php echo e(request('legalitas') == 'pending' ? 'selected' : ''); ?>>Pending</option>
@@ -291,8 +313,8 @@
                                             </div>
 
                                             <!-- Pembangunan -->
-                                            <div style="min-width: 140px;">
-                                                <select name="pembangunan" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
+                                            <div style="min-width: 150px;">
+                                                <select name="pembangunan" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px; font-size: 0.84rem;">
                                                     <option value="">Semua Status</option>
                                                     <option value="Selesai" <?php echo e(request('pembangunan') == 'Selesai' ? 'selected' : ''); ?>>Selesai</option>
                                                     <option value="progress" <?php echo e(request('pembangunan') == 'progress' ? 'selected' : ''); ?>>Progress</option>
@@ -401,8 +423,8 @@
                                         <th class="sort-th" onclick="handleSort('acquisition_price')">HARGA BELI <i class="mdi <?php echo e(sortIcon('acquisition_price')); ?>"></i></th>
                                         <th class="sort-th" onclick="handleSort('legal_status')">LEGALITAS <i class="mdi <?php echo e(sortIcon('legal_status')); ?>"></i></th>
                                         <th class="sort-th" onclick="handleSort('development_status')">PEMBANGUNAN <i class="mdi <?php echo e(sortIcon('development_status')); ?>"></i></th>
-                                        <th class="text-center" width="8%">DOKUMEN</th>
-                                        <th class="text-center col-aksi" width="10%">AKSI</th>
+                                        <th class="text-center col-dokumen">DOKUMEN</th>
+                                        <th class="text-center col-aksi">AKSI</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -413,10 +435,15 @@
                                         <tr class="project-table-row" data-search="<?php echo e($searchKeywords); ?>">
                                             <td class="col-no text-center fw-bold text-muted"><?php echo e($landBanks->firstItem() + $index); ?></td>
                                             <td>
-                                                <div class="fw-bold text-dark" style="font-size: 0.88rem;">
+                                                <a href="javascript:void(0)" 
+                                                   class="fw-bold text-dark text-decoration-none hover-primary d-inline-block" 
+                                                   data-bs-toggle="modal" 
+                                                   data-bs-target="#modalDetail<?php echo e($item->id); ?>" 
+                                                   title="Klik untuk melihat detail lengkap"
+                                                   style="font-size: 0.88rem; transition: color 0.15s ease;">
                                                     <?php echo e($item->name); ?>
 
-                                                </div>
+                                                </a>
                                                 <small class="text-muted d-block d-md-none mt-1">
                                                     <?php echo e(Str::limit($item->address ?? '-', 15)); ?>
 
@@ -492,7 +519,6 @@
                                                         <div class="progress-bar" role="progressbar" style="width: <?php echo e($legalPercent); ?>%; <?php echo e($legalBarColor); ?> border-radius: 4px;" aria-valuenow="<?php echo e($legalPercent); ?>" aria-valuemin="0" aria-valuemax="100"></div>
                                                     </div>
                                                 </div>
-                                            </td>
                                             <td>
                                                 <?php
                                                     $devPercent = (float) $item->overall_infrastructure_progress;
@@ -516,76 +542,40 @@
                                                         $devLabel = 'Belum';
                                                     }
                                                 ?>
-                                                 <?php
-                                                     $isProfileOk = $item->isProfileComplete();
-                                                     $missingFields = $item->getMissingProfileFields();
-                                                 ?>
-                                                 <?php if($isProfileOk): ?>
-                                                     <a href="<?php echo e(route('properti.pengolahanLahan', $item->id)); ?>" 
-                                                        class="text-decoration-none d-block" 
-                                                        style="min-width: 115px;" 
-                                                        title="Buka Halaman Pengolahan Lahan (<?php echo e($devPercent); ?>%)">
-                                                         <div class="d-flex justify-content-between align-items-center mb-1">
-                                                             <small class="fw-bold <?php echo e($devTextClass); ?>" style="font-size: 0.75rem;">
-                                                                 <i class="mdi <?php echo e($devIcon); ?> me-0.5"></i> <?php echo e($devLabel); ?>
+                                                <div style="min-width: 110px;">
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <small class="fw-bold <?php echo e($devTextClass); ?>" style="font-size: 0.75rem;">
+                                                            <i class="mdi <?php echo e($devIcon); ?> me-0.5"></i> <?php echo e($devLabel); ?>
 
-                                                             </small>
-                                                             <span class="fw-bold" style="font-size: 0.75rem; color: #374151;"><?php echo e($devPercent); ?>%</span>
-                                                         </div>
-                                                         <div class="progress" style="height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden;">
-                                                             <div class="progress-bar" role="progressbar" style="width: <?php echo e($devPercent); ?>%; <?php echo e($devBarColor); ?> border-radius: 4px;" aria-valuenow="<?php echo e($devPercent); ?>" aria-valuemin="0" aria-valuemax="100"></div>
-                                                         </div>
-                                                     </a>
-                                                 <?php else: ?>
-                                                     <a href="javascript:void(0)" 
-                                                        class="text-decoration-none d-block btn-pengolahan-alert" 
-                                                        style="min-width: 115px;" 
-                                                        data-id="<?php echo e($item->id); ?>"
-                                                        data-name="<?php echo e($item->name); ?>"
-                                                        data-missing="<?php echo e(implode(', ', $missingFields)); ?>"
-                                                        data-url="<?php echo e(route('properti.pengolahanLahan', $item->id)); ?>"
-                                                        data-edit-url="<?php echo e(route('properti.edit', $item->id)); ?>"
-                                                        title="Profil Belum Lengkap - Klik untuk Melihat">
-                                                         <div class="d-flex justify-content-between align-items-center mb-1">
-                                                             <small class="fw-bold text-warning" style="font-size: 0.75rem;">
-                                                                 <i class="mdi mdi-alert-circle me-0.5"></i> Profil Belum Lengkap
-                                                             </small>
-                                                             <span class="fw-bold" style="font-size: 0.75rem; color: #374151;"><?php echo e($devPercent); ?>%</span>
-                                                         </div>
-                                                         <div class="progress" style="height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden;">
-                                                             <div class="progress-bar" role="progressbar" style="width: <?php echo e($devPercent); ?>%; <?php echo e($devBarColor); ?> border-radius: 4px;" aria-valuenow="<?php echo e($devPercent); ?>" aria-valuemin="0" aria-valuemax="100"></div>
-                                                         </div>
-                                                     </a>
-                                                 <?php endif; ?>
+                                                        </small>
+                                                        <span class="fw-bold" style="font-size: 0.75rem; color: #374151;"><?php echo e($devPercent); ?>%</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden;">
+                                                        <div class="progress-bar" role="progressbar" style="width: <?php echo e($devPercent); ?>%; <?php echo e($devBarColor); ?> border-radius: 4px;" aria-valuenow="<?php echo e($devPercent); ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td class="text-center">
                                                 <button type="button" class="document-trigger" data-bs-toggle="modal"
-                                                    data-bs-target="#modalDokumen<?php echo e($item->id); ?>">
+                                                    data-bs-target="#modalDokumen<?php echo e($item->id); ?>" title="Lihat Dokumen">
                                                     <i class="mdi mdi-file-document-multiple-outline"></i><?php echo e($item->merged_documents->count()); ?>
 
                                                 </button>
                                             </td>
                                             <td class="text-center" style="white-space: nowrap;">
-                                                 <?php if($isProfileOk): ?>
-                                                     <a href="<?php echo e(route('properti.pengolahanLahan', $item->id)); ?>" 
-                                                        class="btn-action fase1" 
-                                                        title="Kelola Pengolahan Lahan (PJU, Selokan, Jalan, dll)">
-                                                         <i class="mdi mdi-wrench"></i>
-                                                     </a>
-                                                 <?php else: ?>
-                                                     <a href="javascript:void(0)" 
-                                                        class="btn-action fase1 btn-pengolahan-alert" 
-                                                        data-id="<?php echo e($item->id); ?>"
-                                                        data-name="<?php echo e($item->name); ?>"
-                                                        data-missing="<?php echo e(implode(', ', $missingFields)); ?>"
-                                                        data-url="<?php echo e(route('properti.pengolahanLahan', $item->id)); ?>"
-                                                        data-edit-url="<?php echo e(route('properti.edit', $item->id)); ?>"
-                                                        title="Profil Belum Lengkap - Perbarui Data Landbank">
-                                                         <i class="mdi mdi-wrench text-warning"></i>
-                                                     </a>
-                                                 <?php endif; ?>
-                                                <a href="<?php echo e(route('properti.edit', $item->id)); ?>" class="btn-action edit ms-1" title="Edit Properti">
-                                                    <i class="mdi mdi-pencil"></i>
+                                                <button type="button" 
+                                                    class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1.5 shadow-none" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#modalDetail<?php echo e($item->id); ?>" 
+                                                    title="Lihat Detail Properti"
+                                                    style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
+                                                    <i class="mdi mdi-eye"></i> Detail
+                                                </button>
+                                                <a href="<?php echo e(route('properti.edit', $item->id)); ?>" 
+                                                    class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 px-2.5 py-1.5 ms-1 shadow-sm text-decoration-none fw-semibold" 
+                                                    title="Edit Properti & Dokumen Pengindukan"
+                                                    style="border-radius: 6px; font-size: 0.78rem;">
+                                                    <i class="mdi mdi-pencil"></i> Edit
                                                 </a>
                                             </td>
                                         </tr>
@@ -723,17 +713,6 @@
                                                                      <i class="mdi mdi-download m-0"></i>
                                                                  </a>
                                                              <?php endif; ?>
-                                                             <?php if(!$item->isFromPraLandbank() && $doc->status == 'rejected'): ?>
-                                                                 <button type="button" 
-                                                                     class="btn-outline-red px-2 py-1 ms-1 btn-revisi-trigger" 
-                                                                     data-doc-id="<?php echo e($doc->id); ?>" 
-                                                                     data-doc-name="<?php echo e($doc->documentType->name ?? 'Dokumen'); ?>"
-                                                                     data-doc-reason="<?php echo e($doc->admin_notes ?? 'Tidak ada catatan khusus.'); ?>"
-                                                                     data-property-id="<?php echo e($item->id); ?>"
-                                                                     title="Upload Revisi">
-                                                                     <i class="mdi mdi-upload m-0"></i>
-                                                                 </button>
-                                                             <?php endif; ?>
                                                         </td>
                                                     </tr>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -749,51 +728,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- UPLOAD REVISI FORM (COLLAPSED BY DEFAULT) -->
-                        <div class="card border-0 shadow-sm mb-4 d-none" id="revisionCard<?php echo e($item->id); ?>">
-                            <div class="card-header bg-soft-danger fw-bold text-danger d-flex align-items-center justify-content-between p-3" style="border-radius: 12px 12px 0 0;">
-                                <span>
-                                    <i class="mdi mdi-cloud-upload-outline me-2"></i>
-                                    Form Upload Revisi Dokumen: <span id="revisionDocName<?php echo e($item->id); ?>" class="text-dark"></span>
-                                </span>
-                                <button type="button" class="btn-close-revision" data-target="#revisionCard<?php echo e($item->id); ?>" style="background: none; border: none; font-size: 1.5rem; color: #dc3545; cursor: pointer; font-weight: bold;">&times;</button>
-                            </div>
-                            <div class="card-body p-4">
-                                <form action="#" method="POST" enctype="multipart/form-data" id="revisionForm<?php echo e($item->id); ?>">
-                                    <?php echo csrf_field(); ?>
-                                    <!-- Hidden input for document ID -->
-                                    <input type="hidden" name="document_id" id="revisionDocId<?php echo e($item->id); ?>">
-                                    
-
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3 text-start">
-                                            <label class="form-label fw-bold text-muted small mb-2 d-block" style="color: #9a55ff !important;">Nomor Dokumen Baru <span class="text-danger">*</span></label>
-                                            <input type="text" name="document_number" class="form-control" placeholder="Masukkan nomor dokumen baru" required style="border-radius: 10px; padding: 0.7rem 0.8rem; font-size: 0.85rem; border: 1px solid #e9ecef; width: 100%;">
-                                        </div>
-                                        <div class="col-md-6 mb-3 text-start">
-                                            <label class="form-label fw-bold text-muted small mb-2 d-block" style="color: #9a55ff !important;">Pilih File Baru (PDF/Gambar) <span class="text-danger">*</span></label>
-                                            <div class="properti-file-upload-modern">
-                                                <input type="file" name="file_dokumen" id="fileRevision<?php echo e($item->id); ?>" class="properti-file-input-modern" accept=".pdf,.jpg,.jpeg,.png" required>
-                                                <label for="fileRevision<?php echo e($item->id); ?>" class="properti-file-label-modern w-100">
-                                                    <div class="properti-file-info-modern">
-                                                        <i class="mdi mdi-cloud-upload-outline properti-file-icon-modern" style="font-size: 1.8rem;"></i>
-                                                        <span class="d-block mt-1">Pilih File Revisi</span>
-                                                        <small class="properti-file-size d-block text-muted mt-1"></small>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-end gap-2 mt-3">
-                                        <button type="button" class="btn btn-gradient-secondary btn-sm px-4 btn-close-revision" data-target="#revisionCard<?php echo e($item->id); ?>" style="border-radius: 8px;">Batal</button>
-                                        <button type="submit" class="btn btn-gradient-primary btn-sm px-4" style="border-radius: 8px;">
-                                            <i class="mdi mdi-check-circle-outline me-1"></i>Kirim Revisi
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
                     </div>
                     <div class="modal-footer border-0">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
@@ -803,60 +737,488 @@
                 </div>
             </div>
         </div>
-    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-    <!-- Modal Peringatan Profil Landbank Belum Lengkap -->
-    <div class="modal fade" id="modalProfileIncomplete" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
-                <div class="modal-body p-4 text-center">
-                    <!-- Icon Header -->
-                    <div class="d-inline-flex align-items-center justify-content-center mb-3" 
-                         style="width: 70px; height: 70px; border-radius: 50%; background: #fff7ed; color: #f97316; box-shadow: 0 4px 14px rgba(249, 115, 22, 0.15);">
-                        <i class="mdi mdi-alert-circle-outline" style="font-size: 38px;"></i>
+        <!-- MODAL DETAIL TANAH PASCA LAND BANK -->
+        <div class="modal fade" id="modalDetail<?php echo e($item->id); ?>" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
+                    <!-- Modal Header -->
+                    <div class="modal-header bg-white border-bottom py-3 px-4 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" 
+                                 style="width: 44px; height: 44px; background: rgba(154, 85, 255, 0.12); color: #9a55ff;">
+                                <i class="mdi mdi-domain" style="font-size: 1.5rem;"></i>
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <h5 class="modal-title fw-bold text-dark mb-0" style="font-size: 1.15rem;">
+                                        <?php echo e($item->name); ?>
+
+                                    </h5>
+                                    <span class="badge-category"><?php echo e($item->zoning ?? 'Tanah'); ?></span>
+                                    <?php if($item->isFromPraLandbank()): ?>
+                                        <span class="badge bg-soft-info text-info border border-info px-2 py-0.5" style="font-size: 0.7rem; border-radius: 4px;">Dari Pra-Landbank</span>
+                                    <?php endif; ?>
+                                </div>
+                                <small class="text-muted">
+                                    <i class="mdi mdi-office-building me-1"></i><?php echo e($item->companyProfile->name ?? 'Perusahaan Mitra Tidak Terdaftar'); ?>
+
+                                </small>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <h4 class="fw-bold text-dark mb-2" style="font-size: 1.25rem;">Profil Landbank Belum Lengkap</h4>
-                    <p class="text-muted mb-3" style="font-size: 0.9rem;">
-                        Data profil tanah untuk <strong class="text-dark" id="modalPropName">Properti</strong> belum dilengkapi.
-                    </p>
+                    <!-- Modal Body -->
+                    <div class="modal-body p-4" style="background: #f8fafc;">
 
-                    <!-- Box Daftar Yang Belum Lengkap -->
-                    <div class="text-start p-3 mb-3" style="background: #fff8eb; border-radius: 10px; border-left: 4px solid #f59e0b;">
-                        <div class="fw-bold text-dark mb-1" style="font-size: 0.82rem;">
-                            <i class="mdi mdi-information-outline me-1 text-warning"></i> Belum diisi / belum diunggah:
+                        <!-- Top Quick Stats (4 Cards) -->
+                        <div class="row g-3 mb-4">
+                            <!-- Luas Lahan -->
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="bg-white p-3 rounded-3 border h-100 shadow-sm">
+                                    <div class="d-flex align-items-center justify-content-between text-muted small mb-1">
+                                        <span class="fw-semibold">Luas Lahan</span>
+                                        <i class="mdi mdi-texture-box text-primary" style="font-size: 1.2rem;"></i>
+                                    </div>
+                                    <div class="fw-bold text-dark fs-5">
+                                        <?php echo e(number_format($item->area ?? 0, 0, ',', '.')); ?> <span class="fs-6 text-muted font-normal">m²</span>
+                                    </div>
+                                    <small class="text-muted" style="font-size: 0.75rem;">
+                                        Sisa: <?php echo e(number_format($item->remaining_area ?? 0, 0, ',', '.')); ?> m²
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Total Harga Beli -->
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="bg-white p-3 rounded-3 border h-100 shadow-sm">
+                                    <div class="d-flex align-items-center justify-content-between text-muted small mb-1">
+                                        <span class="fw-semibold">Harga Akuisisi</span>
+                                        <i class="mdi mdi-cash-multiple text-success" style="font-size: 1.2rem;"></i>
+                                    </div>
+                                    <div class="fw-bold text-success fs-5">
+                                        Rp <?php echo e(number_format($item->grand_total_acquisition_price, 0, ',', '.')); ?>
+
+                                    </div>
+                                    <small class="text-muted" style="font-size: 0.75rem;">
+                                        Tgl: <?php echo e($item->acquisition_date ? \Carbon\Carbon::parse($item->acquisition_date)->locale('id')->translatedFormat('d M Y') : '-'); ?>
+
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Status Legalitas -->
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="bg-white p-3 rounded-3 border h-100 shadow-sm">
+                                    <div class="d-flex align-items-center justify-content-between text-muted small mb-1">
+                                        <span class="fw-semibold">Legalitas</span>
+                                        <i class="mdi mdi-shield-check text-info" style="font-size: 1.2rem;"></i>
+                                    </div>
+                                    <div class="fw-bold text-dark fs-5">
+                                        <?php if($item->isFromPraLandbank() || $item->legal_status === 'verified'): ?>
+                                            <span class="text-success"><i class="mdi mdi-check-circle me-1"></i>Terverifikasi</span>
+                                        <?php elseif($item->legal_status === 'rejected'): ?>
+                                            <span class="text-danger"><i class="mdi mdi-close-circle me-1"></i>Ditolak</span>
+                                        <?php else: ?>
+                                            <span class="text-warning"><i class="mdi mdi-clock-outline me-1"></i><?php echo e(ucfirst($item->legal_status ?? 'Pending')); ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <small class="text-muted" style="font-size: 0.75rem;">
+                                        <?php echo e($item->merged_documents->count()); ?> Dokumen Terlampir
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Status Pembangunan -->
+                            <div class="col-sm-6 col-lg-3">
+                                <div class="bg-white p-3 rounded-3 border h-100 shadow-sm">
+                                    <div class="d-flex align-items-center justify-content-between text-muted small mb-1">
+                                        <span class="fw-semibold">Pembangunan Fisik</span>
+                                        <i class="mdi mdi-progress-wrench text-warning" style="font-size: 1.2rem;"></i>
+                                    </div>
+                                    <div class="fw-bold text-dark fs-5">
+                                        <?php echo e((float) $item->overall_infrastructure_progress); ?>%
+                                    </div>
+                                    <small class="text-muted" style="font-size: 0.75rem;">
+                                        Status: <?php echo e(ucfirst($item->development_status ?? 'Belum Mulai')); ?>
+
+                                    </small>
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-danger fw-semibold" style="font-size: 0.85rem;" id="modalPropMissing">
-                            -
+
+                        <!-- Detail Navigation Tabs -->
+                        <div class="card border-0 shadow-sm mb-0" style="border-radius: 10px; overflow: hidden;">
+                            <div class="card-header bg-white border-bottom p-0">
+                                <ul class="nav nav-tabs border-0 px-3 pt-2" id="detailTab<?php echo e($item->id); ?>" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active fw-semibold py-2.5 px-3 border-0" 
+                                            id="info-tab-<?php echo e($item->id); ?>" data-bs-toggle="tab" 
+                                            data-bs-target="#info-pane-<?php echo e($item->id); ?>" type="button" role="tab">
+                                            <i class="mdi mdi-information-outline me-1 text-primary"></i> Data Tanah & Lokasi
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link fw-semibold py-2.5 px-3 border-0" 
+                                            id="legal-tab-<?php echo e($item->id); ?>" data-bs-toggle="tab" 
+                                            data-bs-target="#legal-pane-<?php echo e($item->id); ?>" type="button" role="tab">
+                                            <i class="mdi mdi-certificate-outline me-1 text-success"></i> Legalitas & Perizinan
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link fw-semibold py-2.5 px-3 border-0" 
+                                            id="docs-tab-<?php echo e($item->id); ?>" data-bs-toggle="tab" 
+                                            data-bs-target="#docs-pane-<?php echo e($item->id); ?>" type="button" role="tab">
+                                            <i class="mdi mdi-file-document-multiple-outline me-1 text-info"></i> Berkas Dokumen (<?php echo e($item->merged_documents->count()); ?>)
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link fw-semibold py-2.5 px-3 border-0" 
+                                            id="infra-tab-<?php echo e($item->id); ?>" data-bs-toggle="tab" 
+                                            data-bs-target="#infra-pane-<?php echo e($item->id); ?>" type="button" role="tab">
+                                            <i class="mdi mdi-road-variant me-1 text-warning"></i> Lahan & Akses
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="card-body p-4 bg-white">
+                                <div class="tab-content" id="detailTabContent<?php echo e($item->id); ?>">
+                                    
+                                    <!-- TAB 1: DATA TANAH & LOKASI -->
+                                    <div class="tab-pane fade show active" id="info-pane-<?php echo e($item->id); ?>" role="tabpanel">
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                                                    <i class="mdi mdi-map-marker-radius me-1 text-primary"></i> Alamat & Lokasi
+                                                </h6>
+                                                <table class="table table-sm table-borderless mb-0">
+                                                    <tr>
+                                                        <td class="text-muted" width="40%">Alamat Lengkap</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->address ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Desa / Kelurahan</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->village ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Kecamatan</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->district ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Kota / Kabupaten</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->city ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Provinsi</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->province ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Kode Pos</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->postal_code ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Koordinat Peta</td>
+                                                        <td class="fw-semibold text-dark">
+                                                            : <?php if(!empty($item->lat) && !empty($item->lng)): ?>
+                                                                <span><?php echo e($item->lat); ?>, <?php echo e($item->lng); ?></span>
+                                                                <a href="https://www.google.com/maps?q=<?php echo e($item->lat); ?>,<?php echo e($item->lng); ?>" target="_blank" class="btn btn-xs btn-outline-primary ms-2 py-0 px-2" style="font-size: 0.75rem;">
+                                                                    <i class="mdi mdi-open-in-new me-1"></i>Maps
+                                                                </a>
+                                                              <?php else: ?>
+                                                                <span class="text-muted">Belum diset</span>
+                                                              <?php endif; ?>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                                                    <i class="mdi mdi-card-account-details-outline me-1 text-primary"></i> Identitas Kepemilikan & Fisik
+                                                </h6>
+                                                <table class="table table-sm table-borderless mb-0">
+                                                    <tr>
+                                                        <td class="text-muted" width="40%">Perusahaan Pengembang</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->companyProfile->name ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Status Kepemilikan</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->ownership_status ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Kategori Peruntukan</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->zoning ?? 'Tanah Properti'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Luas Total Lahan</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e(number_format($item->area ?? 0, 0, ',', '.')); ?> m²</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Sisa Luas Belum Terpakai</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e(number_format($item->remaining_area ?? 0, 0, ',', '.')); ?> m²</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Nilai / Harga Perolehan</td>
+                                                        <td class="fw-bold text-success">: Rp <?php echo e(number_format($item->grand_total_acquisition_price, 0, ',', '.')); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Tanggal Akuisisi</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->acquisition_date ? \Carbon\Carbon::parse($item->acquisition_date)->locale('id')->translatedFormat('d F Y') : '-'); ?></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            <?php if($item->description): ?>
+                                                <div class="col-12 mt-3">
+                                                    <div class="p-3 rounded-2 bg-light border">
+                                                        <small class="fw-bold text-muted d-block mb-1">Catatan / Deskripsi Tambahan:</small>
+                                                        <p class="mb-0 text-dark small" style="white-space: pre-line;"><?php echo e($item->description); ?></p>
+                                                    </div>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+
+                                    <!-- TAB 2: LEGALITAS & PERIZINAN -->
+                                    <div class="tab-pane fade" id="legal-pane-<?php echo e($item->id); ?>" role="tabpanel">
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                                                    <i class="mdi mdi-certificate me-1 text-success"></i> Sertifikat & Pajak
+                                                </h6>
+                                                <table class="table table-sm table-borderless mb-0">
+                                                    <tr>
+                                                        <td class="text-muted" width="40%">Nomor Sertifikat</td>
+                                                        <td class="fw-bold text-dark">: <?php echo e($item->certificate_no ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Atas Nama Pemilik</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->certificate_owner ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Nomor IMB / PBG</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->imb_no ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Nomor Objek Pajak (PBB)</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->pbb_no ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Status Verifikasi Legal</td>
+                                                        <td>
+                                                            : <?php if($item->isFromPraLandbank() || $item->legal_status === 'verified'): ?>
+                                                                <span class="badge bg-success">Terverifikasi Sah</span>
+                                                              <?php elseif($item->legal_status === 'rejected'): ?>
+                                                                <span class="badge bg-danger">Revisi / Ditolak</span>
+                                                              <?php else: ?>
+                                                                <span class="badge bg-warning text-dark">Dalam Proses</span>
+                                                             <?php endif; ?>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                                                    <i class="mdi mdi-file-check-outline me-1 text-success"></i> Perizinan & Tahapan Pasca
+                                                </h6>
+                                                <table class="table table-sm table-borderless mb-0">
+                                                    <tr>
+                                                        <td class="text-muted" width="40%">Registrasi Desa</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->desa_reg_no ?? '-'); ?> <?php echo e($item->desa_reg_date ? '(' . $item->desa_reg_date->format('d/m/Y') . ')' : ''); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Pertimbangan Teknis (Pertek)</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->pertek_no ?? '-'); ?> <?php echo e($item->pertek_date ? '(' . $item->pertek_date->format('d/m/Y') . ')' : ''); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Peta Bidang BPN</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->peta_bidang_no ?? '-'); ?> <?php echo e($item->peta_bidang_area ? '(' . number_format($item->peta_bidang_area, 0, ',', '.') . ' m²)' : ''); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Kesesuaian Tata Ruang (PKKPR)</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->pkkpr_no ?? '-'); ?> <?php echo e($item->pkkpr_status ? '[' . $item->pkkpr_status . ']' : ''); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">SK Pemberian HGB</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->sk_hgb_no ?? '-'); ?> <?php echo e($item->sk_hgb_date ? '(' . $item->sk_hgb_date->format('d/m/Y') . ')' : ''); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">SHGB Induk Kawasan</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->shgb_induk_no ?? '-'); ?> <?php echo e($item->shgb_induk_area ? '(' . number_format($item->shgb_induk_area, 0, ',', '.') . ' m²)' : ''); ?></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- TAB 3: BERKAS DOKUMEN TERLAMPIR -->
+                                    <div class="tab-pane fade" id="docs-pane-<?php echo e($item->id); ?>" role="tabpanel">
+                                        <?php if($item->merged_documents->count() > 0): ?>
+                                            <div class="table-responsive">
+                                                <table class="table table-hover align-middle mb-0">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th width="5%" class="text-center">No</th>
+                                                            <th width="30%">Nomor Dokumen</th>
+                                                            <th>Jenis / Nama Dokumen</th>
+                                                            <th width="15%" class="text-center">Status</th>
+                                                            <th width="12%" class="text-center">Aksi</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php $__currentLoopData = $item->merged_documents; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $idx => $doc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <tr>
+                                                                <td class="text-center text-muted small"><?php echo e($idx + 1); ?></td>
+                                                                <td class="fw-bold text-dark" style="font-size: 0.85rem;"><?php echo e($doc->document_number ?? '-'); ?></td>
+                                                                <td>
+                                                                    <div class="d-flex align-items-center gap-2">
+                                                                        <i class="mdi mdi-file-<?php echo e($doc->type == 'sertifikat' ? 'certificate' : 'document'); ?>-outline text-primary fs-5"></i>
+                                                                        <span class="fw-semibold text-dark" style="font-size: 0.85rem;"><?php echo e($doc->documentType->name ?? '-'); ?></span>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <?php if($item->isFromPraLandbank() || $doc->status == 'verified'): ?>
+                                                                        <span class="badge rounded-pill bg-success px-2.5 py-1" style="font-size: 0.72rem;">
+                                                                            <i class="mdi mdi-check-circle me-1"></i>Terverifikasi
+                                                                        </span>
+                                                                    <?php elseif($doc->status == 'pending'): ?>
+                                                                        <span class="badge rounded-pill bg-warning text-dark px-2.5 py-1" style="font-size: 0.72rem;">
+                                                                            <i class="mdi mdi-clock-outline me-1"></i>Pending
+                                                                        </span>
+                                                                    <?php elseif($doc->status == 'rejected'): ?>
+                                                                        <span class="badge rounded-pill bg-danger px-2.5 py-1" style="font-size: 0.72rem;">
+                                                                            <i class="mdi mdi-close-circle me-1"></i>Ditolak
+                                                                        </span>
+                                                                    <?php endif; ?>
+                                                                </td>
+                                                                <td class="text-center" style="white-space: nowrap;">
+                                                                    <?php if($doc->file_path): ?>
+                                                                        <?php
+                                                                            $docUrl = asset(str_starts_with($doc->file_path, 'uploads/') ? $doc->file_path : 'uploads/' . $doc->file_path);
+                                                                            $ext = pathinfo($doc->file_path, PATHINFO_EXTENSION);
+                                                                            $cleanDocName = str_replace(' ', '_', $doc->documentType->name ?? 'Dokumen');
+                                                                            $cleanPropName = str_replace(' ', '_', $item->name);
+                                                                            $dlName = $cleanDocName . '_' . $cleanPropName . '.' . $ext;
+                                                                        ?>
+                                                                        <a href="<?php echo e($docUrl); ?>" target="_blank" class="btn btn-xs btn-outline-primary px-2 py-1" title="Lihat Berkas">
+                                                                            <i class="mdi mdi-eye"></i>
+                                                                        </a>
+                                                                        <a href="<?php echo e($docUrl); ?>" download="<?php echo e($dlName); ?>" class="btn btn-xs btn-outline-success px-2 py-1 ms-1" title="Download Berkas">
+                                                                            <i class="mdi mdi-download"></i>
+                                                                        </a>
+                                                                    <?php else: ?>
+                                                                        <span class="text-muted small">-</span>
+                                                                    <?php endif; ?>
+                                                                </td>
+                                                            </tr>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        <?php else: ?>
+                                            <div class="text-center text-muted py-5">
+                                                <i class="mdi mdi-file-document-outline" style="font-size: 2.8rem; opacity: 0.3;"></i>
+                                                <p class="mt-2 mb-0 small">Belum ada dokumen yang diunggah untuk properti ini.</p>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <!-- TAB 4: LAHAN & AKSES / FASILITAS -->
+                                    <div class="tab-pane fade" id="infra-pane-<?php echo e($item->id); ?>" role="tabpanel">
+                                        <div class="row g-4">
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                                                    <i class="mdi mdi-road me-1 text-warning"></i> Akses Jalan & Kontur Tanah
+                                                </h6>
+                                                <table class="table table-sm table-borderless mb-0">
+                                                    <tr>
+                                                        <td class="text-muted" width="40%">Lebar Akses Jalan</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->road_width ? $item->road_width . ' Meter' : '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Tipe Perkerasan Jalan</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->road_type ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Elevasi Awal</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->elevasi_awal ? $item->elevasi_awal . ' m' : '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Elevasi Rencana</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->elevasi_rencana ? $item->elevasi_rencana . ' m' : '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Volume Cut (Galian)</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->volume_cut ? number_format($item->volume_cut, 0, ',', '.') . ' m³' : '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted">Volume Fill (Timbunan)</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->volume_fill ? number_format($item->volume_fill, 0, ',', '.') . ' m³' : '-'); ?></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">
+                                                    <i class="mdi mdi-storefront-outline me-1 text-warning"></i> Fasilitas Sekitar Lahan
+                                                </h6>
+                                                <table class="table table-sm table-borderless mb-0">
+                                                    <tr>
+                                                        <td class="text-muted" width="40%"><i class="mdi mdi-school-outline me-1 text-primary"></i> Sekolah / Pendidikan</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->facility_school ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted"><i class="mdi mdi-hospital-building me-1 text-danger"></i> Rumah Sakit / Faskes</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->facility_hospital ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted"><i class="mdi mdi-cart-outline me-1 text-success"></i> Mall / Pasar / Swalayan</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->facility_mall ?? '-'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted"><i class="mdi mdi-bus me-1 text-info"></i> Akses Transportasi</td>
+                                                        <td class="fw-semibold text-dark">: <?php echo e($item->facility_transport ?? '-'); ?></td>
+                                                    </tr>
+                                                </table>
+
+                                                <?php if($item->denah): ?>
+                                                    <div class="mt-4 pt-2 border-top">
+                                                        <span class="text-muted small d-block mb-1">Berkas Denah / Siteplan:</span>
+                                                        <a href="<?php echo e(asset(str_starts_with($item->denah, 'uploads/') ? $item->denah : 'uploads/' . $item->denah)); ?>" target="_blank" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+                                                            <i class="mdi mdi-floor-plan"></i> Buka Berkas Denah
+                                                        </a>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
+
                     </div>
 
-                    <p class="text-muted mb-4" style="font-size: 0.82rem;">
-                        Silakan lengkapi data profil tanah terlebih dahulu atau tetap lanjut ke proses pengolahan lahan fisik.
-                    </p>
-
-                    <!-- Tombol Aksi Rapi, Jelas & Berkontras Tinggi -->
-                    <div class="d-grid gap-2">
-                        <a href="#" id="btnModalEditProfile" class="btn btn-gradient-primary py-2.5 fw-bold d-flex align-items-center justify-content-center shadow-sm" style="border-radius: 10px; font-size: 0.9rem; text-decoration: none;">
-                            <i class="mdi mdi-pencil me-1.5 fs-5"></i> Lengkapi Profil Tanah Sekarang
+                    <!-- Modal Footer -->
+                    <div class="modal-footer bg-white border-top py-2.5 px-4 d-flex justify-content-between">
+                        <a href="<?php echo e(route('properti.edit', $item->id)); ?>" class="btn btn-gradient-primary btn-sm px-3 d-inline-flex align-items-center gap-1 fw-semibold" style="border-radius: 6px;">
+                            <i class="mdi mdi-pencil"></i> Edit Data Properti
                         </a>
-                        <a href="#" id="btnModalContinueDev" class="btn btn-modal-continue-dev py-2.5 d-flex align-items-center justify-content-center" style="border-radius: 10px; font-size: 0.9rem;">
-                            <i class="mdi mdi-tools me-1.5 fs-5"></i> Tetap Lanjut Pengolahan Lahan
-                        </a>
-                        <button type="button" class="btn btn-modal-cancel py-2.5 d-flex align-items-center justify-content-center gap-1" data-bs-dismiss="modal" style="border-radius: 10px; font-size: 0.85rem;">
-                            <i class="mdi mdi-close-circle-outline"></i> Batal
+                        <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal" style="border-radius: 6px;">
+                            <i class="mdi mdi-close me-1"></i>Tutup
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startPush('scripts'); ?>
-
-
     <script>
 
         function showLoading(message = 'Memproses data...') {
@@ -1013,71 +1375,6 @@
             // Handle verification button (shows loader instantly upon click)
             $('.btn-verifikasi').on('click', function(e) {
                 showLoading('Memverifikasi properti...');
-            });
-
-            // Trigger Revision Form
-            $('.btn-revisi-trigger').on('click', function() {
-                let docId = $(this).data('doc-id');
-                let docName = $(this).data('doc-name');
-                let propertyId = $(this).data('property-id');
-                
-                let card = $('#revisionCard' + propertyId);
-                $('#revisionDocId' + propertyId).val(docId);
-                $('#revisionDocName' + propertyId).text(docName);
-                
-                // Set form action dynamically
-                let formAction = "<?php echo e(route('dokumen.update', ':id')); ?>".replace(':id', docId);
-                $('#revisionForm' + propertyId).attr('action', formAction);
-                
-                // Show revision card
-                card.removeClass('d-none');
-                
-                // Smooth scroll to the form card inside modal body
-                let modalBody = $(this).closest('.modal-body');
-                modalBody.animate({
-                    scrollTop: card.offset().top - modalBody.offset().top + modalBody.scrollTop()
-                }, 500);
-            });
-
-            // Close/Batal Revision Form
-            $('.btn-close-revision').on('click', function() {
-                let target = $(this).data('target');
-                $(target).addClass('d-none');
-            });
-
-            // Handle file input preview for revision files
-            $('.properti-file-input-modern').on('change', function(e) {
-                const fileName = e.target.files[0]?.name;
-                const fileSize = e.target.files[0]?.size;
-                const label = $(this).next('.properti-file-label-modern').find('.properti-file-info-modern span');
-                const sizeSpan = $(this).next('.properti-file-label-modern').find('.properti-file-info-modern .properti-file-size');
-
-                if (fileName) {
-                    label.text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
-                    if (fileSize) {
-                        const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                        sizeSpan.text(sizeInMB + ' MB');
-                    }
-                } else {
-                    label.text('Pilih File Revisi');
-                    sizeSpan.text('');
-                }
-            });
-
-            // Handle Alert Peringatan Profil Land Bank Belum Lengkap via Bootstrap Modal
-            $(document).on('click', '.btn-pengolahan-alert', function(e) {
-                e.preventDefault();
-                const name = $(this).data('name') || 'Properti';
-                const url = $(this).data('url');
-                const editUrl = $(this).data('edit-url');
-                const missing = $(this).data('missing') || 'Berkas profil penting';
-
-                $('#modalPropName').text(name);
-                $('#modalPropMissing').text(missing);
-                $('#btnModalEditProfile').attr('href', editUrl);
-                $('#btnModalContinueDev').attr('href', url);
-
-                $('#modalProfileIncomplete').modal('show');
             });
 
             // Handle session flash messages with beautiful SweetAlert

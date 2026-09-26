@@ -158,54 +158,68 @@
         $menuSortWeight = [
             'Dashboard'               => 1,
             
-            // Kelompok Legalitas & Perizinan
-            'Tugas Perizinan'         => 1.8,
-            'Pembagian Tugas'         => 1.8,
-            'Perizinan'               => 2,
-            'Tanah Induk (Land Bank)' => 3,
-            'Tanah Induk'             => 3,
-            'Document'                => 4,
-            'Dokumen'                 => 4,
+            // Kelompok Legalitas & Land Bank (Di Atas)
+            'Tanah Induk (Land Bank)' => 2,
+            'Tanah Induk'             => 2,
+            'Unit'                    => 2.5,
+
+            // Kelompok Dokumen Legal (Label Sendiri)
+            'Document'                => 3,
+            'Dokumen'                 => 3,
+            'Dokumen Perizinan'       => 3.5,
+            'Master Dokumen Perizinan' => 3.5,
+
+            // Kelompok Perizinan (Di Bawah Dokumen Legal)
+            'Tugas Perizinan'          => 5,
+            'Pembagian Tugas'          => 5,
+            'Perizinan'                => 6,
 
             // Kelompok Proyek
-            'Proyek'                  => 4.8,
-            'Pengolahan Lahan'        => 5,
-            'Unit'                    => 6,
+            'Proyek'                  => 7,
+            'Pengolahan Lahan'        => 8,
+            'SPK Kontraktor'          => 8.5,
 
             // Kelompok Marketing & Transaksi
-            'Marketing'               => 7,
-            'User'                    => 8,
+            'Marketing'               => 10,
+            'User'                    => 11,
 
             // Kelompok KPR
-            'Transaksi'               => 9,
+            'Transaksi'               => 12,
 
             // Kelompok Keuangan
-            'Keuangan'                => 10,
+            'Keuangan'                => 13,
 
             // Kelompok Master Data & Sistem
-            'Master Data'             => 11,
-            'Pengguna'                => 12,
-            'Pengaturan'              => 13,
-            'Setting'                 => 13,
-            'Laporan'                 => 14,
+            'Master Data'             => 14,
+            'Pengguna'                => 15,
+            'Pengaturan'              => 16,
+            'Setting'                 => 16,
+            'Laporan'                 => 17,
         ];
 
         $categoryMap = [
             'Dashboard'               => 'Menu Utama',
 
             // Legal
-            'Tugas Perizinan'         => 'Legal',
-            'Pembagian Tugas'         => 'Legal',
-            'Perizinan'               => 'Legal',
             'Tanah Induk (Land Bank)' => 'Legal',
             'Tanah Induk'             => 'Legal',
-            'Document'                => 'Legal',
-            'Dokumen'                 => 'Legal',
+            'Unit'                    => 'Legal',
+
+            // Dokumen Legal (Label Sendiri)
+            'Document'                => 'Dokumen Legal',
+            'Dokumen'                 => 'Dokumen Legal',
+            'Dokumen Perizinan'       => 'Dokumen Legal',
+            'Master Dokumen Perizinan' => 'Dokumen Legal',
+
+            // Perizinan (Label Sendiri di Bawah Dokumen Legal)
+            'Tugas Perizinan'          => 'Perizinan',
+            'Pembagian Tugas'          => 'Perizinan',
+            'Perizinan'                => 'Perizinan',
 
             // Proyek
             'Proyek'                  => 'Proyek',
             'Pengolahan Lahan'        => 'Proyek',
-            'Unit'                    => 'Proyek',
+            'SPK Kontraktor'          => 'Proyek',
 
             // Marketing
             'Marketing'               => 'Marketing',
@@ -227,14 +241,32 @@
 
         // Pastikan urutan menu selalu rapi sesuai kelompok domain
         $mainMenus = $mainMenus->sortBy(function($m) use ($menuSortWeight) {
-            if ($m->route === 'perizinan.tugas.index') {
-                return 1.8;
-            }
             if ($m->route === 'legal.unit.index') {
-                return 4.5;
+                return 2.5;
+            }
+            if ($m->name === 'Document' || $m->name === 'Dokumen') {
+                return 3;
+            }
+            if ($m->route === 'master.dokumen-perizinan.index' || $m->name === 'Dokumen Perizinan' || $m->name === 'Master Dokumen Perizinan') {
+                return 3.5;
+            }
+            if ($m->route === 'perizinan.tugas.index') {
+                return 5;
+            }
+            if ($m->route === 'perizinan.index') {
+                return 6;
             }
             if ($m->route === 'proyek.index') {
-                return 4.8;
+                return 7;
+            }
+            if ($m->route === 'proyek.pengolahan-lahan.index') {
+                return 8;
+            }
+            if ($m->route === 'spk.index') {
+                return 8.5;
+            }
+            if ($m->route === 'proyek.unit.index') {
+                return 9;
             }
             return $menuSortWeight[$m->name] ?? $m->order ?? 99;
         });
@@ -285,14 +317,19 @@
                 if ($mainDisplayName === 'Tanah Induk (Land Bank)') {
                     $mainDisplayName = 'Tanah Induk';
                 }
+                if ($mainDisplayName === 'Master Dokumen Perizinan') {
+                    $mainDisplayName = 'Dokumen Perizinan';
+                }
                 $mainIcon = $iconMap[$main->route] ?? $main->icon;
                 if ($mainIcon === 'mdi-file-document-box-multiple-outline' || empty($mainIcon)) {
                     $mainIcon = ($mainDisplayName === 'Dokumen') ? 'mdi-file-document-multiple-outline' : ($main->icon ?: 'mdi-folder-outline');
                 }
 
                 // Label Kategori / Section Header
-                if ($main->route === 'perizinan.tugas.index') {
-                    $sectionName = 'Legal';
+                if ($main->name === 'Document' || $main->name === 'Dokumen' || $mainDisplayName === 'Dokumen' || $mainDisplayName === 'Dokumen Legal' || $main->route === 'master.dokumen-perizinan.index' || $mainDisplayName === 'Dokumen Perizinan' || $main->name === 'Dokumen Perizinan' || $main->name === 'Master Dokumen Perizinan') {
+                    $sectionName = 'Dokumen Legal';
+                } elseif ($main->route === 'perizinan.tugas.index' || $main->route === 'perizinan.index') {
+                    $sectionName = 'Perizinan';
                 } elseif ($main->route === 'legal.unit.index') {
                     $sectionName = 'Legal';
                 } elseif ($main->route === 'proyek.index' || $main->route === 'proyek.pengolahan-lahan.index' || $main->route === 'proyek.unit.index') {
@@ -392,4 +429,4 @@
         </div>
     </div>
 </aside>
-<?php /**PATH D:\Property-Management-Web-App\resources\views/layouts/sidebar.blade.php ENDPATH**/ ?>
+<?php /**PATH F:\Property-Management-Web-App\resources\views/layouts/sidebar.blade.php ENDPATH**/ ?>

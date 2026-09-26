@@ -156,16 +156,18 @@
             </p>
         </div>
         <div class="d-flex align-items-center gap-2">
-            @if(!empty($project['is_finalized_to_pasca']) && !empty($project['land_bank_id']))
-                <a href="{{ route('properti.edit', $project['land_bank_id']) }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-semibold" style="background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; font-size: 0.85rem;" title="Buka data kawasan ini di Pasca Land Bank">
-                    <i class="mdi mdi-shield-check" style="font-size: 1.1rem; line-height: 1;"></i>
-                    <span>Buka di Pasca Land Bank</span>
-                </a>
-            @else
-                <button type="button" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-semibold" onclick="confirmFinalizeToPasca({{ $project['id'] }}, '{{ addslashes($project['nama']) }}', {{ $projectProgress ?? 0 }}, {{ $totalTerbit ?? 0 }}, {{ $totalIzin ?? 0 }})" style="background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; font-size: 0.85rem;" title="Alihkan kawasan ini ke Pasca Land Bank untuk pengolahan lahan & kavling">
-                    <i class="mdi mdi-shield-crown" style="font-size: 1.1rem; line-height: 1;"></i>
-                    <span>Finalisasi ke Pasca Land Bank</span>
-                </button>
+            @if(!empty($canManage))
+                @if(!empty($project['is_finalized_to_pasca']) && !empty($project['land_bank_id']))
+                    <a href="{{ route('properti.edit', $project['land_bank_id']) }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-semibold" style="background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; font-size: 0.85rem;" title="Buka data kawasan ini di Pasca Land Bank">
+                        <i class="mdi mdi-shield-check" style="font-size: 1.1rem; line-height: 1;"></i>
+                        <span>Buka di Pasca Land Bank</span>
+                    </a>
+                @else
+                    <button type="button" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-semibold" onclick="confirmFinalizeToPasca({{ $project['id'] }}, '{{ addslashes($project['nama']) }}', {{ $projectProgress ?? 0 }}, {{ $totalTerbit ?? 0 }}, {{ $totalIzin ?? 0 }})" style="background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; font-size: 0.85rem;" title="Alihkan kawasan ini ke Pasca Land Bank untuk pengolahan lahan & kavling">
+                        <i class="mdi mdi-shield-crown" style="font-size: 1.1rem; line-height: 1;"></i>
+                        <span>Finalisasi ke Pasca Land Bank</span>
+                    </button>
+                @endif
             @endif
             <a href="{{ route('perizinan.index') }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm btn-kembali-proyek" style="border: 1px solid #cbd5e1; background-color: #ffffff; color: #1e293b; border-radius: 8px; font-weight: 600; font-size: 0.85rem; transition: all 0.2s ease;">
                 <i class="mdi mdi-arrow-left text-primary" style="font-size: 1.1rem; line-height: 1;"></i>
@@ -256,10 +258,12 @@
                         </div>
                         <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Rincian Dokumen Perizinan Kawasan</span>
                     </div>
+                    @if(!empty($canManage))
                     <a href="{{ route('perizinan.dokumen.kelola', ['id' => $project['id'], 'item_id' => 'baru']) }}" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm">
                         <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
                         <span>Tambah Dokumen Izin</span>
                     </a>
+                    @endif
                 </div>
 
                 <div class="card-body" style="padding: 0.75rem 1.25rem 1.15rem 1.25rem !important;">
@@ -393,7 +397,11 @@
                                     <tr>
                                         <td colspan="7" class="text-center text-muted py-4">
                                             <i class="mdi mdi-file-question-outline me-2" style="font-size: 1.5rem;"></i>
-                                            Tidak ada dokumen perizinan yang sesuai dengan filter.
+                                            @if(!empty($isStaffLegal) && empty($canManage))
+                                                Belum ada dokumen perizinan yang ditugaskan kepada Anda pada proyek kawasan ini.
+                                            @else
+                                                Tidak ada dokumen perizinan yang sesuai dengan filter.
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforelse

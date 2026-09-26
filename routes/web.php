@@ -625,6 +625,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/master-data-promo/get/{id}', [PromoController::class, 'getPromo'])->name('promo.get');
     // MASTER DATA PT/COMPANY
     Route::get('/master-data-pt', [CompanyProfileController::class, 'index'])->name('company-profile.index');
+    Route::get('/master-data-pt/create', [CompanyProfileController::class, 'create'])->name('company-profile.create');
     Route::post('/master-data-pt/store', [CompanyProfileController::class, 'store'])->name('company-profile.store');
     Route::get('/master-data-pt/{companyProfile}/edit', [CompanyProfileController::class, 'edit'])->name('company-profile.edit');
     Route::put('/master-data-pt/{companyProfile}', [CompanyProfileController::class, 'update'])->name('company-profile.update');

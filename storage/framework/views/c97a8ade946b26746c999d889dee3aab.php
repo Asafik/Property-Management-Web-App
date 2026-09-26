@@ -103,6 +103,9 @@
         .btn-fase-3 {
             background: linear-gradient(135deg, #10b981, #059669);
         }
+        .btn-fase-perizinan {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+        }
         .btn-fase-delete {
             background: linear-gradient(135deg, #ef4444, #dc2626);
             padding: 0.32rem 0.55rem;
@@ -380,7 +383,7 @@
                                 <div>
                                     <span class="fw-bold text-dark d-block" style="font-size: 13px;">Pemberitahuan Dokumen & Capaian Legalitas:</span>
                                     <small class="text-muted" style="font-size: 12px;">
-                                        Terdapat <strong><?php echo e($landsWithPendingDocsCount); ?> tanah</strong> dengan dokumen baru yang menunggu verifikasi Kepala Legal.
+                                        Terdapat <strong><?php echo e($landsWithPendingDocsCount); ?> tanah</strong> dengan dokumen baru yang menunggu verifikasi Admin.
                                     </small>
                                 </div>
                             </div>
@@ -911,7 +914,7 @@
                         </div>
                         <ul class="mb-0 ps-3 text-secondary" style="font-size: 0.82rem; line-height: 1.6;">
                             <li>Berkas dokumen legalitas di <b>Fase 1</b> wajib diunggah lengkap.</li>
-                            <li>Seluruh dokumen wajib telah <b>Divalidasi Sah</b> oleh Kepala Legal.</li>
+                            <li>Seluruh dokumen wajib telah <b>Divalidasi Sah</b> oleh Admin.</li>
                         </ul>
                     </div>
                 `,
@@ -945,7 +948,7 @@
                             <span>Syarat Pembukaan Akses Fase 3:</span>
                         </div>
                         <ul class="mb-0 ps-3 text-secondary" style="font-size: 0.82rem; line-height: 1.6;">
-                            <li class="fw-semibold text-danger">Dokumen legalitas di <b>Fase 1</b> wajib diunggah dan <b>Divalidasi Sah</b> oleh Kepala Legal terlebih dahulu.</li>
+                            <li class="fw-semibold text-danger">Dokumen legalitas di <b>Fase 1</b> wajib diunggah dan <b>Divalidasi Sah</b> oleh Admin terlebih dahulu.</li>
                             <li>Hasil survey fisik, zonasi & titik spasial di <b>Fase 2</b> wajib diselesaikan.</li>
                         </ul>
                     </div>

@@ -15,7 +15,8 @@ class PropertyController extends Controller
     //
    public function index(Request $request)
 {
-    $query = LandBank::with(['companyProfile', 'documents.documentType']);
+    $query = LandBank::with(['companyProfile', 'documents.documentType'])
+        ->whereIn('status', ['aktif', 'active']);
 
     // Filter Search Nama
     if ($request->search) {
@@ -59,14 +60,15 @@ class PropertyController extends Controller
     $landBanks = $query->paginate($show);
 
     $companies = CompanyProfile::orderBy('name')->get();
-    $categories = \App\Models\LandBank::select('zoning')
+    $categories = \App\Models\LandBank::whereIn('status', ['aktif', 'active'])
+        ->select('zoning')
         ->whereNotNull('zoning')
         ->distinct()
         ->orderBy('zoning')
         ->pluck('zoning');
 
     // 4 KPI Metrics
-    $allLands = LandBank::with('infrastructures')->get();
+    $allLands = LandBank::whereIn('status', ['aktif', 'active'])->with('infrastructures')->get();
     $totalLandBank = $allLands->count();
     $legalVerified = $allLands->filter(function($item) {
         return $item->legal_status === 'verified' || $item->isFromPraLandbank();

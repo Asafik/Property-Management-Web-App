@@ -101,6 +101,14 @@ class MenuSeeder extends Seeder
             ])->positions()->attach($legalRoles);
         }
 
+        $dokumenPerizinanMenu = Menu::create([
+            'name'  => 'Dokumen Perizinan',
+            'route' => 'master.dokumen-perizinan.index',
+            'icon'  => 'mdi-file-certificate-outline',
+            'order' => 3.5
+        ]);
+        $dokumenPerizinanMenu->positions()->attach($legalRoles);
+
         // ================= 4. LEGAL UNIT =================
         $legalUnitMenu = Menu::create([
             'name'  => 'Unit',
@@ -117,7 +125,8 @@ class MenuSeeder extends Seeder
             'icon'  => 'mdi-clipboard-account-outline',
             'order' => 5
         ]);
-        $tugasPerizinanMenu->positions()->attach($legalRoles);
+        $tugasPerizinanRoles = array_values(array_unique(array_filter([$admin?->id, $legal?->id])));
+        $tugasPerizinanMenu->positions()->attach($tugasPerizinanRoles);
 
         $perizinanMenu = Menu::create([
             'name'  => 'Perizinan',
@@ -126,14 +135,6 @@ class MenuSeeder extends Seeder
             'order' => 6
         ]);
         $perizinanMenu->positions()->attach($legalRoles);
-
-        $masterDokumenMenu = Menu::create([
-            'name'  => 'Master Dokumen Perizinan',
-            'route' => 'master.dokumen-perizinan.index',
-            'icon'  => 'mdi-file-cog-outline',
-            'order' => 6.5
-        ]);
-        $masterDokumenMenu->positions()->attach($legalRoles);
 
         // ================= 6. PROYEK, PENGOLAHAN LAHAN & UNIT (ADMIN ONLY) =================
         $proyekMasterMenu = Menu::create([
@@ -158,7 +159,7 @@ class MenuSeeder extends Seeder
             'icon'  => 'mdi-file-sign',
             'order' => 8.5
         ]);
-        $spkRoles = array_values(array_unique(array_merge($adminOnly, $legalRoles)));
+        $spkRoles = $adminOnly;
         $spkMenu->positions()->attach($spkRoles);
 
         $unitMenu = Menu::create([

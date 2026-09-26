@@ -15,7 +15,7 @@ class DokumenPerizinanMenuSeeder extends Seeder
             $menu = Menu::firstOrCreate(
                 ['route' => 'master.dokumen-perizinan.index'],
                 [
-                    'name' => 'Master Dokumen Perizinan',
+                    'name' => 'Dokumen Perizinan',
                     'parent_id' => $master->id,
                     'icon' => 'mdi-file-certificate-outline',
                     'order' => 1
