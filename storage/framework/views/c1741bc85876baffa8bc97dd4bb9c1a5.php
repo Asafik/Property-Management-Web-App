@@ -1575,15 +1575,6 @@
             <div class="col-12">
                 <div class="card shadow-sm border-0">
                     <div class="card-body py-4">
-                        <div class="step-wizard">
-                            <div class="step-progress-bar" id="wizardProgressBar"></div>
-
-                            <!-- STEP 1 -->
-                            <div class="step-item" id="step1" onclick="switchStep(1)" style="cursor: pointer;">
-                                <div class="step-circle">1</div>
-                                <div class="step-title">Fase 1</div>
-                            </div>
-
                             <?php
                                 $currentUser = auth()->user();
                                 $userPositionName = strtolower($currentUser->position->name ?? '');
@@ -1627,10 +1618,33 @@
                                 $totalUploadedDocs = $applicablePraDocs->whereNotNull('file_path')->count();
                                 $verifiedCount = $applicablePraDocs->where('status', 'verified')->count();
                                 $isLegalSah = $land && !empty($selectedCat) && ($totalUploadedDocs > 0) && ($verifiedCount === $totalUploadedDocs);
-                                $isFase2Done = $land && $isLegalSah && in_array($land->status, ['fase2', 'fase3', 'fase4', 'approved', 'rejected']) && (!empty($land->survey_date) || in_array($land->status, ['fase3', 'fase4', 'approved', 'rejected']));
+                                
+                                $hasSurveyData = $land && (!empty($land->land_status) || !empty($land->water_condition) || !empty($land->photo) || !empty($land->photo_2));
+                                $isFase2Done = $land && $isLegalSah && in_array($land->status, ['fase2', 'fase3', 'fase4', 'approved', 'rejected']) && ($hasSurveyData || in_array($land->status, ['fase3', 'fase4', 'approved', 'rejected']));
                                 $canAccessFase3 = $isLegalSah && $isFase2Done;
                                 
+                                $hasPendingVerification = false;
+                                if ($land && !$isLegalSah && $land->status != 'rejected') {
+                                    $hasPendingVerification = true;
+                                }
                             ?>
+
+                        <div class="step-wizard">
+                            <div class="step-progress-bar" id="wizardProgressBar"></div>
+
+                            <!-- STEP 1 -->
+                            <div class="step-item" id="step1" onclick="switchStep(1)" style="cursor: pointer;" title="<?php echo e($hasPendingVerification ? 'Menunggu Verifikasi Admin' : ''); ?>">
+                                <div class="step-circle">
+                                    <?php if($hasPendingVerification): ?>
+                                        <i class="mdi mdi-clock-outline text-warning" style="font-size: 1.5rem;"></i>
+                                    <?php else: ?>
+                                        1
+                                    <?php endif; ?>
+                                </div>
+                                <div class="step-title d-flex align-items-center justify-content-center">
+                                    Fase 1
+                                </div>
+                            </div>
 
                             <!-- STEP 2 -->
                             <div class="step-item <?php echo e(!$land ? 'disabled' : ''); ?>" id="step2" onclick="switchStep(2)" style="cursor: pointer;" title="<?php echo e((!$isLegalSah && !$isKeuangan && !$isAdmin && $land && $land->status != 'approved') ? 'Terkunci: Wajib verifikasi legalitas sah di Fase 1 terlebih dahulu' : ''); ?>">
@@ -4033,6 +4047,11 @@
                 document.getElementById('step1')?.classList.add('completed');
                 const c1 = document.querySelector('#step1 .step-circle');
                 if (c1) c1.innerHTML = '<i class="mdi mdi-check"></i>';
+            } else if (isEditMode && currentLandStatus !== 'rejected') {
+                const c1 = document.querySelector('#step1 .step-circle');
+                if (c1) c1.innerHTML = '<i class="mdi mdi-clock-outline text-warning" style="font-size: 1.5rem;"></i>';
+                const el1 = document.getElementById('step1');
+                if (el1) el1.title = 'Menunggu Verifikasi Admin';
             }
 
             if (isEditMode && isLegalSah && isFase2Done) {
