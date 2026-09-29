@@ -33,20 +33,20 @@ class DatabaseSeeder extends Seeder
             EmployeeSeeder::class,
             MenuSeeder::class,
             // Dokumen
-            // DocumentTypeSeeder::class,
-            // DocumentSeeder::class,
+            DocumentTypeSeeder::class,
+            DocumentSeeder::class,
             // Master Data
-            // PromoSeeder::class,
-            // CompanyProfileSeeder::class,
-            // BankSeeder::class,
-            // CompanySettingSeeder::class,
-            // NotarisSeeder::class,
+            PromoSeeder::class,
+            CompanyProfileSeeder::class,
+            BankSeeder::class,
+            CompanySettingSeeder::class,
+            NotarisSeeder::class,
             MasterDokumenPerizinanSeeder::class,
-            // MasterBiayaLegalitasSeeder::class,
-            // PraLandbankDocumentSeeder::class,
-            // DevelopmentProgressItemsSeeder::class,
-            // LandBankUnitSeeder::class,
-            // PerizinanTaskSeeder::class,
+            MasterBiayaLegalitasSeeder::class,
+            PraLandbankDocumentSeeder::class,
+            DevelopmentProgressItemsSeeder::class,
+            LandBankUnitSeeder::class,
+            PerizinanTaskSeeder::class,
         ]);
     }
 }
