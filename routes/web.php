@@ -113,6 +113,8 @@ Route::middleware(['auth'])->group(function () {
     */
 
     Route::get('/marketing/sell-unit', [SellUnitController::class, 'index'])->name('marketing.jual-unit');
+    Route::get('/marketing/unit', [\App\Http\Controllers\Marketing\UnitMarketingController::class, 'index'])->name('marketing.unit.index');
+    Route::post('/marketing/unit/{id}/price', [\App\Http\Controllers\Marketing\UnitMarketingController::class, 'updatePrice'])->name('marketing.unit.updatePrice');
     Route::post('/marketing/set-agency/{unitId}', [SellUnitController::class, 'setAgency'])->name('marketing.setAgency');
     Route::post('/unit/save-position', [SellUnitController::class, 'savePosition'])
         ->name('unit.save.position');

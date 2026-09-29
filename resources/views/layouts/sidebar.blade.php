@@ -47,6 +47,7 @@
         $iconMap = [
             // Marketing
             'marketing.jual-unit' => 'mdi-view-grid-outline',
+            'marketing.unit.index' => 'mdi-home-city-outline',
             'marketing.list_pengajuan' => 'mdi-book-check-outline',
             // Tanah Induk / Land Bank
             'pralandbank.all' => 'mdi-map-clock-outline',
@@ -122,6 +123,7 @@
             'kavling.index' => ['kavling.index', 'properti.buatKavling*', 'properti.storeKavling', 'kavling.*', 'properti.kavling.*'],
             'lokasi.index' => ['lokasi.index', 'lokasi.*'],
             'marketing.jual-unit' => ['marketing.jual-unit*', 'unit.save.position', 'marketing.setAgency', 'set.customer'],
+            'marketing.unit.index' => ['marketing.unit.*'],
             'marketing.list_pengajuan' => ['marketing.list_pengajuan*', 'marketing.cash*', 'pengajuan.*', 'bookings.*', 'cetak.*', 'dashboard.cetak.*'],
             'master.data.tugas-staff-marketing' => ['master.data.tugas-staff-marketing*'],
             'customer.data' => ['customer.data*'],
