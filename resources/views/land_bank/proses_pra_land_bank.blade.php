@@ -1751,6 +1751,25 @@
                                             <input type="text" class="form-control" name="land_name" value="{{ $land->land_name ?? '' }}" placeholder="Contoh: Tanah Jember Regency" required {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
                                         <div class="col-md-6 mb-3">
+                                            <label class="form-label d-flex align-items-center justify-content-between">
+                                                <span>PT Mitra Pengembang / Nama Perusahaan <span class="text-danger">*</span></span>
+                                                <span class="badge bg-soft-primary text-primary" style="font-size: 10px;"><i class="mdi mdi-city me-0.5"></i>Profil PT</span>
+                                            </label>
+                                            <select class="form-select select2-search" id="select_company_profile_id" name="company_profile_id" data-placeholder="-- Pilih PT Mitra Pengembang --" style="width: 100%;" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                                <option value="">-- Pilih PT Mitra Pengembang --</option>
+                                                @if(isset($companies))
+                                                    @foreach($companies as $company)
+                                                        <option value="{{ $company->id }}" {{ (old('company_profile_id', $land->company_profile_id ?? '') == $company->id) ? 'selected' : '' }}>
+                                                            {{ $company->name }}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                            <small class="text-muted d-block mt-1" style="font-size: 0.74rem; line-height: 1.3;">
+                                                <i class="mdi mdi-information-outline text-primary"></i> Ketika berkas fisik lengkap & PT dipilih, lahan otomatis masuk ke <strong>Pasca Land Bank</strong>.
+                                            </small>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
                                             <label class="form-label">Status Tanah / Kepemilikan (Dasar Perolehan) *</label>
                                             <select class="form-select select2-search" id="select_ownership_status" name="ownership_status" data-placeholder="Pilih Dasar Perolehan Tanah" style="width: 100%;" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                                 <option value="">-- Pilih Dasar Perolehan Tanah --</option>
@@ -3156,6 +3175,12 @@
                                                     <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Divisi Keuangan / Admin)</small>
                                                 @endif
                                             </div>
+                                            @if(Route::has('master.biaya-legalitas.index'))
+                                                <a href="{{ route('master.biaya-legalitas.index') }}" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2 d-inline-flex align-items-center gap-1" style="font-size: 0.78rem; text-decoration: none; border-radius: 6px;">
+                                                    <i class="mdi mdi-cog-outline"></i>
+                                                    <span>Master Data Biaya</span>
+                                                </a>
+                                            @endif
                                         </div>
                                         
                                         <!-- Komponen Biaya Legalitas & Administrasi (Otomatis Diatur dari Master Data) -->
@@ -4293,6 +4318,31 @@
                 Swal.close();
 
                 if (res.success) {
+                    if (res.auto_migrated_to_pasca) {
+                        Swal.fire({
+                            title: '<span style="color:#059669; font-weight:700;"><i class="mdi mdi-check-decagram me-1"></i> Masuk ke Pasca Land Bank!</span>',
+                            html: `
+                                <p class="text-muted small mb-2" style="font-size:0.92rem;">${res.message || 'Dokumen fisik lengkap dan profil PT telah diisi! Lahan berhasil dialihkan ke Pasca Land Bank.'}</p>
+                                <div class="alert alert-success py-2 px-3 mb-0 text-start" style="font-size:0.83rem;">
+                                    <i class="mdi mdi-information-outline me-1"></i> Data lahan kini aktif di modul Pasca Land Bank untuk alur Perizinan & Pengindukan Lahan.
+                                </div>
+                            `,
+                            icon: 'success',
+                            showCancelButton: true,
+                            confirmButtonColor: '#10b981',
+                            cancelButtonColor: '#6366f1',
+                            confirmButtonText: '<i class="mdi mdi-arrow-right-circle me-1"></i> Buka di Pasca Land Bank',
+                            cancelButtonText: 'Tetap di Sini'
+                        }).then((choice) => {
+                            if (choice.isConfirmed && res.redirect_url) {
+                                window.location.href = res.redirect_url;
+                            } else {
+                                window.location.reload();
+                            }
+                        });
+                        return;
+                    }
+
                     let targetId = res.id || "{{ $land->id ?? '' }}";
                     if (andProceed && targetId && isLegalSah) {
                         sessionStorage.setItem('success_message', 'Data Fase 1 berhasil disimpan.');

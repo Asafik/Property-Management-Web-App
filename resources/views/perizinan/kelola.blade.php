@@ -230,13 +230,19 @@
         </div>
     @endif
 
+    @php
+        $rawStatus = old('status', $item['status'] ?? 'Belum');
+        $isProsesOrMore = in_array($rawStatus, ['Proses', 'Berjalan', 'Dalam Proses', 'Revisi', 'Tertunda', 'Terkendala', 'Terbit', 'Selesai']);
+        $isTerbit = in_array($rawStatus, ['Terbit', 'Selesai']);
+    @endphp
+
     <!-- Form Kelola Dokumen -->
     <form action="{{ route('perizinan.dokumen.simpan', ['id' => $project['id'], 'item_id' => $item_id]) }}" method="POST" enctype="multipart/form-data" id="formKelolaDokumen">
         @csrf
 
         <div class="row g-3">
             <!-- Left Column: Informasi Utama Dokumen & Berkas SK -->
-            <div class="col-lg-7">
+            <div class="{{ $isProsesOrMore ? 'col-lg-7' : 'col-lg-12' }}" id="colLeftDoc" style="transition: all 0.3s ease;">
                 <div class="card kelola-card mb-3">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-2">
@@ -296,6 +302,24 @@
                             </div>
                         </div>
 
+                        <!-- Notice jika status masih Belum Ada -->
+                        <div id="cardSyaratBelumProsesNotice" class="p-3 rounded-3 mb-3" style="background: #f8fafc; border: 1.5px dashed #cbd5e1; {{ $isProsesOrMore ? 'display: none;' : 'display: block;' }};">
+                            <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
+                                <div class="d-flex align-items-center gap-2.5 text-muted" style="font-size: 0.83rem;">
+                                    <div class="p-2 rounded-2 flex-shrink-0" style="background: rgba(124, 58, 237, 0.1); color: #7c3aed;">
+                                        <i class="mdi mdi-checkbox-multiple-marked-outline fs-5"></i>
+                                    </div>
+                                    <div>
+                                        <strong class="text-dark d-block">Rincian & Prasyarat Berkas Dinas</strong>
+                                        Status saat ini <em>Belum Ada (Menunggu)</em>. Ubah status ke <strong>Sedang Proses Dinas</strong> untuk membuka checklist unggah berkas prasyarat dinas.
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-primary fw-semibold px-3 py-1.5" onclick="setDokumenStatus('Proses')" style="font-size: 0.8rem; border-radius: 6px;">
+                                    <i class="mdi mdi-play-circle-outline me-1"></i>Mulai Proses Dinas
+                                </button>
+                            </div>
+                        </div>
+
                         <!-- Nomor Dokumen/SK & Tanggal -->
                         <div class="row g-2 mb-3">
                             <div class="col-md-7">
@@ -342,10 +366,14 @@
 
                         <hr class="my-3" style="border-color: #f1f5f9;">
 
-                        <!-- BAGIAN UPLOAD BERKAS UTAMA SK (1 Card dengan 2 Tombol: Lihat & Ganti) -->
-                        <div class="mb-3">
+                        <!-- BAGIAN UPLOAD BERKAS UTAMA SK (HANYA MUNCUL JIKA STATUS SELESAI / TERBIT) -->
+                        <div class="mb-3" id="sectionUploadSkUtama" style="{{ $isTerbit ? '' : 'display: none;' }};">
                             <label class="form-label-custom d-flex justify-content-between align-items-center">
-                                <span>Berkas Dokumen Utama / SK Izin</span>
+                                <span class="d-flex align-items-center gap-1.5">
+                                    <i class="mdi mdi-certificate text-success"></i>
+                                    <span>Berkas Dokumen Utama / SK Izin</span>
+                                    <span class="badge bg-success-subtle text-success ms-1" style="font-size: 11px;">Resmi / Selesai</span>
+                                </span>
                                 <span class="badge" style="background-color: #fffbeb; border: 1px solid #fde68a; color: #d97706; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">PDF, JPG, PNG (Maks 20MB)</span>
                             </label>
 
@@ -368,7 +396,7 @@
                                             <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
                                         </div>
                                         <div class="overflow-hidden">
-                                            <span class="d-block fw-bold text-success" id="mainDocStatusText" style="font-size: 0.85rem; line-height: 1.2;">Berkas Terunggah</span>
+                                            <span class="d-block fw-bold text-success" id="mainDocStatusText" style="font-size: 0.85rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
                                             <small class="text-muted text-truncate d-block font-monospace" id="mainDocFileName" style="font-size: 0.74rem;">{{ basename($item['file_dokumen'] ?? '') }}</small>
                                         </div>
                                     </div>
@@ -388,18 +416,34 @@
 
                             <!-- Box Upload Saat Berkas Masih Kosong -->
                             <div id="mainDocEmptyBox" onclick="document.getElementById('inpFileDokumen').click()" style="cursor: pointer; display: {{ $hasMainDoc ? 'none' : 'block' }};">
-                                <div class="p-3 rounded-3 d-flex align-items-center gap-3" style="border: 1.5px dashed #c4b5fd; background: #ffffff; transition: all 0.2s ease;">
-                                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="background: rgba(154, 85, 255, 0.12); width: 42px; height: 42px; color: #9a55ff;">
+                                <div class="p-3 rounded-3 d-flex align-items-center gap-3" style="border: 1.5px dashed #10b981; background: #f0fdf4; transition: all 0.2s ease;">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="background: rgba(16, 185, 129, 0.15); width: 42px; height: 42px; color: #10b981;">
                                         <i class="mdi mdi-cloud-upload" style="font-size: 1.35rem;"></i>
                                     </div>
                                     <div class="overflow-hidden flex-grow-1">
-                                        <span class="fw-bold d-block text-truncate" id="txtUploadMainLabel" style="font-size: 0.85rem; color: #9a55ff;">
+                                        <span class="fw-bold d-block text-truncate" id="txtUploadMainLabel" style="font-size: 0.85rem; color: #059669;">
                                             Pilih / Upload Berkas SK Resmi
                                         </span>
-                                        <small class="text-muted d-block" id="txtUploadMainSub" style="font-size: 0.74rem;">Klik di sini untuk memilih file dokumen (PDF, JPG, PNG)</small>
+                                        <small class="text-muted d-block" id="txtUploadMainSub" style="font-size: 0.74rem;">Klik di sini untuk mengunggah file SK izin yang telah terbit resmi (PDF, JPG, PNG)</small>
                                     </div>
-                                    <span class="btn btn-sm btn-light border px-2.5 py-1 text-secondary fw-semibold" style="font-size: 0.75rem;">Browse</span>
+                                    <span class="btn btn-sm btn-success px-2.5 py-1 text-white fw-semibold" style="font-size: 0.75rem; border-radius: 5px;">Browse</span>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- INFO HINT JIKA STATUS BELUM SELESAI / TERBIT -->
+                        <div id="sectionSkBelumTerbitHint" class="p-3 rounded-3 mb-3" style="background: #f8fafc; border: 1.5px dashed #cbd5e1; {{ $isTerbit ? 'display: none;' : 'display: block;' }};">
+                            <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                                <div class="d-flex align-items-center gap-2 text-muted" style="font-size: 0.82rem;">
+                                    <i class="mdi mdi-information-outline text-primary fs-5 flex-shrink-0"></i>
+                                    <div>
+                                        <strong class="text-dark d-block">Berkas Dokumen Utama / SK Izin</strong>
+                                        Upload Berkas SK Resmi akan muncul saat status dokumen diubah ke <span class="badge bg-success-subtle text-success fw-bold">Selesai / Terbit Resmi</span>.
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-success fw-semibold px-2.5 py-1" onclick="setDokumenStatus('Terbit')" style="font-size: 0.76rem; border-radius: 6px;">
+                                    <i class="mdi mdi-check-circle-outline me-1"></i>Tandai Selesai / Terbit
+                                </button>
                             </div>
                         </div>
 
@@ -415,7 +459,7 @@
             </div>
 
             <!-- Right Column: Rincian & Prasyarat Dokumen (Checklist Upload Persyaratan) -->
-            <div class="col-lg-5">
+            <div class="col-lg-5" id="colRightSyarat" style="{{ $isProsesOrMore ? '' : 'display: none;' }}; transition: all 0.3s ease;">
                 <div class="card kelola-card mb-3">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center gap-2">
@@ -663,10 +707,8 @@
                 if (currentStatus !== 'Revisi') {
                     if (percent === 100) {
                         statusSelect.value = 'Terbit';
-                    } else if (percent > 0) {
+                    } else if (percent > 0 && currentStatus === 'Belum') {
                         statusSelect.value = 'Proses';
-                    } else {
-                        statusSelect.value = 'Belum';
                     }
                     syncStatusChange(statusSelect.value, false);
                 }
@@ -679,12 +721,24 @@
         }
     }
 
-    // SINKRONISASI STATUS DOKUMEN & BADGE HEADER
+    // SET STATUS DARI TOMBOL PINTASAN
+    function setDokumenStatus(newStatus) {
+        var statusSelect = document.getElementById('inpStatus');
+        if (statusSelect) {
+            statusSelect.value = newStatus;
+            syncStatusChange(newStatus, false);
+        }
+    }
+
+    // SINKRONISASI STATUS DOKUMEN & BADGE HEADER & KONTROL VISIBILITAS KARTU
     function syncStatusChange(val, updateProgress = true) {
         var topBadge = document.getElementById('topStatusBadge');
         var topText = document.getElementById('topStatusText');
 
-        if (val === 'Terbit' || val === 'terbit' || val === 'selesai' || val === 'Selesai') {
+        var isTerbit = (val === 'Terbit' || val === 'terbit' || val === 'selesai' || val === 'Selesai');
+        var isProses = (val === 'Proses' || val === 'proses' || val === 'Berjalan' || val === 'Dalam Proses' || val === 'Revisi' || val === 'Tertunda' || val === 'Terkendala');
+
+        if (isTerbit) {
             topBadge.style.backgroundColor = '#00c9a7';
             topBadge.style.color = '#ffffff';
             topBadge.style.border = 'none';
@@ -699,21 +753,59 @@
                     inpHidden.value = 100;
                 }
             }
-        } else if (val === 'Proses' || val === 'proses' || val === 'Berjalan' || val === 'Dalam Proses') {
-            topBadge.style.backgroundColor = '#fffbeb';
-            topBadge.style.border = '1px solid #fde68a';
-            topBadge.style.color = '#d97706';
-            topText.innerHTML = '<i class="mdi mdi-clock-outline me-1"></i>Sedang Proses';
-        } else if (val === 'Revisi' || val === 'Tertunda' || val === 'Terkendala') {
-            topBadge.style.backgroundColor = '#fff1f2';
-            topBadge.style.border = '1px solid #fecdd3';
-            topBadge.style.color = '#e11d48';
-            topText.innerHTML = '<i class="mdi mdi-alert-circle me-1"></i>Ditolak / Kendala';
+        } else if (isProses) {
+            if (val === 'Revisi' || val === 'Tertunda' || val === 'Terkendala') {
+                topBadge.style.backgroundColor = '#fff1f2';
+                topBadge.style.border = '1px solid #fecdd3';
+                topBadge.style.color = '#e11d48';
+                topText.innerHTML = '<i class="mdi mdi-alert-circle me-1"></i>Ditolak / Kendala';
+            } else {
+                topBadge.style.backgroundColor = '#fffbeb';
+                topBadge.style.border = '1px solid #fde68a';
+                topBadge.style.color = '#d97706';
+                topText.innerHTML = '<i class="mdi mdi-clock-outline me-1"></i>Sedang Proses';
+            }
         } else {
             topBadge.style.backgroundColor = '#ffffff';
             topBadge.style.border = '1px solid #e2e8f0';
             topBadge.style.color = '#94a3b8';
             topText.innerHTML = 'Belum Ada';
+        }
+
+        // 1. KONTROL VISIBILITAS CARD SEBELAH KANAN (Rincian & Prasyarat)
+        // Card kanan baru muncul kalau status dokumen proses dalam dinas (atau selesai/revisi)
+        var colLeft = document.getElementById('colLeftDoc');
+        var colRight = document.getElementById('colRightSyarat');
+        var noticeBelum = document.getElementById('cardSyaratBelumProsesNotice');
+
+        if (isProses || isTerbit) {
+            if (colRight) colRight.style.display = 'block';
+            if (colLeft) {
+                colLeft.classList.remove('col-lg-12');
+                colLeft.classList.add('col-lg-7');
+            }
+            if (noticeBelum) noticeBelum.style.display = 'none';
+        } else {
+            // Status Belum Ada: sembunyikan card prasyarat kanan
+            if (colRight) colRight.style.display = 'none';
+            if (colLeft) {
+                colLeft.classList.remove('col-lg-7');
+                colLeft.classList.add('col-lg-12');
+            }
+            if (noticeBelum) noticeBelum.style.display = 'block';
+        }
+
+        // 2. KONTROL VISIBILITAS UPLOAD BERKAS UTAMA SK RESMI
+        // Berkas Dokumen Utama / SK Izin BARU MUNCUL KALAU STATUS SELESAI / TERBIT
+        var sectionSkUtama = document.getElementById('sectionUploadSkUtama');
+        var sectionSkHint = document.getElementById('sectionSkBelumTerbitHint');
+
+        if (isTerbit) {
+            if (sectionSkUtama) sectionSkUtama.style.display = 'block';
+            if (sectionSkHint) sectionSkHint.style.display = 'none';
+        } else {
+            if (sectionSkUtama) sectionSkUtama.style.display = 'none';
+            if (sectionSkHint) sectionSkHint.style.display = 'block';
         }
     }
 

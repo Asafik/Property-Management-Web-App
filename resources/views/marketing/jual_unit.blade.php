@@ -2167,9 +2167,10 @@
                                                         @php
                                                             $numbers = [];
                                                             foreach ($blokKavlings[$blok] as $unit) {
-                                                                $numbers[] = (int) explode('.', $unit->unit_code)[1];
+                                                                $parts = explode('.', $unit->unit_code);
+                                                                $numbers[] = isset($parts[1]) ? (int) $parts[1] : (int) ($unit->unit_number ?? 0);
                                                             }
-                                                            $maxNum = max($numbers);
+                                                            $maxNum = count($numbers) > 0 ? max($numbers) : 0;
                                                         @endphp
                                                         @for ($i = 1; $i <= $maxNum; $i++)
                                                             @php
@@ -3212,10 +3213,11 @@
                 bookingFee: {{ $unit->activeBooking->booking_fee ?? 0 }},
                 agentFee: {{ $unit->activeBooking->agent_fee ?? 0 }},
                 bookingStatus: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->status ?? '-')) }}",
-                pos_x: {{ $unit->pos_x ?? 100 }},
-                pos_y: {{ $unit->pos_y ?? 100 }},
+                pos_x: {{ $unit->pos_x !== null ? $unit->pos_x : 'null' }},
+                pos_y: {{ $unit->pos_y !== null ? $unit->pos_y : 'null' }},
                 width: {{ $unit->width ?? 80 }},
                 angle: {{ $unit->angle ?? 0 }},
+                polygon_points: {!! !empty($unit->polygon_points) ? json_encode($unit->polygon_points) : 'null' !!},
             },
             @endforeach
         ];
@@ -3308,84 +3310,162 @@
                         }
 
                         // Border status penjualan
-                        if (u.statusRaw === 'sold') {
-                            strokeColor = '#dc3545';
-                            strokeWidth = 4;
+                        if (u.statusRaw === 'sold' || u.statusRaw === 'terjual') {
+                            fillColor = '#dc3545';
+                            strokeColor = '#b02a37';
+                            strokeWidth = 3.5;
                             strokeDash = null;
                         } else if (u.statusRaw === 'booked') {
-                            strokeColor = '#ffc107';
+                            fillColor = '#ffc107';
+                            strokeColor = '#d39e00';
                             strokeWidth = 3.5;
                         }
 
-                        const radius = (u.width || 80) / 2;
+                        // 1. JIKA MEMILIKI TITIK POLIGON (KOTAK DENAH ASLI)
+                        if (u.polygon_points && Array.isArray(u.polygon_points) && u.polygon_points.length >= 3) {
+                            let cx = 0, cy = 0;
+                            u.polygon_points.forEach(pt => { cx += pt.x; cy += pt.y; });
+                            cx /= u.polygon_points.length;
+                            cy /= u.polygon_points.length;
 
-                        const circle = new fabric.Circle({
-                            radius: radius,
-                            fill: fillColor,
-                            opacity: 0.88,
-                            stroke: strokeColor,
-                            strokeWidth: strokeWidth,
-                            strokeDashArray: strokeDash,
-                            originX: 'center',
-                            originY: 'center'
-                        });
+                            const poly = new fabric.Polygon(u.polygon_points, {
+                                fill: fillColor,
+                                opacity: 0.65,
+                                stroke: strokeColor,
+                                strokeWidth: strokeWidth,
+                                strokeDashArray: strokeDash,
+                                selectable: false,
+                                hasControls: false,
+                                hoverCursor: 'pointer',
+                                objectCaching: false
+                            });
 
-                        const labelText = u.unitCode || (u.block && u.unitNumber ? `${u.block}.${u.unitNumber}` : (u.unitName || 'Unit'));
-                        const fontSize = Math.max(12, Math.min(20, Math.round(radius * 0.58)));
+                            const labelText = u.unitCode || (u.block && u.unitNumber ? `${u.block}.${u.unitNumber}` : (u.unitName || 'Unit'));
+                            const text = new fabric.Text(labelText, {
+                                left: cx,
+                                top: cy,
+                                originX: 'center',
+                                originY: 'center',
+                                fontSize: 11,
+                                fontWeight: 'bold',
+                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+                                fill: '#0f172a',
+                                textAlign: 'center',
+                                selectable: false,
+                                evented: false,
+                                shadow: new fabric.Shadow({
+                                    color: 'rgba(255, 255, 255, 0.95)',
+                                    blur: 3,
+                                    offsetX: 0,
+                                    offsetY: 0
+                                })
+                            });
 
-                        const text = new fabric.Text(labelText, {
-                            fontSize: fontSize,
-                            fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-                            fontWeight: 'bold',
-                            fill: '#1e293b',
-                            textAlign: 'center',
-                            originX: 'center',
-                            originY: 'center',
-                            shadow: new fabric.Shadow({
-                                color: 'rgba(255, 255, 255, 0.95)',
-                                blur: 3,
-                                offsetX: 0,
-                                offsetY: 0
-                            })
-                        });
+                            // Attach all unit properties
+                            Object.assign(poly, {
+                                unitId: u.id,
+                                unitCode: u.unitCode,
+                                unitName: u.unitName,
+                                unitNumber: u.unitNumber,
+                                block: u.block,
+                                jenis: u.jenis,
+                                type: u.type,
+                                address: u.address,
+                                area: u.area,
+                                building: u.building,
+                                price: u.price,
+                                direction: u.direction,
+                                statusRaw: u.statusRaw,
+                                statusText: u.statusText,
+                                construction: u.construction,
+                                hasBooking: u.hasBooking,
+                                bookingId: u.bookingId,
+                                customer: u.customer,
+                                sales: u.sales,
+                                bookingDate: u.bookingDate,
+                                bookingFee: u.bookingFee,
+                                agentFee: u.agentFee,
+                                bookingStatus: u.bookingStatus,
+                                isPolygon: true
+                            });
 
-                        const markerGroup = new fabric.Group([circle, text], {
-                            left: u.pos_x,
-                            top: u.pos_y,
-                            angle: u.angle || 0,
-                            hasControls: true,
-                            hasBorders: true,
-                            lockRotation: false,
-                            cornerColor: '#9a55ff',
-                            cornerSize: 8,
-                            transparentCorners: false
-                        });
+                            canvas.add(poly);
+                            canvas.add(text);
+                            return;
+                        }
 
-                        markerGroup.unitId = u.id;
-                        markerGroup.unitCode = u.unitCode;
-                        markerGroup.unitName = u.unitName;
-                        markerGroup.unitNumber = u.unitNumber;
-                        markerGroup.block = u.block;
-                        markerGroup.jenis = u.jenis;
-                        markerGroup.type = u.type;
-                        markerGroup.address = u.address;
-                        markerGroup.area = u.area;
-                        markerGroup.building = u.building;
-                        markerGroup.price = u.price;
-                        markerGroup.direction = u.direction;
-                        markerGroup.statusRaw = u.statusRaw;
-                        markerGroup.statusText = u.statusText;
-                        markerGroup.construction = u.construction;
-                        markerGroup.hasBooking = u.hasBooking;
-                        markerGroup.bookingId = u.bookingId;
-                        markerGroup.customer = u.customer;
-                        markerGroup.sales = u.sales;
-                        markerGroup.bookingDate = u.bookingDate;
-                        markerGroup.bookingFee = u.bookingFee;
-                        markerGroup.agentFee = u.agentFee;
-                        markerGroup.bookingStatus = u.bookingStatus;
+                        // 2. FALLBACK JIKA MASIH MENGGUNAKAN POSISI CIRCLE (LEGACY)
+                        if (u.pos_x !== null && u.pos_y !== null) {
+                            const radius = (u.width || 80) / 2;
 
-                        canvas.add(markerGroup);
+                            const circle = new fabric.Circle({
+                                radius: radius,
+                                fill: fillColor,
+                                opacity: 0.88,
+                                stroke: strokeColor,
+                                strokeWidth: strokeWidth,
+                                strokeDashArray: strokeDash,
+                                originX: 'center',
+                                originY: 'center'
+                            });
+
+                            const labelText = u.unitCode || (u.block && u.unitNumber ? `${u.block}.${u.unitNumber}` : (u.unitName || 'Unit'));
+                            const fontSize = Math.max(12, Math.min(20, Math.round(radius * 0.58)));
+
+                            const text = new fabric.Text(labelText, {
+                                fontSize: fontSize,
+                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+                                fontWeight: 'bold',
+                                fill: '#1e293b',
+                                textAlign: 'center',
+                                originX: 'center',
+                                originY: 'center',
+                                shadow: new fabric.Shadow({
+                                    color: 'rgba(255, 255, 255, 0.95)',
+                                    blur: 3,
+                                    offsetX: 0,
+                                    offsetY: 0
+                                })
+                            });
+
+                            const markerGroup = new fabric.Group([circle, text], {
+                                left: u.pos_x,
+                                top: u.pos_y,
+                                angle: u.angle || 0,
+                                hasControls: true,
+                                hasBorders: true,
+                                lockRotation: false,
+                                cornerColor: '#9a55ff',
+                                cornerSize: 8,
+                                transparentCorners: false
+                            });
+
+                            markerGroup.unitId = u.id;
+                            markerGroup.unitCode = u.unitCode;
+                            markerGroup.unitName = u.unitName;
+                            markerGroup.unitNumber = u.unitNumber;
+                            markerGroup.block = u.block;
+                            markerGroup.jenis = u.jenis;
+                            markerGroup.type = u.type;
+                            markerGroup.address = u.address;
+                            markerGroup.area = u.area;
+                            markerGroup.building = u.building;
+                            markerGroup.price = u.price;
+                            markerGroup.direction = u.direction;
+                            markerGroup.statusRaw = u.statusRaw;
+                            markerGroup.statusText = u.statusText;
+                            markerGroup.construction = u.construction;
+                            markerGroup.hasBooking = u.hasBooking;
+                            markerGroup.bookingId = u.bookingId;
+                            markerGroup.customer = u.customer;
+                            markerGroup.sales = u.sales;
+                            markerGroup.bookingDate = u.bookingDate;
+                            markerGroup.bookingFee = u.bookingFee;
+                            markerGroup.agentFee = u.agentFee;
+                            markerGroup.bookingStatus = u.bookingStatus;
+
+                            canvas.add(markerGroup);
+                        }
                     });
 
                     resetZoom();

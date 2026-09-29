@@ -582,4 +582,62 @@ class LandBankUnitController extends Controller
         return redirect()->route('properti.buatKavling', $land->id)
             ->with('success', "SPK '{$request->no_spk}' (Total Rp {$formattedNilai}) berhasil diterbitkan dan terhubung ke {$affectedCount} unit kavling!");
     }
+
+    public function savePolygon(Request $request)
+    {
+        $request->validate([
+            'unit_id' => 'required|exists:land_bank_units,id',
+            'polygon_points' => 'required',
+        ]);
+
+        $unit = LandBankUnit::findOrFail($request->unit_id);
+        
+        $points = $request->polygon_points;
+        if (is_string($points)) {
+            $points = json_decode($points, true);
+        }
+
+        $unit->polygon_points = $points;
+
+        if ($request->filled('pos_x')) {
+            $unit->pos_x = (int) $request->pos_x;
+        }
+        if ($request->filled('pos_y')) {
+            $unit->pos_y = (int) $request->pos_y;
+        }
+
+        $unit->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Titik poligon kavling berhasil dipetakan!',
+            'unit' => [
+                'id' => $unit->id,
+                'unit_code' => $unit->unit_code,
+                'polygon_points' => $unit->polygon_points,
+                'pos_x' => $unit->pos_x,
+                'pos_y' => $unit->pos_y
+            ]
+        ]);
+    }
+
+    public function deletePolygon(Request $request)
+    {
+        $request->validate([
+            'unit_id' => 'required|exists:land_bank_units,id',
+        ]);
+
+        $unit = LandBankUnit::findOrFail($request->unit_id);
+        $unit->polygon_points = null;
+        $unit->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pemetaan poligon unit berhasil dihapus.',
+            'unit' => [
+                'id' => $unit->id,
+                'unit_code' => $unit->unit_code
+            ]
+        ]);
+    }
 }

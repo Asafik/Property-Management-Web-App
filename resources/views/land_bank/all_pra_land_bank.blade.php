@@ -519,12 +519,41 @@
                                             <div class="fw-bold text-dark" style="font-size: 0.88rem; line-height: 1.3;">
                                                 <i class="mdi mdi-map-marker text-primary me-0.5"></i>{{ $land->land_name }}
                                             </div>
-                                            @if(!empty($land->ownership_status))
-                                                <span class="badge py-0.5 px-2 mt-1" 
-                                                    style="background-color: #f3e8ff; color: #7e22ce; font-size: 0.73rem; font-weight: 700; border-radius: 4px; border: 1px solid #e9d5ff;">
-                                                    {{ $land->ownership_status }}
-                                                </span>
-                                            @endif
+                                            <div class="d-flex align-items-center gap-1 flex-wrap mt-1">
+                                                @if(!empty($land->ownership_status))
+                                                    <span class="badge py-0.5 px-2" 
+                                                        style="background-color: #f3e8ff; color: #7e22ce; font-size: 0.73rem; font-weight: 700; border-radius: 4px; border: 1px solid #e9d5ff;">
+                                                        {{ $land->ownership_status }}
+                                                    </span>
+                                                @endif
+                                                
+                                                {{-- BADGE PT ATAU TOMBOL PILIH PT --}}
+                                                @if($land->companyProfile)
+                                                    <span class="badge py-0.5 px-2 text-truncate cursor-pointer" 
+                                                        style="background-color: #e0f2fe; color: #0284c7; font-size: 0.73rem; font-weight: 600; border-radius: 4px; border: 1px solid #bae6fd; max-width: 175px; cursor: pointer;" 
+                                                        onclick="openQuickUpdateCompanyModal({{ $land->id }}, '{{ addslashes($land->land_name) }}', {{ $land->company_profile_id }})" 
+                                                        title="PT Mitra Pengembang. Klik untuk mengubah">
+                                                        <i class="mdi mdi-city me-0.5"></i>{{ $land->companyProfile->name }}
+                                                    </span>
+                                                @else
+                                                    <button type="button" class="btn btn-xs py-0.5 px-1.5 border border-dashed rounded text-primary bg-light" 
+                                                        style="font-size: 10px; font-weight: 600;" 
+                                                        onclick="openQuickUpdateCompanyModal({{ $land->id }}, '{{ addslashes($land->land_name) }}', null)" 
+                                                        title="Klik untuk memilih PT Mitra Pengembang">
+                                                        <i class="mdi mdi-plus-circle me-0.5"></i>Pilih PT
+                                                    </button>
+                                                @endif
+
+                                                {{-- BADGE PASCA LAND BANK --}}
+                                                @if($land->land_bank_id)
+                                                    <a href="{{ route('properti.edit', $land->land_bank_id) }}" 
+                                                        class="badge py-0.5 px-2 text-decoration-none" 
+                                                        style="background-color: #ecfdf5; color: #059669; font-size: 0.73rem; font-weight: 700; border-radius: 4px; border: 1px solid #a7f3d0;" 
+                                                        title="Lahan telah aktif di Pasca Land Bank. Klik untuk melihat berkas pengindukan">
+                                                        <i class="mdi mdi-shield-check me-0.5"></i>Pasca Land Bank
+                                                    </a>
+                                                @endif
+                                            </div>
                                         </td>
 
                                         <td>
@@ -671,6 +700,15 @@
                                                     </button>
                                                 @endif
 
+                                                <!-- Pasca Land Bank Shortcut -->
+                                                @if($land->land_bank_id)
+                                                    <a href="{{ route('properti.edit', $land->land_bank_id) }}" 
+                                                        class="btn-fase-action" style="background: linear-gradient(135deg, #059669, #10b981);" title="Buka di Pasca Land Bank">
+                                                        <i class="mdi mdi-shield-crown"></i>
+                                                        <span>Pasca</span>
+                                                    </a>
+                                                @endif
+
                                                 <!-- Delete Button -->
                                                 @if(!$isKeuangan || $isAdmin)
                                                     <form action="{{ route('pra-landbanks.destroy', $land->id) }}" method="POST" class="d-inline delete-form">
@@ -793,6 +831,54 @@
                     </button>
                     <button type="submit" class="btn btn-gradient-primary px-4 py-2 rounded-pill shadow-sm fw-bold" id="btnSubmitUploadDoc" style="font-size: 0.84rem;">
                         Simpan & Lengkapi Dokumen
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Quick Update PT Mitra Pengembang -->
+<div class="modal fade" id="modalQuickUpdateCompany" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+        <div class="modal-content shadow-lg border-0 rounded-4 overflow-hidden">
+            <div class="modal-header border-0 pb-0 pt-4 px-4 bg-white">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: #e0f2fe; color: #0284c7; width: 42px; height: 42px;">
+                        <i class="mdi mdi-city fs-4"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark mb-0" style="font-size: 1.05rem;">Profil PT Pengembang</h5>
+                        <small class="text-muted d-block text-truncate" style="max-width: 250px;" id="quickCompLandName">-</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formQuickUpdateCompany" onsubmit="submitQuickCompany(event)">
+                @csrf
+                <input type="hidden" id="quickCompLandId" name="land_id">
+                <div class="modal-body p-4 pt-3">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark mb-1" style="font-size: 0.84rem;">
+                            Pilih PT Mitra Pengembang <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" id="quickCompanySelect" name="company_profile_id" required style="border-radius: 8px; font-size: 0.88rem; border-color: #cbd5e1;">
+                            <option value="">-- Pilih PT Mitra Pengembang --</option>
+                            @if(isset($companies))
+                                @foreach($companies as $c)
+                                    <option value="{{ $c->id }}">{{ $c->name }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                        <div class="alert alert-info py-2 px-3 mt-3 mb-0 rounded-3" style="font-size: 0.77rem; line-height: 1.45; background-color: #f0fdf4; border-color: #86efac; color: #166534;">
+                            <i class="mdi mdi-information-outline me-1"></i><strong>Otomatisasi Sistem:</strong> Ketika dokumen fisik lahan ini telah lengkap dan nama PT diupdate, sistem akan otomatis mengaktifkan & memasukkan lahan ini ke <strong>Pasca Land Bank</strong>.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-light px-3 py-1.5 rounded-pill text-muted" data-bs-dismiss="modal" style="font-size: 0.84rem;">Batal</button>
+                    <button type="submit" class="btn btn-gradient-primary px-4 py-2 rounded-pill shadow-sm fw-bold" style="font-size: 0.84rem;">
+                        <i class="mdi mdi-check-circle me-1"></i>Simpan Profil PT
                     </button>
                 </div>
             </form>
@@ -1014,6 +1100,155 @@
                 sizeBadge.innerText = sizeText;
                 sizeBadge.classList.remove('d-none');
             }
+        }
+
+        // ==========================================
+        // AJAX SUBMIT UNTUK MODAL UPLOAD DOKUMEN FISIK
+        // ==========================================
+        document.getElementById('formUploadCompletedDoc')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const submitBtn = document.getElementById('btnSubmitUploadDoc');
+            const originalBtnHtml = submitBtn.innerHTML;
+            const formData = new FormData(form);
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Mengunggah...';
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHtml;
+
+                if (data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('modalUploadCompletedDoc'))?.hide();
+
+                    if (data.auto_migrated_to_pasca) {
+                        Swal.fire({
+                            title: '<span style="color:#059669; font-weight:700;"><i class="mdi mdi-check-decagram me-1"></i> Masuk ke Pasca Land Bank!</span>',
+                            html: `
+                                <p class="text-muted small mb-2" style="font-size:0.92rem;">${data.message}</p>
+                                <div class="alert alert-success py-2 px-3 mb-0 text-start" style="font-size:0.83rem;">
+                                    <i class="mdi mdi-information-outline me-1"></i> Seluruh berkas fisik telah lengkap dan profil PT telah diisi. Data tanah otomatis masuk dan aktif di <strong>Pasca Land Bank</strong>.
+                                </div>
+                            `,
+                            icon: 'success',
+                            showCancelButton: true,
+                            confirmButtonColor: '#10b981',
+                            cancelButtonColor: '#6366f1',
+                            confirmButtonText: '<i class="mdi mdi-arrow-right-circle me-1"></i> Buka di Pasca Land Bank',
+                            cancelButtonText: 'Tetap di Sini'
+                        }).then((choice) => {
+                            if (choice.isConfirmed && data.redirect_url) {
+                                window.location.href = data.redirect_url;
+                            } else {
+                                location.reload();
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: data.message,
+                            timer: 1600,
+                            showConfirmButton: false
+                        }).then(() => location.reload());
+                    }
+                } else {
+                    Swal.fire('Gagal', data.message || 'Gagal mengunggah berkas', 'error');
+                }
+            })
+            .catch(err => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHtml;
+                Swal.fire('Error', 'Terjadi kesalahan sistem saat mengunggah berkas.', 'error');
+            });
+        });
+
+        // ==========================================
+        // QUICK UPDATE PT MITRA PENGEMBANG
+        // ==========================================
+        function openQuickUpdateCompanyModal(landId, landName, currentCompId) {
+            document.getElementById('quickCompLandId').value = landId;
+            document.getElementById('quickCompLandName').textContent = landName;
+            document.getElementById('quickCompanySelect').value = currentCompId || '';
+            const modal = new bootstrap.Modal(document.getElementById('modalQuickUpdateCompany'));
+            modal.show();
+        }
+
+        function submitQuickCompany(e) {
+            e.preventDefault();
+            const landId = document.getElementById('quickCompLandId').value;
+            const compId = document.getElementById('quickCompanySelect').value;
+            if (!compId) return;
+
+            Swal.fire({
+                title: 'Menyimpan Profil PT...',
+                text: 'Memeriksa kelengkapan berkas fisik & alur Pasca...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            fetch(`/properti/pra-landbank/${landId}/update-company`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ company_profile_id: compId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('modalQuickUpdateCompany'))?.hide();
+
+                    if (data.auto_migrated_to_pasca) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '<span style="color:#059669; font-weight:700;"><i class="mdi mdi-check-decagram me-1"></i> Masuk ke Pasca Land Bank!</span>',
+                            html: `
+                                <p class="text-muted small mb-2" style="font-size:0.92rem;">${data.message}</p>
+                                <div class="alert alert-success py-2 px-3 mb-0 text-start" style="font-size:0.83rem;">
+                                    <i class="mdi mdi-shield-check me-1"></i> Lahan telah aktif di Pasca Land Bank dan siap untuk alur pengurusan <strong>Dokumen Pengindukan & Perizinan</strong>.
+                                </div>
+                            `,
+                            showCancelButton: true,
+                            confirmButtonColor: '#10b981',
+                            cancelButtonColor: '#6366f1',
+                            confirmButtonText: '<i class="mdi mdi-arrow-right-circle me-1"></i> Buka di Pasca Land Bank',
+                            cancelButtonText: 'Tetap di Sini'
+                        }).then((choice) => {
+                            if (choice.isConfirmed && data.redirect_url) {
+                                window.location.href = data.redirect_url;
+                            } else {
+                                location.reload();
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: data.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => location.reload());
+                    }
+                } else {
+                    Swal.fire('Gagal', data.message || 'Gagal menyimpan profil PT', 'error');
+                }
+            })
+            .catch(err => {
+                Swal.fire('Error', 'Terjadi kesalahan sistem saat memperbarui PT', 'error');
+            });
         }
     </script>
 @endpush

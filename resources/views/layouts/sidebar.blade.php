@@ -86,7 +86,6 @@
             'rab.deadline.index' => 'mdi-calendar-clock',
             'master.data.division.index' => 'mdi-domain-plus',
             'master.data.posisi' => 'mdi-badge-account-outline',
-            'master.biaya-legalitas.index' => 'mdi-cash-multiple',
             // Keuangan
             'keuangan.project-accounting.index' => 'mdi-finance',
             'keuangan.master-invoice.index' => 'mdi-receipt-text-outline',

@@ -35,9 +35,15 @@ class LandBankUnit extends Model
         'no_spk',
         'dokumen_spk',
         'kontraktor',
+        'pos_x',
+        'pos_y',
+        'width',
+        'height',
+        'polygon_points',
     ];
     protected $casts = [
-    'coordinates' => 'array',
+        'coordinates' => 'array',
+        'polygon_points' => 'array',
     ];
     public function getConstructionProgressPercentageAttribute()
     {
