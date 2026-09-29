@@ -676,15 +676,6 @@
                                                     </button>
                                                 <?php endif; ?>
 
-                                                <!-- Perizinan (Saat Deal / Fase 3 Selesai) -->
-                                                <?php if($land->status === 'approved' || !empty($land->deal_price) || $land->status === 'fase3'): ?>
-                                                    <a href="<?php echo e(route('perizinan.show', $land->id)); ?>" 
-                                                        class="btn-fase-action btn-fase-perizinan" title="Lanjut ke Modul Perizinan Proyek">
-                                                        <i class="mdi mdi-file-certificate-outline"></i>
-                                                        <span>Izin</span>
-                                                    </a>
-                                                <?php endif; ?>
-
                                                 <!-- Delete Button -->
                                                 <?php if(!$isKeuangan || $isAdmin): ?>
                                                     <form action="<?php echo e(route('pra-landbanks.destroy', $land->id)); ?>" method="POST" class="d-inline delete-form">
