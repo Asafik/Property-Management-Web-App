@@ -19,7 +19,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-    }
+    } 
     .form-section-title {
         font-size: 0.95rem;
         font-weight: 700;
@@ -190,8 +190,8 @@
                         <label class="form-label fw-bold" style="font-size: 0.84rem; color: #1e293b;">
                             Nama Perusahaan (PT) <span class="text-danger">*</span>
                         </label>
-                        <input type="text" name="name" class="form-control form-control-custom" 
-                               placeholder="Contoh: PT. Graha Cipta Sejahtera" 
+                        <input type="text" name="name" class="form-control form-control-custom"
+                               placeholder="Contoh: PT. Graha Cipta Sejahtera"
                                value="{{ old('name', $companyProfile->name) }}" required>
                         <small class="text-muted" style="font-size: 0.73rem;">Gunakan nama lengkap berbadan hukum sesuai Akta Notaris.</small>
                     </div>
@@ -200,8 +200,8 @@
                         <label class="form-label fw-bold" style="font-size: 0.84rem; color: #1e293b;">
                             Nomor Telepon Kantor
                         </label>
-                        <input type="text" name="phone" class="form-control form-control-custom" 
-                               placeholder="Contoh: 0331-331447 / 08123456789" 
+                        <input type="text" name="phone" class="form-control form-control-custom"
+                               placeholder="Contoh: 0331-331447 / 08123456789"
                                value="{{ old('phone', $companyProfile->phone) }}">
                         <small class="text-muted" style="font-size: 0.73rem;">Nomor telepon kantor operasional atau kontak penanggung jawab.</small>
                     </div>
@@ -210,7 +210,7 @@
                         <label class="form-label fw-bold" style="font-size: 0.84rem; color: #1e293b;">
                             Alamat Kantor Resmi
                         </label>
-                        <textarea name="address" rows="2" class="form-control form-control-custom" 
+                        <textarea name="address" rows="2" class="form-control form-control-custom"
                                   placeholder="Contoh: Jl. Letjen Sutoyo No. 99 A, Kel. Kaliwates, Kec. Kaliwates, Kab. Jember">{{ old('address', $companyProfile->address) }}</textarea>
                         <small class="text-muted" style="font-size: 0.73rem;">Alamat domisili kantor PT sesuai yang tertera pada Surat Keterangan Domisili / NIB.</small>
                     </div>
@@ -335,7 +335,7 @@
 
                                     <!-- Upload / Ganti Berkas -->
                                     <div class="pratanah-file-upload-modern">
-                                        <input type="file" name="{{ $doc['field'] }}" id="{{ $doc['field'] }}" 
+                                        <input type="file" name="{{ $doc['field'] }}" id="{{ $doc['field'] }}"
                                                accept=".pdf,.jpg,.jpeg,.png"
                                                onchange="handleFileSelect(this, 'label_text_{{ $doc['field'] }}')">
                                         <div class="pratanah-file-label-modern">
