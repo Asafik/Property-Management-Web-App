@@ -103,7 +103,7 @@
     <div class="row align-items-center mb-4">
         <div class="col">
             <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
-                Daftar Unit & Penentuan Harga Jual
+                Daftar Unit Marketing
             </h2>
             <p class="text-muted mb-0" style="font-size: 0.88rem;">
                 Unit kavling hasil pemecahan Legal & Proyek. Tentukan dan sesuaikan harga jual unit untuk siap dipasarkan oleh Tim Marketing.

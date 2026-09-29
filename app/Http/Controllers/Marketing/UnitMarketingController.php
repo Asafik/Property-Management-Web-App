@@ -86,7 +86,7 @@ class UnitMarketingController extends Controller
             ->paginate($perPage)
             ->withQueryString();
 
-        return view('marketing.unit_dummy', compact(
+        return view('marketing.unit.index', compact(
             'units',
             'landBanks',
             'totalUnit',

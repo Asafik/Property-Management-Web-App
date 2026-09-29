@@ -36,7 +36,7 @@ class MenuSeeder extends Seeder
         $legalRoles     = array_values(array_filter([$admin?->id, $legal?->id, $staffLegal?->id]));
         $landbankRoles  = array_values(array_filter([$admin?->id, $legal?->id, $staffLegal?->id, $keuanganStaff?->id]));
         $adminOnly      = array_values(array_filter([$admin?->id]));
-        $kprTransaksiRoles = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $staffKpr?->id]));
+        $kprTransaksiRoles = array_values(array_filter([$admin?->id, $staffKpr?->id]));
 
         // ================= 1. DASHBOARD =================
         $dashboard = Menu::create([
@@ -161,7 +161,6 @@ class MenuSeeder extends Seeder
         ]);
         $spkRoles = $adminOnly;
         $spkMenu->positions()->attach($spkRoles);
-
         $unitMenu = Menu::create([
             'name'  => 'Unit',
             'route' => 'proyek.unit.index',
@@ -181,6 +180,12 @@ class MenuSeeder extends Seeder
         Menu::create([
             'name'      => 'Catalog Unit',
             'route'     => 'marketing.jual-unit',
+            'parent_id' => $marketingMenu->id
+        ])->positions()->attach($marketingRoles);
+
+        Menu::create([
+            'name'      => 'Unit',
+            'route'     => 'marketing.unit.index',
             'parent_id' => $marketingMenu->id
         ])->positions()->attach($marketingRoles);
 
@@ -223,9 +228,9 @@ class MenuSeeder extends Seeder
             'customer.kpr'             => ['name' => 'KPR', 'roles' => $kprTransaksiRoles],
             'kpr.customer-verified'    => ['name' => 'User verifikasi dokumen kpr', 'roles' => $kprTransaksiRoles],
             'customer.kpr.survey'      => ['name' => 'User Acc kpr', 'roles' => $kprTransaksiRoles],
-            'customer.kpr.rijected'    => ['name' => 'User Rijected kpr', 'roles' => $marketingRoles],
-            'cash-tempo.timeline'      => ['name' => 'User Cash Tempo', 'roles' => $marketingRoles],
-            'analisa.kpr.komersil'     => ['name' => 'User KPR Komersil', 'roles' => $marketingRoles],
+            'customer.kpr.rijected'    => ['name' => 'User Rijected kpr', 'roles' => $kprTransaksiRoles],
+            'cash-tempo.timeline'      => ['name' => 'User Cash Tempo', 'roles' => $kprTransaksiRoles],
+            'analisa.kpr.komersil'     => ['name' => 'User KPR Komersil', 'roles' => $kprTransaksiRoles],
         ];
 
         foreach ($transaksiMenus as $route => $config) {
