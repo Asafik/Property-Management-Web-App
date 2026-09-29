@@ -1592,9 +1592,15 @@ body.modal-open .page-body-wrapper {
                                             {{ $denahFileName }}
                                         </span>
                                     </div>
-                                    <div class="d-flex align-items-center gap-1">
+                                    <div class="d-flex align-items-center gap-1 flex-wrap">
                                         @if(!$isPdf)
-                                            <button type="button" class="siteplan-toolbar-btn" onclick="zoomSiteplan(0.2)" title="Perbesar (Zoom In)">
+                                            <button type="button" class="btn btn-sm btn-gradient-primary fw-bold text-white d-inline-flex align-items-center gap-1 shadow-sm rounded-pill px-3 py-1.5" id="btnModeMapping" onclick="toggleMappingMode()" title="Klik 4 titik sudut kotak kavling pada gambar denah JPG">
+                                                <i class="mdi mdi-vector-polygon me-1"></i> <span id="textBtnMapping">Petakan Kavling (Klik 4 Titik)</span>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger fw-bold d-none align-items-center gap-1 rounded-pill px-2.5 py-1" id="btnBatalTitik" onclick="resetCurrentPoints()" title="Reset titik yang baru diklik">
+                                                <i class="mdi mdi-refresh"></i> Ulang Titik
+                                            </button>
+                                            <button type="button" class="siteplan-toolbar-btn ms-1" onclick="zoomSiteplan(0.2)" title="Perbesar (Zoom In)">
                                                 <i class="mdi mdi-magnify-plus-outline"></i>
                                             </button>
                                             <button type="button" class="siteplan-toolbar-btn" onclick="zoomSiteplan(-0.2)" title="Perkecil (Zoom Out)">
@@ -1624,6 +1630,25 @@ body.modal-open .page-body-wrapper {
                                         </a>
                                     </div>
                                 @else
+                                    <!-- Banner Panduan Mode Pemetaan 4 Titik -->
+                                    <div id="mappingBanner" class="d-none alert alert-primary py-2 px-3 mb-2 rounded-3 d-flex align-items-center justify-content-between shadow-sm border-primary">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="spinner-grow spinner-grow-sm text-primary" role="status"></span>
+                                            <span class="small fw-bold text-dark">
+                                                <i class="mdi mdi-cursor-crosshair text-primary me-1"></i>
+                                                Mode Pemetaan Aktif: Klik 4 titik sudut kotak kavling di denah JPG secara berurutan.
+                                            </span>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge bg-primary text-white px-2.5 py-1.5 rounded-pill fw-bold" id="badgeTitikCounter" style="font-size: 11px;">
+                                                0 / 4 Titik
+                                            </span>
+                                            <button type="button" class="btn btn-xs btn-outline-danger py-0.5 px-2 rounded-pill small" onclick="toggleMappingMode()">
+                                                Tutup Mode
+                                            </button>
+                                        </div>
+                                    </div>
+
                                     <!-- Interactive Fabric.js Canvas Engine untuk Tim Legal (Tinggi 620px Besar & Luas) -->
                                     <div class="siteplan-scroll-container" style="min-height: 580px; height: 620px; overflow: hidden; border: 2px solid #9a55ff; border-radius: 12px; background: #ffffff; display: flex; justify-content: center; align-items: center; position: relative;">
                                         <canvas id="siteplanCanvasLegal"></canvas>
@@ -1634,7 +1659,7 @@ body.modal-open .page-body-wrapper {
                                         <div class="row g-2">
                                             <div class="col-md-7 border-end">
                                                 <strong class="d-block text-dark mb-1" style="font-size: 10px;">
-                                                    <i class="mdi mdi-hammer-wrench text-warning me-1"></i>Status Pembangunan Fisik (Warna Bulatan):
+                                                    <i class="mdi mdi-hammer-wrench text-warning me-1"></i>Status Pembangunan Fisik (Warna Kavling / Kotak Denah):
                                                 </strong>
                                                 <div class="d-flex flex-wrap gap-1">
                                                     <span class="badge" style="background: #adb5bd; color: #fff; font-size: 9px;">Belum Mulai (0%)</span>
@@ -1647,7 +1672,7 @@ body.modal-open .page-body-wrapper {
                                             </div>
                                             <div class="col-md-5">
                                                 <strong class="d-block text-dark mb-1" style="font-size: 10px;">
-                                                    <i class="mdi mdi-circle-outline text-primary me-1"></i>Status Penjualan (Garis Border):
+                                                    <i class="mdi mdi-checkbox-blank-outline text-primary me-1"></i>Status Penjualan (Garis Border):
                                                 </strong>
                                                 <div class="d-flex flex-wrap gap-1">
                                                     <span class="badge" style="background: rgba(220,53,69,0.15); color: #dc3545; border: 1.5px solid #dc3545; font-size: 9px;">Terjual / Sold (Border Merah)</span>
@@ -1659,8 +1684,8 @@ body.modal-open .page-body-wrapper {
 
                                     <div class="p-3 bg-white border-top rounded-bottom-3 d-flex flex-wrap justify-content-between align-items-center gap-3">
                                         <span class="text-muted d-flex align-items-center gap-1" style="font-size: 0.85rem;">
-                                            <i class="mdi mdi-cursor-move text-primary fs-5"></i>
-                                            Geser bulatan untuk atur posisi, atau <strong>klik 2x</strong> untuk lihat detail unit
+                                            <i class="mdi mdi-information-outline text-primary fs-5"></i>
+                                            Klik kotak kavling untuk melihat detail unit, atau klik <strong>Petakan Kavling (Klik 4 Titik)</strong> untuk mewarnai kotak denah JPG.
                                         </span>
                                         <div class="d-flex align-items-center gap-2 flex-wrap">
                                             <button type="button" class="btn btn-sm btn-gradient-primary px-3 py-2 d-inline-flex align-items-center gap-1.5 shadow-sm text-white rounded-3 fw-bold" onclick="savePositionLegal()">
@@ -2328,6 +2353,9 @@ body.modal-open .page-body-wrapper {
                     Detail Unit Kavling Lengkap
                 </h5>
                 <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-danger fw-bold px-3 rounded-pill" id="btnHapusPolygonLegal" onclick="hapusPemetaanCurrentUnit()" style="display: none;">
+                        <i class="mdi mdi-vector-polygon-remove me-1"></i>Hapus Pemetaan Kotak
+                    </button>
                     <button type="button" class="btn btn-sm btn-light text-primary fw-bold px-3 rounded-pill" id="btnEditFromDetailLegal" style="display: none;">
                         <i class="mdi mdi-pencil me-1"></i>Edit Data Unit
                     </button>
@@ -2492,6 +2520,69 @@ body.modal-open .page-body-wrapper {
     </div>
 </div>
 
+<!-- Modal Hubungkan Poligon ke Unit Kavling -->
+<div class="modal fade" id="modalAssignPolygonUnit" tabindex="-1" aria-labelledby="modalAssignPolygonUnitLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0 rounded-4">
+            <div class="modal-header bg-light py-3 border-bottom">
+                <h5 class="modal-title fw-bold text-dark fs-6" id="modalAssignPolygonUnitLabel">
+                    <i class="mdi mdi-vector-polygon text-primary me-2 fs-5"></i>
+                    Hubungkan Kotak Denah ke Unit Kavling
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="cancelCurrentPoints()"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="alert alert-soft-success py-2.5 px-3 rounded-3 d-flex align-items-center gap-2 mb-3 border border-success border-opacity-25" style="background: rgba(40, 167, 69, 0.08);">
+                    <i class="mdi mdi-check-circle text-success fs-5"></i>
+                    <div class="small">
+                        <strong class="text-success d-block">4 Titik Sudut Berhasil Ditandai!</strong>
+                        <span class="text-muted">Pilih unit kavling yang ingin dihubungkan ke kotak denah ini.</span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="selectPolygonUnitId" class="form-label small fw-bold text-dark">
+                        Pilih Unit Kavling: <span class="text-danger">*</span>
+                    </label>
+                    <select class="form-select rounded-3 py-2" id="selectPolygonUnitId" style="font-size: 0.9rem;">
+                        <option value="">-- Pilih Unit Kavling --</option>
+                        @foreach ($land->units as $u)
+                            @php
+                                $isMapped = !empty($u->polygon_points);
+                                $unitTag = '[' . $u->unit_code . '] ' . ($u->unit_name ?: 'Unit') . ' (Tipe ' . ($u->type ?: '-') . ')';
+                                if ($isMapped) {
+                                    $unitTag .= ' ✓ [Sudah Dipetakan]';
+                                } else {
+                                    $unitTag .= ' ⚪ [Belum Dipetakan]';
+                                }
+                            @endphp
+                            <option value="{{ $u->id }}" data-unit-code="{{ $u->unit_code }}" data-is-mapped="{{ $isMapped ? '1' : '0' }}">
+                                {{ $unitTag }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <small class="text-muted d-block mt-1">
+                        Pewarnaan status pembangunan dan penjualan unit ini akan langsung mengisi kotak garis pada denah JPG.
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer bg-light py-2.5 px-4 border-top d-flex justify-content-between">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="resetCurrentPoints()">
+                    <i class="mdi mdi-refresh me-1"></i>Ulangi 4 Titik
+                </button>
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-sm btn-light border rounded-pill px-3" data-bs-dismiss="modal" onclick="cancelCurrentPoints()">
+                        Batal
+                    </button>
+                    <button type="button" class="btn btn-sm btn-gradient-primary fw-bold text-white rounded-pill px-4 shadow-sm" onclick="submitPolygonMapping()">
+                        <i class="mdi mdi-check me-1"></i>Simpan Pemetaan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -2565,6 +2656,11 @@ function switchSiteplanView(view) {
 let canvasLegal = null;
 let isDraggingLegal = false;
 let lastPosXLegal, lastPosYLegal;
+let isMappingMode = false;
+let currentClickPoints = []; // [{x, y}, ...] in unscaled coordinates
+let currentTempVisuals = []; // Fabric objects for points and lines
+let currentScaleFactor = 1;
+let currentActiveUnitId = null;
 
 const legalUnitsData = [
     @foreach ($land->units as $unit)
@@ -2577,6 +2673,7 @@ const legalUnitsData = [
         $aFee = $booking->agent_fee ?? 0;
         $bStat = $booking->status ?? '-';
         $hasBk = $booking ? true : false;
+        $polyPoints = !empty($unit->polygon_points) ? $unit->polygon_points : null;
     @endphp
     {
         id: "{{ $unit->id }}",
@@ -2596,10 +2693,12 @@ const legalUnitsData = [
         statusRaw: "{{ $unit->status ?? 'ready' }}",
         statusText: "{{ ucfirst($unit->status ?? 'ready') }}",
         construction: "{{ $unit->construction_progress ?? 'belum_mulai' }}",
-        pos_x: {{ $unit->pos_x ?? 100 }},
-        pos_y: {{ $unit->pos_y ?? 100 }},
+        pos_x: {{ $unit->pos_x !== null ? $unit->pos_x : 'null' }},
+        pos_y: {{ $unit->pos_y !== null ? $unit->pos_y : 'null' }},
         width: {{ $unit->width ?? 70 }},
         angle: {{ $unit->angle ?? 0 }},
+        polygon_points: {!! $polyPoints ? json_encode($polyPoints) : 'null' !!},
+        hasPolygon: {{ $polyPoints ? 'true' : 'false' }},
         hasBooking: {{ $hasBk ? 'true' : 'false' }},
         customer: "{{ str_replace(["\r", "\n"], ' ', addslashes($custName)) }}",
         sales: "{{ str_replace(["\r", "\n"], ' ', addslashes($salesName)) }}",
@@ -2611,7 +2710,418 @@ const legalUnitsData = [
     @endforeach
 ];
 
+// Helper kalkulasi warna & border berdasarkan status pembangunan & penjualan
+function getUnitColors(u) {
+    let fillColor = '#adb5bd'; // default abu-abu untuk Belum Mulai (0%)
+    let strokeColor = '#495057';
+    let strokeWidth = 1.8;
+    let strokeDash = null;
+
+    switch (u.construction) {
+        case 'pondasi':
+            fillColor = '#fd7e14'; // Oranye
+            strokeColor = '#d96509';
+            strokeWidth = 2.5;
+            break;
+        case 'dinding':
+            fillColor = '#ffc107'; // Kuning Emas
+            strokeColor = '#d39e00';
+            strokeWidth = 2.5;
+            break;
+        case 'atap':
+            fillColor = '#17a2b8'; // Cyan
+            strokeColor = '#117a8b';
+            strokeWidth = 2.8;
+            break;
+        case 'finishing':
+            fillColor = '#9a55ff'; // Ungu
+            strokeColor = '#7a3bcf';
+            strokeWidth = 2.8;
+            break;
+        case 'selesai':
+            fillColor = '#28a745'; // Hijau Selesai
+            strokeColor = '#1e7e34';
+            strokeWidth = 2.5;
+            break;
+        default:
+            fillColor = '#adb5bd';
+            strokeColor = '#6c757d';
+            strokeWidth = 1.8;
+            break;
+    }
+
+    // Border status penjualan
+    const sRaw = (u.statusRaw || '').toLowerCase();
+    if (sRaw === 'sold' || sRaw === 'terjual') {
+        fillColor = '#dc3545'; // Merah Terjual
+        strokeColor = '#b02a37';
+        strokeWidth = 3;
+        strokeDash = null;
+    } else if (sRaw === 'booked') {
+        fillColor = '#ffc107'; // Kuning Booked
+        strokeColor = '#d39e00';
+        strokeWidth = 3;
+    }
+
+    return { fillColor, strokeColor, strokeWidth, strokeDash };
+}
+
+// Render 1 unit pada Canvas Fabric.js (bisa berupa Polygon kotak denah atau Circle marker)
+function renderUnitOnCanvas(u, scaleFactor) {
+    if (!canvasLegal) return;
+
+    // 1. KASUS UTAMA: Unit memiliki pemetaan titik polygon (mengikuti garis kotak di denah JPG)
+    if (u.polygon_points && Array.isArray(u.polygon_points) && u.polygon_points.length >= 3) {
+        const { fillColor, strokeColor, strokeWidth, strokeDash } = getUnitColors(u);
+
+        const scaledPoints = u.polygon_points.map(pt => ({
+            x: pt.x * scaleFactor,
+            y: pt.y * scaleFactor
+        }));
+
+        let cx = 0, cy = 0;
+        scaledPoints.forEach(pt => { cx += pt.x; cy += pt.y; });
+        cx /= scaledPoints.length;
+        cy /= scaledPoints.length;
+
+        const poly = new fabric.Polygon(scaledPoints, {
+            fill: fillColor,
+            opacity: 0.65, // Transparan agar garis & nomor asli denah JPG di bawahnya tetap terlihat
+            stroke: strokeColor,
+            strokeWidth: strokeWidth,
+            strokeDashArray: strokeDash,
+            selectable: false,
+            hasControls: false,
+            hoverCursor: 'pointer',
+            objectCaching: false
+        });
+
+        const labelText = u.unitCode || (u.block && u.unitNumber ? `${u.block}.${u.unitNumber}` : (u.unitName || 'Unit'));
+        const text = new fabric.Text(labelText, {
+            left: cx,
+            top: cy,
+            originX: 'center',
+            originY: 'center',
+            fontSize: 11,
+            fontWeight: 'bold',
+            fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+            fill: '#0f172a',
+            textAlign: 'center',
+            selectable: false,
+            evented: false, // Klik diteruskan ke Polygon
+            shadow: new fabric.Shadow({
+                color: 'rgba(255, 255, 255, 0.95)',
+                blur: 3,
+                offsetX: 0,
+                offsetY: 0
+            })
+        });
+
+        poly.unitId = u.id;
+        poly.unitData = u;
+        poly.labelObj = text;
+        poly.isPolygon = true;
+
+        canvasLegal.add(poly);
+        canvasLegal.add(text);
+        return;
+    }
+
+    // 2. KASUS KEDUA: Unit memiliki koordinat bulat legacy (jika pos_x & pos_y sudah pernah diatur)
+    if (u.pos_x !== null && u.pos_y !== null) {
+        const { fillColor, strokeColor, strokeWidth, strokeDash } = getUnitColors(u);
+        const radius = ((u.width || 70) * scaleFactor) / 2;
+
+        const circle = new fabric.Circle({
+            radius: radius,
+            fill: fillColor,
+            opacity: 0.85,
+            stroke: strokeColor,
+            strokeWidth: strokeWidth,
+            strokeDashArray: strokeDash,
+            originX: 'center',
+            originY: 'center'
+        });
+
+        const labelText = u.unitCode || (u.block && u.unitNumber ? `${u.block}.${u.unitNumber}` : (u.unitName || 'Unit'));
+        const fontSize = Math.max(11, Math.min(18, Math.round(radius * 0.58)));
+
+        const text = new fabric.Text(labelText, {
+            fontSize: fontSize,
+            fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+            fontWeight: 'bold',
+            fill: '#1e293b',
+            textAlign: 'center',
+            originX: 'center',
+            originY: 'center',
+            shadow: new fabric.Shadow({
+                color: 'rgba(255, 255, 255, 0.95)',
+                blur: 3,
+                offsetX: 0,
+                offsetY: 0
+            })
+        });
+
+        const markerGroup = new fabric.Group([circle, text], {
+            left: u.pos_x * scaleFactor,
+            top: u.pos_y * scaleFactor,
+            angle: u.angle || 0,
+            hasControls: true,
+            hasBorders: true,
+            lockRotation: false,
+            cornerColor: '#9a55ff',
+            cornerSize: 8,
+            transparentCorners: false
+        });
+
+        markerGroup.unitId = u.id;
+        markerGroup.unitData = u;
+        markerGroup.scaleFactor = scaleFactor;
+        markerGroup.isPolygon = false;
+
+        canvasLegal.add(markerGroup);
+    }
+}
+
+// Hapus objek unit tertentu dari Canvas Legal
+function removeUnitFromCanvas(unitId) {
+    if (!canvasLegal) return;
+    const objects = canvasLegal.getObjects();
+    const toRemove = [];
+    objects.forEach(obj => {
+        if (obj.unitId == unitId) {
+            toRemove.push(obj);
+            if (obj.labelObj) toRemove.push(obj.labelObj);
+        }
+    });
+    toRemove.forEach(obj => canvasLegal.remove(obj));
+}
+
+// Toggle Mode Pemetaan 4 Titik
+function toggleMappingMode() {
+    isMappingMode = !isMappingMode;
+    const btn = document.getElementById('btnModeMapping');
+    const textBtn = document.getElementById('textBtnMapping');
+    const banner = document.getElementById('mappingBanner');
+    const btnBatal = document.getElementById('btnBatalTitik');
+
+    resetCurrentPoints();
+
+    if (isMappingMode) {
+        if (btn) {
+            btn.classList.remove('btn-gradient-primary');
+            btn.classList.add('btn-danger');
+        }
+        if (textBtn) textBtn.innerText = 'Batal Petakan Kavling';
+        if (banner) banner.classList.remove('d-none');
+        if (btnBatal) btnBatal.classList.remove('d-none');
+        if (canvasLegal) {
+            canvasLegal.defaultCursor = 'crosshair';
+            canvasLegal.setCursor('crosshair');
+            canvasLegal.selection = false;
+        }
+    } else {
+        if (btn) {
+            btn.classList.remove('btn-danger');
+            btn.classList.add('btn-gradient-primary');
+        }
+        if (textBtn) textBtn.innerText = 'Petakan Kavling (Klik 4 Titik)';
+        if (banner) banner.classList.add('d-none');
+        if (btnBatal) btnBatal.classList.add('d-none');
+        if (canvasLegal) {
+            canvasLegal.defaultCursor = 'grab';
+            canvasLegal.setCursor('grab');
+            canvasLegal.selection = true;
+        }
+    }
+}
+
+// Reset 4 titik yang sedang diklik sementara
+function resetCurrentPoints() {
+    currentClickPoints = [];
+    currentTempVisuals.forEach(obj => {
+        if (canvasLegal) canvasLegal.remove(obj);
+    });
+    currentTempVisuals = [];
+    const counter = document.getElementById('badgeTitikCounter');
+    if (counter) counter.innerText = '0 / 4 Titik';
+    if (canvasLegal) canvasLegal.requestRenderAll();
+}
+
+function cancelCurrentPoints() {
+    resetCurrentPoints();
+    const modalEl = document.getElementById('modalAssignPolygonUnit');
+    if (modalEl) {
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+    }
+}
+
+// Submit Simpan Pemetaan 4 Titik Poligon ke Database
+function submitPolygonMapping() {
+    const select = document.getElementById('selectPolygonUnitId');
+    const unitId = select ? select.value : null;
+
+    if (!unitId) {
+        Swal.fire('Pilih Unit', 'Silakan pilih unit kavling yang sesuai terlebih dahulu!', 'warning');
+        return;
+    }
+
+    if (currentClickPoints.length !== 4) {
+        Swal.fire('Peringatan', 'Titik sudut belum lengkap 4 titik! Silakan klik 4 titik pada gambar.', 'warning');
+        return;
+    }
+
+    // Hitung koordinat tengah (centroid)
+    let cx = 0, cy = 0;
+    currentClickPoints.forEach(p => { cx += p.x; cy += p.y; });
+    cx = Math.round(cx / 4);
+    cy = Math.round(cy / 4);
+
+    Swal.fire({
+        title: 'Menyimpan Pemetaan...',
+        text: 'Menghubungkan 4 titik kotak kavling ke unit',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    fetch("{{ route('unit.save.polygon') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            unit_id: unitId,
+            polygon_points: currentClickPoints,
+            pos_x: cx,
+            pos_y: cy
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            // Tutup modal
+            const modalEl = document.getElementById('modalAssignPolygonUnit');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+
+            // Perbarui data lokal
+            const u = legalUnitsData.find(item => item.id == unitId);
+            if (u) {
+                u.polygon_points = currentClickPoints;
+                u.hasPolygon = true;
+                u.pos_x = cx;
+                u.pos_y = cy;
+            }
+
+            // Hapus objek lama unit ini dari canvas
+            removeUnitFromCanvas(unitId);
+
+            // Bersihkan visual klik sementara
+            currentTempVisuals.forEach(obj => canvasLegal.remove(obj));
+            currentTempVisuals = [];
+            currentClickPoints = [];
+
+            // Gambar poligon permanen pada denah
+            if (u) {
+                renderUnitOnCanvas(u, currentScaleFactor);
+            }
+
+            // Update keterangan pada select option
+            const opt = select.querySelector(`option[value="${unitId}"]`);
+            if (opt) {
+                opt.text = opt.text.replace('⚪ [Belum Dipetakan]', '✓ [Sudah Dipetakan]');
+            }
+
+            canvasLegal.renderAll();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil Dipetakan!',
+                text: 'Kotak kavling pada denah telah diwarnai mengikuti garis denah JPG.',
+                timer: 1800,
+                showConfirmButton: false
+            });
+
+            const counter = document.getElementById('badgeTitikCounter');
+            if (counter) counter.innerText = '0 / 4 Titik';
+        } else {
+            Swal.fire('Gagal', data.message || 'Gagal menyimpan pemetaan', 'error');
+        }
+    })
+    .catch(err => {
+        Swal.fire('Error', 'Terjadi kesalahan sistem saat menyimpan pemetaan', 'error');
+    });
+}
+
+// Hapus pemetaan poligon untuk unit yang sedang dibuka di modal
+function hapusPemetaanCurrentUnit() {
+    if (!currentActiveUnitId) return;
+
+    Swal.fire({
+        title: 'Hapus Pemetaan Kotak?',
+        text: 'Warna kotak kavling pada denah untuk unit ini akan dihapus.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus Pemetaan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch("{{ route('unit.delete.polygon') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ unit_id: currentActiveUnitId })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    const modalEl = document.getElementById('detailUnitModalLegal');
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+
+                    const u = legalUnitsData.find(item => item.id == currentActiveUnitId);
+                    if (u) {
+                        u.polygon_points = null;
+                        u.hasPolygon = false;
+                    }
+
+                    removeUnitFromCanvas(currentActiveUnitId);
+                    canvasLegal.renderAll();
+
+                    // Update option di select modal
+                    const select = document.getElementById('selectPolygonUnitId');
+                    if (select) {
+                        const opt = select.querySelector(`option[value="${currentActiveUnitId}"]`);
+                        if (opt) {
+                            opt.text = opt.text.replace('✓ [Sudah Dipetakan]', '⚪ [Belum Dipetakan]');
+                        }
+                    }
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pemetaan Dihapus',
+                        text: 'Pemetaan kotak pada denah berhasil dihapus.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire('Gagal', data.message || 'Gagal menghapus pemetaan', 'error');
+                }
+            })
+            .catch(() => Swal.fire('Error', 'Terjadi kesalahan sistem saat menghapus', 'error'));
+        }
+    });
+}
+
 function populateModalLegal(data) {
+    currentActiveUnitId = data.id || data.unitId;
+
     document.getElementById('leg_unit_name').innerText = data.unitName || '-';
     document.getElementById('leg_block').innerText = data.block || '-';
     document.getElementById('leg_unit_number').innerText = data.unitNumber || '-';
@@ -2639,7 +3149,7 @@ function populateModalLegal(data) {
     }
     document.getElementById('leg_address').innerText = data.address || '-';
 
-    // Status Penjualan (Jelas & Kontras Tinggi)
+    // Status Penjualan
     const sRaw = (data.statusRaw || '').toLowerCase();
     const tRaw = (data.type || '').toLowerCase();
     let sHtml = '';
@@ -2658,7 +3168,7 @@ function populateModalLegal(data) {
     }
     document.getElementById('leg_status').innerHTML = sHtml;
 
-    // Progress Pembangunan Fisik (Gradient & Jelas)
+    // Progress Pembangunan Fisik
     const cMap = {
         'belum_mulai': { pct: 0, label: '0% - Belum Mulai', bg: '#adb5bd' },
         'pondasi': { pct: 20, label: '20% - Pondasi', bg: 'linear-gradient(135deg, #fd7e14, #ff922b)' },
@@ -2675,13 +3185,14 @@ function populateModalLegal(data) {
 
     // Tombol Edit Unit
     const btnEdit = document.getElementById('btnEditFromDetailLegal');
-    if (data.unitId) {
+    const uId = data.id || data.unitId;
+    if (uId) {
         btnEdit.style.display = 'inline-block';
         btnEdit.onclick = function() {
             const detailModal = bootstrap.Modal.getInstance(document.getElementById('detailUnitModalLegal'));
             if (detailModal) detailModal.hide();
             setTimeout(() => {
-                const editModalEl = document.getElementById('editUnitModal' + data.unitId);
+                const editModalEl = document.getElementById('editUnitModal' + uId);
                 if (editModalEl) {
                     const m = new bootstrap.Modal(editModalEl);
                     m.show();
@@ -2690,6 +3201,17 @@ function populateModalLegal(data) {
         };
     } else {
         btnEdit.style.display = 'none';
+    }
+
+    // Tombol Hapus Pemetaan Kotak
+    const btnHapusPoly = document.getElementById('btnHapusPolygonLegal');
+    if (btnHapusPoly) {
+        const uFound = legalUnitsData.find(item => item.id == uId);
+        if (uFound && uFound.polygon_points && uFound.polygon_points.length > 0) {
+            btnHapusPoly.style.display = 'inline-block';
+        } else {
+            btnHapusPoly.style.display = 'none';
+        }
     }
 
     // Informasi Booking
@@ -2726,8 +3248,10 @@ function populateModalLegal(data) {
 }
 
 function openUnitDetailModalLegal(target) {
-    if (!target || !target.unitId) return;
-    populateModalLegal(target);
+    if (!target) return;
+    const uData = target.unitData || target;
+    if (!uData || (!uData.id && !uData.unitId)) return;
+    populateModalLegal(uData);
     const modal = new bootstrap.Modal(document.getElementById('detailUnitModalLegal'));
     modal.show();
 }
@@ -2751,8 +3275,8 @@ function initLegalSiteplanCanvas() {
             const delta = opt.e.deltaY;
             let zoomVal = canvasLegal.getZoom();
             zoomVal *= (delta < 0 ? 1.1 : 0.9);
-            if (zoomVal > 3.5) zoomVal = 3.5;
-            if (zoomVal < 0.3) zoomVal = 0.3;
+            if (zoomVal > 4.0) zoomVal = 4.0;
+            if (zoomVal < 0.25) zoomVal = 0.25;
             legalZoomLevel = zoomVal;
             const pointer = canvasLegal.getPointer(opt.e);
             canvasLegal.zoomToPoint(new fabric.Point(pointer.x, pointer.y), legalZoomLevel);
@@ -2761,9 +3285,120 @@ function initLegalSiteplanCanvas() {
             canvasLegal.renderAll();
         });
 
-        // Background Drag to Pan & Click to Open Detail Modal
+        // Event Klik Canvas (Bisa untuk Mode Pemetaan 4 Titik atau Drag Pan)
         let clickStartPosLegal = { x: 0, y: 0 };
+
         canvasLegal.on('mouse:down', function(opt) {
+            if (isMappingMode) {
+                // KLIK 4 TITIK PADA GAMBAR DENAH JPG
+                const pointer = canvasLegal.getPointer(opt.e);
+                const sf = currentScaleFactor || 1;
+                const unscaledPt = {
+                    x: Math.round(pointer.x / sf),
+                    y: Math.round(pointer.y / sf)
+                };
+                const currentPt = {
+                    x: pointer.x,
+                    y: pointer.y
+                };
+
+                currentClickPoints.push(unscaledPt);
+                const ptIndex = currentClickPoints.length;
+
+                // Titik pin penanda
+                const dot = new fabric.Circle({
+                    left: currentPt.x,
+                    top: currentPt.y,
+                    radius: 5,
+                    fill: '#9a55ff',
+                    stroke: '#ffffff',
+                    strokeWidth: 2,
+                    originX: 'center',
+                    originY: 'center',
+                    selectable: false,
+                    evented: false
+                });
+
+                const numText = new fabric.Text(ptIndex.toString(), {
+                    left: currentPt.x,
+                    top: currentPt.y - 10,
+                    fontSize: 11,
+                    fontWeight: 'bold',
+                    fill: '#7a3bcf',
+                    stroke: '#ffffff',
+                    strokeWidth: 2.5,
+                    paintFirst: 'stroke',
+                    originX: 'center',
+                    originY: 'bottom',
+                    selectable: false,
+                    evented: false
+                });
+
+                canvasLegal.add(dot);
+                canvasLegal.add(numText);
+                currentTempVisuals.push(dot, numText);
+
+                // Tarik garis penghubung dari titik sebelumnya
+                if (ptIndex > 1) {
+                    const prevUnscaled = currentClickPoints[ptIndex - 2];
+                    const line = new fabric.Line([
+                        prevUnscaled.x * sf, prevUnscaled.y * sf,
+                        currentPt.x, currentPt.y
+                    ], {
+                        stroke: '#9a55ff',
+                        strokeWidth: 2,
+                        strokeDashArray: [4, 3],
+                        selectable: false,
+                        evented: false
+                    });
+                    canvasLegal.add(line);
+                    currentTempVisuals.push(line);
+                }
+
+                const counter = document.getElementById('badgeTitikCounter');
+                if (counter) counter.innerText = ptIndex + ' / 4 Titik';
+
+                // Ketika sudah 4 titik sudut ditandai
+                if (ptIndex === 4) {
+                    const firstUnscaled = currentClickPoints[0];
+                    const closeLine = new fabric.Line([
+                        currentPt.x, currentPt.y,
+                        firstUnscaled.x * sf, firstUnscaled.y * sf
+                    ], {
+                        stroke: '#28a745',
+                        strokeWidth: 2.5,
+                        strokeDashArray: [4, 3],
+                        selectable: false,
+                        evented: false
+                    });
+                    canvasLegal.add(closeLine);
+                    currentTempVisuals.push(closeLine);
+
+                    // Preview poligon transparan
+                    const polyPreview = new fabric.Polygon(currentClickPoints.map(p => ({ x: p.x * sf, y: p.y * sf })), {
+                        fill: 'rgba(154, 85, 255, 0.30)',
+                        stroke: '#9a55ff',
+                        strokeWidth: 2,
+                        selectable: false,
+                        evented: false
+                    });
+                    canvasLegal.add(polyPreview);
+                    currentTempVisuals.push(polyPreview);
+
+                    canvasLegal.renderAll();
+
+                    // Buka modal pilih unit
+                    setTimeout(() => {
+                        const modal = new bootstrap.Modal(document.getElementById('modalAssignPolygonUnit'));
+                        modal.show();
+                    }, 200);
+                } else {
+                    canvasLegal.renderAll();
+                }
+                return;
+            }
+
+            // Normal Mode: Drag pan
             if (opt.e) {
                 clickStartPosLegal = { x: opt.e.clientX, y: opt.e.clientY };
             }
@@ -2775,8 +3410,9 @@ function initLegalSiteplanCanvas() {
                 lastPosYLegal = opt.e.clientY;
             }
         });
+
         canvasLegal.on('mouse:move', function(opt) {
-            if (isDraggingLegal) {
+            if (isDraggingLegal && !isMappingMode) {
                 const e = opt.e;
                 const vpt = canvasLegal.viewportTransform;
                 vpt[4] += e.clientX - lastPosXLegal;
@@ -2786,17 +3422,43 @@ function initLegalSiteplanCanvas() {
                 lastPosYLegal = e.clientY;
             }
         });
+
         canvasLegal.on('mouse:up', function(opt) {
-            canvasLegal.setViewportTransform(canvasLegal.viewportTransform);
-            isDraggingLegal = false;
-            canvasLegal.selection = true;
-            canvasLegal.setCursor('grab');
+            if (!isMappingMode) {
+                canvasLegal.setViewportTransform(canvasLegal.viewportTransform);
+                isDraggingLegal = false;
+                canvasLegal.selection = true;
+                canvasLegal.setCursor('grab');
+
+                // Buka detail unit jika klik pada poligon atau lingkaran (single click dengan pergeseran minimal)
+                if (opt.target && (opt.target.unitId || opt.target.unitData) && opt.e) {
+                    const dist = Math.hypot(opt.e.clientX - clickStartPosLegal.x, opt.e.clientY - clickStartPosLegal.y);
+                    if (dist < 6) {
+                        openUnitDetailModalLegal(opt.target);
+                    }
+                }
+            }
         });
 
-        // Buka Modal Detail Unit HANYA saat bulatan di-DOUBLE CLICK (klik 2x)
+        // Double Click cadangan
         canvasLegal.on('mouse:dblclick', function(opt) {
-            if (opt.target && opt.target.unitId) {
+            if (!isMappingMode && opt.target && (opt.target.unitId || opt.target.unitData)) {
                 openUnitDetailModalLegal(opt.target);
+            }
+        });
+
+        // Hover effect pada Polygon
+        canvasLegal.on('mouse:over', function(e) {
+            if (!isMappingMode && e.target && e.target.isPolygon) {
+                e.target.set('opacity', 0.88);
+                canvasLegal.renderAll();
+            }
+        });
+
+        canvasLegal.on('mouse:out', function(e) {
+            if (!isMappingMode && e.target && e.target.isPolygon) {
+                e.target.set('opacity', 0.65);
+                canvasLegal.renderAll();
             }
         });
     } else {
@@ -2807,10 +3469,10 @@ function initLegalSiteplanCanvas() {
     fabric.Image.fromURL(denahUrl, function(img) {
         if (!img || !img.width) return;
 
-        // Skala agar gambar denah mengisi bidang kanvas secara optimal dan besar
         const scaleX = containerWidth / img.width;
         const scaleY = containerHeight / img.height;
         const scaleFactor = Math.max(scaleX, scaleY);
+        currentScaleFactor = scaleFactor;
 
         canvasLegal.setWidth(containerWidth);
         canvasLegal.setHeight(containerHeight);
@@ -2824,130 +3486,7 @@ function initLegalSiteplanCanvas() {
 
         canvasLegal.setBackgroundImage(img, function() {
             legalUnitsData.forEach(u => {
-                // Warna & Gaya Utama mengikuti STATUS PEMBANGUNAN FISIK
-                let fillColor = '#adb5bd'; // default abu-abu untuk Belum Mulai (0%)
-                let strokeColor = '#495057';
-                let strokeWidth = 1.5;
-                let strokeDash = null;
-
-                switch (u.construction) {
-                    case 'pondasi':
-                        fillColor = '#fd7e14'; // Oranye
-                        strokeColor = '#d96509';
-                        strokeWidth = 3;
-                        strokeDash = [5, 2];
-                        break;
-                    case 'dinding':
-                        fillColor = '#ffc107'; // Kuning Emas
-                        strokeColor = '#d39e00';
-                        strokeWidth = 3;
-                        strokeDash = [5, 2];
-                        break;
-                    case 'atap':
-                        fillColor = '#17a2b8'; // Cyan
-                        strokeColor = '#117a8b';
-                        strokeWidth = 3.5;
-                        strokeDash = [6, 2];
-                        break;
-                    case 'finishing':
-                        fillColor = '#9a55ff'; // Ungu
-                        strokeColor = '#7a3bcf';
-                        strokeWidth = 3.5;
-                        strokeDash = [6, 2];
-                        break;
-                    case 'selesai':
-                        fillColor = '#28a745'; // HIJAU HANYA JIKA PEMBANGUNAN SUDAH SELESAI (100%)
-                        strokeColor = '#1e7e34';
-                        strokeWidth = 3;
-                        break;
-                    default:
-                        // Belum Mulai -> Abu-abu Netral
-                        fillColor = '#adb5bd';
-                        strokeColor = '#6c757d';
-                        strokeWidth = 1.5;
-                        break;
-                }
-
-                // Border Khusus jika unit sudah Sold atau Booked
-                if (u.statusRaw === 'sold') {
-                    strokeColor = '#dc3545'; // Merah Sold
-                    strokeWidth = 4;
-                    strokeDash = null;
-                } else if (u.statusRaw === 'booked') {
-                    strokeColor = '#ffc107'; // Kuning Emas Booked
-                    strokeWidth = 3.5;
-                }
-
-                const radius = ((u.width || 70) * scaleFactor) / 2;
-
-                const circle = new fabric.Circle({
-                    radius: radius,
-                    fill: fillColor,
-                    opacity: 0.88,
-                    stroke: strokeColor,
-                    strokeWidth: strokeWidth,
-                    strokeDashArray: strokeDash,
-                    originX: 'center',
-                    originY: 'center'
-                });
-
-                const labelText = u.unitCode || (u.block && u.unitNumber ? `${u.block}.${u.unitNumber}` : (u.unitName || 'Unit'));
-                const fontSize = Math.max(12, Math.min(20, Math.round(radius * 0.58)));
-
-                const text = new fabric.Text(labelText, {
-                    fontSize: fontSize,
-                    fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-                    fontWeight: 'bold',
-                    fill: '#1e293b',
-                    textAlign: 'center',
-                    originX: 'center',
-                    originY: 'center',
-                    shadow: new fabric.Shadow({
-                        color: 'rgba(255, 255, 255, 0.95)',
-                        blur: 3,
-                        offsetX: 0,
-                        offsetY: 0
-                    })
-                });
-
-                const markerGroup = new fabric.Group([circle, text], {
-                    left: (u.pos_x || 100) * scaleFactor,
-                    top: (u.pos_y || 100) * scaleFactor,
-                    angle: u.angle || 0,
-                    hasControls: true,
-                    hasBorders: true,
-                    lockRotation: false,
-                    cornerColor: '#9a55ff',
-                    cornerSize: 8,
-                    transparentCorners: false
-                });
-
-                // Attach all rich attributes
-                markerGroup.unitId = u.id;
-                markerGroup.unitCode = u.unitCode;
-                markerGroup.unitName = u.unitName;
-                markerGroup.unitNumber = u.unitNumber;
-                markerGroup.block = u.block;
-                markerGroup.jenis = u.jenis;
-                markerGroup.type = u.type;
-                markerGroup.address = u.address;
-                markerGroup.area = u.area;
-                markerGroup.building = u.building;
-                markerGroup.price = u.price;
-                markerGroup.direction = u.direction;
-                markerGroup.statusRaw = u.statusRaw;
-                markerGroup.statusText = u.statusText;
-                markerGroup.construction = u.construction;
-                markerGroup.hasBooking = u.hasBooking;
-                markerGroup.customer = u.customer;
-                markerGroup.sales = u.sales;
-                markerGroup.bookingDate = u.bookingDate;
-                markerGroup.bookingFee = u.bookingFee;
-                markerGroup.agentFee = u.agentFee;
-                markerGroup.bookingStatus = u.bookingStatus;
-                markerGroup.scaleFactor = scaleFactor;
-
-                canvasLegal.add(markerGroup);
+                renderUnitOnCanvas(u, scaleFactor);
             });
 
             canvasLegal.renderAll();
@@ -2959,8 +3498,8 @@ function savePositionLegal() {
     if (!canvasLegal) return;
     let units = [];
     canvasLegal.getObjects().forEach(function(obj) {
-        if (obj.unitId) {
-            const sf = obj.scaleFactor || 1;
+        if (obj.unitId && !obj.isPolygon) {
+            const sf = obj.scaleFactor || currentScaleFactor || 1;
             units.push({
                 id: obj.unitId,
                 pos_x: Math.round(obj.left / sf),
@@ -2972,9 +3511,20 @@ function savePositionLegal() {
         }
     });
 
+    if (units.length === 0) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Informasi',
+            text: 'Semua unit yang dipetakan dengan poligon tersimpan otomatis secara presisi. Tidak ada marker lingkaran yang perlu disimpan.',
+            timer: 2000,
+            showConfirmButton: false
+        });
+        return;
+    }
+
     Swal.fire({
         title: 'Menyimpan Posisi...',
-        text: 'Menyimpan koordinat buletan unit di siteplan',
+        text: 'Menyimpan koordinat unit di siteplan',
         allowOutsideClick: false,
         didOpen: () => Swal.showLoading()
     });
@@ -2993,7 +3543,7 @@ function savePositionLegal() {
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: 'Posisi buletan unit di siteplan berhasil disimpan dan tersinkronisasi ke marketing.',
+                text: 'Posisi unit di siteplan berhasil disimpan.',
                 timer: 1800,
                 showConfirmButton: false
             });

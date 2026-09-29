@@ -247,17 +247,10 @@ class MenuSeeder extends Seeder
         $keuangan->positions()->attach($keuanganRoles);
 
         Menu::create([
-            'name'      => 'Master Biaya Legalitas & Admin',
-            'route'     => 'master.biaya-legalitas.index',
-            'parent_id' => $keuangan->id,
-            'order'     => 2
-        ])->positions()->attach($keuanganRoles);
-
-        Menu::create([
             'name'      => 'Master Fee Agency',
             'route'     => 'marketing.commission-rules.index',
             'parent_id' => $keuangan->id,
-            'order'     => 3
+            'order'     => 2
         ])->positions()->attach($keuanganRoles);
 
         Menu::create([
@@ -294,6 +287,18 @@ class MenuSeeder extends Seeder
             'route'     => 'master.data.menu',
             'parent_id' => $master->id
         ])->positions()->attach($adminOnly);
+
+        Menu::create([
+            'name'      => 'Master Dokumen Perizinan',
+            'route'     => 'master.dokumen-perizinan.index',
+            'parent_id' => $master->id
+        ])->positions()->attach(array_values(array_filter([$admin?->id, $legal?->id, $staffLegal?->id])));
+
+        Menu::create([
+            'name'      => 'Master Biaya Legalitas & Admin',
+            'route'     => 'master.biaya-legalitas.index',
+            'parent_id' => $master->id
+        ])->positions()->attach(array_values(array_filter([$admin?->id, $legal?->id, $staffLegal?->id, $keuanganStaff?->id])));
 
         Menu::create([
             'name'      => 'Master Barang / Bahan',

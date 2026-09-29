@@ -224,8 +224,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/properti/pra-landbank/{id}/delete-custom-workflow-doc', [PraLandBankController::class, 'deleteCustomWorkflowDoc'])->name('pra-landbank.delete-custom-workflow-doc');
     Route::post('/properti/pra-landbank/{id}/load-fase4-template', [PraLandBankController::class, 'loadFase4DefaultTemplate'])->name('pra-landbank.load-fase4-template');
     Route::post('/properti/pra-landbank/{id}/add-from-master', [PraLandBankController::class, 'addBatchFromMaster'])->name('pra-landbank.add-from-master');
-    Route::post('/properti/pra-landbank/{id}/update-workflow-info', [PraLandBankController::class, 'updateWorkflowInfo'])->name('pra-landbank.update-workflow-info');
     Route::post('/properti/pra-landbank/{id}/finalize-pasca', [PraLandBankController::class, 'finalizeToPascaLandbank'])->name('pra-landbank.finalize-pasca');
+    Route::post('/properti/pra-landbank/{id}/update-company', [PraLandBankController::class, 'updateCompanyAjax'])->name('pra-landbank.update-company');
 
     /*
     |--------------------------------------------------------------------------
@@ -298,6 +298,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/properti-buat-kavling/{land_bank_id}/store', [LandBankUnitController::class, 'store'])->name('properti.storeKavling');
     Route::post('/properti-buat-kavling/{land_bank_id}/import', [LandBankUnitController::class, 'import'])->name('kavling.import');
     Route::post('/properti-buat-kavling/{land_bank_id}/assign-spk', [LandBankUnitController::class, 'assignSpk'])->name('properti.kavling.assignSpk');
+    Route::post('/properti/kavling/save-polygon', [LandBankUnitController::class, 'savePolygon'])->name('unit.save.polygon');
+    Route::post('/properti/kavling/delete-polygon', [LandBankUnitController::class, 'deletePolygon'])->name('unit.delete.polygon');
 
 
     // edit kavling

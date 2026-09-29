@@ -81,6 +81,10 @@ public function store(Request $request)
 
             $data['status'] = 'fase1';
 
+            if ($request->filled('company_profile_id')) {
+                $data['company_profile_id'] = $request->company_profile_id;
+            }
+
             // upload certificate
             if ($request->hasFile('file_certificate')) {
                 $file = $request->file('file_certificate');
@@ -105,10 +109,18 @@ public function store(Request $request)
             // Proses penyimpanan dokumen legalitas di Fase 1 awal
             $this->processDocuments($request, $record);
 
+            // AUTO CEK MIGRASI KE PASCA LAND BANK JIKA DOKUMEN FISIK LENGKAP & PT TERISI
+            $autoLandBank = $record->fresh(['documents.documentType'])->syncToPascaLandbank();
+
             return response()->json([
-                'success' => true,
-                'message' => 'Data Fase 1 dan Dokumen Legalitas berhasil disimpan',
-                'id' => $record->id
+                'success'                => true,
+                'auto_migrated_to_pasca' => !empty($autoLandBank),
+                'land_bank_id'           => $autoLandBank ? $autoLandBank->id : null,
+                'redirect_url'           => $autoLandBank ? (route('properti.edit', ['id' => $autoLandBank->id]) . '#dokumen') : null,
+                'message'                => !empty($autoLandBank)
+                    ? 'Data tersimpan! Dokumen fisik lengkap & PT terisi, tanah otomatis masuk ke Pasca Land Bank.'
+                    : 'Data Fase 1 dan Dokumen Legalitas berhasil disimpan',
+                'id'                     => $record->id
             ]);
         }
 
@@ -117,6 +129,10 @@ public function store(Request $request)
         // =========================
         $record = PraLandbank::findOrFail($request->id);
         $data   = $request->except(['id', 'fase', 'documents', 'deleted_document_ids']);
+
+        if ($request->filled('company_profile_id')) {
+            $data['company_profile_id'] = $request->company_profile_id;
+        }
 
         // clean number
         if ($request->has('offer_price')) {
@@ -150,10 +166,19 @@ public function store(Request $request)
         // Jika request hanya untuk update Fase 1
         if ($request->fase === 'fase1') {
             $record->update($data);
+
+            // AUTO CEK MIGRASI KE PASCA LAND BANK JIKA DOKUMEN FISIK LENGKAP & PT TERISI
+            $autoLandBank = $record->fresh(['documents.documentType'])->syncToPascaLandbank();
+
             return response()->json([
-                'success' => true,
-                'message' => 'Data Fase 1 dan Dokumen Legalitas berhasil diperbarui!',
-                'id'      => $record->id
+                'success'                => true,
+                'auto_migrated_to_pasca' => !empty($autoLandBank),
+                'land_bank_id'           => $autoLandBank ? $autoLandBank->id : null,
+                'redirect_url'           => $autoLandBank ? (route('properti.edit', ['id' => $autoLandBank->id]) . '#dokumen') : null,
+                'message'                => !empty($autoLandBank)
+                    ? 'Data diperbarui! Dokumen fisik lengkap & PT terisi, tanah otomatis masuk ke Pasca Land Bank.'
+                    : 'Data Fase 1 dan Dokumen Legalitas berhasil diperbarui!',
+                'id'                     => $record->id
             ]);
         }
 
@@ -700,6 +725,7 @@ public function store(Request $request)
         $totalFase1 = PraLandbank::where('status', 'fase1')->count();
         $totalFase2 = PraLandbank::where('status', 'fase2')->count();
         $totalFase3 = PraLandbank::whereIn('status', ['fase3', 'approved'])->count();
+        $companies  = \App\Models\CompanyProfile::orderBy('name')->get();
 
         return view('land_bank.all_pra_land_bank', compact(
             'praLandBank',
@@ -708,7 +734,8 @@ public function store(Request $request)
             'totalPraTanah',
             'totalFase1',
             'totalFase2',
-            'totalFase3'
+            'totalFase3',
+            'companies'
         ));
     }
     public function proses(Request $request, $id = null)
@@ -760,7 +787,8 @@ public function store(Request $request)
         $notarisList      = \App\Models\Notaris::where('is_active', true)->orderBy('nama_notaris', 'asc')->get();
         $masterPerizinans     = \App\Models\MasterDokumenPerizinan::active()->get();
         $masterBiayaLegalitas = \App\Models\MasterBiayaLegalitas::active()->get();
-        return view('land_bank.proses_pra_land_bank', compact('land', 'documentTypes', 'notarisList', 'masterPerizinans', 'masterBiayaLegalitas'));
+        $companies            = \App\Models\CompanyProfile::orderBy('name')->get();
+        return view('land_bank.proses_pra_land_bank', compact('land', 'documentTypes', 'notarisList', 'masterPerizinans', 'masterBiayaLegalitas', 'companies'));
     }
     public function destroy($id)
     {
@@ -854,14 +882,20 @@ public function store(Request $request)
                     ]);
                 }
             }
+
+            // AUTO MIGRATE KE PASCA LAND BANK JIKA DOKUMEN FISIK LENGKAP & PT TERISI
+            $autoLandBank = $praLandbank->fresh(['documents.documentType'])->syncToPascaLandbank();
         }
 
         if (request()->ajax() || request()->wantsJson()) {
             return response()->json([
                 'success'                => true,
-                'message'                => 'Dokumen berhasil disetujui & diverifikasi oleh Admin!',
+                'message'                => 'Dokumen berhasil disetujui & diverifikasi oleh Admin!' . (!empty($autoLandBank) ? ' Lahan otomatis telah masuk ke Pasca Land Bank.' : ''),
                 'status'                 => 'verified',
                 'auto_advanced_to_fase2' => $autoAdvanced,
+                'auto_migrated_to_pasca' => !empty($autoLandBank),
+                'land_bank_id'           => $autoLandBank ? $autoLandBank->id : null,
+                'redirect_url'           => $autoLandBank ? (route('properti.edit', ['id' => $autoLandBank->id]) . '#dokumen') : null,
             ]);
         }
 
@@ -952,11 +986,17 @@ public function store(Request $request)
             ]);
         }
 
+        // AUTO MIGRATE KE PASCA LAND BANK JIKA DOKUMEN FISIK LENGKAP & PT TERISI
+        $autoLandBank = $record->fresh(['documents.documentType'])->syncToPascaLandbank();
+
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
-                'success' => true,
-                'message' => 'Berkas fisik dokumen ' . ($doc->documentType->name ?? '') . ' berhasil diunggah & status diperbarui menjadi Lengkap!',
-                'doc'     => $doc->fresh(['documentType']),
+                'success'                => true,
+                'message'                => 'Berkas fisik dokumen ' . ($doc->documentType->name ?? '') . ' berhasil diunggah & status diperbarui menjadi Lengkap!' . (!empty($autoLandBank) ? ' Lahan otomatis dialihkan ke Pasca Land Bank.' : ''),
+                'doc'                    => $doc->fresh(['documentType']),
+                'auto_migrated_to_pasca' => !empty($autoLandBank),
+                'land_bank_id'           => $autoLandBank ? $autoLandBank->id : null,
+                'redirect_url'           => $autoLandBank ? (route('properti.edit', ['id' => $autoLandBank->id]) . '#dokumen') : null,
             ]);
         }
 
@@ -1843,8 +1883,8 @@ public function store(Request $request)
     {
         $record = PraLandbank::findOrFail($id);
 
-        // Ambil ID profil perusahaan default
-        $companyId = \App\Models\CompanyProfile::first()->id ?? null;
+        // Ambil ID profil perusahaan dari record atau master default
+        $companyId = $record->company_profile_id ?? (\App\Models\CompanyProfile::first()->id ?? null);
         $totalArea = $record->field_area ?: ($record->area ?: 0);
 
         // Buat atau update data di LandBank (Pasca Land Bank)
@@ -2001,6 +2041,40 @@ public function store(Request $request)
             if ($unverifiedDocsCount > 0 && $record->legal_status === 'clear') {
                 $record->update(['legal_status' => 'process']);
             }
+        }
+    }
+
+    /**
+     * Update PT Mitra Pengembang via AJAX dan auto-migrasi jika dokumen fisik sudah lengkap
+     */
+    public function updateCompanyAjax(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'company_profile_id' => 'required|exists:company_profiles,id',
+            ]);
+
+            $record = PraLandbank::findOrFail($id);
+            $record->update([
+                'company_profile_id' => $request->company_profile_id
+            ]);
+
+            $autoLandBank = $record->fresh(['documents.documentType'])->syncToPascaLandbank();
+
+            return response()->json([
+                'success'                => true,
+                'auto_migrated_to_pasca' => !empty($autoLandBank),
+                'land_bank_id'           => $autoLandBank ? $autoLandBank->id : null,
+                'redirect_url'           => $autoLandBank ? (route('properti.edit', ['id' => $autoLandBank->id]) . '#dokumen') : null,
+                'message'                => !empty($autoLandBank)
+                    ? 'Profil PT berhasil diperbarui & Dokumen fisik lengkap! Lahan ' . $record->land_name . ' otomatis masuk ke Pasca Land Bank.'
+                    : 'PT Mitra Pengembang berhasil diperbarui!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 }
