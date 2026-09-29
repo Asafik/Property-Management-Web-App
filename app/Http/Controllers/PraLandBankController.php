@@ -504,7 +504,7 @@ public function store(Request $request)
             if ($record->exists && $record->status === 'approved') {
                 $customMessage = 'Progres dan data pembayaran termin tanah berhasil diperbarui!';
             } else {
-                $customMessage = 'Keputusan sidang berhasil disetujui (DIAMBIL)! Data tanah telah otomatis masuk ke menu Semua Tanah Pasca Land Bank.';
+                $customMessage = 'Keputusan sidang berhasil disetujui (DIAMBIL)! Data tanah telah masuk ke alur Perizinan & Pengolahan Lahan.';
             }
         } else {
             $customMessage = 'Data keputusan sidang berhasil disimpan!';
@@ -561,7 +561,7 @@ public function store(Request $request)
                 'file_certificate'  => $record->file_certificate,
                 'photo'             => $record->photo,
                 'priority'          => $record->priority ?? 'Normal',
-                'status'            => $landBank->exists ? $landBank->status : 'active',
+                'status'            => $landBank->exists ? $landBank->status : 'draft',
                 'legal_status'      => 'verified',
                 'development_status'=> $landBank->exists ? $landBank->development_status : 'Belum'
             ]);

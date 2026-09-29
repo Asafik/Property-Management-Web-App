@@ -139,87 +139,50 @@ class DevelopmentProgressItemsSeeder extends Seeder
             }
         }
 
-        // 2. Ambil atau pastikan ada LandBank / Unit
-        $land = LandBank::first();
-        if (!$land) {
-            $land = LandBank::create([
-                'name'               => 'Grand Permata Estate',
-                'area'               => 15000,
-                'remaining_area'     => 15000,
-                'acquisition_price'  => 3500000000,
-                'acquisition_date'   => '2026-01-10',
-                'address'            => 'Jl. Raya Permata Hijau No. 88',
-                'village'            => 'Cimanggis',
-                'district'           => 'Tapos',
-                'city'               => 'Depok',
-                'province'           => 'Jawa Barat',
-                'legal_status'       => 'verified',
-                'development_status' => 'selesai',
-            ]);
-        }
-
-        // 3. Ambil atau buat minimal 1 Unit Contoh (Harga Jual 200 Juta)
+        // 2. Jika ada Unit yang sudah dibuat secara manual, pasang template progress
         $unit = LandBankUnit::first();
-        if (!$unit) {
-            $unit = LandBankUnit::create([
-                'land_bank_id'          => $land->id,
-                'block'                 => 'A',
-                'unit_number'           => '01',
-                'unit_code'             => 'A-01',
-                'unit_name'             => 'Kavling Tipe 36/72 Hook',
-                'type'                  => '36/72',
-                'area'                  => 72,
-                'building_area'         => 36,
-                'price'                 => 200000000,
-                'facing'                => 'Utara',
-                'position'              => 'Hook',
-                'status'                => 'ready',
-                'construction_progress' => 'pondasi',
-            ]);
-        } else {
-            $unit->update(['price' => 200000000]);
-        }
+        if ($unit) {
+            // Pastikan ada DevelopmentProgress
+            $progress = DevelopmentProgress::firstOrCreate(
+                ['land_bank_unit_id' => $unit->id],
+                ['title' => 'Progress Pembangunan Unit ' . $unit->unit_code]
+            );
 
-        // 4. Pastikan ada DevelopmentProgress
-        $progress = DevelopmentProgress::firstOrCreate(
-            ['land_bank_unit_id' => $unit->id],
-            ['title' => 'Progress Pembangunan Unit ' . $unit->unit_code]
-        );
+            // Hapus data lama pada progress ini jika ada
+            DevelopmentProgressItem::where('development_progress_id', $progress->id)->delete();
 
-        // 5. Hapus data lama pada progress ini jika ada
-        DevelopmentProgressItem::where('development_progress_id', $progress->id)->delete();
+            // Masukkan seluruh template dari Master Categories
+            $allMasterCategories = MasterProgressCategory::with('items')->where('is_active', true)->orderBy('urutan')->get();
+            $totalItemsCount = 0;
 
-        // 6. Masukkan seluruh template dari Master Categories
-        $allMasterCategories = MasterProgressCategory::with('items')->where('is_active', true)->orderBy('urutan')->get();
-        $totalItemsCount = 0;
-
-        foreach ($allMasterCategories as $masterCat) {
-            foreach ($masterCat->items as $masterItem) {
-                DevelopmentProgressItem::create([
-                    'development_progress_id' => $progress->id,
-                    'kategori'                => $masterCat->slug,
-                    'kode'                    => $masterItem->kode,
-                    'uraian'                  => $masterItem->uraian,
-                    'volume'                  => $masterItem->default_volume,
-                    'satuan'                  => $masterItem->satuan,
-                    'harga_satuan'            => $masterItem->default_harga_satuan,
-                    'total'                   => round($masterItem->default_volume * $masterItem->default_harga_satuan),
-                    'keterangan'              => $masterItem->keterangan,
-                ]);
-                $totalItemsCount++;
+            foreach ($allMasterCategories as $masterCat) {
+                foreach ($masterCat->items as $masterItem) {
+                    DevelopmentProgressItem::create([
+                        'development_progress_id' => $progress->id,
+                        'kategori'                => $masterCat->slug,
+                        'kode'                    => $masterItem->kode,
+                        'uraian'                  => $masterItem->uraian,
+                        'volume'                  => $masterItem->default_volume,
+                        'satuan'                  => $masterItem->satuan,
+                        'harga_satuan'            => $masterItem->default_harga_satuan,
+                        'total'                   => round($masterItem->default_volume * $masterItem->default_harga_satuan),
+                        'keterangan'              => $masterItem->keterangan,
+                    ]);
+                    $totalItemsCount++;
+                }
             }
+
+            // Hitung total anggaran progress
+            $subtotal = $progress->items()->sum('total');
+            $ppn = round($subtotal * 0.1);
+            $totalAnggaran = $subtotal + $ppn;
+
+            $progress->update([
+                'total_anggaran' => $totalAnggaran,
+                'status'         => 'ongoing',
+            ]);
         }
 
-        // 7. Hitung total anggaran progress
-        $subtotal = $progress->items()->sum('total');
-        $ppn = round($subtotal * 0.1);
-        $totalAnggaran = $subtotal + $ppn;
-
-        $progress->update([
-            'total_anggaran' => $totalAnggaran,
-            'status'         => 'ongoing',
-        ]);
-
-        $this->command->info("✓ Master Kategori Dinamis & Seeder RAP Pembangunan berhasil dijalankan ({$totalItemsCount} item di 8 tahapan) dengan harga jual unit Rp 200.000.000.");
+        $this->command->info("✓ Master Kategori Dinamis & Template RAP Pembangunan berhasil dijalankan.");
     }
 }

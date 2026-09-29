@@ -103,7 +103,7 @@ class ProjectPengolahanLahanController extends Controller
                         'city'               => $pra->city,
                         'province'           => $pra->province,
                         'ownership_status'   => $pra->ownership_status ?: 'SHGB Induk',
-                        'status'             => 'active',
+                        'status'             => 'draft',
                         'legal_status'       => 'verified',
                         'development_status' => 'Belum'
                     ]);

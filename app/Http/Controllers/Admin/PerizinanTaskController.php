@@ -51,14 +51,14 @@ class PerizinanTaskController extends Controller
         $canManage = $ctx['canManage'];
         $isStaffLegal = $ctx['isStaffLegal'];
 
+        // Hanya Admin dan Kepala Legal yang dapat mengakses Tugas Perizinan
+        if (!$canManage) {
+            return redirect()->route('perizinan.index')->with('error', 'Menu Tugas Perizinan hanya dapat diakses oleh Admin dan Kepala Legal.');
+        }
+
         $query = PerizinanTask::with(['employee.position', 'assigner.position', 'updater.position', 'proyek'])
             ->latest('last_activity_at')
             ->latest('created_at');
-
-        // Batasi untuk Staf Legal jika tidak memiliki hak manajerial
-        if ($isStaffLegal && !$canManage) {
-            $query->where('employee_id', $user->id);
-        }
 
         // Filter Staf Pelaksana (khusus Kepala Legal / Owner)
         if ($request->filled('employee_id') && $request->employee_id !== 'all') {

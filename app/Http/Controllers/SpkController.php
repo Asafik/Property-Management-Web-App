@@ -19,6 +19,14 @@ class SpkController extends Controller
      */
     public function index(Request $request)
     {
+        $user = auth()->user();
+        $pos = strtolower($user->position->name ?? '');
+        $isAdmin = str_contains($pos, 'admin') || str_contains($pos, 'owner') || str_contains($pos, 'direktur') || ($user && $user->division_id == 4);
+
+        if (!$isAdmin) {
+            return redirect()->route('dashboard')->with('error', 'Menu SPK Kontraktor saat ini hanya dapat diakses oleh Admin.');
+        }
+
         $query = Spk::with(['landBank', 'unit', 'termins'])->latest();
 
         // Filter Pencarian

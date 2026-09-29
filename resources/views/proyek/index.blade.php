@@ -429,6 +429,14 @@
                                                     title="Kelola Pengolahan Lahan (Cut & Fill, Jalan, Utilitas)">
                                                     <i class="mdi mdi-hard-hat text-warning"></i>
                                                 </a>
+
+                                                <!-- Shortcut ke SPK Kontraktor -->
+                                                <a href="{{ route('spk.index', ['land_bank_id' => $item->id]) }}" 
+                                                    class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center px-2 py-1.5 border shadow-none" 
+                                                    style="border-radius: 6px; font-size: 0.85rem;"
+                                                    title="Kelola SPK Kontraktor Proyek Ini">
+                                                    <i class="mdi mdi-file-sign text-info"></i>
+                                                </a>
                                             </div>
                                         </td>
 

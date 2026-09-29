@@ -10,7 +10,7 @@
     $pageTitle = 'Dashboard';
     if (!empty($rawTitle)) {
         $parts = explode(' - ', $rawTitle);
-        $pageTitle = trim($parts[0]);
+        $pageTitle = html_entity_decode(trim($parts[0]));
     }
 ?>
 
@@ -162,4 +162,4 @@
         localStorage.setItem("last_notif_count", notifCount);
     });
 </script>
-<?php /**PATH D:\Property-Management-Web-App\resources\views/layouts/navbar.blade.php ENDPATH**/ ?>
+<?php /**PATH F:\Property-Management-Web-App\resources\views/layouts/navbar.blade.php ENDPATH**/ ?>

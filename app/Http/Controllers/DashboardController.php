@@ -294,7 +294,36 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         $positionName = strtolower($user->position->name ?? '');
-        $isStaffLegal = str_contains($positionName, 'staff') && str_contains($positionName, 'legal');
+        $isStaffLegal = ($user->position_id == 4) || (str_contains($positionName, 'staff') && str_contains($positionName, 'legal'));
+
+        // Data Khusus Staff Legal (Tugas Saya & Kawasan yang Diampu)
+        $myTasks = collect();
+        $myTasksCount = 0;
+        $myTasksActive = 0;
+        $myTasksProblem = 0;
+        $myTasksDone = 0;
+        $myProjects = collect();
+
+        if ($isStaffLegal) {
+            $myTasksQuery = \App\Models\PerizinanTask::with(['proyek', 'employee'])
+                ->where('employee_id', $user->id);
+
+            $myTasksCount   = (clone $myTasksQuery)->count();
+            $myTasksActive  = (clone $myTasksQuery)->whereIn('status', ['Dalam Proses', 'Proses', 'Berjalan', 'Menunggu', 'Pending'])->count();
+            $myTasksProblem = (clone $myTasksQuery)->whereIn('status', ['Terkendala', 'Revisi', 'Tertunda'])->count();
+            $myTasksDone    = (clone $myTasksQuery)->whereIn('status', ['Selesai', 'Terbit'])->count();
+
+            $myTasks = (clone $myTasksQuery)->latest('last_activity_at')->latest('created_at')->get();
+
+            // Proyek kawasan di mana staf ini memiliki tugas
+            $myProjectIds = $myTasks->pluck('proyek_id')->filter()->unique();
+            if ($myProjectIds->isNotEmpty()) {
+                $myProjects = LandBank::whereIn('id', $myProjectIds)->withCount('units')->get();
+            }
+            if ($myProjects->isEmpty()) {
+                $myProjects = LandBank::latest()->take(3)->get();
+            }
+        }
 
         $perPage = $request->get('perPage', 10);
         $search = $request->get('search');
@@ -402,8 +431,67 @@ class DashboardController extends Controller
         // Master Document Types
         $documentTypes = DocumentTypes::all();
 
+        // Data Proyek Kawasan & Status Perizinan (Sama dengan format Dashboard Monitoring)
+        $totalProperty = LandBank::count();
+        $recentProjects = LandBank::with(['companyProfile', 'units'])->latest()->take(5)->get();
+
+        $masterDocs = \App\Models\MasterDokumenPerizinan::orderBy('urutan', 'asc')->take(5)->get();
+        $allTasks   = \App\Models\PerizinanTask::all();
+
+        $perizinanSummary = [
+            'total'    => $allTasks->count() > 0 ? $allTasks->count() : \App\Models\MasterDokumenPerizinan::count(),
+            'selesai'  => $allTasks->whereIn('status', ['Selesai', 'Terbit'])->count(),
+            'berjalan' => $allTasks->whereIn('status', ['Dalam Proses', 'Proses', 'Menunggu'])->count(),
+            'tertunda' => $allTasks->whereIn('status', ['Terkendala', 'Tertunda', 'Revisi'])->count(),
+        ];
+
+        $perizinanRows = $masterDocs->map(function ($doc) use ($allTasks) {
+            $tasks = $allTasks->where('master_dokumen_id', $doc->id);
+            $total = $tasks->count();
+            $selesai = $tasks->whereIn('status', ['Selesai', 'Terbit'])->count();
+            $berjalan = $tasks->whereIn('status', ['Dalam Proses', 'Proses', 'Menunggu'])->count();
+            $tertunda = $tasks->whereIn('status', ['Terkendala', 'Tertunda', 'Revisi'])->count();
+
+            if ($total === 0) {
+                $total = LandBank::count();
+                $berjalan = $total;
+            }
+
+            $shortName = match($doc->kode_dokumen) {
+                'POIN-07' => 'PERTEK',
+                'POIN-08' => 'PETA BIDANG',
+                'POIN-09' => 'PKKPR',
+                'POIN-10' => 'PBG (IMB)',
+                'POIN-11', 'POIN-12' => 'SK HGB',
+                'POIN-13', 'POIN-14', 'POIN-15' => 'PBB & BPHTB',
+                'POIN-16', 'POIN-17' => 'HGB Induk',
+                'POIN-18', 'POIN-19' => 'Pemecahan Sertipikat',
+                default => preg_replace('/^.*?-\s*/', '', $doc->nama_dokumen)
+            };
+            if (strlen($shortName) > 25) {
+                $shortName = substr($shortName, 0, 22) . '...';
+            }
+
+            return [
+                'id'       => $doc->id,
+                'nama'     => $shortName,
+                'total'    => $total,
+                'selesai'  => $selesai,
+                'berjalan' => $berjalan,
+                'tertunda' => $tertunda,
+            ];
+        });
+
+        // Tugas Tim Legal Terbaru
+        $recentTeamTasks = \App\Models\PerizinanTask::with(['employee.division', 'employee.position', 'proyek'])
+            ->latest('last_activity_at')
+            ->latest('created_at')
+            ->take(5)
+            ->get();
+
         return view('dashboard_legal', compact(
             'isStaffLegal',
+            'totalProperty',
             'totalPraTanah',
             'totalPraTanahFase1',
             'totalPraTanahFase2',
@@ -427,7 +515,17 @@ class DashboardController extends Controller
             'praLandbanks',
             'legalStatusCounts',
             'ownershipCounts',
-            'documentTypes'
+            'documentTypes',
+            'recentProjects',
+            'perizinanSummary',
+            'perizinanRows',
+            'recentTeamTasks',
+            'myTasks',
+            'myTasksCount',
+            'myTasksActive',
+            'myTasksProblem',
+            'myTasksDone',
+            'myProjects'
         ));
     }
 

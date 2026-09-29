@@ -47,29 +47,11 @@ class MenuSeeder extends Seeder
         ]);
         $dashboard->positions()->attach($allRoles);
 
-        // ================= 2. TUGAS PERIZINAN (PALING ATAS LEGAL) =================
-        $tugasPerizinanMenu = Menu::create([
-            'name'  => 'Tugas Perizinan',
-            'route' => 'perizinan.tugas.index',
-            'icon'  => 'mdi-clipboard-account-outline',
-            'order' => 2
-        ]);
-        $tugasPerizinanMenu->positions()->attach($allRoles);
-
-        // ================= 3. PERIZINAN =================
-        $perizinanMenu = Menu::create([
-            'name'  => 'Perizinan',
-            'route' => 'perizinan.index',
-            'icon'  => 'mdi-file-certificate-outline',
-            'order' => 3
-        ]);
-        $perizinanMenu->positions()->attach($allRoles);
-
-        // ================= 3. TANAH INDUK (LAND BANK) =================
+        // ================= 2. TANAH INDUK (LAND BANK) =================
         $properti = Menu::create([
             'name'  => 'Tanah Induk (Land Bank)',
             'icon'  => 'mdi-office-building',
-            'order' => 3
+            'order' => 2
         ]);
         $properti->positions()->attach($landbankRoles);
 
@@ -97,11 +79,11 @@ class MenuSeeder extends Seeder
             'parent_id' => $properti->id
         ])->positions()->attach($legalRoles);
 
-        // ================= 4. DOKUMEN (LEGALITAS) =================
+        // ================= 3. DOKUMEN (LEGALITAS) =================
         $document = Menu::create([
             'name'  => 'Dokumen',
             'icon'  => 'mdi-file-document-multiple-outline',
-            'order' => 4
+            'order' => 3
         ]);
         $document->positions()->attach($legalRoles);
 
@@ -109,7 +91,6 @@ class MenuSeeder extends Seeder
             'dokument.index'                => 'Tanah Induk (LandBank)',
             'dokument.persiapan'            => 'Pecah Tanah Induk Unit',
             'document.user.persiapan-legal' => 'Data User Persiapan Pecah Legal',
-            'spk.index'                     => 'SPK Kontraktor'
         ];
 
         foreach ($docMenus as $route => $name) {
@@ -120,7 +101,15 @@ class MenuSeeder extends Seeder
             ])->positions()->attach($legalRoles);
         }
 
-        // ================= 4.1 LEGAL UNIT =================
+        $dokumenPerizinanMenu = Menu::create([
+            'name'  => 'Dokumen Perizinan',
+            'route' => 'master.dokumen-perizinan.index',
+            'icon'  => 'mdi-file-certificate-outline',
+            'order' => 3.5
+        ]);
+        $dokumenPerizinanMenu->positions()->attach($legalRoles);
+
+        // ================= 4. LEGAL UNIT =================
         $legalUnitMenu = Menu::create([
             'name'  => 'Unit',
             'route' => 'legal.unit.index',
@@ -129,22 +118,57 @@ class MenuSeeder extends Seeder
         ]);
         $legalUnitMenu->positions()->attach($legalRoles);
 
-        // ================= 5. PENGOLAHAN LAHAN & UNIT =================
+        // ================= 5. PERIZINAN (LABEL PERIZINAN SENDIRI) =================
+        $tugasPerizinanMenu = Menu::create([
+            'name'  => 'Tugas Perizinan',
+            'route' => 'perizinan.tugas.index',
+            'icon'  => 'mdi-clipboard-account-outline',
+            'order' => 5
+        ]);
+        $tugasPerizinanRoles = array_values(array_unique(array_filter([$admin?->id, $legal?->id])));
+        $tugasPerizinanMenu->positions()->attach($tugasPerizinanRoles);
+
+        $perizinanMenu = Menu::create([
+            'name'  => 'Perizinan',
+            'route' => 'perizinan.index',
+            'icon'  => 'mdi-file-certificate-outline',
+            'order' => 6
+        ]);
+        $perizinanMenu->positions()->attach($legalRoles);
+
+        // ================= 6. PROYEK, PENGOLAHAN LAHAN & UNIT (ADMIN ONLY) =================
+        $proyekMasterMenu = Menu::create([
+            'name'  => 'Proyek',
+            'route' => 'proyek.index',
+            'icon'  => 'mdi-city-variant-outline',
+            'order' => 7
+        ]);
+        $proyekMasterMenu->positions()->attach($adminOnly);
+
         $proyekMenu = Menu::create([
             'name'  => 'Pengolahan Lahan',
             'route' => 'proyek.pengolahan-lahan.index',
             'icon'  => 'mdi-hard-hat',
-            'order' => 5
+            'order' => 8
         ]);
-        $proyekMenu->positions()->attach($allRoles);
+        $proyekMenu->positions()->attach($adminOnly);
+
+        $spkMenu = Menu::create([
+            'name'  => 'SPK Kontraktor',
+            'route' => 'spk.index',
+            'icon'  => 'mdi-file-sign',
+            'order' => 8.5
+        ]);
+        $spkRoles = $adminOnly;
+        $spkMenu->positions()->attach($spkRoles);
 
         $unitMenu = Menu::create([
             'name'  => 'Unit',
             'route' => 'proyek.unit.index',
             'icon'  => 'mdi-home-city-outline',
-            'order' => 6
+            'order' => 9
         ]);
-        $unitMenu->positions()->attach($allRoles);
+        $unitMenu->positions()->attach($adminOnly);
 
         // ================= 7. MARKETING =================
         $marketingMenu = Menu::create([
@@ -213,7 +237,7 @@ class MenuSeeder extends Seeder
         }
 
         // ================= 10. KEUANGAN =================
-        $keuanganRoles = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $legal?->id, $keuanganStaff?->id]));
+        $keuanganRoles = array_values(array_filter([$admin?->id, $keuanganStaff?->id]));
 
         $keuangan = Menu::create([
             'name'  => 'Keuangan',
@@ -221,13 +245,6 @@ class MenuSeeder extends Seeder
             'order' => 10
         ]);
         $keuangan->positions()->attach($keuanganRoles);
-
-        Menu::create([
-            'name'      => 'Master Aturan Fee',
-            'route'     => 'keuangan.pembayaran.index',
-            'parent_id' => $keuangan->id,
-            'order'     => 1
-        ])->positions()->attach($keuanganRoles);
 
         Menu::create([
             'name'      => 'Master Biaya Legalitas & Admin',
@@ -264,15 +281,13 @@ class MenuSeeder extends Seeder
             'order'     => 6
         ])->positions()->attach($keuanganRoles);
 
-        // ================= 11. MASTER DATA =================
-        $kepalaLegalAndAdmin = array_values(array_filter([$admin?->id, $legal?->id]));
-
+        // ================= 11. MASTER DATA (ADMIN ONLY) =================
         $master = Menu::create([
             'name'  => 'Master Data',
             'icon'  => 'mdi-wrench',
             'order' => 11
         ]);
-        $master->positions()->attach($kepalaLegalAndAdmin);
+        $master->positions()->attach($adminOnly);
 
         Menu::create([
             'name'      => 'Role & Permission',
@@ -281,28 +296,22 @@ class MenuSeeder extends Seeder
         ])->positions()->attach($adminOnly);
 
         Menu::create([
-            'name'      => 'Master Dokumen Perizinan',
-            'route'     => 'master.dokumen-perizinan.index',
-            'parent_id' => $master->id
-        ])->positions()->attach($kepalaLegalAndAdmin);
-
-        Menu::create([
             'name'      => 'Master Barang / Bahan',
             'route'     => 'master.bahan.index',
             'parent_id' => $master->id
-        ])->positions()->attach($kepalaLegalAndAdmin);
+        ])->positions()->attach($adminOnly);
 
         Menu::create([
             'name'      => 'Master Tahapan Progress Unit',
             'route'     => 'master.progress.index',
             'parent_id' => $master->id
-        ])->positions()->attach($kepalaLegalAndAdmin);
+        ])->positions()->attach($adminOnly);
 
         Menu::create([
             'name'      => 'Data Notaris',
             'route'     => 'notaris.index',
             'parent_id' => $master->id
-        ])->positions()->attach(array_values(array_filter([$admin?->id, $marketing?->id, $legal?->id, $staffLegal?->id, $keuanganStaff?->id])));
+        ])->positions()->attach(array_values(array_filter([$admin?->id, $marketing?->id, $keuanganStaff?->id])));
 
         $masterMenus = [
             'promo.index'                => 'Promo',

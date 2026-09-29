@@ -44,12 +44,32 @@ class CompanyProfileController extends Controller
                           ->paginate($perPage)
                           ->withQueryString();
 
-        return view('pt.pt', compact('companies'));
+        // Hitung metrik statistik untuk kartu KPI (sama seperti perizinan)
+        $allCompanies = CompanyProfile::withCount('landBanks')->get();
+        $totalCompanies = $allCompanies->count();
+        $totalProjects = $allCompanies->sum('land_banks_count');
+        $legalCompleteCount = $allCompanies->filter(function($c) {
+            return $c->uploaded_legal_docs_count === 6;
+        })->count();
+        $legalIncompleteCount = $totalCompanies - $legalCompleteCount;
+
+        return view('pt.pt', compact(
+            'companies',
+            'totalCompanies',
+            'totalProjects',
+            'legalCompleteCount',
+            'legalIncompleteCount'
+        ));
+    }
+
+    public function create()
+    {
+        return view('pt.create');
     }
 
     public function edit(CompanyProfile $companyProfile)
     {
-        return response()->json($companyProfile);
+        return view('pt.edit', compact('companyProfile'));
     }
 
     public function store(Request $request)

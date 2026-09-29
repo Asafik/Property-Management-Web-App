@@ -249,8 +249,9 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::prefix('master-data/biaya-legalitas')->name('master.biaya-legalitas.')->group(function () {
         Route::get('/', [MasterBiayaLegalitasController::class, 'index'])->name('index');
-        Route::get('/{id}/edit', [MasterBiayaLegalitasController::class, 'edit'])->name('edit');
+        Route::get('/tambah', [MasterBiayaLegalitasController::class, 'create'])->name('create');
         Route::post('/store', [MasterBiayaLegalitasController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [MasterBiayaLegalitasController::class, 'edit'])->name('edit');
         Route::put('/{id}', [MasterBiayaLegalitasController::class, 'update'])->name('update');
         Route::delete('/{id}', [MasterBiayaLegalitasController::class, 'destroy'])->name('destroy');
         Route::match(['post', 'patch'], '/{id}/toggle-status', [MasterBiayaLegalitasController::class, 'toggleStatus'])->name('toggle-status');
@@ -361,6 +362,8 @@ Route::middleware(['auth'])->group(function () {
     */
     Route::get('/perizinan', [\App\Http\Controllers\Admin\PerizinanController::class, 'index'])->name('perizinan.index');
     Route::get('/perizinan/{id}', [\App\Http\Controllers\Admin\PerizinanController::class, 'show'])->name('perizinan.show');
+    Route::get('/perizinan/{id}/dokumen/{item_id}', [\App\Http\Controllers\Admin\PerizinanController::class, 'kelolaDokumen'])->name('perizinan.dokumen.kelola');
+    Route::post('/perizinan/{id}/dokumen/{item_id}', [\App\Http\Controllers\Admin\PerizinanController::class, 'simpanKelolaDokumen'])->name('perizinan.dokumen.simpan');
     Route::post('/perizinan/{id}/finalize-pasca', [\App\Http\Controllers\Admin\PerizinanController::class, 'finalizeToPasca'])->name('perizinan.finalize-pasca');
 
     /*
@@ -471,9 +474,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/keuangan/pencairan-kpr/store', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'store'])->name('finance.kpr-disbursement.store');
     Route::delete('/keuangan/pencairan-kpr/{id}', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'destroy'])->name('finance.kpr-disbursement.destroy');
 
-    // Pembayaran Fee Legalitas, IJB, AJB, Notaris, BPHTB, Komisi
-    Route::get('/keuangan/pembayaran', [\App\Http\Controllers\Finance\PembayaranFeeController::class, 'index'])->name('keuangan.pembayaran.index');
-    Route::get('/keuangan/pembayaran/simulasi', [\App\Http\Controllers\Finance\PembayaranFeeController::class, 'simulasi'])->name('keuangan.pembayaran.simulasi');
 
 
     Route::resource('dokument', LandBankDocumentController::class);
@@ -625,6 +625,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/master-data-promo/get/{id}', [PromoController::class, 'getPromo'])->name('promo.get');
     // MASTER DATA PT/COMPANY
     Route::get('/master-data-pt', [CompanyProfileController::class, 'index'])->name('company-profile.index');
+    Route::get('/master-data-pt/create', [CompanyProfileController::class, 'create'])->name('company-profile.create');
     Route::post('/master-data-pt/store', [CompanyProfileController::class, 'store'])->name('company-profile.store');
     Route::get('/master-data-pt/{companyProfile}/edit', [CompanyProfileController::class, 'edit'])->name('company-profile.edit');
     Route::put('/master-data-pt/{companyProfile}', [CompanyProfileController::class, 'update'])->name('company-profile.update');
