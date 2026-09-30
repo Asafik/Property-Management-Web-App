@@ -59,6 +59,7 @@ use App\Http\Controllers\Finance\InvoiceMasterController;
 use App\Http\Controllers\Finance\ProjectAccountingController;
 use App\Http\Controllers\MasterDokumenPerizinanController;
 use App\Http\Controllers\MasterBiayaLegalitasController;
+use App\Http\Controllers\MasterSkemaKprController;
 
 /*
 |--------------------------------------------------------------------------
@@ -368,6 +369,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/properti/progress/apply-template/{unit}', [DevelopmentProgressController::class, 'applyTemplate'])->name('properti.progress.applyTemplate');
     Route::delete('/properti/progress/item/{itemId}', [DevelopmentProgressController::class, 'destroy'])->name('properti.progress.item.destroy');
 
+    // === PEMBAYARAN TERMIN ===
+    Route::post('/properti/progress/termin/store', [DevelopmentProgressController::class, 'storeTermin'])->name('properti.progress.termin.store');
+    Route::put('/properti/progress/termin/{id}/status', [DevelopmentProgressController::class, 'updateTerminStatus'])->name('properti.progress.termin.status');
+    Route::delete('/properti/progress/termin/{id}', [DevelopmentProgressController::class, 'destroyTermin'])->name('properti.progress.termin.destroy');
+
+    // === OPNAME MINGGUAN ===
+    Route::post('/properti/progress/opname/store', [DevelopmentProgressController::class, 'storeOpname'])->name('properti.progress.opname.store');
+    Route::put('/properti/progress/opname/{id}/status', [DevelopmentProgressController::class, 'updateOpnameStatus'])->name('properti.progress.opname.status');
+    Route::delete('/properti/progress/opname/{id}', [DevelopmentProgressController::class, 'destroyOpname'])->name('properti.progress.opname.destroy');
 
     /*
     |--------------------------------------------------------------------------
@@ -549,6 +559,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/transaksi/kpr/{booking}/verifikasi', [TransaksiKPRController::class, 'storeVerifikasi'])->name('kpr.verifikasi.store');
     Route::post('/transaksi/kpr/document/{document}/validate', [TransaksiKPRController::class, 'validateDocument'])->name('kpr.document.validate');
+    Route::post('/transaksi/kpr/{kprApplication}/validate-all-documents', [TransaksiKPRController::class, 'validateAllDocuments'])->name('kpr.document.validate-all');
     Route::post('/transaksi/kpr/document/{document}/reupload', [TransaksiKPRController::class, 'reuploadDocument'])->name('kpr.document.reupload');
     Route::post('/transaksi/kpr/{kprApplication}/upload-doc', [TransaksiKPRController::class, 'uploadNewDocument'])->name('kpr.document.upload-new');
 
@@ -651,6 +662,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/master-data-bank/{id}/edit', [BankController::class, 'edit'])->name('bank.edit');
     Route::put('/master-data-bank/{id}', [BankController::class, 'update'])->name('bank.update');
     Route::delete('/master-data-bank/{id}', [BankController::class, 'destroy'])->name('bank.destroy');
+    // MASTER DATA SKEMA ANGSURAN KPR
+    Route::get('/master-skema-kpr', [MasterSkemaKprController::class, 'index'])->name('master.skema-kpr.index');
+    Route::post('/master-skema-kpr/store', [MasterSkemaKprController::class, 'store'])->name('master.skema-kpr.store');
+    Route::get('/master-skema-kpr/{id}/edit', [MasterSkemaKprController::class, 'edit'])->name('master.skema-kpr.edit');
+    Route::put('/master-skema-kpr/{id}', [MasterSkemaKprController::class, 'update'])->name('master.skema-kpr.update');
+    Route::delete('/master-skema-kpr/{id}', [MasterSkemaKprController::class, 'destroy'])->name('master.skema-kpr.destroy');
+    Route::get('/api/skema-kpr', [MasterSkemaKprController::class, 'getSkemaAjax'])->name('api.skema-kpr');
     // MASTER DATA NOTARIS
     Route::get('/master-data-notaris', [NotarisController::class, 'index'])->name('notaris.index');
     Route::post('/master-data-notaris/store', [NotarisController::class, 'store'])->name('notaris.store');
@@ -854,4 +872,14 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/master-invoice/{id}', [InvoiceMasterController::class, 'destroy'])->name('master-invoice.destroy');
         Route::post('/master-invoice-sync-all', [InvoiceMasterController::class, 'syncAll'])->name('master-invoice.sync-all');
     });
+
+    // Master Skema Angsuran KPR
+    Route::prefix('master-skema-kpr')->name('master.skema-kpr.')->group(function () {
+        Route::get('/', [MasterSkemaKprController::class, 'index'])->name('index');
+        Route::post('/store', [MasterSkemaKprController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [MasterSkemaKprController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [MasterSkemaKprController::class, 'update'])->name('update');
+        Route::delete('/{id}', [MasterSkemaKprController::class, 'destroy'])->name('destroy');
+    });
+    Route::get('/api/skema-kpr', [MasterSkemaKprController::class, 'getSkemaAjax'])->name('api.skema-kpr');
 });

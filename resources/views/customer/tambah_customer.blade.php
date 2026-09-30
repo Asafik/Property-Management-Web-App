@@ -336,6 +336,32 @@
         color: #888ea8;
         margin-top: 0.2rem;
     }
+
+    /* KTP Scanner & OCR Styles */
+    .ktp-dropzone:hover {
+        background-color: #f3e8ff !important;
+        border-color: #9a55ff !important;
+    }
+    .ktp-dropzone.dragover {
+        background-color: #ede9fe !important;
+        border-color: #7c3aed !important;
+        transform: scale(1.01);
+    }
+    .ktp-scan-laser {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #9a55ff, #da8cff, #9a55ff, transparent);
+        box-shadow: 0 0 12px 3px rgba(154, 85, 255, 0.75);
+        animation: ktpScanAnimation 1.6s ease-in-out infinite alternate;
+        pointer-events: none;
+    }
+    @keyframes ktpScanAnimation {
+        0% { top: 5%; }
+        100% { top: 92%; }
+    }
 </style>
 
 @php
@@ -400,8 +426,8 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center p-3 border-bottom">
-                    <h5 class="card-title mb-0 fw-bold">
+                <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center p-3 border-bottom gap-2">
+                    <h5 class="card-title mb-0 fw-bold d-flex align-items-center">
                         <i class="mdi mdi-form-select me-2 text-primary"></i>Formulir Data Customer
                     </h5>
                 </div>
@@ -459,6 +485,23 @@
 
                             <!-- TAB 1: PRIBADI -->
                             <div class="custom-tab-pane active" id="pribadi">
+                                <!-- Banner Panduan Auto-Fill KTP -->
+                                <div class="p-3 rounded-3 mb-3 d-flex flex-wrap align-items-center justify-content-between gap-2" style="background: linear-gradient(135deg, #f5f3ff, #ede9fe); border: 1px solid #ddd6fe;">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 38px; height: 38px; background: #8b5cf6; color: white;">
+                                            <i class="mdi mdi-card-account-details-outline fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark" style="font-size: 0.88rem;">Auto-Fill Data dari Foto e-KTP</div>
+                                            <div class="text-muted" style="font-size: 0.76rem;">Scan atau upload foto e-KTP untuk mengisi NIK, Nama, Tanggal Lahir, Alamat, dll secara otomatis.</div>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm text-white fw-bold d-inline-flex align-items-center gap-1 shadow-sm" id="btnScanKtpTab1" style="background: #7c3aed; border-radius: 6px; font-size: 0.8rem; padding: 0.4rem 0.85rem;">
+                                        <i class="mdi mdi-camera-plus-outline"></i>
+                                        <span>Scan KTP Sekarang</span>
+                                    </button>
+                                </div>
+
                                 <div class="row g-3">
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
@@ -513,11 +556,17 @@
                                         </select>
                                     </div>
                                     <div class="col-12 col-md-4">
-                                        <label class="form-label">Status Pernikahan</label>
+                                        @php
+                                            $currMarital = strtoupper(trim(old('marital_status', $customer->marital_status ?? '')));
+                                            if ($currMarital === 'MENIKAH') $currMarital = 'KAWIN';
+                                            if ($currMarital === 'BELUM MENIKAH') $currMarital = 'BELUM KAWIN';
+                                            if ($currMarital === 'CERAI') $currMarital = 'CERAI HIDUP';
+                                        @endphp
+                                        <label class="form-label">Status Perkawinan (Sesuai KTP)</label>
                                         <select class="form-control" name="marital_status">
-                                            <option value="">-- Pilih Status --</option>
-                                            @foreach(['Belum Menikah', 'Menikah', 'Cerai'] as $st)
-                                                <option value="{{ $st }}" {{ old('marital_status', $customer->marital_status ?? '') == $st ? 'selected' : '' }}>{{ $st }}</option>
+                                            <option value="">-- Pilih Status Perkawinan --</option>
+                                            @foreach(['BELUM KAWIN', 'KAWIN', 'CERAI HIDUP', 'CERAI MATI'] as $st)
+                                                <option value="{{ $st }}" {{ $currMarital === $st ? 'selected' : '' }}>{{ $st }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -851,6 +900,215 @@
         </div>
     </div>
 </div>
+
+<!-- MODAL SCAN KTP / OCR AUTO-FILL -->
+<div class="modal fade" id="modalKtpScanner" tabindex="-1" aria-labelledby="modalKtpScannerLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="border-radius: 14px; border: none; box-shadow: 0 15px 35px rgba(0,0,0,0.18);">
+            <div class="modal-header border-bottom py-3 px-4" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9);">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="d-flex align-items-center justify-content-center rounded-3" style="width: 38px; height: 38px; background: linear-gradient(135deg, #7c3aed, #9a55ff); color: white;">
+                        <i class="mdi mdi-card-account-details-outline fs-4"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark mb-0" id="modalKtpScannerLabel" style="font-size: 1.05rem;">
+                            Scan & Auto-Fill Data e-KTP
+                        </h5>
+                        <small class="text-muted" style="font-size: 0.75rem;">Ekstrak otomatis NIK, Nama, Tanggal Lahir, Alamat, dll dari foto e-KTP</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <!-- Sumber Input: Upload File vs Kamera -->
+                <ul class="nav nav-pills nav-fill mb-3 p-1 rounded-3" style="background: #f1f5f9;" id="ktpSourceTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active fw-semibold py-2 d-flex align-items-center justify-content-center gap-2" id="tab-upload-btn" data-bs-toggle="pill" data-bs-target="#tab-upload" type="button" role="tab" style="border-radius: 8px; font-size: 0.85rem;">
+                            <i class="mdi mdi-file-image-outline fs-5"></i> Upload Foto KTP
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-semibold py-2 d-flex align-items-center justify-content-center gap-2" id="tab-camera-btn" data-bs-toggle="pill" data-bs-target="#tab-camera" type="button" role="tab" style="border-radius: 8px; font-size: 0.85rem;">
+                            <i class="mdi mdi-camera-outline fs-5"></i> Ambil dari Kamera
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="ktpSourceTabContent">
+                    <!-- Tab 1: Upload File -->
+                    <div class="tab-pane fade show active" id="tab-upload" role="tabpanel">
+                        <div class="ktp-dropzone p-4 text-center rounded-3 border-2 border-dashed" id="ktpDropzone" style="border-color: #cbd5e1; background: #faf5ff; cursor: pointer; transition: all 0.2s ease;">
+                            <input type="file" id="ktpFileInput" accept="image/*" class="d-none">
+                            <i class="mdi mdi-cloud-upload-outline text-primary mb-2" style="font-size: 3rem;"></i>
+                            <h6 class="fw-bold text-dark mb-1">Klik atau Tarik Foto e-KTP ke sini</h6>
+                            <p class="text-muted small mb-2">Mendukung format JPG, PNG, WEBP (Bisa juga tekan <strong>Ctrl + V</strong> untuk paste gambar)</p>
+                            <span class="badge px-3 py-1.5" style="background: #ede9fe; color: #7c3aed; font-weight: 600;">
+                                <i class="mdi mdi-lightning-bolt me-1"></i>Pindai Otomatis dengan AI OCR
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Kamera -->
+                    <div class="tab-pane fade" id="tab-camera" role="tabpanel">
+                        <div class="text-center rounded-3 p-2 bg-dark position-relative overflow-hidden" style="min-height: 240px;">
+                            <video id="ktpCameraVideo" autoplay playsinline class="w-100 rounded-2" style="max-height: 280px; object-fit: contain; background: #000;"></video>
+                            <div class="ktp-camera-overlay" id="ktpCameraOverlay" style="display: none; position: absolute; top: 8%; left: 8%; right: 8%; bottom: 8%; border: 2px dashed rgba(255,255,255,0.75); border-radius: 12px; pointer-events: none;">
+                                <span class="badge bg-dark bg-opacity-75 text-white position-absolute top-0 start-50 translate-middle-x mt-2">
+                                    Posisikan KTP di dalam bingkai
+                                </span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center gap-2 mt-3">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" id="btnStartCamera">
+                                <i class="mdi mdi-camera-switch me-1"></i>Buka Kamera
+                            </button>
+                            <button type="button" class="btn btn-primary btn-sm text-white px-3 fw-bold" id="btnCaptureCamera" disabled>
+                                <i class="mdi mdi-camera me-1"></i>Ambil Foto
+                            </button>
+                            <button type="button" class="btn btn-outline-danger btn-sm" id="btnStopCamera" style="display: none;">
+                                <i class="mdi mdi-stop me-1"></i>Tutup
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Area & Progress Scan -->
+                <div id="ktpPreviewWrapper" class="mt-3 p-3 rounded-3 border" style="background: #ffffff; display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold text-dark small d-flex align-items-center gap-1">
+                            <i class="mdi mdi-image-check text-success"></i> Foto KTP yang Dipindai
+                        </span>
+                        <button type="button" class="btn btn-sm btn-outline-secondary py-0.5 px-2" id="btnResetKtpScan" style="font-size: 0.76rem;">
+                            <i class="mdi mdi-refresh me-1"></i>Ganti Foto
+                        </button>
+                    </div>
+
+                    <div class="position-relative text-center bg-light rounded-2 p-2 overflow-hidden" style="max-height: 220px;">
+                        <img id="ktpImagePreview" src="" alt="Preview KTP" class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
+                        <!-- Scanline Laser Effect -->
+                        <div id="ktpScanline" class="ktp-scan-laser" style="display: none;"></div>
+                    </div>
+
+                    <!-- Progress Bar OCR -->
+                    <div id="ktpOcrProgressWrapper" class="mt-3" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="small fw-semibold text-primary" id="ktpOcrStatusText">
+                                <span class="spinner-border spinner-border-sm me-1" role="status"></span>Menganalisis KTP...
+                            </span>
+                            <span class="small fw-bold text-primary" id="ktpOcrPercent">0%</span>
+                        </div>
+                        <div class="progress" style="height: 6px; border-radius: 10px; background: #e2e8f0;">
+                            <div id="ktpOcrProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%; background: linear-gradient(90deg, #7c3aed, #9a55ff);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Verifikasi Data Hasil Ekstraksi OCR -->
+                <div id="ktpResultWrapper" class="mt-3" style="display: none;">
+                    <div class="alert alert-success d-flex align-items-center py-2 px-3 mb-3 rounded-3" style="font-size: 0.82rem;">
+                        <i class="mdi mdi-check-circle fs-5 me-2 text-success"></i>
+                        <div><strong>Berhasil!</strong> Data berhasil dibaca dari foto KTP. Periksa atau koreksi hasil di bawah jika diperlukan:</div>
+                    </div>
+
+                    <div class="row g-2" style="font-size: 0.84rem;">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small mb-1 fw-bold text-dark">NIK (16 Digit) <span class="text-danger">*</span></label>
+                            <input type="text" id="ocr_nik" class="form-control form-control-sm fw-bold font-monospace text-primary" maxlength="16" placeholder="3271xxxxxxxxxxxx">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small mb-1 fw-bold text-dark">Nama Lengkap <span class="text-danger">*</span></label>
+                            <input type="text" id="ocr_full_name" class="form-control form-control-sm fw-bold text-uppercase" placeholder="Nama Sesuai KTP">
+                        </div>
+                        <div class="col-6 col-md-6">
+                            <label class="form-label small mb-1 fw-bold text-dark">Tempat Lahir</label>
+                            <input type="text" id="ocr_birthplace" class="form-control form-control-sm text-uppercase" placeholder="Kota/Kabupaten">
+                        </div>
+                        <div class="col-6 col-md-6">
+                            <label class="form-label small mb-1 fw-bold text-dark">Tanggal Lahir</label>
+                            <input type="date" id="ocr_date_birth" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <label class="form-label small mb-1 fw-bold text-dark">Jenis Kelamin</label>
+                            <select id="ocr_gender" class="form-select form-select-sm">
+                                <option value="">-- Pilih --</option>
+                                <option value="L">Laki-laki</option>
+                                <option value="P">Perempuan</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <label class="form-label small mb-1 fw-bold text-dark">Agama</label>
+                            <select id="ocr_religion" class="form-select form-select-sm">
+                                <option value="">-- Pilih --</option>
+                                <option value="Islam">Islam</option>
+                                <option value="Kristen">Kristen</option>
+                                <option value="Katolik">Katolik</option>
+                                <option value="Hindu">Hindu</option>
+                                <option value="Buddha">Buddha</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small mb-1 fw-bold text-dark">Status Perkawinan</label>
+                            <select id="ocr_marital_status" class="form-select form-select-sm">
+                                <option value="">-- Pilih --</option>
+                                <option value="BELUM KAWIN">BELUM KAWIN</option>
+                                <option value="KAWIN">KAWIN</option>
+                                <option value="CERAI HIDUP">CERAI HIDUP</option>
+                                <option value="CERAI MATI">CERAI MATI</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small mb-1 fw-bold text-dark">Alamat Lengkap</label>
+                            <input type="text" id="ocr_address" class="form-control form-control-sm" placeholder="Nama Jalan, Blok, No. Rumah">
+                        </div>
+                        <div class="col-4 col-md-2">
+                            <label class="form-label small mb-1 fw-bold text-dark">RT</label>
+                            <input type="text" id="ocr_rt" class="form-control form-control-sm" placeholder="001">
+                        </div>
+                        <div class="col-4 col-md-2">
+                            <label class="form-label small mb-1 fw-bold text-dark">RW</label>
+                            <input type="text" id="ocr_rw" class="form-control form-control-sm" placeholder="002">
+                        </div>
+                        <div class="col-4 col-md-4">
+                            <label class="form-label small mb-1 fw-bold text-dark">Kelurahan / Desa</label>
+                            <input type="text" id="ocr_village" class="form-control form-control-sm" placeholder="Kelurahan">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small mb-1 fw-bold text-dark">Kecamatan</label>
+                            <input type="text" id="ocr_subdistrict" class="form-control form-control-sm" placeholder="Kecamatan">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small mb-1 fw-bold text-dark">Kota / Kabupaten</label>
+                            <input type="text" id="ocr_city" class="form-control form-control-sm" placeholder="Kota / Kabupaten">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small mb-1 fw-bold text-dark">Provinsi</label>
+                            <input type="text" id="ocr_province" class="form-control form-control-sm" placeholder="Provinsi">
+                        </div>
+                    </div>
+
+                    <!-- Accordion Raw Text OCR (Opsional) -->
+                    <div class="mt-2 text-end">
+                        <a class="text-muted small text-decoration-none" data-bs-toggle="collapse" href="#collapseRawOcr" role="button" style="font-size: 0.74rem;">
+                            <i class="mdi mdi-code-tags me-1"></i>Lihat teks mentah pembacaan OCR
+                        </a>
+                        <div class="collapse text-start mt-2" id="collapseRawOcr">
+                            <textarea id="ocr_raw_text" class="form-control form-control-sm font-monospace text-muted" rows="4" readonly style="font-size: 0.72rem; background: #f8fafc;"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer border-top py-2.5 px-4 bg-light d-flex justify-content-between">
+                <button type="button" class="btn btn-sm btn-light border px-3" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-sm text-white px-4 fw-bold shadow-sm" id="btnApplyKtpToForm" disabled style="background: linear-gradient(135deg, #7c3aed, #9a55ff); border-radius: 6px;">
+                    <i class="mdi mdi-check-all me-1"></i>Terapkan ke Formulir Customer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -1115,6 +1373,24 @@ $(document).ready(function() {
             box.find('.file-upload-icon').removeClass('mdi-cloud-upload').addClass('mdi-file-check');
             box.find('.file-name-text').html('<span class="text-success fw-bold"><i class="mdi mdi-check-circle me-1"></i>' + file.name + '</span>');
             box.find('.file-upload-hint').html('<span class="text-muted">Ukuran: ' + sizeInMb + ' MB • <i>Klik jika ingin mengganti</i></span>');
+
+            // Deteksi KTP Customer untuk Auto-Fill jika upload langsung dari tab dokumen
+            if ($(this).attr('id') === 'uploadKtp' && !window.isApplyingKtpFile && file.type.startsWith('image/')) {
+                Swal.fire({
+                    title: 'Pindai KTP Otomatis?',
+                    text: 'Foto KTP terdeteksi! Mau mengekstrak NIK, Nama, dan Alamat secara otomatis untuk mengisi formulir customer?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#9a55ff',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="mdi mdi-text-box-search-outline me-1"></i> Ya, Scan & Auto-Fill',
+                    cancelButtonText: 'Tidak, Hanya Simpan File'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        openKtpScannerWithFile(file);
+                    }
+                });
+            }
         } else {
             box.removeClass('has-file');
             box.find('.file-upload-icon').removeClass('mdi-file-check').addClass('mdi-cloud-upload');
@@ -1240,6 +1516,725 @@ $(document).ready(function() {
     });
 
     updateButtonState();
+
+    // ==========================================
+    // FITUR KTP OCR SCANNER & AUTO-FILL
+    // ==========================================
+    let ktpScannerModal = null;
+    let cameraStream = null;
+    let currentScannedKtpFile = null;
+
+    function getKtpModalInstance() {
+        if (!ktpScannerModal) {
+            const modalEl = document.getElementById('modalKtpScanner');
+            if (modalEl) {
+                ktpScannerModal = new bootstrap.Modal(modalEl);
+            }
+        }
+        return ktpScannerModal;
+    }
+
+    window.openKtpScannerWithFile = function(file) {
+        const modal = getKtpModalInstance();
+        if (modal) {
+            modal.show();
+            handleKtpFile(file);
+        }
+    };
+
+    $('#btnOpenKtpScanner, #btnScanKtpTab1').on('click', function() {
+        const modal = getKtpModalInstance();
+        if (modal) {
+            modal.show();
+        }
+    });
+
+    // Dropzone Click & Change
+    $('#ktpDropzone').on('click', function(e) {
+        if (e.target !== document.getElementById('ktpFileInput')) {
+            $('#ktpFileInput').trigger('click');
+        }
+    });
+
+    $('#ktpFileInput').on('change', function() {
+        if (this.files && this.files[0]) {
+            handleKtpFile(this.files[0]);
+        }
+    });
+
+    // Drag and Drop
+    const dropzone = document.getElementById('ktpDropzone');
+    if (dropzone) {
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.add('dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('dragover');
+            }, false);
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            if (dt && dt.files && dt.files[0]) {
+                handleKtpFile(dt.files[0]);
+            }
+        });
+    }
+
+    // Paste Image from Clipboard (Ctrl + V)
+    document.addEventListener('paste', function(e) {
+        const modalEl = document.getElementById('modalKtpScanner');
+        if (modalEl && modalEl.classList.contains('show')) {
+            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            for (let item of items) {
+                if (item.type.indexOf('image') !== -1) {
+                    const blob = item.getAsFile();
+                    handleKtpFile(blob);
+                    break;
+                }
+            }
+        }
+    });
+
+    // Reset / Ganti Foto
+    $('#btnResetKtpScan').on('click', function() {
+        $('#ktpPreviewWrapper').hide();
+        $('#ktpResultWrapper').hide();
+        $('#btnApplyKtpToForm').prop('disabled', true);
+        $('#ktpFileInput').val('');
+        currentScannedKtpFile = null;
+    });
+
+    // Helper global pintar untuk memilih value pada dropdown (tahan case, alias, dan teks)
+    function applySelectValue(selector, value) {
+        if (!value) return;
+        const select = typeof selector === 'string' ? document.querySelector(selector) : selector;
+        if (!select || !select.options) return;
+
+        const target = value.toString().trim().toUpperCase();
+
+        // 1. Coba kecocokan value persis
+        for (let i = 0; i < select.options.length; i++) {
+            if (select.options[i].value.trim().toUpperCase() === target) {
+                select.selectedIndex = i;
+                $(select).trigger('change');
+                return;
+            }
+        }
+
+        // 2. Coba kecocokan text persis
+        for (let i = 0; i < select.options.length; i++) {
+            if (select.options[i].text.trim().toUpperCase() === target) {
+                select.selectedIndex = i;
+                $(select).trigger('change');
+                return;
+            }
+        }
+
+        // 3. Kecocokan cerdas berdasarkan teks, value, dan alias umum
+        for (let i = 0; i < select.options.length; i++) {
+            const optVal = select.options[i].value.trim().toUpperCase();
+            const optText = select.options[i].text.trim().toUpperCase();
+            const optCombined = optVal + ' ' + optText;
+
+            // Jenis Kelamin: Perempuan / P / Wanita
+            if ((target === 'P' || target.includes('PEREMPUAN') || target.includes('WANITA') || target.includes('FEMALE')) &&
+                (optVal === 'P' || optCombined.includes('PEREMPUAN') || optCombined.includes('WANITA'))) {
+                select.selectedIndex = i;
+                $(select).trigger('change');
+                return;
+            }
+            // Jenis Kelamin: Laki-laki / L / Pria
+            if ((target === 'L' || target.includes('LAKI') || target.includes('PRIA') || target.includes('MALE')) &&
+                (optVal === 'L' || optCombined.includes('LAKI') || optCombined.includes('PRIA'))) {
+                select.selectedIndex = i;
+                $(select).trigger('change');
+                return;
+            }
+
+            // Agama: Islam
+            if ((target.includes('ISLAM') || target.includes('1SLAM') || target.includes('ISIAM')) && optCombined.includes('ISLAM')) {
+                select.selectedIndex = i;
+                $(select).trigger('change');
+                return;
+            }
+            // Agama: Kristen
+            if ((target.includes('KRISTEN') || target.includes('PROTESTAN')) && optCombined.includes('KRISTEN')) {
+                select.selectedIndex = i;
+                $(select).trigger('change');
+                return;
+            }
+            // Agama: Katolik
+            if (target.includes('KATOLIK') && optCombined.includes('KATOLIK')) {
+                select.selectedIndex = i;
+                $(select).trigger('change');
+                return;
+            }
+            // Agama: Hindu
+            if (target.includes('HINDU') && optCombined.includes('HINDU')) {
+                select.selectedIndex = i;
+                $(select).trigger('change');
+                return;
+            }
+            // Agama: Buddha
+            if (target.includes('BUDDHA') && optCombined.includes('BUDDHA')) {
+                select.selectedIndex = i;
+                $(select).trigger('change');
+                return;
+            }
+
+            // Status Perkawinan: BELUM KAWIN
+            if ((target.includes('BELUM') || target.includes('BLM')) && optCombined.includes('BELUM')) {
+                select.selectedIndex = i;
+                $(select).trigger('change');
+                return;
+            }
+            // Status Perkawinan: KAWIN / MENIKAH
+            if ((target === 'KAWIN' || target === 'MENIKAH' || (!target.includes('BELUM') && (target.includes('KAWIN') || target.includes('MENIKAH')))) &&
+                (optVal === 'KAWIN' || optVal === 'MENIKAH' || (!optCombined.includes('BELUM') && (optCombined.includes('KAWIN') || optCombined.includes('MENIKAH'))))) {
+                select.selectedIndex = i;
+                $(select).trigger('change');
+                return;
+            }
+            // Status Perkawinan: CERAI MATI
+            if (target.includes('MATI') && optCombined.includes('MATI')) {
+                select.selectedIndex = i;
+                $(select).trigger('change');
+                return;
+            }
+            // Status Perkawinan: CERAI HIDUP / CERAI
+            if (target.includes('CERAI') && !target.includes('MATI') && (optCombined.includes('CERAI HIDUP') || optCombined.includes('CERAI'))) {
+                select.selectedIndex = i;
+                $(select).trigger('change');
+                return;
+            }
+        }
+    }
+
+    // Handle KTP File Selection
+    function handleKtpFile(file) {
+        if (!file || !file.type.startsWith('image/')) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Format Tidak Sesuai',
+                text: 'Harap pilih file gambar (JPG, PNG, atau WEBP).'
+            });
+            return;
+        }
+
+        currentScannedKtpFile = file;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const previewImg = document.getElementById('ktpImagePreview');
+            $('#ktpPreviewWrapper').show();
+            $('#ktpResultWrapper').hide();
+            $('#btnApplyKtpToForm').prop('disabled', true);
+
+            let triggered = false;
+            function runOcr() {
+                if (triggered) return;
+                triggered = true;
+                processKtpOcr(previewImg, file);
+            }
+
+            previewImg.onload = runOcr;
+            previewImg.src = e.target.result;
+
+            // Fallback jika gambar sudah selesai ter-render secara sinkron
+            if (previewImg.complete && previewImg.naturalWidth > 0) {
+                runOcr();
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Kamera Handlers
+    $('#btnStartCamera').on('click', async function() {
+        try {
+            cameraStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+            });
+            const video = document.getElementById('ktpCameraVideo');
+            video.srcObject = cameraStream;
+            $('#ktpCameraOverlay').show();
+            $('#btnCaptureCamera').prop('disabled', false);
+            $('#btnStopCamera').show();
+            $(this).hide();
+        } catch (err) {
+            console.error('Error camera:', err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Akses Kamera Gagal',
+                text: 'Tidak dapat membuka kamera. Pastikan izin kamera aktif pada browser Anda.'
+            });
+        }
+    });
+
+    function stopCamera() {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
+            const video = document.getElementById('ktpCameraVideo');
+            if (video) video.srcObject = null;
+        }
+        $('#ktpCameraOverlay').hide();
+        $('#btnCaptureCamera').prop('disabled', true);
+        $('#btnStopCamera').hide();
+        $('#btnStartCamera').show();
+    }
+
+    $('#btnStopCamera').on('click', stopCamera);
+
+    // Ambil Snapshot dari Kamera
+    $('#btnCaptureCamera').on('click', function() {
+        const video = document.getElementById('ktpCameraVideo');
+        if (!video || !video.videoWidth) return;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        stopCamera();
+
+        canvas.toBlob(function(blob) {
+            const file = new File([blob], 'ktp_capture_' + Date.now() + '.jpg', { type: 'image/jpeg' });
+            // Switch kembali ke tab preview upload
+            $('#tab-upload-btn').tab('show');
+            handleKtpFile(file);
+        }, 'image/jpeg', 0.95);
+    });
+
+    // Hentikan kamera saat modal ditutup
+    $('#modalKtpScanner').on('hidden.bs.modal', function() {
+        stopCamera();
+    });
+
+    // Pra-pemrosesan Gambar (Grayscale & Contrast Boost) untuk meningkatkan akurasi OCR
+    function preprocessImageForOcr(imgEl) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = imgEl.naturalWidth || imgEl.width;
+        let height = imgEl.naturalHeight || imgEl.height;
+
+        // Normalisasi ukuran gambar ideal OCR
+        if (width > 1600) {
+            height = Math.round((height * 1600) / width);
+            width = 1600;
+        } else if (width < 800) {
+            height = Math.round((height * 1000) / width);
+            width = 1000;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(imgEl, 0, 0, width, height);
+
+        const imgData = ctx.getImageData(0, 0, width, height);
+        const data = imgData.data;
+
+        // Grayscale dan reduksi noise pola biru KTP
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+
+            // Luminance
+            let gray = 0.299 * r + 0.587 * g + 0.114 * b;
+
+            // Jika background KTP kebiruan, buat lebih terang agar teks hitam kontras
+            if (b > 130 && r < 120 && g < 130) {
+                gray = Math.min(255, gray + 45);
+            }
+
+            // Contrast stretch
+            const contrast = 1.35;
+            gray = contrast * (gray - 128) + 128;
+            gray = Math.max(0, Math.min(255, gray));
+
+            data[i] = gray;
+            data[i + 1] = gray;
+            data[i + 2] = gray;
+        }
+
+        ctx.putImageData(imgData, 0, 0);
+        return canvas.toDataURL('image/jpeg', 0.92);
+    }
+
+    // Eksekusi Tesseract.js OCR
+    async function processKtpOcr(imgEl, file) {
+        $('#ktpScanline').show();
+        $('#ktpOcrProgressWrapper').show();
+        $('#ktpOcrPercent').text('5%');
+        $('#ktpOcrProgressBar').css('width', '5%');
+        $('#ktpOcrStatusText').html('<span class="spinner-border spinner-border-sm me-1"></span>Mempersiapkan mesin OCR...');
+
+        try {
+            if (typeof Tesseract === 'undefined') {
+                throw new Error('Pustaka Tesseract OCR belum terhubung.');
+            }
+
+            const processedDataUrl = preprocessImageForOcr(imgEl);
+
+            // Inisialisasi Tesseract Worker
+            const worker = await Tesseract.createWorker('ind', 1, {
+                logger: m => {
+                    if (m.status === 'recognizing text') {
+                        const pct = Math.round(m.progress * 100);
+                        $('#ktpOcrPercent').text(pct + '%');
+                        $('#ktpOcrProgressBar').css('width', pct + '%');
+                        $('#ktpOcrStatusText').html('<span class="spinner-border spinner-border-sm me-1"></span>Membaca teks KTP: ' + pct + '%');
+                    } else if (m.status === 'loading tesseract core') {
+                        $('#ktpOcrStatusText').html('<span class="spinner-border spinner-border-sm me-1"></span>Memuat modul OCR...');
+                    } else if (m.status === 'loading language traineddata') {
+                        $('#ktpOcrStatusText').html('<span class="spinner-border spinner-border-sm me-1"></span>Memuat bahasa Indonesia...');
+                    }
+                }
+            });
+
+            const ret = await worker.recognize(processedDataUrl);
+            await worker.terminate();
+
+            $('#ktpScanline').hide();
+            $('#ktpOcrProgressBar').css('width', '100%');
+            $('#ktpOcrPercent').text('100%');
+            $('#ktpOcrStatusText').html('<i class="mdi mdi-check-circle text-success me-1"></i>Ekstraksi teks selesai!');
+
+            const rawText = ret.data.text || '';
+            const parsedData = parseKtpText(rawText);
+
+            // Isi nilai hasil ekstraksi ke form verifikasi modal
+            $('#ocr_nik').val(parsedData.nik);
+            $('#ocr_full_name').val(parsedData.full_name);
+            $('#ocr_birthplace').val(parsedData.birthplace);
+            $('#ocr_date_birth').val(parsedData.date_birth);
+
+            applySelectValue('#ocr_gender', parsedData.gender);
+            applySelectValue('#ocr_religion', parsedData.religion);
+            applySelectValue('#ocr_marital_status', parsedData.marital_status);
+
+            $('#ocr_address').val(parsedData.address);
+            $('#ocr_rt').val(parsedData.rt);
+            $('#ocr_rw').val(parsedData.rw);
+            $('#ocr_village').val(parsedData.village);
+            $('#ocr_subdistrict').val(parsedData.subdistrict);
+            $('#ocr_city').val(parsedData.city);
+            $('#ocr_province').val(parsedData.province);
+            $('#ocr_raw_text').val(rawText);
+
+            $('#ktpResultWrapper').slideDown();
+            $('#btnApplyKtpToForm').prop('disabled', false);
+
+        } catch (err) {
+            console.error('OCR Error:', err);
+            $('#ktpScanline').hide();
+            $('#ktpOcrStatusText').html('<span class="text-danger"><i class="mdi mdi-alert-circle me-1"></i>Gagal memproses gambar.</span>');
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Pembacaan Otomatis Kurang Maksimal',
+                text: 'Kualitas foto mungkin kurang jelas atau jaringan lambat. Anda tetap dapat memasukkan data secara manual atau mencoba foto KTP yang lebih terang.'
+            });
+
+            // Tampilkan form verifikasi kosong agar user tetap bisa mengisi
+            $('#ktpResultWrapper').slideDown();
+            $('#btnApplyKtpToForm').prop('disabled', false);
+        }
+    }
+
+    // Heuristik & Regex Parser e-KTP Indonesia
+    function parseKtpText(raw) {
+        const result = {
+            nik: '',
+            full_name: '',
+            birthplace: '',
+            date_birth: '',
+            gender: '',
+            religion: '',
+            marital_status: '',
+            address: '',
+            rt: '',
+            rw: '',
+            village: '',
+            subdistrict: '',
+            city: '',
+            province: ''
+        };
+
+        if (!raw) return result;
+
+        const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+
+        // Teks ternormalisasi untuk menangani typo karakter OCR (1->I, 0->O, !->I)
+        const norm = raw.replace(/[1!|]/g, 'I')
+                        .replace(/0/g, 'O')
+                        .replace(/5/g, 'S')
+                        .toUpperCase();
+
+        // 1. Ekstraksi NIK (16 Digit)
+        for (let line of lines) {
+            if (/N[I1l!|][Kk]/i.test(line)) {
+                let cleaned = line.replace(/N[I1l!|][Kk]/i, '')
+                                  .replace(/[oO]/g, '0')
+                                  .replace(/[lI|]/g, '1')
+                                  .replace(/[bB]/g, '8')
+                                  .replace(/[sS]/g, '5')
+                                  .replace(/[^0-9]/g, '');
+                if (cleaned.length >= 16) {
+                    result.nik = cleaned.substring(0, 16);
+                    break;
+                }
+            }
+        }
+        if (!result.nik) {
+            const digitCleaned = raw.replace(/[oO]/g, '0').replace(/[lI|]/g, '1');
+            const nikMatch = digitCleaned.match(/\b([1-9][0-9]{15})\b/);
+            if (nikMatch) result.nik = nikMatch[1];
+        }
+
+        // 2. Provinsi & Kota/Kabupaten
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (/PROVINSI/i.test(line)) {
+                result.province = line.replace(/PROVINSI/i, '').replace(/[:;.-]/g, '').trim().toUpperCase();
+                // Baris tepat di bawah PROVINSI biasanya KOTA/KABUPATEN (misal JAKARTA BARAT)
+                if (i + 1 < lines.length && !result.city) {
+                    const nextLine = lines[i + 1].trim();
+                    if (!/NIK|N[I1l!|][Kk]/i.test(nextLine) && nextLine.length > 3) {
+                        result.city = nextLine.replace(/KOTA|KABUPATEN|KAB\.?|ADM\.?/gi, '').replace(/[:;.-]/g, '').trim().toUpperCase();
+                    }
+                }
+            }
+            if (/KABUPATEN|KOTA/i.test(line) && !/PROVINSI/i.test(line)) {
+                result.city = line.replace(/KABUPATEN|KOTA|KAB\.?|ADM\.?/gi, '').replace(/[:;.-]/g, '').trim().toUpperCase();
+            }
+        }
+
+        // Helper cari baris setelah label
+        function getAfter(regex) {
+            for (let line of lines) {
+                const m = line.match(regex);
+                if (m && m[1]) return m[1].replace(/^[:;.-]+/, '').trim();
+            }
+            return '';
+        }
+
+        // 3. Nama
+        let rawName = getAfter(/(?:Nama|Name)\s*[:;]?\s*(.+)/i);
+        if (rawName) {
+            rawName = rawName.replace(/\b(Tempat|Tgl|Lahir|Jenis|Kelamin|Alamat|Agama)\b.*/i, '')
+                             .replace(/[^A-Za-z\s.'`]/g, '')
+                             .trim();
+            result.full_name = rawName.toUpperCase();
+        } else {
+            // Jika label Nama tidak terdeteksi, ambil baris di bawah NIK
+            for (let i = 0; i < lines.length; i++) {
+                if (/N[I1l!|][Kk]/i.test(lines[i]) || (result.nik && lines[i].includes(result.nik))) {
+                    if (i + 1 < lines.length) {
+                        let candidate = lines[i + 1].replace(/^[:;.-]+/, '').trim();
+                        if (/^[A-Za-z\s.'`]+$/.test(candidate) && candidate.length > 3 && !/tempat|lahir/i.test(candidate)) {
+                            result.full_name = candidate.toUpperCase();
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        // 4. Tempat / Tanggal Lahir
+        for (let line of lines) {
+            if (/Tempat|Tgl\s*Lahir|Lahir|TG[Ll1I|]/i.test(line)) {
+                let cleaned = line.replace(/Tempat\s*[\/|\\]?\s*TG[Ll1I|]?\s*Lahir/gi, '')
+                                  .replace(/Tempat\s*[\/|\\]?\s*TG[Ll1I|]?/gi, '')
+                                  .replace(/Tempat|Lahir/gi, '')
+                                  .replace(/^[:;.-]+/, '')
+                                  .trim();
+                const dateMatch = cleaned.match(/(\d{1,2})[\s\/-]+(\d{1,2})[\s\/-]+(\d{4})/);
+                if (dateMatch) {
+                    const d = dateMatch[1].padStart(2, '0');
+                    const m = dateMatch[2].padStart(2, '0');
+                    const y = dateMatch[3];
+                    result.date_birth = `${y}-${m}-${d}`;
+
+                    let place = cleaned.substring(0, dateMatch.index)
+                                       .replace(/TEMPAT\s*[\/|\\]?\s*TG[Ll1I|]?\s*LAHIR/gi, '')
+                                       .replace(/TEMPAT\s*[\/|\\]?\s*TG[Ll1I|]?/gi, '')
+                                       .replace(/TG[Ll1I|]?\s*LAHIR/gi, '')
+                                       .replace(/TEMPAT/gi, '')
+                                       .replace(/LAHIR/gi, '')
+                                       .replace(/[^A-Za-z\s]/g, '')
+                                       .replace(/\s+/g, ' ')
+                                       .trim();
+                    if (place) result.birthplace = place.toUpperCase();
+                } else {
+                    const parts = cleaned.split(/[,:]/);
+                    if (parts.length > 0 && parts[0].length > 2) {
+                        result.birthplace = parts[0].replace(/TEMPAT\s*[\/|\\]?\s*TG[Ll1I|]?/gi, '').replace(/[^A-Za-z\s]/g, '').trim().toUpperCase();
+                    }
+                }
+                break;
+            }
+        }
+
+        // 5. Jenis Kelamin
+        let rawGender = getAfter(/(?:Jenis\s*Kelamin|Kelamin|Jns\s*Kelamin)\s*[:;.]?\s*(.+)/i);
+        const genderSearch = (rawGender + ' ' + raw + ' ' + norm).toUpperCase();
+
+        if (/PEREMPUAN|PERENPUAN|PFREMPUAN|PFRFMPUAN|WANITA|FEMALE/i.test(genderSearch) || /\bPER\b/i.test(rawGender) || /PEREMPUAN|WANITA/i.test(raw)) {
+            result.gender = 'P';
+        } else if (/LAKI\s*[-–]\s*LAKI|LAKILAKI|LAKHLAKI|LAK1\s*[-–]\s*LAK1|PRIA|MALE/i.test(genderSearch) || /\bLAK\b/i.test(rawGender) || /LAKI/i.test(raw)) {
+            result.gender = 'L';
+        }
+
+        // 6. Alamat
+        let rawAlamat = getAfter(/Alamat\s*[:;]?\s*(.+)/i);
+        if (rawAlamat) {
+            result.address = rawAlamat.replace(/\b(RT|RW|Kel|Desa|Kecamatan)\b.*/i, '').trim();
+        }
+
+        // 7. RT / RW
+        const rtrw = raw.match(/RT\s*\/?\s*RW\s*[:;]?\s*(\d{1,3})\s*[\/-]\s*(\d{1,3})/i) ||
+                     raw.match(/(\d{1,3})\s*\/\s*(\d{1,3})/);
+        if (rtrw) {
+            result.rt = rtrw[1].padStart(3, '0');
+            result.rw = rtrw[2].padStart(3, '0');
+        }
+
+        // 8. Kelurahan / Desa
+        let rawKel = getAfter(/(?:Kel\/?Desa|Kelurahan|Desa)\s*[:;]?\s*(.+)/i);
+        if (rawKel) {
+            result.village = rawKel.replace(/\b(Kecamatan|Agama)\b.*/i, '').replace(/[^A-Za-z0-9\s.-]/g, '').trim().toUpperCase();
+        }
+
+        // 9. Kecamatan
+        let rawKec = getAfter(/(?:Kecamatan|Kec)\s*[:;]?\s*(.+)/i);
+        if (rawKec) {
+            result.subdistrict = rawKec.replace(/\b(Agama|Status)\b.*/i, '').replace(/[^A-Za-z0-9\s.-]/g, '').trim().toUpperCase();
+        }
+
+        // 10. Agama
+        let rawAgama = getAfter(/(?:Agama|Agm|Agma)\s*[:;.]?\s*(.+)/i);
+        const agamaSearch = (rawAgama + ' ' + raw + ' ' + norm).toUpperCase();
+
+        if (/ISLAM|1SLAM|!SLAM|ISIAM|1S1AM/i.test(agamaSearch) || /ISLAM/i.test(raw)) {
+            result.religion = 'Islam';
+        } else if (/KRISTEN|KR1STEN|PROTESTAN|PROT/i.test(agamaSearch) || /KRISTEN/i.test(raw)) {
+            result.religion = 'Kristen';
+        } else if (/KATOLIK|KATHOLIK|KAT0L1K/i.test(agamaSearch) || /KATOLIK/i.test(raw)) {
+            result.religion = 'Katolik';
+        } else if (/HINDU|H1NDU/i.test(agamaSearch) || /HINDU/i.test(raw)) {
+            result.religion = 'Hindu';
+        } else if (/BUDDHA|BUDHA/i.test(agamaSearch) || /BUDDHA/i.test(raw)) {
+            result.religion = 'Buddha';
+        } else if (/KONGHUCU|KHONGHUCU/i.test(agamaSearch) || /KONGHUCU/i.test(raw)) {
+            result.religion = 'Lainnya';
+        }
+
+        // 11. Status Perkawinan (Sesuai Standar e-KTP: BELUM KAWIN, KAWIN, CERAI HIDUP, CERAI MATI)
+        let rawStatus = getAfter(/(?:Status\s*Perkawinan|Status\s*Pernikahan|Perkawinan|Status)\s*[:;.]?\s*(.+)/i);
+        const statusSearch = (rawStatus + ' ' + raw + ' ' + norm).toUpperCase();
+
+        if (/BELUM\s*KAWIN|BELUM\s*MENIKAH|BFLUM\s*KAWIN|BLM\s*KAWIN|BELUMKAWIN/i.test(statusSearch) || /BELUM\s*KAWIN|BELUM\s*MENIKAH/i.test(raw)) {
+            result.marital_status = 'BELUM KAWIN';
+        } else if (/CERAI\s*MATI|CERAI\s*MTI/i.test(statusSearch) || /CERAI\s*MATI/i.test(raw)) {
+            result.marital_status = 'CERAI MATI';
+        } else if (/CERAI\s*HIDUP|CERAI\s*H1DUP|\bCERAI\b/i.test(statusSearch) || /CERAI\s*HIDUP|CERAI/i.test(raw)) {
+            result.marital_status = 'CERAI HIDUP';
+        } else if (/KAWIN|KAW1N|KAW\s*IN|MENIKAH|KANIN/i.test(statusSearch) || /KAWIN|MENIKAH/i.test(raw)) {
+            result.marital_status = 'KAWIN';
+        }
+
+        return result;
+    }
+
+    // Terapkan Data Hasil Scan ke Formulir Customer
+    $('#btnApplyKtpToForm').on('click', function() {
+        // 1. Data Pribadi
+        const fullName = $('#ocr_full_name').val().trim();
+        const nik = $('#ocr_nik').val().trim();
+        const birthplace = $('#ocr_birthplace').val().trim();
+        const dateBirth = $('#ocr_date_birth').val();
+        const gender = $('#ocr_gender').val();
+        const religion = $('#ocr_religion').val();
+        const maritalStatus = $('#ocr_marital_status').val();
+
+        if (fullName) $('input[name="full_name"]').val(fullName);
+        if (nik) $('input[name="nik"]').val(nik);
+        if (birthplace) $('input[name="birthplace"]').val(birthplace);
+        if (dateBirth) {
+            $('input[name="date_birth"]').val(dateBirth).trigger('change'); // Otomatis hitung usia
+        }
+        if (gender) applySelectValue('select[name="gender"]', gender);
+        if (religion) applySelectValue('select[name="religion"]', religion);
+        if (maritalStatus) applySelectValue('select[name="marital_status"]', maritalStatus);
+
+        // 2. Alamat Sesuai KTP
+        const address = $('#ocr_address').val().trim();
+        const rt = $('#ocr_rt').val().trim();
+        const rw = $('#ocr_rw').val().trim();
+        const province = $('#ocr_province').val().trim();
+        const city = $('#ocr_city').val().trim();
+        const subdistrict = $('#ocr_subdistrict').val().trim();
+        const village = $('#ocr_village').val().trim();
+
+        if (address) $('#alamatKTP').val(address);
+        if (rt) $('#rtKTP').val(rt);
+        if (rw) $('#rwKTP').val(rw);
+
+        // Jika alamat wilayah terbaca, sinkronkan dropdown cascade KTP
+        if (province || city || subdistrict || village) {
+            setupWilayahCascade('KTP', {
+                province: province,
+                city: city,
+                subdistrict: subdistrict,
+                village: village
+            });
+        }
+
+        // 3. Pasang file KTP ke input uploadKtp di Tab Dokumen
+        if (currentScannedKtpFile) {
+            window.isApplyingKtpFile = true;
+            try {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(currentScannedKtpFile);
+                const uploadKtpInput = document.getElementById('uploadKtp');
+                if (uploadKtpInput) {
+                    uploadKtpInput.files = dataTransfer.files;
+                    $(uploadKtpInput).trigger('change');
+                }
+            } catch (e) {
+                console.warn('DataTransfer not supported:', e);
+            }
+            window.isApplyingKtpFile = false;
+        }
+
+        // 4. Arahkan kembali ke Tab 1 (Data Pribadi) agar user melihat hasil input
+        $('.custom-tab-link[href="#pribadi"]').trigger('click');
+
+        // 5. Tutup Modal
+        const modal = getKtpModalInstance();
+        if (modal) modal.hide();
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Data KTP Berhasil Diisi!',
+            html: 'Data NIK, Nama, Tanggal Lahir, Alamat, dan File KTP telah diterapkan ke formulir customer.',
+            timer: 2500,
+            showConfirmButton: false
+        });
+    });
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 @endpush

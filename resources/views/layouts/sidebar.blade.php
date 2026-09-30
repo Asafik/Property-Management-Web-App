@@ -84,6 +84,7 @@
             'company-profile.index' => 'mdi-city-variant-outline',
             'servis' => 'mdi-face-agent',
             'bank.index' => 'mdi-bank-outline',
+            'master.skema-kpr.index' => 'mdi-calculator-variant-outline',
             'notaris.index' => 'mdi-scale-balance',
             'rab.deadline.index' => 'mdi-calendar-clock',
             'master.data.division.index' => 'mdi-domain-plus',
@@ -152,6 +153,7 @@
             'company-profile.index' => ['company-profile.index*', 'company-profile.*'],
             'servis' => ['servis*'],
             'bank.index' => ['bank.index*', 'bank.*'],
+            'master.skema-kpr.index' => ['master.skema-kpr.*', 'master-skema-kpr*'],
             'notaris.index' => ['notaris.index*', 'notaris.*', 'master-data-notaris*'],
             'rab.deadline.index' => ['rab.deadline.index*', 'rab.*'],
             'master.data.division.index' => ['master.data.division.*'],
@@ -337,7 +339,7 @@
                     $sectionName = 'Perizinan';
                 } elseif ($main->route === 'legal.unit.index') {
                     $sectionName = 'Legal';
-                } elseif ($main->route === 'proyek.index' || $main->route === 'proyek.pengolahan-lahan.index' || $main->route === 'proyek.unit.index') {
+                } elseif ($main->route === 'proyek.index' || $main->route === 'proyek.pengolahan-lahan.index' || $main->route === 'proyek.unit.index' || $main->route === 'spk.index') {
                     $sectionName = 'Proyek';
                 } else {
                     $sectionName = $categoryMap[$main->name] ?? ($categoryMap[$mainDisplayName] ?? $mainDisplayName);

@@ -29,14 +29,17 @@ class MenuSeeder extends Seeder
         $staffLegal     = Position::where('name', 'Staff Legal')->first();
         $staffKpr       = Position::where('name', 'Staff KPR')->orWhere('name', 'KPR')->first();
         $keuanganStaff  = Position::where('name', 'Staff Keuangan')->first();
+        $kepalaProyek   = Position::where('name', 'Kepala Proyek')->first();
+        $staffProyek    = Position::where('name', 'Staff Proyek')->first();
 
         // Role Groups
-        $allRoles       = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $legal?->id, $staffLegal?->id, $staffKpr?->id, $keuanganStaff?->id]));
+        $allRoles       = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $legal?->id, $staffLegal?->id, $staffKpr?->id, $keuanganStaff?->id, $kepalaProyek?->id, $staffProyek?->id]));
         $marketingRoles = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id]));
         $legalRoles     = array_values(array_filter([$admin?->id, $legal?->id, $staffLegal?->id]));
-        $landbankRoles  = array_values(array_filter([$admin?->id, $legal?->id, $staffLegal?->id, $keuanganStaff?->id]));
+        $landbankRoles  = array_values(array_filter([$admin?->id, $legal?->id, $staffLegal?->id, $keuanganStaff?->id, $marketing?->id]));
         $adminOnly      = array_values(array_filter([$admin?->id]));
         $kprTransaksiRoles = array_values(array_filter([$admin?->id, $staffKpr?->id]));
+        $proyekRoles    = array_values(array_unique(array_filter([$admin?->id, $kepalaProyek?->id, $staffProyek?->id])));
 
         // ================= 1. DASHBOARD =================
         $dashboard = Menu::create([
@@ -136,14 +139,14 @@ class MenuSeeder extends Seeder
         ]);
         $perizinanMenu->positions()->attach($legalRoles);
 
-        // ================= 6. PROYEK, PENGOLAHAN LAHAN & UNIT (ADMIN ONLY) =================
+        // ================= 6. PROYEK, PENGOLAHAN LAHAN & UNIT (DIVISI PROYEK & ADMIN) =================
         $proyekMasterMenu = Menu::create([
             'name'  => 'Proyek',
             'route' => 'proyek.index',
             'icon'  => 'mdi-city-variant-outline',
             'order' => 7
         ]);
-        $proyekMasterMenu->positions()->attach($adminOnly);
+        $proyekMasterMenu->positions()->attach($proyekRoles);
 
         $proyekMenu = Menu::create([
             'name'  => 'Pengolahan Lahan',
@@ -151,7 +154,7 @@ class MenuSeeder extends Seeder
             'icon'  => 'mdi-hard-hat',
             'order' => 8
         ]);
-        $proyekMenu->positions()->attach($adminOnly);
+        $proyekMenu->positions()->attach($proyekRoles);
 
         $spkMenu = Menu::create([
             'name'  => 'SPK Kontraktor',
@@ -159,15 +162,15 @@ class MenuSeeder extends Seeder
             'icon'  => 'mdi-file-sign',
             'order' => 8.5
         ]);
-        $spkRoles = $adminOnly;
-        $spkMenu->positions()->attach($spkRoles);
+        $spkMenu->positions()->attach($proyekRoles);
+
         $unitMenu = Menu::create([
             'name'  => 'Unit',
             'route' => 'proyek.unit.index',
             'icon'  => 'mdi-home-city-outline',
             'order' => 9
         ]);
-        $unitMenu->positions()->attach($adminOnly);
+        $unitMenu->positions()->attach($proyekRoles);
 
         // ================= 7. MARKETING =================
         $marketingMenu = Menu::create([
@@ -205,7 +208,7 @@ class MenuSeeder extends Seeder
             'name'      => 'Tugas Marketing',
             'route'     => 'master.data.tugas-staff-marketing',
             'parent_id' => $marketingMenu->id
-        ])->positions()->attach($adminOnly);
+        ])->positions()->attach($marketingRoles);
 
         // ================= 8. USER =================
         $userMenu = Menu::create([
@@ -340,6 +343,7 @@ class MenuSeeder extends Seeder
             'company-profile.index'      => 'PT',
             'servis'                     => 'Servis',
             'bank.index'                 => 'Data Bank',
+            'master.skema-kpr.index'     => 'Skema Angsuran KPR',
             'rab.deadline.index'         => 'Deadline RAB',
             'master.data.division.index' => 'Divisi',
             'master.data.posisi'         => 'Posisi',

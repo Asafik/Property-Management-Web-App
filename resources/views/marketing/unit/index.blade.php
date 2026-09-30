@@ -441,8 +441,8 @@
                         </label>
                         <div class="input-group">
                             <span class="input-group-text bg-light fw-bold" style="font-size: 0.88rem;">Rp</span>
-                            <input type="number" name="price" id="modalInputPrice" class="form-control" 
-                                   placeholder="Contoh: 185000000" min="0" step="100000" required
+                            <input type="text" inputmode="numeric" name="price" id="modalInputPrice" class="form-control" 
+                                   placeholder="Contoh: 185.000.000" required autocomplete="off"
                                    style="font-size: 0.95rem; font-weight: 600;">
                         </div>
                         <small class="text-muted" style="font-size: 0.74rem;">Wewenang penuh bagian Marketing menentukan harga resmi ke konsumen.</small>
@@ -478,6 +478,32 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const modalSetHarga = document.getElementById('modalSetHarga');
+        const inputPrice = document.getElementById('modalInputPrice');
+        const formSetHarga = document.getElementById('formSetHarga');
+
+        // Fungsi format nominal Rupiah (pemisah ribuan dengan titik)
+        function formatRupiah(value) {
+            if (!value && value !== 0) return '';
+            const clean = value.toString().replace(/[^0-9]/g, '');
+            if (!clean) return '';
+            return new Intl.NumberFormat('id-ID').format(clean);
+        }
+
+        // Event listener saat user mengetik nominal harga
+        if (inputPrice) {
+            inputPrice.addEventListener('input', function () {
+                const selectionStart = this.selectionStart;
+                const prevLen = this.value.length;
+                this.value = formatRupiah(this.value);
+                const newLen = this.value.length;
+                // Jaga posisi cursor tetap nyaman saat mengetik
+                if (selectionStart !== null) {
+                    const diff = newLen - prevLen;
+                    this.setSelectionRange(selectionStart + diff, selectionStart + diff);
+                }
+            });
+        }
+
         if (modalSetHarga) {
             modalSetHarga.addEventListener('show.bs.modal', function (event) {
                 const button = event.relatedTarget;
@@ -489,21 +515,37 @@
                 const status = button.getAttribute('data-status');
 
                 // Set Action Form
-                const form = document.getElementById('formSetHarga');
-                form.action = "{{ url('/marketing/unit') }}/" + id + "/price";
+                if (formSetHarga) {
+                    formSetHarga.action = "{{ url('/marketing/unit') }}/" + id + "/price";
+                }
 
                 // Set View Content
                 document.getElementById('modalUnitTitle').textContent = code + ' - ' + name;
                 document.getElementById('modalProjectName').textContent = project;
-                document.getElementById('modalInputPrice').value = price || '';
+                
+                // Format harga saat modal dibuka jika unit sudah punya harga
+                if (inputPrice) {
+                    inputPrice.value = price ? formatRupiah(price) : '';
+                }
                 
                 const statusSelect = document.getElementById('modalSelectStatus');
-                if (status) {
-                    statusSelect.value = status;
-                } else {
-                    statusSelect.value = 'ready';
+                if (statusSelect) {
+                    if (status) {
+                        statusSelect.value = status;
+                    } else {
+                        statusSelect.value = 'ready';
+                    }
                 }
             });
+
+            // Bersihkan format titik sebelum dikirim ke backend
+            if (formSetHarga) {
+                formSetHarga.addEventListener('submit', function () {
+                    if (inputPrice) {
+                        inputPrice.value = inputPrice.value.replace(/[^0-9]/g, '');
+                    }
+                });
+            }
         }
     });
 </script>

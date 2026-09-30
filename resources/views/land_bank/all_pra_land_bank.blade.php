@@ -222,6 +222,7 @@
     $userPositionId = $currentUser->position_id ?? null;
     $isAdmin = ($userPositionId == 5) || str_contains($userPositionName, 'admin');
     $isKeuangan = ($userPositionId == 7) || str_contains($userPositionName, 'keuangan') || str_contains($userPositionName, 'finance') || str_contains($userDivisionName, 'keuangan') || str_contains($userDivisionName, 'finance');
+    $isKepalaMarketing = ($userPositionId == 1) || str_contains($userPositionName, 'kepala marketing') || str_contains($userPositionName, 'kepala pemasaran') || str_contains($userPositionName, 'head of marketing') || (str_contains($userPositionName, 'kepala') && str_contains($userPositionName, 'market'));
 @endphp
 
 <div class="container-fluid px-2 px-md-4 py-3">
@@ -322,7 +323,7 @@
                             <i class="mdi mdi-format-list-bulleted me-2" style="color: #6366f1;"></i>Daftar Pra Tanah
                         </h5>
                     </div>
-                    @if(!$isKeuangan || $isAdmin)
+                    @if((!$isKeuangan && !$isKepalaMarketing) || $isAdmin)
                         <a class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm fw-semibold" style="border-radius: 6px; font-size: 0.84rem;"
                             href="{{ route('pra-landbank.proses') }}">
                             <i class="mdi mdi-plus"></i>Tambah Pra Tanah
@@ -503,9 +504,9 @@
                                         $unverifiedOrMissing = max(0, $totalRequired - $verifiedDocs);
                                         $legalPercent = $totalRequired > 0 ? round(($verifiedDocs / $totalRequired) * 100) : 0;
                                         $isLandLegalSah = ($totalRequired > 0) && ($verifiedDocs === $totalRequired);
-                                        $isFase2Done = !empty($land->survey_date) && !empty($land->survey_by);
-                                        $canAccessFase2 = $isLandLegalSah || $land->status === 'approved' || $land->status === 'rejected';
-                                        $canAccessFase3 = ($isLandLegalSah && $isFase2Done) || $land->status === 'approved' || $land->status === 'rejected' || $isTerminActive;
+                                        $isFase2Done = (!empty($land->survey_date) || !empty($land->survey_by) || !empty($land->lat) || in_array($land->status, ['fase2', 'fase3', 'approved', 'rejected']));
+                                        $canAccessFase2 = $isLandLegalSah || in_array($land->status, ['fase2', 'fase3', 'approved', 'rejected']);
+                                        $canAccessFase3 = in_array($land->status, ['fase3', 'approved', 'rejected']) || ($isLandLegalSah && $isFase2Done) || $isTerminActive;
                                     @endphp
 
                                     <tr class="pra-table-row" id="row-{{ $land->id }}"
@@ -663,16 +664,16 @@
                                             <div class="d-inline-flex align-items-center gap-1">
                                                 <!-- Fase 1 -->
                                                 <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 1]) }}" 
-                                                    class="btn-fase-action btn-fase-1" title="FASE 1: Dokumen Legalitas">
-                                                    <i class="mdi mdi-file-document-check"></i>
+                                                    class="btn-fase-action btn-fase-1" title="FASE 1: Dokumen Legalitas{{ $isKepalaMarketing ? ' (Read-Only)' : '' }}">
+                                                    <i class="mdi {{ $isKepalaMarketing ? 'mdi-eye-outline' : 'mdi-file-document-check' }}"></i>
                                                     <span>Fase 1</span>
                                                 </a>
 
                                                 <!-- Fase 2 -->
                                                 @if($canAccessFase2)
                                                     <a href="{{ route('pra-landbank.proses', ['id' => $land->id, 'step' => 2]) }}" 
-                                                        class="btn-fase-action btn-fase-2" title="FASE 2: Survey & Teknis">
-                                                        <i class="mdi mdi-map-search"></i>
+                                                        class="btn-fase-action btn-fase-2" title="FASE 2: Survey & Teknis{{ $isKepalaMarketing ? ' (Read-Only)' : '' }}">
+                                                        <i class="mdi {{ $isKepalaMarketing ? 'mdi-eye-outline' : 'mdi-map-search' }}"></i>
                                                         <span>Fase 2</span>
                                                     </a>
                                                 @else
@@ -701,7 +702,7 @@
                                                 @endif
 
                                                 <!-- Pasca Land Bank Shortcut -->
-                                                @if($land->land_bank_id)
+                                                @if($land->land_bank_id && !$isKepalaMarketing)
                                                     <a href="{{ route('properti.edit', $land->land_bank_id) }}" 
                                                         class="btn-fase-action" style="background: linear-gradient(135deg, #059669, #10b981);" title="Buka di Pasca Land Bank">
                                                         <i class="mdi mdi-shield-crown"></i>
@@ -710,7 +711,7 @@
                                                 @endif
 
                                                 <!-- Delete Button -->
-                                                @if(!$isKeuangan || $isAdmin)
+                                                @if((!$isKeuangan && !$isKepalaMarketing) || $isAdmin)
                                                     <form action="{{ route('pra-landbanks.destroy', $land->id) }}" method="POST" class="d-inline delete-form">
                                                         @csrf
                                                         @method('DELETE')

@@ -103,6 +103,12 @@ class UnitMarketingController extends Controller
      */
     public function updatePrice(Request $request, $id)
     {
+        // Bersihkan formatting rupiah (titik/koma/spasi) jika dikirim dalam format angka berpemisah
+        if ($request->has('price')) {
+            $rawPrice = preg_replace('/[^0-9]/', '', (string) $request->price);
+            $request->merge(['price' => $rawPrice]);
+        }
+
         $request->validate([
             'price' => 'required|numeric|min:0',
             'status' => 'nullable|string',

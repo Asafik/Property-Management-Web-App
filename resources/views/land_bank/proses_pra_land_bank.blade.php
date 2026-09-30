@@ -1588,7 +1588,15 @@
                                 $isReadOnlyKeuangan = $isKeuangan && !$isAdmin;
                                 $isKepalaLegal = ($userPositionId == 3) || str_contains($userPositionName, 'kepala legal') || (str_contains($userPositionName, 'legal') && !str_contains($userPositionName, 'staff'));
                                 $isStaffLegal = ($userPositionId == 4) || (str_contains($userPositionName, 'staff') && str_contains($userPositionName, 'legal'));
-                                
+                                $isKepalaMarketing = ($userPositionId == 1) || str_contains($userPositionName, 'kepala marketing') || str_contains($userPositionName, 'kepala pemasaran') || str_contains($userPositionName, 'head of marketing') || (str_contains($userPositionName, 'kepala') && str_contains($userPositionName, 'market'));
+                                $isReadOnlyMarketing = $isKepalaMarketing && !$isAdmin;
+
+                                // Upload bukti pembayaran & simpan keputusan sidang: hanya Admin & Kepala Marketing
+                                $canUploadPayment = $isAdmin || $isKepalaMarketing;
+
+                                // Isi nominal biaya legalitas & harga: Staff Legal & Kepala Legal (serta Admin & Kepala Marketing)
+                                $canEditNominal = $isAdmin || $isKepalaLegal || $isStaffLegal || $isKepalaMarketing;
+
                                 // Hak Akses Role
                                 $canEditGeneralInfo = ($isAdmin || !$isStaffLegal) && !$isKeuangan && !$land;
                                 $canEditFinancial   = $isAdmin || $isKeuangan;
@@ -1621,14 +1629,20 @@
                                 $verifiedCount = $applicablePraDocs->where('status', 'verified')->count();
                                 $isLegalSah = $land && !empty($selectedCat) && ($totalUploadedDocs > 0) && ($verifiedCount === $totalUploadedDocs);
                                 
-                                $hasSurveyData = $land && (!empty($land->land_status) || !empty($land->water_condition) || !empty($land->photo) || !empty($land->photo_2));
-                                $isFase2Done = $land && $isLegalSah && in_array($land->status, ['fase2', 'fase3', 'fase4', 'approved', 'rejected']) && ($hasSurveyData || in_array($land->status, ['fase3', 'fase4', 'approved', 'rejected']));
-                                $canAccessFase3 = $isLegalSah && $isFase2Done;
+                                $hasSurveyData = $land && (!empty($land->land_status) || !empty($land->water_condition) || !empty($land->photo) || !empty($land->photo_2) || !empty($land->survey_date) || !empty($land->survey_by) || !empty($land->lat));
+                                $isFase2Done = $land && ($hasSurveyData || in_array($land->status, ['fase2', 'fase3', 'fase4', 'approved', 'rejected']));
+                                $canAccessFase3 = ($isLegalSah && $isFase2Done) || in_array($land?->status, ['fase3', 'fase4', 'approved', 'rejected']);
                                 
                                 $hasPendingVerification = false;
                                 if ($land && !$isLegalSah && $land->status != 'rejected') {
                                     $hasPendingVerification = true;
                                 }
+
+                                $hasPaymentProof = (bool) ($land && (
+                                    !empty($land->receipt_file) 
+                                    || !empty($land->tax_pph_file) 
+                                    || ($land->payments && $land->payments->whereNotNull('file_path')->count() > 0)
+                                ));
                             @endphp
 
                         <div class="step-wizard">
@@ -1702,6 +1716,13 @@
                                             <strong>Mode Lihat Data (Divisi Keuangan)</strong>: Anda dapat melihat seluruh riwayat penawaran, status legalitas, dan berkas fisik tanah ini (Read-Only).
                                         </div>
                                     </div>
+                                @elseif($isReadOnlyMarketing)
+                                    <div class="alert alert-soft-info border border-info-subtle py-2.5 px-3 mb-3 d-flex align-items-center gap-2 rounded-3 text-info" style="background: #f0f9ff; font-size: 0.85rem;">
+                                        <i class="mdi mdi-eye-outline fs-5"></i>
+                                        <div>
+                                            <strong>Mode Lihat Data (Kepala Marketing)</strong>: Tahap Fase 1 bersifat Read-Only. Kepala Marketing berfokus mengelola <strong>Fase 3 (Sidang Keputusan Akhir, Upload Bukti Pembayaran & Deal Transaksi)</strong>.
+                                        </div>
+                                    </div>
                                 @elseif($isStaffLegal && $land)
                                     <div class="alert alert-soft-primary border border-primary-subtle py-2.5 px-3 mb-3 d-flex align-items-center gap-2 rounded-3 text-primary" style="background: #eff6ff; font-size: 0.83rem;">
                                         <i class="mdi mdi-information-outline fs-5 text-primary"></i>
@@ -1750,25 +1771,8 @@
                                             <label class="form-label">Nama Prospek Tanah *</label>
                                             <input type="text" class="form-control" name="land_name" value="{{ $land->land_name ?? '' }}" placeholder="Contoh: Tanah Jember Regency" required {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label d-flex align-items-center justify-content-between">
-                                                <span>PT Mitra Pengembang / Nama Perusahaan <span class="text-danger">*</span></span>
-                                                <span class="badge bg-soft-primary text-primary" style="font-size: 10px;"><i class="mdi mdi-city me-0.5"></i>Profil PT</span>
-                                            </label>
-                                            <select class="form-select select2-search" id="select_company_profile_id" name="company_profile_id" data-placeholder="-- Pilih PT Mitra Pengembang --" style="width: 100%;" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
-                                                <option value="">-- Pilih PT Mitra Pengembang --</option>
-                                                @if(isset($companies))
-                                                    @foreach($companies as $company)
-                                                        <option value="{{ $company->id }}" {{ (old('company_profile_id', $land->company_profile_id ?? '') == $company->id) ? 'selected' : '' }}>
-                                                            {{ $company->name }}
-                                                        </option>
-                                                    @endforeach
-                                                @endif
-                                            </select>
-                                            <small class="text-muted d-block mt-1" style="font-size: 0.74rem; line-height: 1.3;">
-                                                <i class="mdi mdi-information-outline text-primary"></i> Ketika berkas fisik lengkap & PT dipilih, lahan otomatis masuk ke <strong>Pasca Land Bank</strong>.
-                                            </small>
-                                        </div>
+
+
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Status Tanah / Kepemilikan (Dasar Perolehan) *</label>
                                             <select class="form-select select2-search" id="select_ownership_status" name="ownership_status" data-placeholder="Pilih Dasar Perolehan Tanah" style="width: 100%;" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
@@ -2152,7 +2156,7 @@
 
                                 <!-- ACTIONS FASE 1 -->
                                 <div class="d-flex justify-content-end gap-3 mt-4 footer-action-row">
-                                    @if ($isReadOnlyKeuangan)
+                                    @if ($isReadOnlyKeuangan || $isReadOnlyMarketing)
                                         <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="switchStep(2)">
                                             <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut Lihat Fase 2
                                         </button>
@@ -2194,15 +2198,26 @@
                                 <input type="hidden" name="id" value="{{ $land->id ?? '' }}">
                                 <input type="hidden" name="fase" value="fase2">
 
+                                @if($isReadOnlyMarketing)
+                                    <div class="alert alert-soft-info border border-info-subtle py-2.5 px-3 mb-3 d-flex align-items-center gap-2 rounded-3 text-info" style="background: #f0f9ff; font-size: 0.85rem;">
+                                        <i class="mdi mdi-eye-outline fs-5"></i>
+                                        <div>
+                                            <strong>Mode Lihat Data (Kepala Marketing)</strong>: Tahap Fase 2 (Survey & Teknis) bersifat Read-Only. Kepala Marketing berfokus mengelola <strong>Fase 3 (Sidang Keputusan Akhir, Upload Bukti Pembayaran & Deal Transaksi)</strong>.
+                                        </div>
+                                    </div>
+                                @endif
+
                                 <!-- PROFIL PEMILIK & INFORMASI TANAH DARI FASE 1 -->
                                 <div class="form-section">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div class="form-section-title mb-0">
                                             Profil Pemilik & Informasi Tanah (Fase 1)
                                         </div>
-                                        <button type="button" class="btn btn-sm btn-outline-purple py-1 px-3" onclick="switchStep(1)" style="font-size: 0.78rem;">
-                                            <i class="mdi mdi-pencil me-1"></i> Edit Data Fase 1
-                                        </button>
+                                        @if(!$isReadOnlyKeuangan && !$isReadOnlyMarketing)
+                                            <button type="button" class="btn btn-sm btn-outline-purple py-1 px-3" onclick="switchStep(1)" style="font-size: 0.78rem;">
+                                                <i class="mdi mdi-pencil me-1"></i> Edit Data Fase 1
+                                            </button>
+                                        @endif
                                     </div>
 
                                     <div class="row g-3">
@@ -2556,9 +2571,9 @@
                                         <i class="mdi mdi-arrow-left-circle me-1"></i> Kembali ke Fase 1
                                     </button>
 
-                                    @if ($isReadOnlyKeuangan)
+                                    @if ($isReadOnlyKeuangan || $isReadOnlyMarketing)
                                         <button type="button" class="btn btn-gradient-primary btn-action-mobile" onclick="switchStep(3)">
-                                            <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut Lihat Fase 3
+                                            <i class="mdi mdi-arrow-right-circle me-1"></i> Lanjut ke Fase 3
                                         </button>
                                     @elseif (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
                                         <button type="button" class="btn btn-gradient-success btn-action-mobile" id="btnProceedFase3" onclick="saveFase2(true)">
@@ -2779,14 +2794,18 @@
                                 <div class="form-section">
                                     <div class="form-section-title">
                                         Hasil Sidang & Keputusan Direksi
-                                        @if(!$isAdmin)
-                                            <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Wewenang Direksi / Admin)</small>
+                                        @if(!$canUploadPayment)
+                                            <small class="text-warning d-block fw-normal" style="font-size: 0.75rem;">
+                                                <i class="mdi mdi-lock-outline me-1"></i>Hanya dapat diputuskan dan disimpan oleh Admin & Kepala Marketing
+                                            </small>
+                                        @else
+                                            <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Wewenang Admin & Kepala Marketing)</small>
                                         @endif
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-bold">Hasil Keputusan Sidang Akhir <span class="text-danger">*</span></label>
-                                            <select class="form-select border-primary" id="fase3_status_akhir" name="status" {{ ($land && ($land->status == 'approved' || $land->status == 'rejected')) ? 'disabled' : '' }}>
+                                            <select class="form-select border-primary" id="fase3_status_akhir" name="status" {{ (!$canUploadPayment || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                                 <option value="approved" {{ $land && $land->status == 'approved' ? 'selected' : '' }}>DIAMBIL - Deal untuk Diakuisisi (Masuk LandBank Utama)</option>
                                                 <option value="pending" {{ $land && $land->status == 'pending' ? 'selected' : '' }}>DIPENDING - Ditunda Sementara (Negosiasi / Evaluasi Lanjutan)</option>
                                                 <option value="rejected" {{ $land && $land->status == 'rejected' ? 'selected' : '' }}>DIBATALKAN - Gugur Prospeknya (Tidak Diambil)</option>
@@ -2794,7 +2813,7 @@
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label fw-bold">Skala Prioritas Akuisisi</label>
-                                            <select class="form-select" name="prioritas" {{ ($land && ($land->status == 'approved' || $land->status == 'rejected')) ? 'disabled' : '' }}>
+                                            <select class="form-select" name="prioritas" {{ (!$canUploadPayment || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                                 <option value="urgent" {{ $land && $land->priority == 'urgent' ? 'selected' : '' }}>Urgent (Sangat Prioritas / Segera Diproses)</option>
                                                 <option value="high" {{ $land && $land->priority == 'high' ? 'selected' : '' }}>High (Tinggi)</option>
                                                 <option value="normal" {{ $land && ($land->priority == 'normal' || !$land->priority) ? 'selected' : '' }}>Normal</option>
@@ -2803,7 +2822,7 @@
                                         </div>
                                         <div class="col-12 mb-3">
                                             <label class="form-label fw-bold">Catatan & Kesimpulan Keputusan Sidang</label>
-                                            <textarea class="form-control" name="catatan" rows="3" placeholder="Masukkan ringkasan pertimbangan keputusan rapat, kesepakatan notaris, tanggal rencana akta pelepasan..." {{ ($land && ($land->status == 'approved' || $land->status == 'rejected')) ? 'disabled' : '' }}>{{ $land->notes ?? '' }}</textarea>
+                                            <textarea class="form-control" name="catatan" rows="3" placeholder="Masukkan ringkasan pertimbangan keputusan rapat, kesepakatan notaris, tanggal rencana akta pelepasan..." {{ (!$canUploadPayment || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>{{ $land->notes ?? '' }}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -2860,6 +2879,11 @@
                                                     </span>
                                                 </div>
                                                 <small class="text-muted d-block mb-3" style="font-size: 0.74rem;">Bukti kwitansi bermaterai pembayaran di kantor Notaris</small>
+                                @if(!$canUploadPayment)
+                                    <div class="alert alert-soft-warning border border-warning-subtle py-1.5 px-2 rounded-2 mb-2" style="font-size:0.75rem; background:#fffbeb;">
+                                        <i class="mdi mdi-lock-outline me-1 text-warning"></i>Upload hanya untuk <strong>Admin / Kepala Marketing</strong>
+                                    </div>
+                                @endif
 
                                                 <div class="d-flex flex-column justify-content-end flex-grow-1" id="container_receipt_file">
                                                     @if($land && $land->receipt_file)
@@ -2885,6 +2909,7 @@
                                                         </div>
 
                                                         @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                        @if($canUploadPayment)
                                                             <div class="pratanah-file-upload-modern mb-1">
                                                                 <input type="file" name="receipt_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'receipt_file')">
                                                                 <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
@@ -2896,18 +2921,25 @@
                                                                 </div>
                                                             </div>
                                                         @endif
+                                                    @endif
                                                     @else
-                                                        @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                            <div class="pratanah-file-upload-modern mb-1">
-                                                                <input type="file" name="receipt_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'receipt_file')">
-                                                                <div class="pratanah-file-label-modern py-2.5 px-3">
-                                                                    <i class="mdi mdi-cloud-upload" style="font-size: 1.35rem; color: #9a55ff;"></i>
-                                                                    <div class="pratanah-file-info-modern">
-                                                                        <span class="file-label-text fw-semibold" style="font-size: 0.8rem;">Pilih File Kwitansi</span>
-                                                                        <span class="file-label-hint" style="font-size: 0.72rem;">PDF, JPG, PNG (Auto Upload)</span>
+                                                        @if($canUploadPayment)
+                                                            @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                                <div class="pratanah-file-upload-modern mb-1">
+                                                                    <input type="file" name="receipt_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'receipt_file')">
+                                                                    <div class="pratanah-file-label-modern py-2.5 px-3">
+                                                                        <i class="mdi mdi-cloud-upload" style="font-size: 1.35rem; color: #9a55ff;"></i>
+                                                                        <div class="pratanah-file-info-modern">
+                                                                            <span class="file-label-text fw-semibold" style="font-size: 0.8rem;">Pilih File Kwitansi</span>
+                                                                            <span class="file-label-hint" style="font-size: 0.72rem;">PDF, JPG, PNG (Auto Upload)</span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            @else
+                                                                <div class="p-3 text-center text-muted bg-light rounded-2 border" style="font-size: 0.8rem;">
+                                                                    <i class="mdi mdi-file-hidden me-1"></i>Belum ada berkas kwitansi
+                                                                </div>
+                                                            @endif
                                                         @else
                                                             <div class="p-3 text-center text-muted bg-light rounded-2 border" style="font-size: 0.8rem;">
                                                                 <i class="mdi mdi-file-hidden me-1"></i>Belum ada berkas kwitansi
@@ -2932,6 +2964,11 @@
                                                     </span>
                                                 </div>
                                                 <small class="text-muted d-block mb-3" style="font-size: 0.74rem;">Bukti bayar PPh (ACC Direktur PT & NPWP Penjual)</small>
+                                @if(!$canUploadPayment)
+                                    <div class="alert alert-soft-warning border border-warning-subtle py-1.5 px-2 rounded-2 mb-2" style="font-size:0.75rem; background:#fffbeb;">
+                                        <i class="mdi mdi-lock-outline me-1 text-warning"></i>Upload hanya untuk <strong>Admin / Kepala Marketing</strong>
+                                    </div>
+                                @endif
 
                                                 <div class="d-flex flex-column justify-content-end flex-grow-1" id="container_tax_pph_file">
                                                     @if($land && $land->tax_pph_file)
@@ -2957,29 +2994,37 @@
                                                         </div>
 
                                                         @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                            <div class="pratanah-file-upload-modern mb-1">
-                                                                <input type="file" name="tax_pph_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'tax_pph_file')">
-                                                                <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
-                                                                    <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
-                                                                    <div class="pratanah-file-info-modern">
-                                                                        <span class="file-label-text text-secondary" style="font-size: 0.76rem; font-weight: 600;">Ganti Bukti PPh / Upload Ulang</span>
-                                                                        <span class="file-label-hint" style="font-size: 0.7rem;">PDF, JPG, PNG (Auto Upload)</span>
+                                                            @if($canUploadPayment)
+                                                                <div class="pratanah-file-upload-modern mb-1">
+                                                                    <input type="file" name="tax_pph_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'tax_pph_file')">
+                                                                    <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                                                                        <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
+                                                                        <div class="pratanah-file-info-modern">
+                                                                            <span class="file-label-text text-secondary" style="font-size: 0.76rem; font-weight: 600;">Ganti Bukti PPh / Upload Ulang</span>
+                                                                            <span class="file-label-hint" style="font-size: 0.7rem;">PDF, JPG, PNG (Auto Upload)</span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            @endif
                                                         @endif
                                                     @else
-                                                        @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                            <div class="pratanah-file-upload-modern mb-1">
-                                                                <input type="file" name="tax_pph_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'tax_pph_file')">
-                                                                <div class="pratanah-file-label-modern py-2.5 px-3">
-                                                                    <i class="mdi mdi-cloud-upload" style="font-size: 1.35rem; color: #9a55ff;"></i>
-                                                                    <div class="pratanah-file-info-modern">
-                                                                        <span class="file-label-text fw-semibold" style="font-size: 0.8rem;">Pilih Bukti PPh</span>
-                                                                        <span class="file-label-hint" style="font-size: 0.72rem;">PDF, JPG, PNG (Auto Upload)</span>
+                                                        @if($canUploadPayment)
+                                                            @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                                <div class="pratanah-file-upload-modern mb-1">
+                                                                    <input type="file" name="tax_pph_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'tax_pph_file')">
+                                                                    <div class="pratanah-file-label-modern py-2.5 px-3">
+                                                                        <i class="mdi mdi-cloud-upload" style="font-size: 1.35rem; color: #9a55ff;"></i>
+                                                                        <div class="pratanah-file-info-modern">
+                                                                            <span class="file-label-text fw-semibold" style="font-size: 0.8rem;">Pilih Bukti PPh</span>
+                                                                            <span class="file-label-hint" style="font-size: 0.72rem;">PDF, JPG, PNG (Auto Upload)</span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            @else
+                                                                <div class="p-3 text-center text-muted bg-light rounded-2 border" style="font-size: 0.8rem;">
+                                                                    <i class="mdi mdi-file-hidden me-1"></i>Belum ada berkas PPh
+                                                                </div>
+                                                            @endif
                                                         @else
                                                             <div class="p-3 text-center text-muted bg-light rounded-2 border" style="font-size: 0.8rem;">
                                                                 <i class="mdi mdi-file-hidden me-1"></i>Belum ada berkas PPh
@@ -3004,6 +3049,11 @@
                                                     </span>
                                                 </div>
                                                 <small class="text-muted d-block mb-3" style="font-size: 0.74rem;">Salinan Akta Pelepasan Hak resmi selesai dari Notaris</small>
+                                @if(!$canUploadPayment)
+                                    <div class="alert alert-soft-warning border border-warning-subtle py-1.5 px-2 rounded-2 mb-2" style="font-size:0.75rem; background:#fffbeb;">
+                                        <i class="mdi mdi-lock-outline me-1 text-warning"></i>Upload hanya untuk <strong>Admin / Kepala Marketing</strong>
+                                    </div>
+                                @endif
 
                                                 <div class="d-flex flex-column justify-content-end flex-grow-1" id="container_release_deed_file">
                                                     @if($land && $land->release_deed_file)
@@ -3029,29 +3079,37 @@
                                                         </div>
 
                                                         @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                            <div class="pratanah-file-upload-modern mb-1">
-                                                                <input type="file" name="release_deed_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'release_deed_file')">
-                                                                <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
-                                                                    <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
-                                                                    <div class="pratanah-file-info-modern">
-                                                                        <span class="file-label-text text-secondary" style="font-size: 0.76rem; font-weight: 600;">Ganti Akta / Upload Ulang</span>
-                                                                        <span class="file-label-hint" style="font-size: 0.7rem;">PDF, JPG, PNG (Auto Upload)</span>
+                                                            @if($canUploadPayment)
+                                                                <div class="pratanah-file-upload-modern mb-1">
+                                                                    <input type="file" name="release_deed_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'release_deed_file')">
+                                                                    <div class="pratanah-file-label-modern py-1.5 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
+                                                                        <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
+                                                                        <div class="pratanah-file-info-modern">
+                                                                            <span class="file-label-text text-secondary" style="font-size: 0.76rem; font-weight: 600;">Ganti Akta / Upload Ulang</span>
+                                                                            <span class="file-label-hint" style="font-size: 0.7rem;">PDF, JPG, PNG (Auto Upload)</span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            @endif
                                                         @endif
                                                     @else
-                                                        @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                            <div class="pratanah-file-upload-modern mb-1">
-                                                                <input type="file" name="release_deed_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'release_deed_file')">
-                                                                <div class="pratanah-file-label-modern py-2.5 px-3">
-                                                                    <i class="mdi mdi-cloud-upload" style="font-size: 1.35rem; color: #9a55ff;"></i>
-                                                                    <div class="pratanah-file-info-modern">
-                                                                        <span class="file-label-text fw-semibold" style="font-size: 0.8rem;">Pilih Akta Pelepasan</span>
-                                                                        <span class="file-label-hint" style="font-size: 0.72rem;">PDF, JPG, PNG (Auto Upload)</span>
+                                                        @if($canUploadPayment)
+                                                            @if(!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                                <div class="pratanah-file-upload-modern mb-1">
+                                                                    <input type="file" name="release_deed_file" accept=".pdf,.jpg,.jpeg,.png" onchange="autoUploadNotaryDoc(this, 'release_deed_file')">
+                                                                    <div class="pratanah-file-label-modern py-2.5 px-3">
+                                                                        <i class="mdi mdi-cloud-upload" style="font-size: 1.35rem; color: #9a55ff;"></i>
+                                                                        <div class="pratanah-file-info-modern">
+                                                                            <span class="file-label-text fw-semibold" style="font-size: 0.8rem;">Pilih Akta Pelepasan</span>
+                                                                            <span class="file-label-hint" style="font-size: 0.72rem;">PDF, JPG, PNG (Auto Upload)</span>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            @else
+                                                                <div class="p-3 text-center text-muted bg-light rounded-2 border" style="font-size: 0.8rem;">
+                                                                    <i class="mdi mdi-file-hidden me-1"></i>Belum ada salinan akta
+                                                                </div>
+                                                            @endif
                                                         @else
                                                             <div class="p-3 text-center text-muted bg-light rounded-2 border" style="font-size: 0.8rem;">
                                                                 <i class="mdi mdi-file-hidden me-1"></i>Belum ada salinan akta
@@ -3171,9 +3229,15 @@
                                         <div class="form-section-title d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
                                             <div>
                                                 Aspek Legalitas, Pajak & Biaya Administrasi
-                                                @if(!$canEditFinancial)
-                                                    <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Divisi Keuangan / Admin)</small>
-                                                @endif
+                                                <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">
+                                                    @if($isStaffLegal || $isKepalaLegal)
+                                                        <i class="mdi mdi-pencil-outline text-success me-1"></i>Anda dapat mengisi nominal biaya legalitas
+                                                    @elseif(!$canEditNominal)
+                                                        (Diinput oleh Staff Legal / Kepala Legal)
+                                                    @else
+                                                        (Diinput oleh Staff Legal / Kepala Legal)
+                                                    @endif
+                                                </small>
                                             </div>
                                             @if(Route::has('master.biaya-legalitas.index'))
                                                 <a href="{{ route('master.biaya-legalitas.index') }}" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2 d-inline-flex align-items-center gap-1" style="font-size: 0.78rem; text-decoration: none; border-radius: 6px;">
@@ -3297,7 +3361,7 @@
                                                         value="{{ ($val !== null && $val !== '') ? number_format($val, 0, ',', '.') : '' }}" 
                                                         placeholder="Contoh: {{ number_format($mItem->nominal_standar ?? 10000000, 0, ',', '.') }}" 
                                                         onkeyup="this.dataset.userEdited = 'true'; formatRupiahTemp(this); updateFinancialSummary();" 
-                                                        {{ (!$canEditFinancial || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                                        {{ (!$canEditNominal || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                                 </div>
                                             @empty
                                                 <div class="col-12 text-muted fst-italic py-2">
@@ -3320,8 +3384,10 @@
                                                 <input type="text" class="form-control" value="Rp {{ $land && $land->estimated_price ? number_format($land->estimated_price, 0, ',', '.') : '0' }}" disabled style="background-color: #f1f3f7; color: #6c757d; font-weight: 600;">
                                             </div>
                                             <div class="col-12 col-sm-6 col-lg-4">
-                                                <label class="form-label text-dark font-weight-bold">Harga Deal Pokok Tanah (Rp) <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control font-weight-bold border-primary" id="deal_price_input" name="deal_price" value="Rp {{ $land && ($land->deal_price || $land->estimated_price) ? number_format($land->deal_price ?? $land->estimated_price, 0, ',', '.') : ($land && $land->offer_price ? number_format($land->offer_price, 0, ',', '.') : '0') }}" placeholder="Contoh: 500.000.000" onkeyup="formatRupiahTemp(this); calculateInstallments(); updateFinancialSummary();" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                <label class="form-label text-dark font-weight-bold">Harga Deal Pokok Tanah (Rp) <span class="text-danger">*</span>
+                                                    <small class="text-muted fw-normal d-block" style="font-size:0.72rem;">(Diisi oleh Staff Legal / Kepala Legal)</small>
+                                                </label>
+                                                <input type="text" class="form-control font-weight-bold border-primary" id="deal_price_input" name="deal_price" value="Rp {{ $land && ($land->deal_price || $land->estimated_price) ? number_format($land->deal_price ?? $land->estimated_price, 0, ',', '.') : ($land && $land->offer_price ? number_format($land->offer_price, 0, ',', '.') : '0') }}" placeholder="Contoh: 500.000.000" onkeyup="formatRupiahTemp(this); calculateInstallments(); updateFinancialSummary();" {{ (!$canEditNominal || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                             </div>
                                             <div class="col-12 col-sm-6 col-lg-4">
                                                 <label class="form-label font-weight-bold" style="color: #7e22ce;">Grand Total Final Transaksi (Rp)</label>
@@ -3500,25 +3566,44 @@
                                                     <label class="form-label fw-semibold text-dark" style="font-size: 0.82rem;">
                                                         Bukti Transfer / Kuitansi Fisik Pelunasan
                                                     </label>
-                                                    <div class="pratanah-file-upload-modern py-2 px-3 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: #ffffff;">
-                                                        <input type="file" name="cash_file" id="cash_payment_file" class="d-none" onchange="handleSingleFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                                                        <label for="cash_payment_file" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
-                                                            <i class="mdi mdi-cloud-upload-outline text-muted fs-4"></i>
-                                                            <span class="text-truncate text-muted file-label-text" style="max-width: 280px;">
-                                                                {{ $cashPayment && $cashPayment->file_path ? basename($cashPayment->file_path) : 'Unggah Bukti Transfer / Kuitansi Pelunasan' }}
+                                                    @if($canUploadPayment)
+                                                        <div class="pratanah-file-upload-modern py-2 px-3 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: #ffffff;">
+                                                            <input type="file" name="cash_file" id="cash_payment_file" class="d-none" onchange="handleSingleFileUpload(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                                            <label for="cash_payment_file" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
+                                                                <i class="mdi mdi-cloud-upload-outline text-muted fs-4"></i>
+                                                                <span class="text-truncate text-muted file-label-text" style="max-width: 280px;">
+                                                                    {{ $cashPayment && $cashPayment->file_path ? basename($cashPayment->file_path) : 'Unggah Bukti Transfer / Kuitansi Pelunasan' }}
+                                                                </span>
+                                                            </label>
+                                                            @if($cashPayment && $cashPayment->file_path)
+                                                                @php $cleanCashPath = str_replace('uploads/', '', $cashPayment->file_path); @endphp
+                                                                <button type="button" class="btn btn-xs btn-outline-primary ms-2 py-1 px-2 btn-preview-doc"
+                                                                    data-url="{{ route('dokumen.preview', ['path' => $cleanCashPath]) }}"
+                                                                    data-ext="{{ pathinfo($cashPayment->file_path, PATHINFO_EXTENSION) }}"
+                                                                    data-label="Bukti Pelunasan Tunai"
+                                                                    title="Lihat Berkas" style="font-size: 11px;">
+                                                                    <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                                                </button>
+                                                            @endif
+                                                        </div>
+                                                    @else
+                                                        <div class="p-2 px-3 rounded-2 border d-flex align-items-center justify-content-between" style="background: #f8fafc; font-size: 0.8rem;">
+                                                            <span class="text-muted d-flex align-items-center gap-1">
+                                                                <i class="mdi mdi-lock-outline text-warning"></i>
+                                                                Upload bukti transfer hanya dapat dilakukan oleh <strong>Admin</strong> atau <strong>Kepala Marketing</strong>.
                                                             </span>
-                                                        </label>
-                                                        @if($cashPayment && $cashPayment->file_path)
-                                                            @php $cleanCashPath = str_replace('uploads/', '', $cashPayment->file_path); @endphp
-                                                            <button type="button" class="btn btn-xs btn-outline-primary ms-2 py-1 px-2 btn-preview-doc"
-                                                                data-url="{{ route('dokumen.preview', ['path' => $cleanCashPath]) }}"
-                                                                data-ext="{{ pathinfo($cashPayment->file_path, PATHINFO_EXTENSION) }}"
-                                                                data-label="Bukti Pelunasan Tunai"
-                                                                title="Lihat Berkas" style="font-size: 11px;">
-                                                                <i class="mdi mdi-eye me-1"></i>Lihat Berkas
-                                                            </button>
-                                                        @endif
-                                                    </div>
+                                                            @if($cashPayment && $cashPayment->file_path)
+                                                                @php $cleanCashPath = str_replace('uploads/', '', $cashPayment->file_path); @endphp
+                                                                <button type="button" class="btn btn-xs btn-outline-primary py-1 px-2 btn-preview-doc"
+                                                                    data-url="{{ route('dokumen.preview', ['path' => $cleanCashPath]) }}"
+                                                                    data-ext="{{ pathinfo($cashPayment->file_path, PATHINFO_EXTENSION) }}"
+                                                                    data-label="Bukti Pelunasan Tunai"
+                                                                    title="Lihat Berkas" style="font-size: 11px;">
+                                                                    <i class="mdi mdi-eye me-1"></i>Lihat Berkas
+                                                                </button>
+                                                            @endif
+                                                        </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -3577,27 +3662,44 @@
                                                                         <input type="date" name="installments[{{ $i }}][due_date]" class="form-control form-control-sm" value="{{ $payment->due_date ? \Carbon\Carbon::parse($payment->due_date)->format('Y-m-d') : '' }}" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
                                                                     </td>
                                                                     <td>
-                                                                        <div class="pratanah-file-upload-modern py-1 px-2 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: rgba(0,0,0,0.01);">
-                                                                            <input type="file" name="installments[{{ $i }}][file]" id="file_tahap_{{ $i }}" class="d-none" onchange="handleTerminFileName(this)" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
-                                                                            <label for="file_tahap_{{ $i }}" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
-                                                                                <i class="mdi mdi-file-upload text-muted fs-5"></i>
-                                                                                <span class="text-truncate text-muted file-label-text" style="max-width: 120px;">
-                                                                                    {{ $payment->file_path ? basename($payment->file_path) : 'Pilih Bukti' }}
-                                                                                </span>
-                                                                            </label>
-                                                                            @if($payment->file_path)
-                                                                                @php
-                                                                                    $cleanPath = str_replace('uploads/', '', $payment->file_path);
-                                                                                @endphp
-                                                                                <button type="button" class="btn btn-xs btn-link p-0 ms-1 text-primary btn-preview-doc"
-                                                                                    data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}"
-                                                                                    data-ext="{{ pathinfo($payment->file_path, PATHINFO_EXTENSION) }}"
-                                                                                    data-label="Bukti Pembayaran {{ $payment->term_name }}"
-                                                                                    title="Lihat Berkas">
-                                                                                    <i class="mdi mdi-eye" style="font-size: 14px;"></i>
-                                                                                </button>
-                                                                            @endif
-                                                                        </div>
+                                                                        @if($canUploadPayment)
+                                                                            <div class="pratanah-file-upload-modern py-1 px-2 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: rgba(0,0,0,0.01);">
+                                                                                <input type="file" name="installments[{{ $i }}][file]" id="file_tahap_{{ $i }}" class="d-none" onchange="handleTerminFileName(this)" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
+                                                                                <label for="file_tahap_{{ $i }}" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
+                                                                                    <i class="mdi mdi-file-upload text-muted fs-5"></i>
+                                                                                    <span class="text-truncate text-muted file-label-text" style="max-width: 120px;">
+                                                                                        {{ $payment->file_path ? basename($payment->file_path) : 'Pilih Bukti' }}
+                                                                                    </span>
+                                                                                </label>
+                                                                                @if($payment->file_path)
+                                                                                    @php
+                                                                                        $cleanPath = str_replace('uploads/', '', $payment->file_path);
+                                                                                    @endphp
+                                                                                    <button type="button" class="btn btn-xs btn-link p-0 ms-1 text-primary btn-preview-doc"
+                                                                                        data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}"
+                                                                                        data-ext="{{ pathinfo($payment->file_path, PATHINFO_EXTENSION) }}"
+                                                                                        data-label="Bukti Pembayaran {{ $payment->term_name }}"
+                                                                                        title="Lihat Berkas">
+                                                                                        <i class="mdi mdi-eye" style="font-size: 14px;"></i>
+                                                                                    </button>
+                                                                                @endif
+                                                                            </div>
+                                                                        @else
+                                                                            <div class="d-flex align-items-center gap-1 text-muted" style="font-size: 11px;">
+                                                                                @if($payment->file_path)
+                                                                                    @php $cleanPath = str_replace('uploads/', '', $payment->file_path); @endphp
+                                                                                    <button type="button" class="btn btn-xs btn-outline-primary py-0.5 px-1.5 btn-preview-doc"
+                                                                                        data-url="{{ route('dokumen.preview', ['path' => $cleanPath]) }}"
+                                                                                        data-ext="{{ pathinfo($payment->file_path, PATHINFO_EXTENSION) }}"
+                                                                                        data-label="Bukti {{ $payment->term_name }}"
+                                                                                        title="Lihat Berkas" style="font-size: 10px;">
+                                                                                        <i class="mdi mdi-eye me-1"></i>Lihat Bukti
+                                                                                    </button>
+                                                                                @else
+                                                                                    <span class="text-muted"><i class="mdi mdi-lock-outline text-warning me-1"></i>Admin/Marketing</span>
+                                                                                @endif
+                                                                            </div>
+                                                                        @endif
                                                                     </td>
                                                                     <td>
                                                                         <select name="installments[{{ $i }}][status]" class="form-select form-select-sm termin-status-select" {{ $land && $land->status == 'rejected' ? 'disabled' : '' }}>
@@ -3658,18 +3760,43 @@
                                             <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="saveFase3()">
                                                 <i class="mdi mdi-cash-register me-1"></i> Simpan & Update Data Keuangan
                                             </button>
-                                        @else
+                                        @elseif($canUploadPayment)
                                             @if ($land && $land->status == 'approved')
                                                 <button type="button" class="btn btn-gradient-warning py-2 px-4 shadow-sm" onclick="saveFase3()">
                                                     <i class="mdi mdi-cash-check me-1"></i> Update Keputusan & Transaksi
                                                 </button>
                                             @elseif (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="saveFase3()">
-                                                    <i class="mdi mdi-content-save-all me-1"></i> Simpan Keputusan Sidang
-                                                </button>
+                                                @php
+                                                    $hasPaymentProof = $land && (
+                                                        !empty($land->receipt_file) 
+                                                        || !empty($land->tax_pph_file) 
+                                                        || ($land->payments && $land->payments->whereNotNull('file_path')->count() > 0)
+                                                    );
+                                                @endphp
+                                                <div class="d-flex flex-column align-items-end">
+                                                    <button type="button" id="btnSimpanKeputusanFase3" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="saveFase3()">
+                                                        <i class="mdi mdi-content-save-all me-1"></i> Simpan Keputusan Sidang
+                                                    </button>
+                                                    <small id="warningBuktiPembayaran" class="text-warning mt-1 text-end {{ $hasPaymentProof ? 'd-none' : '' }}" style="font-size:0.75rem;">
+                                                        <i class="mdi mdi-alert-outline me-1"></i>Upload bukti pembayaran terlebih dahulu sebelum menyimpan keputusan.
+                                                    </small>
+                                                </div>
+                                            @endif
+                                        @else
+                                            {{-- Staff Legal / Kepala Legal: hanya bisa input nominal, simpan draft input --}}
+                                            @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
+                                                <div class="d-flex flex-column align-items-end gap-2">
+                                                    <button type="button" class="btn btn-gradient-primary py-2 px-4 shadow-sm" onclick="saveNominalOnly()">
+                                                        <i class="mdi mdi-content-save-edit me-1"></i> Simpan Input Nominal
+                                                    </button>
+                                                    <div class="alert alert-soft-info border border-info-subtle py-1.5 px-3 rounded-2 d-flex align-items-center gap-2 mb-0" style="font-size:0.78rem; background:#eff6ff;">
+                                                        <i class="mdi mdi-information-outline text-info fs-5"></i>
+                                                        <span><strong>Upload Bukti Transfer & Simpan Keputusan Sidang</strong> hanya dapat dilakukan oleh <strong>Admin</strong> atau <strong>Kepala Marketing</strong>.</span>
+                                                    </div>
+                                                </div>
                                             @endif
                                         @endif
-                                        @if($land)
+                                        @if($land && !$isReadOnlyMarketing)
                                             @if($land->land_bank_id)
                                                 <a href="{{ route('properti.edit', $land->land_bank_id) }}" class="btn btn-outline-success py-2 px-3 shadow-sm d-inline-flex align-items-center gap-1" title="Buka data kawasan ini di Pasca Land Bank">
                                                     <i class="mdi mdi-shield-check me-1"></i> Buka di Pasca Land Bank
@@ -3963,9 +4090,37 @@
         let activeStep = 1;
         const isEditMode = {{ $land ? 'true' : 'false' }};
         const currentLandStatus = "{{ $land->status ?? 'fase1' }}";
-        let isLegalSah = {{ $isLegalSah ? 'true' : 'false' }};
-        let isFase2Done = {{ ($isFase2Done ?? false) ? 'true' : 'false' }};
-        let canAccessFase3 = {{ ($canAccessFase3 ?? false) ? 'true' : 'false' }};
+        let isLegalSah = {{ ($isLegalSah || in_array($land?->status, ['fase2', 'fase3', 'fase4', 'approved', 'rejected'])) ? 'true' : 'false' }};
+        let isFase2Done = {{ ($isFase2Done || in_array($land?->status, ['fase2', 'fase3', 'fase4', 'approved', 'rejected'])) ? 'true' : 'false' }};
+        let canAccessFase3 = {{ ($canAccessFase3 || in_array($land?->status, ['fase3', 'fase4', 'approved', 'rejected'])) ? 'true' : 'false' }};
+        const isReadOnlyMarketing = {{ ($isReadOnlyMarketing ?? false) ? 'true' : 'false' }};
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (isReadOnlyMarketing) {
+                ['formFase1', 'formFase2'].forEach(function(formId) {
+                    const form = document.getElementById(formId);
+                    if (form) {
+                        form.querySelectorAll('input:not([type="hidden"]), select, textarea').forEach(function(el) {
+                            el.disabled = true;
+                            el.readOnly = true;
+                        });
+                        form.querySelectorAll('button:not(.btn-action-mobile):not([onclick*="switchStep"]):not([onclick*="previewDokumen"]):not([onclick*="modal"]):not([data-bs-dismiss])').forEach(function(btn) {
+                            btn.style.display = 'none';
+                        });
+                    }
+                });
+            }
+
+            const formFase3 = document.getElementById('formFase3');
+            if (formFase3) {
+                formFase3.addEventListener('change', function(e) {
+                    if (e.target && (e.target.type === 'file' || e.target.id === 'fase3_status_akhir')) {
+                        checkPaymentProofUploaded();
+                    }
+                });
+            }
+            checkPaymentProofUploaded();
+        });
 
         function switchStep(step) {
             // If in create mode and user tries to skip to step 2 or 3, reject
@@ -3979,7 +4134,7 @@
             }
 
             // Cek akses ke Step 2 (Wajib dokumen di Fase 1 Sah)
-            if (step === 2 && !isLegalSah && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
+            if (step === 2 && !isLegalSah && currentLandStatus !== 'fase2' && currentLandStatus !== 'fase3' && currentLandStatus !== 'fase4' && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Fase 2 Terkunci!',
@@ -4006,8 +4161,8 @@
                 return;
             }
 
-            // Cek akses ke Step 3 (Wajib Fase 1 Sah DAN Fase 2 Selesai)
-            if (step === 3 && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
+            // Cek akses ke Step 3 (Wajib Fase 1 Sah DAN Fase 2 Selesai, kecuali status sudah fase3/fase4/approved/rejected)
+            if (step === 3 && !canAccessFase3 && currentLandStatus !== 'fase3' && currentLandStatus !== 'fase4' && currentLandStatus !== 'approved' && currentLandStatus !== 'rejected') {
                 if (!isLegalSah) {
                     Swal.fire({
                         icon: 'warning',
@@ -4106,6 +4261,8 @@
             if (queryStep >= 1 && queryStep <= 3) {
                 switchStep(queryStep);
             } else if (queryStep > 3) {
+                switchStep(3);
+            } else if (isReadOnlyMarketing && canAccessFase3) {
                 switchStep(3);
             } else if (currentLandStatus === 'fase3' || currentLandStatus === 'fase4' || currentLandStatus === 'approved' || currentLandStatus === 'rejected') {
                 switchStep(3);
@@ -4404,6 +4561,51 @@
             }
         }
 
+        async function saveNominalOnly() {
+            try {
+                showLoading('Menyimpan rincian nominal biaya...');
+                let form = document.getElementById('formFase3');
+
+                let disabledInputs = form.querySelectorAll(':disabled');
+                disabledInputs.forEach(el => el.disabled = false);
+                let formData = new FormData(form);
+                disabledInputs.forEach(el => el.disabled = true);
+
+                formData.set('fase', 'fase3');
+                formData.set('status', 'fase3');
+
+                const selectPayMethod = document.getElementById('temp_payment_method');
+                const chosenMethod = selectPayMethod ? selectPayMethod.value : 'cash';
+                formData.set('payment_method_temp', chosenMethod);
+                formData.set('payment_method', chosenMethod);
+
+                const dealPriceInput = document.getElementById('deal_price_input');
+                if (dealPriceInput) {
+                    formData.set('deal_price', dealPriceInput.value);
+                }
+
+                let res = await fetchJSON("{{ route('pra-landbanks.store') }}", formData);
+                Swal.close();
+
+                if (res.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Nominal Berhasil Disimpan!',
+                        text: 'Rincian nominal biaya berhasil diperbarui. Keputusan sidang akhir dan upload bukti pembayaran akan diselesaikan oleh Admin atau Kepala Marketing.',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#9a55ff'
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    showError(res.message);
+                }
+            } catch (err) {
+                Swal.close();
+                showError(err.message);
+            }
+        }
+
         async function saveFase3() {
             try {
                 showLoading('Menyimpan keputusan & progres pembayaran...');
@@ -4441,6 +4643,18 @@
                 const selectStatusAkhir = document.getElementById('fase3_status_akhir');
                 if (selectStatusAkhir) {
                     formData.set('status', selectStatusAkhir.value);
+
+                    // Validasi bukti transfer jika disetujui (Approved)
+                    if (selectStatusAkhir.value === 'approved' && !checkPaymentProofUploaded()) {
+                        Swal.close();
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Bukti Pembayaran Diperlukan',
+                            text: 'Harap unggah bukti transfer / kuitansi pembayaran terlebih dahulu sebelum menyetujui (Approved) keputusan sidang.',
+                            confirmButtonColor: '#9a55ff'
+                        });
+                        return;
+                    }
                 }
                 const dealPriceInput = document.getElementById('deal_price_input');
                 if (dealPriceInput) {
@@ -4815,13 +5029,17 @@
                         <input type="date" name="installments[${i}][due_date]" value="${dateStr}" class="form-control form-control-sm" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
                     </td>
                     <td>
-                        <div class="pratanah-file-upload-modern py-1 px-2 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: rgba(0,0,0,0.01);">
-                            <input type="file" name="installments[${i}][file]" id="file_tahap_${i}" class="d-none" onchange="handleTerminFileName(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
-                            <label for="file_tahap_${i}" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
-                                <i class="mdi mdi-file-upload text-muted fs-5"></i>
-                                <span class="text-truncate text-muted file-label-text" style="max-width: 120px;">Pilih Bukti</span>
-                            </label>
-                        </div>
+                        @if($canUploadPayment)
+                            <div class="pratanah-file-upload-modern py-1 px-2 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: rgba(0,0,0,0.01);">
+                                <input type="file" name="installments[${i}][file]" id="file_tahap_${i}" class="d-none" onchange="handleTerminFileName(this)" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
+                                <label for="file_tahap_${i}" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
+                                    <i class="mdi mdi-file-upload text-muted fs-5"></i>
+                                    <span class="text-truncate text-muted file-label-text" style="max-width: 120px;">Pilih Bukti</span>
+                                </label>
+                            </div>
+                        @else
+                            <span class="text-muted" style="font-size: 11px;"><i class="mdi mdi-lock-outline text-warning me-1"></i>Admin/Marketing</span>
+                        @endif
                     </td>
                     <td>
                         <select name="installments[${i}][status]" class="form-select form-select-sm termin-status-select" {{ $land && ($land->status == 'approved' || $land->status == 'rejected') ? 'disabled' : '' }}>
@@ -4876,13 +5094,17 @@
                     <input type="date" name="installments[${newIndex}][due_date]" value="${dateStr}" class="form-control form-control-sm">
                 </td>
                 <td>
-                    <div class="pratanah-file-upload-modern py-1 px-2 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: rgba(0,0,0,0.01);">
-                        <input type="file" name="installments[${newIndex}][file]" id="file_tahap_${newIndex}" class="d-none" onchange="handleTerminFileName(this)">
-                        <label for="file_tahap_${newIndex}" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
-                            <i class="mdi mdi-file-upload text-muted fs-5"></i>
-                            <span class="text-truncate text-muted file-label-text" style="max-width: 120px;">Pilih Bukti</span>
-                        </label>
-                    </div>
+                    @if($canUploadPayment)
+                        <div class="pratanah-file-upload-modern py-1 px-2 d-flex align-items-center justify-content-between" style="border-width: 1px; border-style: dashed; border-radius: 6px; background: rgba(0,0,0,0.01);">
+                            <input type="file" name="installments[${newIndex}][file]" id="file_tahap_${newIndex}" class="d-none" onchange="handleTerminFileName(this)">
+                            <label for="file_tahap_${newIndex}" class="mb-0 d-flex align-items-center gap-2 cursor-pointer w-100" style="font-size: 11px;">
+                                <i class="mdi mdi-file-upload text-muted fs-5"></i>
+                                <span class="text-truncate text-muted file-label-text" style="max-width: 120px;">Pilih Bukti</span>
+                            </label>
+                        </div>
+                    @else
+                        <span class="text-muted" style="font-size: 11px;"><i class="mdi mdi-lock-outline text-warning me-1"></i>Admin/Marketing</span>
+                    @endif
                 </td>
                 <td>
                     <select name="installments[${newIndex}][status]" class="form-select form-select-sm termin-status-select">
@@ -4959,6 +5181,7 @@
                 labelSpan.classList.remove('text-success', 'fw-bold');
                 labelSpan.classList.add('text-muted');
             }
+            checkPaymentProofUploaded();
         }
 
         function handleSingleFileUpload(input) {
@@ -4967,6 +5190,40 @@
                 labelSpan.textContent = input.files[0].name;
                 labelSpan.classList.add('text-primary', 'fw-bold');
             }
+            checkPaymentProofUploaded();
+        }
+
+        function checkPaymentProofUploaded() {
+            const warningText = document.getElementById('warningBuktiPembayaran');
+            const selectStatusAkhir = document.getElementById('fase3_status_akhir');
+            const isRejected = selectStatusAkhir && selectStatusAkhir.value === 'rejected';
+
+            let hasFile = {{ !empty($hasPaymentProof) ? 'true' : 'false' }};
+
+            if (isRejected) {
+                hasFile = true;
+            }
+
+            const cashFileInput = document.getElementById('cash_payment_file');
+            if (cashFileInput && cashFileInput.files && cashFileInput.files.length > 0) {
+                hasFile = true;
+            }
+
+            const allFileInputs = document.querySelectorAll('#formFase3 input[type="file"]');
+            allFileInputs.forEach(inp => {
+                if (inp.files && inp.files.length > 0) {
+                    hasFile = true;
+                }
+            });
+
+            if (warningText) {
+                if (hasFile) {
+                    warningText.classList.add('d-none');
+                } else {
+                    warningText.classList.remove('d-none');
+                }
+            }
+            return hasFile;
         }
 
         function toggleDocUploadBox(docId) {

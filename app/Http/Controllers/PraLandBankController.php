@@ -525,12 +525,44 @@ public function store(Request $request)
         // pastikan status tidak kosong
         $data['status'] = $data['status'] ?? $record->status;
 
+        $currentUser = auth()->user();
+        $userPositionName = strtolower($currentUser->position->name ?? '');
+        $userPositionId = $currentUser->position_id ?? null;
+        $isAdmin = ($userPositionId == 5) || str_contains($userPositionName, 'admin');
+        $isKepalaMarketing = ($userPositionId == 1) || str_contains($userPositionName, 'kepala marketing') || str_contains($userPositionName, 'kepala pemasaran') || str_contains($userPositionName, 'head of marketing') || (str_contains($userPositionName, 'kepala') && str_contains($userPositionName, 'market'));
+        $canFinalizeSidang = $isAdmin || $isKepalaMarketing;
+
+        // Jika bukan Admin / Kepala Marketing (misal Staff Legal / Kepala Legal), status sidang tidak boleh diubah ke approved atau rejected
+        if (!$canFinalizeSidang && in_array($data['status'] ?? '', ['approved', 'rejected'])) {
+            $data['status'] = $record->status ?? 'fase3';
+        }
+
+        // Jika Admin / Kepala Marketing ingin approve, pastikan bukti pembayaran sudah terunggah
+        if (($data['status'] ?? '') === 'approved') {
+            $hasProof = !empty($record->receipt_file) 
+                || !empty($record->tax_pph_file) 
+                || $request->hasFile('receipt_file') 
+                || $request->hasFile('tax_pph_file') 
+                || $request->hasFile('cash_file') 
+                || ($record->payments()->whereNotNull('file_path')->exists()) 
+                || ($request->hasFile('installments'));
+
+            if (!$hasProof) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Harap upload minimal satu bukti pembayaran (kwitansi bermaterai, bukti bayar PPh, atau bukti transfer) terlebih dahulu sebelum menyetujui keputusan sidang DIAMBIL.'
+                ], 422);
+            }
+        }
+
         if ($data['status'] === 'approved') {
             if ($record->exists && $record->status === 'approved') {
                 $customMessage = 'Progres dan data pembayaran termin tanah berhasil diperbarui!';
             } else {
                 $customMessage = 'Keputusan sidang berhasil disetujui (DIAMBIL)! Data tanah telah masuk ke alur Perizinan & Pengolahan Lahan.';
             }
+        } elseif (!$canFinalizeSidang) {
+            $customMessage = 'Draft rincian biaya berhasil disimpan!';
         } else {
             $customMessage = 'Data keputusan sidang berhasil disimpan!';
         }
@@ -612,6 +644,54 @@ public function store(Request $request)
                         'revision_number'  => $doc->revision_number ?? 0
                     ]);
                 }
+            }
+        }
+
+        // =========================
+        // NOTIFIKASI TAGIHAN KE KEPALA MARKETING
+        // =========================
+        if ($request->fase === 'fase3') {
+            try {
+                $finalDealForNotif = $record->fresh()->deal_price ?? $record->estimated_price ?? 0;
+                $grandTotalForNotif = (float)$finalDealForNotif
+                    + (float)($record->cost_ijb ?? 0)
+                    + (float)($record->cost_tax ?? 0)
+                    + (float)($record->cost_broker ?? 0)
+                    + (float)($record->cost_other ?? 0);
+
+                // Cari semua employee dengan jabatan Kepala Marketing (position_id = 1 atau nama posisi kepala marketing)
+                $kepalaMarketingEmployees = \App\Models\Employee::where('position_id', 1)
+                    ->orWhereHas('position', function ($q) {
+                        $q->whereRaw("LOWER(name) LIKE '%kepala marketing%'")
+                          ->orWhereRaw("LOWER(name) LIKE '%kepala pemasaran%'")
+                          ->orWhereRaw("LOWER(name) LIKE '%head of marketing%'");
+                    })->get();
+
+                $isStatusApproved = ($data['status'] ?? '') === 'approved';
+                $taskTitle = $isStatusApproved
+                    ? 'Tagihan Akuisisi Tanah: ' . $record->land_name . ' (Disetujui)'
+                    : 'Tagihan Pembayaran Lahan: ' . $record->land_name;
+
+                $taskDesc = $isStatusApproved
+                    ? 'Keputusan sidang DIAMBIL telah dikonfirmasi. Tanah: ' . $record->land_name . ' | Harga Deal: Rp ' . number_format($finalDealForNotif, 0, ',', '.') . ' | Grand Total: Rp ' . number_format($grandTotalForNotif, 0, ',', '.') . '. Harap koordinasikan proses pembayaran dan perizinan lahan.'
+                    : 'Rincian nominal biaya legalitas lahan ' . $record->land_name . ' telah diinput oleh tim Legal. Estimasi Grand Total: Rp ' . number_format($grandTotalForNotif, 0, ',', '.') . '. Harap unggah bukti transfer pembayaran dan selesaikan keputusan sidang.';
+
+                foreach ($kepalaMarketingEmployees as $emp) {
+                    // Kirim notifikasi database langsung ke Employee (Lonceng Notifikasi)
+                    try {
+                        $emp->notify(new \App\Notifications\TagihanAkuisisiTanah([
+                            'land_id'         => $record->id,
+                            'land_name'       => $record->land_name,
+                            'deal_price'      => $finalDealForNotif,
+                            'grand_total'     => $grandTotalForNotif,
+                            'pra_landbank_url'=> route('pra-landbank.proses', ['id' => $record->id, 'step' => 3]),
+                        ]));
+                    } catch (\Exception $ne) {
+                        \Log::warning('Gagal kirim database notification ke emp ' . $emp->id . ': ' . $ne->getMessage());
+                    }
+                }
+            } catch (\Exception $notifEx) {
+                \Log::warning('Gagal kirim notifikasi tagihan ke Kepala Marketing: ' . $notifEx->getMessage());
             }
         }
 
