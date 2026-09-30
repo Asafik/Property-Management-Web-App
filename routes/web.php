@@ -274,6 +274,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/properti/verifikasi-legal/{id}', [LandBankController::class, 'verifikasiLegal'])->name('properti.verifikasi');
     Route::post('/properti/{id}/update-company', [PropertyController::class, 'updateCompanyAjax'])->name('properti.updateCompany');
     Route::post('/properti/{id}/update', [PropertyController::class, 'update'])->name('properti.update');
+    Route::get('/properti/{id}/detail', [PropertyController::class, 'show'])->name('properti.show');
     Route::get('/properti/{id}/edit', [PropertyController::class, 'edit'])->name('properti.edit');
     Route::post('/properti/{id}/upload-custom-workflow-doc', [PropertyController::class, 'uploadCustomWorkflowDoc'])->name('properti.upload-custom-workflow-doc');
     Route::post('/properti/{id}/delete-custom-workflow-doc', [PropertyController::class, 'deleteCustomWorkflowDoc'])->name('properti.delete-custom-workflow-doc');

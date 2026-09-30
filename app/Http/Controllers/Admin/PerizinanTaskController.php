@@ -500,6 +500,9 @@ class PerizinanTaskController extends Controller
             $file = $request->file('file_dokumen');
             $filename = 'izin_' . $task->id . '_' . time() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/perizinan_dokumen', $filename);
+            $file->storeAs('perizinan_dokumen', $filename, 'public');
+            @copy($file->getRealPath(), public_path('uploads/perizinan_dokumen/' . $filename));
+            @copy($file->getRealPath(), public_path('perizinan_dokumen/' . $filename));
             $filePath = 'perizinan_dokumen/' . $filename;
             $uploadedFileName = $file->getClientOriginalName();
         }

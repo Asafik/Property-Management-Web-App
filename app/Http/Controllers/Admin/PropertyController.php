@@ -89,6 +89,194 @@ class PropertyController extends Controller
     ));
 }
 
+    /**
+     * Halaman Detail Properti (Pasca Land Bank)
+     * Menampilkan informasi tanah lengkap dengan Berkas Dokumen Resmi Atas Nama PT (hasil Perizinan).
+     */
+    public function show($id)
+    {
+        $item = LandBank::with(['companyProfile', 'units', 'documents.documentType', 'notaris'])->findOrFail($id);
+
+        // Ambil data PraLandbank terkait
+        $pra = \App\Models\PraLandbank::with('notaris')->where('land_bank_id', $item->id)->first()
+            ?? \App\Models\PraLandbank::with('notaris')->where('land_name', $item->name)->first();
+
+        // Sinkronkan notaris jika belum tercatat di land_banks
+        if (empty($item->notaris_id) && $pra && !empty($pra->notaris_id)) {
+            $item->update([
+                'notaris_id'   => $pra->notaris_id,
+                'notaris_name' => $pra->notaris->nama_notaris ?? $pra->notaris_name ?? null,
+            ]);
+            $item->load('notaris');
+        }
+
+        // Ambil data perizinan resmi atas nama PT (hasil alur pengindukan & perizinan)
+        $perizinanDocs = $this->getPerizinanDocumentsForProperty($item);
+
+        // Ringkasan KPI Perizinan
+        $totalIzin = $perizinanDocs->count();
+        $totalTerbit = $perizinanDocs->whereIn('status', ['Terbit', 'Selesai'])->count();
+        $totalProses = $perizinanDocs->whereIn('status', ['Proses', 'Berjalan'])->count();
+        $totalRevisi = $perizinanDocs->whereIn('status', ['Revisi', 'Tertunda'])->count();
+
+        return view('properti.show', compact('item', 'pra', 'perizinanDocs', 'totalIzin', 'totalTerbit', 'totalProses', 'totalRevisi'));
+    }
+
+    /**
+     * Mengambil daftar dokumen perizinan resmi atas nama PT
+     * Disinkronkan dari alur Master Dokumen Perizinan, PerizinanTask, dan custom_workflow_docs.
+     */
+    public function getPerizinanDocumentsForProperty($item)
+    {
+        // 1. Temukan data PraLandbank terkait jika ada
+        $pra = \App\Models\PraLandbank::where('land_bank_id', $item->id)->first()
+            ?? \App\Models\PraLandbank::where('land_name', $item->name)->first();
+
+        $projectId = $pra ? $pra->id : $item->id;
+        $projectName = $pra ? $pra->land_name : $item->name;
+
+        // 2. Master Dokumen Perizinan
+        try {
+            $masterDocs = \App\Models\MasterDokumenPerizinan::orderBy('urutan', 'asc')->get();
+        } catch (\Throwable $e) {
+            $masterDocs = collect();
+        }
+
+        // 3. Workflow Docs dari Lahan (PT)
+        $workflowDocs = $item->custom_workflow_docs;
+        if (empty($workflowDocs) && $pra && !empty($pra->custom_workflow_docs)) {
+            $workflowDocs = $pra->custom_workflow_docs;
+        }
+        if (empty($workflowDocs)) {
+            $workflowDocs = self::getDefaultFase4Templates($pra ?? $item);
+        }
+        if (!is_array($workflowDocs)) {
+            $workflowDocs = [];
+        }
+
+        // 4. Tasks dari PerizinanTask
+        try {
+            $tasks = \App\Models\PerizinanTask::with('employee')
+                ->where(function($q) use ($projectId, $projectName) {
+                    $q->where('proyek_id', $projectId)
+                      ->orWhere('proyek_nama', $projectName);
+                })->get();
+        } catch (\Throwable $e) {
+            $tasks = collect();
+        }
+
+        $docs = collect();
+        $matchedTaskIds = [];
+
+        if ($masterDocs->isNotEmpty()) {
+            foreach ($masterDocs as $idx => $m) {
+                $poinLabel = str_replace('-', ' ', ucwords(strtolower($m->kode_dokumen ?? '')));
+                if (empty($poinLabel) || $poinLabel === 'Poin') {
+                    $poinLabel = 'Poin ' . ($m->urutan ?? ($idx + 7));
+                }
+
+                // Cari data di custom_workflow_docs
+                $matchedWf = null;
+                foreach ($workflowDocs as $cwd) {
+                    if (!empty($cwd['master_id']) && $cwd['master_id'] == $m->id) {
+                        $matchedWf = $cwd;
+                        break;
+                    }
+                    if (!empty($cwd['doc_name'])) {
+                        $cwName = strtolower(trim($cwd['doc_name']));
+                        $mName = strtolower(trim($m->nama_dokumen));
+                        if ($cwName === $mName || str_contains($cwName, $mName) || str_contains($mName, $cwName)) {
+                            $matchedWf = $cwd;
+                            break;
+                        }
+                    }
+                }
+
+                // Cari data di PerizinanTask
+                $matchedTask = $tasks->first(function ($t) use ($m, $matchedTaskIds) {
+                    if (in_array($t->id, $matchedTaskIds)) return false;
+                    if (!empty($t->master_dokumen_id) && $t->master_dokumen_id == $m->id) {
+                        return true;
+                    }
+                    $tName = strtolower(trim($t->nama_tugas ?? ''));
+                    $mName = strtolower(trim($m->nama_dokumen ?? ''));
+                    return $tName === $mName || str_contains($mName, $tName) || str_contains($tName, $mName);
+                });
+
+                $status      = 'Belum';
+                $progress    = 0;
+                $noIzin      = '-';
+                $tanggal     = '-';
+                $fileDokumen = null;
+                $instansi    = $m->instansi ?? '-';
+                $catatan     = $m->deskripsi ?? '';
+                $syaratItems = [];
+                $syaratFiles = [];
+
+                if ($matchedWf) {
+                    if (!empty($matchedWf['file_path'])) $fileDokumen = $matchedWf['file_path'];
+                    if (!empty($matchedWf['doc_number'])) $noIzin = $matchedWf['doc_number'];
+                    if (!empty($matchedWf['doc_date'])) $tanggal = $matchedWf['doc_date'];
+                    if (!empty($matchedWf['instansi'])) $instansi = $matchedWf['instansi'];
+                    if (!empty($matchedWf['notes'])) $catatan = $matchedWf['notes'];
+                    if (!empty($matchedWf['syarat_items'])) $syaratItems = (array) $matchedWf['syarat_items'];
+                    if (!empty($matchedWf['syarat_files'])) $syaratFiles = (array) $matchedWf['syarat_files'];
+                    if (isset($matchedWf['progress'])) $progress = (int) $matchedWf['progress'];
+                    if (!empty($matchedWf['status'])) {
+                        $stLower = strtolower($matchedWf['status']);
+                        if (in_array($stLower, ['terbit', 'selesai'])) $status = 'Terbit';
+                        elseif (in_array($stLower, ['proses', 'berjalan'])) $status = 'Proses';
+                        elseif (in_array($stLower, ['revisi', 'tertunda'])) $status = 'Revisi';
+                    }
+                }
+
+                if ($matchedTask) {
+                    $matchedTaskIds[] = $matchedTask->id;
+                    $progress    = (int) $matchedTask->progress;
+                    if (!empty($matchedTask->nomor_dokumen)) $noIzin = $matchedTask->nomor_dokumen;
+                    if (!empty($matchedTask->tanggal_terbit)) $tanggal = date('d/m/Y', strtotime($matchedTask->tanggal_terbit));
+                    if (!empty($matchedTask->file_dokumen)) $fileDokumen = $matchedTask->file_dokumen;
+                    if (!empty($matchedTask->instansi)) $instansi = $matchedTask->instansi;
+                    if (!empty($matchedTask->catatan)) $catatan = $matchedTask->catatan;
+
+                    if ($matchedTask->status === 'Selesai' || $progress >= 100) {
+                        $status = 'Terbit';
+                    } elseif ($matchedTask->status === 'Terkendala') {
+                        $status = 'Revisi';
+                    } elseif ($matchedTask->status === 'Dalam Proses' || $progress > 0) {
+                        $status = 'Proses';
+                    } else {
+                        $status = 'Belum';
+                    }
+                }
+
+                if ($progress >= 100 && $status !== 'Terbit') {
+                    $status = 'Terbit';
+                }
+
+                $docs->push([
+                    'id'           => $idx + 1,
+                    'master_id'    => $m->id,
+                    'kode_dokumen' => $m->kode_dokumen ?: $poinLabel,
+                    'poin_label'   => $poinLabel,
+                    'nama_izin'    => $m->nama_dokumen,
+                    'nama_dokumen' => $m->nama_dokumen,
+                    'instansi'     => $instansi,
+                    'no_izin'      => $noIzin,
+                    'nomor_dokumen'=> $noIzin,
+                    'tanggal'      => $tanggal,
+                    'status'       => $status,
+                    'progress'     => $progress,
+                    'file_dokumen' => $fileDokumen,
+                    'syarat_items' => $syaratItems,
+                    'syarat_files' => $syaratFiles,
+                    'catatan'      => $catatan,
+                ]);
+            }
+        }
+
+        return $docs;
+    }
 
 public function kavlingindex(Request $request)
 {
@@ -197,28 +385,23 @@ public function edit($id)
     $companies = CompanyProfile::withCount('landBanks')->get();
     $documentTypes = DocumentTypes::orderBy('name')->get();
 
-    // Load workflow perizinan & pengindukan
-    $workflowDocs = $land->custom_workflow_docs;
-    if (empty($workflowDocs) || !is_array($workflowDocs)) {
-        // Ambil dari data PraLandbank jika ada relasi
-        $pra = \App\Models\PraLandbank::where('land_bank_id', $land->id)
-            ->orWhere('land_name', $land->name)
-            ->first();
-        if ($pra && !empty($pra->custom_workflow_docs)) {
-            $workflowDocs = $pra->custom_workflow_docs;
-            // Salin ke land_bank agar tersimpan permanen di Pasca
-            $land->update(['custom_workflow_docs' => $workflowDocs]);
-        } else {
-            $workflowDocs = self::getDefaultFase4Templates($land);
-        }
-    }
+    // Temukan data perizinan terkait
+    $pra = \App\Models\PraLandbank::where('land_bank_id', $land->id)->first()
+        ?? \App\Models\PraLandbank::where('land_name', $land->name)->first();
+    $proyekId = $pra ? $pra->id : $land->id;
 
-    $masterDocuments = \App\Models\MasterDokumenPerizinan::where('is_active', true)
-        ->orderBy('urutan', 'asc')
-        ->orderBy('nama_dokumen', 'asc')
-        ->get();
+    // Ambil data tugas perizinan SHGB Induk (Poin 11: SHGB Induk Selesai an. PT)
+    $shgbTask = \App\Models\PerizinanTask::where(function($q) use ($proyekId, $land) {
+            $q->where('proyek_id', $proyekId)
+              ->orWhere('proyek_nama', $land->name);
+        })
+        ->where(function($q) {
+            $q->where('master_dokumen_id', 11)
+              ->orWhere('nama_tugas', 'like', '%SHGB Induk%');
+        })
+        ->first();
 
-    return view('properti.edit', compact('land', 'companies', 'documentTypes', 'workflowDocs', 'masterDocuments'));
+    return view('properti.edit', compact('land', 'companies', 'documentTypes', 'shgbTask', 'proyekId'));
 }
 
 public function update(Request $request, $id)
@@ -250,7 +433,7 @@ public function update(Request $request, $id)
         $land->update([
             'name' => $request->namaTanah,
             'company_profile_id' => $request->company_profile_id ?? 1,
-            'ownership_status' => $request->statusKepemilikan ?? 'SHM',
+            'ownership_status' => $request->statusKepemilikan ?? 'SHGB',
             'address' => $request->lokasi,
             'village' => $request->kelurahan,
             'district' => $request->kecamatan,
@@ -266,8 +449,10 @@ public function update(Request $request, $id)
             'road_type' => $request->jenisJalan,
             'facility_school' => $request->has('fasSekolah'),
             'facility_hospital' => $request->has('fasRumahSakit'),
-            'facility_mall' => $request->has('fasMall'),
+            'facility_market' => $request->has('fasPasar'),
             'facility_transport' => $request->has('fasTransportasi'),
+            'facility_mall' => $request->has('fasMall'),
+            'facility_bank' => $request->has('fasBank'),
             'description' => $request->deskripsi,
             'legal_status' => $request->statusLegal ?? 'pending',
             'development_status' => $request->statusKavling ?? 'Belum',
@@ -276,6 +461,20 @@ public function update(Request $request, $id)
             'lng' => $request->longitude,
             'fee_document_verification' => $fee_verification,
         ]);
+
+        // HANDLE SHGB INDUK FILE UPLOAD
+        if ($request->hasFile('shgb_induk_file')) {
+            $shgbFile = $request->file('shgb_induk_file');
+            $shgbFilename = 'shgb_induk_' . uniqid() . '.' . $shgbFile->getClientOriginalExtension();
+            $destination = public_path('uploads/landbank/' . $land->id . '/shgb');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+            $shgbFile->move($destination, $shgbFilename);
+            $land->update([
+                'shgb_induk_file' => 'uploads/landbank/' . $land->id . '/shgb/' . $shgbFilename
+            ]);
+        }
 
         // HANDLE DENAH / SITEPLAN UPLOAD
         if ($request->hasFile('denah')) {
@@ -291,7 +490,20 @@ public function update(Request $request, $id)
             ]);
         }
 
-        // HANDLE DOCUMENTS (Hanya untuk dokumen yang belum terverifikasi)
+        if ($request->hasFile('shgb_file')) {
+            $shgbFile = $request->file('shgb_file');
+            $shgbFilename = uniqid() . '.' . $shgbFile->getClientOriginalExtension();
+            $destination = public_path('uploads/landbank/' . $land->id . '/shgb');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+            $shgbFile->move($destination, $shgbFilename);
+            $land->update([
+                'shgb_induk_file' => 'landbank/' . $land->id . '/shgb/' . $shgbFilename
+            ]);
+        }
+
+        // HANDLE DOCUMENTS
         if ($request->has('documents')) {
             $isLandVerified = $land->isFromPraLandbank() || $land->legal_status === 'verified';
 
@@ -304,11 +516,10 @@ public function update(Request $request, $id)
                     ->where('document_type_id', $typeId)
                     ->first();
 
-                // Dokumen hanya dikunci jika SUDAH memiliki file DAN statusnya verified/berasal dari pra landbank
                 $isDocVerified = $existingDoc && !empty($existingDoc->file_path) && (($existingDoc->status === 'verified') || $isLandVerified);
 
-                // Jika dokumen sudah verified dan sudah punya file, kunci agar tidak bisa ditimpa
-                if ($isDocVerified) {
+                // Jika dokumen terkunci dan tidak ada berkas baru diunggah, lewati
+                if ($isDocVerified && empty($doc['file'])) {
                     continue;
                 }
 

@@ -31,8 +31,10 @@ class LandBank extends Model
         'road_type',
         'facility_school',
         'facility_hospital',
-        'facility_mall',
+        'facility_market',
         'facility_transport',
+        'facility_mall',
+        'facility_bank',
         'legal_status',
         'development_status',
         'priority',
@@ -72,7 +74,19 @@ class LandBank extends Model
         'shgb_induk_date',
         'shgb_induk_area',
         'shgb_induk_file',
+        'notaris_id',
+        'notaris_name',
     ];
+
+    public function notary()
+    {
+        return $this->belongsTo(Notaris::class, 'notaris_id');
+    }
+
+    public function notaris()
+    {
+        return $this->belongsTo(Notaris::class, 'notaris_id');
+    }
 
     protected $casts = [
         'custom_workflow_docs' => 'array',

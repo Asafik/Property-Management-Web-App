@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
             CompanyProfileSeeder::class,
             CompanySettingSeeder::class,
             BankSeeder::class,
+            MasterSkemaKprSeeder::class,
             NotarisSeeder::class,
             DocumentTypeSeeder::class,
             MasterDokumenPerizinanSeeder::class,

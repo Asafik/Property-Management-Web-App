@@ -97,20 +97,46 @@
             color: #ffffff !important;
         }
         .btn-fase-1 {
-            background: linear-gradient(135deg, #a855f7, #7e22ce);
+            background: #9a55ff !important;
         }
         .btn-fase-2 {
-            background: linear-gradient(135deg, #0284c7, #0369a1);
+            background: #0284c7 !important;
         }
         .btn-fase-3 {
-            background: linear-gradient(135deg, #10b981, #059669);
+            background: #10b981 !important;
         }
         .btn-fase-perizinan {
-            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            background: #6366f1 !important;
         }
         .btn-fase-delete {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
+            background: #ef4444 !important;
             padding: 0.32rem 0.55rem;
+        }
+
+        /* Solid Color Buttons (No Gradient) */
+        .btn-gradient-primary {
+            background-color: #9a55ff !important;
+            background: #9a55ff !important;
+            border: 1px solid #9a55ff !important;
+            color: #ffffff !important;
+        }
+        .btn-gradient-primary:hover {
+            background-color: #8435f5 !important;
+            background: #8435f5 !important;
+            border-color: #8435f5 !important;
+            color: #ffffff !important;
+        }
+        .btn-gradient-secondary {
+            background-color: #64748b !important;
+            background: #64748b !important;
+            border: 1px solid #64748b !important;
+            color: #ffffff !important;
+        }
+        .btn-gradient-secondary:hover {
+            background-color: #475569 !important;
+            background: #475569 !important;
+            border-color: #475569 !important;
+            color: #ffffff !important;
         }
 
         /* Process Document Pill */
@@ -130,7 +156,7 @@
             font-weight: 700 !important;
             border-radius: 6px !important;
             border: none !important;
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            background: #9a55ff !important;
             color: #ffffff !important;
             box-shadow: 0 2px 4px rgba(154, 85, 255, 0.25);
             transition: all 0.2s ease;
@@ -545,15 +571,7 @@
                                                     </button>
                                                 @endif
 
-                                                {{-- BADGE PASCA LAND BANK --}}
-                                                @if($land->land_bank_id)
-                                                    <a href="{{ route('properti.edit', $land->land_bank_id) }}" 
-                                                        class="badge py-0.5 px-2 text-decoration-none" 
-                                                        style="background-color: #ecfdf5; color: #059669; font-size: 0.73rem; font-weight: 700; border-radius: 4px; border: 1px solid #a7f3d0;" 
-                                                        title="Lahan telah aktif di Pasca Land Bank. Klik untuk melihat berkas pengindukan">
-                                                        <i class="mdi mdi-shield-check me-0.5"></i>Pasca Land Bank
-                                                    </a>
-                                                @endif
+
                                             </div>
                                         </td>
 
@@ -701,14 +719,7 @@
                                                     </button>
                                                 @endif
 
-                                                <!-- Pasca Land Bank Shortcut -->
-                                                @if($land->land_bank_id && !$isKepalaMarketing)
-                                                    <a href="{{ route('properti.edit', $land->land_bank_id) }}" 
-                                                        class="btn-fase-action" style="background: linear-gradient(135deg, #059669, #10b981);" title="Buka di Pasca Land Bank">
-                                                        <i class="mdi mdi-shield-crown"></i>
-                                                        <span>Pasca</span>
-                                                    </a>
-                                                @endif
+
 
                                                 <!-- Delete Button -->
                                                 @if((!$isKeuangan && !$isKepalaMarketing) || $isAdmin)

@@ -140,6 +140,56 @@
             border-bottom: 2px solid #9a55ff !important;
             background: transparent !important;
         }
+
+        /* Action Buttons Styling (Persis Catalog Unit & Kavling) */
+        .action-group {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: none;
+            transition: all 0.2s ease;
+            text-decoration: none !important;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+        .btn-action i {
+            font-size: 0.95rem;
+            line-height: 1;
+        }
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        .btn-action.view,
+        .btn-action-view {
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            color: #ffffff !important;
+        }
+        .btn-action.view:hover,
+        .btn-action-view:hover {
+            background: linear-gradient(135deg, #d279ff, #8b40ff);
+            color: #ffffff !important;
+        }
+        .btn-action.edit,
+        .btn-action-edit {
+            background: linear-gradient(135deg, #36d1dc, #5b86e5);
+            color: #ffffff !important;
+        }
+        .btn-action.edit:hover,
+        .btn-action-edit:hover {
+            background: linear-gradient(135deg, #2bc4cf, #4a77d4);
+            color: #ffffff !important;
+        }
     </style>
 @endpush
 
@@ -423,7 +473,6 @@
                                         <th class="sort-th" onclick="handleSort('acquisition_price')">HARGA BELI <i class="mdi {{ sortIcon('acquisition_price') }}"></i></th>
                                         <th class="sort-th" onclick="handleSort('legal_status')">LEGALITAS <i class="mdi {{ sortIcon('legal_status') }}"></i></th>
                                         <th class="sort-th" onclick="handleSort('development_status')">PEMBANGUNAN <i class="mdi {{ sortIcon('development_status') }}"></i></th>
-                                        <th class="text-center col-dokumen">DOKUMEN</th>
                                         <th class="text-center col-aksi">AKSI</th>
                                     </tr>
                                 </thead>
@@ -435,11 +484,9 @@
                                         <tr class="project-table-row" data-search="{{ $searchKeywords }}">
                                             <td class="col-no text-center fw-bold text-muted">{{ $landBanks->firstItem() + $index }}</td>
                                             <td>
-                                                <a href="javascript:void(0)" 
+                                                <a href="{{ route('properti.show', $item->id) }}" 
                                                    class="fw-bold text-dark text-decoration-none hover-primary d-inline-block" 
-                                                   data-bs-toggle="modal" 
-                                                   data-bs-target="#modalDetail{{ $item->id }}" 
-                                                   title="Klik untuk melihat detail lengkap"
+                                                   title="Klik untuk melihat detail lengkap properti"
                                                    style="font-size: 0.88rem; transition: color 0.15s ease;">
                                                     {{ $item->name }}
                                                 </a>
@@ -548,32 +595,24 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="text-center">
-                                                <button type="button" class="document-trigger" data-bs-toggle="modal"
-                                                    data-bs-target="#modalDokumen{{ $item->id }}" title="Lihat Dokumen">
-                                                    <i class="mdi mdi-file-document-multiple-outline"></i>{{ $item->merged_documents->count() }}
-                                                </button>
-                                            </td>
                                             <td class="text-center" style="white-space: nowrap;">
-                                                <button type="button" 
-                                                    class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1.5 shadow-none" 
-                                                    data-bs-toggle="modal" 
-                                                    data-bs-target="#modalDetail{{ $item->id }}" 
-                                                    title="Lihat Detail Properti"
-                                                    style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
-                                                    <i class="mdi mdi-eye"></i> Detail
-                                                </button>
-                                                <a href="{{ route('properti.edit', $item->id) }}" 
-                                                    class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 px-2.5 py-1.5 ms-1 shadow-sm text-decoration-none fw-semibold" 
-                                                    title="Edit Properti & Dokumen Pengindukan"
-                                                    style="border-radius: 6px; font-size: 0.78rem;">
-                                                    <i class="mdi mdi-pencil"></i> Edit
-                                                </a>
+                                                <div class="action-group">
+                                                    <a href="{{ route('properti.show', $item->id) }}" 
+                                                        class="btn-action view" 
+                                                        title="Lihat Detail Properti">
+                                                        <i class="mdi mdi-eye"></i>
+                                                    </a>
+                                                    <a href="{{ route('properti.edit', $item->id) }}" 
+                                                        class="btn-action edit" 
+                                                        title="Edit Properti & Dokumen Pengindukan">
+                                                        <i class="mdi mdi-pencil"></i>
+                                                    </a>
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="10" class="text-center text-muted py-4">
+                                            <td colspan="9" class="text-center text-muted py-4">
                                                 <i class="mdi mdi-information-outline me-2"></i> Belum ada data properti
                                             </td>
                                         </tr>
@@ -1152,20 +1191,28 @@
                                                 </h6>
                                                 <table class="table table-sm table-borderless mb-0">
                                                     <tr>
-                                                        <td class="text-muted" width="40%"><i class="mdi mdi-school-outline me-1 text-primary"></i> Sekolah / Pendidikan</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->facility_school ?? '-' }}</td>
+                                                        <td class="text-muted" width="45%"><i class="mdi mdi-school-outline me-1 text-primary"></i> Dekat Sekolah</td>
+                                                        <td class="fw-semibold text-dark">: {!! $item->facility_school ? '<span class="badge bg-success-subtle text-success border border-success-subtle py-0.5 px-1.5"><i class="mdi mdi-check me-0.5"></i>Tersedia</span>' : '<span class="text-muted">-</span>' !!}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="text-muted"><i class="mdi mdi-hospital-building me-1 text-danger"></i> Rumah Sakit / Faskes</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->facility_hospital ?? '-' }}</td>
+                                                        <td class="text-muted"><i class="mdi mdi-hospital-building me-1 text-danger"></i> Rumah Sakit</td>
+                                                        <td class="fw-semibold text-dark">: {!! $item->facility_hospital ? '<span class="badge bg-success-subtle text-success border border-success-subtle py-0.5 px-1.5"><i class="mdi mdi-check me-0.5"></i>Tersedia</span>' : '<span class="text-muted">-</span>' !!}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="text-muted"><i class="mdi mdi-cart-outline me-1 text-success"></i> Mall / Pasar / Swalayan</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->facility_mall ?? '-' }}</td>
+                                                        <td class="text-muted"><i class="mdi mdi-store-outline me-1 text-warning"></i> Pasar</td>
+                                                        <td class="fw-semibold text-dark">: {!! $item->facility_market ? '<span class="badge bg-success-subtle text-success border border-success-subtle py-0.5 px-1.5"><i class="mdi mdi-check me-0.5"></i>Tersedia</span>' : '<span class="text-muted">-</span>' !!}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="text-muted"><i class="mdi mdi-bus me-1 text-info"></i> Akses Transportasi</td>
-                                                        <td class="fw-semibold text-dark">: {{ $item->facility_transport ?? '-' }}</td>
+                                                        <td class="text-muted"><i class="mdi mdi-bus me-1 text-info"></i> Transportasi Umum</td>
+                                                        <td class="fw-semibold text-dark">: {!! $item->facility_transport ? '<span class="badge bg-success-subtle text-success border border-success-subtle py-0.5 px-1.5"><i class="mdi mdi-check me-0.5"></i>Tersedia</span>' : '<span class="text-muted">-</span>' !!}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted"><i class="mdi mdi-cart-outline me-1 text-success"></i> Mall / Swalayan</td>
+                                                        <td class="fw-semibold text-dark">: {!! $item->facility_mall ? '<span class="badge bg-success-subtle text-success border border-success-subtle py-0.5 px-1.5"><i class="mdi mdi-check me-0.5"></i>Tersedia</span>' : '<span class="text-muted">-</span>' !!}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-muted"><i class="mdi mdi-bank-outline me-1 text-secondary"></i> Bank / ATM</td>
+                                                        <td class="fw-semibold text-dark">: {!! $item->facility_bank ? '<span class="badge bg-success-subtle text-success border border-success-subtle py-0.5 px-1.5"><i class="mdi mdi-check me-0.5"></i>Tersedia</span>' : '<span class="text-muted">-</span>' !!}</td>
                                                     </tr>
                                                 </table>
 

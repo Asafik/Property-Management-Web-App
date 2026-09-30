@@ -930,11 +930,11 @@
                                     </div>
 
                                     <div class="properti-checkbox-wrapper">
-                                        <input type="checkbox" class="properti-checkbox-input" name="fasMall"
-                                            id="fasMall" value="1" {{ old('fasMall') ? 'checked' : '' }}>
-                                        <label class="properti-checkbox-label" for="fasMall">
+                                        <input type="checkbox" class="properti-checkbox-input" name="fasPasar"
+                                            id="fasPasar" value="1" {{ old('fasPasar') ? 'checked' : '' }}>
+                                        <label class="properti-checkbox-label" for="fasPasar">
                                             <i class="fas fa-check-circle properti-check-icon"></i>
-                                            <span class="properti-check-text">Mall / Swalayan</span>
+                                            <span class="properti-check-text">Pasar</span>
                                         </label>
                                     </div>
 
@@ -944,6 +944,24 @@
                                         <label class="properti-checkbox-label" for="fasTransportasi">
                                             <i class="fas fa-check-circle properti-check-icon"></i>
                                             <span class="properti-check-text">Transportasi Umum</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="properti-checkbox-wrapper">
+                                        <input type="checkbox" class="properti-checkbox-input" name="fasMall"
+                                            id="fasMall" value="1" {{ old('fasMall') ? 'checked' : '' }}>
+                                        <label class="properti-checkbox-label" for="fasMall">
+                                            <i class="fas fa-check-circle properti-check-icon"></i>
+                                            <span class="properti-check-text">Mall / Swalayan</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="properti-checkbox-wrapper">
+                                        <input type="checkbox" class="properti-checkbox-input" name="fasBank"
+                                            id="fasBank" value="1" {{ old('fasBank') ? 'checked' : '' }}>
+                                        <label class="properti-checkbox-label" for="fasBank">
+                                            <i class="fas fa-check-circle properti-check-icon"></i>
+                                            <span class="properti-check-text">Bank / ATM</span>
                                         </label>
                                     </div>
                                 </div>

@@ -76,6 +76,11 @@
         text-align: center;
         white-space: nowrap !important;
     }
+    .table-perizinan .col-kode {
+        width: 100px;
+        text-align: center;
+        white-space: nowrap !important;
+    }
     .table-perizinan .col-nama {
         min-width: 250px;
     }
@@ -141,36 +146,61 @@
         color: #0f172a !important;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
     }
+
+    /* Responsive Improvements for Mobile/Tablet */
+    @media (max-width: 767.98px) {
+        .page-title-show {
+            font-size: 1.25rem !important;
+        }
+        .header-top-show {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 0.85rem !important;
+        }
+        .header-top-show .header-actions {
+            width: 100% !important;
+        }
+        .header-top-show .header-actions .btn {
+            flex: 1 1 0 !important;
+            justify-content: center !important;
+        }
+        .filter-search-box {
+            min-width: 100% !important;
+            max-width: 100% !important;
+        }
+        .filter-status-box {
+            width: 100% !important;
+        }
+        .filter-action-btns {
+            width: 100% !important;
+            justify-content: flex-end !important;
+        }
+    }
 </style>
 
 <div class="container-fluid px-2 px-md-4 py-3">
 
     <!-- Top Navigation & Page Title -->
-    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4 header-top-show">
         <div>
-            <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+            <h2 class="text-dark mb-1 fw-bold page-title-show" style="font-size: 1.55rem; letter-spacing: -0.02em;">
                 Perizinan Kawasan: {{ $project['nama'] }}
             </h2>
             <p class="text-muted mb-0" style="font-size: 0.88rem;">
                 {{ $project['pt'] }} &bull; {{ $project['lokasi'] }} &bull; Luas: {{ $project['luas'] }} ({{ $project['ownership_status'] }})
             </p>
         </div>
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 header-actions">
             @if(!empty($canManage))
                 @if(!empty($project['is_finalized_to_pasca']) && !empty($project['land_bank_id']))
-                    <a href="{{ route('properti.edit', $project['land_bank_id']) }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-semibold" style="background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; font-size: 0.85rem;" title="Buka data kawasan ini di Pasca Land Bank">
+                    <a href="{{ route('properti.edit', $project['land_bank_id']) }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-semibold" style="background: #10b981; border: 1px solid #10b981; border-radius: 8px; font-size: 0.85rem;" title="Buka data kawasan ini di Pasca Land Bank">
                         <i class="mdi mdi-shield-check" style="font-size: 1.1rem; line-height: 1;"></i>
                         <span>Buka di Pasca Land Bank</span>
                     </a>
-                @else
-                    <button type="button" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-semibold" onclick="confirmFinalizeToPasca({{ $project['id'] }}, '{{ addslashes($project['nama']) }}', {{ $projectProgress ?? 0 }}, {{ $totalTerbit ?? 0 }}, {{ $totalIzin ?? 0 }})" style="background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; font-size: 0.85rem;" title="Alihkan kawasan ini ke Pasca Land Bank untuk pengolahan lahan & kavling">
-                        <i class="mdi mdi-shield-crown" style="font-size: 1.1rem; line-height: 1;"></i>
-                        <span>Finalisasi ke Pasca Land Bank</span>
-                    </button>
                 @endif
             @endif
-            <a href="{{ route('perizinan.index') }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm btn-kembali-proyek" style="border: 1px solid #cbd5e1; background-color: #ffffff; color: #1e293b; border-radius: 8px; font-weight: 600; font-size: 0.85rem; transition: all 0.2s ease;">
-                <i class="mdi mdi-arrow-left text-primary" style="font-size: 1.1rem; line-height: 1;"></i>
+            <a href="{{ route('perizinan.index') }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-bold" style="border: 1px solid #64748b; background-color: #64748b; border-radius: 8px; font-size: 0.85rem; transition: all 0.2s ease;">
+                <i class="mdi mdi-arrow-left text-white" style="font-size: 1.1rem; line-height: 1;"></i>
                 <span>Kembali</span>
             </a>
         </div>
@@ -258,12 +288,6 @@
                         </div>
                         <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Rincian Dokumen Perizinan Kawasan</span>
                     </div>
-                    @if(!empty($canManage))
-                    <a href="{{ route('perizinan.dokumen.kelola', ['id' => $project['id'], 'item_id' => 'baru']) }}" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1 shadow-sm">
-                        <i class="mdi mdi-plus-circle" style="font-size: 1rem;"></i>
-                        <span>Tambah Dokumen Izin</span>
-                    </a>
-                    @endif
                 </div>
 
                 <div class="card-body" style="padding: 0.75rem 1.25rem 1.15rem 1.25rem !important;">
@@ -273,23 +297,23 @@
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
                                 <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                                     <!-- Search Input -->
-                                    <div style="min-width: 240px; max-width: 360px; flex: 1;">
+                                    <div class="filter-search-box" style="min-width: 240px; max-width: 360px; flex: 1;">
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="search" id="liveSearchInput"
-                                                placeholder="Cari nama izin, instansi, nomor SK..."
+                                                placeholder="Cari kode, nama izin, instansi, nomor SK..."
                                                 value="{{ request('search') }}"
                                                 onkeyup="applyLiveSearch(this.value)"
                                                 style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
-                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                            <button class="btn d-flex align-items-center justify-content-center px-3 text-white" 
                                                 type="submit" title="Cari"
-                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none; background: #9a55ff; border: 1px solid #9a55ff;">
                                                 <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
                                             </button>
                                         </div>
                                     </div>
 
                                     <!-- Filter Status -->
-                                    <div style="width: 160px;">
+                                    <div class="filter-status-box" style="width: 160px;">
                                         <select class="form-control" name="status" id="statusFilterSelect" onchange="document.getElementById('filterForm').submit()">
                                             <option value="all">Semua Status</option>
                                             <option value="Terbit" {{ request('status') == 'Terbit' ? 'selected' : '' }}>Terbit</option>
@@ -300,11 +324,11 @@
                                 </div>
 
                                 <!-- Reset Button -->
-                                <div class="d-flex align-items-center gap-2 ms-auto">
-                                    <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Terapkan Filter">
+                                <div class="d-flex align-items-center gap-2 ms-auto filter-action-btns">
+                                    <button type="submit" class="btn btn-icon-only text-white" title="Terapkan Filter" style="background: #9a55ff; border: 1px solid #9a55ff; border-radius: 6px;">
                                         <i class="mdi mdi-filter"></i>
                                     </button>
-                                    <a href="{{ route('perizinan.show', $project['id']) }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset Filter">
+                                    <a href="{{ route('perizinan.show', $project['id']) }}" class="btn btn-secondary btn-icon-only" title="Reset Filter" style="border-radius: 6px;">
                                         <i class="mdi mdi-refresh"></i>
                                     </a>
                                 </div>
@@ -318,6 +342,7 @@
                             <thead>
                                 <tr>
                                     <th class="col-no">No</th>
+                                    <th class="col-kode">Kode</th>
                                     <th class="col-nama">Nama Perizinan & Instansi</th>
                                     <th class="col-no-sk">Nomor Izin / SK</th>
                                     <th class="col-tgl">Target / Tgl</th>
@@ -340,8 +365,13 @@
                                             $pColor = '#e11d48'; // Rose
                                         }
                                     @endphp
-                                    <tr class="permit-table-row" id="row_permit_{{ $item['id'] }}" data-search="{{ strtolower($item['nama_izin'] . ' ' . $item['instansi'] . ' ' . $item['no_izin']) }}">
+                                    <tr class="permit-table-row" id="row_permit_{{ $item['id'] }}" data-search="{{ strtolower(($item['kode_dokumen'] ?? '') . ' ' . $item['nama_izin'] . ' ' . $item['instansi'] . ' ' . $item['no_izin']) }}">
                                         <td class="col-no fw-bold text-center">{{ $loop->iteration }}</td>
+                                        <td class="col-kode text-center">
+                                            <span class="badge bg-light text-dark fw-bold px-2 py-1 border font-monospace" style="font-size: 0.78rem; letter-spacing: 0.4px;">
+                                                {{ $item['kode_dokumen'] ?? '-' }}
+                                            </span>
+                                        </td>
                                         <td class="col-nama">
                                             <div class="fw-bold text-dark" style="line-height: 1.35; font-size: 0.85rem;">
                                                 {{ $item['nama_izin'] }}
@@ -386,8 +416,8 @@
                                         <td class="col-aksi text-center">
                                             <!-- Tombol Aksi: Kelola Dokumen (Halaman Sendiri) -->
                                             <a href="{{ route('perizinan.dokumen.kelola', ['id' => $project['id'], 'item_id' => $item['id']]) }}" 
-                                               class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center py-1 px-2.5 fw-semibold shadow-sm" 
-                                               title="Kelola Dokumen & Persyaratan" style="font-size: 0.76rem; border-radius: 5px;">
+                                               class="btn btn-sm d-inline-flex align-items-center py-1 px-2.5 fw-semibold shadow-sm text-white" 
+                                               title="Kelola Dokumen & Persyaratan" style="font-size: 0.76rem; border-radius: 5px; background: #9a55ff; border: 1px solid #9a55ff;">
                                                 <i class="mdi mdi-file-document-edit-outline" style="margin-right: 6px !important; font-size: 0.85rem;"></i>
                                                 <span>Kelola</span>
                                             </a>
@@ -395,7 +425,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted py-4">
+                                        <td colspan="8" class="text-center text-muted py-4">
                                             <i class="mdi mdi-file-question-outline me-2" style="font-size: 1.5rem;"></i>
                                             @if(!empty($isStaffLegal) && empty($canManage))
                                                 Belum ada dokumen perizinan yang ditugaskan kepada Anda pada proyek kawasan ini.

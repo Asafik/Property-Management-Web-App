@@ -218,24 +218,80 @@
         }
 
         .btn-gradient-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+            background-color: #9a55ff !important;
+            background: #9a55ff !important;
+            border: 1px solid #9a55ff !important;
+            color: #ffffff !important;
+        }
+
+        .btn-gradient-primary:hover {
+            background-color: #8435f5 !important;
+            background: #8435f5 !important;
+            border-color: #8435f5 !important;
             color: #ffffff !important;
         }
 
         .btn-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
+            background-color: #16a34a !important;
+            background: #16a34a !important;
+            border: 1px solid #16a34a !important;
+            color: #ffffff !important;
+        }
+
+        .btn-gradient-success:hover {
+            background-color: #15803d !important;
+            background: #15803d !important;
+            border-color: #15803d !important;
+            color: #ffffff !important;
+        }
+
+        .btn-gradient-warning {
+            background-color: #d97706 !important;
+            background: #d97706 !important;
+            border: 1px solid #d97706 !important;
+            color: #ffffff !important;
+        }
+
+        .btn-gradient-warning:hover {
+            background-color: #b45309 !important;
+            background: #b45309 !important;
+            border-color: #b45309 !important;
+            color: #ffffff !important;
+        }
+
+        .btn-gradient-danger {
+            background-color: #dc2626 !important;
+            background: #dc2626 !important;
+            border: 1px solid #dc2626 !important;
+            color: #ffffff !important;
+        }
+
+        .btn-gradient-danger:hover {
+            background-color: #b91c1c !important;
+            background: #b91c1c !important;
+            border-color: #b91c1c !important;
             color: #ffffff !important;
         }
 
         .btn-gradient-secondary {
-            background: #6c757d !important;
+            background-color: #64748b !important;
+            background: #64748b !important;
+            border: 1px solid #64748b !important;
+            color: #ffffff !important;
+        }
+
+        .btn-gradient-secondary:hover {
+            background-color: #475569 !important;
+            background: #475569 !important;
+            border-color: #475569 !important;
             color: #ffffff !important;
         }
 
         .btn-outline-purple {
-            background: #fbf9ff !important;
+            background-color: #ffffff !important;
+            background: #ffffff !important;
             border: 1.5px solid #9a55ff !important;
-            color: #7e22ce !important;
+            color: #9a55ff !important;
             border-radius: 8px;
             padding: 0.55rem 1.15rem;
             font-size: 0.85rem;
@@ -248,6 +304,7 @@
         }
 
         .btn-outline-purple:hover {
+            background-color: #9a55ff !important;
             background: #9a55ff !important;
             color: #ffffff !important;
             border-color: #9a55ff !important;
@@ -256,8 +313,9 @@
         }
 
         .btn-fase4-add {
-            background: linear-gradient(135deg, #9a55ff 0%, #7e22ce 100%) !important;
-            border: 1px solid #7e22ce !important;
+            background-color: #9a55ff !important;
+            background: #9a55ff !important;
+            border: 1px solid #9a55ff !important;
             color: #ffffff !important;
             border-radius: 8px;
             padding: 0.55rem 1.15rem;
@@ -266,14 +324,41 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            box-shadow: 0 3px 8px rgba(154, 85, 255, 0.35);
+            box-shadow: 0 2px 6px rgba(154, 85, 255, 0.2);
             transition: all 0.25s ease;
         }
 
         .btn-fase4-add:hover {
-            background: linear-gradient(135deg, #8b3cf6 0%, #6b18b5 100%) !important;
+            background-color: #8435f5 !important;
+            background: #8435f5 !important;
+            border-color: #8435f5 !important;
             color: #ffffff !important;
-            box-shadow: 0 5px 14px rgba(154, 85, 255, 0.45) !important;
+            box-shadow: 0 4px 10px rgba(154, 85, 255, 0.3) !important;
+            transform: translateY(-1px);
+        }
+
+        .btn-fase4-master {
+            background-color: #f3e8ff !important;
+            background: #f3e8ff !important;
+            border: 1.5px solid #9a55ff !important;
+            color: #9a55ff !important;
+            border-radius: 8px;
+            padding: 0.55rem 1.15rem;
+            font-size: 0.84rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 6px rgba(154, 85, 255, 0.18);
+            transition: all 0.25s ease;
+        }
+
+        .btn-fase4-master:hover {
+            background-color: #9a55ff !important;
+            background: #9a55ff !important;
+            color: #ffffff !important;
+            border-color: #9a55ff !important;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3) !important;
             transform: translateY(-1px);
         }
 
@@ -1477,14 +1562,15 @@
         }
 
         .btn-master-submit {
-            background: linear-gradient(135deg, #9a55ff 0%, #7e22ce 100%) !important;
-            border: none !important;
+            background-color: #9a55ff !important;
+            background: #9a55ff !important;
+            border: 1px solid #9a55ff !important;
             color: #ffffff !important;
             font-size: 0.88rem !important;
             font-weight: 700 !important;
             padding: 0.58rem 1.55rem !important;
             border-radius: 8px !important;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3) !important;
+            box-shadow: 0 2px 8px rgba(154, 85, 255, 0.25) !important;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
             display: inline-flex !important;
             align-items: center !important;
@@ -1492,7 +1578,10 @@
         }
 
         .btn-master-submit:hover:not(:disabled) {
-            box-shadow: 0 6px 22px rgba(154, 85, 255, 0.5) !important;
+            background-color: #8435f5 !important;
+            background: #8435f5 !important;
+            border-color: #8435f5 !important;
+            box-shadow: 0 4px 14px rgba(154, 85, 255, 0.35) !important;
             transform: translateY(-2px);
             color: #ffffff !important;
         }
@@ -3240,8 +3329,8 @@
                                                 </small>
                                             </div>
                                             @if(Route::has('master.biaya-legalitas.index'))
-                                                <a href="{{ route('master.biaya-legalitas.index') }}" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2 d-inline-flex align-items-center gap-1" style="font-size: 0.78rem; text-decoration: none; border-radius: 6px;">
-                                                    <i class="mdi mdi-cog-outline"></i>
+                                                <a href="{{ route('master.biaya-legalitas.index') }}" target="_blank" class="btn btn-sm text-white py-1.5 px-3 d-inline-flex align-items-center gap-1 shadow-sm" style="background-color: #9a55ff; font-size: 0.78rem; font-weight: 600; text-decoration: none; border-radius: 6px; border: 1px solid #9a55ff;" title="Buka Master Data Biaya Legalitas">
+                                                    <i class="mdi mdi-cog-outline me-1"></i>
                                                     <span>Master Data Biaya</span>
                                                 </a>
                                             @endif
@@ -3618,7 +3707,7 @@
                                                     <small class="text-muted">Nominal, tanggal jatuh tempo, dan bukti pembayaran dapat dikelola per tahap.</small>
                                                 </div>
                                                 @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
-                                                    <button type="button" class="btn btn-sm btn-gradient-primary py-1 px-3 shadow-sm d-inline-flex align-items-center gap-1 text-white text-nowrap flex-shrink-0" onclick="addCustomInstallmentRow()" style="font-size: 0.8rem; font-weight: 600; border-radius: 6px; white-space: nowrap;">
+                                                    <button type="button" class="btn btn-sm py-1.5 px-3 shadow-sm d-inline-flex align-items-center gap-1 text-white text-nowrap flex-shrink-0" onclick="addCustomInstallmentRow()" style="background-color: #9a55ff; font-size: 0.8rem; font-weight: 600; border-radius: 6px; border: 1px solid #9a55ff; white-space: nowrap;">
                                                         <i class="mdi mdi-plus-circle me-1" style="font-size: 1rem;"></i> Tambah Tahap Pembayaran
                                                     </button>
                                                 @endif
@@ -3757,12 +3846,12 @@
                                             </button>
                                         @endif
                                         @if ($isKeuangan)
-                                            <button type="button" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="saveFase3()">
+                                            <button type="button" class="btn py-2 px-4 shadow-sm text-white" onclick="saveFase3()" style="background-color: #16a34a; border: none; font-size: 0.88rem; font-weight: 600; border-radius: 8px;">
                                                 <i class="mdi mdi-cash-register me-1"></i> Simpan & Update Data Keuangan
                                             </button>
                                         @elseif($canUploadPayment)
                                             @if ($land && $land->status == 'approved')
-                                                <button type="button" class="btn btn-gradient-warning py-2 px-4 shadow-sm" onclick="saveFase3()">
+                                                <button type="button" class="btn py-2 px-4 shadow-sm text-white" onclick="saveFase3()" style="background-color: #d97706; border: none; font-size: 0.88rem; font-weight: 600; border-radius: 8px;">
                                                     <i class="mdi mdi-cash-check me-1"></i> Update Keputusan & Transaksi
                                                 </button>
                                             @elseif (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
@@ -3774,7 +3863,7 @@
                                                     );
                                                 @endphp
                                                 <div class="d-flex flex-column align-items-end">
-                                                    <button type="button" id="btnSimpanKeputusanFase3" class="btn btn-gradient-success py-2 px-4 shadow-sm" onclick="saveFase3()">
+                                                    <button type="button" id="btnSimpanKeputusanFase3" class="btn py-2 px-4 shadow-sm text-white" onclick="saveFase3()" style="background-color: #16a34a; border: none; font-size: 0.88rem; font-weight: 600; border-radius: 8px;">
                                                         <i class="mdi mdi-content-save-all me-1"></i> Simpan Keputusan Sidang
                                                     </button>
                                                     <small id="warningBuktiPembayaran" class="text-warning mt-1 text-end {{ $hasPaymentProof ? 'd-none' : '' }}" style="font-size:0.75rem;">
@@ -3786,7 +3875,7 @@
                                             {{-- Staff Legal / Kepala Legal: hanya bisa input nominal, simpan draft input --}}
                                             @if (!$land || ($land && $land->status != 'approved' && $land->status != 'rejected'))
                                                 <div class="d-flex flex-column align-items-end gap-2">
-                                                    <button type="button" class="btn btn-gradient-primary py-2 px-4 shadow-sm" onclick="saveNominalOnly()">
+                                                    <button type="button" class="btn py-2 px-4 shadow-sm text-white" onclick="saveNominalOnly()" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.88rem; font-weight: 600; border-radius: 8px;">
                                                         <i class="mdi mdi-content-save-edit me-1"></i> Simpan Input Nominal
                                                     </button>
                                                     <div class="alert alert-soft-info border border-info-subtle py-1.5 px-3 rounded-2 d-flex align-items-center gap-2 mb-0" style="font-size:0.78rem; background:#eff6ff;">
@@ -3797,13 +3886,9 @@
                                             @endif
                                         @endif
                                         @if($land && !$isReadOnlyMarketing)
-                                            @if($land->land_bank_id)
-                                                <a href="{{ route('properti.edit', $land->land_bank_id) }}" class="btn btn-outline-success py-2 px-3 shadow-sm d-inline-flex align-items-center gap-1" title="Buka data kawasan ini di Pasca Land Bank">
-                                                    <i class="mdi mdi-shield-check me-1"></i> Buka di Pasca Land Bank
-                                                </a>
-                                            @endif
+
                                             @if($land->status === 'approved' || !empty($land->deal_price) || $land->status === 'fase3')
-                                                <a href="{{ route('perizinan.show', $land->id) }}" class="btn btn-gradient-primary py-2 px-3 shadow-sm d-inline-flex align-items-center gap-1" title="Lanjut ke modul Perizinan Proyek untuk pengurusan izin kawasan">
+                                                <a href="{{ route('perizinan.show', $land->id) }}" class="btn py-2 px-3 shadow-sm d-inline-flex align-items-center gap-1 text-white" title="Lanjut ke modul Perizinan Proyek untuk pengurusan izin kawasan" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.88rem; font-weight: 600; border-radius: 8px;">
                                                     <i class="mdi mdi-file-certificate-outline me-1"></i> Lanjut ke Perizinan Proyek
                                                 </a>
                                             @endif

@@ -272,7 +272,7 @@ public function store(Request $request)
             } else {
                 $data['status'] = $request->status ?? ($record->status ?? 'fase3'); // approved, rejected, or pending (fase3)
             }
-            
+
             // Map Fase 3 fields
             if ($request->filled('prioritas')) {
                 $data['priority'] = $request->prioritas;
@@ -539,12 +539,12 @@ public function store(Request $request)
 
         // Jika Admin / Kepala Marketing ingin approve, pastikan bukti pembayaran sudah terunggah
         if (($data['status'] ?? '') === 'approved') {
-            $hasProof = !empty($record->receipt_file) 
-                || !empty($record->tax_pph_file) 
-                || $request->hasFile('receipt_file') 
-                || $request->hasFile('tax_pph_file') 
-                || $request->hasFile('cash_file') 
-                || ($record->payments()->whereNotNull('file_path')->exists()) 
+            $hasProof = !empty($record->receipt_file)
+                || !empty($record->tax_pph_file)
+                || $request->hasFile('receipt_file')
+                || $request->hasFile('tax_pph_file')
+                || $request->hasFile('cash_file')
+                || ($record->payments()->whereNotNull('file_path')->exists())
                 || ($request->hasFile('installments'));
 
             if (!$hasProof) {
@@ -572,80 +572,8 @@ public function store(Request $request)
         // =========================
         // AUTO PINDAH KE LANDBANK (PASCA LAND BANK)
         // =========================
-        if ($data['status'] === 'approved') {
-            $finalDealPrice = $data['deal_price'] ?? $data['estimated_price'] ?? $record->deal_price ?? $record->estimated_price;
-            $finalGrandTotal = (float)$finalDealPrice 
-                + (float)($data['cost_ijb'] ?? $record->cost_ijb ?? 0)
-                + (float)($data['cost_tax'] ?? $record->cost_tax ?? 0)
-                + (float)($data['cost_broker'] ?? $record->cost_broker ?? 0)
-                + (float)($data['cost_other'] ?? $record->cost_other ?? 0);
+        // Dinonaktifkan sesuai SOP bisnis: Ketika di Pra Fase 3 Deal, lahan TIDAK boleh masuk ke Pasca Land Bank dulu.
 
-            $landBank = null;
-            if ($record->land_bank_id) {
-                $landBank = \App\Models\LandBank::find($record->land_bank_id);
-            }
-            if (!$landBank) {
-                $landBank = \App\Models\LandBank::where('name', $record->land_name)->first();
-            }
-            if (!$landBank) {
-                $landBank = new \App\Models\LandBank(['name' => $record->land_name]);
-            }
-
-            $companyId = $landBank->company_profile_id ?? (\App\Models\CompanyProfile::first()->id ?? null);
-
-            $landBank->fill([
-                'name'              => $record->land_name,
-                'company_profile_id'=> $companyId,
-                'area'              => $record->area,
-                'remaining_area'    => $landBank->exists ? $landBank->remaining_area : $record->area,
-                'acquisition_price' => $finalGrandTotal > 0 ? $finalGrandTotal : $finalDealPrice,
-                'acquisition_date'  => $landBank->exists ? $landBank->acquisition_date : now()->toDateString(),
-                'address'           => $record->address,
-                'village'           => $record->village,
-                'district'          => $record->district,
-                'city'              => $record->city,
-                'province'          => $record->province,
-                'zoning'            => $record->zoning,
-                'road_width'        => (isset($record->road_width) && is_numeric($record->road_width)) ? (int)$record->road_width : null,
-                'ownership_status'  => $record->ownership_status ?? 'SHM',
-                'certificate_owner' => $record->certificate_owner ?? $record->owner_name ?? $record->land_owner,
-                'facility_school'   => (bool)($record->facility_school ?? false),
-                'facility_hospital' => (bool)($record->facility_hospital ?? false),
-                'facility_mall'     => (bool)($record->facility_mall ?? false),
-                'facility_transport'=> (bool)($record->facility_transport ?? false),
-                'lat'               => $record->lat,
-                'lng'               => $record->lng,
-                'file_certificate'  => $record->file_certificate,
-                'photo'             => $record->photo,
-                'priority'          => $record->priority ?? 'Normal',
-                'status'            => $landBank->exists ? $landBank->status : 'draft',
-                'legal_status'      => 'verified',
-                'development_status'=> $landBank->exists ? $landBank->development_status : 'Belum'
-            ]);
-            $landBank->save();
-
-            if ($record->land_bank_id != $landBank->id) {
-                $record->update(['land_bank_id' => $landBank->id]);
-            }
-
-            // Initialize default infrastructure site development items (PJU, Selokan, Jalan, etc.)
-            $landBank->initializeDefaultInfrastructures();
-
-            // Copy all documents from pra_landbank_documents to land_bank_documents
-            if ($record->documents()->exists()) {
-                foreach ($record->documents as $doc) {
-                    \App\Models\LandBankDocument::firstOrCreate([
-                        'land_bank_id'     => $landBank->id,
-                        'document_type_id' => $doc->document_type_id,
-                    ], [
-                        'document_number'  => $doc->document_number,
-                        'file_path'        => $doc->file_path,
-                        'status'           => 'verified',
-                        'revision_number'  => $doc->revision_number ?? 0
-                    ]);
-                }
-            }
-        }
 
         // =========================
         // NOTIFIKASI TAGIHAN KE KEPALA MARKETING
@@ -1212,7 +1140,7 @@ public function store(Request $request)
         $prefix = str_replace('_file', '', $fileField) . '_';
         $filename = uniqid() . '_' . $prefix . $file->getClientOriginalName();
         $destination = public_path('uploads/pra_landbank/' . $record->id . '/pengindukan');
-        
+
         if (!file_exists($destination)) {
             mkdir($destination, 0755, true);
         }
@@ -1654,10 +1582,10 @@ public function store(Request $request)
                         $sFilename = uniqid() . '_syarat_' . preg_replace('/[^a-zA-Z0-9_\.-]/', '_', $sFile->getClientOriginalName());
                         $sFile->move($destinationSyarat, $sFilename);
                         $savedPath = 'uploads/pra_landbank/' . $record->id . '/prasyarat/' . $sFilename;
-                        
+
                         $itemName = isset($syaratItems[$key]) ? $syaratItems[$key] : (string)$key;
                         $syaratFiles[$itemName] = $savedPath;
-                        
+
                         if (!in_array($itemName, $syaratChecklist)) {
                             $syaratChecklist[] = $itemName;
                         }
@@ -1806,7 +1734,7 @@ public function store(Request $request)
     {
         $record = PraLandbank::findOrFail($id);
         $templates = self::getDefaultFase4Templates($record);
-        
+
         $currentDocs = $record->custom_workflow_docs;
         if (empty($currentDocs) || !is_array($currentDocs)) {
             $currentDocs = $templates;
@@ -2006,6 +1934,12 @@ public function store(Request $request)
             'file_pbb'                  => $record->pbb_mutasi_file,
             'photo'                     => $record->photo,
             'denah'                     => $record->peta_bidang_file,
+            'facility_school'           => $record->facility_school ?? false,
+            'facility_hospital'         => $record->facility_hospital ?? false,
+            'facility_market'           => $record->facility_market ?? false,
+            'facility_transport'        => $record->facility_transport ?? false,
+            'facility_mall'             => $record->facility_mall ?? false,
+            'facility_bank'             => $record->facility_bank ?? false,
             'status'                    => 'aktif',
             'legal_status'              => 'aman',
             'development_status'        => 'Belum',
@@ -2016,6 +1950,21 @@ public function store(Request $request)
             $landBank->update($landBankData);
         } else {
             $landBank = \App\Models\LandBank::create($landBankData);
+        }
+
+        // Sinkronisasi dokumen dari Pra ke Pasca
+        $praDocs = \App\Models\pra_landbank_documents::where('pra_landbank_id', $record->id)->get();
+        foreach ($praDocs as $pd) {
+            \App\Models\LandBankDocument::firstOrCreate(
+                [
+                    'land_bank_id'     => $landBank->id,
+                    'document_type_id' => $pd->document_type_id,
+                ],
+                [
+                    'document_number'  => $pd->document_number,
+                    'file_path'        => $pd->file_path,
+                ]
+            );
         }
 
         // Hubungkan pra_landbank ke land_bank

@@ -46,17 +46,18 @@
         .btn-kembali-proyek {
             border-radius: 8px !important;
             font-size: 0.85rem;
-            font-weight: 600;
-            border: 1px solid #cbd5e1;
-            background-color: #ffffff;
-            color: #1e293b;
+            font-weight: 700;
+            border: 1px solid #64748b !important;
+            background-color: #64748b !important;
+            color: #ffffff !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
             transition: all 0.15s ease;
         }
         .btn-kembali-proyek:hover {
-            background-color: #f8fafc !important;
-            border-color: #94a3b8 !important;
-            color: #0f172a !important;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+            background-color: #475569 !important;
+            border-color: #475569 !important;
+            color: #ffffff !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
         }
         .badge-poin-custom {
             background: #9a55ff;
@@ -79,6 +80,7 @@
             background: #faf5ff;
             border-radius: 8px;
             cursor: pointer;
+            padding: 0.75rem 0.9rem !important;
             transition: all 0.2s ease;
         }
         .syarat-upload-card:hover {
@@ -123,8 +125,8 @@
             background: transparent;
         }
         .syarat-tambah-btn {
-            background: linear-gradient(135deg, #9a55ff, #8b5cf6) !important;
-            border: none !important;
+            background: #9a55ff !important;
+            border: 1px solid #9a55ff !important;
             color: #ffffff !important;
             font-size: 0.82rem !important;
             font-weight: 700 !important;
@@ -141,40 +143,144 @@
             background-color: #10b981 !important;
             color: #ffffff !important;
             border: none !important;
-            font-size: 0.74rem !important;
+            font-size: 0.76rem !important;
             font-weight: 700 !important;
-            padding: 4px 9px !important;
+            padding: 5px 10px !important;
             border-radius: 6px !important;
             display: inline-flex !important;
             align-items: center !important;
-            gap: 4px !important;
+            justify-content: center !important;
+            gap: 6px !important;
             text-decoration: none !important;
             box-shadow: 0 1px 3px rgba(16, 185, 129, 0.3) !important;
             cursor: pointer !important;
             white-space: nowrap !important;
+        }
+        .btn-syarat-lihat i {
+            font-size: 0.88rem !important;
+            line-height: 1 !important;
+            margin-right: 2px !important;
         }
         .btn-syarat-lihat:hover {
             background-color: #059669 !important;
             color: #ffffff !important;
         }
         .btn-syarat-hapus {
-            background-color: #fee2e2 !important;
-            color: #dc2626 !important;
-            border: 1px solid #fca5a5 !important;
-            font-size: 0.74rem !important;
+            background-color: #ef4444 !important;
+            color: #ffffff !important;
+            border: 1px solid #ef4444 !important;
+            font-size: 0.76rem !important;
             font-weight: 700 !important;
-            padding: 4px 8px !important;
+            padding: 5px 10px !important;
             border-radius: 6px !important;
             display: inline-flex !important;
             align-items: center !important;
-            gap: 3px !important;
+            justify-content: center !important;
+            gap: 6px !important;
             cursor: pointer !important;
             white-space: nowrap !important;
         }
+        .btn-syarat-hapus i {
+            font-size: 0.88rem !important;
+            line-height: 1 !important;
+            margin-right: 2px !important;
+        }
         .btn-syarat-hapus:hover {
-            background-color: #ef4444 !important;
+            background-color: #dc2626 !important;
             color: #ffffff !important;
-            border-color: #ef4444 !important;
+            border-color: #dc2626 !important;
+        }
+
+        /* Responsive UI Improvements */
+        @media (max-width: 991.98px) {
+            .page-title-responsive {
+                font-size: 1.35rem !important;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .kelola-card .card-header {
+                padding: 0.85rem 1rem !important;
+            }
+            .kelola-card .card-body {
+                padding: 1rem !important;
+            }
+            .page-title-responsive {
+                font-size: 1.25rem !important;
+            }
+            .header-top-responsive {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 0.85rem !important;
+            }
+            .header-top-responsive .btn-kembali-proyek {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+            .notice-box-responsive {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 0.75rem !important;
+            }
+            .notice-box-responsive .btn {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+            .bottom-action-container {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 0.85rem !important;
+            }
+            .bottom-action-btns {
+                display: flex !important;
+                width: 100% !important;
+                gap: 0.5rem !important;
+            }
+            .bottom-action-btns .btn {
+                flex: 1 1 0 !important;
+                justify-content: center !important;
+                text-align: center !important;
+                padding-left: 0.75rem !important;
+                padding-right: 0.75rem !important;
+            }
+            .doc-uploaded-inner {
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+            .doc-uploaded-inner .doc-action-btns {
+                width: 100% !important;
+                display: flex !important;
+                gap: 0.5rem !important;
+                margin-top: 0.65rem !important;
+            }
+            .doc-uploaded-inner .doc-action-btns .btn {
+                flex: 1 !important;
+                justify-content: center !important;
+            }
+            .main-empty-upload-box {
+                flex-wrap: wrap !important;
+            }
+            .main-empty-upload-box .btn {
+                width: 100% !important;
+                text-align: center !important;
+                margin-top: 0.35rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .bottom-action-btns {
+                flex-direction: column !important;
+            }
+            .bottom-action-btns .btn {
+                width: 100% !important;
+            }
+            .syarat-upload-card {
+                padding: 0.6rem 0.75rem !important;
+            }
+            .badge-status-top {
+                font-size: 0.72rem !important;
+                padding: 4px 8px !important;
+            }
         }
     </style>
 @endpush
@@ -183,17 +289,17 @@
 <div class="container-fluid px-2 px-md-4 py-3">
 
     <!-- Top Header Breadcrumb & Actions -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-md-center align-items-stretch gap-3 mb-4 header-top-responsive">
         <div>
             <div class="d-flex align-items-center gap-2 mb-1">
-                <span class="badge-poin-custom">
-                    {{ $item['poin_label'] ?? 'Poin Perizinan' }}
+                <span class="badge-poin-custom font-monospace">
+                    {{ $item['kode_dokumen'] ?? ($item['poin_label'] ?? 'Poin Perizinan') }}
                 </span>
                 <span class="text-muted" style="font-size: 0.85rem;">
                     Kawasan <strong>{{ $project['nama'] }}</strong>
                 </span>
             </div>
-            <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.5rem; letter-spacing: -0.02em;">
+            <h2 class="text-dark mb-1 fw-bold page-title-responsive" style="font-size: 1.5rem; letter-spacing: -0.02em;">
                 {{ $item['nama_izin'] ?: 'Dokumen Perizinan Baru' }}
             </h2>
             <p class="text-muted mb-0" style="font-size: 0.85rem;">
@@ -202,13 +308,8 @@
         </div>
 
         <div class="d-flex align-items-center gap-2">
-            <!-- Dynamic Status Badge Top -->
-            <span id="topStatusBadge" class="badge-status-top">
-                <span id="topStatusText">Belum Ada</span>
-            </span>
-
             <a href="{{ route('perizinan.show', $project['id']) }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm btn-kembali-proyek">
-                <i class="mdi mdi-arrow-left text-primary" style="font-size: 1.05rem; line-height: 1;"></i>
+                <i class="mdi mdi-arrow-left text-white" style="font-size: 1.05rem; line-height: 1;"></i>
                 <span>Kembali ke Kawasan</span>
             </a>
         </div>
@@ -234,7 +335,25 @@
         $rawStatus = old('status', $item['status'] ?? 'Belum');
         $isProsesOrMore = in_array($rawStatus, ['Proses', 'Berjalan', 'Dalam Proses', 'Revisi', 'Tertunda', 'Terkendala', 'Terbit', 'Selesai']);
         $isTerbit = in_array($rawStatus, ['Terbit', 'Selesai']);
+        $isPoin17Doc = (!empty($item['kode_dokumen']) && strtoupper(trim($item['kode_dokumen'])) === 'POIN-17') 
+            || (!empty($item['master_id']) && $item['master_id'] == 11) 
+            || str_contains(strtolower($item['nama_izin'] ?? ''), 'shgb induk') 
+            || str_contains(strtolower($item['nama_izin'] ?? ''), 'hgb induk selesai');
     @endphp
+
+    @if($isPoin17Doc)
+        <div class="alert border-0 shadow-sm d-flex align-items-center gap-3 mb-3 p-3" style="border-radius: 8px; background: #ecfdf5; border-left: 4px solid #10b981 !important;">
+            <div style="width: 40px; height: 40px; border-radius: 8px; background: #d1fae5; color: #059669; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0;">
+                <i class="mdi mdi-shield-crown"></i>
+            </div>
+            <div>
+                <strong class="d-block text-dark" style="font-size: 0.92rem;">Tahap Final: Balik Nama / Pengindukan Sertifikat an. PT</strong>
+                <span style="font-size: 0.83rem; color: #065f46;">
+                    Ketika dokumen <strong>SHGB Induk atas nama PT</strong> ini statusnya diubah ke <strong>Selesai / Terbit Resmi</strong>, kawasan <strong>{{ $project['nama'] }}</strong> akan <strong>otomatis dialihkan ke Pasca Land Bank</strong> sebagai aset sah developer yang siap dipecah kavling dan dipasarkan.
+                </span>
+            </div>
+        </div>
+    @endif
 
     <!-- Form Kelola Dokumen -->
     <form action="{{ route('perizinan.dokumen.simpan', ['id' => $project['id'], 'item_id' => $item_id]) }}" method="POST" enctype="multipart/form-data" id="formKelolaDokumen">
@@ -251,7 +370,10 @@
                             </div>
                             <h5 class="mb-0 fw-bold text-dark" style="font-size: 0.95rem;">Informasi & Legalitas Dokumen</h5>
                         </div>
-                        <small class="text-muted">ID: #{{ $item['id'] }}</small>
+                        <!-- Dynamic Status Badge -->
+                        <span id="topStatusBadge" class="badge-status-top" style="background-color: #f8fafc; border: 1px solid #cbd5e1; color: #64748b;">
+                            <span id="topStatusText"><i class="mdi mdi-timer-sand me-1"></i>Belum Diproses</span>
+                        </span>
                     </div>
 
                     <div class="card-body">
@@ -268,7 +390,7 @@
                             <div class="col-md-6">
                                 <label class="form-label-custom">Status Dokumen <span class="text-danger">*</span></label>
                                 <select name="status" id="inpStatus" class="form-select form-select-custom fw-bold" onchange="syncStatusChange(this.value, false)" required>
-                                    <option value="Belum" {{ old('status', $item['status']) == 'Belum' ? 'selected' : '' }}>Belum Ada (Menunggu)</option>
+                                    <option value="Belum" {{ old('status', $item['status']) == 'Belum' ? 'selected' : '' }}>Belum Diproses (Menunggu Pengajuan)</option>
                                     <option value="Proses" {{ in_array(old('status', $item['status']), ['Proses', 'Berjalan', 'Dalam Proses']) ? 'selected' : '' }}>Sedang Proses Dinas</option>
                                     <option value="Terbit" {{ in_array(old('status', $item['status']), ['Terbit', 'Selesai']) ? 'selected' : '' }}>Selesai / Terbit Resmi</option>
                                     <option value="Revisi" {{ in_array(old('status', $item['status']), ['Revisi', 'Tertunda', 'Terkendala']) ? 'selected' : '' }}>Ditolak / Perlu Revisi / Kendala</option>
@@ -287,7 +409,7 @@
                                 <!-- Real-time Auto Progress Bar -->
                                 <div class="progress rounded-pill my-1" style="height: 10px; background-color: #f1f5f9; overflow: hidden; border: 1px solid #e2e8f0;">
                                     <div id="barProgressAuto" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" 
-                                         style="width: {{ old('progress', $item['progress'] ?? 0) }}%; background: linear-gradient(90deg, #9a55ff, #00c9a7); transition: width 0.4s ease;" 
+                                         style="width: {{ old('progress', $item['progress'] ?? 0) }}%; background-color: #9a55ff; transition: width 0.4s ease;" 
                                          aria-valuenow="{{ old('progress', $item['progress'] ?? 0) }}" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center mt-1">
@@ -302,19 +424,19 @@
                             </div>
                         </div>
 
-                        <!-- Notice jika status masih Belum Ada -->
+                        <!-- Notice jika status masih Belum Diproses -->
                         <div id="cardSyaratBelumProsesNotice" class="p-3 rounded-3 mb-3" style="background: #f8fafc; border: 1.5px dashed #cbd5e1; {{ $isProsesOrMore ? 'display: none;' : 'display: block;' }};">
-                            <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
+                            <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap notice-box-responsive">
                                 <div class="d-flex align-items-center gap-2.5 text-muted" style="font-size: 0.83rem;">
                                     <div class="p-2 rounded-2 flex-shrink-0" style="background: rgba(124, 58, 237, 0.1); color: #7c3aed;">
                                         <i class="mdi mdi-checkbox-multiple-marked-outline fs-5"></i>
                                     </div>
                                     <div>
                                         <strong class="text-dark d-block">Rincian & Prasyarat Berkas Dinas</strong>
-                                        Status saat ini <em>Belum Ada (Menunggu)</em>. Ubah status ke <strong>Sedang Proses Dinas</strong> untuk membuka checklist unggah berkas prasyarat dinas.
+                                        Status saat ini <em>Belum Diproses</em>. Ubah status ke <strong>Sedang Proses Dinas</strong> untuk membuka checklist unggah berkas prasyarat dinas.
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-sm btn-outline-primary fw-semibold px-3 py-1.5" onclick="setDokumenStatus('Proses')" style="font-size: 0.8rem; border-radius: 6px;">
+                                <button type="button" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm" onclick="setDokumenStatus('Proses')" style="background: #9a55ff; border: 1px solid #9a55ff; font-size: 0.8rem; border-radius: 6px;">
                                     <i class="mdi mdi-play-circle-outline me-1"></i>Mulai Proses Dinas
                                 </button>
                             </div>
@@ -368,10 +490,10 @@
 
                         <!-- BAGIAN UPLOAD BERKAS UTAMA SK (HANYA MUNCUL JIKA STATUS SELESAI / TERBIT) -->
                         <div class="mb-3" id="sectionUploadSkUtama" style="{{ $isTerbit ? '' : 'display: none;' }};">
-                            <label class="form-label-custom d-flex justify-content-between align-items-center">
-                                <span class="d-flex align-items-center gap-1.5">
-                                    <i class="mdi mdi-certificate text-success"></i>
-                                    <span>Berkas Dokumen Utama / SK Izin</span>
+                            <label class="form-label-custom d-flex justify-content-between align-items-center mb-2">
+                                <span class="d-inline-flex align-items-center gap-2">
+                                    <i class="mdi mdi-certificate text-success" style="font-size: 1.2rem; line-height: 1; margin-right: 4px;"></i>
+                                    <span class="fw-bold">Berkas Dokumen Utama / SK Izin</span>
                                     <span class="badge bg-success-subtle text-success ms-1" style="font-size: 11px;">Resmi / Selesai</span>
                                 </span>
                                 <span class="badge" style="background-color: #fffbeb; border: 1px solid #fde68a; color: #d97706; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">PDF, JPG, PNG (Maks 20MB)</span>
@@ -390,24 +512,24 @@
 
                             <!-- Card Saat Berkas Sudah Terunggah (Tunggal dengan 2 Tombol: Lihat & Ganti) -->
                             <div id="mainDocUploadedCard" class="p-3 rounded-3" style="background: #f0fdf4; border: 1.5px solid #86efac; display: {{ $hasMainDoc ? 'block' : 'none' }};">
-                                <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
-                                    <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1 me-2">
+                                <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap doc-uploaded-inner">
+                                    <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1 me-2" style="min-width: 0;">
                                         <div class="p-2 rounded-2 flex-shrink-0" style="background: rgba(0, 201, 167, 0.15); color: #00c9a7;">
                                             <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
                                         </div>
-                                        <div class="overflow-hidden">
-                                            <span class="d-block fw-bold text-success" id="mainDocStatusText" style="font-size: 0.85rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
+                                        <div class="overflow-hidden" style="min-width: 0;">
+                                            <span class="d-block fw-bold text-success text-truncate" id="mainDocStatusText" style="font-size: 0.85rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
                                             <small class="text-muted text-truncate d-block font-monospace" id="mainDocFileName" style="font-size: 0.74rem;">{{ basename($item['file_dokumen'] ?? '') }}</small>
                                         </div>
                                     </div>
                                     <!-- 2 BUTTONS: LIHAT & GANTI -->
-                                    <div class="d-flex align-items-center gap-2 flex-shrink-0">
-                                        <a href="{{ $mainDocUrl }}" target="_blank" id="btnMainDocView" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center gap-1.5" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px;">
-                                            <i class="mdi mdi-eye" style="font-size: 0.95rem;"></i>
+                                    <div class="d-flex align-items-center flex-shrink-0 doc-action-btns" style="gap: 8px;">
+                                        <a href="{{ $mainDocUrl }}" target="_blank" id="btnMainDocView" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 6px;">
+                                            <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1; margin-right: 2px;"></i>
                                             <span>Lihat</span>
                                         </a>
-                                        <button type="button" onclick="document.getElementById('inpFileDokumen').click()" class="btn btn-sm btn-light border fw-semibold px-3 py-1.5 shadow-sm d-inline-flex align-items-center gap-1.5" style="font-size: 0.78rem; border-radius: 6px; color: #475569;">
-                                            <i class="mdi mdi-cloud-sync text-primary" style="font-size: 0.95rem;"></i>
+                                        <button type="button" onclick="document.getElementById('inpFileDokumen').click()" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 6px;">
+                                            <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1; margin-right: 2px;"></i>
                                             <span>Ganti</span>
                                         </button>
                                     </div>
@@ -416,24 +538,24 @@
 
                             <!-- Box Upload Saat Berkas Masih Kosong -->
                             <div id="mainDocEmptyBox" onclick="document.getElementById('inpFileDokumen').click()" style="cursor: pointer; display: {{ $hasMainDoc ? 'none' : 'block' }};">
-                                <div class="p-3 rounded-3 d-flex align-items-center gap-3" style="border: 1.5px dashed #10b981; background: #f0fdf4; transition: all 0.2s ease;">
+                                <div class="p-3 rounded-3 d-flex align-items-center gap-3 main-empty-upload-box" style="border: 1.5px dashed #10b981; background: #f0fdf4; transition: all 0.2s ease;">
                                     <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="background: rgba(16, 185, 129, 0.15); width: 42px; height: 42px; color: #10b981;">
                                         <i class="mdi mdi-cloud-upload" style="font-size: 1.35rem;"></i>
                                     </div>
-                                    <div class="overflow-hidden flex-grow-1">
+                                    <div class="overflow-hidden flex-grow-1" style="min-width: 0;">
                                         <span class="fw-bold d-block text-truncate" id="txtUploadMainLabel" style="font-size: 0.85rem; color: #059669;">
                                             Pilih / Upload Berkas SK Resmi
                                         </span>
-                                        <small class="text-muted d-block" id="txtUploadMainSub" style="font-size: 0.74rem;">Klik di sini untuk mengunggah file SK izin yang telah terbit resmi (PDF, JPG, PNG)</small>
+                                        <small class="text-muted d-block text-truncate" id="txtUploadMainSub" style="font-size: 0.74rem;">Klik di sini untuk mengunggah file SK izin yang telah terbit resmi (PDF, JPG, PNG)</small>
                                     </div>
-                                    <span class="btn btn-sm btn-success px-2.5 py-1 text-white fw-semibold" style="font-size: 0.75rem; border-radius: 5px;">Browse</span>
+                                    <span class="btn btn-sm text-white fw-bold px-3 py-1 shadow-sm d-inline-flex align-items-center justify-content-center" style="font-size: 0.78rem; border-radius: 6px; background: #10b981; border: 1px solid #10b981;">Browse</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- INFO HINT JIKA STATUS BELUM SELESAI / TERBIT -->
                         <div id="sectionSkBelumTerbitHint" class="p-3 rounded-3 mb-3" style="background: #f8fafc; border: 1.5px dashed #cbd5e1; {{ $isTerbit ? 'display: none;' : 'display: block;' }};">
-                            <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                            <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap notice-box-responsive">
                                 <div class="d-flex align-items-center gap-2 text-muted" style="font-size: 0.82rem;">
                                     <i class="mdi mdi-information-outline text-primary fs-5 flex-shrink-0"></i>
                                     <div>
@@ -441,7 +563,7 @@
                                         Upload Berkas SK Resmi akan muncul saat status dokumen diubah ke <span class="badge bg-success-subtle text-success fw-bold">Selesai / Terbit Resmi</span>.
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-sm btn-outline-success fw-semibold px-2.5 py-1" onclick="setDokumenStatus('Terbit')" style="font-size: 0.76rem; border-radius: 6px;">
+                                <button type="button" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm" onclick="setDokumenStatus('Terbit')" style="background: #10b981; border: 1px solid #10b981; font-size: 0.8rem; border-radius: 6px;">
                                     <i class="mdi mdi-check-circle-outline me-1"></i>Tandai Selesai / Terbit
                                 </button>
                             </div>
@@ -538,7 +660,7 @@
                                                 </small>
                                             </div>
                                         </div>
-                                        <div id="syarat_actions_{{ $idx }}" class="{{ $hasFile ? 'd-flex' : 'd-none' }} align-items-center gap-1.5 flex-shrink-0" onclick="event.stopPropagation()">
+                                        <div id="syarat_actions_{{ $idx }}" class="{{ $hasFile ? 'd-flex' : 'd-none' }} align-items-center flex-shrink-0" style="gap: 8px;" onclick="event.stopPropagation()">
                                             <a href="{{ $fileUrl }}" id="syarat_btn_view_{{ $idx }}" target="_blank" class="btn-syarat-lihat">
                                                 <i class="mdi mdi-eye"></i>
                                                 <span>Lihat</span>
@@ -569,11 +691,11 @@
                         <div id="deletedFilesContainer"></div>
 
                         <!-- Info Petunjuk -->
-                        <div class="p-2.5 rounded-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
-                            <small class="text-muted d-block" style="font-size: 0.75rem; line-height: 1.4;">
-                                <i class="mdi mdi-information-outline text-primary me-1"></i>
+                        <div class="d-flex align-items-start gap-2.5 p-3 rounded-3 mt-3 mb-2" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                            <i class="mdi mdi-information-outline text-primary fs-6 mt-0.5 flex-shrink-0"></i>
+                            <div class="text-muted" style="font-size: 0.78rem; line-height: 1.5;">
                                 Semua berkas prasyarat tersimpan aman di server dan progres persentase akan dihitung secara otomatis saat berkas diunggah.
-                            </small>
+                            </div>
                         </div>
 
                     </div>
@@ -583,16 +705,17 @@
 
         <!-- Sticky / Fixed Bottom Action Bar -->
         <div class="card border-0 shadow-lg mt-3 p-3 bg-white" style="border-radius: 10px; border: 1px solid #e2e8f0 !important;">
-            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 bottom-action-container">
                 <div class="d-flex align-items-center gap-2 text-muted" style="font-size: 0.85rem;">
-                    <i class="mdi mdi-shield-check text-success fs-5"></i>
+                    <i class="mdi mdi-shield-check text-success fs-5 flex-shrink-0"></i>
                     <span>Pastikan data nomor izin dan berkas prasyarat telah lengkap sebelum menyimpan.</span>
                 </div>
-                <div class="d-flex align-items-center gap-2">
-                    <a href="{{ route('perizinan.show', $project['id']) }}" class="btn fw-semibold px-3 py-2 btn-kembali-proyek">
-                        <i class="mdi mdi-close me-1"></i> Batal
+                <div class="d-flex align-items-center gap-2 bottom-action-btns">
+                    <a href="{{ route('perizinan.show', $project['id']) }}" class="btn fw-bold px-3 px-sm-4 py-2 btn-kembali-proyek d-inline-flex align-items-center justify-content-center gap-1.5">
+                        <i class="mdi mdi-close"></i>
+                        <span>Batal</span>
                     </a>
-                    <button type="submit" class="btn text-white fw-bold px-4 py-2 shadow-sm d-inline-flex align-items-center gap-2" style="background: linear-gradient(135deg, #00c9a7, #059669); border: none; border-radius: 8px; font-size: 0.88rem;">
+                    <button type="submit" class="btn text-white fw-bold px-3 px-sm-4 py-2 shadow-sm d-inline-flex align-items-center justify-content-center gap-2" style="background: #10b981; border: 1px solid #10b981; border-radius: 8px; font-size: 0.88rem;">
                         <i class="mdi mdi-content-save" style="font-size: 1.1rem;"></i>
                         <span>Simpan Dokumen Perizinan</span>
                     </button>
@@ -662,9 +785,9 @@
             bar.style.width = percent + '%';
             bar.setAttribute('aria-valuenow', percent);
             if (percent === 100) {
-                bar.style.background = '#10b981';
+                bar.style.backgroundColor = '#10b981';
             } else {
-                bar.style.background = 'linear-gradient(90deg, #9a55ff, #00c9a7)';
+                bar.style.backgroundColor = '#9a55ff';
             }
         }
 
@@ -766,10 +889,10 @@
                 topText.innerHTML = '<i class="mdi mdi-clock-outline me-1"></i>Sedang Proses';
             }
         } else {
-            topBadge.style.backgroundColor = '#ffffff';
-            topBadge.style.border = '1px solid #e2e8f0';
-            topBadge.style.color = '#94a3b8';
-            topText.innerHTML = 'Belum Ada';
+            topBadge.style.backgroundColor = '#f8fafc';
+            topBadge.style.border = '1px solid #cbd5e1';
+            topBadge.style.color = '#64748b';
+            topText.innerHTML = '<i class="mdi mdi-timer-sand me-1"></i>Belum Diproses';
         }
 
         // 1. KONTROL VISIBILITAS CARD SEBELAH KANAN (Rincian & Prasyarat)
@@ -1033,7 +1156,7 @@
                         <small id="syarat_sub_${newIdx}" class="text-muted d-block text-truncate" style="font-size: 0.71rem;">PDF, JPG, PNG (Maks 20MB)</small>
                     </div>
                 </div>
-                <div id="syarat_actions_${newIdx}" class="d-none align-items-center gap-1.5 flex-shrink-0" onclick="event.stopPropagation()">
+                <div id="syarat_actions_${newIdx}" class="d-none align-items-center flex-shrink-0" style="gap: 8px;" onclick="event.stopPropagation()">
                     <a href="javascript:void(0)" id="syarat_btn_view_${newIdx}" target="_blank" class="btn-syarat-lihat">
                         <i class="mdi mdi-eye"></i>
                         <span>Lihat</span>
