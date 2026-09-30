@@ -4,7 +4,7 @@
       <div class="nav-logo-icon">
         <i class="fa-solid fa-house-chimney"></i>
       </div>
-      <span class="nav-logo-text">Sweet <span>Home</span></span>
+      <span class="nav-logo-text">Graha <span>Cipta Sejahtera</span></span>
     </a>
 
     <ul class="nav-links">
@@ -45,7 +45,7 @@
       <div class="nav-logo-icon" style="width: 30px; height: 30px; font-size: 0.9rem;">
         <i class="fa-solid fa-house-chimney"></i>
       </div>
-      <div class="mobile-menu-title">Sweet <span>Home</span></div>
+      <div class="mobile-menu-title">Graha <span>Cipta Sejahtera</span></div>
     </div>
     <button class="mobile-menu-close" onclick="closeMenu()" aria-label="Tutup Menu">
       <i class="fa-solid fa-xmark"></i>

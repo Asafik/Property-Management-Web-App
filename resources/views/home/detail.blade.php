@@ -1,7 +1,7 @@
 {{-- FILE: resources/views/home/properti/detail.blade.php --}}
 @extends('home.layouts.partials.app')
 
-@section('title', 'Cluster Tegal Besar — Sweet Home')
+@section('title', 'Cluster Tegal Besar — Graha Cipta Sejahtera')
 
 {{-- ================ STYLES ================ --}}
 @push('styles')
@@ -1097,41 +1097,58 @@
                 </div>
             </div>
 
-            {{-- Contact Card --}}
+            {{-- Card Buku Tamu & QR Code Barcode Digital --}}
             <div class="contact-card">
-                <div class="contact-card-header">
-                    <img src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=200&h=200&fit=crop"
-                         alt="Rina Wulandari"
-                         class="agent-avatar">
-                    <div class="agent-name">Rina Wulandari</div>
-                    <div class="agent-title">Marketing Resmi Sweet Home Jember</div>
-                    <a href="https://wa.me/628123456789" class="agent-phone">
-                        <i class="fa-brands fa-whatsapp"></i> 0812-3456-7890
-                    </a>
+                <div class="contact-card-header" style="background: linear-gradient(145deg, #1e293b, #0f172a); padding: 1.75rem 1.25rem 1.5rem; text-align: center;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: rgba(201,151,58,0.2); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; color: var(--gold); font-size: 1.4rem;">
+                        <i class="fa-solid fa-qrcode"></i>
+                    </div>
+                    <div class="agent-name" style="font-size: 1.2rem; color: #ffffff;">Buku Tamu & Survei</div>
+                    <div class="agent-title" style="margin-bottom: 1rem; color: rgba(255,255,255,0.7); font-size: 0.78rem;">Graha Cipta Sejahtera Official</div>
+
+                    <!-- Kotak Barcode / QR Code Interaktif Dinamis Sesuai Hosting -->
+                    <div style="background: #ffffff; border-radius: 12px; padding: 0.85rem; width: 170px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+                        <img id="barcodeQrImg"
+                             src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data={{ urlencode(url('/buku-tamu') . '?' . http_build_query(['project_id' => 1, 'unit_id' => 1, 'unit' => 'Cluster Tegal Besar (Ready Stock)'])) }}" 
+                             alt="Barcode Buku Tamu Digital" 
+                             style="width: 100%; height: auto; display: block; border-radius: 4px;">
+                        <span style="display: block; font-size: 0.65rem; font-weight: 700; color: #334155; margin-top: 0.35rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                            Scan untuk Kunjungan
+                        </span>
+                    </div>
+                    <p style="font-size: 0.72rem; color: rgba(255,255,255,0.65); margin-top: 0.75rem; margin-bottom: 0;">
+                        Arahkan kamera ponsel Anda untuk membuka buku tamu & pendaftaran survei unit ini
+                    </p>
                 </div>
 
                 <div class="contact-card-body">
-                    <a href="https://wa.me/628123456789?text=Halo, saya tertarik dengan Cluster Tegal Besar"
-                       class="btn-wa-card">
-                        <i class="fa-brands fa-whatsapp"></i> Chat WhatsApp
+                    <!-- Tombol Langsung ke Halaman Buku Tamu Mandiri -->
+                    <a href="{{ route('home.buku-tamu', ['unit' => 'Cluster Tegal Besar (Ready Stock)']) }}" 
+                       class="btn-bukutamu-card" 
+                       style="display: flex; align-items: center; justify-content: center; gap: 0.6rem; width: 100%; background: var(--navy); color: #ffffff; border: 1.5px solid var(--gold); border-radius: 12px; padding: 0.85rem; font-size: 0.92rem; font-weight: 700; text-decoration: none; cursor: pointer; transition: all 0.25s; margin-bottom: 0.75rem; box-shadow: 0 4px 14px rgba(15,23,42,0.15);">
+                        <i class="fa-solid fa-clipboard-check" style="color: var(--gold); font-size: 1.05rem;"></i>
+                        <span>Isi Buku Tamu di Sini</span>
                     </a>
 
-                    <a href="#" class="btn-survey">
-                        <i class="fa-solid fa-calendar-check"></i> Jadwalkan Survei
+                    <!-- Tombol Chat WhatsApp CS Resmi Kantor -->
+                    <a href="https://wa.me/62811999988888?text=Halo%20Graha%20Cipta%20Sejahtera,%20saya%20ingin%20konsultasi%20mengenai%20Cluster%20Tegal%20Besar" 
+                       target="_blank" 
+                       class="btn-wa-card" style="padding: 0.8rem; font-size: 0.88rem; margin-bottom: 1.25rem;">
+                        <i class="fa-brands fa-whatsapp"></i> Chat Hotline Kantor
                     </a>
 
                     <div class="contact-perks">
                         <div class="perk">
-                            <i class="fa-solid fa-circle-check"></i> Survei lokasi gratis
+                            <i class="fa-solid fa-circle-check"></i> Data tersimpan resmi di sistem kantor
                         </div>
                         <div class="perk">
-                            <i class="fa-solid fa-circle-check"></i> Harga langsung dari developer
+                            <i class="fa-solid fa-circle-check"></i> Prioritas jadwal survei lokasi
                         </div>
                         <div class="perk">
-                            <i class="fa-solid fa-circle-check"></i> Bantuan pengajuan KPR
+                            <i class="fa-solid fa-circle-check"></i> Bantuan simulasi & pengajuan KPR
                         </div>
                         <div class="perk">
-                            <i class="fa-solid fa-circle-check"></i> Konsultasi tanpa biaya
+                            <i class="fa-solid fa-circle-check"></i> Informasi promo & diskon developer
                         </div>
                     </div>
                 </div>
@@ -1145,12 +1162,12 @@
 
 {{-- Mobile Sticky CTA --}}
 <div class="mobile-cta">
-    <a href="https://wa.me/628123456789?text=Halo, saya tertarik dengan Cluster Tegal Besar"
-       class="btn-wa-card">
-        <i class="fa-brands fa-whatsapp"></i> Chat WA
+    <a href="{{ route('home.buku-tamu', ['unit' => 'Cluster Tegal Besar (Ready Stock)']) }}" class="btn-wa-card" style="background: var(--navy); border: 1.5px solid var(--gold); text-decoration: none;">
+        <i class="fa-solid fa-clipboard-check" style="color: var(--gold);"></i> Isi Buku Tamu
     </a>
-    <a href="#" class="btn-survey">
-        <i class="fa-solid fa-calendar-check"></i> Jadwal Survei
+    <a href="https://wa.me/62811999988888?text=Halo%20Graha%20Cipta%20Sejahtera,%20saya%20tertarik%20dengan%20Cluster%20Tegal%20Besar"
+       class="btn-survey" style="background: #25D366; color: white; border: none; text-decoration: none;">
+        <i class="fa-brands fa-whatsapp"></i> Chat Hotline
     </a>
 </div>
 
@@ -1164,10 +1181,7 @@
 <script>
     // Gallery image switcher
     function switchImg(el) {
-        // Update main image
         document.getElementById('mainImg').src = el.src.replace('w=400&h=300', 'w=1200&h=600');
-
-        // Update active state
         document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
         el.classList.add('active');
     }
@@ -1185,12 +1199,22 @@
         { threshold: 0.1 }
     );
 
-    // Apply animation to spec items and recommendation cards
     document.querySelectorAll('.spec-item, .rec-card').forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(16px)';
         el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
         observer.observe(el);
+    });
+
+    // Auto-sync Barcode QR Code dengan Origin / Domain Hosting Aktif
+    document.addEventListener('DOMContentLoaded', function() {
+        const qrImg = document.getElementById('barcodeQrImg');
+        if (qrImg) {
+            const currentHost = window.location.origin;
+            const targetQuery = "{{ route('home.buku-tamu', ['project_id' => 1, 'unit_id' => 1, 'unit' => 'Cluster Tegal Besar (Ready Stock)'], false) }}";
+            const fullTargetUrl = currentHost + targetQuery;
+            qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(fullTargetUrl);
+        }
     });
 </script>
 @endpush

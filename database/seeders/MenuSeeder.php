@@ -190,6 +190,12 @@ class MenuSeeder extends Seeder
         ])->positions()->attach($marketingRoles);
 
         Menu::create([
+            'name'      => 'Halaman Utama',
+            'route'     => 'marketing.landingpage.index',
+            'parent_id' => $marketingMenu->id
+        ])->positions()->attach($marketingRoles);
+
+        Menu::create([
             'name'      => 'Tugas Marketing',
             'route'     => 'master.data.tugas-staff-marketing',
             'parent_id' => $marketingMenu->id

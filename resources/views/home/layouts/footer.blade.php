@@ -3,9 +3,9 @@
         <div class="footer-grid">
 
             <div class="footer-brand">
-                <h3>Sweet <span>Home</span></h3>
-                <p>Developer rumah terpercaya. Menyediakan rumah subsidi, komersil, dan pilihan cash/KPR dengan proses
-                    mudah, aman, dan transparan sejak 2015.</p>
+                <h3>Graha <span>Cipta Sejahtera</span></h3>
+                <p>Developer properti terpercaya. Menyediakan perumahan subsidi, komersil, dan pilihan cash/KPR dengan proses
+                    mudah, aman, dan transparan.</p>
                 <div class="footer-socials">
                     <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
                     <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
@@ -42,7 +42,7 @@
                     <div class="frow"><i class="fa-solid fa-location-dot"></i> Jl. Gajah Mada No. 45, Jawa Timur</div>
                     <div class="frow"><i class="fa-solid fa-phone"></i> (0331) 456-789</div>
                     <div class="frow"><i class="fa-brands fa-whatsapp"></i> 0811-9999-8888</div>
-                    <div class="frow"><i class="fa-solid fa-envelope"></i> info@sweethome.id</div>
+                    <div class="frow"><i class="fa-solid fa-envelope"></i> info@gcs-property.com</div>
                     <div class="frow"><i class="fa-solid fa-clock"></i> Senin–Sabtu 08.00–17.00</div>
                 </div>
             </div>
@@ -50,7 +50,7 @@
         </div>
 
         <div class="footer-bottom">
-            <span>&copy; {{ date('Y') }} Sweet Home — Developer Rumah. All rights reserved.</span>
+            <span>&copy; {{ date('Y') }} PT Graha Cipta Sejahtera. All rights reserved.</span>
         </div>
     </div>
 </footer>

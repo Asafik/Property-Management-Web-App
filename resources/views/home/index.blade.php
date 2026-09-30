@@ -1,7 +1,7 @@
 {{-- FILE: resources/views/home/index.blade.php --}}
 @extends('home.layouts.partials.app')
 
-@section('title', 'Sweet Home — Jual Rumah')
+@section('title', 'Graha Cipta Sejahtera (GCS) — Hunian Impian Keluarga')
 
 {{-- ================ STYLES ================ --}}
 @push('styles')
@@ -1303,11 +1303,11 @@
             {{-- Hero Left Content --}}
             <div>
                 <h1 class="hero-title">
-                    Rumah impian<br><span class="gold">Sweet Home</span>
+                    Rumah impian<br><span class="gold">Graha Cipta Sejahtera</span>
                 </h1>
 
                 <p class="hero-sub">
-                    Sweet Home menyediakan pilihan rumah lengkap untuk semua kebutuhan —
+                    Graha Cipta Sejahtera (GCS) menyediakan pilihan perumahan lengkap untuk semua kebutuhan keluarga —
                     dari subsidi terjangkau hingga komersil premium, dengan pilihan pembayaran cash maupun KPR.
                 </p>
 
@@ -1732,7 +1732,7 @@
 <section class="why-section">
     <div class="why-inner">
         <div class="slabel" style="color:var(--gold-light);">Keunggulan Kami</div>
-        <h2 class="stitle" style="color:white;">Kenapa beli rumah di Sweet Home?</h2>
+        <h2 class="stitle" style="color:white;">Kenapa memilih Graha Cipta Sejahtera?</h2>
         <p class="ssub" style="color:rgba(255,255,255,0.5); max-width:560px;">
             Dari subsidi hingga komersil, kami pastikan setiap keluarga mendapatkan hunian terbaik sesuai kemampuan dan kebutuhan.
         </p>
@@ -1827,13 +1827,13 @@
 
         <div class="office-card">
             <div class="ocity"><i class="fa-solid fa-location-dot fa-xs"></i> Kantor Pusat</div>
-            <h4>Sweet Home</h4>
+            <h4>Graha Cipta Sejahtera</h4>
             <div class="oinfo">
                 <div class="orow"><i class="fa-solid fa-location-dot"></i> Jl. Gajah Mada No. 45, Jawa Timur</div>
                 <div class="orow"><i class="fa-solid fa-clock"></i> Senin – Sabtu, 08.00 – 17.00 WIB</div>
                 <div class="orow"><i class="fa-solid fa-phone"></i> (0331) 456-789</div>
                 <div class="orow"><i class="fa-brands fa-whatsapp"></i> 0811-9999-8888</div>
-                <div class="orow"><i class="fa-solid fa-envelope"></i> info@sweethome.id</div>
+                <div class="orow"><i class="fa-solid fa-envelope"></i> info@gcs-property.com</div>
             </div>
             <a href="https://wa.me/62811999988888" class="btn-wa">
                 <i class="fa-brands fa-whatsapp"></i> Chat & Janji Temu via WhatsApp

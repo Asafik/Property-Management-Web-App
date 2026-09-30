@@ -73,6 +73,9 @@ Route::get('/beranda', function () {
 Route::get('/detail', function () {
     return view('home.detail');
 })->name('home.detail');
+
+Route::get('/buku-tamu', [LandingpageController::class, 'bukuTamu'])->name('home.buku-tamu');
+Route::post('/buku-tamu', [LandingpageController::class, 'storeBukuTamu'])->name('home.buku-tamu.store');
 /*
 |--------------------------------------------------------------------------
 | AUTH
@@ -115,6 +118,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/marketing/sell-unit', [SellUnitController::class, 'index'])->name('marketing.jual-unit');
     Route::get('/marketing/unit', [\App\Http\Controllers\Marketing\UnitMarketingController::class, 'index'])->name('marketing.unit.index');
     Route::post('/marketing/unit/{id}/price', [\App\Http\Controllers\Marketing\UnitMarketingController::class, 'updatePrice'])->name('marketing.unit.updatePrice');
+    Route::get('/marketing/landing-page', [\App\Http\Controllers\Marketing\LandingpageManagementController::class, 'index'])->name('marketing.landingpage.index');
+    Route::get('/marketing/landing-page/{id}/edit', [\App\Http\Controllers\Marketing\LandingpageManagementController::class, 'edit'])->name('marketing.landingpage.edit');
+    Route::put('/marketing/landing-page/{id}', [\App\Http\Controllers\Marketing\LandingpageManagementController::class, 'update'])->name('marketing.landingpage.update');
     Route::post('/marketing/set-agency/{unitId}', [SellUnitController::class, 'setAgency'])->name('marketing.setAgency');
     Route::post('/unit/save-position', [SellUnitController::class, 'savePosition'])
         ->name('unit.save.position');
