@@ -49,6 +49,7 @@
             'marketing.jual-unit' => 'mdi-view-grid-outline',
             'marketing.unit.index' => 'mdi-home-city-outline',
             'marketing.landingpage.index' => 'mdi-web',
+            'marketing.sosialmedia.index' => 'mdi-instagram',
             'marketing.list_pengajuan' => 'mdi-book-check-outline',
             // Tanah Induk / Land Bank
             'pralandbank.all' => 'mdi-map-clock-outline',
@@ -125,6 +126,7 @@
             'marketing.jual-unit' => ['marketing.jual-unit*', 'unit.save.position', 'marketing.setAgency', 'set.customer'],
             'marketing.unit.index' => ['marketing.unit.*'],
             'marketing.landingpage.index' => ['marketing.landingpage.*'],
+            'marketing.sosialmedia.index' => ['marketing.sosialmedia.*'],
             'marketing.list_pengajuan' => ['marketing.list_pengajuan*', 'marketing.cash*', 'pengajuan.*', 'bookings.*', 'cetak.*', 'dashboard.cetak.*'],
             'master.data.tugas-staff-marketing' => ['master.data.tugas-staff-marketing*'],
             'customer.data' => ['customer.data*'],
@@ -419,8 +421,8 @@
                 {{ $initials }}
             </div>
             <div class="sidebar-bottom-details">
-                <h6 class="sidebar-bottom-name" title="{{ auth()->user()->name }}">{{ auth()->user()->name }}</h6>
-                <span class="sidebar-bottom-email" title="{{ auth()->user()->email }}">{{ auth()->user()->email }}</span>
+                <h6 class="sidebar-bottom-name" title="{{ auth()->user()?->name ?? 'User' }}">{{ auth()->user()?->name ?? 'User' }}</h6>
+                <span class="sidebar-bottom-email" title="{{ auth()->user()?->email ?? '' }}">{{ auth()->user()?->email ?? '' }}</span>
             </div>
             <form action="{{ route('logout') }}" method="POST" class="m-0 p-0">
                 @csrf

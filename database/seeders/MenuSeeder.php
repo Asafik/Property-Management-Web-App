@@ -196,6 +196,12 @@ class MenuSeeder extends Seeder
         ])->positions()->attach($marketingRoles);
 
         Menu::create([
+            'name'      => 'Sosial Media',
+            'route'     => 'marketing.sosialmedia.index',
+            'parent_id' => $marketingMenu->id
+        ])->positions()->attach($marketingRoles);
+
+        Menu::create([
             'name'      => 'Tugas Marketing',
             'route'     => 'master.data.tugas-staff-marketing',
             'parent_id' => $marketingMenu->id

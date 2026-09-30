@@ -121,6 +121,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/marketing/landing-page', [\App\Http\Controllers\Marketing\LandingpageManagementController::class, 'index'])->name('marketing.landingpage.index');
     Route::get('/marketing/landing-page/{id}/edit', [\App\Http\Controllers\Marketing\LandingpageManagementController::class, 'edit'])->name('marketing.landingpage.edit');
     Route::put('/marketing/landing-page/{id}', [\App\Http\Controllers\Marketing\LandingpageManagementController::class, 'update'])->name('marketing.landingpage.update');
+    Route::get('/marketing/sosial-media', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'index'])->name('marketing.sosialmedia.index');
+    Route::post('/marketing/sosial-media/store', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'store'])->name('marketing.sosialmedia.store');
+    Route::post('/marketing/sosial-media/{id}/sync', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'sync'])->name('marketing.sosialmedia.sync');
+    Route::delete('/marketing/sosial-media/{id}', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'destroy'])->name('marketing.sosialmedia.destroy');
     Route::post('/marketing/set-agency/{unitId}', [SellUnitController::class, 'setAgency'])->name('marketing.setAgency');
     Route::post('/unit/save-position', [SellUnitController::class, 'savePosition'])
         ->name('unit.save.position');
