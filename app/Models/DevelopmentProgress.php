@@ -25,6 +25,16 @@ class DevelopmentProgress extends Model
     {
         return $this->hasMany(DevelopmentProgressItem::class, 'development_progress_id');
     }
+
+    public function pembayaranTermin()
+    {
+        return $this->hasMany(\App\Models\PembayaranTermin::class, 'development_progress_id')->orderBy('termin_ke');
+    }
+
+    public function opnameMingguan()
+    {
+        return $this->hasMany(\App\Models\OpnameMingguan::class, 'development_progress_id')->orderBy('minggu_ke');
+    }
     public function deadlines()
     {
         return $this->hasMany(\App\Models\RabDeadline::class, 'development_progress_id');

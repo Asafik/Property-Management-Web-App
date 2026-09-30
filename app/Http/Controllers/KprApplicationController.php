@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Booking;
 use App\Models\KprDocument;
 use App\Models\Promo;
+use App\Models\MasterSkemaKpr;
 class KprApplicationController extends Controller
 {
   
@@ -105,7 +106,7 @@ public function store(Request $request)
         }
 
         // =============================
-        // HITUNG PINJAMAN & ANGSURAN
+        // HITUNG PINJAMAN & ANGSURAN (DARI MASTER DATA SKEMA KPR)
         // =============================
         $hargaSetelahPromo = $hargaUnit - $promoValue;
         $jumlahPinjaman    = $hargaSetelahPromo - $dp;
@@ -114,9 +115,31 @@ public function store(Request $request)
             $jumlahPinjaman = 0;
         }
 
-        $bungaTotal       = $jumlahPinjaman * ($bunga / 100);
-        $totalPinjaman    = $jumlahPinjaman + $bungaTotal;
-        $estimasiAngsuran = $totalPinjaman / ($tenor * 12);
+        // Ambil nominal angsuran dari input form (yang disinkronkan dari Master Skema KPR)
+        $estimasiAngsuran = (float) preg_replace('/[^0-9]/', '', (string)$request->estimasi_angsuran);
+
+        // Jika form tidak mengirimkan atau 0, cari langsung dari Master Data Skema KPR
+        if ($estimasiAngsuran <= 0) {
+            $skemaMaster = MasterSkemaKpr::where('bank_id', $request->banks_id)
+                ->where('tenor', $tenor)
+                ->where('is_active', true)
+                ->when($request->produk_kpr, function ($q) use ($request) {
+                    $q->where('produk_kpr', $request->produk_kpr);
+                })
+                ->orderBy('id', 'asc')
+                ->first();
+
+            if ($skemaMaster) {
+                $estimasiAngsuran = (float)$skemaMaster->angsuran_per_bulan;
+            }
+        }
+
+        // Fallback jika tidak ada konfigurasi di master data
+        if ($estimasiAngsuran <= 0) {
+            $bungaTotal       = $jumlahPinjaman * ($bunga / 100);
+            $totalPinjaman    = $jumlahPinjaman + $bungaTotal;
+            $estimasiAngsuran = ($tenor > 0) ? ($totalPinjaman / ($tenor * 12)) : 0;
+        }
 
         // =============================
         // SIMPAN DATA KPR
@@ -162,24 +185,47 @@ public function store(Request $request)
         // UPLOAD FILE (STANDAR & DINAMIS)
         // =============================
         $fileFields = [
-            'ktp'            => 'KTP Pemohon',
-            'kk'             => 'Kartu Keluarga (KK)',
-            'npwp'           => 'NPWP Pemohon',
-            'slip_gaji'      => 'Slip Gaji 3 Bulan',
-            'rekening_koran' => 'Rekening Koran',
-            'sku'            => 'SKU / Surat Keterangan Kerja',
-            'surat_nikah'    => 'Buku / Surat Nikah',
-            'ktp_pasangan'   => 'KTP Pasangan',
+            // 1. Dokumen Bank
+            'form_bank'                     => 'Form Bank',
+            'tapera_mobile'                 => 'Tapera Mobile',
+
+            // 2. Data Diri
+            'ktp'                           => 'KTP Pemohon',
+            'ktp_pasangan'                  => 'KTP Pasangan',
+            'kk'                            => 'Kartu Keluarga (KK) Pemohon',
+            'pas_foto'                      => 'Foto Berwarna Pemohon dan Pasangan',
+            'surat_nikah'                   => 'Buku Nikah / Ket. Belum Menikah / Akta Cerai',
+            'surat_belum_nikah_kembali'     => 'Surat Keterangan Belum Menikah Kembali',
+            'surat_domisili'                => 'Surat Keterangan Domisili',
+            'surat_belum_punya_rumah'       => 'Surat Keterangan Tidak Punya Rumah',
+            'surat_pasangan_tidak_bekerja'  => 'Surat Keterangan Pasangan Tidak Bekerja',
+
+            // 3. Dokumen Karyawan Swasta
+            'npwp'                          => 'NPWP Pemohon',
+            'spt'                           => 'SPT Tahunan',
+            'surat_keterangan_kerja'        => 'Surat Keterangan Kerja',
+            'slip_gaji'                     => 'Slip Gaji 3 Bulan Terakhir',
+            'rekening_koran'                => 'Rekening Koran 3 Bulan Terakhir',
+            'denah_tempat_kerja'            => 'Denah Tempat Kerja dan Foto',
+
+            // 4. Dokumen Wiraswasta
+            'npwp_wiraswasta'               => 'NPWP Pemohon',
+            'spt_wiraswasta'                => 'SPT Tahunan',
+            'sku'                           => 'Surat Keterangan Usaha (SKU)',
+            'slip_gaji_wiraswasta'          => 'Slip Gaji / Laporan 6 Bulan Terakhir',
+            'rekening_koran_wiraswasta'     => 'Rekening Koran 6 Bulan Terakhir',
+            'denah_tempat_kerja_wiraswasta' => 'Denah Tempat Usaha dan Foto Usaha',
         ];
 
         $docMap = [
-            'ktp'          => 'KTP',
-            'kk'           => 'Kartu Keluarga',
-            'npwp'         => 'NPWP',
-            'ktp_pasangan' => 'KTP Pasangan'
+            'ktp'             => 'KTP',
+            'kk'              => 'Kartu Keluarga',
+            'npwp'            => 'NPWP',
+            'npwp_wiraswasta' => 'NPWP',
+            'ktp_pasangan'    => 'KTP Pasangan'
         ];
 
-        $destination = $_SERVER['DOCUMENT_ROOT'] . '/uploads/kpr';
+        $destination = public_path('uploads/kpr');
         if (!file_exists($destination)) {
             mkdir($destination, 0755, true);
         }

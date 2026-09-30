@@ -1522,31 +1522,21 @@
                                 <span>Harga Unit</span>
                                 <span>Rp {{ number_format($kpr->harga_unit ?? ($kpr->unit->price ?? 0), 0, ',', '.') }}</span>
                             </div>
-                            <div class="transaksi-detail-item">
-                                <span>Uang Muka (DP) Awal</span>
-                                <span>Rp {{ number_format($kpr->dp ?? 0, 0, ',', '.') }}</span>
-                            </div>
-
                             @if(($kpr->promo_value ?? 0) > 0 || !empty($kpr->promo_name))
                             <div class="transaksi-detail-item">
                                 <span>Promo</span>
                                 <span class="text-primary fw-bold">{{ $kpr->promo_name ?? 'Promo Spesial' }}</span>
                             </div>
                             <div class="transaksi-detail-item">
-                                <span>Potongan DP (Promo)</span>
+                                <span>Diskon Promo</span>
                                 <span class="text-danger fw-bold">- Rp {{ number_format($kpr->promo_value ?? 0, 0, ',', '.') }}</span>
                             </div>
                             @endif
 
-                            @php
-                                $dpAwal = (float)($kpr->dp ?? 0);
-                                $nilaiPromo = (float)($kpr->promo_value ?? 0);
-                                $dpBersih = max(0, $dpAwal - $nilaiPromo);
-                            @endphp
                             <div class="transaksi-detail-item">
                                 <span>Total DP yang Dibayar</span>
                                 <span style="color: #2563eb; font-weight: 700;">
-                                    Rp {{ number_format($dpBersih, 0, ',', '.') }}
+                                    Rp {{ number_format($kpr->dp ?? 0, 0, ',', '.') }}
                                 </span>
                             </div>
 

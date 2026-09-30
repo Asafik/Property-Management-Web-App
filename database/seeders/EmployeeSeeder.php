@@ -65,6 +65,24 @@ class EmployeeSeeder extends Seeder
                 'phone' => '08123456781',
                 'address' => 'Jember'
             ],
+            [
+                'name' => 'Kepala Proyek',
+                'username' => 'kepalaproyek',
+                'password' => Hash::make('password'),
+                'division_id' => 6,
+                'position_id' => 8,
+                'phone' => '08123456785',
+                'address' => 'Jember'
+            ],
+            [
+                'name' => 'Staff Proyek',
+                'username' => 'staffproyek',
+                'password' => Hash::make('password'),
+                'division_id' => 6,
+                'position_id' => 9,
+                'phone' => '08123456786',
+                'address' => 'Jember'
+            ],
         ];
 
         foreach ($employees as $emp) {

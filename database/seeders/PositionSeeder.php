@@ -38,6 +38,14 @@ class PositionSeeder extends Seeder
                 'name' => 'Staff Keuangan',
                 'division_id' => 5
             ],
+            [
+                'name' => 'Kepala Proyek',
+                'division_id' => 6
+            ],
+            [
+                'name' => 'Staff Proyek',
+                'division_id' => 6
+            ],
         ]);
     }
 }

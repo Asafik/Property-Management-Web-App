@@ -9,7 +9,7 @@ class CustomerKPRRijectedController extends Controller
     //
     public function index(Request $request)
     {
-        $query = KprApplication::with(['customer', 'unit', 'bank'])
+        $query = KprApplication::with(['customer', 'unit', 'bank', 'booking'])
             ->where('status', 'rejected');
 
         if ($request->filled('search')) {

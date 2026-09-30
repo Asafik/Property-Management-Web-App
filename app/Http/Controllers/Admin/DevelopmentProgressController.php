@@ -9,6 +9,8 @@ use App\Models\DevelopmentProgress;
 use App\Models\DevelopmentProgressItem;
 use App\Models\MasterProgressCategory;
 use App\Models\MasterProgressItem;
+use App\Models\PembayaranTermin;
+use App\Models\OpnameMingguan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -60,7 +62,19 @@ class DevelopmentProgressController extends Controller
             ->orderBy('urutan', 'asc')
             ->get();
 
-        return view('properti.proses_pembangunan', compact('land', 'selectedUnit', 'items', 'masterCategories'));
+        $opnameMingguan = $selectedUnit->progress
+            ? OpnameMingguan::where('development_progress_id', $selectedUnit->progress->id)
+                ->orderBy('minggu_ke', 'asc')
+                ->get()
+            : collect();
+
+        $pembayaranTermin = $selectedUnit->progress
+            ? PembayaranTermin::where('development_progress_id', $selectedUnit->progress->id)
+                ->orderBy('termin_ke', 'asc')
+                ->get()
+            : collect();
+
+        return view('properti.proses_pembangunan', compact('land', 'selectedUnit', 'items', 'masterCategories', 'opnameMingguan', 'pembayaranTermin'));
     }
 
     public function store(Request $request)
@@ -438,4 +452,152 @@ class DevelopmentProgressController extends Controller
             return back()->with('error', 'Gagal menerapkan template RAP: ' . $e->getMessage());
         }
     }
+
+    // =====================================================
+    // PEMBAYARAN TERMIN
+    // =====================================================
+
+    public function storeTermin(Request $request)
+    {
+        $request->validate([
+            'development_progress_id' => 'required|exists:development_progress,id',
+            'land_bank_unit_id'       => 'required|exists:land_bank_units,id',
+            'termin_ke'               => 'required|integer|min:1',
+            'nama_termin'             => 'required|string|max:150',
+            'uraian_pekerjaan'        => 'nullable|string',
+            'syarat_progress_persen'  => 'nullable|numeric|min:0|max:100',
+            'persentase_bayar'        => 'nullable|numeric|min:0|max:100',
+            'nominal'                 => 'nullable|string',
+            'tanggal_jatuh_tempo'     => 'nullable|date',
+            'catatan'                 => 'nullable|string',
+        ]);
+
+        $nominal = (float) preg_replace('/[^0-9.]/', '', str_replace(',', '.', $request->nominal ?? '0'));
+
+        $termin = PembayaranTermin::create([
+            'development_progress_id' => $request->development_progress_id,
+            'land_bank_unit_id'       => $request->land_bank_unit_id,
+            'termin_ke'               => $request->termin_ke,
+            'nama_termin'             => $request->nama_termin,
+            'uraian_pekerjaan'        => $request->uraian_pekerjaan,
+            'syarat_progress_persen'  => $request->syarat_progress_persen ?? 0,
+            'persentase_bayar'        => $request->persentase_bayar ?? 0,
+            'nominal'                 => $nominal,
+            'tanggal_jatuh_tempo'     => $request->tanggal_jatuh_tempo,
+            'catatan'                 => $request->catatan,
+            'status'                  => 'menunggu',
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Termin berhasil ditambahkan.', 'data' => $termin]);
+    }
+
+    public function updateTerminStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status'          => 'required|in:menunggu,diajukan,disetujui,dibayar,ditolak',
+            'tanggal_bayar'   => 'nullable|date',
+            'no_bukti_bayar'  => 'nullable|string|max:100',
+            'catatan'         => 'nullable|string',
+        ]);
+
+        $termin = PembayaranTermin::findOrFail($id);
+        $termin->status = $request->status;
+
+        if ($request->status === 'dibayar') {
+            $termin->tanggal_bayar = $request->tanggal_bayar ?? now()->toDateString();
+            $termin->dibayar_oleh  = auth()->id();
+            $termin->no_bukti_bayar = $request->no_bukti_bayar;
+        } elseif ($request->status === 'disetujui') {
+            $termin->disetujui_oleh = auth()->id();
+        }
+        if ($request->catatan) $termin->catatan = $request->catatan;
+        $termin->save();
+
+        return response()->json(['success' => true, 'message' => 'Status termin berhasil diperbarui.', 'data' => $termin]);
+    }
+
+    public function destroyTermin($id)
+    {
+        $termin = PembayaranTermin::findOrFail($id);
+        $termin->delete();
+        return response()->json(['success' => true, 'message' => 'Termin berhasil dihapus.']);
+    }
+
+    // =====================================================
+    // OPNAME MINGGUAN
+    // =====================================================
+
+    public function storeOpname(Request $request)
+    {
+        $request->validate([
+            'development_progress_id'  => 'required|exists:development_progress,id',
+            'land_bank_unit_id'        => 'required|exists:land_bank_units,id',
+            'minggu_ke'                => 'required|integer|min:1',
+            'tanggal_mulai_minggu'     => 'required|date',
+            'tanggal_akhir_minggu'     => 'required|date|after_or_equal:tanggal_mulai_minggu',
+            'progress_minggu_ini'      => 'nullable|numeric|min:0|max:100',
+            'progress_kumulatif'       => 'nullable|numeric|min:0|max:100',
+            'jumlah_pekerja'           => 'nullable|integer|min:0',
+            'material_digunakan'       => 'nullable|string',
+            'kendala'                  => 'nullable|string',
+            'solusi'                   => 'nullable|string',
+            'rencana_minggu_depan'     => 'nullable|string',
+            'catatan'                  => 'nullable|string',
+            'uraian_pekerjaan'         => 'nullable|array',
+        ]);
+
+        // Auto-generate no_opname
+        $progressId = $request->development_progress_id;
+        $count = OpnameMingguan::where('development_progress_id', $progressId)->count() + 1;
+        $noOpname = 'OPN-' . date('Y') . '-' . str_pad($count, 3, '0', STR_PAD_LEFT);
+
+        $opname = OpnameMingguan::create([
+            'development_progress_id' => $progressId,
+            'land_bank_unit_id'       => $request->land_bank_unit_id,
+            'no_opname'               => $noOpname,
+            'minggu_ke'               => $request->minggu_ke,
+            'tanggal_mulai_minggu'    => $request->tanggal_mulai_minggu,
+            'tanggal_akhir_minggu'    => $request->tanggal_akhir_minggu,
+            'progress_minggu_ini'     => $request->progress_minggu_ini ?? 0,
+            'progress_kumulatif'      => $request->progress_kumulatif ?? 0,
+            'jumlah_pekerja'          => $request->jumlah_pekerja,
+            'material_digunakan'      => $request->material_digunakan,
+            'kendala'                 => $request->kendala,
+            'solusi'                  => $request->solusi,
+            'rencana_minggu_depan'    => $request->rencana_minggu_depan,
+            'catatan'                 => $request->catatan,
+            'uraian_pekerjaan'        => $request->uraian_pekerjaan ?? [],
+            'status'                  => 'draft',
+            'dibuat_oleh'             => auth()->id(),
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Opname minggu ke-' . $request->minggu_ke . ' berhasil disimpan.', 'data' => $opname]);
+    }
+
+    public function updateOpnameStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status'           => 'required|in:draft,diajukan,disetujui,ditolak',
+            'catatan_reviewer' => 'nullable|string',
+        ]);
+
+        $opname = OpnameMingguan::findOrFail($id);
+        $opname->status = $request->status;
+        if ($request->catatan_reviewer) $opname->catatan_reviewer = $request->catatan_reviewer;
+        if ($request->status === 'disetujui') {
+            $opname->disetujui_oleh = auth()->id();
+            $opname->tanggal_disetujui = now();
+        }
+        $opname->save();
+
+        return response()->json(['success' => true, 'message' => 'Status opname berhasil diperbarui.', 'data' => $opname]);
+    }
+
+    public function destroyOpname($id)
+    {
+        $opname = OpnameMingguan::findOrFail($id);
+        $opname->delete();
+        return response()->json(['success' => true, 'message' => 'Data opname berhasil dihapus.']);
+    }
 }
+

@@ -853,6 +853,256 @@
         <form id="formApplyTemplate" action="{{ route('properti.progress.applyTemplate', $selectedUnit->id) }}" method="POST" style="display: none;">
             @csrf
         </form>
+
+        {{-- ============================================================
+             OPNAME MINGGUAN
+        ============================================================ --}}
+        @php
+            $isUnitSoldOut = false; // TODO: set to true when unit is sold/completed to lock editing
+            $totalOpname = $opnameMingguan->count();
+            $latestKumulatif = $opnameMingguan->last()?->progress_kumulatif ?? 0;
+        @endphp
+        <div class="row mt-3 mt-md-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0" style="border-radius: 14px; overflow: hidden;">
+                    <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 py-3 px-4" style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-bottom: 1.5px solid #bbf7d0;">
+                        <div class="d-flex align-items-center gap-2">
+                            <div style="width:38px;height:38px;border-radius:10px;background:rgba(16,185,129,0.12);color:#10b981;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">
+                                <i class="mdi mdi-clipboard-list-outline"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0 fw-bold text-dark" style="font-size: 1rem;">Opname Mingguan</h5>
+                                <small class="text-muted">Laporan progress fisik per minggu · Kumulatif: <strong class="text-success">{{ number_format($latestKumulatif, 1) }}%</strong></small>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <span class="badge bg-success bg-opacity-15 text-success fw-bold px-3 py-1.5 rounded-2" style="font-size:0.82rem;">{{ $totalOpname }} Laporan</span>
+                            @if(!$isUnitSoldOut)
+                                <button type="button" class="btn btn-sm btn-success text-white px-3 fw-semibold shadow-sm rounded-2" onclick="modalTambahOpname()" id="btnTambahOpname">
+                                    <i class="mdi mdi-plus me-1"></i>Tambah Opname
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="card-body p-0">
+                        @if($opnameMingguan->isNotEmpty())
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0" style="font-size:0.84rem;">
+                                    <thead style="background:#f8fffe;">
+                                        <tr>
+                                            <th class="px-3 py-2 text-muted fw-bold" style="width:60px; font-size:0.75rem; text-transform:uppercase;">No</th>
+                                            <th class="px-3 py-2 text-muted fw-bold" style="font-size:0.75rem; text-transform:uppercase;">No Opname</th>
+                                            <th class="px-3 py-2 text-muted fw-bold" style="font-size:0.75rem; text-transform:uppercase;">Periode Minggu</th>
+                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:120px; font-size:0.75rem; text-transform:uppercase;">Progress Minggu</th>
+                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:120px; font-size:0.75rem; text-transform:uppercase;">Kumulatif</th>
+                                            <th class="px-3 py-2 text-muted fw-bold" style="font-size:0.75rem; text-transform:uppercase;">Uraian Pekerjaan</th>
+                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:110px; font-size:0.75rem; text-transform:uppercase;">Status</th>
+                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:80px; font-size:0.75rem; text-transform:uppercase;">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBodyOpname">
+                                        @foreach($opnameMingguan as $opname)
+                                        <tr>
+                                            <td class="px-3 text-center fw-bold text-muted">{{ $loop->iteration }}</td>
+                                            <td class="px-3">
+                                                <span class="fw-bold font-monospace text-success">{{ $opname->no_opname ?? '-' }}</span>
+                                                <br><small class="text-muted">Minggu ke-{{ $opname->minggu_ke }}</small>
+                                            </td>
+                                            <td class="px-3">
+                                                <div class="fw-semibold">{{ \Carbon\Carbon::parse($opname->tanggal_mulai_minggu)->isoFormat('D MMM') }} – {{ \Carbon\Carbon::parse($opname->tanggal_akhir_minggu)->isoFormat('D MMM Y') }}</div>
+                                            </td>
+                                            <td class="px-3 text-center">
+                                                <div class="fw-bold text-success" style="font-size:1.05rem;">{{ number_format($opname->progress_minggu_ini, 1) }}%</div>
+                                                <div class="progress mt-1" style="height:5px; border-radius:4px;">
+                                                    <div class="progress-bar bg-success" style="width:{{ $opname->progress_minggu_ini }}%"></div>
+                                                </div>
+                                            </td>
+                                            <td class="px-3 text-center">
+                                                <div class="fw-bold text-primary" style="font-size:1rem;">{{ number_format($opname->progress_kumulatif, 1) }}%</div>
+                                            </td>
+                                            <td class="px-3">
+                                                @if($opname->uraian_pekerjaan && count($opname->uraian_pekerjaan) > 0)
+                                                    <ul class="mb-0 ps-3" style="font-size:0.8rem;">
+                                                        @foreach(array_slice($opname->uraian_pekerjaan, 0, 3) as $uraian)
+                                                            <li>{{ $uraian }}</li>
+                                                        @endforeach
+                                                        @if(count($opname->uraian_pekerjaan) > 3)
+                                                            <li class="text-muted">+{{ count($opname->uraian_pekerjaan) - 3 }} lainnya...</li>
+                                                        @endif
+                                                    </ul>
+                                                @else
+                                                    <span class="text-muted small">{{ $opname->catatan ?? '-' }}</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-3 text-center">
+                                                <span class="badge bg-{{ $opname->status_badge_class }} bg-opacity-15 text-{{ $opname->status_badge_class }} fw-bold px-2 py-1 rounded-2" style="font-size:0.75rem;">{{ $opname->status_label }}</span>
+                                            </td>
+                                            <td class="px-3 text-center">
+                                                @if(!$isUnitSoldOut)
+                                                <button type="button" class="btn btn-sm btn-outline-danger rounded-circle p-1 btn-hapus-opname" data-id="{{ $opname->id }}" style="width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;">
+                                                    <i class="mdi mdi-trash-can-outline" style="font-size:0.85rem;"></i>
+                                                </button>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <div class="text-center py-5 text-muted">
+                                <i class="mdi mdi-clipboard-text-off-outline" style="font-size:3rem; opacity:0.25;"></i>
+                                <p class="mt-2 mb-0 fw-semibold" style="font-size:0.9rem;">Belum ada laporan opname mingguan</p>
+                                <small>Klik "Tambah Opname" untuk mencatat progres fisik pembangunan per minggu</small>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ============================================================
+             PEMBAYARAN TERMIN
+        ============================================================ --}}
+        @php
+            $totalTermin = $pembayaranTermin->count();
+            $totalNominalTermin = $pembayaranTermin->sum('nominal');
+            $sudahDibayar = $pembayaranTermin->where('status', 'dibayar')->sum('nominal');
+            $belumDibayar = $totalNominalTermin - $sudahDibayar;
+        @endphp
+        <div class="row mt-3 mt-md-4 mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0" style="border-radius: 14px; overflow: hidden;">
+                    <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 py-3 px-4" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border-bottom: 1.5px solid #bfdbfe;">
+                        <div class="d-flex align-items-center gap-2">
+                            <div style="width:38px;height:38px;border-radius:10px;background:rgba(59,130,246,0.12);color:#3b82f6;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">
+                                <i class="mdi mdi-cash-multiple"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0 fw-bold text-dark" style="font-size: 1rem;">Pembayaran Termin Pembangunan</h5>
+                                <small class="text-muted">
+                                    Total: <strong class="text-primary">Rp {{ number_format($totalNominalTermin, 0, ',', '.') }}</strong>
+                                    · Dibayar: <strong class="text-success">Rp {{ number_format($sudahDibayar, 0, ',', '.') }}</strong>
+                                    · Sisa: <strong class="text-danger">Rp {{ number_format($belumDibayar, 0, ',', '.') }}</strong>
+                                </small>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <span class="badge bg-primary bg-opacity-15 text-primary fw-bold px-3 py-1.5 rounded-2" style="font-size:0.82rem;">{{ $totalTermin }} Termin</span>
+                            @if(!$isUnitSoldOut)
+                                <button type="button" class="btn btn-sm btn-primary text-white px-3 fw-semibold shadow-sm rounded-2" onclick="modalTambahTermin()">
+                                    <i class="mdi mdi-plus me-1"></i>Tambah Termin
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="card-body p-0">
+                        @if($pembayaranTermin->isNotEmpty())
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0" style="font-size:0.84rem;">
+                                    <thead style="background:#f5f9ff;">
+                                        <tr>
+                                            <th class="px-3 py-2 text-muted fw-bold" style="width:60px;font-size:0.75rem;text-transform:uppercase;">Termin</th>
+                                            <th class="px-3 py-2 text-muted fw-bold" style="font-size:0.75rem;text-transform:uppercase;">Nama Termin</th>
+                                            <th class="px-3 py-2 text-muted fw-bold" style="font-size:0.75rem;text-transform:uppercase;">Uraian Pekerjaan</th>
+                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:110px;font-size:0.75rem;text-transform:uppercase;">Syarat Progress</th>
+                                            <th class="px-3 py-2 text-muted fw-bold text-end" style="width:150px;font-size:0.75rem;text-transform:uppercase;">Nominal</th>
+                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:110px;font-size:0.75rem;text-transform:uppercase;">Jatuh Tempo</th>
+                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:110px;font-size:0.75rem;text-transform:uppercase;">Status</th>
+                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:100px;font-size:0.75rem;text-transform:uppercase;">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBodyTermin">
+                                        @foreach($pembayaranTermin as $termin)
+                                        @php
+                                            $statusColor = match($termin->status) {
+                                                'dibayar'   => 'success',
+                                                'disetujui' => 'info',
+                                                'diajukan'  => 'warning',
+                                                'ditolak'   => 'danger',
+                                                default     => 'secondary',
+                                            };
+                                        @endphp
+                                        <tr @if($termin->status === 'dibayar') style="background: rgba(16,185,129,0.04);" @endif>
+                                            <td class="px-3 text-center">
+                                                <span class="badge bg-primary bg-opacity-15 text-primary fw-bold rounded-circle" style="width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;font-size:0.85rem;">{{ $termin->termin_ke }}</span>
+                                            </td>
+                                            <td class="px-3">
+                                                <div class="fw-bold text-dark">{{ $termin->nama_termin }}</div>
+                                                @if($termin->persentase_bayar > 0)
+                                                    <small class="text-muted">{{ $termin->persentase_bayar }}% dari nilai kontrak</small>
+                                                @endif
+                                            </td>
+                                            <td class="px-3">
+                                                <small class="text-muted" style="font-size:0.8rem;">{{ $termin->uraian_pekerjaan ? \Str::limit($termin->uraian_pekerjaan, 80) : '-' }}</small>
+                                            </td>
+                                            <td class="px-3 text-center">
+                                                @if($termin->syarat_progress_persen > 0)
+                                                    <span class="badge bg-warning bg-opacity-15 text-warning fw-bold rounded-2">≥ {{ $termin->syarat_progress_persen }}%</span>
+                                                @else
+                                                    <span class="text-muted">-</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-3 text-end">
+                                                <span class="fw-bold font-monospace text-{{ $termin->status === 'dibayar' ? 'success' : 'dark' }}" style="font-size:0.92rem;">
+                                                    Rp {{ number_format($termin->nominal, 0, ',', '.') }}
+                                                </span>
+                                                @if($termin->status === 'dibayar' && $termin->tanggal_bayar)
+                                                    <br><small class="text-success"><i class="mdi mdi-check-circle me-0.5"></i>{{ \Carbon\Carbon::parse($termin->tanggal_bayar)->isoFormat('D MMM Y') }}</small>
+                                                @endif
+                                            </td>
+                                            <td class="px-3 text-center">
+                                                <small class="text-muted">{{ $termin->tanggal_jatuh_tempo ? \Carbon\Carbon::parse($termin->tanggal_jatuh_tempo)->isoFormat('D MMM Y') : '-' }}</small>
+                                            </td>
+                                            <td class="px-3 text-center">
+                                                <span class="badge bg-{{ $statusColor }} bg-opacity-15 text-{{ $statusColor }} fw-bold px-2 py-1 rounded-2" style="font-size:0.75rem;">{{ $termin->status_label }}</span>
+                                            </td>
+                                            <td class="px-3 text-center">
+                                                <div class="d-flex gap-1 justify-content-center">
+                                                    @if(!$isUnitSoldOut && $termin->status !== 'dibayar')
+                                                        <button type="button" class="btn btn-sm btn-outline-success rounded-2 px-2 py-1 btn-bayar-termin"
+                                                            data-id="{{ $termin->id }}"
+                                                            data-nama="{{ $termin->nama_termin }}"
+                                                            data-nominal="{{ number_format($termin->nominal, 0, ',', '.') }}"
+                                                            style="font-size:0.75rem;" title="Tandai Dibayar">
+                                                            <i class="mdi mdi-cash-check"></i>
+                                                        </button>
+                                                    @endif
+                                                    @if(!$isUnitSoldOut)
+                                                        <button type="button" class="btn btn-sm btn-outline-danger rounded-circle p-1 btn-hapus-termin"
+                                                            data-id="{{ $termin->id }}"
+                                                            style="width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;">
+                                                            <i class="mdi mdi-trash-can-outline" style="font-size:0.85rem;"></i>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style="background:#f5f9ff; border-top: 2px solid #bfdbfe;">
+                                            <td colspan="4" class="px-3 py-2 fw-bold text-dark text-end small">TOTAL PEMBAYARAN TERMIN</td>
+                                            <td class="px-3 py-2 text-end fw-bold text-primary font-monospace" style="font-size:0.95rem;">Rp {{ number_format($totalNominalTermin, 0, ',', '.') }}</td>
+                                            <td colspan="3" class="px-3 py-2 small text-muted">{{ $pembayaranTermin->where('status', 'dibayar')->count() }}/{{ $totalTermin }} termin terbayar</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        @else
+                            <div class="text-center py-5 text-muted">
+                                <i class="mdi mdi-cash-off" style="font-size:3rem; opacity:0.25;"></i>
+                                <p class="mt-2 mb-0 fw-semibold" style="font-size:0.9rem;">Belum ada termin pembayaran</p>
+                                <small>Klik "Tambah Termin" untuk menambahkan jadwal pembayaran berdasarkan progress pembangunan</small>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 @endsection
 
@@ -1467,6 +1717,346 @@
                     }
                 });
             });
+        });
+    </script>
+
+    {{-- ============================================================
+         JS: OPNAME MINGGUAN & PEMBAYARAN TERMIN
+    ============================================================ --}}
+    <script>
+        const CSRF_TOKEN = '{{ csrf_token() }}';
+        const PROGRESS_ID = '{{ $selectedUnit->progress ? $selectedUnit->progress->id : "" }}';
+        const UNIT_ID = '{{ $selectedUnit->id }}';
+
+        /* ─── OPNAME MINGGUAN ─── */
+        function modalTambahOpname() {
+            if (!PROGRESS_ID) {
+                Swal.fire('Perhatian', 'Simpan data RAP terlebih dahulu sebelum menambah opname.', 'warning');
+                return;
+            }
+            const nextMinggu = {{ $opnameMingguan->count() + 1 }};
+            Swal.fire({
+                title: '<i class="mdi mdi-clipboard-list-outline text-success me-2"></i>Tambah Opname Mingguan',
+                width: 700,
+                html: `
+                    <div class="text-start">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Minggu Ke</label>
+                                <input type="number" id="swal-minggu-ke" class="form-control form-control-sm" value="${nextMinggu}" min="1">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Jumlah Pekerja</label>
+                                <input type="number" id="swal-pekerja" class="form-control form-control-sm" placeholder="0" min="0">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Tanggal Mulai Minggu</label>
+                                <input type="date" id="swal-tgl-mulai" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Tanggal Akhir Minggu</label>
+                                <input type="date" id="swal-tgl-akhir" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Progress Minggu Ini (%)</label>
+                                <input type="number" id="swal-prog-minggu" class="form-control form-control-sm" placeholder="0.00" min="0" max="100" step="0.5">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Progress Kumulatif (%)</label>
+                                <input type="number" id="swal-prog-kumulatif" class="form-control form-control-sm" placeholder="0.00" min="0" max="100" step="0.5">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-muted mb-1">Uraian Pekerjaan Minggu Ini</label>
+                                <small class="text-muted d-block mb-1">Satu baris = satu uraian pekerjaan</small>
+                                <textarea id="swal-uraian" class="form-control form-control-sm" rows="3" placeholder="Contoh:&#10;Pemasangan kolom lantai 1&#10;Cor balok ring"></textarea>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Material Digunakan</label>
+                                <textarea id="swal-material" class="form-control form-control-sm" rows="2" placeholder="Semen, pasir, besi 10mm..."></textarea>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Kendala / Hambatan</label>
+                                <textarea id="swal-kendala" class="form-control form-control-sm" rows="2" placeholder="Cuaca buruk, keterlambatan material..."></textarea>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Solusi</label>
+                                <textarea id="swal-solusi" class="form-control form-control-sm" rows="2" placeholder="Solusi dari kendala..."></textarea>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Rencana Minggu Depan</label>
+                                <textarea id="swal-rencana" class="form-control form-control-sm" rows="2" placeholder="Rencana pekerjaan minggu berikutnya..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="mdi mdi-check me-1"></i>Simpan Opname',
+                cancelButtonText: 'Batal',
+                preConfirm: () => {
+                    const mingguKe = document.getElementById('swal-minggu-ke').value;
+                    const tglMulai = document.getElementById('swal-tgl-mulai').value;
+                    const tglAkhir = document.getElementById('swal-tgl-akhir').value;
+                    if (!mingguKe || !tglMulai || !tglAkhir) {
+                        Swal.showValidationMessage('Minggu ke, tanggal mulai, dan tanggal akhir wajib diisi!');
+                        return false;
+                    }
+                    const uraianRaw = document.getElementById('swal-uraian').value;
+                    const uraianArr = uraianRaw.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+                    return {
+                        minggu_ke: parseInt(mingguKe),
+                        tanggal_mulai_minggu: tglMulai,
+                        tanggal_akhir_minggu: tglAkhir,
+                        progress_minggu_ini: parseFloat(document.getElementById('swal-prog-minggu').value) || 0,
+                        progress_kumulatif: parseFloat(document.getElementById('swal-prog-kumulatif').value) || 0,
+                        jumlah_pekerja: parseInt(document.getElementById('swal-pekerja').value) || null,
+                        uraian_pekerjaan: uraianArr,
+                        material_digunakan: document.getElementById('swal-material').value || null,
+                        kendala: document.getElementById('swal-kendala').value || null,
+                        solusi: document.getElementById('swal-solusi').value || null,
+                        rencana_minggu_depan: document.getElementById('swal-rencana').value || null,
+                    };
+                }
+            }).then(result => {
+                if (result.isConfirmed && result.value) {
+                    simpanOpname(result.value);
+                }
+            });
+        }
+
+        function simpanOpname(data) {
+            Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            fetch('{{ route("properti.progress.opname.store") }}', {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': CSRF_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ ...data, development_progress_id: PROGRESS_ID, land_bank_unit_id: UNIT_ID })
+            })
+            .then(res => res.json())
+            .then(resp => {
+                if (resp.success) {
+                    Swal.fire({ icon: 'success', title: 'Berhasil!', text: resp.message, timer: 1800, showConfirmButton: false })
+                        .then(() => window.location.reload());
+                } else {
+                    Swal.fire('Gagal!', resp.message || 'Terjadi kesalahan.', 'error');
+                }
+            })
+            .catch(() => Swal.fire('Error!', 'Terjadi kesalahan server.', 'error'));
+        }
+
+        document.addEventListener('click', function(e) {
+            const btnHapusOpname = e.target.closest('.btn-hapus-opname');
+            if (btnHapusOpname) {
+                const id = btnHapusOpname.dataset.id;
+                Swal.fire({
+                    title: 'Hapus Opname?',
+                    text: 'Data laporan opname ini akan dihapus permanen.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        fetch(`/properti/progress/opname/${id}`, {
+                            method: 'DELETE',
+                            headers: { 'X-CSRF-TOKEN': CSRF_TOKEN, 'Accept': 'application/json' }
+                        })
+                        .then(r => r.json())
+                        .then(resp => {
+                            if (resp.success) {
+                                Swal.fire({ icon: 'success', title: 'Dihapus!', text: resp.message, timer: 1500, showConfirmButton: false })
+                                    .then(() => window.location.reload());
+                            } else {
+                                Swal.fire('Gagal!', resp.message, 'error');
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        /* ─── PEMBAYARAN TERMIN ─── */
+        function modalTambahTermin() {
+            if (!PROGRESS_ID) {
+                Swal.fire('Perhatian', 'Simpan data RAP terlebih dahulu sebelum menambah termin.', 'warning');
+                return;
+            }
+            const nextTermin = {{ $pembayaranTermin->count() + 1 }};
+            Swal.fire({
+                title: '<i class="mdi mdi-cash-multiple text-primary me-2"></i>Tambah Termin Pembayaran',
+                width: 680,
+                html: `
+                    <div class="text-start">
+                        <div class="row g-3">
+                            <div class="col-4">
+                                <label class="form-label small fw-bold text-muted mb-1">Termin Ke</label>
+                                <input type="number" id="swal-termin-ke" class="form-control form-control-sm" value="${nextTermin}" min="1">
+                            </div>
+                            <div class="col-8">
+                                <label class="form-label small fw-bold text-muted mb-1">Nama Termin <span class="text-danger">*</span></label>
+                                <input type="text" id="swal-nama-termin" class="form-control form-control-sm" placeholder="Contoh: Termin 1 – Pekerjaan Pondasi">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-muted mb-1">Uraian Pekerjaan</label>
+                                <textarea id="swal-uraian-termin" class="form-control form-control-sm" rows="2" placeholder="Deskripsi pekerjaan yang dibayar pada termin ini..."></textarea>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label small fw-bold text-muted mb-1">Syarat Progress (%)</label>
+                                <input type="number" id="swal-syarat-progress" class="form-control form-control-sm" placeholder="0" min="0" max="100" step="5">
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label small fw-bold text-muted mb-1">% Bayar dari Kontrak</label>
+                                <input type="number" id="swal-persen-bayar" class="form-control form-control-sm" placeholder="0" min="0" max="100" step="5">
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label small fw-bold text-muted mb-1">Nominal (Rp) <span class="text-danger">*</span></label>
+                                <input type="text" id="swal-nominal" class="form-control form-control-sm font-monospace" placeholder="0" oninput="this.value=this.value.replace(/[^0-9]/g,'').replace(/\\B(?=(\\d{3})+(?!\\d))/g,'.')">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Tanggal Jatuh Tempo</label>
+                                <input type="date" id="swal-jatuh-tempo" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-muted mb-1">Catatan</label>
+                                <textarea id="swal-catatan-termin" class="form-control form-control-sm" rows="2" placeholder="Catatan tambahan..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="mdi mdi-check me-1"></i>Simpan Termin',
+                cancelButtonText: 'Batal',
+                preConfirm: () => {
+                    const namaTermin = document.getElementById('swal-nama-termin').value.trim();
+                    const nominalRaw = document.getElementById('swal-nominal').value;
+                    if (!namaTermin) {
+                        Swal.showValidationMessage('Nama termin wajib diisi!');
+                        return false;
+                    }
+                    const nominal = nominalRaw.replace(/\./g, '');
+                    return {
+                        termin_ke: parseInt(document.getElementById('swal-termin-ke').value),
+                        nama_termin: namaTermin,
+                        uraian_pekerjaan: document.getElementById('swal-uraian-termin').value || null,
+                        syarat_progress_persen: parseFloat(document.getElementById('swal-syarat-progress').value) || 0,
+                        persentase_bayar: parseFloat(document.getElementById('swal-persen-bayar').value) || 0,
+                        nominal: nominal,
+                        tanggal_jatuh_tempo: document.getElementById('swal-jatuh-tempo').value || null,
+                        catatan: document.getElementById('swal-catatan-termin').value || null,
+                    };
+                }
+            }).then(result => {
+                if (result.isConfirmed && result.value) {
+                    simpanTermin(result.value);
+                }
+            });
+        }
+
+        function simpanTermin(data) {
+            Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            fetch('{{ route("properti.progress.termin.store") }}', {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': CSRF_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ ...data, development_progress_id: PROGRESS_ID, land_bank_unit_id: UNIT_ID })
+            })
+            .then(res => res.json())
+            .then(resp => {
+                if (resp.success) {
+                    Swal.fire({ icon: 'success', title: 'Berhasil!', text: resp.message, timer: 1800, showConfirmButton: false })
+                        .then(() => window.location.reload());
+                } else {
+                    Swal.fire('Gagal!', resp.message || 'Terjadi kesalahan.', 'error');
+                }
+            })
+            .catch(() => Swal.fire('Error!', 'Terjadi kesalahan server.', 'error'));
+        }
+
+        document.addEventListener('click', function(e) {
+            // Bayar termin
+            const btnBayar = e.target.closest('.btn-bayar-termin');
+            if (btnBayar) {
+                const id = btnBayar.dataset.id;
+                const nama = btnBayar.dataset.nama;
+                const nominal = btnBayar.dataset.nominal;
+                Swal.fire({
+                    title: `Tandai Dibayar?`,
+                    html: `
+                        <div class="text-start">
+                            <p class="mb-2"><strong>${nama}</strong> — Rp ${nominal}</p>
+                            <label class="form-label small fw-bold text-muted mb-1">No. Bukti Bayar</label>
+                            <input type="text" id="swal-no-bukti" class="form-control form-control-sm mb-2" placeholder="No. kwitansi / transfer">
+                            <label class="form-label small fw-bold text-muted mb-1">Tanggal Bayar</label>
+                            <input type="date" id="swal-tgl-bayar" class="form-control form-control-sm mb-2" value="${new Date().toISOString().substr(0,10)}">
+                            <label class="form-label small fw-bold text-muted mb-1">Catatan</label>
+                            <textarea id="swal-catatan-bayar" class="form-control form-control-sm" rows="2" placeholder="Catatan pembayaran..."></textarea>
+                        </div>
+                    `,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#10b981',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="mdi mdi-cash-check me-1"></i>Konfirmasi Dibayar',
+                    cancelButtonText: 'Batal'
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        fetch(`/properti/progress/termin/${id}/status`, {
+                            method: 'PUT',
+                            headers: { 'X-CSRF-TOKEN': CSRF_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                            body: JSON.stringify({
+                                status: 'dibayar',
+                                no_bukti_bayar: document.getElementById('swal-no-bukti').value,
+                                tanggal_bayar: document.getElementById('swal-tgl-bayar').value,
+                                catatan: document.getElementById('swal-catatan-bayar').value,
+                            })
+                        })
+                        .then(r => r.json())
+                        .then(resp => {
+                            if (resp.success) {
+                                Swal.fire({ icon: 'success', title: 'Dibayar!', text: resp.message, timer: 1500, showConfirmButton: false })
+                                    .then(() => window.location.reload());
+                            } else {
+                                Swal.fire('Gagal!', resp.message, 'error');
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Hapus termin
+            const btnHapusTermin = e.target.closest('.btn-hapus-termin');
+            if (btnHapusTermin) {
+                const id = btnHapusTermin.dataset.id;
+                Swal.fire({
+                    title: 'Hapus Termin?',
+                    text: 'Data termin pembayaran ini akan dihapus permanen.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        fetch(`/properti/progress/termin/${id}`, {
+                            method: 'DELETE',
+                            headers: { 'X-CSRF-TOKEN': CSRF_TOKEN, 'Accept': 'application/json' }
+                        })
+                        .then(r => r.json())
+                        .then(resp => {
+                            if (resp.success) {
+                                Swal.fire({ icon: 'success', title: 'Dihapus!', text: resp.message, timer: 1500, showConfirmButton: false })
+                                    .then(() => window.location.reload());
+                            } else {
+                                Swal.fire('Gagal!', resp.message, 'error');
+                            }
+                        });
+                    }
+                });
+            }
         });
     </script>
 @endpush

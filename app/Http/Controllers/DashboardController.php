@@ -12,6 +12,11 @@ use App\Models\LandBankUnit;
 use App\Models\Booking;
 use App\Models\MarketingTask;
 use App\Models\Employee;
+use App\Models\LandBankInfrastructure;
+use App\Models\Spk;
+use App\Models\DevelopmentProgress;
+use App\Models\PembayaranTermin;
+use App\Models\OpnameMingguan;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -41,6 +46,17 @@ class DashboardController extends Controller
         if ($isMarketing) {
             $isKepalaMarketing = str_contains($posName, 'kepala') || $user->position_id == 1;
             return $this->marketingDashboard($request, $isKepalaMarketing);
+        }
+
+        $isProyek = $user && (
+            $user->division_id == 6 ||
+            str_contains($posName, 'proyek') ||
+            str_contains($divName, 'proyek')
+        );
+
+        if ($isProyek) {
+            $isKepalaProyek = str_contains($posName, 'kepala') || $user->position_id == 8;
+            return $this->proyekDashboard($request, $isKepalaProyek);
         }
 
         $perPage = $request->get('perPage', 10);
@@ -628,10 +644,79 @@ class DashboardController extends Controller
                 ->withCount(['bookings as total_bookings', 'marketingTasks as total_tasks'])
                 ->get();
 
-            $allMarketingTasks = MarketingTask::with('employee')->latest()->take(8)->get();
-            $totalTasks = MarketingTask::count();
-            $completedTasks = MarketingTask::where('status', 'selesai')->count();
-            $pendingTasks = MarketingTask::where('status', '!=', 'selesai')->count();
+            // Monitoring Penugasan Khusus Staf Marketing (Staff Marketing, exclude Kepala Marketing)
+            $allMarketingTasks = MarketingTask::with('employee.position')
+                ->whereHas('employee', function($eq) {
+                    $eq->where('position_id', '!=', 1);
+                })
+                ->latest()
+                ->take(8)
+                ->get();
+            $totalTasks = MarketingTask::whereHas('employee', function($eq) {
+                $eq->where('position_id', '!=', 1);
+            })->count();
+            $completedTasks = MarketingTask::whereHas('employee', function($eq) {
+                $eq->where('position_id', '!=', 1);
+            })->where('status', 'selesai')->count();
+            $pendingTasks = MarketingTask::whereHas('employee', function($eq) {
+                $eq->where('position_id', '!=', 1);
+            })->where('status', '!=', 'selesai')->count();
+        }
+
+        // 5b. TAGIHAN AKUISISI LAHAN (YANG HARUS DIBAYARKAN & DITRANSFERKAN)
+        $landBills = collect();
+        $totalTagihanLahan = 0;
+        $totalTagihanLunas = 0;
+        $totalTagihanPending = 0;
+        $countTagihanPending = 0;
+        $countTagihanLunas = 0;
+
+        if ($isKepalaMarketing) {
+            $landBills = \App\Models\PraLandbank::with(['payments'])
+                ->where(function($q) {
+                    $q->whereIn('status', ['fase3', 'approved'])
+                      ->orWhereHas('payments');
+                })
+                ->latest()
+                ->get()
+                ->map(function($land) {
+                    $firstPayment = $land->payments->first();
+                    $totalNominal = (float) $land->payments->sum('amount');
+                    if ($totalNominal == 0) {
+                        $totalNominal = (float)($land->deal_price ?? 0) 
+                            + (float)($land->cost_ijb ?? 0) 
+                            + (float)($land->cost_tax ?? 0) 
+                            + (float)($land->cost_broker ?? 0) 
+                            + (float)($land->cost_other ?? 0);
+                    }
+                    $hasProof = !empty($land->receipt_file) 
+                        || !empty($land->tax_pph_file) 
+                        || ($land->payments->whereNotNull('file_path')->count() > 0);
+                    $isLunas = ($firstPayment && $firstPayment->status === 'lunas') || $hasProof;
+                    
+                    return (object) [
+                        'id'               => $land->id,
+                        'land_name'        => $land->land_name,
+                        'owner_name'       => $land->owner_name ?? ($land->land_owner ?? '-'),
+                        'ownership_status' => $land->ownership_status,
+                        'payment_method'   => $land->payment_method ?? 'cash',
+                        'nominal'          => $totalNominal,
+                        'bank_name'        => $firstPayment->bank_name ?? 'BCA',
+                        'account_number'   => $firstPayment->account_number ?? '-',
+                        'account_name'     => $firstPayment->account_name ?? ($land->owner_name ?? '-'),
+                        'due_date'         => $firstPayment->due_date ?? null,
+                        'file_path'        => $firstPayment->file_path ?? $land->receipt_file,
+                        'has_proof'        => $hasProof,
+                        'is_lunas'         => $isLunas,
+                        'status'           => $land->status
+                    ];
+                });
+
+            $totalTagihanLahan   = $landBills->sum('nominal');
+            $totalTagihanLunas   = $landBills->where('is_lunas', true)->sum('nominal');
+            $totalTagihanPending = $landBills->where('is_lunas', false)->sum('nominal');
+            $countTagihanPending = $landBills->where('is_lunas', false)->count();
+            $countTagihanLunas   = $landBills->where('is_lunas', true)->count();
         }
 
         // 6. STAFF MARKETING SPECIFIC DATA
@@ -685,6 +770,12 @@ class DashboardController extends Controller
             'totalTasks',
             'completedTasks',
             'pendingTasks',
+            'landBills',
+            'totalTagihanLahan',
+            'totalTagihanLunas',
+            'totalTagihanPending',
+            'countTagihanPending',
+            'countTagihanLunas',
             'myTotalBookings',
             'mySoldUnits',
             'myActiveBookings',
@@ -692,6 +783,119 @@ class DashboardController extends Controller
             'myTotalCustomers',
             'myTasks',
             'myPendingTasks'
+        ));
+    }
+
+    public function proyekDashboard(Request $request, bool $isKepalaProyek)
+    {
+        $user = auth()->user();
+
+        // 1. PROYEK KAWASAN METRICS
+        $totalProjects = LandBank::count();
+        $totalArea = (float) LandBank::sum('area');
+        $allProjects = LandBank::with(['companyProfile', 'infrastructures', 'units'])
+            ->latest()
+            ->get();
+
+        // 2. PENGOLAHAN LAHAN & INFRASTRUKTUR
+        $allInfrastructures = LandBankInfrastructure::all();
+        $totalInfrastruktur = $allInfrastructures->count();
+        $infraSelesai = $allInfrastructures->where('status', 'selesai')->count();
+        $infraBerjalan = $allInfrastructures->whereIn('status', ['dalam_pengerjaan', 'proses', 'berjalan'])->count();
+        $infraBelum = $allInfrastructures->where('status', 'belum_mulai')->count();
+        $avgInfraProgress = $totalInfrastruktur > 0 ? round($allInfrastructures->avg('progress_percentage')) : 0;
+        $totalInfraBudget = (float) $allInfrastructures->sum('actual_cost');
+
+        // Transform Projects for Dashboard Table
+        $projectsList = $allProjects->map(function($lb) {
+            $infras = $lb->infrastructures;
+            $units = $lb->units;
+            $totalInfra = $infras->count();
+            $doneInfra = $infras->where('status', 'selesai')->count();
+            $progressInfra = $totalInfra > 0 ? round($infras->avg('progress_percentage')) : 0;
+
+            return (object) [
+                'id' => $lb->id,
+                'name' => $lb->name,
+                'address' => $lb->address,
+                'city' => $lb->city,
+                'area' => $lb->area,
+                'company_name' => $lb->companyProfile->name ?? 'PT Mandiri',
+                'total_units' => $units->count(),
+                'ready_units' => $units->whereIn('status', ['ready', 'tersedia'])->count(),
+                'progress_units' => $units->whereIn('status', ['pembangunan', 'proses'])->count(),
+                'total_infra' => $totalInfra,
+                'done_infra' => $doneInfra,
+                'progress_infra' => $progressInfra,
+                'legal_status' => $lb->legal_status ?? 'SHM/HGB'
+            ];
+        });
+
+        // 3. UNIT & PEMBANGUNAN FISIK
+        $totalUnits = LandBankUnit::count();
+        $readyUnits = LandBankUnit::whereIn('status', ['ready', 'tersedia'])->count();
+        $progressUnits = LandBankUnit::whereIn('status', ['pembangunan', 'proses'])->count();
+        $bookedUnits = LandBankUnit::where('status', 'booked')->count();
+        $soldUnits = LandBankUnit::whereIn('status', ['sold', 'terjual'])->count();
+
+        // 4. SPK KONTRAKTOR
+        $allSpks = Spk::with(['landBank', 'unit'])->latest()->get();
+        $totalSpk = $allSpks->count();
+        $spkBerjalan = $allSpks->whereIn('status', ['berjalan', 'aktif', 'proses'])->count();
+        $spkSelesai = $allSpks->where('status', 'selesai')->count();
+        $spkPending = $allSpks->whereIn('status', ['draft', 'pending', 'menunggu'])->count();
+        $totalNilaiKontrak = (float) $allSpks->sum('nilai_kontrak');
+        $recentSpks = $allSpks->take(6);
+
+        // 5. OPNAME MINGGUAN & TERMIN PEMBANGUNAN
+        $recentOpnames = OpnameMingguan::with(['unit.landBank', 'progress'])
+            ->latest('tanggal_mulai_minggu')
+            ->take(6)
+            ->get();
+        $totalOpname = OpnameMingguan::count();
+        $opnamePending = OpnameMingguan::whereIn('status', ['diajukan', 'pending', 'menunggu'])->count();
+        $opnameApproved = OpnameMingguan::whereIn('status', ['disetujui', 'approved', 'acc'])->count();
+
+        $recentTermins = PembayaranTermin::with(['unit.landBank', 'progress'])
+            ->latest('tanggal_jatuh_tempo')
+            ->take(6)
+            ->get();
+        $totalTermin = PembayaranTermin::count();
+        $totalTerminPending = PembayaranTermin::whereIn('status', ['pending', 'diajukan', 'menunggu'])->count();
+        $nominalTerminPending = (float) PembayaranTermin::whereIn('status', ['pending', 'diajukan', 'menunggu'])->sum('nominal');
+        $nominalTerminLunas = (float) PembayaranTermin::where('status', 'lunas')->sum('nominal');
+
+        return view('dashboard_proyek', compact(
+            'isKepalaProyek',
+            'totalProjects',
+            'totalArea',
+            'projectsList',
+            'totalInfrastruktur',
+            'infraSelesai',
+            'infraBerjalan',
+            'infraBelum',
+            'avgInfraProgress',
+            'totalInfraBudget',
+            'totalUnits',
+            'readyUnits',
+            'progressUnits',
+            'bookedUnits',
+            'soldUnits',
+            'totalSpk',
+            'spkBerjalan',
+            'spkSelesai',
+            'spkPending',
+            'totalNilaiKontrak',
+            'recentSpks',
+            'recentOpnames',
+            'totalOpname',
+            'opnamePending',
+            'opnameApproved',
+            'recentTermins',
+            'totalTermin',
+            'totalTerminPending',
+            'nominalTerminPending',
+            'nominalTerminLunas'
         ));
     }
 

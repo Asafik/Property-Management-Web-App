@@ -1,6 +1,6 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Daftar Customer KPR Terverifikasi - Demo UI')
+@section('title', 'Daftar Customer KPR Ditolak - Property Management')
 
 @section('content')
 
@@ -171,12 +171,12 @@
 }
 
 .btn-action {
-    height: 36px;
+    height: 34px;
     padding: 0 14px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
+    border-radius: 8px;
     transition: all 0.3s ease;
     cursor: pointer;
     font-size: 0.82rem;
@@ -186,6 +186,8 @@
     color: #9a55ff;
     border: 1.5px solid #9a55ff;
     text-decoration: none;
+    white-space: nowrap !important;
+    width: auto !important;
 }
 .btn-action i {
     font-size: 1rem;
@@ -194,6 +196,22 @@
     background: #9a55ff;
     color: #ffffff;
     box-shadow: 0 5px 15px rgba(154, 85, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.btn-action-primary {
+    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 3px 8px rgba(154, 85, 255, 0.25);
+}
+.btn-action-primary i {
+    color: #ffffff !important;
+}
+.btn-action-primary:hover {
+    background: linear-gradient(135deg, #b47aff, #8338ec) !important;
+    color: #ffffff !important;
+    box-shadow: 0 5px 15px rgba(154, 85, 255, 0.35) !important;
     transform: translateY(-2px);
 }
 
@@ -212,6 +230,29 @@
 }
 .btn-action-warning:hover i {
     color: #2c2e3f !important;
+}
+
+.col-aksi {
+    width: 170px !important;
+    min-width: 170px !important;
+    max-width: 170px !important;
+    text-align: center;
+    position: sticky;
+    right: 0;
+    z-index: 5;
+    background-color: #ffffff;
+    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.05);
+}
+.table thead th.col-aksi {
+    position: sticky;
+    right: 0;
+    top: 0;
+    z-index: 20;
+    background: #f4f5f7;
+    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.05);
+}
+.table tbody tr:hover td.col-aksi {
+    background-color: #f8f9fa;
 }
 
 .table-responsive {
@@ -460,14 +501,14 @@ h3.text-dark {
                 <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
                         <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-file-document-check-outline me-2" style="color: #9a55ff;"></i>Daftar User KPR Persiapan Pecah Legal Unit
+                            <i class="mdi mdi-close-circle-outline me-2 text-danger"></i>Daftar Customer KPR Ditolak
                         </h3>
                         <p class="text-muted mb-0">
-                           Persiapan Pecah Legal Unit
+                            Data pengajuan verifikasi KPR yang ditolak atau memerlukan perbaikan berkas
                         </p>
                     </div>
                     <div class="d-none d-sm-block">
-                        <i class="mdi mdi-account-check-outline" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        <i class="mdi mdi-account-cancel-outline" style="font-size: 2.5rem; color: #ea5455; opacity: 0.25;"></i>
                     </div>
                 </div>
             </div>
@@ -479,7 +520,7 @@ h3.text-dark {
             <div class="card">
                 <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2"></i>Data Customer KPR Terverifikasi
+                        <i class="mdi mdi-format-list-bulleted me-2"></i>Data Customer KPR Ditolak
                     </h5>
                 </div>
 
@@ -490,10 +531,10 @@ h3.text-dark {
                             <div class="filter-row-desktop">
                                 <div class="filter-text">
                                     <i class="mdi mdi-filter-outline"></i>
-                                    <span>Filter data user KPR Terverifikasi</span>
+                                    <span>Filter data user KPR Ditolak</span>
                                 </div>
 
-                                <form method="GET" action="{{ route('customer.kpr.survey') }}">
+                                <form method="GET" action="{{ route('customer.kpr.rijected') }}">
                                     <div class="row g-2 align-items-end w-100">
                                         <div class="col-md-8">
                                             <label class="form-label">Search</label>
@@ -516,7 +557,7 @@ h3.text-dark {
                                         </div>
 
                                         <div class="col-md-1">
-                                            <a href="{{ route('customer.kpr.survey') }}" class="btn btn-gradient-secondary btn-icon-only w-100" title="Reset" style="text-decoration:none;" onclick="showResetLoading(event)">
+                                            <a href="{{ route('customer.kpr.rijected') }}" class="btn btn-gradient-secondary btn-icon-only w-100" title="Reset" style="text-decoration:none;" onclick="showResetLoading(event)">
                                                 <i class="mdi mdi-refresh"></i>
                                             </a>
                                         </div>
@@ -527,10 +568,10 @@ h3.text-dark {
                             <div class="filter-row-mobile">
                                 <div class="filter-text mb-2">
                                     <i class="mdi mdi-filter-outline"></i>
-                                    <span>Filter data user KPR Terverifikasi</span>
+                                    <span>Filter data user KPR Ditolak</span>
                                 </div>
 
-                                <form method="GET" action="{{ route('customer.kpr.survey') }}">
+                                <form method="GET" action="{{ route('customer.kpr.rijected') }}">
                                     <div class="row g-2">
                                         <div class="col-12 mb-2">
                                             <label class="form-label">Search</label>
@@ -552,7 +593,7 @@ h3.text-dark {
                                             </button>
                                         </div>
                                         <div class="col-6">
-                                            <a href="{{ route('customer.kpr.survey') }}" class="btn btn-gradient-secondary w-100" style="text-decoration:none;" onclick="showResetLoading(event)">
+                                            <a href="{{ route('customer.kpr.rijected') }}" class="btn btn-gradient-secondary w-100" style="text-decoration:none;" onclick="showResetLoading(event)">
                                                 <i class="mdi mdi-refresh me-1"></i>Reset
                                             </a>
                                         </div>
@@ -580,7 +621,7 @@ h3.text-dark {
                                     <th>Bank</th>
                                     <th>Status</th>
                                     <th>Tanggal Verifikasi</th>
-                                    <th class="text-center">Aksi</th>
+                                    <th class="text-center col-aksi">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -648,7 +689,11 @@ h3.text-dark {
                                         </td>
 
                                         <td>
-                                            @if ($application->status === 'dokumen')
+                                            @if ($application->status === 'rejected')
+                                                <span class="badge-status" style="background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5;">
+                                                    <i class="mdi mdi-close-circle-outline me-1"></i>Rejected
+                                                </span>
+                                            @elseif ($application->status === 'dokumen')
                                                 <span class="badge-status badge-verified">
                                                     <i class="mdi mdi-check-circle-outline me-1"></i>Terverifikasi
                                                 </span>
@@ -665,6 +710,11 @@ h3.text-dark {
                                                     <i class="mdi mdi-progress-question me-1"></i>{{ ucfirst($application->status ?? '-') }}
                                                 </span>
                                             @endif
+                                            @if ($application->catatan)
+                                                <div class="text-muted small mt-1" style="font-size: 0.76rem; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $application->catatan }}">
+                                                    <i class="mdi mdi-information-outline text-danger me-0.5"></i>{{ $application->catatan }}
+                                                </div>
+                                            @endif
                                         </td>
 
                                         <td>
@@ -674,39 +724,20 @@ h3.text-dark {
                                             </div>
                                         </td>
 
-                                        <td class="text-center">
-                                            @if (($application->unit->jenis ?? null) === 'subsidi')
+                                        <td class="text-center col-aksi">
+                                            @php
+                                                $bookingId = $application->booking_id ?? optional($application->booking)->id;
+                                            @endphp
+                                            @if ($bookingId)
                                                 <a
-                                                    href="{{ route('kpr.pecahlegal', $application->id) }}"
-                                                    class="btn-action btn-action-warning"
-                                                    title="Persiapan Pecah Legal Unit"
+                                                    href="{{ route('transaksi.kpr.approve', $bookingId) }}"
+                                                    class="btn-action btn-action-primary"
+                                                    title="Kembali ke Form Verifikasi KPR"
                                                     onclick="showProcessLoading(event)"
                                                 >
-                                                    <i class="mdi mdi-file-document-edit-outline"></i>
-                                                    Persiapan Pecah Legal
+                                                    <i class="mdi mdi-clipboard-edit-outline me-1"></i>
+                                                    Form Verifikasi
                                                 </a>
-                                            @elseif (($application->unit->jenis ?? null) === 'komersil')
-                                                @if ($application->status === 'survey')
-                                                    <a
-                                                        href="{{ route('kpr.survey', $application->id) }}"
-                                                        class="btn-action"
-                                                        title="Lanjut Survey"
-                                                        onclick="showProcessLoading(event)"
-                                                    >
-                                                        <i class="mdi mdi-arrow-right-bold-circle-outline"></i>
-                                                        Lanjut Survey
-                                                    </a>
-                                                @else
-                                                    <a
-                                                        href="{{ route('kpr.akad', $application->id) }}"
-                                                        class="btn-action"
-                                                        title="Lanjut Akad"
-                                                        onclick="showProcessLoading(event)"
-                                                    >
-                                                        <i class="mdi mdi-handshake-outline"></i>
-                                                        Lanjut Akad
-                                                    </a>
-                                                @endif
                                             @else
                                                 <span class="text-muted">-</span>
                                             @endif
@@ -715,7 +746,7 @@ h3.text-dark {
                                 @empty
                                     <tr>
                                         <td colspan="8" class="text-center text-muted py-4">
-                                            Tidak ada data customer KPR terverifikasi
+                                            Tidak ada data customer KPR ditolak
                                         </td>
                                     </tr>
                                 @endforelse

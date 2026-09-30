@@ -42,6 +42,12 @@
 
                     <!-- Action Shortcut Buttons -->
                     <div class="d-flex flex-wrap align-items-center gap-2">
+                        @if($isKepalaMarketing && Route::has('pralandbank.all'))
+                            <a href="{{ route('pralandbank.all') }}" class="btn btn-sm btn-gradient-success text-white d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm" style="border-radius: 6px; font-weight: 600;">
+                                <i class="mdi mdi-map-clock-outline"></i>
+                                <span>Tanah Pra Land Bank</span>
+                            </a>
+                        @endif
                         <a href="{{ route('marketing.jual-unit') }}" class="btn btn-sm text-white d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm" style="background: #9a55ff; border-radius: 6px; font-weight: 600;">
                             <i class="mdi mdi-view-grid-plus"></i>
                             <span>Catalog Unit</span>
@@ -73,7 +79,7 @@
         <!-- STATS KEPALA MARKETING (EXECUTIVE OVERVIEW) -->
         <div class="row g-3 mb-4">
             <!-- Card 1: Unit Tersedia -->
-            <div class="col-12 col-sm-6 col-xl-3">
+            <div class="col-12 col-sm-6 col-xl">
                 <div class="card border-0 shadow-sm p-3 h-100 position-relative overflow-hidden" style="border-radius: 14px; background: #ffffff; border-left: 4px solid #10b981 !important;">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
@@ -92,7 +98,7 @@
             </div>
 
             <!-- Card 2: Booking Aktif -->
-            <div class="col-12 col-sm-6 col-xl-3">
+            <div class="col-12 col-sm-6 col-xl">
                 <div class="card border-0 shadow-sm p-3 h-100 position-relative overflow-hidden" style="border-radius: 14px; background: #ffffff; border-left: 4px solid #f59e0b !important;">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
@@ -112,7 +118,7 @@
             </div>
 
             <!-- Card 3: Unit Terjual (Sold) -->
-            <div class="col-12 col-sm-6 col-xl-3">
+            <div class="col-12 col-sm-6 col-xl">
                 <div class="card border-0 shadow-sm p-3 h-100 position-relative overflow-hidden" style="border-radius: 14px; background: #ffffff; border-left: 4px solid #6366f1 !important;">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
@@ -131,13 +137,46 @@
                 </div>
             </div>
 
-            <!-- Card 4: Total Estimasi Fee Agency -->
-            <div class="col-12 col-sm-6 col-xl-3">
+            <!-- Card 4: Tagihan Lahan yang Harus Ditransferkan -->
+            <div class="col-12 col-sm-6 col-xl">
+                <div class="card border-0 shadow-sm p-3 h-100 position-relative overflow-hidden" style="border-radius: 14px; background: #ffffff; border-left: 4px solid {{ $countTagihanPending > 0 ? '#f59e0b' : '#059669' }} !important;">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <span class="text-muted small fw-semibold d-block">Tagihan Lahan Harus Ditransfer</span>
+                            <h3 class="fw-bold mb-1 mt-1" style="color: {{ $countTagihanPending > 0 ? '#d97706' : '#059669' }}; font-size: 1.35rem;">
+                                Rp {{ number_format($totalTagihanPending, 0, ',', '.') }}
+                            </h3>
+                            <div class="d-flex flex-wrap gap-1 mt-2">
+                                @if($countTagihanPending > 0)
+                                    <span class="badge" style="background: #fef3c7; color: #b45309; font-size: 0.72rem; font-weight: 700; border-radius: 4px;">
+                                        <i class="mdi mdi-clock-alert-outline me-0.5"></i>{{ $countTagihanPending }} Menunggu Transfer
+                                    </span>
+                                @else
+                                    <span class="badge" style="background: #dcfce7; color: #15803d; font-size: 0.72rem; font-weight: 700; border-radius: 4px;">
+                                        <i class="mdi mdi-check-circle me-0.5"></i>Semua Tagihan Lunas
+                                    </span>
+                                @endif
+                                @if($countTagihanLunas > 0)
+                                    <span class="badge" style="background: #f1f5f9; color: #64748b; font-size: 0.72rem; font-weight: 600; border-radius: 4px;">
+                                        {{ $countTagihanLunas }} Sudah Ditransfer
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="rounded-circle p-2.5 d-flex align-items-center justify-content-center" style="background: {{ $countTagihanPending > 0 ? 'rgba(245, 158, 11, 0.12)' : 'rgba(5, 150, 105, 0.12)' }}; color: {{ $countTagihanPending > 0 ? '#f59e0b' : '#059669' }}; width: 44px; height: 44px;">
+                            <i class="mdi {{ $countTagihanPending > 0 ? 'mdi-clock-alert-outline' : 'mdi-bank-transfer' }} fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5: Total Estimasi Fee Agency -->
+            <div class="col-12 col-sm-6 col-xl">
                 <div class="card border-0 shadow-sm p-3 h-100 position-relative overflow-hidden" style="border-radius: 14px; background: #ffffff; border-left: 4px solid #9a55ff !important;">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <span class="text-muted small fw-semibold d-block">Total Komisi / Fee Agent</span>
-                            <h3 class="fw-bold text-purple mb-1 mt-1" style="color: #9a55ff;">Rp {{ number_format($totalAgentFee, 0, ',', '.') }}</h3>
+                            <h3 class="fw-bold text-purple mb-1 mt-1" style="color: #9a55ff; font-size: 1.35rem;">Rp {{ number_format($totalAgentFee, 0, ',', '.') }}</h3>
                             <div class="mt-2">
                                 <small class="text-muted" style="font-size: 0.74rem;">
                                     <i class="mdi mdi-account-group me-1 text-primary"></i>{{ count($salesTeam) }} Sales & Staff Aktif
@@ -213,6 +252,134 @@
                         </div>
                         <div class="rounded-circle p-2.5 d-flex align-items-center justify-content-center" style="background: rgba(59, 130, 246, 0.12); color: #3b82f6; width: 44px; height: 44px;">
                             <i class="mdi mdi-clipboard-check-outline fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- ========================================================================= -->
+    <!-- SECTION: TAGIHAN AKUISISI LAHAN YANG HARUS DIBAYARKAN & DITRANSFERKAN -->
+    <!-- ========================================================================= -->
+    @if($isKepalaMarketing)
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm" style="border-radius: 14px; background: #ffffff;">
+                    <div class="card-header bg-white py-3 px-4 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div class="d-flex align-items-center gap-2.5">
+                            <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: rgba(16, 185, 129, 0.12); color: #10b981; width: 40px; height: 40px;">
+                                <i class="mdi mdi-bank-transfer fs-4"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold text-dark mb-0" style="font-size: 1.05rem;">
+                                    Tagihan & Pembayaran Transfer Akuisisi Lahan
+                                </h5>
+                                <small class="text-muted" style="font-size: 0.8rem;">
+                                    Kewajiban pelunasan & termin transaksi tanah (Fase 3) yang harus ditransferkan serta diunggah bukti pembayarannya
+                                </small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            @if($totalTagihanPending > 0)
+                                <span class="badge py-1.5 px-3" style="background: #fef3c7; color: #b45309; font-size: 0.8rem; font-weight: 700; border: 1px solid #fde68a; border-radius: 6px;">
+                                    <i class="mdi mdi-clock-alert-outline me-1"></i>Harus Ditransfer: Rp {{ number_format($totalTagihanPending, 0, ',', '.') }}
+                                </span>
+                            @else
+                                <span class="badge py-1.5 px-3" style="background: #ecfdf5; color: #059669; font-size: 0.8rem; font-weight: 700; border: 1px solid #a7f3d0; border-radius: 6px;">
+                                    <i class="mdi mdi-check-circle me-1"></i>Harus Ditransfer: Rp 0 (Semua Lunas)
+                                </span>
+                            @endif
+                            <a href="{{ route('pralandbank.all') }}" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 shadow-sm" style="border-radius: 6px; font-size: 0.82rem;">
+                                <i class="mdi mdi-format-list-bulleted me-1"></i> Buka Pra Land Bank
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" style="font-size: 0.86rem;">
+                                <thead class="table-light">
+                                    <tr style="background: #f8fafc;">
+                                        <th class="py-2.5 px-3 text-center" style="width: 50px; color: #475569; font-weight: 700;">No</th>
+                                        <th class="py-2.5" style="color: #475569; font-weight: 700;">Nama Lahan & Pemilik</th>
+                                        <th class="py-2.5" style="color: #475569; font-weight: 700;">Skema & Realisasi</th>
+                                        <th class="py-2.5" style="color: #475569; font-weight: 700;">Nominal Kewajiban</th>
+                                        <th class="py-2.5" style="color: #475569; font-weight: 700;">Rekening Tujuan Transfer</th>
+                                        <th class="py-2.5 text-center" style="color: #475569; font-weight: 700;">Status Transfer</th>
+                                        <th class="py-2.5 text-center" style="color: #475569; font-weight: 700; width: 160px;">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($landBills as $idx => $bill)
+                                        <tr>
+                                            <td class="px-3 text-center text-muted fw-semibold">{{ $idx + 1 }}</td>
+                                            <td>
+                                                <div class="fw-bold text-dark" style="font-size: 0.9rem;">
+                                                    <i class="mdi mdi-map-marker text-primary me-0.5"></i>{{ $bill->land_name }}
+                                                </div>
+                                                <div class="d-flex align-items-center gap-1.5 mt-0.5">
+                                                    <span class="text-muted small"><i class="mdi mdi-account-tie me-0.5"></i>{{ $bill->owner_name }}</span>
+                                                    @if($bill->ownership_status)
+                                                        <span class="badge py-0.5 px-1.5" style="background: #f3e8ff; color: #7e22ce; font-size: 0.7rem; font-weight: 700;">
+                                                            {{ $bill->ownership_status }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge py-1 px-2" style="background: {{ strtolower($bill->payment_method) === 'termin' ? '#eff6ff' : '#f0fdf4' }}; color: {{ strtolower($bill->payment_method) === 'termin' ? '#1d4ed8' : '#15803d' }}; font-weight: 700; border-radius: 4px;">
+                                                    {{ strtoupper($bill->payment_method) }}
+                                                </span>
+                                                <small class="text-muted d-block mt-1">
+                                                    <i class="mdi mdi-calendar me-0.5"></i>{{ $bill->due_date ? \Carbon\Carbon::parse($bill->due_date)->format('d M Y') : 'Hari ini' }}
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <span class="fw-bold text-dark" style="font-size: 0.92rem;">
+                                                    Rp {{ number_format($bill->nominal, 0, ',', '.') }}
+                                                </span>
+                                                <small class="text-muted d-block" style="font-size: 0.72rem;">Deal & Biaya Transaksi</small>
+                                            </td>
+                                            <td>
+                                                <div class="fw-semibold text-dark" style="font-size: 0.85rem;">
+                                                    <i class="mdi mdi-bank text-secondary me-1"></i>{{ $bill->bank_name }} - {{ $bill->account_number }}
+                                                </div>
+                                                <small class="text-muted d-block" style="font-size: 0.76rem;">a/n {{ $bill->account_name }}</small>
+                                            </td>
+                                            <td class="text-center">
+                                                @if($bill->is_lunas)
+                                                    <span class="badge py-1.5 px-2.5" style="background: #10b981; color: #ffffff; font-size: 0.74rem; font-weight: 700; border-radius: 6px;">
+                                                        <i class="mdi mdi-check-circle me-1"></i>Lunas / Ditransfer
+                                                    </span>
+                                                    @if($bill->file_path)
+                                                        @php $cleanPath = str_replace('uploads/', '', $bill->file_path); @endphp
+                                                        <div class="mt-1">
+                                                            <a href="{{ route('dokumen.preview', ['path' => $cleanPath]) }}" target="_blank" class="badge bg-light text-primary border py-1 px-1.5 text-decoration-none" style="font-size: 0.72rem;">
+                                                                <i class="mdi mdi-file-check me-0.5"></i>Lihat Bukti
+                                                            </a>
+                                                        </div>
+                                                    @endif
+                                                @else
+                                                    <span class="badge py-1.5 px-2.5" style="background: #f59e0b; color: #ffffff; font-size: 0.74rem; font-weight: 700; border-radius: 6px;">
+                                                        <i class="mdi mdi-clock-alert-outline me-1"></i>Menunggu Transfer
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="{{ route('pra-landbank.proses', ['id' => $bill->id, 'step' => 3]) }}" class="btn btn-sm btn-outline-success py-1 px-2.5 shadow-sm fw-semibold" style="font-size: 0.78rem; border-radius: 6px;">
+                                                    <i class="mdi mdi-cash-check me-1"></i>Kelola di Fase 3
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="7" class="text-center py-4 text-muted">
+                                                <i class="mdi mdi-check-circle-outline text-success me-1 fs-5"></i> Tidak ada tagihan pembayaran lahan yang menunggu transfer.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
