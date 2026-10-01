@@ -102,7 +102,7 @@
             align-items: center;
             gap: 6px;
             padding: 6px 14px;
-            border-radius: 9999px;
+            border-radius: 6px;
             font-size: 0.8rem;
             font-weight: 700;
         }

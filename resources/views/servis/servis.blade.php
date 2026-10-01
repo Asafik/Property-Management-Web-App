@@ -926,8 +926,14 @@
                                             @endif
                                         </small>
                                     </div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <button type="button" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1.5 px-3 py-1.5 fw-bold shadow-sm" style="border-radius: 8px; font-size: 0.82rem;" onclick="openTambahComplaintForUnit({{ $ub->id }})">
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <a href="{{ route('complaint.barcode.print', $ub->id) }}" target="_blank" class="btn btn-sm btn-outline-dark d-inline-flex align-items-center gap-1 px-2.5 py-1.5 fw-semibold shadow-sm" style="border-radius: 6px; font-size: 0.8rem;" title="Cetak Stiker QR Barcode untuk Unit Rumah ini">
+                                            <i class="mdi mdi-qrcode-scan"></i> Cetak Stiker QR
+                                        </a>
+                                        <a href="{{ route('complaint.customer.form', $ub->booking_code ?: $ub->id) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1.5 fw-semibold shadow-sm" style="border-radius: 6px; font-size: 0.8rem;" title="Buka Form Pengaduan Mandiri Konsumen">
+                                            <i class="mdi mdi-open-in-new"></i> Form Konsumen
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-gradient-primary d-flex align-items-center gap-1.5 px-3 py-1.5 fw-bold shadow-sm" style="border-radius: 6px; font-size: 0.82rem;" onclick="openTambahComplaintForUnit({{ $ub->id }})">
                                             <i class="mdi mdi-plus-circle"></i> Tambah Keluhan Unit Ini
                                         </button>
                                     </div>
