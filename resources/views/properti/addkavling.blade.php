@@ -1078,14 +1078,36 @@ body.modal-open .page-body-wrapper {
                             </span>
                         @endif
                     </div>
+                    @php
+                        $addressParts = [];
+                        if (!empty($land->address) && $land->address !== '-') {
+                            $addressParts[] = $land->address;
+                        }
+                        if (!empty($land->village) && $land->village !== '-') {
+                            $addressParts[] = 'Kel. ' . $land->village;
+                        }
+                        if (!empty($land->district) && $land->district !== '-') {
+                            $addressParts[] = 'Kec. ' . $land->district;
+                        }
+                        if (!empty($land->city) && $land->city !== '-') {
+                            $addressParts[] = $land->city;
+                        }
+                        if (!empty($land->province) && $land->province !== '-') {
+                            $addressParts[] = $land->province;
+                        }
+                        if (!empty($land->postal_code) && $land->postal_code !== '-') {
+                            $addressParts[] = '(' . $land->postal_code . ')';
+                        }
+                        $formattedAddress = !empty($addressParts) ? implode(', ', $addressParts) : '-';
+                    @endphp
                     <p class="text-muted mb-3" style="font-size: 0.88rem;">
                         <i class="mdi mdi-map-marker-outline text-danger me-1"></i>
-                        {{ $land->address ?? '-' }},
-                        Kel. {{ $land->village ?? '-' }},
-                        Kec. {{ $land->district ?? '-' }},
-                        {{ $land->city ?? '-' }},
-                        {{ $land->province ?? '-' }}
-                        {{ $land->postal_code ? '(' . $land->postal_code . ')' : '' }}
+                        <span>{{ $formattedAddress }}</span>
+                        @if(empty($land->village) || empty($land->district) || empty($land->city))
+                            <a href="{{ route('properti.edit', $land->id) }}" class="badge bg-light text-primary border text-decoration-none ms-1.5 py-1 px-2" title="Lengkapi Kelurahan, Kecamatan, Kota di menu Edit Properti" style="font-size: 0.72rem; border-radius: 4px; vertical-align: middle;">
+                                <i class="mdi mdi-pencil-outline me-0.5"></i>Lengkapi Wilayah
+                            </a>
+                        @endif
                     </p>
 
                     <!-- Progress Pembangunan Full Width Kanan-Kiri di Bawah Alamat -->

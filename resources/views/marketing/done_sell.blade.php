@@ -2143,18 +2143,90 @@
         <!-- Row: Modul Complaint / Keluhan & Garansi -->
         <div class="row mt-3">
             <div class="col-12">
-                <div class="card complaint-table-card border-0">
+                <div class="card complaint-table-card border-0 shadow-sm" style="border-radius: 16px; overflow: hidden;">
                     @php
                         $complaints = $booking->complaints ?? collect([]);
+                        $complaintIdentifier = $booking->booking_code ?: $booking->id;
+                        $complaintUrl = $complaintUrl ?? route('complaint.customer.form', $complaintIdentifier);
+                        if (!isset($qrCodeSvg) || empty($qrCodeSvg)) {
+                            try {
+                                $qrCodeSvg = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(125)->color(79, 70, 229)->generate($complaintUrl);
+                            } catch (\Exception $e) {
+                                $qrCodeSvg = null;
+                            }
+                        }
                     @endphp
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2 py-3">
-                        <h5 class="card-title mb-0 fw-bold" style="color: #2c2e3f;">
-                            KELUHAN & KLAIM GARANSI (COMPLAINT)
-                        </h5>
-                        <button type="button" class="btn btn-gradient-primary btn-sm shadow-sm px-3 fw-bold d-flex align-items-center gap-1" onclick="openAddComplaintModal(event)">
-                            <i class="mdi mdi-plus-circle me-1"></i> Ajukan Keluhan Baru
-                        </button>
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2 py-3 border-bottom">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="p-2 rounded-3" style="background: rgba(154, 85, 255, 0.1); color: #9a55ff;">
+                                <i class="mdi mdi-shield-home fs-5"></i>
+                            </span>
+                            <div>
+                                <h5 class="card-title mb-0 fw-bold" style="color: #2c2e3f;">
+                                    KELUHAN & KLAIM GARANSI (COMPLAINT)
+                                </h5>
+                                <small class="text-muted">Akses mandiri pengaduan pembeli via Barcode / QR Code & pencatatan maintenance</small>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <a href="{{ route('complaint.barcode.print', $booking->id) }}" target="_blank" class="btn btn-outline-dark btn-sm shadow-sm px-3 fw-bold d-flex align-items-center gap-1">
+                                <i class="mdi mdi-printer me-1"></i> Cetak Stiker QR
+                            </a>
+                            <button type="button" class="btn btn-gradient-primary btn-sm shadow-sm px-3 fw-bold d-flex align-items-center gap-1" onclick="openAddComplaintModal(event)">
+                                <i class="mdi mdi-plus-circle me-1"></i> + Input Internal (Staff)
+                            </button>
+                        </div>
                     </div>
+
+                    <!-- Banner Barcode / QR Code Pembeli -->
+                    <div class="p-3 p-md-4" style="background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%); border-bottom: 1px solid #e5e9f5;">
+                        <div class="row align-items-center g-3">
+                            <div class="col-auto text-center">
+                                <div class="p-2 bg-white rounded-3 shadow-sm d-inline-flex flex-column align-items-center border" style="width: 140px;">
+                                    <div style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                        @if($qrCodeSvg)
+                                            {!! $qrCodeSvg !!}
+                                        @else
+                                            <i class="mdi mdi-qrcode fs-1 text-muted"></i>
+                                        @endif
+                                    </div>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary mt-1" style="font-size: 0.68rem; font-weight: 700;">
+                                        <i class="mdi mdi-cellphone-arrow-down me-0.5"></i> Scan QR Pembeli
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                    <span class="badge px-2 py-1 text-white fw-bold" style="background: linear-gradient(135deg, #6366f1, #4f46e5); font-size: 0.72rem; letter-spacing: 0.5px;">
+                                        PORTAL KHUSUS PEMBELI RUMAH
+                                    </span>
+                                    <span class="badge bg-light text-dark border font-monospace" style="font-size: 0.72rem;">
+                                        Unit: {{ $unit->unit_name ?? '-' }} (Blok {{ $unit->unit_code ?? '-' }})
+                                    </span>
+                                </div>
+                                <h6 class="fw-bold mb-1" style="color: #1e1b4b;">Link & Barcode Pengaduan Mandiri Konsumen</h6>
+                                <p class="text-muted small mb-2" style="max-width: 680px; line-height: 1.45;">
+                                    Konsumen (<strong>{{ $booking->customer->full_name ?? 'Pembeli' }}</strong>) dapat mengisi keluhan, melampirkan foto kerusakan langsung dari kamera HP, dan mengecek tiket garansi secara mandiri tanpa login admin. Bagikan link atau cetak stiker barcode untuk ditempel pada unit rumah.
+                                </p>
+                                
+                                <div class="d-flex align-items-center gap-2 flex-wrap" style="max-width: 650px;">
+                                    <div class="input-group input-group-sm flex-nowrap" style="max-width: 440px;">
+                                        <span class="input-group-text bg-white text-muted border-end-0">
+                                            <i class="mdi mdi-link-variant"></i>
+                                        </span>
+                                        <input type="text" class="form-control bg-white font-monospace border-start-0" id="complaintUrlInput" value="{{ $complaintUrl }}" readonly style="font-size: 0.8rem;">
+                                        <button class="btn btn-outline-secondary bg-white text-primary fw-semibold" type="button" onclick="copyComplaintUrl()" id="btnCopyUrl" title="Salin Link Pengaduan">
+                                            <i class="mdi mdi-content-copy me-1"></i> Salin Link
+                                        </button>
+                                    </div>
+                                    <a href="{{ $complaintUrl }}" target="_blank" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 shadow-sm px-2.5">
+                                        <i class="mdi mdi-open-in-new"></i> Buka Form Konsumen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card-body p-0">
                         @if($complaints->count() > 0)
                             <div class="table-responsive">
@@ -2249,15 +2321,24 @@
                                 </table>
                             </div>
                         @else
-                            <div class="text-center py-4">
-                                <div class="mb-2">
-                                    <i class="mdi mdi-check-circle-outline text-success" style="font-size: 3rem;"></i>
+                            <div class="text-center py-5">
+                                <div class="mb-3">
+                                    <div class="d-inline-flex p-3 rounded-circle" style="background: rgba(16, 185, 129, 0.1);">
+                                        <i class="mdi mdi-shield-check-outline text-success" style="font-size: 2.8rem;"></i>
+                                    </div>
                                 </div>
                                 <h6 class="fw-bold text-dark mb-1">Belum Ada Keluhan / Komplain</h6>
-                                <p class="text-muted small mb-3">Unit dalam kondisi baik dan masa garansi aktif berjalan.</p>
-                                <button type="button" class="btn btn-gradient-primary btn-sm px-3" onclick="openAddComplaintModal(event)">
-                                    <i class="mdi mdi-plus-circle"></i> Ajukan Keluhan Baru
-                                </button>
+                                <p class="text-muted small mb-3" style="max-width: 440px; margin: 0 auto;">
+                                    Unit dalam kondisi baik dan masa garansi aktif berjalan. Konsumen dapat melakukan scan QR di atas atau Anda dapat mencatat keluhan internal.
+                                </p>
+                                <div class="d-inline-flex gap-2">
+                                    <a href="{{ $complaintUrl }}" target="_blank" class="btn btn-outline-primary btn-sm px-3">
+                                        <i class="mdi mdi-cellphone-check me-1"></i> Buka Form Konsumen
+                                    </a>
+                                    <button type="button" class="btn btn-gradient-primary btn-sm px-3" onclick="openAddComplaintModal(event)">
+                                        <i class="mdi mdi-plus-circle me-1"></i> + Input Internal (Staff)
+                                    </button>
+                                </div>
                             </div>
                         @endif
                     </div>
@@ -2726,6 +2807,43 @@
         });
     }
 
+    function copyComplaintUrl() {
+        var input = document.getElementById('complaintUrlInput');
+        if (!input) return;
+        
+        var copyText = function() {
+            var btn = document.getElementById('btnCopyUrl');
+            var originalHtml = btn ? btn.innerHTML : '';
+            if (btn) btn.innerHTML = '<i class="mdi mdi-check text-success me-1"></i> Tersalin!';
+            setTimeout(function() {
+                if (btn) btn.innerHTML = originalHtml;
+            }, 2000);
+
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Link Tersalin!',
+                    text: 'Link formulir pengaduan konsumen berhasil disalin ke clipboard.',
+                    timer: 1800,
+                    showConfirmButton: false
+                });
+            }
+        };
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(input.value).then(copyText).catch(function() {
+                input.select();
+                document.execCommand('copy');
+                copyText();
+            });
+        } else {
+            input.select();
+            input.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            copyText();
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // Prevent scroll jump on Bootstrap modal events
         ['modalAddComplaint', 'modalUpdateComplaint'].forEach(function(modalId) {
@@ -2763,7 +2881,7 @@
             });
         @endif
 
-        @if ($errors->any())
+        @if(isset($errors) && $errors->any())
             Swal.fire({
                 icon: 'error',
                 title: 'Validasi Gagal!',

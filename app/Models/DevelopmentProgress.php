@@ -13,7 +13,12 @@ class DevelopmentProgress extends Model
         'title',
         'status',
         'total_anggaran',
-        'deadline'
+        'deadline',
+        'checklist_kondisi',
+    ];
+
+    protected $casts = [
+        'checklist_kondisi' => 'array',
     ];
 
     public function unit()

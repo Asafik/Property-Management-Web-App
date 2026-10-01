@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\LandBankUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ComplaintController extends Controller
 {
@@ -269,5 +270,224 @@ class ComplaintController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal menghapus data keluhan.');
         }
+    }
+
+    /**
+     * Tampilkan formulir pengaduan mandiri untuk konsumen pembeli rumah (Akses Publik / Scan QR)
+     */
+    public function customerForm($identifier)
+    {
+        $booking = Booking::with(['unit.landBank', 'customer', 'complaints' => function ($q) {
+            $q->latest();
+        }])
+        ->where('booking_code', $identifier)
+        ->orWhere('id', $identifier)
+        ->firstOrFail();
+
+        $unit = $booking->unit;
+        $customer = $booking->customer;
+
+        // Hitung status garansi (Standar garansi pemeliharaan 100 hari setelah serah terima / akad)
+        $bastDate = $booking->serah_terima_date ?? $booking->akad_date ?? $booking->booking_date;
+        $garansiStatus = 'Aktif';
+        $garansiDaysLeft = 100;
+        $garansiExpiry = null;
+
+        if ($bastDate) {
+            $garansiExpiry = \Carbon\Carbon::parse($bastDate)->addDays(100);
+            $now = now();
+            if ($now->greaterThan($garansiExpiry)) {
+                $garansiStatus = 'Berakhir';
+                $garansiDaysLeft = 0;
+            } else {
+                $garansiDaysLeft = (int) $now->diffInDays($garansiExpiry, false);
+            }
+        }
+
+        $complaintUrl = route('complaint.customer.form', $booking->booking_code ?: $booking->id);
+
+        return view('customer.complaint_form', compact(
+            'booking',
+            'unit',
+            'customer',
+            'garansiStatus',
+            'garansiDaysLeft',
+            'garansiExpiry',
+            'complaintUrl'
+        ));
+    }
+
+    /**
+     * Simpan pengaduan langsung dari formulir konsumen publik
+     */
+    public function customerStore(Request $request, $identifier)
+    {
+        $booking = Booking::with(['unit', 'customer'])
+            ->where('booking_code', $identifier)
+            ->orWhere('id', $identifier)
+            ->firstOrFail();
+
+        $request->validate([
+            'nama_pelapor'  => 'nullable|string|max:150',
+            'no_whatsapp'   => 'nullable|string|max:30',
+        ]);
+
+        try {
+            $destination = public_path('uploads/complaints');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+
+            $createdTickets = [];
+            $pelaporInfo = '';
+            if (!empty($request->nama_pelapor) || !empty($request->no_whatsapp)) {
+                $pelaporInfo = "[Pelapor: " . ($request->nama_pelapor ?? $booking->customer->full_name ?? 'Konsumen') . " | WA: " . ($request->no_whatsapp ?? $booking->customer->phone ?? '-') . "]\n";
+            }
+
+            // Mode Multi-Item
+            if ($request->has('items') && is_array($request->items) && count($request->items) > 0) {
+                foreach ($request->items as $index => $item) {
+                    if (empty($item['judul_keluhan']) || empty($item['kategori'])) {
+                        continue;
+                    }
+
+                    $fotoPath = null;
+                    if ($request->hasFile("items.{$index}.foto_keluhan")) {
+                        $file = $request->file("items.{$index}.foto_keluhan");
+                        $filename = time() . '_' . $index . '_cust_' . preg_replace('/[^A-Za-z0-9\-]/', '_', pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+                        $file->move($destination, $filename);
+                        $fotoPath = 'uploads/complaints/' . $filename;
+                    }
+
+                    $ticketNumber = $this->generateTicketNumber();
+
+                    Complaint::create([
+                        'ticket_number'     => $ticketNumber,
+                        'booking_id'        => $booking->id,
+                        'unit_id'           => $booking->unit_id,
+                        'customer_id'       => $booking->customer_id,
+                        'kategori'          => $item['kategori'] ?? 'lainnya',
+                        'judul_keluhan'     => $item['judul_keluhan'],
+                        'deskripsi'         => $pelaporInfo . ($item['deskripsi'] ?? '-'),
+                        'prioritas'         => $item['prioritas'] ?? 'sedang',
+                        'status'            => 'diajukan',
+                        'tanggal_pengajuan' => now(),
+                        'foto_keluhan'      => $fotoPath,
+                    ]);
+
+                    $createdTickets[] = $ticketNumber;
+                }
+            } else {
+                // Fallback Single Item
+                $request->validate([
+                    'kategori'      => 'required|string',
+                    'judul_keluhan' => 'required|string|max:255',
+                    'deskripsi'     => 'required|string',
+                    'prioritas'     => 'nullable|in:rendah,sedang,tinggi,darurat',
+                    'foto_keluhan'  => 'nullable|file|mimes:jpg,jpeg,png,webp,pdf|max:10240',
+                ]);
+
+                $fotoPath = null;
+                if ($request->hasFile('foto_keluhan')) {
+                    $file = $request->file('foto_keluhan');
+                    $filename = time() . '_cust_' . preg_replace('/[^A-Za-z0-9\-]/', '_', pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+                    $file->move($destination, $filename);
+                    $fotoPath = 'uploads/complaints/' . $filename;
+                }
+
+                $ticketNumber = $this->generateTicketNumber();
+
+                Complaint::create([
+                    'ticket_number'     => $ticketNumber,
+                    'booking_id'        => $booking->id,
+                    'unit_id'           => $booking->unit_id,
+                    'customer_id'       => $booking->customer_id,
+                    'kategori'          => $request->kategori,
+                    'judul_keluhan'     => $request->judul_keluhan,
+                    'deskripsi'         => $pelaporInfo . $request->deskripsi,
+                    'prioritas'         => $request->prioritas ?? 'sedang',
+                    'status'            => 'diajukan',
+                    'tanggal_pengajuan' => now(),
+                    'foto_keluhan'      => $fotoPath,
+                ]);
+
+                $createdTickets[] = $ticketNumber;
+            }
+
+            if (empty($createdTickets)) {
+                return redirect()->back()->with('error', 'Mohon isi minimal 1 rincian keluhan dengan judul dan kategori.');
+            }
+
+            $firstTicket = $createdTickets[0];
+            return redirect()->route('complaint.customer.success', [
+                'identifier' => $booking->booking_code ?: $booking->id,
+                'ticket'     => $firstTicket
+            ])->with('allTickets', $createdTickets);
+
+        } catch (\Exception $e) {
+            Log::error('Error customer complaint store: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Terjadi kendala saat mengirim pengaduan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Tampilkan halaman sukses pengaduan untuk konsumen
+     */
+    public function customerSuccess($identifier, $ticket)
+    {
+        $booking = Booking::with(['unit.landBank', 'customer'])
+            ->where('booking_code', $identifier)
+            ->orWhere('id', $identifier)
+            ->firstOrFail();
+
+        $complaint = Complaint::where('ticket_number', $ticket)
+            ->where('booking_id', $booking->id)
+            ->first();
+
+        $recentComplaints = Complaint::where('booking_id', $booking->id)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('customer.complaint_success', compact(
+            'booking',
+            'complaint',
+            'recentComplaints',
+            'ticket'
+        ));
+    }
+
+    /**
+     * Tampilkan lembar stiker QR Code / Barcode pengaduan yang siap dicetak
+     */
+    public function printBarcodeSticker($bookingId)
+    {
+        $booking = Booking::with(['unit.landBank', 'customer', 'serahTerima'])
+            ->where('id', $bookingId)
+            ->orWhere('booking_code', $bookingId)
+            ->firstOrFail();
+
+        $unit = $booking->unit;
+        $customer = $booking->customer;
+
+        $complaintIdentifier = $booking->booking_code ?: $booking->id;
+        $complaintUrl = route('complaint.customer.form', $complaintIdentifier);
+
+        try {
+            $qrCodeSvg = QrCode::format('svg')
+                ->size(220)
+                ->color(26, 32, 44)
+                ->generate($complaintUrl);
+        } catch (\Exception $e) {
+            $qrCodeSvg = null;
+        }
+
+        return view('customer.complaint_barcode_sticker', compact(
+            'booking',
+            'unit',
+            'customer',
+            'complaintUrl',
+            'qrCodeSvg'
+        ));
     }
 }

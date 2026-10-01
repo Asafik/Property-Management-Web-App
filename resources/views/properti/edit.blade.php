@@ -1998,6 +1998,14 @@
                             </div>
                         @endif
 
+                        @if (session('error'))
+                            <div class="properti-alert properti-alert-danger" role="alert">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                {{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
                         @if ($errors->any())
                             <div class="properti-alert properti-alert-danger" role="alert">
                                 <i class="fas fa-exclamation-circle me-2"></i>
@@ -3009,6 +3017,9 @@
                     });
 
                     targetSelect.innerHTML = optionsHtml;
+                    if (selectedValue) {
+                        $(targetSelect).val(selectedValue);
+                    }
                     $(targetSelect).trigger('change.select2');
                     return matchedId;
                 } catch (e) {
@@ -3039,13 +3050,13 @@
                 }
 
                 // On Province Change
-                $('#provinsiProperti').on('change', async function() {
-                    const selectedOpt = this.options[this.selectedIndex];
+                $('#provinsiProperti').on('change select2:select', async function() {
+                    const selectedOpt = $(this).find(':selected')[0];
                     const pId = selectedOpt ? selectedOpt.getAttribute('data-id') : null;
                     kotaSelect.innerHTML = '<option value="">-- Pilih Kota/Kabupaten --</option>';
                     kecSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
                     kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
-                    $('#kotaProperti, #kecamatanProperti, #kelurahanProperti').trigger('change.select2');
+                    $('#kotaProperti, #kecamatanProperti, #kelurahanProperti').val('').trigger('change.select2');
 
                     if (pId) {
                         await loadWilayahProperti('regencies', kotaSelect, pId);
@@ -3053,12 +3064,12 @@
                 });
 
                 // On City Change
-                $('#kotaProperti').on('change', async function() {
-                    const selectedOpt = this.options[this.selectedIndex];
+                $('#kotaProperti').on('change select2:select', async function() {
+                    const selectedOpt = $(this).find(':selected')[0];
                     const cId = selectedOpt ? selectedOpt.getAttribute('data-id') : null;
                     kecSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
                     kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
-                    $('#kecamatanProperti, #kelurahanProperti').trigger('change.select2');
+                    $('#kecamatanProperti, #kelurahanProperti').val('').trigger('change.select2');
 
                     if (cId) {
                         await loadWilayahProperti('districts', kecSelect, cId);
@@ -3066,11 +3077,11 @@
                 });
 
                 // On District Change
-                $('#kecamatanProperti').on('change', async function() {
-                    const selectedOpt = this.options[this.selectedIndex];
+                $('#kecamatanProperti').on('change select2:select', async function() {
+                    const selectedOpt = $(this).find(':selected')[0];
                     const dId = selectedOpt ? selectedOpt.getAttribute('data-id') : null;
                     kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
-                    $('#kelurahanProperti').trigger('change.select2');
+                    $('#kelurahanProperti').val('').trigger('change.select2');
 
                     if (dId) {
                         await loadWilayahProperti('villages', kelSelect, dId);
@@ -3086,6 +3097,26 @@
                 village: "{{ old('kelurahan', $land->village ?? '') }}"
             };
             setupWilayahPropertiCascade(initialWilayah);
+
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: "{{ session('success') }}",
+                    timer: 3500,
+                    showConfirmButton: true,
+                    confirmButtonColor: '#3085d6'
+                });
+            @endif
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Memperbarui!',
+                    text: "{{ session('error') }}",
+                    showConfirmButton: true,
+                    confirmButtonColor: '#d33'
+                });
+            @endif
         });
 
         // Leaflet Map with Google Maps Tile Layers
