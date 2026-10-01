@@ -144,13 +144,13 @@
         .progress-row .progress {
             flex: 1;
             height: 8px;
-            border-radius: 9999px;
+            border-radius: 4px;
             background-color: #e2e8f0;
             margin-bottom: 0;
         }
         .progress-bar-custom {
             height: 100%;
-            border-radius: 9999px;
+            border-radius: 4px;
             transition: width 0.4s ease;
         }
         .progress-percent {
@@ -345,7 +345,7 @@
                         <button class="nav-link" id="tab-customer-agent-btn" data-bs-toggle="tab" data-bs-target="#tab-customer-agent" type="button" role="tab" aria-controls="tab-customer-agent" aria-selected="false">
                             <i class="mdi mdi-account-group-outline me-2"></i>Customer & Agen
                             @if($unit->activeBooking)
-                                <span class="badge rounded-pill bg-success ms-1.5" style="font-size: 0.72rem;">Aktif</span>
+                                <span class="badge bg-success ms-1.5" style="font-size: 0.72rem; border-radius: 6px;">Aktif</span>
                             @endif
                         </button>
                     </li>

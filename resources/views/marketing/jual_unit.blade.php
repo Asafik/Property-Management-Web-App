@@ -69,41 +69,47 @@
             padding: 0.35rem 0.6rem;
             font-size: 0.75rem;
             font-weight: 600;
-            border-radius: 30px;
+            border-radius: 6px;
             display: inline-block;
             white-space: nowrap;
         }
 
         @media (min-width: 576px) {
             .badge {
-                padding: 0.4rem 0.75rem;
-                font-size: 0.8rem;
+                padding: 0.38rem 0.7rem;
+                font-size: 0.78rem;
+                border-radius: 6px;
             }
         }
 
         .badge-gradient-success {
             background: #10b981 !important;
             color: #ffffff !important;
+            border-radius: 6px;
         }
 
         .badge-gradient-primary {
             background: #9a55ff !important;
             color: #ffffff !important;
+            border-radius: 6px;
         }
 
         .badge-gradient-secondary {
             background: #64748b !important;
             color: #ffffff !important;
+            border-radius: 6px;
         }
 
         .badge-gradient-warning {
             background: #f59e0b !important;
             color: #ffffff !important;
+            border-radius: 6px;
         }
 
         .badge-gradient-danger {
             background: #ef4444 !important;
             color: #ffffff !important;
+            border-radius: 6px;
         }
 
         /* Card Compact Persis Perizinan */
@@ -122,8 +128,8 @@
 
         /* ===== CSS DARI UI PERTAMA (UNTUK TABEL) ===== */
         .badge-soft {
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
+            padding: 0.35rem 0.7rem;
+            border-radius: 6px;
             font-weight: 700;
             font-size: 0.78rem;
             display: inline-flex;
@@ -132,28 +138,33 @@
         }
 
         .badge-available-subsidi {
-            background: #28a745;
+            background: #10b981;
             color: #ffffff;
+            border-radius: 6px;
         }
 
         .badge-available-komersil {
-            background: #0d6efd;
+            background: #0284c7;
             color: #ffffff;
+            border-radius: 6px;
         }
 
         .badge-booking {
-            background: #ffc107;
-            color: #2c2e3f;
+            background: #f59e0b;
+            color: #ffffff;
+            border-radius: 6px;
         }
 
         .badge-sold {
-            background: #dc3545;
+            background: #ef4444;
             color: #ffffff;
+            border-radius: 6px;
         }
 
         .badge-draft {
-            background: #6c757d;
+            background: #64748b;
             color: #ffffff;
+            border-radius: 6px;
         }
 
         .price-text {
@@ -179,7 +190,7 @@
         .progress {
             flex: 1;
             height: 10px;
-            border-radius: 20px;
+            border-radius: 4px;
             background: #edf0f5;
             overflow: hidden;
         }
@@ -194,7 +205,7 @@
 
         .progress-bar-custom {
             height: 100%;
-            border-radius: 20px;
+            border-radius: 4px;
         }
 
         .customer-info {
@@ -244,7 +255,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
+            border-radius: 6px;
             margin: 0 2px;
             transition: all 0.3s ease;
             border: none;
@@ -467,7 +478,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
+            border-radius: 6px;
         }
 
         .btn-icon-only i {
@@ -526,7 +537,7 @@
             min-width: 70px;
             display: inline-block;
             padding: 8px 12px;
-            border-radius: 50px;
+            border-radius: 6px;
             font-size: 12px;
             font-weight: 600;
             color: white;
@@ -921,7 +932,7 @@
             align-items: center;
             gap: 0.4rem;
             padding: 0.38rem 0.75rem;
-            border-radius: 999px;
+            border-radius: 6px;
             font-weight: 600;
             font-size: 0.82rem;
             white-space: nowrap;
@@ -932,13 +943,15 @@
         }
 
         .land-badge {
-            background: linear-gradient(135deg, #fff8e1, #ffefb3);
+            background: #fff8e1;
             color: #9a6700;
+            border: 1px solid #fef3c7;
         }
 
         .building-badge {
-            background: linear-gradient(135deg, #eef2ff, #dbe4ff);
+            background: #eef2ff;
             color: #4c63d2;
+            border: 1px solid #e0e7ff;
         }
 
         /* ===== MODAL DETAIL UNIT LENGKAP STYLES (MIRRORING TIMELINE PEMBAYARAN) ===== */
@@ -1110,7 +1123,7 @@
             align-items: center;
             gap: 0.45rem;
             padding: 0.45rem 0.8rem;
-            border-radius: 999px;
+            border-radius: 6px;
             font-size: 0.82rem;
             font-weight: 700;
             margin-right: 0.5rem;
@@ -1119,7 +1132,7 @@
 
         .badge-status {
             padding: 0.45rem 0.85rem;
-            border-radius: 20px;
+            border-radius: 6px;
             font-weight: 700;
             font-size: 0.82rem;
             display: inline-flex;
@@ -1128,17 +1141,17 @@
         }
 
         .badge-status.active {
-            background: linear-gradient(135deg, #28c76f, #48da89);
+            background: #10b981;
             color: #fff;
         }
 
         .badge-status.process {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
+            background: #f59e0b;
+            color: #ffffff;
         }
 
         .badge-status.inactive {
-            background: linear-gradient(135deg, #6c757d, #9aa0a6);
+            background: #64748b;
             color: #fff;
         }
 
@@ -1156,7 +1169,7 @@
 
         .progress {
             height: 8px;
-            border-radius: 10px;
+            border-radius: 4px;
             background: #f0f0f0;
             overflow: hidden;
             flex: 1;
@@ -1164,7 +1177,7 @@
 
         .progress-bar-custom {
             height: 100%;
-            border-radius: 10px;
+            border-radius: 4px;
             transition: width 0.6s ease;
         }
 
@@ -2718,7 +2731,7 @@
                                     <span class="badge bg-primary text-white" id="agency_modal_unit_code" style="font-size: 0.75rem; border-radius: 6px; padding: 4px 8px;">Unit -</span>
                                     <h6 class="fw-bold text-dark mb-0" id="agency_modal_unit_name" style="font-size: 0.95rem;">-</h6>
                                 </div>
-                                <span class="badge" id="agency_modal_jenis_badge" style="font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 12px;">-</span>
+                                <span class="badge" id="agency_modal_jenis_badge" style="font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 6px;">-</span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center pt-2 border-top" style="border-color: #f1ecfc !important;">
                                 <span class="text-muted small">Harga Jual Unit:</span>
@@ -3758,16 +3771,16 @@
             let sHtml = '';
             if (sRaw === 'ready' || sRaw === 'tersedia') {
                 if (tRaw === 'komersil' || jRaw === 'komersil') {
-                    sHtml = `<span class="badge shadow-sm" style="background: #2675BB; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-office-building me-1"></i>Tersedia (Ready Komersil)</span>`;
+                    sHtml = `<span class="badge shadow-sm" style="background: #2675BB; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-office-building me-1"></i>Tersedia (Ready Komersil)</span>`;
                 } else {
-                    sHtml = `<span class="badge shadow-sm" style="background: #28a745; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia (Ready Subsidi)</span>`;
+                    sHtml = `<span class="badge shadow-sm" style="background: #28a745; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia (Ready Subsidi)</span>`;
                 }
             } else if (sRaw === 'booked') {
-                sHtml = `<span class="badge shadow-sm" style="background: #ffc107; color: #212529 !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-bookmark-check me-1"></i>Booked (Terbooking)</span>`;
+                sHtml = `<span class="badge shadow-sm" style="background: #ffc107; color: #212529 !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-bookmark-check me-1"></i>Booked (Terbooking)</span>`;
             } else if (sRaw === 'sold' || sRaw === 'terjual') {
-                sHtml = `<span class="badge shadow-sm" style="background: #dc3545; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-close-circle me-1"></i>Terjual (Sold)</span>`;
+                sHtml = `<span class="badge shadow-sm" style="background: #dc3545; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-close-circle me-1"></i>Terjual (Sold)</span>`;
             } else {
-                sHtml = `<span class="badge bg-secondary shadow-sm" style="color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;">${data.statusText || sRaw}</span>`;
+                sHtml = `<span class="badge bg-secondary shadow-sm" style="color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;">${data.statusText || sRaw}</span>`;
             }
             document.getElementById('m_status').innerHTML = sHtml;
 
