@@ -225,6 +225,36 @@
     color: #ffffff !important;
 }
 
+a.transaksi-step-icon {
+    text-decoration: none !important;
+    cursor: pointer;
+}
+
+a.transaksi-step-icon:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+.transaksi-step.completed a.transaksi-step-icon:hover {
+    box-shadow: 0 6px 16px rgba(40, 199, 111, 0.4) !important;
+}
+
+.transaksi-step.active a.transaksi-step-icon:hover {
+    box-shadow: 0 6px 16px rgba(154, 85, 255, 0.45) !important;
+}
+
+.transaksi-step-title-link {
+    text-decoration: none !important;
+    color: inherit;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.transaksi-step-title-link:hover .transaksi-step-title {
+    color: #9a55ff !important;
+    text-decoration: underline;
+}
+
 .transaksi-step-title {
     font-size: 0.88rem;
     font-weight: 700;
@@ -885,34 +915,72 @@ select.serah-form-control {
                             <div class="transaksi-progress-bar" style="width: {{ $progressWidth }}%;"></div>
                         </div>
 
+                        @php
+                            $bookingId = $application->booking_id ?? optional($application->booking)->id;
+                            $unitId = $application->unit_id ?? optional($application->unit)->id;
+                            $landBankId = optional($application->unit)->land_bank_id ?? 1;
+
+                            $urlPengajuan = $bookingId ? route('pengajuan.show', $bookingId) : '#';
+                            $urlVerifikasi = $bookingId ? route('transaksi.kpr.approve', $bookingId) : '#';
+
+                            $spkModel = null;
+                            if ($application->unit) {
+                                $spkModel = \App\Models\Spk::where('land_bank_unit_id', $application->unit->id)
+                                    ->orWhere(function ($q) use ($application) {
+                                        if (!empty($application->unit->no_spk)) {
+                                            $q->where('no_spk', $application->unit->no_spk);
+                                        } else {
+                                            $q->whereRaw('0 = 1');
+                                        }
+                                    })->first();
+                            }
+                            $urlSpk = $spkModel ? route('spk.show', $spkModel->id) : route('spk.index');
+
+                            $urlPembangunan = route('properti.progress', [
+                                'land_bank_id' => $landBankId,
+                                'unit_id' => $unitId,
+                            ]);
+
+                            $urlSurvey = route('kpr.survey', $application->id);
+                            $urlAkad = $bookingId ? url('/transaksi/kpr/akad-kpr/' . $bookingId) : '#';
+                            $urlSerahTerima = route('kpr.serahterima', $application->id);
+                        @endphp
+
                         <div class="transaksi-steps" {!! $stepStyle !!}>
+                            {{-- Tahap 1: Pengajuan --}}
                             <div class="transaksi-step completed">
-                                <div class="transaksi-step-icon">
+                                <a href="{{ $urlPengajuan }}" class="transaksi-step-icon" title="Buka Halaman Pengajuan KPR">
                                     <i class="mdi mdi-check"></i>
-                                </div>
-                                <span class="transaksi-step-title">Pengajuan</span>
+                                </a>
+                                <a href="{{ $urlPengajuan }}" class="transaksi-step-title-link" title="Buka Halaman Pengajuan KPR">
+                                    <span class="transaksi-step-title">Pengajuan</span>
+                                </a>
                                 <small>{{ \Carbon\Carbon::parse($application->created_at)->translatedFormat('j F Y') }}</small>
                             </div>
 
+                            {{-- Tahap 2: Verifikasi --}}
                             <div class="transaksi-step completed">
-                                <div class="transaksi-step-icon">
+                                <a href="{{ $urlVerifikasi }}" class="transaksi-step-icon" title="Buka Halaman Verifikasi KPR">
                                     <i class="mdi mdi-check"></i>
-                                </div>
-                                <span class="transaksi-step-title">Verifikasi</span>
+                                </a>
+                                <a href="{{ $urlVerifikasi }}" class="transaksi-step-title-link" title="Buka Halaman Verifikasi KPR">
+                                    <span class="transaksi-step-title">Verifikasi</span>
+                                </a>
                                 <small>{{ $application->submitted_at ? \Carbon\Carbon::parse($application->submitted_at)->translatedFormat('j F Y') : '-' }}</small>
                             </div>
 
+                            {{-- Tahap 3: SPK --}}
                             <div class="transaksi-step {{ $spkDone ? 'completed' : '' }}">
-                                <div class="transaksi-step-icon">
+                                <a href="{{ $urlSpk }}" class="transaksi-step-icon" title="{{ $spkModel ? 'Lihat Detail SPK (' . $spkModel->no_spk . ')' : 'Buka Manajemen SPK Kontraktor' }}">
                                     @if ($spkDone)
                                         <i class="mdi mdi-check"></i>
                                     @else
                                         <i class="mdi mdi-clipboard-text"></i>
                                     @endif
-                                </div>
-
-                                <span class="transaksi-step-title">SPK</span>
-
+                                </a>
+                                <a href="{{ $urlSpk }}" class="transaksi-step-title-link" title="{{ $spkModel ? 'Lihat Detail SPK (' . $spkModel->no_spk . ')' : 'Buka Manajemen SPK Kontraktor' }}">
+                                    <span class="transaksi-step-title">SPK</span>
+                                </a>
                                 <small>
                                     @if ($spkDone)
                                         Selesai
@@ -933,69 +1001,60 @@ select.serah-form-control {
                                 ];
                             @endphp
 
+                            {{-- Tahap 4: Pembangunan --}}
                             <div class="transaksi-step {{ $pembangunanDone ? 'completed' : '' }}">
-                                @if ($pembangunanDone)
-                                    <div class="transaksi-step-icon">
+                                <a href="{{ $urlPembangunan }}" class="transaksi-step-icon" title="Buka Monitoring Progress Pembangunan Unit">
+                                    @if ($pembangunanDone)
                                         <i class="mdi mdi-check"></i>
-                                    </div>
-                                @else
-                                    <div class="transaksi-step-icon">
+                                    @else
                                         <i class="mdi mdi-home-city"></i>
-                                    </div>
-                                @endif
-
-                                <span class="transaksi-step-title">Pembangunan</span>
+                                    @endif
+                                </a>
+                                <a href="{{ $urlPembangunan }}" class="transaksi-step-title-link" title="Buka Monitoring Progress Pembangunan Unit">
+                                    <span class="transaksi-step-title">Pembangunan</span>
+                                </a>
                                 <small>{{ $statusText[$status] ?? 'Belum mulai pembangunan' }}</small>
                             </div>
 
-                            @if ($isSubsidi)
-                                <div class="transaksi-step completed">
-                                    <div class="transaksi-step-icon">
-                                        <i class="mdi mdi-check"></i>
-                                    </div>
+                            {{-- Tahap 5: Survey --}}
+                            <div class="transaksi-step completed">
+                                <a href="{{ $urlSurvey }}" class="transaksi-step-icon" title="Buka Halaman Hasil Survey Lapangan KPR">
+                                    <i class="mdi mdi-check"></i>
+                                </a>
+                                <a href="{{ $urlSurvey }}" class="transaksi-step-title-link" title="Buka Halaman Hasil Survey Lapangan KPR">
                                     <span class="transaksi-step-title">Survey</span>
-                                    <small>{{ $application->updated_at ? \Carbon\Carbon::parse($application->updated_at)->translatedFormat('j F Y') : '-' }}</small>
-                                </div>
+                                </a>
+                                <small>{{ $application->updated_at ? \Carbon\Carbon::parse($application->updated_at)->translatedFormat('j F Y') : '-' }}</small>
+                            </div>
 
-                                <div class="transaksi-step completed">
-                                    <div class="transaksi-step-icon">
-                                        <i class="mdi mdi-check"></i>
-                                    </div>
+                            {{-- Tahap 6: Akad --}}
+                            <div class="transaksi-step completed">
+                                <a href="{{ $urlAkad }}" class="transaksi-step-icon" title="Buka Halaman Akad KPR">
+                                    <i class="mdi mdi-check"></i>
+                                </a>
+                                <a href="{{ $urlAkad }}" class="transaksi-step-title-link" title="Buka Halaman Akad KPR">
                                     <span class="transaksi-step-title">Akad</span>
-                                    <small>{{ $application->akad_at ? \Carbon\Carbon::parse($application->akad_at)->translatedFormat('j F Y') : '-' }}</small>
-                                </div>
-                            @else
-                                <div class="transaksi-step completed">
-                                    <div class="transaksi-step-icon">
-                                        <i class="mdi mdi-check"></i>
-                                    </div>
-                                    <span class="transaksi-step-title">Akad</span>
-                                    <small>{{ $application->akad_at ? \Carbon\Carbon::parse($application->akad_at)->translatedFormat('j F Y') : '-' }}</small>
-                                </div>
+                                </a>
+                                <small>{{ $application->akad_at ? \Carbon\Carbon::parse($application->akad_at)->translatedFormat('j F Y') : '-' }}</small>
+                            </div>
 
-                                <div class="transaksi-step completed">
-                                    <div class="transaksi-step-icon">
-                                        <i class="mdi mdi-check"></i>
-                                    </div>
-                                    <span class="transaksi-step-title">Survey</span>
-                                    <small>{{ $application->updated_at ? \Carbon\Carbon::parse($application->updated_at)->translatedFormat('j F Y') : '-' }}</small>
-                                </div>
-                            @endif
-
-                            <div class="transaksi-step {{ $serahTerimaDone ? 'completed' : '' }}">
-                                <div class="transaksi-step-icon">
+                            {{-- Tahap 7: Serah Terima --}}
+                            <div class="transaksi-step active {{ $serahTerimaDone ? 'completed' : '' }}">
+                                <a href="{{ $urlSerahTerima }}" class="transaksi-step-icon" title="Halaman Serah Terima Unit (Saat Ini)">
                                     @if ($serahTerimaDone)
                                         <i class="mdi mdi-check"></i>
                                     @else
                                         <i class="mdi mdi-key"></i>
                                     @endif
-                                </div>
-                                <span class="transaksi-step-title">Serah Terima</span>
+                                </a>
+                                <a href="{{ $urlSerahTerima }}" class="transaksi-step-title-link" title="Halaman Serah Terima Unit (Saat Ini)">
+                                    <span class="transaksi-step-title">Serah Terima</span>
+                                </a>
                                 <small>
                                     @if ($serahTerimaDone)
                                         {{ \Carbon\Carbon::parse($application->booking->serah_terima_date)->translatedFormat('d F Y') }}
                                     @else
-                                        Menunggu
+                                        Dalam Proses
                                     @endif
                                 </small>
                             </div>
@@ -1074,8 +1133,7 @@ select.serah-form-control {
 
                             <div class="transaksi-inline-alert info">
                                 <i class="mdi mdi-information-outline"></i>
-                                <div>Silakan isi data serah terima, checklist kondisi unit, dokumen yang diserahkan, dan
-                                    dokumentasi pendukung tanpa mengubah isi proses yang sudah berjalan.</div>
+                                <div>Silakan isi data serah terima, dokumen yang diserahkan, dan dokumentasi pendukung. Checklist kondisi kelayakan fisik unit diverifikasi langsung melalui <strong>Progress Pembangunan RAP</strong>.</div>
                             </div>
 
                             <div class="row g-3">
@@ -1107,34 +1165,78 @@ select.serah-form-control {
 
                             <hr class="my-4">
 
-                            <div class="transaksi-section-title mb-3">
-                                <i class="mdi mdi-checkbox-marked-outline"></i>
-                                <span>Checklist Kondisi Unit</span>
-                            </div>
+                            @php
+                                $unitProgress = optional(optional($application)->unit)->progress;
+                                $savedChecklist = $unitProgress ? ($unitProgress->checklist_kondisi ?? []) : [];
+                                if (!is_array($savedChecklist)) {
+                                    $savedChecklist = json_decode($savedChecklist, true) ?: [];
+                                }
+                                $kondisiItems = [
+                                    'listrik' => 'Listrik berfungsi normal',
+                                    'air' => 'Air mengalir lancar',
+                                    'pintu_jendela' => 'Pintu & jendela berfungsi baik',
+                                    'kunci_lengkap' => 'Kunci lengkap (pintu utama, pagar)',
+                                    'dinding_plafon' => 'Dinding & plafon baik',
+                                    'lantai' => 'Lantai keramik baik',
+                                    'sanitasi' => 'Kloset & sanitasi berfungsi',
+                                    'meteran' => 'Meteran listrik & air terpasang',
+                                ];
+                                $totalKondisi = count($kondisiItems);
+                                $terpenuhi = 0;
+                                foreach ($kondisiItems as $kKey => $kLabel) {
+                                    if (empty($savedChecklist) || !empty($savedChecklist[$kKey])) {
+                                        $terpenuhi++;
+                                    }
+                                }
+                                $isAllReady = ($terpenuhi === $totalKondisi);
+                                $urlProgressRap = route('properti.progress', [
+                                    'land_bank_id' => $application->unit->land_bank_id ?? 1,
+                                    'unit_id' => $application->unit_id ?? ($booking->unit_id ?? 1),
+                                ]);
+                            @endphp
 
-                            <div class="survey-checklist-grid">
-                                @php
-                                    $kondisiItems = [
-                                        'listrik' => 'Listrik berfungsi normal',
-                                        'air' => 'Air mengalir lancar',
-                                        'pintu_jendela' => 'Pintu & jendela berfungsi baik',
-                                        'kunci_lengkap' => 'Kunci lengkap (pintu utama, pagar)',
-                                        'dinding_plafon' => 'Dinding & plafon baik',
-                                        'lantai' => 'Lantai keramik baik',
-                                        'sanitasi' => 'Kloset & sanitasi berfungsi',
-                                        'meteran' => 'Meteran listrik & air terpasang',
-                                    ];
-                                @endphp
-                                @foreach ($kondisiItems as $field => $label)
-                                    <div class="survey-checkbox-wrapper">
-                                        <input type="checkbox" class="survey-checkbox-input" id="{{ $field }}"
-                                            name="{{ $field }}" value="1" checked>
-                                        <label class="survey-checkbox-label" for="{{ $field }}">
-                                            <i class="mdi mdi-check-circle survey-check-icon"></i>
-                                            <span class="survey-check-text">{{ $label }}</span>
-                                        </label>
+                            <div class="card border-0 mb-3" style="background: #faf7ff; border: 1.5px solid #e9d5ff !important; border-radius: 12px;">
+                                <div class="card-body p-3 p-md-4">
+                                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(154, 85, 255, 0.15); color: #9a55ff; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                                                <i class="mdi mdi-checkbox-marked-circle-outline"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="fw-bold text-dark mb-0" style="font-size: 0.95rem;">Checklist Kondisi Unit</h6>
+                                                <small class="text-muted">Kondisi fisik unit diverifikasi langsung pada <strong>Progress Pembangunan RAP</strong></small>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                            <span class="badge {{ $isAllReady ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning' }} px-3 py-1.5 rounded-pill fw-bold" style="font-size: 0.8rem; border: 1px solid {{ $isAllReady ? '#bbf7d0' : '#fef08a' }};">
+                                                <i class="mdi {{ $isAllReady ? 'mdi-check-decagram' : 'mdi-alert-circle' }} me-1"></i>
+                                                {{ $terpenuhi }}/{{ $totalKondisi }} Kondisi Terpenuhi
+                                            </span>
+                                            <a href="{{ $urlProgressRap }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
+                                                <i class="mdi mdi-open-in-new"></i> Buka Progress RAP
+                                            </a>
+                                        </div>
                                     </div>
-                                @endforeach
+
+                                    <div class="row g-2">
+                                        @foreach ($kondisiItems as $field => $label)
+                                            @php
+                                                $ok = empty($savedChecklist) ? true : !empty($savedChecklist[$field]);
+                                            @endphp
+                                            <div class="col-12 col-md-6">
+                                                <div class="d-flex align-items-center justify-content-between px-3 py-2 bg-white rounded-3 border" style="border-color: #ede4ff !important;">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="mdi {{ $ok ? 'mdi-check-circle text-success' : 'mdi-close-circle text-danger' }}" style="font-size: 1.15rem;"></i>
+                                                        <span class="small fw-semibold text-dark">{{ $label }}</span>
+                                                    </div>
+                                                    <span class="badge {{ $ok ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }} rounded-pill" style="font-size: 0.68rem;">
+                                                        {{ $ok ? 'Terpenuhi' : 'Belum' }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
 
                             <hr class="my-4">
@@ -1270,7 +1372,7 @@ select.serah-form-control {
                                 <ul class="transaksi-mini-list mb-0" style="padding-left: 0; list-style: none;">
                                     <li class="d-flex align-items-start gap-2 mb-2 text-muted" style="font-size: 0.82rem;">
                                         <i class="mdi mdi-arrow-right-circle-outline text-primary mt-0.5"></i>
-                                        <span>Pastikan checklist kondisi unit telah dicek sebelum proses disimpan.</span>
+                                        <span>Pastikan kondisi unit telah diverifikasi di Progress Pembangunan RAP.</span>
                                     </li>
                                     <li class="d-flex align-items-start gap-2 mb-2 text-muted" style="font-size: 0.82rem;">
                                         <i class="mdi mdi-arrow-right-circle-outline text-primary mt-0.5"></i>

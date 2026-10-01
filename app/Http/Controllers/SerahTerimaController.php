@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\SerahTerima;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class SerahTerimaController extends Controller
 {
@@ -157,7 +158,19 @@ class SerahTerimaController extends Controller
 
         $unit = $booking->unit;
 
-        return view('marketing.done_sell', compact('booking', 'unit'));
+        $complaintIdentifier = $booking->booking_code ?: $booking->id;
+        $complaintUrl = route('complaint.customer.form', $complaintIdentifier);
+        $qrCodeSvg = null;
+        try {
+            $qrCodeSvg = QrCode::format('svg')
+                ->size(130)
+                ->color(79, 70, 229)
+                ->generate($complaintUrl);
+        } catch (\Exception $e) {
+            $qrCodeSvg = null;
+        }
+
+        return view('marketing.done_sell', compact('booking', 'unit', 'complaintUrl', 'qrCodeSvg'));
     }
 
     /**

@@ -14,6 +14,7 @@ class PembayaranTermin extends Model
     protected $fillable = [
         'development_progress_id',
         'land_bank_unit_id',
+        'development_progress_item_id',
         'termin_ke',
         'nama_termin',
         'uraian_pekerjaan',
@@ -45,6 +46,11 @@ class PembayaranTermin extends Model
     public function progress()
     {
         return $this->belongsTo(DevelopmentProgress::class, 'development_progress_id');
+    }
+
+    public function item()
+    {
+        return $this->belongsTo(DevelopmentProgressItem::class, 'development_progress_item_id');
     }
 
     public function unit()

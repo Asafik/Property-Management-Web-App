@@ -229,6 +229,36 @@
     color: #ffffff !important;
 }
 
+a.transaksi-step-icon {
+    text-decoration: none !important;
+    cursor: pointer;
+}
+
+a.transaksi-step-icon:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+.transaksi-step.completed a.transaksi-step-icon:hover {
+    box-shadow: 0 6px 16px rgba(40, 199, 111, 0.4) !important;
+}
+
+.transaksi-step.active a.transaksi-step-icon:hover {
+    box-shadow: 0 6px 16px rgba(154, 85, 255, 0.45) !important;
+}
+
+.transaksi-step-title-link {
+    text-decoration: none !important;
+    color: inherit;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.transaksi-step-title-link:hover .transaksi-step-title {
+    color: #9a55ff !important;
+    text-decoration: underline;
+}
+
 .transaksi-step-title {
     font-size: 0.88rem;
     font-weight: 700;
@@ -969,24 +999,68 @@
                             <div class="transaksi-progress-bar" style="width: {{ $progressWidth }}%;"></div>
                         </div>
 
+                        @php
+                            $bookingId = $application->booking_id ?? optional($application->booking)->id;
+                            $unitId = $application->unit_id ?? optional($application->unit)->id;
+                            $landBankId = optional($application->unit)->land_bank_id ?? 1;
+
+                            $urlPengajuan = $bookingId ? route('pengajuan.show', $bookingId) : '#';
+                            $urlVerifikasi = $bookingId ? route('transaksi.kpr.approve', $bookingId) : '#';
+
+                            $spkModel = null;
+                            if ($application->unit) {
+                                $spkModel = \App\Models\Spk::where('land_bank_unit_id', $application->unit->id)
+                                    ->orWhere(function ($q) use ($application) {
+                                        if (!empty($application->unit->no_spk)) {
+                                            $q->where('no_spk', $application->unit->no_spk);
+                                        } else {
+                                            $q->whereRaw('0 = 1');
+                                        }
+                                    })->first();
+                            }
+                            $urlSpk = $spkModel ? route('spk.show', $spkModel->id) : route('spk.index');
+
+                            $urlPembangunan = route('properti.progress', [
+                                'land_bank_id' => $landBankId,
+                                'unit_id' => $unitId,
+                            ]);
+
+                            $urlSurvey = route('kpr.survey', $application->id);
+                            $urlAkad = $bookingId ? url('/transaksi/kpr/akad-kpr/' . $bookingId) : '#';
+                            $urlSerahTerima = route('kpr.serahterima', $application->id);
+                        @endphp
+
                         <div class="transaksi-steps" style="grid-template-columns: repeat(7, 1fr);">
+                            {{-- Tahap 1: Pengajuan --}}
                             <div class="transaksi-step completed">
-                                <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
-                                <span class="transaksi-step-title">Pengajuan</span>
+                                <a href="{{ $urlPengajuan }}" class="transaksi-step-icon" title="Buka Halaman Pengajuan KPR">
+                                    <i class="mdi mdi-check"></i>
+                                </a>
+                                <a href="{{ $urlPengajuan }}" class="transaksi-step-title-link" title="Buka Halaman Pengajuan KPR">
+                                    <span class="transaksi-step-title">Pengajuan</span>
+                                </a>
                                 <small>{{ \Carbon\Carbon::parse($application->created_at)->translatedFormat('j F Y') }}</small>
                             </div>
 
+                            {{-- Tahap 2: Verifikasi --}}
                             <div class="transaksi-step completed">
-                                <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
-                                <span class="transaksi-step-title">Verifikasi</span>
+                                <a href="{{ $urlVerifikasi }}" class="transaksi-step-icon" title="Buka Halaman Verifikasi KPR">
+                                    <i class="mdi mdi-check"></i>
+                                </a>
+                                <a href="{{ $urlVerifikasi }}" class="transaksi-step-title-link" title="Buka Halaman Verifikasi KPR">
+                                    <span class="transaksi-step-title">Verifikasi</span>
+                                </a>
                                 <small>{{ $application->submitted_at ? \Carbon\Carbon::parse($application->submitted_at)->translatedFormat('j F Y') : '-' }}</small>
                             </div>
 
+                            {{-- Tahap 3: SPK --}}
                             <div class="transaksi-step {{ $spkDone ? 'completed' : '' }}">
-                                <div class="transaksi-step-icon">
+                                <a href="{{ $urlSpk }}" class="transaksi-step-icon" title="{{ $spkModel ? 'Lihat Detail SPK (' . $spkModel->no_spk . ')' : 'Buka Manajemen SPK Kontraktor' }}">
                                     <i class="mdi {{ $spkDone ? 'mdi-check' : 'mdi-clipboard-text' }}"></i>
-                                </div>
-                                <span class="transaksi-step-title">SPK</span>
+                                </a>
+                                <a href="{{ $urlSpk }}" class="transaksi-step-title-link" title="{{ $spkModel ? 'Lihat Detail SPK (' . $spkModel->no_spk . ')' : 'Buka Manajemen SPK Kontraktor' }}">
+                                    <span class="transaksi-step-title">SPK</span>
+                                </a>
                                 <small>{{ $spkDone ? 'Selesai' : 'Menunggu' }}</small>
                             </div>
 
@@ -1001,58 +1075,55 @@
                                 ];
                             @endphp
 
+                            {{-- Tahap 4: Pembangunan --}}
                             <div class="transaksi-step {{ $devDone ? 'completed' : '' }}">
-                                @if ($devDone)
-                                    <div class="transaksi-step-icon">
+                                <a href="{{ $urlPembangunan }}" class="transaksi-step-icon" title="Buka Monitoring Progress Pembangunan Unit">
+                                    @if ($devDone)
                                         <i class="mdi mdi-check"></i>
-                                    </div>
-                                @else
-                                    <div class="transaksi-step-icon">
+                                    @else
                                         <i class="mdi mdi-home-city"></i>
-                                    </div>
-                                @endif
-
-                                <span class="transaksi-step-title">Pembangunan</span>
+                                    @endif
+                                </a>
+                                <a href="{{ $urlPembangunan }}" class="transaksi-step-title-link" title="Buka Monitoring Progress Pembangunan Unit">
+                                    <span class="transaksi-step-title">Pembangunan</span>
+                                </a>
                                 <small>{{ $statusText[$status] ?? 'Belum mulai pembangunan' }}</small>
                             </div>
 
-                            @if ($isSubsidi)
-                                <div class="transaksi-step {{ $surveyDone ? 'completed' : '' }}">
+                            {{-- Tahap 5: Survey --}}
+                            <div class="transaksi-step active {{ $surveyDone ? 'completed' : '' }}">
+                                <a href="{{ $urlSurvey }}" class="transaksi-step-icon" title="Halaman Hasil Survey Lapangan KPR (Saat Ini)">
                                     @if ($surveyDone)
-                                        <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
+                                        <i class="mdi mdi-check"></i>
                                     @else
-                                        <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
+                                        <i class="mdi mdi-home-search-outline"></i>
                                     @endif
+                                </a>
+                                <a href="{{ $urlSurvey }}" class="transaksi-step-title-link" title="Halaman Hasil Survey Lapangan KPR (Saat Ini)">
                                     <span class="transaksi-step-title">Survey</span>
-                                    <small>{{ $surveyDone ? 'Selesai' : 'Menunggu' }}</small>
-                                </div>
+                                </a>
+                                <small>{{ $surveyDone ? 'Selesai' : 'Dalam Proses' }}</small>
+                            </div>
 
-                                <div class="transaksi-step">
-                                    <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
-                                    <span class="transaksi-step-title">Akad</span>
-                                    <small>Menunggu</small>
-                                </div>
-                            @else
-                                <div class="transaksi-step {{ $surveyDone ? 'completed' : '' }}">
-                                    @if ($surveyDone)
-                                        <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
-                                    @else
-                                        <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
-                                    @endif
-                                    <span class="transaksi-step-title">Survey</span>
-                                    <small>{{ $surveyDone ? 'Selesai' : 'Menunggu' }}</small>
-                                </div>
-
-                                <div class="transaksi-step">
-                                    <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
-                                    <span class="transaksi-step-title">Akad</span>
-                                    <small>Menunggu</small>
-                                </div>
-                            @endif
-
+                            {{-- Tahap 6: Akad --}}
                             <div class="transaksi-step">
-                                <div class="transaksi-step-icon"><i class="mdi mdi-cash-fast"></i></div>
-                                <span class="transaksi-step-title">Serah Terima</span>
+                                <a href="{{ $urlAkad }}" class="transaksi-step-icon" title="Buka Halaman Akad KPR">
+                                    <i class="mdi mdi-handshake-outline"></i>
+                                </a>
+                                <a href="{{ $urlAkad }}" class="transaksi-step-title-link" title="Buka Halaman Akad KPR">
+                                    <span class="transaksi-step-title">Akad</span>
+                                </a>
+                                <small>Menunggu</small>
+                            </div>
+
+                            {{-- Tahap 7: Serah Terima --}}
+                            <div class="transaksi-step">
+                                <a href="{{ $urlSerahTerima }}" class="transaksi-step-icon" title="Buka Halaman Serah Terima Unit">
+                                    <i class="mdi mdi-cash-fast"></i>
+                                </a>
+                                <a href="{{ $urlSerahTerima }}" class="transaksi-step-title-link" title="Buka Halaman Serah Terima Unit">
+                                    <span class="transaksi-step-title">Serah Terima</span>
+                                </a>
                                 <small>Menunggu</small>
                             </div>
                         </div>

@@ -2,126 +2,15 @@
 
 @section('title', 'RAP Pembangunan - Property Management App')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
-@endpush
-
 @section('content')
 
     <style>
-        .card.rab-info-card,
         .rab-info-card {
-            background: #ffffff !important;
-            border-radius: 8px !important;
-            box-shadow: none !important;
-            border: 1px solid #e2e8f0 !important;
-            padding: 1.15rem 1.25rem !important;
-            transition: border-color 0.2s ease;
-        }
-        .card.rab-info-card:hover,
-        .rab-info-card:hover {
-            border-color: #cbd5e1 !important;
-        }
-        /* Solid Color Buttons (Tanpa Gradient) - Warna Semantik Jelas */
-        .btn-kembali {
-            background-color: #64748b !important;
-            border: 1px solid #64748b !important;
-            color: #ffffff !important;
-            border-radius: 8px !important;
-            font-size: 0.85rem !important;
-            font-weight: 700 !important;
-            padding: 0.5rem 0.85rem !important;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-            transition: all 0.2s ease !important;
-            text-decoration: none !important;
-        }
-        .btn-kembali:hover {
-            background-color: #475569 !important;
-            border-color: #475569 !important;
-            color: #ffffff !important;
-            text-decoration: none !important;
-        }
-
-        .btn-master-template {
-            background-color: #1e293b !important;
-            border: 1px solid #1e293b !important;
-            color: #ffffff !important;
-            border-radius: 8px !important;
-            font-size: 0.85rem !important;
-            font-weight: 700 !important;
-            padding: 0.5rem 0.85rem !important;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-            transition: all 0.2s ease !important;
-            text-decoration: none !important;
-        }
-        .btn-master-template:hover {
-            background-color: #0f172a !important;
-            border-color: #0f172a !important;
-            color: #ffffff !important;
-            text-decoration: none !important;
-        }
-
-        .btn-terapkan-template {
-            background-color: #0284c7 !important;
-            border: 1px solid #0284c7 !important;
-            color: #ffffff !important;
-            border-radius: 8px !important;
-            font-size: 0.85rem !important;
-            font-weight: 700 !important;
-            padding: 0.5rem 0.85rem !important;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-            transition: all 0.2s ease !important;
-            text-decoration: none !important;
-        }
-        .btn-terapkan-template:hover {
-            background-color: #0369a1 !important;
-            border-color: #0369a1 !important;
-            color: #ffffff !important;
-            text-decoration: none !important;
-        }
-
-        .btn-tambah-kategori {
-            background-color: #9a55ff !important;
-            border: 1px solid #9a55ff !important;
-            color: #ffffff !important;
-            border-radius: 8px !important;
-            font-size: 0.85rem !important;
-            font-weight: 700 !important;
-            padding: 0.5rem 0.85rem !important;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-            transition: all 0.2s ease !important;
-            text-decoration: none !important;
-        }
-        .btn-tambah-kategori:hover {
-            background-color: #8435e6 !important;
-            border-color: #8435e6 !important;
-            color: #ffffff !important;
-            text-decoration: none !important;
-        }
-
-        .btn-tambah-item,
-        .rab-btn-add {
-            background-color: #16a34a !important;
-            border: 1px solid #16a34a !important;
-            color: #ffffff !important;
-            border-radius: 6px !important;
-            padding: 0.35rem 0.85rem !important;
-            font-size: 0.8rem !important;
-            font-weight: 600 !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            gap: 4px !important;
-            cursor: pointer !important;
-            transition: all 0.2s ease !important;
-            text-decoration: none !important;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-        }
-        .btn-tambah-item:hover,
-        .rab-btn-add:hover {
-            background-color: #15803d !important;
-            border-color: #15803d !important;
-            color: #ffffff !important;
-            text-decoration: none !important;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f0f2f5;
+            padding: 1.25rem;
         }
 
         .rab-label {
@@ -163,16 +52,12 @@
         }
 
         .rab-card {
-            border: 1px solid #e2e8f0 !important;
-            border-radius: 8px !important;
+            border: none;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: none !important;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.04);
             margin-bottom: 1.5rem;
             background: #ffffff;
-            transition: border-color 0.2s ease;
-        }
-        .rab-card:hover {
-            border-color: #cbd5e1 !important;
         }
 
         .rab-card-header {
@@ -188,6 +73,28 @@
             margin: 0;
         }
 
+        .rab-btn-add {
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            color: #ffffff !important;
+            border: none;
+            border-radius: 6px;
+            padding: 0.4rem 0.95rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            box-shadow: 0 2px 6px rgba(154, 85, 255, 0.25);
+        }
+
+        .rab-btn-add:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(154, 85, 255, 0.35);
+            color: #ffffff !important;
+        }
 
         .rab-table thead th {
             background-color: #f8f9fc !important;
@@ -326,80 +233,15 @@
         }
 
         .rab-btn-success {
-            background-color: #16a34a !important;
-            border: 1px solid #16a34a !important;
-            color: #ffffff !important;
-        }
-        .rab-btn-success:hover {
-            background-color: #15803d !important;
-            border-color: #15803d !important;
-            color: #ffffff !important;
+            background: linear-gradient(135deg, #11998e, #38ef7d);
         }
 
         .rab-btn-primary {
-            background-color: #0284c7 !important;
-            border: 1px solid #0284c7 !important;
-            color: #ffffff !important;
-        }
-        .rab-btn-primary:hover {
-            background-color: #0369a1 !important;
-            border-color: #0369a1 !important;
-            color: #ffffff !important;
+            background: linear-gradient(135deg, #36d1dc, #5b86e5);
         }
 
         .rab-btn-warning {
-            background-color: #f59e0b !important;
-            border: 1px solid #f59e0b !important;
-            color: #ffffff !important;
-        }
-        .rab-btn-warning:hover {
-            background-color: #d97706 !important;
-            border-color: #d97706 !important;
-            color: #ffffff !important;
-        }
-
-        .btn-tambah-opname {
-            background-color: #16a34a !important;
-            border: 1px solid #16a34a !important;
-            color: #ffffff !important;
-            border-radius: 6px !important;
-            padding: 0.35rem 0.85rem !important;
-            font-size: 0.82rem !important;
-            font-weight: 600 !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            gap: 4px !important;
-            cursor: pointer !important;
-            transition: all 0.2s ease !important;
-            text-decoration: none !important;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-        }
-        .btn-tambah-opname:hover {
-            background-color: #15803d !important;
-            border-color: #15803d !important;
-            color: #ffffff !important;
-        }
-
-        .btn-tambah-termin {
-            background-color: #0284c7 !important;
-            border: 1px solid #0284c7 !important;
-            color: #ffffff !important;
-            border-radius: 6px !important;
-            padding: 0.35rem 0.85rem !important;
-            font-size: 0.82rem !important;
-            font-weight: 600 !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            gap: 4px !important;
-            cursor: pointer !important;
-            transition: all 0.2s ease !important;
-            text-decoration: none !important;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-        }
-        .btn-tambah-termin:hover {
-            background-color: #0369a1 !important;
-            border-color: #0369a1 !important;
-            color: #ffffff !important;
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
         }
 
         .btn-action {
@@ -424,7 +266,7 @@
         }
 
         .btn-action.delete {
-            background: #dc3545 !important;
+            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
             color: #ffffff !important;
         }
 
@@ -455,6 +297,65 @@
             border: 1px solid #fecaca !important;
         }
 
+        /* CHECKLIST KONDISI UNIT */
+        .survey-checklist-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+        @media (max-width: 768px) {
+            .survey-checklist-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+        .survey-checkbox-wrapper {
+            position: relative;
+        }
+        .survey-checkbox-input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .survey-checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.95rem 1.15rem;
+            background: #ffffff;
+            border: 2px solid #ede4ff;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            margin-bottom: 0;
+            min-height: 56px;
+        }
+        .survey-checkbox-label:hover {
+            border-color: #c4a1ff;
+            background: #faf7ff;
+            transform: translateY(-1px);
+        }
+        .survey-check-icon {
+            font-size: 1.35rem;
+            color: #cbd5e1;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+        }
+        .survey-check-text {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #2c2e3f;
+        }
+        .survey-checkbox-input:checked + .survey-checkbox-label {
+            border-color: #9a55ff;
+            background: #fbf9ff;
+            box-shadow: 0 4px 14px rgba(154, 85, 255, 0.16);
+        }
+        .survey-checkbox-input:checked + .survey-checkbox-label .survey-check-icon {
+            color: #9a55ff;
+        }
+
         /* Prevent page jump to top on modal open */
         html.modal-open,
         body.modal-open {
@@ -470,64 +371,68 @@
         }
     </style>
 
-    <div class="container-fluid px-2 px-md-4 py-3">
+    <div class="container-fluid px-2 px-sm-3 px-md-4 py-3">
+        <!-- Header Card Banner -->
+        <div class="row mb-3 mb-md-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0 header-card" style="border-radius: 12px;">
+                    <div class="card-body p-3 p-md-4 d-flex justify-content-between align-items-center" style="min-height: 90px;">
+                        <div>
+                            <h3 class="text-dark mb-1 fw-bold" style="font-size: clamp(1.1rem, 2.5vw, 1.35rem);">
+                                Rencana Anggaran Pekerjaan (RAP) Pembangunan
+                            </h3>
+                            <p class="text-muted mb-0" style="font-size: clamp(0.78rem, 1.8vw, 0.9rem);">
+                                Rincian anggaran pekerjaan pembangunan unit dari awal hingga selesai
+                            </p>
+                        </div>
+                        <div class="d-none d-sm-block pe-2">
+                            <i class="mdi mdi-calculator" style="font-size: 2.8rem; color: #9a55ff; opacity: 0.25;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-3 d-flex align-items-center" role="alert" style="background-color: #ecfdf5; color: #065f46; border-radius: 8px;">
-                <i class="mdi mdi-check-circle-outline me-2 fs-5"></i>
-                <div>{{ session('success') }}</div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert alert-success alert-dismissible fade show" style="border-radius: 10px;">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
         @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-3" role="alert" style="background-color: #fef2f2; color: #991b1b; border-radius: 8px;">
-                <div>{{ session('error') }}</div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert alert-danger alert-dismissible fade show" style="border-radius: 10px;">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
         @if ($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-3" role="alert" style="background-color: #fef2f2; color: #991b1b; border-radius: 8px;">
-                <div class="fw-bold mb-1"><i class="mdi mdi-alert-circle-outline me-1"></i>Terdapat kesalahan:</div>
-                <ul class="mb-0 ps-3">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="alert alert-danger" style="border-radius: 10px;">
+                {{ $errors->first() }}
             </div>
         @endif
 
-        <!-- Top Navigation & Page Title (Persis Perizinan Kelola/Show) -->
-        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4 header-top-show">
-            <div>
-                <h2 class="text-dark mb-1 fw-bold page-title-show" style="font-size: 1.55rem; letter-spacing: -0.02em;">
-                    Rencana Anggaran Biaya (RAP) Pembangunan
-                </h2>
-                <p class="text-muted mb-0" style="font-size: 0.88rem;">
-                    Rincian anggaran pekerjaan pembangunan unit {{ $selectedUnit->unit_code }} dari awal hingga selesai
-                </p>
-            </div>
-            <div class="d-flex align-items-center gap-2 header-actions">
-                <a href="{{ route('proyek.unit.index') }}" class="btn-kembali d-inline-flex align-items-center gap-2">
-                    <i class="mdi mdi-arrow-left" style="font-size: 1.1rem; line-height: 1;"></i>
-                    <span>Kembali</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- Info Unit (Card Bersih Meniru Persis Card Total UI) -->
-        <div class="row mb-4">
+        <!-- Info Unit -->
+        <div class="row mb-3 mb-md-4">
             <div class="col-12">
-                <div class="card rab-info-card">
+                <div class="card shadow-sm border-0 rab-info-card" style="border-radius: 12px;">
                     <div class="row g-2 g-md-3 align-items-center">
                         {{-- UNIT --}}
                         <div class="col-12 col-sm-6 col-lg-2">
                             <span class="rab-label">
                                 <i class="mdi mdi-home text-primary me-1"></i>Unit
                             </span>
-                            <input type="text" class="rab-form-control fw-bold text-dark" value="{{ $selectedUnit->unit_code }}" readonly>
+                            <select class="rab-form-control" id="unitSelect">
+                                @foreach ($land->units as $unit)
+                                    <option value="{{ $unit->id }}"
+                                        {{ $unit->id == $selectedUnit->id ? 'selected' : '' }}
+                                        data-type="{{ $unit->type }}" data-area="{{ $unit->area }}"
+                                        data-building="{{ $unit->building_area }}" data-price="{{ $unit->price }}">
+                                        {{ $unit->unit_code }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
                         {{-- TIPE / NAMA --}}
@@ -535,31 +440,35 @@
                             <span class="rab-label">
                                 <i class="mdi mdi-shape-outline text-info me-1"></i>Tipe / Nama
                             </span>
-                            <input type="text" id="unitType" class="rab-form-control" value="{{ $selectedUnit->type ? 'Tipe ' . $selectedUnit->type : ($selectedUnit->unit_name ?: '-') }}" readonly>
+                            <input type="text" id="unitType" class="rab-form-control" readonly>
                         </div>
 
                         {{-- LUAS TANAH --}}
-                        <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="col-6 col-sm-6 col-lg-2">
                             <span class="rab-label">
                                 <i class="mdi mdi-ruler-square text-warning me-1"></i>Luas Tanah
                             </span>
-                            <input type="text" id="unitArea" class="rab-form-control" value="{{ $selectedUnit->area ? $selectedUnit->area . ' m²' : '-' }}" readonly>
+                            <input type="text" id="unitArea" class="rab-form-control" readonly>
                         </div>
 
-                        {{-- HARGA JUAL UNIT --}}
-                        <div class="col-12 col-sm-6 col-lg-4">
+                        {{-- LUAS BANGUNAN --}}
+                        <div class="col-6 col-sm-6 col-lg-2">
+                            <span class="rab-label">
+                                <i class="mdi mdi-office-building-marker text-success me-1"></i>Luas Bangunan
+                            </span>
+                            <input type="text" id="unitBuilding" class="rab-form-control" readonly>
+                        </div>
+
+                        {{-- HARGA --}}
+                        <div class="col-12 col-sm-12 col-lg-3">
                             <span class="rab-label">
                                 <i class="mdi mdi-currency-usd text-danger me-1"></i>Harga Jual Unit
                             </span>
-                            <input type="text" id="unitPrice" class="rab-form-control fw-bold text-success" value="Rp {{ number_format($selectedUnit->price ?? 0, 0, ',', '.') }}" readonly>
+                            <input type="text" id="unitPrice" class="rab-form-control fw-bold text-success" readonly>
                         </div>
-
-                        {{-- Hidden field for JS backward-compatibility --}}
-                        <input type="hidden" id="unitBuilding" value="{{ $selectedUnit->building_area ? $selectedUnit->building_area . ' m²' : '-' }}">
                     </div>
                 </div>
             </div>
-        </div>
         @if(isset($selectedUnit))
             <form id="formApplyTemplate" action="{{ route('properti.progress.applyTemplate', $selectedUnit->id) }}" method="POST" style="display: none;">
                 @csrf
@@ -649,31 +558,22 @@
                     </span>
                 </div>
                 <div class="d-flex flex-wrap gap-2 w-100 w-md-auto justify-content-start justify-content-md-end">
-                    <a href="{{ route('master.progress.index') }}" target="_blank" 
-                       class="btn-master-template d-inline-flex align-items-center gap-1.5" 
-                       title="Kelola Master Kategori & Item Template">
-                        <i class="mdi mdi-cog-outline" style="font-size: 1.1rem; line-height: 1;"></i>
-                        <span>Master Template</span>
+                    <a href="{{ route('master.progress.index') }}" target="_blank" class="btn btn-sm btn-secondary text-white px-3 py-1.5 rounded-2 fw-semibold shadow-sm" style="font-size: 0.82rem;" title="Kelola Master Kategori & Item Template">
+                        <i class="mdi mdi-cog-outline me-1"></i>Master Template
                     </a>
                     @if($isUnitSoldOut)
-                        <button type="button" class="btn btn-sm btn-secondary shadow-sm px-3 py-2 fw-semibold opacity-75 d-inline-flex align-items-center gap-1.5" disabled style="border-radius: 8px; font-size: 0.85rem; cursor: not-allowed;" title="Unit Selesai / Sold Out">
+                        <button type="button" class="btn btn-sm btn-secondary shadow-sm px-3 py-1.5 rounded-2 fw-semibold opacity-75" disabled style="font-size: 0.82rem; cursor: not-allowed;" title="Unit Selesai / Sold Out">
                             <i class="mdi mdi-lock-outline me-1"></i>Terapkan Template (Terkunci)
                         </button>
-                        <button type="button" class="btn btn-sm btn-secondary shadow-sm px-3 py-2 fw-semibold opacity-75 d-inline-flex align-items-center gap-1.5" disabled style="border-radius: 8px; font-size: 0.85rem; cursor: not-allowed;" title="Unit Selesai / Sold Out">
+                        <button type="button" class="btn btn-sm btn-secondary shadow-sm px-3 py-1.5 rounded-2 fw-semibold opacity-75" disabled style="font-size: 0.82rem; cursor: not-allowed;" title="Unit Selesai / Sold Out">
                             <i class="mdi mdi-lock-outline me-1"></i>Tambah Kategori (Terkunci)
                         </button>
                     @else
-                        <button type="button" 
-                                class="btn-terapkan-template d-inline-flex align-items-center gap-1.5" 
-                                onclick="confirmApplyTemplate()">
-                            <i class="mdi mdi-flash" style="font-size: 1.1rem; line-height: 1;"></i>
-                            <span>Terapkan Template</span>
+                        <button type="button" class="btn btn-sm btn-info text-white px-3 py-1.5 rounded-2 fw-semibold shadow-sm" style="font-size: 0.82rem;" onclick="confirmApplyTemplate()">
+                            <i class="mdi mdi-flash me-1"></i>Terapkan Template
                         </button>
-                        <button type="button" 
-                                class="btn-tambah-kategori d-inline-flex align-items-center gap-1.5" 
-                                onclick="modalTambahKategoriBaru()">
-                            <i class="mdi mdi-plus-circle-outline" style="font-size: 1.1rem; line-height: 1;"></i>
-                            <span>Tambah Kategori</span>
+                        <button type="button" class="btn btn-sm btn-gradient-primary px-3 py-1.5 rounded-2 fw-semibold text-white shadow-sm" style="font-size: 0.82rem;" onclick="modalTambahKategoriBaru()">
+                            <i class="mdi mdi-plus-circle-outline me-1"></i>Tambah Kategori
                         </button>
                     @endif
                 </div>
@@ -723,14 +623,14 @@
                                     <!-- Mini Progress Bar & Persentase -->
                                     <div class="d-flex align-items-center gap-1.5 px-2 py-1 bg-white border rounded-2" style="min-width: 120px;">
                                         <div class="progress flex-grow-1" style="height: 6px; border-radius: 4px; background: #e2e8f0; width: 60px;">
-                                            <div class="progress-bar" id="progbar-{{ $key }}" style="width: {{ $catProgress }}%; background-color: #9a55ff;"></div>
+                                            <div class="progress-bar bg-gradient-primary" id="progbar-{{ $key }}" style="width: {{ $catProgress }}%;"></div>
                                         </div>
                                         <span class="fw-bold font-monospace text-primary" id="progpct-{{ $key }}" style="font-size: 0.8rem; width: 38px; text-align: right;">{{ $catProgress }}%</span>
                                     </div>
 
                                     @if(!$isUnitSoldOut)
-                                        <button type="button" class="btn-tambah-item" style="height: 30px;" onclick="tambahItem('{{ $key }}')">
-                                            <i class="mdi mdi-plus"></i> Tambah Item
+                                        <button type="button" class="btn btn-sm btn-success text-white px-3 py-1 rounded-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-1" style="height: 30px; font-size: 0.8rem;" onclick="tambahItem('{{ $key }}')">
+                                            + Tambah Item
                                         </button>
                                     @endif
                                 </div>
@@ -751,6 +651,7 @@
                                                 <th style="width: 100px;">PROGRESS</th>
                                                 <th style="width: 130px;">DEADLINE</th>
                                                 <th style="width: 140px;">DOKUMENTASI</th>
+                                                <th style="width: 175px; background: linear-gradient(135deg, #f0fdf4, #eff6ff); color: #374151;" title="Opname Mingguan & Pembayaran Termin per uraian">OPNAME &amp; TERMIN</th>
                                                 <th style="width: 60px;">AKSI</th>
                                             </tr>
                                         </thead>
@@ -833,6 +734,70 @@
                                                             </div>
                                                         </td>
 
+                                                        {{-- Kolom Opname & Termin per Uraian --}}
+                                                        @php
+                                                            $itemOpnames = $item->opnames()->latest()->take(2)->get();
+                                                            $itemTermins = $item->termins()->latest()->take(2)->get();
+                                                            $totalItemOpname = $item->opnames()->count();
+                                                            $totalItemTermin = $item->termins()->count();
+                                                        @endphp
+                                                        <td class="p-0" style="vertical-align: top; min-width: 175px;">
+                                                            <div style="font-size: 0.75rem;">
+                                                                {{-- Opname Mingguan --}}
+                                                                <div class="px-2 py-1.5 border-bottom" style="background: rgba(16,185,129,0.04);">
+                                                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                                                        <span class="fw-bold text-success" style="font-size: 0.7rem;"><i class="mdi mdi-clipboard-text-outline me-1"></i>Opname ({{ $totalItemOpname }})</span>
+                                                                        @if(!$isUnitSoldOut)
+                                                                        <button type="button" class="btn btn-xs py-0 px-1.5 btn-outline-success rounded-1 shadow-none"
+                                                                            style="font-size: 0.68rem; line-height: 1.5;"
+                                                                            onclick="modalOpnamePerItem({{ $item->id }}, '{{ addslashes($item->uraian) }}', {{ $item->progress_persen ?? 0 }})">
+                                                                            <i class="mdi mdi-plus"></i> Tambah
+                                                                        </button>
+                                                                        @endif
+                                                                    </div>
+                                                                    @forelse($itemOpnames as $iop)
+                                                                        <div class="d-flex align-items-center justify-content-between gap-1 mb-0.5">
+                                                                            <span style="color:#6b7280; font-size:0.68rem;">Mg {{ $iop->minggu_ke }}</span>
+                                                                            <span style="background:#d1fae5; color:#059669; font-size:0.65rem; padding:1px 5px; border-radius:4px; font-weight:700;">+{{ number_format($iop->progress_minggu_ini, 1) }}%</span>
+                                                                            <span style="background:#dbeafe; color:#2563eb; font-size:0.65rem; padding:1px 5px; border-radius:4px; font-weight:700;">{{ number_format($iop->progress_kumulatif, 1) }}%</span>
+                                                                        </div>
+                                                                    @empty
+                                                                        <span style="color:#9ca3af; font-size:0.68rem;">Belum ada opname</span>
+                                                                    @endforelse
+                                                                </div>
+                                                                {{-- Pembayaran Termin --}}
+                                                                <div class="px-2 py-1.5" style="background: rgba(59,130,246,0.04);">
+                                                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                                                        <span class="fw-bold text-primary" style="font-size: 0.7rem;"><i class="mdi mdi-cash-multiple me-1"></i>Termin ({{ $totalItemTermin }})</span>
+                                                                        @if(!$isUnitSoldOut)
+                                                                        <button type="button" class="btn btn-xs py-0 px-1.5 btn-outline-primary rounded-1 shadow-none"
+                                                                            style="font-size: 0.68rem; line-height: 1.5;"
+                                                                            onclick="modalTerminPerItem({{ $item->id }}, '{{ addslashes($item->uraian) }}', {{ (float)$item->total }})">
+                                                                            <i class="mdi mdi-plus"></i> Tambah
+                                                                        </button>
+                                                                        @endif
+                                                                    </div>
+                                                                    @forelse($itemTermins as $itr)
+                                                                        <div class="d-flex align-items-center justify-content-between gap-1 mb-0.5">
+                                                                            <span style="color:#6b7280; font-size:0.68rem; max-width:65px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:inline-block;">{{ $itr->nama_termin }}</span>
+                                                                            @php
+                                                                                $tBg = match($itr->status) {
+                                                                                    'dibayar'   => ['#d1fae5','#059669'],
+                                                                                    'disetujui' => ['#cffafe','#0891b2'],
+                                                                                    'diajukan'  => ['#fef3c7','#d97706'],
+                                                                                    'ditolak'   => ['#fee2e2','#dc2626'],
+                                                                                    default     => ['#f3f4f6','#6b7280'],
+                                                                                };
+                                                                            @endphp
+                                                                            <span style="background:{{ $tBg[0] }}; color:{{ $tBg[1] }}; font-size:0.62rem; padding:1px 5px; border-radius:4px; font-weight:700; white-space:nowrap;">{{ $itr->status_label }}</span>
+                                                                        </div>
+                                                                    @empty
+                                                                        <span style="color:#9ca3af; font-size:0.68rem;">Belum ada termin</span>
+                                                                    @endforelse
+                                                                </div>
+                                                            </div>
+                                                        </td>
+
                                                         <td class="text-center">
                                                             <button type="button" class="btn-action delete"
                                                                 onclick="hapusItem(this, '{{ $key }}', {{ $item->id }})" title="Hapus Item">
@@ -844,7 +809,7 @@
                                                 @endforeach
                                             @else
                                                 <tr>
-                                                    <td colspan="11" class="text-center text-muted py-3">
+                                                    <td colspan="13" class="text-center text-muted py-3">
                                                         Belum ada progress untuk kategori ini
                                                     </td>
                                                 </tr>
@@ -855,7 +820,7 @@
                                                 <td colspan="5" class="text-start ps-3 ps-md-4 fw-bold text-dark small py-2.5">
                                                     Subtotal {{ $cfg['title'] }}
                                                 </td>
-                                                <td colspan="6" class="text-end pe-3 pe-md-4 py-2.5">
+                                                <td colspan="8" class="text-end pe-3 pe-md-4 py-2.5">
                                                     <span id="subtotal-display-{{ $key }}" class="font-monospace fw-bold text-success" style="font-size: 1rem;">
                                                         Rp 0
                                                     </span>
@@ -875,6 +840,7 @@
             {{-- Rincian RAP --}}
             @php
                 $isAccCompleted = ($selectedUnit->progress && $selectedUnit->progress->status === 'completed') || $selectedUnit->construction_progress === 'selesai';
+                $isUnitSoldOut  = in_array(strtolower($selectedUnit->status ?? ''), ['sold', 'soldout']) || $isAccCompleted;
                 $subtotalPerizinan = $items->where('kategori', 'perizinan')->sum(fn($item) => $item->total);
                 $subtotalRumah = $items->where('kategori', '!=', 'perizinan')->sum(fn($item) => $item->total);
                 $subtotal = $items->sum(fn($item) => $item->total);
@@ -888,13 +854,81 @@
                     $unitPrice = $selectedUnit->price ?? 0;
                     $finalPrice = $totalRAB + $unitPrice;
                 }
+            @php
+                $savedChecklist = $selectedUnit->progress->checklist_kondisi ?? [];
+                if (!is_array($savedChecklist)) {
+                    $savedChecklist = json_decode($savedChecklist, true) ?: [];
+                }
+
+                $kondisiItems = [
+                    'listrik' => 'Listrik berfungsi normal',
+                    'air' => 'Air mengalir lancar',
+                    'pintu_jendela' => 'Pintu & jendela berfungsi baik',
+                    'kunci_lengkap' => 'Kunci lengkap (pintu utama, pagar)',
+                    'dinding_plafon' => 'Dinding & plafon baik',
+                    'lantai' => 'Lantai keramik baik',
+                    'sanitasi' => 'Kloset & sanitasi berfungsi',
+                    'meteran' => 'Meteran listrik & air terpasang',
+                ];
+
+                $isFirstTime = empty($savedChecklist);
+                $checkedCount = 0;
+                foreach ($kondisiItems as $f => $l) {
+                    if ($isFirstTime || !empty($savedChecklist[$f])) {
+                        $checkedCount++;
+                    }
+                }
             @endphp
+
+            <!-- Checklist Kondisi Unit -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow-sm border-0 rab-card" style="border-radius: 12px; overflow: hidden;">
+                        <div class="card-header bg-light bg-opacity-75 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 py-3 px-3 px-md-4 border-bottom">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge font-monospace px-2.5 py-1 rounded-2 fw-bold" style="background: rgba(154, 85, 255, 0.12); color: #9a55ff; font-size: 0.85rem;">
+                                    <i class="mdi mdi-checkbox-marked-circle-outline"></i>
+                                </span>
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-dark d-flex align-items-center" style="font-size: 0.98rem;">
+                                        Checklist Kondisi Unit
+                                    </h6>
+                                    <small class="text-muted">Pemeriksaan kondisi fisik dan kelayakan unit sebelum proses serah terima</small>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge" id="badgeChecklistStatus" style="background: #eef2ff; color: #4f46e5; font-size: 0.82rem; font-weight: 700; padding: 0.4rem 0.85rem; border-radius: 20px; border: 1px solid #c7d2fe;">
+                                    <span id="checklistCountText">{{ $checkedCount }}</span> / {{ count($kondisiItems) }} Kondisi Terpenuhi
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body p-3 p-md-4">
+                            <div class="survey-checklist-grid">
+                                @foreach ($kondisiItems as $field => $label)
+                                    @php
+                                        $isChecked = $isFirstTime ? true : (!empty($savedChecklist[$field]));
+                                    @endphp
+                                    <div class="survey-checkbox-wrapper">
+                                        <input type="checkbox" class="survey-checkbox-input unit-checklist-input" id="chk_kondisi_{{ $field }}"
+                                            name="checklist_kondisi[{{ $field }}]" value="1" {{ $isChecked ? 'checked' : '' }}
+                                            data-field="{{ $field }}" data-unit-id="{{ $selectedUnit->id }}">
+                                        <label class="survey-checkbox-label" for="chk_kondisi_{{ $field }}">
+                                            <i class="mdi mdi-check-circle survey-check-icon"></i>
+                                            <span class="survey-check-text">{{ $label }}</span>
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Bagian Rincian RAP - Yang Diperbaiki -->
             <div class="row">
                 <!-- Ringkasan RAP -->
                 <div class="col-12 col-md-6">
-                    <div class="card mb-3" style="border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: none; background: #ffffff;">
+                    <div class="card shadow-sm border-0 mb-3" style="border-radius: 12px;">
                         <div class="card-body">
                             <h6 class="card-title fw-bold text-dark mb-3">
                                 <i class="mdi mdi-chart-pie me-2" style="color: #9a55ff;"></i>Ringkasan RAP Terpadu
@@ -947,7 +981,7 @@
 
                 <!-- Harga Jual Final -->
                 <div class="col-12 col-md-6">
-                    <div class="card mb-3" style="border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: none; background: #ffffff;">
+                    <div class="card shadow-sm border-0 mb-3" style="border-radius: 12px;">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h6 class="card-title fw-bold text-dark mb-0">
@@ -1031,456 +1065,290 @@
              OPNAME MINGGUAN
         ============================================================ --}}
         @php
-            $isUnitSoldOut = false; // TODO: set to true when unit is sold/completed to lock editing
+            $isUnitSoldOut = in_array(strtolower($selectedUnit->status ?? ''), ['sold', 'soldout']) || strtolower($selectedUnit->construction_progress ?? '') === 'selesai' || ($selectedUnit->progress && $selectedUnit->progress->status === 'completed');
             $totalOpname = $opnameMingguan->count();
             $latestKumulatif = $opnameMingguan->last()?->progress_kumulatif ?? 0;
+
+            // Siapkan payload item RAP per uraian untuk modal Opname Mingguan
+            $rapItemsCollection = $selectedUnit->progress && $selectedUnit->progress->items
+                ? $selectedUnit->progress->items->values()
+                : collect();
+            $totalRapBudget = $rapItemsCollection->sum('total');
+            $rapItemsPayload = $rapItemsCollection->map(function($it, $idx) use ($totalRapBudget, $rapItemsCollection) {
+                $bobot = $totalRapBudget > 0 
+                    ? round(($it->total / $totalRapBudget) * 100, 2) 
+                    : ($rapItemsCollection->count() > 0 ? round(100 / $rapItemsCollection->count(), 2) : 0);
+                return [
+                    'id'              => $it->id,
+                    'kategori'        => $it->kategori,
+                    'kode'            => $it->kode ?: ('Item ' . ($idx + 1)),
+                    'uraian'          => $it->uraian,
+                    'volume'          => $it->volume,
+                    'satuan'          => $it->satuan,
+                    'harga_satuan'    => (float)$it->harga_satuan,
+                    'total'           => (float)$it->total,
+                    'bobot'           => $bobot,
+                    'progress_persen' => (float)($it->progress_persen ?? 0),
+                ];
+            });
         @endphp
-        <div class="row mt-3 mt-md-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-0 rab-card" style="border-radius: 8px; overflow: hidden;">
-                    <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 py-3 px-4" style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
-                        <div class="d-flex align-items-center gap-2">
-                            <div style="width:38px;height:38px;border-radius:8px;background:rgba(154,85,255,0.1);color:#9a55ff;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">
-                                <i class="mdi mdi-clipboard-list-outline"></i>
+
+        {{-- ============================================================
+             MODAL: TAMBAH OPNAME MINGGUAN (PER URAIAN PEKERJAAN RAP)
+        ============================================================ --}}
+        <div class="modal fade" id="modalTambahOpnameModal" tabindex="-1" aria-labelledby="modalTambahOpnameLabel" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+                    <div class="modal-header py-3 px-4" style="background: linear-gradient(135deg, #059669, #10b981); color: #fff;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                                <i class="mdi mdi-clipboard-text-play-outline"></i>
                             </div>
                             <div>
-                                <h5 class="mb-0 fw-bold text-dark" style="font-size: 1rem;">Opname Mingguan</h5>
-                                <small class="text-muted">Laporan progress fisik per minggu · Kumulatif: <strong class="text-primary">{{ number_format($latestKumulatif, 1) }}%</strong></small>
+                                <h5 class="modal-title fw-bold mb-0 text-white" id="modalTambahOpnameLabel">Input Laporan Opname Mingguan</h5>
+                                <small class="text-white-50">Unit: <strong class="text-white">{{ $selectedUnit->nama_unit ?? ('Unit #' . $selectedUnit->unit_code) }}</strong> · Catat capaian fisik mingguan & kumulatif per rincian uraian RAP</small>
                             </div>
                         </div>
-                        <div class="d-flex gap-2 flex-wrap">
-                            <span class="badge bg-primary bg-opacity-10 text-primary fw-bold px-3 py-1.5 rounded-2" style="font-size:0.82rem;">{{ $totalOpname }} Laporan</span>
-                            @if(!$isUnitSoldOut)
-                                <button type="button" class="btn-tambah-opname" onclick="modalTambahOpname()" id="btnTambahOpname">
-                                    <i class="mdi mdi-plus me-1"></i>Tambah Opname
-                                </button>
-                            @endif
-                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <div class="card-body p-0">
-                        @if($opnameMingguan->isNotEmpty())
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0" style="font-size:0.84rem;">
-                                    <thead style="background:#f8fffe;">
-                                        <tr>
-                                            <th class="px-3 py-2 text-muted fw-bold" style="width:60px; font-size:0.75rem; text-transform:uppercase;">No</th>
-                                            <th class="px-3 py-2 text-muted fw-bold" style="font-size:0.75rem; text-transform:uppercase;">No Opname</th>
-                                            <th class="px-3 py-2 text-muted fw-bold" style="font-size:0.75rem; text-transform:uppercase;">Periode Minggu</th>
-                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:120px; font-size:0.75rem; text-transform:uppercase;">Progress Minggu</th>
-                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:120px; font-size:0.75rem; text-transform:uppercase;">Kumulatif</th>
-                                            <th class="px-3 py-2 text-muted fw-bold" style="font-size:0.75rem; text-transform:uppercase;">Uraian Pekerjaan</th>
-                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:110px; font-size:0.75rem; text-transform:uppercase;">Status</th>
-                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:80px; font-size:0.75rem; text-transform:uppercase;">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tableBodyOpname">
-                                        @foreach($opnameMingguan as $opname)
-                                        <tr>
-                                            <td class="px-3 text-center fw-bold text-muted">{{ $loop->iteration }}</td>
-                                            <td class="px-3">
-                                                <span class="fw-bold font-monospace text-success">{{ $opname->no_opname ?? '-' }}</span>
-                                                <br><small class="text-muted">Minggu ke-{{ $opname->minggu_ke }}</small>
-                                            </td>
-                                            <td class="px-3">
-                                                <div class="fw-semibold">{{ \Carbon\Carbon::parse($opname->tanggal_mulai_minggu)->isoFormat('D MMM') }} – {{ \Carbon\Carbon::parse($opname->tanggal_akhir_minggu)->isoFormat('D MMM Y') }}</div>
-                                            </td>
-                                            <td class="px-3 text-center">
-                                                <div class="fw-bold text-success" style="font-size:1.05rem;">{{ number_format($opname->progress_minggu_ini, 1) }}%</div>
-                                                <div class="progress mt-1" style="height:5px; border-radius:4px;">
-                                                    <div class="progress-bar bg-success" style="width:{{ $opname->progress_minggu_ini }}%"></div>
-                                                </div>
-                                            </td>
-                                            <td class="px-3 text-center">
-                                                <div class="fw-bold text-primary" style="font-size:1rem;">{{ number_format($opname->progress_kumulatif, 1) }}%</div>
-                                            </td>
-                                            <td class="px-3">
-                                                @if($opname->uraian_pekerjaan && count($opname->uraian_pekerjaan) > 0)
-                                                    <ul class="mb-0 ps-3" style="font-size:0.8rem;">
-                                                        @foreach(array_slice($opname->uraian_pekerjaan, 0, 3) as $uraian)
-                                                            <li>{{ $uraian }}</li>
-                                                        @endforeach
-                                                        @if(count($opname->uraian_pekerjaan) > 3)
-                                                            <li class="text-muted">+{{ count($opname->uraian_pekerjaan) - 3 }} lainnya...</li>
-                                                        @endif
-                                                    </ul>
-                                                @else
-                                                    <span class="text-muted small">{{ $opname->catatan ?? '-' }}</span>
-                                                @endif
-                                            </td>
-                                            <td class="px-3 text-center">
-                                                <span class="badge bg-{{ $opname->status_badge_class }} bg-opacity-15 text-{{ $opname->status_badge_class }} fw-bold px-2 py-1 rounded-2" style="font-size:0.75rem;">{{ $opname->status_label }}</span>
-                                            </td>
-                                            <td class="px-3 text-center">
-                                                @if(!$isUnitSoldOut)
-                                                <button type="button" class="btn btn-sm btn-outline-danger rounded-circle p-1 btn-hapus-opname" data-id="{{ $opname->id }}" style="width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;">
-                                                    <i class="mdi mdi-trash-can-outline" style="font-size:0.85rem;"></i>
-                                                </button>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                    <div class="modal-body p-4 bg-light bg-opacity-50">
+                        <!-- Info Periode & Pekerja -->
+                        <div class="card border-0 shadow-xs mb-3" style="border-radius: 12px;">
+                            <div class="card-body p-3">
+                                <div class="row g-3">
+                                    <div class="col-md-2 col-6">
+                                        <label class="form-label small fw-bold text-muted mb-1"><i class="mdi mdi-numeric me-1 text-primary"></i>Minggu Ke <span class="text-danger">*</span></label>
+                                        <input type="number" id="opname_minggu_ke" class="form-control form-control-sm fw-bold font-monospace" min="1" value="1">
+                                    </div>
+                                    <div class="col-md-2 col-6">
+                                        <label class="form-label small fw-bold text-muted mb-1"><i class="mdi mdi-account-group me-1 text-primary"></i>Jml Pekerja</label>
+                                        <input type="number" id="opname_pekerja" class="form-control form-control-sm" placeholder="0" min="0">
+                                    </div>
+                                    <div class="col-md-4 col-6">
+                                        <label class="form-label small fw-bold text-muted mb-1"><i class="mdi mdi-calendar-start me-1 text-primary"></i>Tgl Mulai Minggu <span class="text-danger">*</span></label>
+                                        <input type="date" id="opname_tgl_mulai" class="form-control form-control-sm">
+                                    </div>
+                                    <div class="col-md-4 col-6">
+                                        <label class="form-label small fw-bold text-muted mb-1"><i class="mdi mdi-calendar-end me-1 text-primary"></i>Tgl Selesai Minggu <span class="text-danger">*</span></label>
+                                        <input type="date" id="opname_tgl_akhir" class="form-control form-control-sm">
+                                    </div>
+                                </div>
                             </div>
-                        @else
-                            <div class="text-center py-5 text-muted">
-                                <i class="mdi mdi-clipboard-text-off-outline" style="font-size:3rem; opacity:0.25;"></i>
-                                <p class="mt-2 mb-0 fw-semibold" style="font-size:0.9rem;">Belum ada laporan opname mingguan</p>
-                                <small>Klik "Tambah Opname" untuk mencatat progres fisik pembangunan per minggu</small>
+                        </div>
+
+                        <!-- Capaian Rincian Uraian Pekerjaan (RAP) -->
+                        <div class="card border-0 shadow-xs mb-3" style="border-radius: 12px; overflow: hidden;">
+                            <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="mdi mdi-format-list-checks text-success fs-5"></i>
+                                    <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.95rem;">Rincian Progres Per Uraian Pekerjaan RAP</h6>
+                                </div>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <button type="button" class="btn btn-xs btn-outline-secondary py-1 px-2.5 rounded-2" onclick="setSemua100Opname()">
+                                        <i class="mdi mdi-check-all me-1 text-success"></i>Set Semua 100%
+                                    </button>
+                                    <button type="button" class="btn btn-xs btn-outline-secondary py-1 px-2.5 rounded-2" onclick="resetSemuaProgresOpname()">
+                                        <i class="mdi mdi-refresh me-1 text-warning"></i>Reset 0%
+                                    </button>
+                                    <div class="vr mx-1 d-none d-md-block"></div>
+                                    <div class="px-2.5 py-1 rounded-2 fw-semibold d-inline-flex align-items-center" style="font-size: 0.8rem; background-color: #d1fae5; color: #065f46; border: 1px solid #6ee7b7;">
+                                        Capaian Mg Ini:&nbsp;<span id="badgeProgMingguIni" class="fw-bold fs-6" style="color: #047857;">0.0%</span>
+                                    </div>
+                                    <div class="px-2.5 py-1 rounded-2 fw-semibold d-inline-flex align-items-center" style="font-size: 0.8rem; background-color: #dbeafe; color: #1e40af; border: 1px solid #93c5fd;">
+                                        Kumulatif:&nbsp;<span id="badgeProgKumulatif" class="fw-bold fs-6" style="color: #1d4ed8;">0.0%</span>
+                                    </div>
+                                </div>
                             </div>
-                        @endif
+
+                            <div class="card-body p-0">
+                                <div class="table-responsive" style="max-height: 380px; overflow-y: auto;">
+                                    <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.82rem;">
+                                        <thead class="table-light sticky-top" style="z-index: 2; font-size: 0.75rem; text-transform: uppercase;">
+                                            <tr>
+                                                <th class="px-3 py-2 text-center" style="width: 50px;">No</th>
+                                                <th class="px-2 py-2" style="min-width: 200px;">Uraian Pekerjaan</th>
+                                                <th class="px-2 py-2 text-center" style="width: 90px;">Vol / Sat</th>
+                                                <th class="px-2 py-2 text-center" style="width: 75px;">Bobot</th>
+                                                <th class="px-2 py-2 text-center" style="width: 85px;">Lalu (%)</th>
+                                                <th class="px-2 py-2 text-center" style="width: 110px;">Mg Ini (%)</th>
+                                                <th class="px-2 py-2 text-center" style="width: 110px;">Total (%)</th>
+                                                <th class="px-3 py-2" style="min-width: 150px;">Catatan / Hasil Fisik</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabelBodyOpnameModal">
+                                            <!-- Rendered dynamically by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="noticeNoRapItems" class="p-4 text-center text-muted d-none">
+                                    <i class="mdi mdi-alert-circle-outline text-warning" style="font-size: 2.5rem;"></i>
+                                    <h6 class="fw-bold mt-2 text-dark">Item Pekerjaan RAP Belum Tersedia</h6>
+                                    <p class="small text-muted mb-3">Unit ini belum memiliki rincian RAP tersimpan. Terapkan template standar RAP terlebih dahulu agar sistem menampilkan rincian per uraian.</p>
+                                    <button type="button" class="btn btn-sm btn-primary rounded-2 px-3 fw-semibold" onclick="confirmApplyTemplate()">
+                                        <i class="mdi mdi-file-document-edit-outline me-1"></i>Terapkan Template RAP Sekarang
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion Data Tambahan / Kendala & Material -->
+                        <div class="accordion" id="accordionOpnameTambahan">
+                            <div class="accordion-item border-0 shadow-xs" style="border-radius: 12px; overflow: hidden;">
+                                <h2 class="accordion-header" id="headingOpnameTambahan">
+                                    <button class="accordion-button collapsed py-2 px-3 bg-white text-muted fw-bold small" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOpnameTambahan" aria-expanded="false" aria-controls="collapseOpnameTambahan" style="font-size: 0.85rem;">
+                                        <i class="mdi mdi-note-text-outline text-primary me-2"></i>Catatan Tambahan, Logistik & Kendala Lapangan (Opsional)
+                                    </button>
+                                </h2>
+                                <div id="collapseOpnameTambahan" class="accordion-collapse collapse" aria-labelledby="headingOpnameTambahan" data-bs-parent="#accordionOpnameTambahan">
+                                    <div class="accordion-body bg-white pt-2 pb-3 px-3">
+                                        <div class="row g-2">
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-bold text-muted mb-1">Material Digunakan</label>
+                                                <textarea id="opname_material" class="form-control form-control-sm" rows="2" placeholder="Semen Gresik 20 sak, Pasir 1 truk, Besi 10mm..."></textarea>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-bold text-muted mb-1">Kendala / Hambatan Lapangan</label>
+                                                <textarea id="opname_kendala" class="form-control form-control-sm" rows="2" placeholder="Hujan lebat di sore hari, keterlambatan pengiriman semen..."></textarea>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-bold text-muted mb-1">Solusi / Tindak Lanjut</label>
+                                                <textarea id="opname_solusi" class="form-control form-control-sm" rows="2" placeholder="Lembur malam hari, penambahan tenaga kerja..."></textarea>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-bold text-muted mb-1">Rencana Minggu Depan</label>
+                                                <textarea id="opname_rencana" class="form-control form-control-sm" rows="2" placeholder="Pengecoran plat lantai 2, pemasangan kusen..."></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer py-2.5 px-4 bg-white border-top d-flex justify-content-between align-items-center">
+                        <div class="small text-muted">
+                            Total Bobot RAP: <strong class="text-dark">100%</strong>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary px-3 rounded-2" data-bs-dismiss="modal">Batal</button>
+                            <button type="button" class="btn btn-sm btn-success px-4 rounded-2 fw-semibold text-white shadow-sm" onclick="simpanOpnamePerUraian()">
+                                <i class="mdi mdi-check me-1"></i>Simpan Laporan Opname
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         {{-- ============================================================
-             PEMBAYARAN TERMIN
+             MODAL: DETAIL OPNAME MINGGUAN (PER RINCIAN URAIAN)
         ============================================================ --}}
-        @php
-            $totalTermin = $pembayaranTermin->count();
-            $totalNominalTermin = $pembayaranTermin->sum('nominal');
-            $sudahDibayar = $pembayaranTermin->where('status', 'dibayar')->sum('nominal');
-            $belumDibayar = $totalNominalTermin - $sudahDibayar;
-        @endphp
-        <div class="row mt-3 mt-md-4 mb-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-0 rab-card" style="border-radius: 8px; overflow: hidden;">
-                    <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 py-3 px-4" style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+        <div class="modal fade" id="modalDetailOpnameModal" tabindex="-1" aria-labelledby="modalDetailOpnameLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+                    <div class="modal-header py-3 px-4 bg-light border-bottom">
                         <div class="d-flex align-items-center gap-2">
-                            <div style="width:38px;height:38px;border-radius:8px;background:rgba(154,85,255,0.1);color:#9a55ff;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">
-                                <i class="mdi mdi-cash-multiple"></i>
+                            <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(16,185,129,0.12); color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                                <i class="mdi mdi-clipboard-text-search-outline"></i>
                             </div>
                             <div>
-                                <h5 class="mb-0 fw-bold text-dark" style="font-size: 1rem;">Pembayaran Termin Pembangunan</h5>
-                                <small class="text-muted">
-                                    Total: <strong class="text-primary">Rp {{ number_format($totalNominalTermin, 0, ',', '.') }}</strong>
-                                    · Dibayar: <strong class="text-success">Rp {{ number_format($sudahDibayar, 0, ',', '.') }}</strong>
-                                    · Sisa: <strong class="text-danger">Rp {{ number_format($belumDibayar, 0, ',', '.') }}</strong>
-                                </small>
+                                <h5 class="modal-title fw-bold text-dark mb-0" id="detailOpnameJudul">Rincian Opname Mingguan</h5>
+                                <small class="text-muted" id="detailOpnameSubjudul">No. Opname</small>
                             </div>
                         </div>
-                        <div class="d-flex gap-2 flex-wrap">
-                            <span class="badge bg-primary bg-opacity-10 text-primary fw-bold px-3 py-1.5 rounded-2" style="font-size:0.82rem;">{{ $totalTermin }} Termin</span>
-                            @if(!$isUnitSoldOut)
-                                <button type="button" class="btn-tambah-termin" onclick="modalTambahTermin()">
-                                    <i class="mdi mdi-plus me-1"></i>Tambah Termin
-                                </button>
-                            @endif
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body p-4">
+                        <!-- Info Ringkasan Header -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-3 col-6">
+                                <div class="p-2.5 rounded-3 bg-light border text-center">
+                                    <small class="text-muted d-block" style="font-size:0.75rem;">Periode</small>
+                                    <span class="fw-bold text-dark" id="detailOpnamePeriode" style="font-size:0.85rem;">-</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="p-2.5 rounded-3 bg-light border text-center">
+                                    <small class="text-muted d-block" style="font-size:0.75rem;">Tenaga Kerja</small>
+                                    <span class="fw-bold text-dark" id="detailOpnamePekerja" style="font-size:0.85rem;">-</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="p-2.5 rounded-3 bg-success bg-opacity-10 border border-success-subtle text-center">
+                                    <small class="text-success d-block fw-semibold" style="font-size:0.75rem;">Progress Minggu Ini</small>
+                                    <span class="fw-bold text-success" id="detailOpnameProgMinggu" style="font-size:1.1rem;">0%</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="p-2.5 rounded-3 bg-primary bg-opacity-10 border border-primary-subtle text-center">
+                                    <small class="text-primary d-block fw-semibold" style="font-size:0.75rem;">Progress Kumulatif</small>
+                                    <span class="fw-bold text-primary" id="detailOpnameProgKumulatif" style="font-size:1.1rem;">0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tabel Rincian Uraian -->
+                        <div class="card border mb-3" style="border-radius: 10px; overflow: hidden;">
+                            <div class="card-header bg-light py-2 px-3 fw-bold small text-dark d-flex align-items-center gap-1">
+                                <i class="mdi mdi-format-list-numbered text-primary"></i> Capaian Tiap Uraian Pekerjaan
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive" style="max-height: 320px; overflow-y: auto;">
+                                    <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.82rem;">
+                                        <thead class="table-light sticky-top" style="font-size: 0.72rem; text-transform: uppercase;">
+                                            <tr>
+                                                <th class="px-3 py-2 text-center" style="width: 45px;">No</th>
+                                                <th class="px-2 py-2">Uraian Pekerjaan</th>
+                                                <th class="px-2 py-2 text-center" style="width: 80px;">Vol/Sat</th>
+                                                <th class="px-2 py-2 text-center" style="width: 70px;">Bobot</th>
+                                                <th class="px-2 py-2 text-center" style="width: 95px;">Mg Ini</th>
+                                                <th class="px-2 py-2 text-center" style="width: 95px;">Total</th>
+                                                <th class="px-2 py-2">Catatan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="detailOpnameTableBody">
+                                            <!-- Rendered dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Catatan & Info Tambahan Lapangan -->
+                        <div class="row g-2" id="detailOpnameInfoTambahan">
+                            <div class="col-md-6" id="wrapperDetailMaterial">
+                                <div class="p-2.5 rounded-3 bg-light border small">
+                                    <strong class="text-muted d-block mb-1"><i class="mdi mdi-cube-outline me-1"></i>Material Digunakan:</strong>
+                                    <div id="detailOpnameMaterial" class="text-dark">-</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6" id="wrapperDetailKendala">
+                                <div class="p-2.5 rounded-3 bg-light border small">
+                                    <strong class="text-muted d-block mb-1"><i class="mdi mdi-alert-circle-outline me-1"></i>Kendala:</strong>
+                                    <div id="detailOpnameKendala" class="text-dark">-</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6" id="wrapperDetailSolusi">
+                                <div class="p-2.5 rounded-3 bg-light border small">
+                                    <strong class="text-muted d-block mb-1"><i class="mdi mdi-lightbulb-on-outline me-1"></i>Solusi:</strong>
+                                    <div id="detailOpnameSolusi" class="text-dark">-</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6" id="wrapperDetailRencana">
+                                <div class="p-2.5 rounded-3 bg-light border small">
+                                    <strong class="text-muted d-block mb-1"><i class="mdi mdi-arrow-right-bold-circle-outline me-1"></i>Rencana Minggu Depan:</strong>
+                                    <div id="detailOpnameRencana" class="text-dark">-</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="card-body p-0">
-                        @if($pembayaranTermin->isNotEmpty())
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0" style="font-size:0.84rem;">
-                                    <thead style="background:#f5f9ff;">
-                                        <tr>
-                                            <th class="px-3 py-2 text-muted fw-bold" style="width:60px;font-size:0.75rem;text-transform:uppercase;">Termin</th>
-                                            <th class="px-3 py-2 text-muted fw-bold" style="font-size:0.75rem;text-transform:uppercase;">Nama Termin</th>
-                                            <th class="px-3 py-2 text-muted fw-bold" style="font-size:0.75rem;text-transform:uppercase;">Uraian Pekerjaan</th>
-                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:110px;font-size:0.75rem;text-transform:uppercase;">Syarat Progress</th>
-                                            <th class="px-3 py-2 text-muted fw-bold text-end" style="width:150px;font-size:0.75rem;text-transform:uppercase;">Nominal</th>
-                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:110px;font-size:0.75rem;text-transform:uppercase;">Jatuh Tempo</th>
-                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:110px;font-size:0.75rem;text-transform:uppercase;">Status</th>
-                                            <th class="px-3 py-2 text-muted fw-bold text-center" style="width:100px;font-size:0.75rem;text-transform:uppercase;">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tableBodyTermin">
-                                        @foreach($pembayaranTermin as $termin)
-                                        @php
-                                            $statusColor = match($termin->status) {
-                                                'dibayar'   => 'success',
-                                                'disetujui' => 'info',
-                                                'diajukan'  => 'warning',
-                                                'ditolak'   => 'danger',
-                                                default     => 'secondary',
-                                            };
-                                        @endphp
-                                        <tr @if($termin->status === 'dibayar') style="background: rgba(16,185,129,0.04);" @endif>
-                                            <td class="px-3 text-center">
-                                                <span class="badge bg-primary bg-opacity-15 text-primary fw-bold rounded-circle" style="width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;font-size:0.85rem;">{{ $termin->termin_ke }}</span>
-                                            </td>
-                                            <td class="px-3">
-                                                <div class="fw-bold text-dark">{{ $termin->nama_termin }}</div>
-                                                @if($termin->persentase_bayar > 0)
-                                                    <small class="text-muted">{{ $termin->persentase_bayar }}% dari nilai kontrak</small>
-                                                @endif
-                                            </td>
-                                            <td class="px-3">
-                                                <small class="text-muted" style="font-size:0.8rem;">{{ $termin->uraian_pekerjaan ? \Str::limit($termin->uraian_pekerjaan, 80) : '-' }}</small>
-                                            </td>
-                                            <td class="px-3 text-center">
-                                                @if($termin->syarat_progress_persen > 0)
-                                                    <span class="badge bg-warning bg-opacity-15 text-warning fw-bold rounded-2">≥ {{ $termin->syarat_progress_persen }}%</span>
-                                                @else
-                                                    <span class="text-muted">-</span>
-                                                @endif
-                                            </td>
-                                            <td class="px-3 text-end">
-                                                <span class="fw-bold font-monospace text-{{ $termin->status === 'dibayar' ? 'success' : 'dark' }}" style="font-size:0.92rem;">
-                                                    Rp {{ number_format($termin->nominal, 0, ',', '.') }}
-                                                </span>
-                                                @if($termin->status === 'dibayar' && $termin->tanggal_bayar)
-                                                    <br><small class="text-success"><i class="mdi mdi-check-circle me-0.5"></i>{{ \Carbon\Carbon::parse($termin->tanggal_bayar)->isoFormat('D MMM Y') }}</small>
-                                                @endif
-                                            </td>
-                                            <td class="px-3 text-center">
-                                                <small class="text-muted">{{ $termin->tanggal_jatuh_tempo ? \Carbon\Carbon::parse($termin->tanggal_jatuh_tempo)->isoFormat('D MMM Y') : '-' }}</small>
-                                            </td>
-                                            <td class="px-3 text-center">
-                                                <span class="badge bg-{{ $statusColor }} bg-opacity-15 text-{{ $statusColor }} fw-bold px-2 py-1 rounded-2" style="font-size:0.75rem;">{{ $termin->status_label }}</span>
-                                            </td>
-                                            <td class="px-3 text-center">
-                                                <div class="d-flex gap-1 justify-content-center">
-                                                    @if(!$isUnitSoldOut && $termin->status !== 'dibayar')
-                                                        <button type="button" class="btn btn-sm btn-outline-success rounded-2 px-2 py-1 btn-bayar-termin"
-                                                            data-id="{{ $termin->id }}"
-                                                            data-nama="{{ $termin->nama_termin }}"
-                                                            data-nominal="{{ number_format($termin->nominal, 0, ',', '.') }}"
-                                                            style="font-size:0.75rem;" title="Tandai Dibayar">
-                                                            <i class="mdi mdi-cash-check"></i>
-                                                        </button>
-                                                    @endif
-                                                    @if(!$isUnitSoldOut)
-                                                        <button type="button" class="btn btn-sm btn-outline-danger rounded-circle p-1 btn-hapus-termin"
-                                                            data-id="{{ $termin->id }}"
-                                                            style="width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;">
-                                                            <i class="mdi mdi-trash-can-outline" style="font-size:0.85rem;"></i>
-                                                        </button>
-                                                    @endif
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                    <tfoot>
-                                        <tr style="background:#f5f9ff; border-top: 2px solid #bfdbfe;">
-                                            <td colspan="4" class="px-3 py-2 fw-bold text-dark text-end small">TOTAL PEMBAYARAN TERMIN</td>
-                                            <td class="px-3 py-2 text-end fw-bold text-primary font-monospace" style="font-size:0.95rem;">Rp {{ number_format($totalNominalTermin, 0, ',', '.') }}</td>
-                                            <td colspan="3" class="px-3 py-2 small text-muted">{{ $pembayaranTermin->where('status', 'dibayar')->count() }}/{{ $totalTermin }} termin terbayar</td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        @else
-                            <div class="text-center py-5 text-muted">
-                                <i class="mdi mdi-cash-off" style="font-size:3rem; opacity:0.25;"></i>
-                                <p class="mt-2 mb-0 fw-semibold" style="font-size:0.9rem;">Belum ada termin pembayaran</p>
-                                <small>Klik "Tambah Termin" untuk menambahkan jadwal pembayaran berdasarkan progress pembangunan</small>
-                            </div>
-                        @endif
+                    <div class="modal-footer py-2 px-4 bg-light border-top">
+                        <button type="button" class="btn btn-sm btn-secondary px-4 rounded-2" data-bs-dismiss="modal">Tutup</button>
                     </div>
-                </div>
-            </div>
-        <!-- ============================================================
-             MODAL: TAMBAH OPNAME MINGGUAN
-        ============================================================ -->
-        <div class="modal fade" id="modalTambahOpname" tabindex="-1" aria-labelledby="modalTambahOpnameLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 620px; width: 95%;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalTambahOpnameLabel">
-                            <i class="mdi mdi-clipboard-list-outline me-2" style="color: #16a34a;"></i>
-                            <span>Tambah Opname Mingguan</span>
-                        </h5>
-                        <button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form id="formTambahOpname" onsubmit="handleFormTambahOpname(event)">
-                        <div class="modal-body">
-                            <div class="row g-3">
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label small fw-bold text-muted mb-1">Minggu Ke <span class="text-danger">*</span></label>
-                                    <input type="number" id="opname_minggu_ke" class="form-control" value="{{ $opnameMingguan->count() + 1 }}" min="1" required>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label small fw-bold text-muted mb-1">Jumlah Pekerja</label>
-                                    <input type="number" id="opname_pekerja" class="form-control" placeholder="Contoh: 8" min="0">
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label small fw-bold text-muted mb-1">Tanggal Mulai Minggu <span class="text-danger">*</span></label>
-                                    <input type="date" id="opname_tgl_mulai" class="form-control" required>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label small fw-bold text-muted mb-1">Tanggal Akhir Minggu <span class="text-danger">*</span></label>
-                                    <input type="date" id="opname_tgl_akhir" class="form-control" required>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label small fw-bold text-muted mb-1">Progress Minggu Ini (%) <span class="text-danger">*</span></label>
-                                    <input type="number" id="opname_prog_minggu" class="form-control" placeholder="0.00" min="0" max="100" step="0.1" required>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label small fw-bold text-muted mb-1">Progress Kumulatif (%) <span class="text-danger">*</span></label>
-                                    <input type="number" id="opname_prog_kumulatif" class="form-control" placeholder="0.00" min="0" max="100" step="0.1" required>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label small fw-bold text-muted mb-1">Uraian Pekerjaan Minggu Ini</label>
-                                    <textarea id="opname_uraian" class="form-control" rows="3" placeholder="Contoh:&#10;Pemasangan kolom lantai 1&#10;Cor balok ring"></textarea>
-                                    <small class="text-muted">Gunakan baris baru untuk memisahkan setiap uraian pekerjaan.</small>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label small fw-bold text-muted mb-1">Material Digunakan</label>
-                                    <textarea id="opname_material" class="form-control" rows="2" placeholder="Semen, pasir, bata ringan, besi..."></textarea>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label small fw-bold text-muted mb-1">Kendala / Hambatan</label>
-                                    <textarea id="opname_kendala" class="form-control" rows="2" placeholder="Cuaca hujan, kendala suplai..."></textarea>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label small fw-bold text-muted mb-1">Solusi</label>
-                                    <textarea id="opname_solusi" class="form-control" rows="2" placeholder="Solusi atas kendala yang dihadapi..."></textarea>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label small fw-bold text-muted mb-1">Rencana Minggu Depan</label>
-                                    <textarea id="opname_rencana" class="form-control" rows="2" placeholder="Rencana pekerjaan minggu berikutnya..."></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary btn-sm px-3" data-dismiss="modal" data-bs-dismiss="modal" style="border-radius: 6px;">Batal</button>
-                            <button type="submit" id="btnSubmitOpname" class="btn btn-sm text-white px-4" style="border-radius: 6px; background-color: #16a34a !important; border: 1px solid #16a34a !important; font-weight: 600;">
-                                <i class="mdi mdi-content-save me-1"></i>Simpan Opname
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============================================================
-             MODAL: TAMBAH TERMIN PEMBAYARAN
-        ============================================================ -->
-        <div class="modal fade" id="modalTambahTermin" tabindex="-1" aria-labelledby="modalTambahTerminLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 580px; width: 95%;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalTambahTerminLabel">
-                            <i class="mdi mdi-cash-multiple me-2" style="color: #0284c7;"></i>
-                            <span>Tambah Termin Pembayaran</span>
-                        </h5>
-                        <button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form id="formTambahTermin" onsubmit="handleFormTambahTermin(event)">
-                        <div class="modal-body">
-                            <div class="row g-3">
-                                <div class="col-12 col-md-4">
-                                    <label class="form-label small fw-bold text-muted mb-1">Termin Ke <span class="text-danger">*</span></label>
-                                    <input type="number" id="termin_ke" class="form-control" value="{{ $pembayaranTermin->count() + 1 }}" min="1" required>
-                                </div>
-                                <div class="col-12 col-md-8">
-                                    <label class="form-label small fw-bold text-muted mb-1">Nama Termin <span class="text-danger">*</span></label>
-                                    <input type="text" id="termin_nama" class="form-control" placeholder="Contoh: Termin 1 – Pondasi Selesai" required>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label small fw-bold text-muted mb-1">Uraian Pekerjaan</label>
-                                    <textarea id="termin_uraian" class="form-control" rows="2" placeholder="Deskripsi pekerjaan yang dicakup pada termin ini..."></textarea>
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <label class="form-label small fw-bold text-muted mb-1">Syarat Progress (%)</label>
-                                    <input type="number" id="termin_syarat_prog" class="form-control" placeholder="0" min="0" max="100" step="1">
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <label class="form-label small fw-bold text-muted mb-1">% Bayar dari Kontrak</label>
-                                    <input type="number" id="termin_persen_bayar" class="form-control" placeholder="0" min="0" max="100" step="1">
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <label class="form-label small fw-bold text-muted mb-1">Nominal (Rp) <span class="text-danger">*</span></label>
-                                    <input type="text" id="termin_nominal" class="form-control font-monospace fw-bold" placeholder="0" oninput="formatRupiahInput(this)" required>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label small fw-bold text-muted mb-1">Tanggal Jatuh Tempo</label>
-                                    <input type="date" id="termin_jatuh_tempo" class="form-control">
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <label class="form-label small fw-bold text-muted mb-1">Catatan</label>
-                                    <textarea id="termin_catatan" class="form-control" rows="1" placeholder="Catatan tambahan (opsional)..."></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary btn-sm px-3" data-dismiss="modal" data-bs-dismiss="modal" style="border-radius: 6px;">Batal</button>
-                            <button type="submit" id="btnSubmitTermin" class="btn btn-sm text-white px-4" style="border-radius: 6px; background-color: #0284c7 !important; border: 1px solid #0284c7 !important; font-weight: 600;">
-                                <i class="mdi mdi-content-save me-1"></i>Simpan Termin
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============================================================
-             MODAL: BAYAR TERMIN PEMBAYARAN
-        ============================================================ -->
-        <div class="modal fade" id="modalBayarTermin" tabindex="-1" aria-labelledby="modalBayarTerminLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" style="max-width: 480px; width: 95%;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalBayarTerminLabel">
-                            <i class="mdi mdi-cash-check me-2" style="color: #0284c7;"></i>
-                            <span>Konfirmasi Pembayaran Termin</span>
-                        </h5>
-                        <button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form id="formBayarTermin" onsubmit="handleFormBayarTermin(event)">
-                        <input type="hidden" id="bayar_termin_id">
-                        <div class="modal-body">
-                            <div class="p-3 bg-light rounded-3 border mb-3">
-                                <div class="fw-bold text-dark" id="bayar_termin_nama">-</div>
-                                <div class="text-primary fw-bold font-monospace" style="font-size: 1.1rem;" id="bayar_termin_nominal">Rp 0</div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold text-muted mb-1">No. Bukti Bayar / Kwitansi</label>
-                                <input type="text" id="bayar_no_bukti" class="form-control" placeholder="Contoh: TRF-20261001-001">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold text-muted mb-1">Tanggal Bayar <span class="text-danger">*</span></label>
-                                <input type="date" id="bayar_tgl" class="form-control" value="{{ date('Y-m-d') }}" required>
-                            </div>
-                            <div class="mb-0">
-                                <label class="form-label small fw-bold text-muted mb-1">Catatan</label>
-                                <textarea id="bayar_catatan" class="form-control" rows="2" placeholder="Catatan pembayaran..."></textarea>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary btn-sm px-3" data-dismiss="modal" data-bs-dismiss="modal" style="border-radius: 6px;">Batal</button>
-                            <button type="submit" id="btnSubmitBayar" class="btn btn-sm text-white px-4" style="border-radius: 6px; background-color: #0284c7 !important; border: 1px solid #0284c7 !important; font-weight: 600;">
-                                <i class="mdi mdi-check-circle me-1"></i>Konfirmasi Dibayar
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- ============================================================
-             MODAL: TAMBAH KATEGORI BARU
-        ============================================================ -->
-        <div class="modal fade" id="modalTambahKategori" tabindex="-1" aria-labelledby="modalTambahKategoriLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" style="max-width: 480px; width: 95%;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalTambahKategoriLabel">
-                            <i class="mdi mdi-folder-plus me-2" style="color: #9a55ff;"></i>
-                            <span>Tambah Kategori Pekerjaan Baru</span>
-                        </h5>
-                        <button type="button" class="btn-close" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form id="formTambahKategori" onsubmit="handleFormTambahKategori(event)">
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label class="form-label small fw-bold text-muted mb-1">Nama Kategori / Tahapan Pekerjaan <span class="text-danger">*</span></label>
-                                <input type="text" id="kategori_baru_title" class="form-control" placeholder="Contoh: IX. PEKERJAAN INTERIOR & MEUBEL" required>
-                                <small class="text-muted d-block mt-1">Kategori baru akan otomatis ditambahkan ke form RAP dan terhubung ke kalkulasi HPP.</small>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary btn-sm px-3" data-dismiss="modal" data-bs-dismiss="modal" style="border-radius: 6px;">Batal</button>
-                            <button type="submit" class="btn btn-sm text-white px-4" style="border-radius: 6px; background-color: #9a55ff !important; border: 1px solid #9a55ff !important; font-weight: 600;">
-                                <i class="mdi mdi-plus-circle me-1"></i>Tambahkan Kategori
-                            </button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -1493,82 +1361,86 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const select = document.getElementById('unitSelect');
-            if (select && select.tagName === 'SELECT') {
-                function updateFields() {
-                    const selected = select.options[select.selectedIndex];
-                    if (!selected) return;
 
-                    const typeEl = document.getElementById('unitType');
-                    if (typeEl) typeEl.value = selected.dataset.type ?? '-';
+            function updateFields() {
+                const selected = select.options[select.selectedIndex];
 
-                    const areaEl = document.getElementById('unitArea');
-                    if (areaEl) areaEl.value = (selected.dataset.area ?? 0) + ' m²';
+                document.getElementById('unitType').value = selected.dataset.type ?? '-';
+                document.getElementById('unitArea').value = (selected.dataset.area ?? 0) + ' m²';
+                document.getElementById('unitBuilding').value =
+                    (selected.dataset.building ?? 0) + ' m²';
 
-                    const bldEl = document.getElementById('unitBuilding');
-                    if (bldEl) bldEl.value = (selected.dataset.building ?? 0) + ' m²';
+                const price = selected.dataset.price ?? 0;
+                document.getElementById('unitPrice').value =
+                    'Rp ' + Number(price).toLocaleString('id-ID');
+            }
 
-                    const price = selected.dataset.price ?? 0;
-                    const priceEl = document.getElementById('unitPrice');
-                    if (priceEl) priceEl.value = 'Rp ' + Number(price).toLocaleString('id-ID');
+            updateFields();
+            select.addEventListener('change', updateFields);
+
+            // Handle Auto-save & Count Checklist Kondisi Unit
+            $(document).on('change', '.unit-checklist-input', function() {
+                const unitId = $(this).data('unit-id');
+                const total = $('.unit-checklist-input').length;
+                const checked = $('.unit-checklist-input:checked').length;
+
+                $('#checklistCountText').text(checked);
+
+                if (checked === total) {
+                    $('#badgeChecklistStatus').css({
+                        'background': '#dcfce7',
+                        'color': '#15803d',
+                        'border': '1px solid #bbf7d0'
+                    });
+                } else {
+                    $('#badgeChecklistStatus').css({
+                        'background': '#eef2ff',
+                        'color': '#4f46e5',
+                        'border': '1px solid #c7d2fe'
+                    });
                 }
 
-                updateFields();
-                select.addEventListener('change', updateFields);
-            }
+                // Kumpulkan payload
+                const payload = {};
+                $('.unit-checklist-input').each(function() {
+                    const f = $(this).data('field');
+                    if ($(this).is(':checked')) {
+                        payload[f] = 1;
+                    }
+                });
+
+                // Kirim via AJAX
+                $.ajax({
+                    url: `/properti/progress/checklist-kondisi/${unitId}`,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        checklist_kondisi: payload
+                    },
+                    success: function(res) {
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 1500,
+                            timerProgressBar: false
+                        });
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Checklist kondisi unit tersimpan'
+                        });
+                    },
+                    error: function(err) {
+                        console.error('Gagal menyimpan checklist', err);
+                    }
+                });
+            });
         });
     </script>
 
     <script>
         let indexItem = 0;
         let kategoriMap = @json($jsKategoriMap);
-
-        /* Universal Bootstrap 4 & 5 Modal Helper dengan Scroll Retention */
-        let _modalScrollY = 0;
-
-        function openModal(id) {
-            _modalScrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-            try {
-                if (window.jQuery && typeof $('#' + id).modal === 'function') {
-                    $('#' + id).modal('show');
-                    window.scrollTo(0, _modalScrollY);
-                    return;
-                }
-            } catch (err) {
-                console.warn('jQuery modal show error:', err);
-            }
-            const el = document.getElementById(id);
-            if (el && window.bootstrap && typeof bootstrap.Modal !== 'undefined') {
-                bootstrap.Modal.getOrCreateInstance(el).show();
-                window.scrollTo(0, _modalScrollY);
-            }
-        }
-
-        function closeModal(id) {
-            try {
-                if (window.jQuery && typeof $('#' + id).modal === 'function') {
-                    $('#' + id).modal('hide');
-                    window.scrollTo(0, _modalScrollY);
-                    return;
-                }
-            } catch (err) {
-                console.warn('jQuery modal hide error:', err);
-            }
-            const el = document.getElementById(id);
-            if (el && window.bootstrap && typeof bootstrap.Modal !== 'undefined') {
-                const inst = bootstrap.Modal.getInstance(el);
-                if (inst) inst.hide();
-                window.scrollTo(0, _modalScrollY);
-            }
-        }
-
-        if (window.jQuery) {
-            $(document).on('show.bs.modal', function () {
-                _modalScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
-            });
-            $(document).on('shown.bs.modal hidden.bs.modal', function () {
-                window.scrollTo(0, _modalScrollY);
-            });
-        }
 
         function confirmApplyTemplate() {
             let form = document.getElementById('formApplyTemplate');
@@ -1582,7 +1454,7 @@
                 text: 'Sistem akan otomatis memasukkan rincian pekerjaan standar (I. Perizinan & Legalitas s/d VIII. Pekerjaan Lainnya) pada unit ini.',
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#0284c7',
+                confirmButtonColor: '#9a55ff',
                 cancelButtonColor: '#6c757d',
                 confirmButtonText: 'Ya, Terapkan!',
                 cancelButtonText: 'Batal'
@@ -1602,19 +1474,33 @@
         }
 
         function modalTambahKategoriBaru() {
-            const modalEl = document.getElementById('modalTambahKategori');
-            if (modalEl) {
-                document.getElementById('kategori_baru_title').value = '';
-                openModal('modalTambahKategori');
-            }
-        }
-
-        function handleFormTambahKategori(e) {
-            e.preventDefault();
-            const title = document.getElementById('kategori_baru_title').value.trim();
-            if (!title) return;
-            tambahKategoriSection(title);
-            closeModal('modalTambahKategori');
+            Swal.fire({
+                title: 'Tambah Kategori Pekerjaan Baru',
+                html: `
+                    <div class="text-start">
+                        <label class="form-label small fw-bold text-muted">Nama Kategori / Tahapan Pekerjaan</label>
+                        <input type="text" id="swal-cat-title" class="form-control" placeholder="Contoh: IX. PEKERJAAN INTERIOR & MEUBEL">
+                        <small class="text-muted d-block mt-1">Kategori baru akan otomatis ditambahkan ke form RAP dan terhubung ke kalkulasi HPP.</small>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#10b981',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Tambahkan Kategori',
+                cancelButtonText: 'Batal',
+                preConfirm: () => {
+                    const title = document.getElementById('swal-cat-title').value.trim();
+                    if (!title) {
+                        Swal.showValidationMessage('Nama kategori tidak boleh kosong!');
+                        return false;
+                    }
+                    return title;
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    tambahKategoriSection(result.value);
+                }
+            });
         }
 
         function tambahKategoriSection(title) {
@@ -1656,13 +1542,13 @@
                                     <!-- Mini Progress Bar & Persentase -->
                                     <div class="d-flex align-items-center gap-1.5 px-2 py-1 bg-white border rounded-2" style="min-width: 120px;">
                                         <div class="progress flex-grow-1" style="height: 6px; border-radius: 4px; background: #e2e8f0; width: 60px;">
-                                            <div class="progress-bar" id="progbar-${cleanKey}" style="width: 0%; background-color: #9a55ff;"></div>
+                                            <div class="progress-bar bg-gradient-primary" id="progbar-${cleanKey}" style="width: 0%;"></div>
                                         </div>
                                         <span class="fw-bold font-monospace text-primary" id="progpct-${cleanKey}" style="font-size: 0.8rem; width: 38px; text-align: right;">0%</span>
                                     </div>
 
-                                    <button type="button" class="btn-tambah-item" style="height: 30px;" onclick="tambahItem('${cleanKey}')">
-                                        <i class="mdi mdi-plus"></i> Tambah Item
+                                    <button type="button" class="btn btn-sm btn-success text-white px-3 py-1 rounded-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-1" style="height: 30px; font-size: 0.8rem;" onclick="tambahItem('${cleanKey}')">
+                                        + Tambah Item
                                     </button>
                                 </div>
                             </div>
@@ -2087,15 +1973,12 @@
             hitungSemua();
         });
 
-        const unitSelectEl = document.getElementById("unitSelect");
-        if (unitSelectEl) {
-            unitSelectEl.addEventListener("change", function() {
-                let unitId = this.value;
-                let url = new URL(window.location.href);
-                url.searchParams.set('unit_id', unitId);
-                window.location.href = url.toString();
-            });
-        }
+        document.getElementById("unitSelect").addEventListener("change", function() {
+            let unitId = this.value;
+            let url = new URL(window.location.href);
+            url.searchParams.set('unit_id', unitId);
+            window.location.href = url.toString();
+        });
 
         document.querySelectorAll('.acc-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -2152,46 +2035,343 @@
         const CSRF_TOKEN = '{{ csrf_token() }}';
         const PROGRESS_ID = '{{ $selectedUnit->progress ? $selectedUnit->progress->id : "" }}';
         const UNIT_ID = '{{ $selectedUnit->id }}';
+        const RAP_ITEMS = @json($rapItemsPayload);
+        const TOTAL_RAP_BUDGET = {{ (float)$totalRapBudget }};
 
-        /* ─── OPNAME MINGGUAN ─── */
+        let modalTambahOpnameInstance = null;
+        let modalDetailOpnameInstance = null;
+
+        /* ─── OPNAME MINGGUAN (PER URAIAN PEKERJAAN) ─── */
         function modalTambahOpname() {
             if (!PROGRESS_ID) {
                 Swal.fire('Perhatian', 'Simpan data RAP terlebih dahulu sebelum menambah opname.', 'warning');
                 return;
             }
-            openModal('modalTambahOpname');
+
+            const nextMinggu = {{ $opnameMingguan->count() + 1 }};
+            document.getElementById('opname_minggu_ke').value = nextMinggu;
+            document.getElementById('opname_pekerja').value = '';
+
+            // Default periode tanggal
+            @if($opnameMingguan->isNotEmpty() && $opnameMingguan->last()->tanggal_akhir_minggu)
+                let lastEnd = new Date('{{ $opnameMingguan->last()->tanggal_akhir_minggu }}');
+                let nextStart = new Date(lastEnd);
+                nextStart.setDate(nextStart.getDate() + 1);
+                let nextEnd = new Date(nextStart);
+                nextEnd.setDate(nextEnd.getDate() + 6);
+                document.getElementById('opname_tgl_mulai').value = nextStart.toISOString().split('T')[0];
+                document.getElementById('opname_tgl_akhir').value = nextEnd.toISOString().split('T')[0];
+            @else
+                let now = new Date();
+                let day = now.getDay();
+                let diffToMonday = now.getDate() - day + (day === 0 ? -6 : 1);
+                let mon = new Date(now.setDate(diffToMonday));
+                let sun = new Date(mon);
+                sun.setDate(sun.getDate() + 6);
+                document.getElementById('opname_tgl_mulai').value = mon.toISOString().split('T')[0];
+                document.getElementById('opname_tgl_akhir').value = sun.toISOString().split('T')[0];
+            @endif
+
+            // Reset field opsional
+            document.getElementById('opname_material').value = '';
+            document.getElementById('opname_kendala').value = '';
+            document.getElementById('opname_solusi').value = '';
+            document.getElementById('opname_rencana').value = '';
+
+            // Render rincian tabel per uraian
+            renderTabelOpnameUraian();
+
+            if (!modalTambahOpnameInstance) {
+                modalTambahOpnameInstance = new bootstrap.Modal(document.getElementById('modalTambahOpnameModal'));
+            }
+            modalTambahOpnameInstance.show();
         }
 
-        function handleFormTambahOpname(e) {
-            e.preventDefault();
+        function renderTabelOpnameUraian() {
+            const tbody = document.getElementById('tabelBodyOpnameModal');
+            const notice = document.getElementById('noticeNoRapItems');
+            tbody.innerHTML = '';
+
+            if (!RAP_ITEMS || RAP_ITEMS.length === 0) {
+                notice.classList.remove('d-none');
+                document.getElementById('badgeProgMingguIni').innerText = '+0.0%';
+                document.getElementById('badgeProgKumulatif').innerText = '0.0%';
+                return;
+            }
+            notice.classList.add('d-none');
+
+            RAP_ITEMS.forEach((it, idx) => {
+                const progLalu = parseFloat(it.progress_persen) || 0;
+                const bobot = parseFloat(it.bobot) || 0;
+
+                const tr = document.createElement('tr');
+                tr.className = 'opname-item-row';
+                tr.dataset.itemId = it.id || '';
+                tr.dataset.kode = it.kode || '';
+                tr.dataset.kategori = it.kategori || '';
+                tr.dataset.uraian = it.uraian || '';
+                tr.dataset.volume = it.volume || '';
+                tr.dataset.satuan = it.satuan || '';
+                tr.dataset.bobot = bobot;
+                tr.dataset.progLalu = progLalu;
+
+                tr.innerHTML = `
+                    <td class="text-center fw-bold text-muted px-2 py-2">${it.kode || (idx + 1)}</td>
+                    <td class="px-2 py-2">
+                        <span class="badge bg-secondary bg-opacity-10 text-secondary me-1" style="font-size:0.68rem; text-transform:uppercase;">${it.kategori || 'PEKERJAAN'}</span>
+                        <strong class="text-dark d-block text-truncate" style="max-width: 250px;" title="${it.uraian}">${it.uraian}</strong>
+                    </td>
+                    <td class="text-center px-2 py-2 text-muted font-monospace small">
+                        ${it.volume ? Number(it.volume).toLocaleString('id-ID') : '-'} ${it.satuan || ''}
+                    </td>
+                    <td class="text-center px-2 py-2">
+                        <span class="fw-bold font-monospace text-info" style="font-size:0.85rem;">${bobot.toFixed(2)}%</span>
+                    </td>
+                    <td class="text-center px-2 py-2">
+                        <span class="fw-bold font-monospace text-muted" style="font-size:0.85rem;">${progLalu.toFixed(1)}%</span>
+                    </td>
+                    <td class="text-center px-2 py-2">
+                        <div class="input-group input-group-sm">
+                            <input type="number" min="0" max="${(100 - progLalu).toFixed(1)}" step="0.5" 
+                                   class="form-control form-control-sm text-center fw-bold text-success font-monospace item-opname-minggu" 
+                                   value="0" style="font-size:0.84rem; padding: 2px 4px;">
+                            <span class="input-group-text px-1 bg-light text-muted" style="font-size:10px;">%</span>
+                        </div>
+                    </td>
+                    <td class="text-center px-2 py-2">
+                        <div class="input-group input-group-sm">
+                            <input type="number" min="${progLalu}" max="100" step="0.5" 
+                                   class="form-control form-control-sm text-center fw-bold text-primary font-monospace item-opname-total" 
+                                   value="${progLalu.toFixed(1)}" style="font-size:0.84rem; padding: 2px 4px;">
+                            <span class="input-group-text px-1 bg-light text-muted" style="font-size:10px;">%</span>
+                        </div>
+                    </td>
+                    <td class="px-2 py-2">
+                        <input type="text" class="form-control form-control-sm item-opname-catatan" placeholder="Catatan fisik..." style="font-size:0.8rem;">
+                    </td>
+                `;
+
+                const inpMinggu = tr.querySelector('.item-opname-minggu');
+                const inpTotal = tr.querySelector('.item-opname-total');
+
+                inpMinggu.addEventListener('input', function() {
+                    let mVal = parseFloat(this.value) || 0;
+                    if (mVal < 0) { mVal = 0; this.value = 0; }
+                    if (mVal + progLalu > 100) {
+                        mVal = Math.max(0, 100 - progLalu);
+                        this.value = mVal.toFixed(1);
+                    }
+                    inpTotal.value = (progLalu + mVal).toFixed(1);
+                    hitungTotalOpname();
+                });
+
+                inpTotal.addEventListener('input', function() {
+                    let tVal = parseFloat(this.value) || 0;
+                    if (tVal > 100) { tVal = 100; this.value = 100; }
+                    if (tVal < progLalu) {
+                        tVal = progLalu;
+                        this.value = tVal.toFixed(1);
+                    }
+                    inpMinggu.value = Math.max(0, tVal - progLalu).toFixed(1);
+                    hitungTotalOpname();
+                });
+
+                tbody.appendChild(tr);
+            });
+
+            hitungTotalOpname();
+        }
+
+        function hitungTotalOpname() {
+            let sumMinggu = 0;
+            let sumTotal = 0;
+            const rows = document.querySelectorAll('#tabelBodyOpnameModal tr.opname-item-row');
+            
+            rows.forEach(row => {
+                const bobot = parseFloat(row.dataset.bobot) || 0;
+                const inpMinggu = row.querySelector('.item-opname-minggu');
+                const inpTotal = row.querySelector('.item-opname-total');
+                const pMinggu = parseFloat(inpMinggu?.value) || 0;
+                const pTotal = parseFloat(inpTotal?.value) || 0;
+
+                sumMinggu += (pMinggu * bobot) / 100;
+                sumTotal += (pTotal * bobot) / 100;
+            });
+
+            sumTotal = Math.min(100, Math.max(0, sumTotal));
+            sumMinggu = Math.max(0, sumMinggu);
+
+            const badgeMinggu = document.getElementById('badgeProgMingguIni');
+            const badgeTotal = document.getElementById('badgeProgKumulatif');
+            if (badgeMinggu) badgeMinggu.innerText = '+' + sumMinggu.toFixed(2) + '%';
+            if (badgeTotal) badgeTotal.innerText = sumTotal.toFixed(2) + '%';
+
+            return { minggu: sumMinggu, total: sumTotal };
+        }
+
+        function setSemua100Opname() {
+            const rows = document.querySelectorAll('#tabelBodyOpnameModal tr.opname-item-row');
+            rows.forEach(row => {
+                const progLalu = parseFloat(row.dataset.progLalu) || 0;
+                const inpMinggu = row.querySelector('.item-opname-minggu');
+                const inpTotal = row.querySelector('.item-opname-total');
+                if (inpTotal) inpTotal.value = '100';
+                if (inpMinggu) inpMinggu.value = Math.max(0, 100 - progLalu).toFixed(1);
+            });
+            hitungTotalOpname();
+        }
+
+        function resetSemuaProgresOpname() {
+            const rows = document.querySelectorAll('#tabelBodyOpnameModal tr.opname-item-row');
+            rows.forEach(row => {
+                const progLalu = parseFloat(row.dataset.progLalu) || 0;
+                const inpMinggu = row.querySelector('.item-opname-minggu');
+                const inpTotal = row.querySelector('.item-opname-total');
+                if (inpMinggu) inpMinggu.value = '0';
+                if (inpTotal) inpTotal.value = progLalu.toFixed(1);
+            });
+            hitungTotalOpname();
+        }
+
+        function simpanOpnamePerUraian() {
             const mingguKe = document.getElementById('opname_minggu_ke').value;
             const tglMulai = document.getElementById('opname_tgl_mulai').value;
             const tglAkhir = document.getElementById('opname_tgl_akhir').value;
+
             if (!mingguKe || !tglMulai || !tglAkhir) {
-                Swal.fire('Peringatan', 'Minggu ke, tanggal mulai, dan tanggal akhir wajib diisi!', 'warning');
+                Swal.fire('Validasi Gagal', 'Minggu ke, tanggal mulai, dan tanggal selesai wajib diisi!', 'warning');
                 return;
             }
-            const uraianRaw = document.getElementById('opname_uraian').value;
-            const uraianArr = uraianRaw.split('\n').map(s => s.trim()).filter(s => s.length > 0);
 
-            const data = {
+            const { minggu: progMinggu, total: progTotal } = hitungTotalOpname();
+
+            const uraianArr = [];
+            const rows = document.querySelectorAll('#tabelBodyOpnameModal tr.opname-item-row');
+            rows.forEach(row => {
+                const itemId = row.dataset.itemId ? parseInt(row.dataset.itemId) : null;
+                const kode = row.dataset.kode || '';
+                const kategori = row.dataset.kategori || '';
+                const uraian = row.dataset.uraian || '';
+                const volume = row.dataset.volume || '';
+                const satuan = row.dataset.satuan || '';
+                const bobot = parseFloat(row.dataset.bobot) || 0;
+                const progLalu = parseFloat(row.dataset.progLalu) || 0;
+                const pMinggu = parseFloat(row.querySelector('.item-opname-minggu')?.value) || 0;
+                const pTotal = parseFloat(row.querySelector('.item-opname-total')?.value) || 0;
+                const catatan = row.querySelector('.item-opname-catatan')?.value.trim() || '';
+
+                uraianArr.push({
+                    item_id: itemId,
+                    kode: kode,
+                    kategori: kategori,
+                    uraian: uraian,
+                    volume: volume,
+                    satuan: satuan,
+                    bobot: bobot,
+                    progress_lalu: progLalu,
+                    progress_minggu_ini: pMinggu,
+                    progress_total: pTotal,
+                    catatan: catatan
+                });
+            });
+
+            const payload = {
+                development_progress_id: PROGRESS_ID,
+                land_bank_unit_id: UNIT_ID,
                 minggu_ke: parseInt(mingguKe),
                 tanggal_mulai_minggu: tglMulai,
                 tanggal_akhir_minggu: tglAkhir,
-                progress_minggu_ini: parseFloat(document.getElementById('opname_prog_minggu').value) || 0,
-                progress_kumulatif: parseFloat(document.getElementById('opname_prog_kumulatif').value) || 0,
+                progress_minggu_ini: parseFloat(progMinggu.toFixed(2)),
+                progress_kumulatif: parseFloat(progTotal.toFixed(2)),
                 jumlah_pekerja: parseInt(document.getElementById('opname_pekerja').value) || null,
+                material_digunakan: document.getElementById('opname_material').value.trim() || null,
+                kendala: document.getElementById('opname_kendala').value.trim() || null,
+                solusi: document.getElementById('opname_solusi').value.trim() || null,
+                rencana_minggu_depan: document.getElementById('opname_rencana').value.trim() || null,
                 uraian_pekerjaan: uraianArr,
-                material_digunakan: document.getElementById('opname_material').value || null,
-                kendala: document.getElementById('opname_kendala').value || null,
-                solusi: document.getElementById('opname_solusi').value || null,
-                rencana_minggu_depan: document.getElementById('opname_rencana').value || null,
             };
 
-            const btn = document.getElementById('btnSubmitOpname');
-            if (btn) btn.disabled = true;
+            // Ikutkan item_id jika ada (dari tombol per uraian)
+            const hiddenItemId = document.getElementById('opname_item_id_hidden');
+            if (hiddenItemId && hiddenItemId.value) {
+                payload.development_progress_item_id = parseInt(hiddenItemId.value);
+            }
 
-            simpanOpname(data);
+            simpanOpname(payload);
+        }
+
+        function bukaDetailOpname(opname) {
+            if (!opname) return;
+
+            document.getElementById('detailOpnameJudul').innerText = `Opname Minggu Ke-${opname.minggu_ke}`;
+            document.getElementById('detailOpnameSubjudul').innerText = `No: ${opname.no_opname || '-'} · Dibuat: ${opname.created_at ? new Date(opname.created_at).toLocaleDateString('id-ID') : '-'}`;
+
+            const tMulai = opname.tanggal_mulai_minggu ? new Date(opname.tanggal_mulai_minggu).toLocaleDateString('id-ID', {day: 'numeric', month: 'short'}) : '-';
+            const tAkhir = opname.tanggal_akhir_minggu ? new Date(opname.tanggal_akhir_minggu).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-';
+            document.getElementById('detailOpnamePeriode').innerText = `${tMulai} - ${tAkhir}`;
+            document.getElementById('detailOpnamePekerja').innerText = opname.jumlah_pekerja ? `${opname.jumlah_pekerja} Orang` : '-';
+            document.getElementById('detailOpnameProgMinggu').innerText = `+${Number(opname.progress_minggu_ini || 0).toFixed(1)}%`;
+            document.getElementById('detailOpnameProgKumulatif').innerText = `${Number(opname.progress_kumulatif || 0).toFixed(1)}%`;
+
+            // Render table rincian
+            const tbody = document.getElementById('detailOpnameTableBody');
+            tbody.innerHTML = '';
+
+            const listUraian = Array.isArray(opname.uraian_pekerjaan) ? opname.uraian_pekerjaan : [];
+
+            if (listUraian.length > 0) {
+                listUraian.forEach((item, idx) => {
+                    const isObj = typeof item === 'object' && item !== null;
+                    const kode = isObj ? (item.kode || (idx + 1)) : (idx + 1);
+                    const nama = isObj ? (item.uraian || '-') : item;
+                    const vol = isObj && (item.volume || item.satuan) ? `${item.volume || ''} ${item.satuan || ''}` : '-';
+                    const bobot = isObj && item.bobot !== undefined ? `${Number(item.bobot).toFixed(2)}%` : '-';
+                    const pMinggu = isObj && item.progress_minggu_ini !== undefined ? `+${Number(item.progress_minggu_ini).toFixed(1)}%` : '-';
+                    const pTotal = isObj && item.progress_total !== undefined ? `${Number(item.progress_total).toFixed(1)}%` : '-';
+                    const catatan = isObj ? (item.catatan || '-') : '-';
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="text-center fw-bold text-muted px-2 py-1.5">${kode}</td>
+                        <td class="px-2 py-1.5">
+                            <span class="fw-semibold text-dark">${nama}</span>
+                            ${isObj && item.kategori ? `<span class="badge bg-light text-muted border ms-1" style="font-size:0.68rem;">${item.kategori}</span>` : ''}
+                        </td>
+                        <td class="text-center px-2 py-1.5 font-monospace text-muted small">${vol}</td>
+                        <td class="text-center px-2 py-1.5"><span class="badge bg-info bg-opacity-10 text-info fw-bold">${bobot}</span></td>
+                        <td class="text-center px-2 py-1.5 text-success fw-bold font-monospace">${pMinggu}</td>
+                        <td class="text-center px-2 py-1.5 text-primary fw-bold font-monospace">${pTotal}</td>
+                        <td class="px-2 py-1.5 text-muted small">${catatan}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="7" class="text-center py-3 text-muted">Belum ada rincian uraian pekerjaan tersimpan.</td>`;
+                tbody.appendChild(tr);
+            }
+
+            // Material, Kendala, Solusi, Rencana
+            const setOrHide = (wrapId, textId, val) => {
+                const wrap = document.getElementById(wrapId);
+                const text = document.getElementById(textId);
+                if (val && val.trim().length > 0) {
+                    wrap.classList.remove('d-none');
+                    text.innerText = val;
+                } else {
+                    wrap.classList.add('d-none');
+                }
+            };
+
+            setOrHide('wrapperDetailMaterial', 'detailOpnameMaterial', opname.material_digunakan);
+            setOrHide('wrapperDetailKendala', 'detailOpnameKendala', opname.kendala);
+            setOrHide('wrapperDetailSolusi', 'detailOpnameSolusi', opname.solusi);
+            setOrHide('wrapperDetailRencana', 'detailOpnameRencana', opname.rencana_minggu_depan);
+
+            if (!modalDetailOpnameInstance) {
+                modalDetailOpnameInstance = new bootstrap.Modal(document.getElementById('modalDetailOpnameModal'));
+            }
+            modalDetailOpnameInstance.show();
         }
 
         function simpanOpname(data) {
@@ -2204,125 +2384,17 @@
             .then(res => res.json())
             .then(resp => {
                 if (resp.success) {
-                    closeModal('modalTambahOpname');
+                    if (modalTambahOpnameInstance) modalTambahOpnameInstance.hide();
                     Swal.fire({ icon: 'success', title: 'Berhasil!', text: resp.message, timer: 1800, showConfirmButton: false })
                         .then(() => window.location.reload());
                 } else {
-                    const btn = document.getElementById('btnSubmitOpname');
-                    if (btn) btn.disabled = false;
                     Swal.fire('Gagal!', resp.message || 'Terjadi kesalahan.', 'error');
                 }
             })
-            .catch(() => {
-                const btn = document.getElementById('btnSubmitOpname');
-                if (btn) btn.disabled = false;
-                Swal.fire('Error!', 'Terjadi kesalahan server.', 'error');
-            });
+            .catch(() => Swal.fire('Error!', 'Terjadi kesalahan server.', 'error'));
         }
 
-        /* ─── PEMBAYARAN TERMIN ─── */
-        function modalTambahTermin() {
-            if (!PROGRESS_ID) {
-                Swal.fire('Perhatian', 'Simpan data RAP terlebih dahulu sebelum menambah termin.', 'warning');
-                return;
-            }
-            openModal('modalTambahTermin');
-        }
-
-        function handleFormTambahTermin(e) {
-            e.preventDefault();
-            const namaTermin = document.getElementById('termin_nama').value.trim();
-            const nominalRaw = document.getElementById('termin_nominal').value;
-            if (!namaTermin) {
-                Swal.fire('Peringatan', 'Nama termin wajib diisi!', 'warning');
-                return;
-            }
-            const nominal = nominalRaw.replace(/\./g, '');
-
-            const data = {
-                termin_ke: parseInt(document.getElementById('termin_ke').value),
-                nama_termin: namaTermin,
-                uraian_pekerjaan: document.getElementById('termin_uraian').value || null,
-                syarat_progress_persen: parseFloat(document.getElementById('termin_syarat_prog').value) || 0,
-                persentase_bayar: parseFloat(document.getElementById('termin_persen_bayar').value) || 0,
-                nominal: nominal,
-                tanggal_jatuh_tempo: document.getElementById('termin_jatuh_tempo').value || null,
-                catatan: document.getElementById('termin_catatan').value || null,
-            };
-
-            const btn = document.getElementById('btnSubmitTermin');
-            if (btn) btn.disabled = true;
-
-            simpanTermin(data);
-        }
-
-        function simpanTermin(data) {
-            Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-            fetch('{{ route("properti.progress.termin.store") }}', {
-                method: 'POST',
-                headers: { 'X-CSRF-TOKEN': CSRF_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify({ ...data, development_progress_id: PROGRESS_ID, land_bank_unit_id: UNIT_ID })
-            })
-            .then(res => res.json())
-            .then(resp => {
-                if (resp.success) {
-                    closeModal('modalTambahTermin');
-                    Swal.fire({ icon: 'success', title: 'Berhasil!', text: resp.message, timer: 1800, showConfirmButton: false })
-                        .then(() => window.location.reload());
-                } else {
-                    const btn = document.getElementById('btnSubmitTermin');
-                    if (btn) btn.disabled = false;
-                    Swal.fire('Gagal!', resp.message || 'Terjadi kesalahan.', 'error');
-                }
-            })
-            .catch(() => {
-                const btn = document.getElementById('btnSubmitTermin');
-                if (btn) btn.disabled = false;
-                Swal.fire('Error!', 'Terjadi kesalahan server.', 'error');
-            });
-        }
-
-        function handleFormBayarTermin(e) {
-            e.preventDefault();
-            const id = document.getElementById('bayar_termin_id').value;
-            const noBukti = document.getElementById('bayar_no_bukti').value;
-            const tglBayar = document.getElementById('bayar_tgl').value;
-            const catatan = document.getElementById('bayar_catatan').value;
-
-            const btn = document.getElementById('btnSubmitBayar');
-            if (btn) btn.disabled = true;
-
-            Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-            fetch(`/properti/progress/termin/${id}/status`, {
-                method: 'PUT',
-                headers: { 'X-CSRF-TOKEN': CSRF_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify({
-                    status: 'dibayar',
-                    no_bukti_bayar: noBukti,
-                    tanggal_bayar: tglBayar,
-                    catatan: catatan,
-                })
-            })
-            .then(r => r.json())
-            .then(resp => {
-                if (resp.success) {
-                    closeModal('modalBayarTermin');
-                    Swal.fire({ icon: 'success', title: 'Dibayar!', text: resp.message, timer: 1500, showConfirmButton: false })
-                        .then(() => window.location.reload());
-                } else {
-                    if (btn) btn.disabled = false;
-                    Swal.fire('Gagal!', resp.message, 'error');
-                }
-            })
-            .catch(() => {
-                if (btn) btn.disabled = false;
-                Swal.fire('Error!', 'Terjadi kesalahan server.', 'error');
-            });
-        }
-
-        /* ─── EVENT LISTENER GLOBAL (CLICK) ─── */
         document.addEventListener('click', function(e) {
-            // Hapus Opname
             const btnHapusOpname = e.target.closest('.btn-hapus-opname');
             if (btnHapusOpname) {
                 const id = btnHapusOpname.dataset.id;
@@ -2352,27 +2424,302 @@
                         });
                     }
                 });
+            }
+        });
+
+        /* ─── OPNAME PER ITEM (dari tombol di tabel RAP) ─── */
+        function modalOpnamePerItem(itemId, uraianLabel, progLaluItem) {
+            if (!PROGRESS_ID) {
+                Swal.fire('Perhatian', 'Simpan data RAP terlebih dahulu sebelum menambah opname.', 'warning');
                 return;
             }
 
-            // Bayar Termin
+            // Set form modal dengan info item
+            const nextMinggu = {{ $opnameMingguan->count() + 1 }};
+            document.getElementById('opname_minggu_ke').value = nextMinggu;
+            document.getElementById('opname_pekerja').value = '';
+            document.getElementById('opname_material').value = '';
+            document.getElementById('opname_kendala').value = '';
+            document.getElementById('opname_solusi').value = '';
+            document.getElementById('opname_rencana').value = '';
+
+            // Set default tanggal
+            @if($opnameMingguan->isNotEmpty() && $opnameMingguan->last()->tanggal_akhir_minggu)
+                let lastEnd2 = new Date('{{ $opnameMingguan->last()->tanggal_akhir_minggu }}');
+                let nextStart2 = new Date(lastEnd2); nextStart2.setDate(nextStart2.getDate() + 1);
+                let nextEnd2 = new Date(nextStart2); nextEnd2.setDate(nextEnd2.getDate() + 6);
+                document.getElementById('opname_tgl_mulai').value = nextStart2.toISOString().split('T')[0];
+                document.getElementById('opname_tgl_akhir').value = nextEnd2.toISOString().split('T')[0];
+            @else
+                let now2 = new Date();
+                let day2 = now2.getDay();
+                let diffMonday2 = now2.getDate() - day2 + (day2 === 0 ? -6 : 1);
+                let mon2 = new Date(now2.setDate(diffMonday2));
+                let sun2 = new Date(mon2); sun2.setDate(sun2.getDate() + 6);
+                document.getElementById('opname_tgl_mulai').value = mon2.toISOString().split('T')[0];
+                document.getElementById('opname_tgl_akhir').value = sun2.toISOString().split('T')[0];
+            @endif
+
+            // Simpan item_id sebagai data attribute di tombol simpan – gunakan hidden input dalam modal
+            let hiddenItemId = document.getElementById('opname_item_id_hidden');
+            if (!hiddenItemId) {
+                hiddenItemId = document.createElement('input');
+                hiddenItemId.type = 'hidden';
+                hiddenItemId.id = 'opname_item_id_hidden';
+                document.getElementById('modalTambahOpnameModal').appendChild(hiddenItemId);
+            }
+            hiddenItemId.value = itemId;
+
+            // Update subjudul modal dengan nama uraian
+            const subLabel = document.getElementById('modalTambahOpnameLabel');
+            if (subLabel) {
+                subLabel.innerHTML = `Input Opname Mingguan`;
+            }
+            const subSmall = document.querySelector('#modalTambahOpnameModal .modal-header small');
+            if (subSmall) {
+                subSmall.innerHTML = `Uraian: <strong class="text-white">${uraianLabel}</strong> · Progres Lalu: <span class="badge bg-white text-success">${progLaluItem}%</span>`;
+            }
+
+            // Render tabel opname (sama seperti biasa, tapi highlight baris item ini)
+            renderTabelOpnameUraian(itemId);
+
+            if (!modalTambahOpnameInstance) {
+                modalTambahOpnameInstance = new bootstrap.Modal(document.getElementById('modalTambahOpnameModal'));
+            }
+            modalTambahOpnameInstance.show();
+        }
+
+        /* ─── TERMIN PER ITEM (dari tombol di tabel RAP) ─── */
+        function modalTerminPerItem(itemId, uraianLabel, nilaiItem) {
+            if (!PROGRESS_ID) {
+                Swal.fire('Perhatian', 'Simpan data RAP terlebih dahulu sebelum menambah termin.', 'warning');
+                return;
+            }
+            const nextTermin = {{ $pembayaranTermin->count() + 1 }};
+            const nilaiFormatted = new Intl.NumberFormat('id-ID').format(nilaiItem);
+
+            Swal.fire({
+                title: `<i class="mdi mdi-cash-multiple text-primary me-2"></i>Tambah Termin Pembayaran`,
+                width: 680,
+                html: `
+                    <div class="text-start">
+                        <div class="alert alert-primary d-flex align-items-center gap-2 py-2 px-3 mb-3" style="font-size:0.85rem; border-radius:8px;">
+                            <i class="mdi mdi-tag-text-outline fs-5"></i>
+                            <div>Uraian: <strong>${uraianLabel}</strong><br><small class="text-muted">Nilai RAP: Rp ${nilaiFormatted}</small></div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-4">
+                                <label class="form-label small fw-bold text-muted mb-1">Termin Ke</label>
+                                <input type="number" id="swal-termin-ke" class="form-control form-control-sm" value="${nextTermin}" min="1">
+                            </div>
+                            <div class="col-8">
+                                <label class="form-label small fw-bold text-muted mb-1">Nama Termin <span class="text-danger">*</span></label>
+                                <input type="text" id="swal-nama-termin" class="form-control form-control-sm" placeholder="Contoh: Termin 1 – Pekerjaan Pondasi">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Syarat Progress (%)</label>
+                                <input type="number" id="swal-syarat-progress" class="form-control form-control-sm" placeholder="0" min="0" max="100" step="5">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Persentase Bayar (%)</label>
+                                <input type="number" id="swal-persen-bayar" class="form-control form-control-sm" placeholder="0" min="0" max="100" step="5">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Nominal (Rp)</label>
+                                <input type="text" id="swal-nominal" class="form-control form-control-sm" placeholder="0" oninput="this.value=this.value.replace(/[^0-9]/g,'').replace(/\\B(?=(\\d{3})+(?!\\d))/g,'.')">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Jatuh Tempo</label>
+                                <input type="date" id="swal-jatuh-tempo" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-muted mb-1">Catatan</label>
+                                <textarea id="swal-catatan-termin" class="form-control form-control-sm" rows="2" placeholder="Catatan tambahan..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="mdi mdi-check me-1"></i>Simpan Termin',
+                cancelButtonText: 'Batal',
+                preConfirm: () => {
+                    const namaTermin = document.getElementById('swal-nama-termin').value.trim();
+                    if (!namaTermin) {
+                        Swal.showValidationMessage('Nama termin wajib diisi!');
+                        return false;
+                    }
+                    const nominalRaw = document.getElementById('swal-nominal').value.replace(/\./g, '');
+                    return {
+                        termin_ke: parseInt(document.getElementById('swal-termin-ke').value),
+                        nama_termin: namaTermin,
+                        uraian_pekerjaan: uraianLabel,
+                        syarat_progress_persen: parseFloat(document.getElementById('swal-syarat-progress').value) || 0,
+                        persentase_bayar: parseFloat(document.getElementById('swal-persen-bayar').value) || 0,
+                        nominal: nominalRaw,
+                        tanggal_jatuh_tempo: document.getElementById('swal-jatuh-tempo').value || null,
+                        catatan: document.getElementById('swal-catatan-termin').value || null,
+                        development_progress_item_id: itemId,
+                    };
+                }
+            }).then(result => {
+                if (result.isConfirmed && result.value) {
+                    simpanTermin(result.value);
+                }
+            });
+        }
+
+        /* ─── PEMBAYARAN TERMIN ─── */
+        function modalTambahTermin() {
+            if (!PROGRESS_ID) {
+                Swal.fire('Perhatian', 'Simpan data RAP terlebih dahulu sebelum menambah termin.', 'warning');
+                return;
+            }
+            const nextTermin = {{ $pembayaranTermin->count() + 1 }};
+            Swal.fire({
+                title: '<i class="mdi mdi-cash-multiple text-primary me-2"></i>Tambah Termin Pembayaran',
+                width: 680,
+                html: `
+                    <div class="text-start">
+                        <div class="row g-3">
+                            <div class="col-4">
+                                <label class="form-label small fw-bold text-muted mb-1">Termin Ke</label>
+                                <input type="number" id="swal-termin-ke" class="form-control form-control-sm" value="${nextTermin}" min="1">
+                            </div>
+                            <div class="col-8">
+                                <label class="form-label small fw-bold text-muted mb-1">Nama Termin <span class="text-danger">*</span></label>
+                                <input type="text" id="swal-nama-termin" class="form-control form-control-sm" placeholder="Contoh: Termin 1 – Pekerjaan Pondasi">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-muted mb-1">Uraian Pekerjaan</label>
+                                <textarea id="swal-uraian-termin" class="form-control form-control-sm" rows="2" placeholder="Deskripsi pekerjaan yang dibayar pada termin ini..."></textarea>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label small fw-bold text-muted mb-1">Syarat Progress (%)</label>
+                                <input type="number" id="swal-syarat-progress" class="form-control form-control-sm" placeholder="0" min="0" max="100" step="5">
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label small fw-bold text-muted mb-1">% Bayar dari Kontrak</label>
+                                <input type="number" id="swal-persen-bayar" class="form-control form-control-sm" placeholder="0" min="0" max="100" step="5">
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label small fw-bold text-muted mb-1">Nominal (Rp) <span class="text-danger">*</span></label>
+                                <input type="text" id="swal-nominal" class="form-control form-control-sm font-monospace" placeholder="0" oninput="this.value=this.value.replace(/[^0-9]/g,'').replace(/\\B(?=(\\d{3})+(?!\\d))/g,'.')">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-muted mb-1">Tanggal Jatuh Tempo</label>
+                                <input type="date" id="swal-jatuh-tempo" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold text-muted mb-1">Catatan</label>
+                                <textarea id="swal-catatan-termin" class="form-control form-control-sm" rows="2" placeholder="Catatan tambahan..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: '<i class="mdi mdi-check me-1"></i>Simpan Termin',
+                cancelButtonText: 'Batal',
+                preConfirm: () => {
+                    const namaTermin = document.getElementById('swal-nama-termin').value.trim();
+                    const nominalRaw = document.getElementById('swal-nominal').value;
+                    if (!namaTermin) {
+                        Swal.showValidationMessage('Nama termin wajib diisi!');
+                        return false;
+                    }
+                    const nominal = nominalRaw.replace(/\./g, '');
+                    return {
+                        termin_ke: parseInt(document.getElementById('swal-termin-ke').value),
+                        nama_termin: namaTermin,
+                        uraian_pekerjaan: document.getElementById('swal-uraian-termin').value || null,
+                        syarat_progress_persen: parseFloat(document.getElementById('swal-syarat-progress').value) || 0,
+                        persentase_bayar: parseFloat(document.getElementById('swal-persen-bayar').value) || 0,
+                        nominal: nominal,
+                        tanggal_jatuh_tempo: document.getElementById('swal-jatuh-tempo').value || null,
+                        catatan: document.getElementById('swal-catatan-termin').value || null,
+                    };
+                }
+            }).then(result => {
+                if (result.isConfirmed && result.value) {
+                    simpanTermin(result.value);
+                }
+            });
+        }
+
+        function simpanTermin(data) {
+            Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            fetch('{{ route("properti.progress.termin.store") }}', {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': CSRF_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ ...data, development_progress_id: PROGRESS_ID, land_bank_unit_id: UNIT_ID })
+            })
+            .then(res => res.json())
+            .then(resp => {
+                if (resp.success) {
+                    Swal.fire({ icon: 'success', title: 'Berhasil!', text: resp.message, timer: 1800, showConfirmButton: false })
+                        .then(() => window.location.reload());
+                } else {
+                    Swal.fire('Gagal!', resp.message || 'Terjadi kesalahan.', 'error');
+                }
+            })
+            .catch(() => Swal.fire('Error!', 'Terjadi kesalahan server.', 'error'));
+        }
+
+        document.addEventListener('click', function(e) {
+            // Bayar termin
             const btnBayar = e.target.closest('.btn-bayar-termin');
             if (btnBayar) {
                 const id = btnBayar.dataset.id;
                 const nama = btnBayar.dataset.nama;
                 const nominal = btnBayar.dataset.nominal;
-
-                document.getElementById('bayar_termin_id').value = id;
-                document.getElementById('bayar_termin_nama').textContent = nama;
-                document.getElementById('bayar_termin_nominal').textContent = 'Rp ' + nominal;
-                document.getElementById('bayar_no_bukti').value = '';
-                document.getElementById('bayar_catatan').value = '';
-
-                openModal('modalBayarTermin');
-                return;
+                Swal.fire({
+                    title: `Tandai Dibayar?`,
+                    html: `
+                        <div class="text-start">
+                            <p class="mb-2"><strong>${nama}</strong> — Rp ${nominal}</p>
+                            <label class="form-label small fw-bold text-muted mb-1">No. Bukti Bayar</label>
+                            <input type="text" id="swal-no-bukti" class="form-control form-control-sm mb-2" placeholder="No. kwitansi / transfer">
+                            <label class="form-label small fw-bold text-muted mb-1">Tanggal Bayar</label>
+                            <input type="date" id="swal-tgl-bayar" class="form-control form-control-sm mb-2" value="${new Date().toISOString().substr(0,10)}">
+                            <label class="form-label small fw-bold text-muted mb-1">Catatan</label>
+                            <textarea id="swal-catatan-bayar" class="form-control form-control-sm" rows="2" placeholder="Catatan pembayaran..."></textarea>
+                        </div>
+                    `,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#10b981',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="mdi mdi-cash-check me-1"></i>Konfirmasi Dibayar',
+                    cancelButtonText: 'Batal'
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        fetch(`/properti/progress/termin/${id}/status`, {
+                            method: 'PUT',
+                            headers: { 'X-CSRF-TOKEN': CSRF_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                            body: JSON.stringify({
+                                status: 'dibayar',
+                                no_bukti_bayar: document.getElementById('swal-no-bukti').value,
+                                tanggal_bayar: document.getElementById('swal-tgl-bayar').value,
+                                catatan: document.getElementById('swal-catatan-bayar').value,
+                            })
+                        })
+                        .then(r => r.json())
+                        .then(resp => {
+                            if (resp.success) {
+                                Swal.fire({ icon: 'success', title: 'Dibayar!', text: resp.message, timer: 1500, showConfirmButton: false })
+                                    .then(() => window.location.reload());
+                            } else {
+                                Swal.fire('Gagal!', resp.message, 'error');
+                            }
+                        });
+                    }
+                });
             }
 
-            // Hapus Termin
+            // Hapus termin
             const btnHapusTermin = e.target.closest('.btn-hapus-termin');
             if (btnHapusTermin) {
                 const id = btnHapusTermin.dataset.id;
@@ -2402,7 +2749,6 @@
                         });
                     }
                 });
-                return;
             }
         });
     </script>

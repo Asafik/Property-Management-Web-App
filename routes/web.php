@@ -77,6 +77,15 @@ Route::get('/detail', function () {
 
 Route::get('/buku-tamu', [LandingpageController::class, 'bukuTamu'])->name('home.buku-tamu');
 Route::post('/buku-tamu', [LandingpageController::class, 'storeBukuTamu'])->name('home.buku-tamu.store');
+
+// ==========================================
+// PENGADUAN & KLAIM GARANSI KONSUMEN (PUBLIC & QR/BARCODE)
+// ==========================================
+Route::get('/pengaduan/{identifier}', [ComplaintController::class, 'customerForm'])->name('complaint.customer.form');
+Route::post('/pengaduan/{identifier}', [ComplaintController::class, 'customerStore'])->name('complaint.customer.store');
+Route::get('/pengaduan/{identifier}/sukses/{ticket}', [ComplaintController::class, 'customerSuccess'])->name('complaint.customer.success');
+Route::get('/pengaduan/cetak-barcode/{bookingId}', [ComplaintController::class, 'printBarcodeSticker'])->name('complaint.barcode.print');
+
 /*
 |--------------------------------------------------------------------------
 | AUTH
@@ -370,6 +379,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/properti/progress/store', [DevelopmentProgressController::class, 'store'])->name('properti.progress.store');
     Route::post('/properti/progress/apply-template/{unit}', [DevelopmentProgressController::class, 'applyTemplate'])->name('properti.progress.applyTemplate');
     Route::delete('/properti/progress/item/{itemId}', [DevelopmentProgressController::class, 'destroy'])->name('properti.progress.item.destroy');
+    Route::post('/properti/progress/checklist-kondisi/{unit}', [DevelopmentProgressController::class, 'updateChecklistKondisi'])->name('properti.progress.checklist');
 
     // === PEMBAYARAN TERMIN ===
     Route::post('/properti/progress/termin/store', [DevelopmentProgressController::class, 'storeTermin'])->name('properti.progress.termin.store');

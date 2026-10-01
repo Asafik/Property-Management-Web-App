@@ -249,6 +249,36 @@
     color: #ffffff !important;
 }
 
+a.transaksi-step-icon {
+    text-decoration: none !important;
+    cursor: pointer;
+}
+
+a.transaksi-step-icon:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+.transaksi-step.completed a.transaksi-step-icon:hover {
+    box-shadow: 0 6px 16px rgba(40, 199, 111, 0.4) !important;
+}
+
+.transaksi-step.active a.transaksi-step-icon:hover {
+    box-shadow: 0 6px 16px rgba(154, 85, 255, 0.45) !important;
+}
+
+.transaksi-step-title-link {
+    text-decoration: none !important;
+    color: inherit;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.transaksi-step-title-link:hover .transaksi-step-title {
+    color: #9a55ff !important;
+    text-decoration: underline;
+}
+
 .transaksi-step-title {
     font-size: 0.88rem;
     font-weight: 700;
@@ -1242,14 +1272,62 @@
                                     ?? optional($booking->kprApplication)->created_at 
                                     ?? $booking->booking_date 
                                     ?? $booking->created_at;
+
+                                // Navigasi URL setiap tahapan
+                                // 1. Pengajuan KPR
+                                $urlPengajuan = route('pengajuan.show', $booking->id);
+
+                                // 2. Verifikasi KPR (halaman saat ini)
+                                $urlVerifikasi = route('transaksi.kpr.approve', $booking->id);
+
+                                // 3. SPK Kontraktor
+                                $spkModel = null;
+                                if ($unit) {
+                                    $spkModel = \App\Models\Spk::where('land_bank_unit_id', $unit->id)
+                                        ->orWhere(function ($q) use ($unit) {
+                                            if (!empty($unit->no_spk)) {
+                                                $q->where('no_spk', $unit->no_spk);
+                                            } else {
+                                                $q->whereRaw('0 = 1');
+                                            }
+                                        })->first();
+                                }
+                                $urlSpk = $spkModel ? route('spk.show', $spkModel->id) : route('spk.index');
+
+                                // 4. Pembangunan Unit (RAP & Progress)
+                                $landBankId = $booking->unit->land_bank_id ?? 1;
+                                $urlPembangunan = route('properti.progress', [
+                                    'land_bank_id' => $landBankId,
+                                    'unit_id' => $booking->unit_id,
+                                ]);
+
+                                // 5. Survey Lapangan KPR
+                                $kprAppId = optional($booking->kprApplication)->id ?? $booking->id;
+                                $urlSurvey = route('kpr.survey', $kprAppId);
+
+                                // 6. Akad KPR
+                                $urlAkad = url('/transaksi/kpr/akad-kpr/' . $booking->id);
+
+                                // 7. Serah Terima
+                                $urlSerahTerima = $serahTerimaDone 
+                                    ? route('unit.selesai', $booking->id) 
+                                    : route('kpr.serahterima', $kprAppId);
                             @endphp
+
+                            {{-- Tahap 1: Pengajuan --}}
                             <div class="transaksi-step {{ $stepClass(1) }}">
-                                <div class="transaksi-step-icon"><i class="mdi mdi-check"></i></div>
-                                <span class="transaksi-step-title">Pengajuan</span>
+                                <a href="{{ $urlPengajuan }}" class="transaksi-step-icon" title="Buka Halaman Pengajuan KPR">
+                                    <i class="mdi mdi-check"></i>
+                                </a>
+                                <a href="{{ $urlPengajuan }}" class="transaksi-step-title-link" title="Buka Halaman Pengajuan KPR">
+                                    <span class="transaksi-step-title">Pengajuan</span>
+                                </a>
                                 <small>{{ $tglPengajuan ? \Carbon\Carbon::parse($tglPengajuan)->translatedFormat('d F Y') : '-' }}</small>
                             </div>
+
+                            {{-- Tahap 2: Verifikasi --}}
                             <div class="transaksi-step {{ $stepClass(2) }}">
-                                <div class="transaksi-step-icon">
+                                <a href="{{ $urlVerifikasi }}" class="transaksi-step-icon" title="Halaman Verifikasi KPR (Saat Ini)">
                                     @if ($verifikasiRejected)
                                         <i class="mdi mdi-close"></i>
                                     @elseif ($verifikasiApproved)
@@ -1257,8 +1335,10 @@
                                     @else
                                         <i class="mdi mdi-file-document-edit-outline"></i>
                                     @endif
-                                </div>
-                                <span class="transaksi-step-title">Verifikasi</span>
+                                </a>
+                                <a href="{{ $urlVerifikasi }}" class="transaksi-step-title-link" title="Halaman Verifikasi KPR (Saat Ini)">
+                                    <span class="transaksi-step-title">Verifikasi</span>
+                                </a>
                                 <small>
                                     @if ($verifikasiRejected)
                                         <span class="text-danger fw-bold">Ditolak</span>
@@ -1270,18 +1350,18 @@
                                 </small>
                             </div>
 
+                            {{-- Tahap 3: SPK --}}
                             <div class="transaksi-step {{ $spkDone ? 'completed' : ($currentStep == 3 ? 'active' : '') }}">
-                                @if ($spkDone)
-                                    <div class="transaksi-step-icon">
+                                <a href="{{ $urlSpk }}" class="transaksi-step-icon" title="{{ $spkModel ? 'Lihat Detail SPK (' . $spkModel->no_spk . ')' : 'Buka Manajemen SPK Kontraktor' }}">
+                                    @if ($spkDone)
                                         <i class="mdi mdi-check"></i>
-                                    </div>
-                                @else
-                                    <div class="transaksi-step-icon">
+                                    @else
                                         <i class="mdi mdi-clipboard-text"></i>
-                                    </div>
-                                @endif
-
-                                <span class="transaksi-step-title">SPK</span>
+                                    @endif
+                                </a>
+                                <a href="{{ $urlSpk }}" class="transaksi-step-title-link" title="{{ $spkModel ? 'Lihat Detail SPK (' . $spkModel->no_spk . ')' : 'Buka Manajemen SPK Kontraktor' }}">
+                                    <span class="transaksi-step-title">SPK</span>
+                                </a>
                                 <small>
                                     {{ $spkDone ? 'Selesai' : ($currentStep == 3 ? 'Dalam Proses' : 'Menunggu') }}
                                 </small>
@@ -1314,47 +1394,63 @@
                                 ];
                             @endphp
 
-                            <div
-                                class="transaksi-step {{ $statusProgress == 'selesai' ? 'completed' : ($currentStep == 4 ? 'active' : '') }}">
-                                @if ($statusProgress == 'selesai')
-                                    <div class="transaksi-step-icon">
+                            {{-- Tahap 4: Pembangunan --}}
+                            <div class="transaksi-step {{ $statusProgress == 'selesai' ? 'completed' : ($currentStep == 4 ? 'active' : '') }}">
+                                <a href="{{ $urlPembangunan }}" class="transaksi-step-icon" title="Buka Monitoring Progress Pembangunan Unit">
+                                    @if ($statusProgress == 'selesai')
                                         <i class="mdi mdi-check"></i>
-                                    </div>
-                                @else
-                                    <div class="transaksi-step-icon">
+                                    @else
                                         <i class="mdi {{ $config['icon'] }}"></i>
-                                    </div>
-                                @endif
-                                <span class="transaksi-step-title">Pembangunan</span>
+                                    @endif
+                                </a>
+                                <a href="{{ $urlPembangunan }}" class="transaksi-step-title-link" title="Buka Monitoring Progress Pembangunan Unit">
+                                    <span class="transaksi-step-title">Pembangunan</span>
+                                </a>
                                 <small>{{ $statusText[$statusProgress] ?? ($developmentDone ? 'Pembangunan selesai' : ($currentStep == 4 ? 'Dalam Proses' : 'Menunggu')) }}</small>
                             </div>
 
-                            @if ($isSubsidi)
-                                <div class="transaksi-step {{ $stepClass(5) }}">
-                                    <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
+                            {{-- Tahap 5: Survey --}}
+                            <div class="transaksi-step {{ $stepClass(5) }}">
+                                <a href="{{ $urlSurvey }}" class="transaksi-step-icon" title="Buka Halaman Hasil Survey Lapangan KPR">
+                                    @if ($surveyDone)
+                                        <i class="mdi mdi-check"></i>
+                                    @else
+                                        <i class="mdi mdi-home-search-outline"></i>
+                                    @endif
+                                </a>
+                                <a href="{{ $urlSurvey }}" class="transaksi-step-title-link" title="Buka Halaman Hasil Survey Lapangan KPR">
                                     <span class="transaksi-step-title">Survey</span>
-                                    <small>{{ $surveyDone ? 'Selesai' : ($currentStep == 5 ? 'Dalam Proses' : 'Menunggu') }}</small>
-                                </div>
-                                <div class="transaksi-step {{ $stepClass(6) }}">
-                                    <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
+                                </a>
+                                <small>{{ $surveyDone ? 'Selesai' : ($currentStep == 5 ? 'Dalam Proses' : 'Menunggu') }}</small>
+                            </div>
+
+                            {{-- Tahap 6: Akad --}}
+                            <div class="transaksi-step {{ $stepClass(6) }}">
+                                <a href="{{ $urlAkad }}" class="transaksi-step-icon" title="Buka Halaman Akad KPR">
+                                    @if ($akadDone)
+                                        <i class="mdi mdi-check"></i>
+                                    @else
+                                        <i class="mdi mdi-handshake-outline"></i>
+                                    @endif
+                                </a>
+                                <a href="{{ $urlAkad }}" class="transaksi-step-title-link" title="Buka Halaman Akad KPR">
                                     <span class="transaksi-step-title">Akad</span>
-                                    <small>{{ $akadDone ? 'Selesai' : ($currentStep == 6 ? 'Dalam Proses' : 'Menunggu') }}</small>
-                                </div>
-                            @else
-                                <div class="transaksi-step {{ $stepClass(5) }}">
-                                    <div class="transaksi-step-icon"><i class="mdi mdi-home-search-outline"></i></div>
-                                    <span class="transaksi-step-title">Survey</span>
-                                    <small>{{ $surveyDone ? 'Selesai' : ($currentStep == 5 ? 'Dalam Proses' : 'Menunggu') }}</small>
-                                </div>
-                                <div class="transaksi-step {{ $stepClass(6) }}">
-                                    <div class="transaksi-step-icon"><i class="mdi mdi-handshake-outline"></i></div>
-                                    <span class="transaksi-step-title">Akad</span>
-                                    <small>{{ $akadDone ? 'Selesai' : ($currentStep == 6 ? 'Dalam Proses' : 'Menunggu') }}</small>
-                                </div>
-                            @endif
+                                </a>
+                                <small>{{ $akadDone ? 'Selesai' : ($currentStep == 6 ? 'Dalam Proses' : 'Menunggu') }}</small>
+                            </div>
+
+                            {{-- Tahap 7: Serah Terima --}}
                             <div class="transaksi-step {{ $stepClass(7) }}">
-                                <div class="transaksi-step-icon"><i class="mdi mdi-cash-fast"></i></div>
-                                <span class="transaksi-step-title">Serah Terima</span>
+                                <a href="{{ $urlSerahTerima }}" class="transaksi-step-icon" title="{{ $serahTerimaDone ? 'Lihat Detail Serah Terima Unit (Selesai)' : 'Buka Halaman Serah Terima Unit' }}">
+                                    @if ($serahTerimaDone)
+                                        <i class="mdi mdi-check"></i>
+                                    @else
+                                        <i class="mdi mdi-cash-fast"></i>
+                                    @endif
+                                </a>
+                                <a href="{{ $urlSerahTerima }}" class="transaksi-step-title-link" title="{{ $serahTerimaDone ? 'Lihat Detail Serah Terima Unit (Selesai)' : 'Buka Halaman Serah Terima Unit' }}">
+                                    <span class="transaksi-step-title">Serah Terima</span>
+                                </a>
                                 <small>{{ $serahTerimaDone ? 'Selesai' : ($currentStep == 7 ? 'Dalam Proses' : 'Menunggu') }}</small>
                             </div>
                         </div>
@@ -1900,7 +1996,7 @@
                                 </div>
                             </div>
 
-                            <div id="formSetuju" class="transaksi-form-shell approve">
+                            <div id="formSetuju" class="transaksi-form-shell approve" style="display: {{ $canApprove ? 'block' : 'none' }};">
                                 <div class="transaksi-form-title approve">Form Persetujuan Verifikasi</div>
                                 <div class="transaksi-inline-alert success">
                                     <i class="mdi mdi-check-circle-outline"></i>
@@ -1914,21 +2010,28 @@
                                         placeholder="Contoh: Semua dokumen lengkap, valid, dan layak dilanjutkan ke tahap survey.">{{ $canApprove ? "Seluruh berkas dokumen ($totalDocs dokumen) telah lengkap, valid, dan disetujui." : '' }}</textarea>
                                 </div>
                                 <div class="transaksi-form-group mb-0">
-                                    <label class="transaksi-form-label mb-2">Upload Dokumen SP3K dari Bank <span class="text-danger">*</span></label>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="transaksi-form-label mb-0">Upload Dokumen SP3K dari Bank <span class="text-danger">*</span></label>
+                                        @if (!empty(optional($booking->kprApplication)->berita_acara))
+                                            <a href="{{ asset('uploads/' . $booking->kprApplication->berita_acara) }}" target="_blank" class="badge bg-success-subtle text-success text-decoration-none px-2 py-1" style="font-size: 0.78rem;">
+                                                <i class="mdi mdi-file-check me-1"></i>SP3K Sudah Ada (Klik Lihat)
+                                            </a>
+                                        @endif
+                                    </div>
                                     <div class="transaksi-file-upload">
-                                        <input type="file" name="berita_acara" id="inputBeritaAcara" accept=".jpg,.jpeg,.png,.pdf" required>
+                                        <input type="file" name="berita_acara" id="inputBeritaAcara" accept=".jpg,.jpeg,.png,.pdf" data-has-file="{{ !empty(optional($booking->kprApplication)->berita_acara) ? '1' : '0' }}" {{ empty(optional($booking->kprApplication)->berita_acara) ? 'required' : '' }}>
                                         <div class="transaksi-file-label">
                                             <i class="mdi mdi-cloud-upload"></i>
                                             <div class="transaksi-file-info">
-                                                <span>Upload Dokumen SP3K dari Bank</span>
-                                                <small>Format: JPG, PNG, PDF (Max 5MB)</small>
+                                                <span>{{ !empty(optional($booking->kprApplication)->berita_acara) ? basename($booking->kprApplication->berita_acara) : 'Upload Dokumen SP3K dari Bank' }}</span>
+                                                <small>Format: JPG, PNG, PDF (Max 5MB){{ !empty(optional($booking->kprApplication)->berita_acara) ? ' — Pilih file baru jika ingin memperbarui' : '' }}</small>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div id="formTolak" class="transaksi-form-shell reject">
+                            <div id="formTolak" class="transaksi-form-shell reject" style="display: {{ !$canApprove ? 'block' : 'none' }};">
                                 <div class="transaksi-form-title reject">Form Penolakan Verifikasi</div>
                                 <div class="transaksi-inline-alert danger">
                                     <i class="mdi mdi-close-circle-outline"></i>
@@ -2035,7 +2138,7 @@
                             </div>
 
                             <div class="transaksi-action-bar">
-                                <a href="{{ url('/marketing/kpr') }}" class="transaksi-btn transaksi-btn-secondary">
+                                <a href="{{ route('customer.kpr') }}" class="transaksi-btn transaksi-btn-secondary">
                                     <i class="mdi mdi-arrow-left"></i> Kembali
                                 </a>
                                 <button type="submit" class="transaksi-btn transaksi-btn-primary">
@@ -2336,7 +2439,8 @@
                     $statusInput.val('survey');
                     $formSetuju.stop(true, true).slideDown(180);
                     $formTolak.stop(true, true).slideUp(180);
-                    $('input[name="berita_acara"]').prop('required', true);
+                    const hasFile = $('#inputBeritaAcara').data('has-file') == 1;
+                    $('input[name="berita_acara"]').prop('required', !hasFile);
                     $('input[name="berita_acara_tolak"]').prop('required', false);
                     renderSummary('survey');
                 } else if (type === 'rejected') {
@@ -2404,14 +2508,10 @@
                         $sidebarText.html(`Seluruh <strong>${total} dokumen</strong> telah disetujui. Pengajuan direkomendasikan untuk <strong>Setujui Verifikasi</strong>.`);
                     }
 
-                    // Otomatis pilih opsi Setujui Verifikasi jika belum dipilih
-                    if (!$inputApprove.is(':checked') && !$inputReject.is(':checked')) {
-                        $inputApprove.prop('checked', true);
-                        window.switchDecision('survey');
-                    } else if (!isInitial && !$inputApprove.is(':checked')) {
-                        $inputApprove.prop('checked', true);
-                        window.switchDecision('survey');
-                    }
+                    // Otomatis pilih opsi Setujui Verifikasi dan langsung tampilkan form persetujuan / upload SP3K
+                    $inputApprove.prop('checked', true);
+                    $inputReject.prop('checked', false);
+                    window.switchDecision('survey');
 
                     if (!$catatanSetuju.val().trim() || $catatanSetuju.data('auto')) {
                         $catatanSetuju.val(`Seluruh berkas dokumen (${total} dokumen) telah lengkap, valid, dan disetujui.`);
@@ -2582,8 +2682,9 @@
                 }
 
                 const $radio = $(this).find('input[type="radio"]');
-                if (!$radio.prop('disabled') && !$radio.is(':checked')) {
-                    $radio.prop('checked', true).trigger('change');
+                if (!$radio.prop('disabled')) {
+                    $radio.prop('checked', true);
+                    window.switchDecision($radio.val());
                 }
             });
 

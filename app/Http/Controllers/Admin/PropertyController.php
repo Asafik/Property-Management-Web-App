@@ -16,7 +16,7 @@ class PropertyController extends Controller
    public function index(Request $request)
 {
     $query = LandBank::with(['companyProfile', 'documents.documentType'])
-        ->whereIn('status', ['aktif', 'active']);
+        ->whereIn('status', ['aktif', 'active', 'draft']);
 
     // Filter Search Nama
     if ($request->search) {
@@ -60,7 +60,7 @@ class PropertyController extends Controller
     $landBanks = $query->paginate($show);
 
     $companies = CompanyProfile::orderBy('name')->get();
-    $categories = \App\Models\LandBank::whereIn('status', ['aktif', 'active'])
+    $categories = \App\Models\LandBank::whereIn('status', ['aktif', 'active', 'draft'])
         ->select('zoning')
         ->whereNotNull('zoning')
         ->distinct()
@@ -68,7 +68,7 @@ class PropertyController extends Controller
         ->pluck('zoning');
 
     // 4 KPI Metrics
-    $allLands = LandBank::whereIn('status', ['aktif', 'active'])->with('infrastructures')->get();
+    $allLands = LandBank::whereIn('status', ['aktif', 'active', 'draft'])->with('infrastructures')->get();
     $totalLandBank = $allLands->count();
     $legalVerified = $allLands->filter(function($item) {
         return $item->legal_status === 'verified' || $item->isFromPraLandbank();
@@ -447,13 +447,25 @@ public function update(Request $request, $id)
             'facility_mall' => $request->has('fasMall'),
             'facility_bank' => $request->has('fasBank'),
             'description' => $request->deskripsi,
-            'legal_status' => $request->statusLegal ?? 'pending',
-            'development_status' => $request->statusKavling ?? 'Belum',
-            'priority' => $request->prioritas,
+            'legal_status' => $request->statusLegal ?? $land->legal_status ?? 'pending',
+            'development_status' => $request->statusKavling ?? $land->development_status ?? 'Belum',
+            'priority' => $request->prioritas ?? $land->priority ?? 'Normal',
             'lat' => $request->latitude,
             'lng' => $request->longitude,
             'fee_document_verification' => $fee_verification,
         ]);
+
+        $pra = \App\Models\PraLandbank::where('land_bank_id', $land->id)->first()
+            ?? \App\Models\PraLandbank::where('land_name', $land->name)->first();
+        if ($pra) {
+            $pra->update([
+                'address'  => $request->lokasi,
+                'village'  => $request->kelurahan,
+                'district' => $request->kecamatan,
+                'city'     => $request->kota,
+                'province' => $request->provinsi,
+            ]);
+        }
 
         // HANDLE SHGB INDUK FILE UPLOAD
         if ($request->hasFile('shgb_induk_file')) {
@@ -552,7 +564,7 @@ public function update(Request $request, $id)
         }
 
         DB::commit();
-        return redirect()->route('properti-all')->with('success', 'Data Properti berhasil diperbarui!');
+        return redirect()->route('properti.edit', $land->id)->with('success', 'Data Properti berhasil diperbarui!');
     } catch (\Exception $e) {
         DB::rollBack();
         return redirect()->back()->with('error', 'Gagal memperbarui properti: ' . $e->getMessage())->withInput();

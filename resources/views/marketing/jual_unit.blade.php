@@ -1688,22 +1688,10 @@
                                                     <i class="mdi mdi-swap-vertical"></i>
                                                 @endif
                                             </th>
-                                            <th class="d-none d-md-table-cell">Lokasi</th>
                                             <th>Luas Tanah</th>
                                             <th>Harga</th>
                                             <th>Status</th>
-                                            <th>Status Pembangunan / Progres</th>
-                                            <th class="sortable" data-field="agent_name"
-                                                data-direction="{{ request('sort') == 'agent_name' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
-                                                Agent
-                                                @if (request('sort') == 'agent_name')
-                                                    <i
-                                                        class="mdi mdi-{{ request('direction') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
-                                                @else
-                                                    <i class="mdi mdi-swap-vertical"></i>
-                                                @endif
-                                            </th>
-                                            <th>Fee Agent</th>
+                                            <th>Pembangunan</th>
                                             <th class="sortable" data-field="customer_name"
                                                 data-direction="{{ request('sort') == 'customer_name' ? (request('direction') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
                                                 Customer
@@ -1805,12 +1793,7 @@
                                                         </span>
                                                     @endif
                                                 </td>
-                                                <td class="d-none d-md-table-cell">
-                                                    <span class="icon-text">
-                                                        <i class="mdi mdi-map-marker-outline"></i>
-                                                        <span>{{ Str::limit($unit->landBank->address ?? '-', 20) }}</span>
-                                                    </span>
-                                                </td>
+
                                                 <td>
                                                     <span class="info-badge-icon land-badge">
                                                         <i class="mdi mdi-arrow-expand-all"></i>{{ $unit->area ?? '-' }}
@@ -1835,34 +1818,7 @@
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td>
-                                                    @if ($unit->activeBooking && $unit->activeBooking->sales)
-                                                        @php
-                                                            $salesName = $unit->activeBooking->sales->name;
-                                                            $sInitials = '';
-                                                            foreach (explode(' ', trim($salesName)) as $word) {
-                                                                if ($word !== '') {
-                                                                    $sInitials .= strtoupper(substr($word, 0, 1));
-                                                                }
-                                                            }
-                                                            $sInitials = substr($sInitials ?: 'S', 0, 2);
-                                                        @endphp
-                                                        <div class="customer-info">
-                                                            <div class="customer-initial"
-                                                                style="background: linear-gradient(135deg, #667eea, #764ba2);">
-                                                                {{ $sInitials }}
-                                                            </div>
-                                                            <span>{{ $salesName }}</span>
-                                                        </div>
-                                                    @else
-                                                        <i class="mdi mdi-account-tie text-primary me-1"></i>
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td class="fee-text">
-                                                    Rp
-                                                    {{ number_format($unit->activeBooking->agent_fee ?? 0, 0, ',', '.') }}
-                                                </td>
+
                                                 <td>
                                                     @if ($unit->activeBooking && $unit->activeBooking->customer)
                                                         @php
@@ -1912,7 +1868,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="14" class="text-center text-muted py-4">
+                                                <td colspan="11" class="text-center text-muted py-4">
                                                     <i class="mdi mdi-home-outline"
                                                         style="font-size: 2rem; opacity: 0.3;"></i>
                                                     <p class="mt-2">Data unit belum tersedia</p>

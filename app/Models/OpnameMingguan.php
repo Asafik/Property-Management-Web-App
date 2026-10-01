@@ -14,6 +14,7 @@ class OpnameMingguan extends Model
     protected $fillable = [
         'development_progress_id',
         'land_bank_unit_id',
+        'development_progress_item_id',
         'no_opname',
         'minggu_ke',
         'tanggal_mulai_minggu',
@@ -47,6 +48,11 @@ class OpnameMingguan extends Model
     public function progress()
     {
         return $this->belongsTo(DevelopmentProgress::class, 'development_progress_id');
+    }
+
+    public function item()
+    {
+        return $this->belongsTo(DevelopmentProgressItem::class, 'development_progress_item_id');
     }
 
     public function unit()

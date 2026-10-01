@@ -259,6 +259,11 @@ class DevelopmentProgressController extends Controller
                 $status = 'selesai';
             }
 
+            if ($request->has('checklist_kondisi')) {
+                $progress->checklist_kondisi = $request->input('checklist_kondisi', []);
+                $progress->save();
+            }
+
             LandBankUnit::where('id', $request->land_bank_unit_id)
                 ->update([
                     'construction_progress' => $status
@@ -470,22 +475,24 @@ class DevelopmentProgressController extends Controller
             'nominal'                 => 'nullable|string',
             'tanggal_jatuh_tempo'     => 'nullable|date',
             'catatan'                 => 'nullable|string',
+            'development_progress_item_id' => 'nullable|exists:development_progress_items,id',
         ]);
 
         $nominal = (float) preg_replace('/[^0-9.]/', '', str_replace(',', '.', $request->nominal ?? '0'));
 
         $termin = PembayaranTermin::create([
-            'development_progress_id' => $request->development_progress_id,
-            'land_bank_unit_id'       => $request->land_bank_unit_id,
-            'termin_ke'               => $request->termin_ke,
-            'nama_termin'             => $request->nama_termin,
-            'uraian_pekerjaan'        => $request->uraian_pekerjaan,
-            'syarat_progress_persen'  => $request->syarat_progress_persen ?? 0,
-            'persentase_bayar'        => $request->persentase_bayar ?? 0,
-            'nominal'                 => $nominal,
-            'tanggal_jatuh_tempo'     => $request->tanggal_jatuh_tempo,
-            'catatan'                 => $request->catatan,
-            'status'                  => 'menunggu',
+            'development_progress_id'      => $request->development_progress_id,
+            'land_bank_unit_id'            => $request->land_bank_unit_id,
+            'development_progress_item_id' => $request->development_progress_item_id,
+            'termin_ke'                    => $request->termin_ke,
+            'nama_termin'                  => $request->nama_termin,
+            'uraian_pekerjaan'             => $request->uraian_pekerjaan,
+            'syarat_progress_persen'       => $request->syarat_progress_persen ?? 0,
+            'persentase_bayar'             => $request->persentase_bayar ?? 0,
+            'nominal'                      => $nominal,
+            'tanggal_jatuh_tempo'          => $request->tanggal_jatuh_tempo,
+            'catatan'                      => $request->catatan,
+            'status'                       => 'menunggu',
         ]);
 
         return response()->json(['success' => true, 'message' => 'Termin berhasil ditambahkan.', 'data' => $termin]);
@@ -530,20 +537,21 @@ class DevelopmentProgressController extends Controller
     public function storeOpname(Request $request)
     {
         $request->validate([
-            'development_progress_id'  => 'required|exists:development_progress,id',
-            'land_bank_unit_id'        => 'required|exists:land_bank_units,id',
-            'minggu_ke'                => 'required|integer|min:1',
-            'tanggal_mulai_minggu'     => 'required|date',
-            'tanggal_akhir_minggu'     => 'required|date|after_or_equal:tanggal_mulai_minggu',
-            'progress_minggu_ini'      => 'nullable|numeric|min:0|max:100',
-            'progress_kumulatif'       => 'nullable|numeric|min:0|max:100',
-            'jumlah_pekerja'           => 'nullable|integer|min:0',
-            'material_digunakan'       => 'nullable|string',
-            'kendala'                  => 'nullable|string',
-            'solusi'                   => 'nullable|string',
-            'rencana_minggu_depan'     => 'nullable|string',
-            'catatan'                  => 'nullable|string',
-            'uraian_pekerjaan'         => 'nullable|array',
+            'development_progress_id'      => 'required|exists:development_progress,id',
+            'land_bank_unit_id'            => 'required|exists:land_bank_units,id',
+            'minggu_ke'                    => 'required|integer|min:1',
+            'tanggal_mulai_minggu'         => 'required|date',
+            'tanggal_akhir_minggu'         => 'required|date|after_or_equal:tanggal_mulai_minggu',
+            'progress_minggu_ini'          => 'nullable|numeric|min:0|max:100',
+            'progress_kumulatif'           => 'nullable|numeric|min:0|max:100',
+            'jumlah_pekerja'               => 'nullable|integer|min:0',
+            'material_digunakan'           => 'nullable|string',
+            'kendala'                      => 'nullable|string',
+            'solusi'                       => 'nullable|string',
+            'rencana_minggu_depan'         => 'nullable|string',
+            'catatan'                      => 'nullable|string',
+            'uraian_pekerjaan'             => 'nullable|array',
+            'development_progress_item_id' => 'nullable|exists:development_progress_items,id',
         ]);
 
         // Auto-generate no_opname
@@ -552,24 +560,50 @@ class DevelopmentProgressController extends Controller
         $noOpname = 'OPN-' . date('Y') . '-' . str_pad($count, 3, '0', STR_PAD_LEFT);
 
         $opname = OpnameMingguan::create([
-            'development_progress_id' => $progressId,
-            'land_bank_unit_id'       => $request->land_bank_unit_id,
-            'no_opname'               => $noOpname,
-            'minggu_ke'               => $request->minggu_ke,
-            'tanggal_mulai_minggu'    => $request->tanggal_mulai_minggu,
-            'tanggal_akhir_minggu'    => $request->tanggal_akhir_minggu,
-            'progress_minggu_ini'     => $request->progress_minggu_ini ?? 0,
-            'progress_kumulatif'      => $request->progress_kumulatif ?? 0,
-            'jumlah_pekerja'          => $request->jumlah_pekerja,
-            'material_digunakan'      => $request->material_digunakan,
-            'kendala'                 => $request->kendala,
-            'solusi'                  => $request->solusi,
-            'rencana_minggu_depan'    => $request->rencana_minggu_depan,
-            'catatan'                 => $request->catatan,
-            'uraian_pekerjaan'        => $request->uraian_pekerjaan ?? [],
-            'status'                  => 'draft',
-            'dibuat_oleh'             => auth()->id(),
+            'development_progress_id'      => $progressId,
+            'land_bank_unit_id'            => $request->land_bank_unit_id,
+            'development_progress_item_id' => $request->development_progress_item_id,
+            'no_opname'                    => $noOpname,
+            'minggu_ke'                    => $request->minggu_ke,
+            'tanggal_mulai_minggu'         => $request->tanggal_mulai_minggu,
+            'tanggal_akhir_minggu'         => $request->tanggal_akhir_minggu,
+            'progress_minggu_ini'          => $request->progress_minggu_ini ?? 0,
+            'progress_kumulatif'           => $request->progress_kumulatif ?? 0,
+            'jumlah_pekerja'               => $request->jumlah_pekerja,
+            'material_digunakan'           => $request->material_digunakan,
+            'kendala'                      => $request->kendala,
+            'solusi'                       => $request->solusi,
+            'rencana_minggu_depan'         => $request->rencana_minggu_depan,
+            'catatan'                      => $request->catatan,
+            'uraian_pekerjaan'             => $request->uraian_pekerjaan ?? [],
+            'status'                       => 'draft',
+            'dibuat_oleh'                  => auth()->check() ? auth()->id() : null,
         ]);
+
+        // Sinkronisasi update progress_persen ke item RAP di database jika ada
+        if (!empty($request->uraian_pekerjaan) && is_array($request->uraian_pekerjaan)) {
+            foreach ($request->uraian_pekerjaan as $uItem) {
+                if (is_array($uItem) && !empty($uItem['item_id']) && isset($uItem['progress_total'])) {
+                    $progVal = max(0, min(100, (float)$uItem['progress_total']));
+                    DevelopmentProgressItem::where('id', $uItem['item_id'])
+                        ->where('development_progress_id', $progressId)
+                        ->update(['progress_persen' => $progVal]);
+                }
+            }
+        }
+
+        // Sinkronisasi status konstruksi unit
+        $unit = LandBankUnit::find($request->land_bank_unit_id);
+        if ($unit && $request->filled('progress_kumulatif')) {
+            $kum = (float)$request->progress_kumulatif;
+            if ($kum >= 100) $unit->construction_progress = 'selesai';
+            elseif ($kum >= 80) $unit->construction_progress = 'finishing';
+            elseif ($kum >= 60) $unit->construction_progress = 'atap';
+            elseif ($kum >= 40) $unit->construction_progress = 'dinding';
+            elseif ($kum >= 20) $unit->construction_progress = 'pondasi';
+            elseif ($kum > 0) $unit->construction_progress = 'pondasi';
+            $unit->save();
+        }
 
         return response()->json(['success' => true, 'message' => 'Opname minggu ke-' . $request->minggu_ke . ' berhasil disimpan.', 'data' => $opname]);
     }
@@ -598,6 +632,32 @@ class DevelopmentProgressController extends Controller
         $opname = OpnameMingguan::findOrFail($id);
         $opname->delete();
         return response()->json(['success' => true, 'message' => 'Data opname berhasil dihapus.']);
+    }
+
+    public function updateChecklistKondisi(Request $request, LandBankUnit $unit)
+    {
+        try {
+            $progress = DevelopmentProgress::firstOrCreate(
+                ['land_bank_unit_id' => $unit->id],
+                ['title' => 'Progress Pembangunan']
+            );
+
+            $checklist = $request->input('checklist_kondisi', []);
+            $progress->checklist_kondisi = $checklist;
+            $progress->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Checklist kondisi unit berhasil diperbarui',
+                'checklist' => $checklist,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error update checklist kondisi: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui checklist: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }
 

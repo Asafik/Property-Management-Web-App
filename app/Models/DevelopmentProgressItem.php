@@ -32,10 +32,20 @@ class DevelopmentProgressItem extends Model
 {
     return $this->hasMany(Rabs::class);
 }
-public function documents()
-{
-    return $this->hasMany(DevelopmentItemDocument::class);
-}
+    public function documents()
+    {
+        return $this->hasMany(DevelopmentItemDocument::class);
+    }
+
+    public function opnames()
+    {
+        return $this->hasMany(OpnameMingguan::class, 'development_progress_item_id');
+    }
+
+    public function termins()
+    {
+        return $this->hasMany(PembayaranTermin::class, 'development_progress_item_id');
+    }
 
     /**
      * Standard Dynamic Template for RAB / RAP Construction & Permits
