@@ -854,7 +854,7 @@
                     $unitPrice = $selectedUnit->price ?? 0;
                     $finalPrice = $totalRAB + $unitPrice;
                 }
-            @php
+
                 $savedChecklist = $selectedUnit->progress->checklist_kondisi ?? [];
                 if (!is_array($savedChecklist)) {
                     $savedChecklist = json_decode($savedChecklist, true) ?: [];

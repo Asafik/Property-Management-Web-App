@@ -14,9 +14,9 @@
 }
 
 .card {
-    border-radius: 14px !important;
-    border: none !important;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+    border-radius: 6px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     background: #ffffff;
     transition: all 0.3s ease;
 }
@@ -31,19 +31,19 @@
 }
 
 .customer-avatar {
-    width: 58px;
-    height: 58px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    background: #9a55ff;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+    box-shadow: none;
     flex-shrink: 0;
 }
 
 .customer-avatar i {
-    font-size: 2.2rem;
+    font-size: 2rem;
     color: #ffffff;
 }
 
@@ -64,10 +64,10 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 1.25rem;
-    background: #fbf9ff;
-    border: 1px solid #ede4ff;
-    padding: 0.75rem 1.25rem;
-    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 0.65rem 1rem;
+    border-radius: 6px;
 }
 
 .customer-unit-info .info-item {
@@ -94,29 +94,29 @@
 
 /* BADGES */
 .badge-gradient-success {
-    background: linear-gradient(135deg, #28c76f, #48da89) !important;
+    background: #10b981 !important;
     color: #fff !important;
-    padding: 0.4rem 0.75rem;
+    padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 700;
 }
 
 .badge-gradient-primary {
-    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+    background: #9a55ff !important;
     color: #fff !important;
-    padding: 0.4rem 0.75rem;
+    padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 700;
 }
 
 .badge-gradient-secondary {
-    background: #6c757d !important;
+    background: #64748b !important;
     color: #fff !important;
-    padding: 0.4rem 0.75rem;
+    padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 700;
 }
 
@@ -147,9 +147,9 @@
     margin-bottom: 0.75rem;
 }
 
-.transaksi-progress-top .transaksi-muted {
-    color: #64748b !important;
-    font-weight: 500;
+.transaksi-progress-top .step-counter-purple {
+    color: #9a55ff !important;
+    font-weight: 700;
 }
 
 .transaksi-progress {
@@ -227,6 +227,45 @@
     border: 3px solid #ffffff !important;
     box-shadow: 0 0 0 1px #28c76f;
     color: #ffffff !important;
+}
+
+.transaksi-step.active:not(.completed) .transaksi-step-icon {
+    background: #ffffff !important;
+    border: 2.5px solid #f59e0b !important;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2) !important;
+    color: #64748b !important;
+    position: relative;
+}
+
+.transaksi-step.active:not(.completed) .transaksi-step-icon::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 50%;
+    border: 2px dashed #f59e0b;
+    animation: stepSpinnerRotate 4s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes stepSpinnerRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.transaksi-step.active:not(.completed) a.transaksi-step-icon:hover {
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.45) !important;
+}
+
+.transaksi-step.active:not(.completed) .transaksi-step-title {
+    color: #b45309 !important;
+}
+
+.transaksi-step.active:not(.completed) small {
+    color: #d97706 !important;
+    font-weight: 700;
 }
 
 a.transaksi-step-icon {
@@ -323,21 +362,21 @@ a.transaksi-step-icon:hover {
     align-items: center;
     gap: 0.85rem;
     background: #f8fafc;
-    border: 1px solid #edf0f5;
+    border: 1px solid #e2e8f0;
     padding: 0.65rem 0.85rem;
-    border-radius: 10px;
+    border-radius: 6px;
 }
 
 .transaksi-handler.verifier {
     background: #f0fdf4;
-    border-color: #dcfce7;
+    border-color: #bbf7d0;
 }
 
 .transaksi-handler-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    background: #6366f1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -347,7 +386,7 @@ a.transaksi-step-icon:hover {
 }
 
 .transaksi-handler.verifier .transaksi-handler-icon {
-    background: linear-gradient(135deg, #0ba360, #3cba92);
+    background: #10b981;
 }
 
 .transaksi-handler-role {
@@ -369,7 +408,7 @@ a.transaksi-step-icon:hover {
     align-items: center;
     gap: 0.75rem;
     padding: 0.85rem 1rem;
-    border-radius: 10px;
+    border-radius: 6px;
     font-size: 0.88rem;
     margin-bottom: 1.25rem;
 }
@@ -380,26 +419,26 @@ a.transaksi-step-icon:hover {
 }
 
 .transaksi-inline-alert.success {
-    background: #eefcf3;
-    border: 1px solid #cbf4d8;
-    color: #1b7a42;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #15803d;
 }
 
 .transaksi-inline-alert.warning {
-    background: #fff9ed;
-    border: 1px solid #ffe6be;
-    color: #b26b00;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #b45309;
 }
 
 .transaksi-inline-alert.info {
-    background: #f3f8ff;
-    border: 1px solid #dbeafe;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
     color: #1d4ed8;
 }
 
 .transaksi-inline-alert.danger {
     background: #fef2f2;
-    border: 1px solid #fed7d7;
+    border: 1px solid #fecaca;
     color: #b91c1c;
 }
 
@@ -418,8 +457,8 @@ a.transaksi-step-icon:hover {
 
 .transaksi-form-control {
     width: 100%;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
     padding: 0.65rem 0.85rem;
     font-size: 0.88rem;
     color: #2c2e3f;
@@ -455,10 +494,10 @@ a.transaksi-step-icon:hover {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 0.9rem 1rem;
-    background: #fbf9ff;
-    border: 2px solid #ede4ff;
-    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.25s ease;
     margin-bottom: 0;
@@ -479,7 +518,7 @@ a.transaksi-step-icon:hover {
 .survey-checkbox-input:checked + .survey-checkbox-label {
     border-color: #9a55ff;
     background: #f5eeff;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.15);
+    box-shadow: none;
 }
 
 .survey-checkbox-input:checked + .survey-checkbox-label .survey-check-icon {
@@ -492,7 +531,7 @@ a.transaksi-step-icon:hover {
     align-items: center;
     gap: 0.35rem;
     padding: 0.35rem 0.85rem;
-    border-radius: 50px;
+    border-radius: 6px;
     font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0.2px;
@@ -507,22 +546,19 @@ a.transaksi-step-icon:hover {
 .survey-badge-pill.success {
     background: #10b981 !important;
     color: #ffffff !important;
-    border: 1.5px solid #059669;
-    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
+    border: 1px solid #059669;
 }
 
 .survey-badge-pill.warning {
     background: #f59e0b !important;
     color: #ffffff !important;
-    border: 1.5px solid #d97706;
-    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25);
+    border: 1px solid #d97706;
 }
 
 .survey-badge-pill.danger {
     background: #ef4444 !important;
     color: #ffffff !important;
-    border: 1.5px solid #dc2626;
-    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.25);
+    border: 1px solid #dc2626;
 }
 
 .survey-input-group {
@@ -538,13 +574,13 @@ a.transaksi-step-icon:hover {
     font-weight: 700;
     color: #64748b;
     background: #f8fafc;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 8px 0 0 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px 0 0 6px;
     border-right: none;
 }
 
 .survey-input-group .transaksi-form-control {
-    border-radius: 0 8px 8px 0;
+    border-radius: 0 6px 6px 0;
 }
 
 /* FILE UPLOADS */
@@ -570,13 +606,13 @@ a.transaksi-step-icon:hover {
     padding: 0.75rem 1rem;
     background: #ffffff;
     border: 1.5px dashed #cbd5e1;
-    border-radius: 8px;
+    border-radius: 6px;
     transition: all 0.2s ease;
 }
 
 .transaksi-file-upload:hover .transaksi-file-label {
     border-color: #9a55ff;
-    background: #fbf9ff;
+    background: #f8fafc;
 }
 
 .transaksi-file-label i {
@@ -615,7 +651,7 @@ a.transaksi-step-icon:hover {
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    border-radius: 10px;
+    border-radius: 6px;
     font-weight: 700;
     font-size: 0.92rem;
     border: none;
@@ -625,14 +661,13 @@ a.transaksi-step-icon:hover {
 }
 
 .transaksi-btn-primary {
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    background: #9a55ff;
     color: #ffffff;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+    box-shadow: none;
 }
 
 .transaksi-btn-primary:hover {
-    box-shadow: 0 6px 18px rgba(154, 85, 255, 0.4);
-    transform: translateY(-2px);
+    background: #873cf4;
     color: #ffffff;
 }
 
@@ -647,19 +682,19 @@ a.transaksi-step-icon:hover {
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    border-radius: 10px;
+    border-radius: 6px;
     font-weight: 700;
     font-size: 0.88rem;
 }
 
 .transaksi-status-banner.success {
-    background: linear-gradient(135deg, #eefcf3, #dcfce7);
+    background: #ecfdf5;
     color: #15803d;
     border: 1px solid #bbf7d0;
 }
 
 .transaksi-status-banner.warning {
-    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    background: #fffbeb;
     color: #b45309;
     border: 1px solid #fde68a;
 }
@@ -673,8 +708,10 @@ a.transaksi-step-icon:hover {
 
 .transaksi-summary-box {
     padding: 0.85rem;
-    border-radius: 10px;
+    border-radius: 6px;
     text-align: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
 }
 
 .transaksi-summary-box.success {
@@ -982,17 +1019,13 @@ a.transaksi-step-icon:hover {
                             $devDone = $status == 'selesai';
 
                             $totalSteps = 7;
-                            $completedCount = 2; // Pengajuan + Verifikasi
-                            if ($spkDone) $completedCount++;
-                            if ($devDone) $completedCount++;
-                            if ($surveyDone) $completedCount++;
-                            
-                            $progressWidth = intval(($completedCount / $totalSteps) * 100);
+                            $currentStep = $surveyDone ? 6 : 5;
+                            $progressWidth = intval(($currentStep / $totalSteps) * 100);
                         @endphp
 
                         <div class="transaksi-progress-top">
                             <span class="transaksi-muted">Progress Proses</span>
-                            <span>Tahap {{ $completedCount }} dari {{ $totalSteps }}</span>
+                            <span class="step-counter-purple">Tahap {{ $currentStep }} dari {{ $totalSteps }}</span>
                         </div>
 
                         <div class="transaksi-progress">
@@ -1219,7 +1252,7 @@ a.transaksi-step-icon:hover {
         {{-- RINCIAN INFORMASI UNIT PROPERTI --}}
         <div class="row mt-2 mb-3">
             <div class="col-12">
-                <div class="card shadow-sm border-0" style="border-radius: 14px; background: #ffffff;">
+                <div class="card">
                     <div class="card-body p-3 p-md-4">
                         {{-- Header Title --}}
                         <div class="d-flex flex-wrap align-items-center justify-content-between pb-3 mb-3 border-bottom gap-2">
@@ -1247,7 +1280,7 @@ a.transaksi-step-icon:hover {
                         <div class="row g-2.5 g-md-3">
                             {{-- 1. Unit & Blok --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                <div class="p-3 border h-100" style="border-radius: 6px; background: #fafbfc; border-color: #e2e8f0 !important;">
                                     <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Unit & Blok</small>
                                     <span class="fw-bold text-dark d-block text-truncate" style="font-size: 0.95rem;">{{ $application->unit->unit_name ?? '-' }}</span>
                                     <small class="text-primary font-monospace fw-semibold" style="font-size: 0.78rem;">Blok {{ $application->unit->block ?? '-' }} No. {{ $application->unit->unit_number ?? '-' }}</small>
@@ -1256,7 +1289,7 @@ a.transaksi-step-icon:hover {
 
                             {{-- 2. Lokasi / Perumahan --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                <div class="p-3 border h-100" style="border-radius: 6px; background: #fafbfc; border-color: #e2e8f0 !important;">
                                     <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Lokasi / Proyek</small>
                                     <span class="fw-bold text-dark d-block text-truncate" style="font-size: 0.95rem;" title="{{ $application->unit->landBank->name ?? '-' }}">{{ $application->unit->landBank->name ?? 'Proyek Utama' }}</span>
                                     <small class="text-muted text-truncate d-block" style="font-size: 0.78rem;">{{ $application->unit->landBank->village ?? ($application->unit->landBank->address ?? 'Lokasi Proyek') }}</small>
@@ -1265,7 +1298,7 @@ a.transaksi-step-icon:hover {
 
                             {{-- 3. Dimensi Lahan & Bangunan --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                <div class="p-3 border h-100" style="border-radius: 6px; background: #fafbfc; border-color: #e2e8f0 !important;">
                                     <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Dimensi Kavling</small>
                                     <div class="d-flex align-items-center gap-1.5 my-1">
                                         <span class="badge bg-white text-dark border fw-semibold" style="font-size: 0.75rem;">LT: {{ number_format($application->unit->area ?? 0, 0, ',', '.') }} m²</span>
@@ -1277,7 +1310,7 @@ a.transaksi-step-icon:hover {
 
                             {{-- 4. Arah Hadap & Posisi --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                <div class="p-3 border h-100" style="border-radius: 6px; background: #fafbfc; border-color: #e2e8f0 !important;">
                                     <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Arah & Posisi</small>
                                     <span class="fw-bold text-dark d-block" style="font-size: 0.95rem;">Hadap {{ $application->unit->facing ?? 'Utara' }}</span>
                                     <small class="text-muted d-block" style="font-size: 0.78rem;">Posisi: <span class="fw-semibold text-dark">{{ $application->unit->position ?? 'Tengah' }}</span></small>
@@ -1286,7 +1319,7 @@ a.transaksi-step-icon:hover {
 
                             {{-- 5. Harga Unit Properti --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                <div class="p-3 border h-100" style="border-radius: 6px; background: #fafbfc; border-color: #e2e8f0 !important;">
                                     <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Harga Unit</small>
                                     <span class="fw-bold text-success d-block" style="font-size: 0.98rem;">Rp {{ number_format($application->unit->price ?? $application->harga_unit ?? 0, 0, ',', '.') }}</span>
                                     <small class="text-muted d-block" style="font-size: 0.78rem;">IJB: Rp {{ number_format($application->unit->ijb_price ?? 0, 0, ',', '.') }}</small>
@@ -1295,7 +1328,7 @@ a.transaksi-step-icon:hover {
 
                             {{-- 6. Progress Konstruksi --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                <div class="p-3 border h-100" style="border-radius: 6px; background: #fafbfc; border-color: #e2e8f0 !important;">
                                     <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Progress Pembangunan</small>
                                     @php
                                         $cProgress = strtolower($application->unit->construction_progress ?? 'belum_mulai');
@@ -1315,7 +1348,7 @@ a.transaksi-step-icon:hover {
 
                             {{-- 7. Kontraktor / SPK --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                <div class="p-3 border h-100" style="border-radius: 6px; background: #fafbfc; border-color: #e2e8f0 !important;">
                                     <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Kontraktor / SPK</small>
                                     <span class="fw-bold text-dark d-block text-truncate" style="font-size: 0.95rem;" title="{{ $application->unit->kontraktor ?? 'Pembangunan Mandiri' }}">{{ $application->unit->kontraktor ?? 'Pembangunan Mandiri' }}</span>
                                     <small class="text-muted font-monospace text-truncate d-block" style="font-size: 0.78rem;">{{ $application->unit->no_spk ? 'No: ' . $application->unit->no_spk : 'SPK Standar' }}</small>
@@ -1324,7 +1357,7 @@ a.transaksi-step-icon:hover {
 
                             {{-- 8. Status Unit --}}
                             <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="p-3 rounded-3 border h-100" style="background: #fafbfc; border-color: #e2e8f0 !important;">
+                                <div class="p-3 border h-100" style="border-radius: 6px; background: #fafbfc; border-color: #e2e8f0 !important;">
                                     <small class="text-muted d-block fw-semibold text-uppercase mb-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">Status Unit</small>
                                     <span class="badge badge-gradient-primary px-2.5 py-1 text-uppercase fw-bold my-1 d-inline-block" style="font-size: 0.75rem;">
                                         {{ $application->unit->status ?? 'BOOKED' }}
@@ -1344,7 +1377,7 @@ a.transaksi-step-icon:hover {
                 <form id="formSurveyKpr" action="{{ route('kpr.survey.store', $application->id) }}" method="POST"
                     enctype="multipart/form-data" class="h-100">
                     @csrf
-                    <div class="card h-100 shadow-sm border-0" style="border-radius: 14px;">
+                    <div class="card h-100">
                         <div class="card-body p-3 p-md-4 d-flex flex-column justify-content-between">
                             <div>
                                 <div class="transaksi-section-title">
@@ -1548,7 +1581,7 @@ a.transaksi-step-icon:hover {
 
             {{-- SIDEBAR RINGKASAN --}}
             <div class="col-12 col-lg-4 mb-4 mb-lg-0">
-                <div class="card h-100 shadow-sm border-0" style="border-radius: 14px;">
+                <div class="card h-100">
                     <div class="card-body p-3 p-md-4 d-flex flex-column justify-content-between">
                         <div>
                             <div class="transaksi-section-title">

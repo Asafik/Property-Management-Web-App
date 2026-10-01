@@ -4,44 +4,35 @@
 
 @section('content')
 <style>
-.card {
-    transition: all 0.3s ease;
-    margin-bottom: 1rem;
-    border: none !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+/* ===== COMPACT TABLE CARD PERSIS CATALOG UNIT / LIST PENGAJUAN ===== */
+.card.compact-table-card,
+.compact-table-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
 }
-.card:hover { box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important; }
 
-.card-header {
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    border-bottom: 1px solid #e9ecef;
-    padding: 0.75rem;
+.compact-table-card .card-body {
+    padding: 0.85rem 1.25rem 1.25rem 1.25rem !important;
+    background: #ffffff !important;
 }
-@media (min-width: 576px) { .card-header { padding: 1rem; } }
-@media (min-width: 768px) { .card-header { padding: 1.2rem; } }
-
-.card-body { padding: 0.75rem; }
-@media (min-width: 576px) { .card-body { padding: 1rem; } }
-@media (min-width: 768px) { .card-body { padding: 1.2rem; } }
-
-.card-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #9a55ff;
-    margin-bottom: 0;
-}
-@media (min-width: 576px) { .card-title { font-size: 1rem; } }
-@media (min-width: 768px) { .card-title { font-size: 1.1rem; } }
 
 .filter-card {
     background: #ffffff;
-    border-radius: 12px;
+    border-radius: 0;
     padding: 0;
-    margin-bottom: 1.25rem;
+    margin-top: 0 !important;
+    margin-bottom: 0.85rem !important;
     border: none;
 }
+.filter-card form {
+    margin-bottom: 0 !important;
+}
 
-/* Search Input Group in Filter (Input on Left, Purple Button on Right) */
+/* Search Input Group in Filter */
 .search-input-group {
     display: flex !important;
     flex-wrap: nowrap !important;
@@ -53,8 +44,8 @@
 .search-input-group .form-control {
     height: 38px !important;
     min-height: 38px !important;
-    border-top-left-radius: 8px !important;
-    border-bottom-left-radius: 8px !important;
+    border-top-left-radius: 6px !important;
+    border-bottom-left-radius: 6px !important;
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
     border: 1.5px solid #e2e8f0 !important;
@@ -70,8 +61,8 @@
     min-height: 38px !important;
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
-    border-top-right-radius: 8px !important;
-    border-bottom-right-radius: 8px !important;
+    border-top-right-radius: 6px !important;
+    border-bottom-right-radius: 6px !important;
     padding: 0 0.95rem !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -79,20 +70,25 @@
     box-shadow: none !important;
     border: none !important;
     font-size: 1.15rem !important;
+    background: #9a55ff !important;
     color: #ffffff !important;
     margin: 0 !important;
     flex-shrink: 0;
+    transition: opacity 0.2s;
+}
+.search-input-group .btn-search-submit:hover {
+    opacity: 0.9;
 }
 
 .search-input-group:focus-within .form-control {
     border-color: #9a55ff !important;
-    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
 }
 
 /* SELECT2 ENHANCEMENTS */
 .select2-container--bootstrap-5 .select2-selection {
     border: 1.5px solid #e2e8f0 !important;
-    border-radius: 8px !important;
+    border-radius: 6px !important;
     min-height: 38px !important;
     height: 38px !important;
     padding: 0.35rem 0.75rem !important;
@@ -122,317 +118,156 @@
 
 .select2-container--bootstrap-5 .select2-dropdown {
     border-color: #e2e8f0 !important;
-    border-radius: 8px !important;
+    border-radius: 6px !important;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
 }
 
-.select2-container--bootstrap-5 .select2-results__option {
-    padding: 0.55rem 0.8rem !important;
-    font-size: 0.86rem !important;
-    font-weight: 600 !important;
-}
-
-.select2-container--bootstrap-5 .select2-results__option--selected {
-    background-color: #f3e8ff !important;
-    color: #7e22ce !important;
-}
-
-.select2-container--bootstrap-5 .select2-results__option--highlighted {
-    background: #9a55ff !important;
-    color: #ffffff !important;
-}
-
-.form-control, .form-select {
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    background-color: #ffffff;
-    color: #2c2e3f;
-}
-.form-control:focus, .form-select:focus {
-    border-color: #9a55ff;
-    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-    outline: none;
-}
-.form-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.3rem;
-    letter-spacing: 0.3px;
-    font-family: 'Nunito', sans-serif;
-}
-
-.btn {
-    font-size: 0.85rem;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    font-family: 'Nunito', sans-serif;
-    border: none;
-}
-.btn:hover {
-    transform: translateY(-2px);
-}
-
-.btn-gradient-primary {
-    background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-    color: #ffffff !important;
-}
-.btn-gradient-secondary {
-    background: #6c757d !important;
-    color: #ffffff !important;
-}
-.btn-gradient-success {
-    background: linear-gradient(135deg, #28c76f, #48da89) !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 10px rgba(40, 199, 111, 0.18);
-}
-.btn-gradient-success:hover {
-    box-shadow: 0 7px 16px rgba(40, 199, 111, 0.28);
-}
-
-.btn-icon-only {
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-}
-
-.table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-    scrollbar-width: thin;
-    scrollbar-color: #9a55ff #f0f0f0;
-}
-.table-responsive::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-.table-responsive::-webkit-scrollbar-track {
-    background: #f0f0f0;
-    border-radius: 10px;
-}
-.table-responsive::-webkit-scrollbar-thumb {
-    background: #9a55ff;
-    border-radius: 10px;
-}
-.table-responsive::-webkit-scrollbar-thumb:hover {
-    background: #7a3fcc;
-}
-
-.table {
+/* TABLE UNIT PERSIS CATALOG UNIT */
+.table-unit {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 0;
 }
-.table thead th {
-    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-    color: #9a55ff;
-    font-weight: 600;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 2px solid #e9ecef;
-    padding: 0.8rem 0.5rem;
-    white-space: nowrap;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-.table thead th:hover {
-    color: #7a3fcc;
-}
-.table thead th i {
-    font-size: 0.8rem;
-    margin-left: 4px;
-    opacity: 0.5;
-}
-.table thead th:first-child,
-.table tbody td:first-child {
-    width: 50px;
-    text-align: center;
-}
-.table tbody td {
+.table-unit thead th {
+    background: #f8fafc !important;
+    color: #475569 !important;
+    font-weight: 700 !important;
+    font-size: 0.76rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    padding: 0.75rem 0.75rem !important;
     vertical-align: middle;
-    font-size: 0.9rem;
-    padding: 0.9rem 0.6rem;
-    border-bottom: 1px solid #e9ecef;
-    color: #2c2e3f;
     white-space: nowrap;
 }
-.table tbody tr:hover { background-color: #f8f9fa; }
-
-.customer-cell {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-.customer-initial {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
-    color: #fff;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 0.9rem;
-    flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.18);
-}
-.customer-name {
-    font-weight: 700;
-    color: #2c2e3f;
-    font-size: 0.9rem;
-}
-
-.badge-status {
-    padding: 0.45rem 0.9rem;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 0.76rem;
-    display: inline-block;
-    letter-spacing: 0.3px;
-}
-.badge-status.booking {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d);
-    color: #2c2e3f;
-}
-.badge-status.proses {
-    background: linear-gradient(135deg, #17a2b8, #56c6d8);
-    color: #ffffff;
-}
-.badge-status.approved {
-    background: linear-gradient(135deg, #28c76f, #48da89);
-    color: #ffffff;
-}
-.badge-status.lanjut_kpr {
-    background: linear-gradient(135deg, #6c757d, #868e96);
-    color: #ffffff;
-}
-.badge-status.default {
-    background: linear-gradient(135deg, #adb5bd, #c7ced4);
-    color: #ffffff;
-}
-
-.badge {
-    padding: 0.35rem 0.6rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border-radius: 30px;
-    display: inline-block;
-    white-space: nowrap;
-}
-@media (min-width: 576px) { .badge { padding: 0.4rem 0.75rem; font-size: 0.8rem; } }
-.badge-gradient-success { background: linear-gradient(135deg, #28a745, #5cb85c); color: #ffffff; }
-.badge-gradient-primary { background: linear-gradient(to right, #da8cff, #9a55ff) !important; color: #ffffff !important; }
-.badge-gradient-secondary { background: #6c757d !important; color: #ffffff !important; }
-
-.badge-doc {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.45rem;
-    padding: 0.65rem 1rem;
-    border-radius: 12px;
-    background: #ffffff;
-    color: #9a55ff;
-    font-weight: 700;
-    font-size: 0.9rem;
+.table-unit thead th.sortable {
     cursor: pointer;
-    border: 1.5px solid #9a55ff;
-    min-width: 78px;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 8px rgba(154, 85, 255, 0.14);
+    user-select: none;
 }
-.badge-doc:hover {
-    background: #9a55ff;
-    color: #ffffff;
-    border-color: #9a55ff;
-    box-shadow: 0 8px 20px rgba(154, 85, 255, 0.30);
-    transform: translateY(-2px);
+.table-unit thead th.sortable:hover {
+    color: #9a55ff !important;
 }
-
-.text-price {
-    color: #28a745 !important;
-    font-weight: 700;
+.table-unit thead th.active-sort {
+    color: #9a55ff !important;
 }
-
-.text-belum-upload {
-    display: inline-block;
-    padding: 0.55rem 0.9rem;
-    border-radius: 10px;
-    background: #f1f3f5;
-    color: #868e96;
+.table-unit thead th i {
     font-size: 0.82rem;
-    font-weight: 700;
+    margin-left: 3px;
+    opacity: 0.6;
+}
+.table-unit thead th:hover i,
+.table-unit thead th.active-sort i {
+    opacity: 1;
 }
 
+.table-unit tbody td {
+    padding: 0.75rem 0.75rem !important;
+    vertical-align: middle;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #f1f5f9 !important;
+    color: #334155;
+}
+.table-unit tbody tr:hover {
+    background-color: #f8fafc !important;
+}
+
+/* User & Sales Avatars */
+.user-avatar-box {
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    background-color: #f3e8ff;
+    color: #9333ea;
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.sales-avatar-box {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background-color: #e0e7ff;
+    color: #4338ca;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Badge Solid & Soft 6px Radius */
+.badge-clean {
+    border-radius: 6px !important;
+    padding: 0.35rem 0.65rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+    white-space: nowrap !important;
+    line-height: 1.3 !important;
+    border: 1px solid transparent;
+}
+.badge-clean.status-approved {
+    background: #ecfdf5 !important;
+    color: #059669 !important;
+    border-color: #a7f3d0 !important;
+}
+.badge-clean.status-survey {
+    background: #f3e8ff !important;
+    color: #9333ea !important;
+    border-color: #d8b4fe !important;
+}
+.badge-clean.status-menunggu {
+    background: #eff6ff !important;
+    color: #2563eb !important;
+    border-color: #bfdbfe !important;
+}
+.badge-clean.status-revisi {
+    background: #fffbeb !important;
+    color: #d97706 !important;
+    border-color: #fde68a !important;
+}
+.badge-clean.status-rejected {
+    background: #fef2f2 !important;
+    color: #dc2626 !important;
+    border-color: #fecaca !important;
+}
+.badge-clean.status-booking {
+    background: #f8fafc !important;
+    color: #475569 !important;
+    border-color: #e2e8f0 !important;
+}
+
+/* Pagination */
 .pagination { margin: 0; gap: 3px; }
 .page-item .page-link {
-    border: 1px solid #e9ecef;
+    border: 1px solid #e2e8f0;
     padding: 0.35rem 0.7rem;
-    font-size: 0.75rem;
-    color: #6c7383;
+    font-size: 0.78rem;
+    color: #64748b;
     background-color: #ffffff;
     border-radius: 6px !important;
     min-width: 32px;
     text-align: center;
     text-decoration: none;
+    font-weight: 600;
 }
 .page-item.active .page-link {
-    background: linear-gradient(to right, #da8cff, #9a55ff);
-    border-color: transparent;
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+    background: #9a55ff !important;
+    border-color: #9a55ff !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
 }
 .pagination-info {
-    font-size: 0.8rem;
-    color: #6c7383;
-}
-
-.text-primary  { color: #9a55ff !important; }
-.text-muted    { color: #a5b3cb !important; }
-.fw-bold       { font-weight: 600 !important; }
-
-h3.text-dark, h4.text-dark {
-    font-weight: 700;
-    color: #2c2e3f !important;
-    margin-bottom: 0.5rem !important;
-}
-
-.mdi { vertical-align: middle; }
-
-.filter-row-desktop {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-.filter-row-desktop .filter-text {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #9a55ff;
-    font-weight: 600;
-    font-size: 0.95rem;
-}
-.filter-row-mobile { display: none; }
-
-@media (max-width: 767px) {
-    .filter-row-desktop { display: none; }
-    .filter-row-mobile { display: block; margin-top: 1rem; }
+    font-size: 0.82rem;
+    color: #64748b;
+    font-weight: 500;
 }
 
 .modal-content {
@@ -496,118 +331,10 @@ h3.text-dark, h4.text-dark {
 .document-action-cell {
     text-align: right;
 }
-
-.customer-detail-card {
-    background: linear-gradient(135deg, #faf7ff, #f4efff);
-    border: 1px solid #eadcff;
-    border-radius: 14px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-}
-.customer-detail-title {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #9a55ff;
-    margin-bottom: 0.85rem;
-}
-.customer-detail-item {
-    background: #ffffff;
-    border: 1px solid #efe6ff;
-    border-radius: 10px;
-    padding: 0.75rem 0.85rem;
-    height: 100%;
-}
-.customer-detail-label {
-    font-size: 0.75rem;
-    color: #8b8fa3;
-    margin-bottom: 0.2rem;
-    font-weight: 600;
-}
-.customer-detail-value {
-    font-size: 0.92rem;
-    color: #2c2e3f;
-    font-weight: 700;
-}
-.customer-detail-value.price {
-    color: #28a745;
-}
-
-/* MODAL TABLE ACTION */
-.btn-action-purple {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.45rem 0.9rem;
-    border-radius: 10px;
-    border: 1.5px solid #9a55ff;
-    background: #fff;
-    color: #9a55ff;
-    font-size: 0.82rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.25s ease;
-}
-
-.btn-action-purple i, .btn-action-green i {
-    font-size: 1rem;
-}
-
-.btn-action-purple:hover {
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
-    color: #fff;
-    border-color: #9a55ff;
-    box-shadow: 0 6px 18px rgba(154, 85, 255, 0.22);
-    transform: translateY(-2px);
-}
-
-.btn-action-green {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.45rem 0.9rem;
-    border-radius: 10px;
-    border: 1.5px solid #28c76f;
-    background: #fff;
-    color: #28c76f;
-    font-size: 0.82rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.25s ease;
-}
-
-.btn-action-green:hover {
-    background: linear-gradient(135deg, #48da89, #28c76f);
-    color: #fff;
-    border-color: #28c76f;
-    box-shadow: 0 6px 18px rgba(40, 199, 111, 0.22);
-    transform: translateY(-2px);
-}
-
-.doc-name-inline {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-}
-
-.doc-file-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #f3e8ff, #efe2ff);
-    color: #9a55ff;
-    font-size: 1.1rem;
-    border: 1px solid #eadbff;
-    flex-shrink: 0;
-}
-
-.col-no-small {
-    width: 55px;
-    min-width: 55px;
-    max-width: 55px;
-    text-align: center;
+.btnApproveKpr:hover {
+    background-color: #059669 !important;
+    border-color: #059669 !important;
+    color: #ffffff !important;
 }
 
 /* ===== MODERN FILE UPLOAD STYLING ===== */
@@ -704,35 +431,28 @@ h3.text-dark, h4.text-dark {
 }
 </style>
 
-<div class="container-fluid p-2 p-sm-3 p-md-4">
+<div class="container-fluid px-2 px-md-4 py-3">
 
-    <div class="row mb-3 mb-sm-3 mb-md-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h4 class="text-dark mb-1">
-                            <i class="mdi mdi-bank me-2" style="color: #9a55ff;"></i>Daftar User KPR
-                        </h4>
-                        <p class="text-muted mb-0">
-                            Kelola data user yang mengajukan KPR
-                        </p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-home-account" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                    </div>
-                </div>
-            </div>
+    <!-- Page Title & Subtitle (Persis Catalog Unit & List Pengajuan) -->
+    <div class="row align-items-center mb-4">
+        <div class="col">
+            <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                Daftar User KPR
+            </h2>
+            <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                Kelola dan verifikasi berkas pengajuan KPR nasabah per unit dan status progres
+            </p>
         </div>
     </div>
 
-    <div class="row mt-2 mt-sm-2 mt-md-3">
+    <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
-                    <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2"></i>Data User KPR
-                    </h5>
+            <div class="card compact-table-card">
+                <div class="card-header bg-white d-flex align-items-center gap-2 py-2.5 px-3 px-md-4" style="border-bottom: 1px solid #e2e8f0 !important;">
+                    <div style="width: 32px; height: 32px; border-radius: 6px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
+                        <i class="mdi mdi-account-group"></i>
+                    </div>
+                    <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Data User KPR</span>
                 </div>
 
                 <div class="card-body">
@@ -748,7 +468,7 @@ h3.text-dark, h4.text-dark {
                                             <div class="input-group search-input-group">
                                                 <input type="text" name="search" value="{{ request('search') }}"
                                                     class="form-control" placeholder="Cari nama user...">
-                                                <button class="btn btn-gradient-primary btn-search-submit" 
+                                                <button class="btn btn-search-submit" 
                                                     type="submit" title="Cari">
                                                     <i class="mdi mdi-magnify"></i>
                                                 </button>
@@ -779,13 +499,15 @@ h3.text-dark, h4.text-dark {
                                             </select>
                                         </div>
                                         <button type="submit"
-                                            class="btn btn-gradient-primary btn-icon-only"
-                                            id="filterBtn" title="Filter" onclick="showFilterLoading()">
+                                            class="btn d-inline-flex align-items-center justify-content-center text-white"
+                                            id="filterBtn" title="Filter" onclick="showFilterLoading()"
+                                            style="width: 38px; height: 38px; border-radius: 6px; background: #9a55ff !important; border: 1px solid #9a55ff !important;">
                                             <i class="mdi mdi-filter"></i>
                                         </button>
                                         <a href="{{ route('customer.kpr') }}"
-                                            class="btn btn-gradient-secondary btn-icon-only"
-                                            title="Reset" onclick="showResetLoading(event)">
+                                            class="btn d-inline-flex align-items-center justify-content-center text-white"
+                                            title="Reset" onclick="showResetLoading(event)"
+                                            style="width: 38px; height: 38px; border-radius: 6px; background: #64748b !important; border: 1px solid #64748b !important;">
                                             <i class="mdi mdi-refresh"></i>
                                         </a>
                                     </div>
@@ -800,7 +522,7 @@ h3.text-dark, h4.text-dark {
                                             <input type="text" name="search_mobile"
                                                 value="{{ request('search') }}" class="form-control"
                                                 placeholder="Cari nama user..." id="searchMobile">
-                                            <button class="btn btn-gradient-primary btn-search-submit" 
+                                            <button class="btn btn-search-submit" 
                                                 type="submit" title="Cari">
                                                 <i class="mdi mdi-magnify"></i>
                                             </button>
@@ -826,16 +548,16 @@ h3.text-dark, h4.text-dark {
                                     </div>
                                     <div class="col-6">
                                         <button type="submit"
-                                            class="btn btn-gradient-primary w-100 d-inline-flex align-items-center justify-content-center"
+                                            class="btn text-white w-100 d-inline-flex align-items-center justify-content-center"
                                             id="filterBtnMobile" title="Filter"
-                                            onclick="showFilterLoading()" style="height: 38px;">
+                                            onclick="showFilterLoading()" style="height: 38px; border-radius: 6px; background: #9a55ff !important; border: 1px solid #9a55ff !important;">
                                             <i class="mdi mdi-filter me-1"></i>Filter
                                         </button>
                                     </div>
                                     <div class="col-6">
                                         <a href="{{ route('customer.kpr') }}"
-                                            class="btn btn-gradient-secondary w-100 d-inline-flex align-items-center justify-content-center"
-                                            title="Reset" onclick="showResetLoading(event)" style="height: 38px; text-decoration: none;">
+                                            class="btn text-white w-100 d-inline-flex align-items-center justify-content-center"
+                                            title="Reset" onclick="showResetLoading(event)" style="height: 38px; border-radius: 6px; background: #64748b !important; border: 1px solid #64748b !important; text-decoration: none;">
                                             <i class="mdi mdi-refresh me-1"></i>Reset
                                         </a>
                                     </div>
@@ -845,25 +567,24 @@ h3.text-dark, h4.text-dark {
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
+                        <table class="table table-hover align-middle table-unit mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-center">No</th>
-                                    <th class="sortable" data-field="name" data-direction="{{ request('sort', 'latest') == 'name_asc' ? 'asc' : 'desc' }}" style="cursor:pointer;">
-                                        Nama User
-                                        <i class="mdi {{ request('sort') == 'name_asc' ? 'mdi-sort-alphabetical-ascending' : (request('sort') == 'name_desc' ? 'mdi-sort-alphabetical-descending' : 'mdi-sort') }}"></i>
+                                    <th class="text-center" style="width: 50px;">No</th>
+                                    <th class="sortable {{ in_array(request('sort'), ['name_asc', 'name_desc']) ? 'active-sort' : '' }}" data-field="name" data-direction="{{ request('sort', 'latest') == 'name_asc' ? 'asc' : 'desc' }}">
+                                        Customer
+                                        <i class="mdi {{ request('sort') == 'name_asc' ? 'mdi-arrow-up' : (request('sort') == 'name_desc' ? 'mdi-arrow-down' : 'mdi-swap-vertical') }}"></i>
                                     </th>
-                                    <th class="sortable" data-field="unit" data-direction="{{ request('sort', 'latest') == 'unit_asc' ? 'asc' : 'desc' }}" style="cursor:pointer;">
+                                    <th class="sortable {{ in_array(request('sort'), ['unit_asc', 'unit_desc']) ? 'active-sort' : '' }}" data-field="unit" data-direction="{{ request('sort', 'latest') == 'unit_asc' ? 'asc' : 'desc' }}">
                                         Nama - Unit
-                                        <i class="mdi {{ request('sort') == 'unit_asc' ? 'mdi-sort-alphabetical-ascending' : (request('sort') == 'unit_desc' ? 'mdi-sort-alphabetical-descending' : 'mdi-sort') }}"></i>
+                                        <i class="mdi {{ request('sort') == 'unit_asc' ? 'mdi-arrow-up' : (request('sort') == 'unit_desc' ? 'mdi-arrow-down' : 'mdi-swap-vertical') }}"></i>
                                     </th>
                                     <th>Jenis & Tipe</th>
                                     <th>Harga</th>
-                                    <th>Sales/Agent</th>
+                                    <th>Sales / Agent</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Tanggal Booking</th>
-                                    <th class="text-center" style="width: 110px;">Dokumen</th>
-                                    <th class="text-center" style="width: 140px;">Aksi</th>
+                                    <th class="text-center" style="min-width: 130px;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -884,47 +605,21 @@ h3.text-dark, h4.text-dark {
                                         $uploadedStandardCount = $uploadedDocs->whereIn('type', $requiredTypes)->count();
 
                                         $customerName = $booking->customer->full_name ?? '-';
-                                        $words = collect(explode(' ', trim($customerName)))->filter();
-                                        $initial = $words->count() >= 2
-                                            ? strtoupper(substr($words->first(), 0, 1) . substr($words->last(), 0, 1))
-                                            : strtoupper(substr($customerName, 0, 2));
-
                                         $kprStatus = strtolower($booking->kprApplication?->status ?? '');
                                     @endphp
                                     <tr>
-                                        <td class="text-center fw-bold">
+                                        <td class="text-center fw-bold text-muted" style="font-size: 0.82rem;">
                                             {{ $loop->iteration + (($bookings->currentPage() - 1) * $bookings->perPage()) }}
                                         </td>
                                         <td>
-                                            <div class="customer-cell">
-                                                <span class="customer-initial">{{ $initial }}</span>
-                                                <span class="customer-name">{{ $customerName }}</span>
-                                            </div>
+                                            <span class="fw-bold text-dark" style="font-size: 0.88rem;">
+                                                {{ $customerName }}
+                                            </span>
                                         </td>
                                         <td>
-                                            <div class="d-flex flex-column">
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-home-city-outline text-primary me-1.5"></i>
-                                                    <span class="fw-bold text-dark">{{ $booking->unit->unit_name ?? '-' }} - {{ $booking->unit->unit_code ?? '-' }}</span>
-                                                </div>
-                                                @php
-                                                    $bProg = strtolower($booking->unit->construction_progress ?? 'belum_mulai');
-                                                    $bPercent = $booking->unit->construction_progress_percentage ?? 0;
-                                                    $bLabelMap = [
-                                                        'belum_mulai' => 'Belum Mulai',
-                                                        'pondasi'     => 'Pondasi',
-                                                        'dinding'     => 'Dinding',
-                                                        'atap'        => 'Atap',
-                                                        'finishing'   => 'Finishing',
-                                                        'selesai'     => 'Selesai 100%',
-                                                    ];
-                                                    $bLabel = $bLabelMap[$bProg] ?? ucfirst($bProg);
-                                                @endphp
-                                                <div class="mt-1">
-                                                    <span class="badge {{ $bProg === 'selesai' ? 'bg-success text-white' : 'bg-light text-secondary border' }}" style="font-size: 0.68rem; padding: 2px 6px;">
-                                                        <i class="mdi {{ $bProg === 'selesai' ? 'mdi-check-decagram' : 'mdi-home-city-outline' }} me-0.5"></i>Fisik: {{ $bLabel }} ({{ $bPercent }}%)
-                                                    </span>
-                                                </div>
+                                            <div class="d-flex align-items-center gap-1.5">
+                                                <span class="fw-bold text-dark" style="font-size: 0.88rem;">{{ $booking->unit->unit_name ?? '-' }}</span>
+                                                <span class="badge bg-light text-dark border fw-bold px-1.5 py-0.5" style="font-size: 0.72rem; border-radius: 4px;">{{ $booking->unit->unit_code ?? '-' }}</span>
                                             </div>
                                         </td>
                                         <td>
@@ -933,129 +628,75 @@ h3.text-dark, h4.text-dark {
                                                 $tipe = $booking->unit->type ?? '-';
                                             @endphp
                                             @if (strtolower($jenis) == 'subsidi')
-                                                <span class="badge badge-gradient-success">
+                                                <span class="badge" style="background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; border-radius: 6px; font-weight: 600; font-size: 0.75rem;">
                                                     <i class="mdi mdi-home-assistant me-1"></i>{{ $jenis }} - {{ $tipe }}
                                                 </span>
                                             @elseif(strtolower($jenis) == 'komersil')
-                                                <span class="badge badge-gradient-primary">
+                                                <span class="badge" style="background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; border-radius: 6px; font-weight: 600; font-size: 0.75rem;">
                                                     <i class="mdi mdi-office-building me-1"></i>{{ $jenis }} - {{ $tipe }}
                                                 </span>
                                             @else
-                                                <span class="badge badge-gradient-secondary">
+                                                <span class="badge" style="background-color: #f8fafc; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; font-weight: 600; font-size: 0.75rem;">
                                                     <i class="mdi mdi-help-circle-outline me-1"></i>{{ ($jenis ?: '-') . ' - ' . $tipe }}
                                                 </span>
                                             @endif
                                         </td>
                                         <td>
-                                            <span class="text-price">Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}</span>
+                                            <span class="fw-bold text-dark" style="font-family: monospace; font-size: 0.88rem;">
+                                                Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}
+                                            </span>
                                         </td>
                                         <td>
                                             @if ($booking->sales)
-                                                @php
-                                                    $salesName = $booking->sales->name;
-                                                    $sInitials = '';
-                                                    foreach (explode(' ', trim($salesName)) as $word) {
-                                                        if ($word !== '') {
-                                                            $sInitials .= strtoupper(substr($word, 0, 1));
-                                                        }
-                                                    }
-                                                    $sInitials = substr($sInitials ?: 'S', 0, 2);
-                                                @endphp
-                                                <div class="customer-info">
-                                                    <div class="customer-initial" style="background: linear-gradient(135deg, #667eea, #764ba2);">
-                                                        {{ $sInitials }}
-                                                    </div>
-                                                    <span>{{ $salesName }}</span>
-                                                </div>
+                                                <span class="fw-semibold text-dark" style="font-size: 0.85rem;">
+                                                    {{ $booking->sales->name }}
+                                                </span>
                                             @else
-                                                <i class="mdi mdi-account-tie text-primary me-1"></i>
-                                                -
+                                                <span class="text-muted" style="font-size: 0.85rem;">-</span>
                                             @endif
                                         </td>
                                         <td class="text-center">
                                             @if ($kprStatus === 'approved')
-                                                <span class="badge badge-gradient-success">
-                                                    <i class="mdi mdi-check-decagram me-1"></i>Approved
+                                                <span class="badge-clean status-approved">
+                                                    <i class="mdi mdi-check-decagram"></i> Approved
                                                 </span>
                                             @elseif ($kprStatus === 'survey')
-                                                <span class="badge badge-gradient-primary">
-                                                    <i class="mdi mdi-account-search me-1"></i>Survey
+                                                <span class="badge-clean status-survey">
+                                                    <i class="mdi mdi-account-search"></i> Survey
                                                 </span>
                                             @elseif ($kprStatus === 'rejected')
-                                                <span class="badge bg-danger text-white">
-                                                    <i class="mdi mdi-close-octagon me-1"></i>Ditolak
+                                                <span class="badge-clean status-rejected">
+                                                    <i class="mdi mdi-close-octagon"></i> Ditolak
                                                 </span>
                                             @elseif ($revisiDocsCount > 0)
-                                                <span class="badge bg-warning text-dark">
-                                                    <i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi ({{ $revisiDocsCount }})
+                                                <span class="badge-clean status-revisi">
+                                                    <i class="mdi mdi-alert-circle"></i> Perlu Revisi ({{ $revisiDocsCount }})
                                                 </span>
                                             @elseif ($rejectedDocsCount > 0)
-                                                <span class="badge bg-danger text-white">
-                                                    <i class="mdi mdi-close-circle me-1"></i>Dokumen Ditolak
+                                                <span class="badge-clean status-rejected">
+                                                    <i class="mdi mdi-close-circle"></i> Dokumen Ditolak
                                                 </span>
                                             @elseif ($totalUploaded > 0 && $approvedDocsCount === $totalUploaded)
-                                                <span class="badge bg-success text-white">
-                                                    <i class="mdi mdi-check-circle me-1"></i>Dokumen Disetujui
+                                                <span class="badge-clean status-approved">
+                                                    <i class="mdi mdi-check-circle"></i> Dokumen Disetujui
                                                 </span>
                                             @elseif ($booking->kprApplication)
-                                                <span class="badge bg-info text-white">
-                                                    <i class="mdi mdi-clock-outline me-1"></i>Menunggu Verifikasi
+                                                <span class="badge-clean status-menunggu">
+                                                    <i class="mdi mdi-clock-outline"></i> Menunggu Verifikasi
                                                 </span>
                                             @else
-                                                <span class="badge badge-gradient-secondary">
+                                                <span class="badge-clean status-booking">
                                                     Belum Pengajuan
                                                 </span>
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            <i class="mdi mdi-calendar-month-outline text-primary me-1"></i>
-                                            {{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}
+                                            <span class="text-dark d-inline-flex align-items-center" style="font-size: 0.84rem;">
+                                                <i class="mdi mdi-calendar-blank-outline text-muted me-1"></i>
+                                                {{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}
+                                            </span>
                                         </td>
-                                        <td class="text-center">
-                                            @php
-                                                $totalDocTarget = max(8, $totalUploaded);
-                                                $verifyPercent = $totalDocTarget > 0 ? min(100, round(($approvedDocsCount / $totalDocTarget) * 100)) : 0;
-                                                $docBadgeClass = 'badge-doc';
-                                                if ($revisiDocsCount > 0) {
-                                                    $docBadgeClass .= ' bg-warning text-dark border-warning';
-                                                } elseif ($rejectedDocsCount > 0) {
-                                                    $docBadgeClass .= ' bg-danger text-white border-danger';
-                                                } elseif ($verifyPercent === 100) {
-                                                    $docBadgeClass .= ' bg-success text-white border-success';
-                                                }
-                                            @endphp
-                                            <div class="d-flex flex-column align-items-center justify-content-center gap-1" style="min-width: 105px;">
-                                                <button
-                                                    type="button"
-                                                    class="{{ $docBadgeClass }} btnOpenDocumentModal d-inline-flex align-items-center justify-content-center gap-1 w-100"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#documentModal"
-                                                    data-customer="{{ $customerName }}"
-                                                    data-unit="{{ $booking->unit->unit_code ?? '-' }}"
-                                                    data-status="{{ $booking->kprApplication ? strtoupper($booking->kprApplication->status) : 'DRAFT' }}"
-                                                    data-harga="Rp {{ number_format($booking->unit->price ?? 0, 0, ',', '.') }}"
-                                                    data-sales="{{ $booking->sales->name ?? '-' }}"
-                                                    data-booking="{{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y') }}"
-                                                    data-documents='@json($uploadedDocs)'
-                                                    data-percent="{{ $verifyPercent }}"
-                                                    data-uploaded-count="{{ $uploadedStandardCount }}"
-                                                    data-approved-count="{{ $approvedDocsCount }}"
-                                                    data-total-count="{{ $totalDocTarget }}"
-                                                    title="{{ $approvedDocsCount }}/{{ $totalDocTarget }} Dokumen Disetujui ({{ $verifyPercent }}%)">
-                                                    <i class="mdi mdi-shield-check-outline"></i>
-                                                    <span>{{ $approvedDocsCount }}/{{ $totalDocTarget }}</span>
-                                                    <span class="ms-1 fw-bold" style="font-size: 0.73rem;">({{ $verifyPercent }}%)</span>
-                                                </button>
-                                                <div class="progress w-100" style="height: 6px; border-radius: 10px; background: #e2e8f0; overflow: hidden;">
-                                                    <div class="progress-bar {{ $verifyPercent === 100 ? 'bg-success' : ($verifyPercent > 0 ? 'bg-primary' : 'bg-secondary') }}"
-                                                         role="progressbar"
-                                                         style="width: {{ $verifyPercent }}%; transition: width 0.4s ease;"
-                                                         aria-valuenow="{{ $verifyPercent }}"
-                                                         aria-valuemin="0"
-                                                         aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-                                        </td>
+
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center">
                                                 @php
@@ -1068,32 +709,38 @@ h3.text-dark, h4.text-dark {
                                                 @endphp
 
                                                 @if($isAlreadyApproved)
-                                                    <a href="{{ route('transaksi.kpr.approve', $booking->id) }}" class="btn btn-sm d-inline-flex align-items-center justify-content-center px-3" title="Pengajuan KPR ini sudah disetujui / diproses. Klik untuk melihat detail verifikasi & cetak Berita Acara"
-                                                            style="background: #ecfdf5; color: #059669; border: 1.5px solid #10b981; border-radius: 8px; min-height: 34px; font-weight: 700; text-decoration: none; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.12);">
-                                                        <i class="mdi mdi-check-all me-1" style="font-size: 1.1rem; color: #10b981;"></i>Detail Selesai
+                                                    <a href="{{ route('transaksi.kpr.approve', $booking->id) }}" 
+                                                       class="btn btn-sm d-inline-flex align-items-center justify-content-center gap-1 px-3 text-white fw-semibold" 
+                                                       style="height: 32px; border-radius: 6px; background-color: #059669; border: 1px solid #059669;"
+                                                       title="Detail Selesai">
+                                                        <i class="mdi mdi-check-all"></i>
+                                                        <span>Selesai</span>
                                                     </a>
                                                 @elseif($isKepalaMarketing)
                                                     <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
-                                                       class="btn btn-gradient-primary btn-sm btnApproveKpr d-inline-flex align-items-center justify-content-center px-3"
-                                                       style="border-radius: 8px; min-height: 34px; font-weight: 700; box-shadow: 0 2px 8px rgba(154, 85, 255, 0.25);"
+                                                       class="btn btn-sm d-inline-flex align-items-center justify-content-center gap-1 px-3 text-white fw-semibold btnApproveKpr"
+                                                       style="height: 32px; border-radius: 6px; background-color: #10b981; border: 1px solid #10b981;"
                                                        title="Verifikasi Dokumen & Pengajuan KPR">
-                                                        <i class="mdi mdi-clipboard-check-outline me-1"></i>Verifikasi
+                                                        <i class="mdi mdi-clipboard-check-outline"></i>
+                                                        <span>Verifikasi</span>
                                                     </a>
                                                 @else
                                                     {{-- Staff Marketing Role --}}
                                                     @if($revisiDocsCount > 0 || $rejectedDocsCount > 0)
                                                         <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
-                                                           class="btn btn-sm {{ $revisiDocsCount > 0 ? 'btn-warning text-dark' : 'btn-danger text-white' }} d-inline-flex align-items-center justify-content-center px-3 font-weight-bold"
-                                                           style="border-radius: 8px; min-height: 34px; font-weight: 700; box-shadow: 0 2px 8px rgba(255, 193, 7, 0.35);"
-                                                           title="{{ ($revisiDocsCount + $rejectedDocsCount) }} dokumen perlu diperbaiki / diunggah ulang. Klik untuk upload berkas perbaikan">
-                                                            <i class="mdi mdi-pencil-box-multiple me-1"></i>Perbaiki Dokumen ({{ $revisiDocsCount + $rejectedDocsCount }})
+                                                           class="btn btn-sm d-inline-flex align-items-center justify-content-center gap-1 px-3 text-white fw-semibold"
+                                                           style="height: 32px; border-radius: 6px; background-color: #f59e0b; border: 1px solid #f59e0b;"
+                                                           title="Perbaiki Dokumen">
+                                                            <i class="mdi mdi-pencil-box-multiple"></i>
+                                                            <span>Perbaiki ({{ $revisiDocsCount + $rejectedDocsCount }})</span>
                                                         </a>
                                                     @else
                                                         <a href="{{ route('transaksi.kpr.approve', $booking->id) }}"
-                                                           class="btn btn-sm d-inline-flex align-items-center justify-content-center px-3"
-                                                           style="border-radius: 8px; min-height: 34px; font-weight: 700; background: #f3e8ff; color: #9a55ff; border: 1.5px solid #d8b4fe;"
+                                                           class="btn btn-sm d-inline-flex align-items-center justify-content-center gap-1 px-3 fw-semibold"
+                                                           style="height: 32px; border-radius: 6px; background-color: #f3e8ff; color: #9a55ff; border: 1px solid #d8b4fe;"
                                                            title="Lihat Progress & Detail Validasi KPR">
-                                                            <i class="mdi mdi-eye-outline me-1"></i>Lihat Progress
+                                                            <i class="mdi mdi-eye-outline"></i>
+                                                            <span>Lihat</span>
                                                         </a>
                                                     @endif
                                                 @endif
@@ -1102,7 +749,8 @@ h3.text-dark, h4.text-dark {
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="10" class="text-center text-muted py-4">
+                                        <td colspan="9" class="text-center text-muted py-4">
+                                            <i class="mdi mdi-account-off-outline me-1" style="font-size: 1.25rem;"></i>
                                             Tidak ada data user KPR
                                         </td>
                                     </tr>
@@ -1153,96 +801,6 @@ h3.text-dark, h4.text-dark {
         </div>
     </div>
 
-</div>
-
-<div class="modal fade" id="documentModal" tabindex="-1" aria-labelledby="documentModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="documentModalLabel">
-                    <i class="mdi mdi-file-document-multiple-outline me-2"></i>Detail Dokumen User KPR
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-
-                <div class="customer-detail-card">
-                    <div class="customer-detail-title">
-                        <i class="mdi mdi-account-box-outline me-1"></i>Detail User
-                    </div>
-
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <div class="customer-detail-item">
-                                <div class="customer-detail-label">Nama User</div>
-                                <div class="customer-detail-value" id="detailCustomerName">-</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="customer-detail-item">
-                                <div class="customer-detail-label">Status</div>
-                                <div class="customer-detail-value" id="detailCustomerStatus">-</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="customer-detail-item">
-                                <div class="customer-detail-label">Unit</div>
-                                <div class="customer-detail-value" id="detailCustomerUnit">-</div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="customer-detail-item">
-                                <div class="customer-detail-label">Harga</div>
-                                <div class="customer-detail-value price" id="detailCustomerPrice">-</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="customer-detail-item">
-                                <div class="customer-detail-label">Sales / Agent</div>
-                                <div class="customer-detail-value" id="detailCustomerSales">-</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="customer-detail-item">
-                                <div class="customer-detail-label">Tanggal Booking</div>
-                                <div class="customer-detail-value" id="detailCustomerBooking">-</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- PROGRESS VERIFIKASI MODAL -->
-                    <div class="mt-3 pt-3 border-top">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="small fw-bold text-dark d-flex align-items-center">
-                                <i class="mdi mdi-shield-check-outline text-primary me-1" style="font-size:1.1rem;"></i>
-                                Progress Verifikasi Dokumen (Kepala Marketing):
-                            </span>
-                            <span class="fw-bold" id="detailDocPercentText" style="color: #9a55ff; font-size: 0.88rem;">0%</span>
-                        </div>
-                        <div class="progress" style="height: 7px; border-radius: 10px; background: #e2e8f0; overflow: hidden;">
-                            <div class="progress-bar bg-primary" id="detailDocProgressBar" role="progressbar" style="width: 0%; transition: width 0.4s ease;"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="table-responsive" style="max-height: 400px;">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th class="col-no-small">No</th>
-                                <th>Nama Dokumen</th>
-                                <th style="width: 28%;">Status Validasi</th>
-                                <th class="text-end" style="width: 22%;">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="documentTableBody"></tbody>
-                    </table>
-                </div>
-
-            </div>
-        </div>
-    </div>
 </div>
 @endsection
 
@@ -1329,158 +887,6 @@ $(document).ready(function() {
             showConfirmButton: false
         });
     @endif
-
-    function formatDocName(type) {
-        if (!type) return 'Dokumen';
-        return type.replace(/_/g, ' ').replace(/\b\w/g, function(l) {
-            return l.toUpperCase();
-        });
-    }
-
-    function formatStorageUrl(path) {
-        if (!path) return '#';
-        return "{{ asset('uploads') }}/" + path;
-    }
-
-    $(document).on('click', '.btnOpenDocumentModal', function() {
-        let customer = $(this).data('customer') || '-';
-        let unit = $(this).data('unit') || '-';
-        let status = $(this).data('status') || '-';
-        let harga = $(this).data('harga') || '-';
-        let sales = $(this).data('sales') || '-';
-        let bookingDate = $(this).data('booking') || '-';
-        let documents = $(this).data('documents') || [];
-        let percent = $(this).data('percent') || 0;
-        let approvedCount = $(this).data('approved-count') || 0;
-        let totalCount = $(this).data('total-count') || 8;
-
-        $('#detailCustomerName').text(customer);
-        $('#detailCustomerUnit').text(unit);
-        $('#detailCustomerPrice').text(harga);
-        $('#detailCustomerSales').text(sales);
-        $('#detailCustomerStatus').text(status);
-        $('#detailCustomerBooking').text(bookingDate);
-
-        $('#detailDocPercentText').text(`${approvedCount}/${totalCount} Dokumen Disetujui (${percent}%)`);
-        $('#detailDocProgressBar').css('width', `${percent}%`);
-        if (percent === 100) {
-            $('#detailDocProgressBar').removeClass('bg-primary bg-warning bg-secondary').addClass('bg-success');
-        } else if (percent > 0) {
-            $('#detailDocProgressBar').removeClass('bg-success bg-warning bg-secondary').addClass('bg-primary');
-        } else {
-            $('#detailDocProgressBar').removeClass('bg-success bg-primary bg-warning').addClass('bg-secondary');
-        }
-
-        let tbody = $('#documentTableBody');
-        tbody.html('');
-
-        const standardDocsList = [
-            { type: 'ktp', label: 'KTP Pemohon' },
-            { type: 'kk', label: 'Kartu Keluarga (KK)' },
-            { type: 'npwp', label: 'NPWP Pemohon' },
-            { type: 'slip_gaji', label: 'Slip Gaji 3 Bulan' },
-            { type: 'rekening_koran', label: 'Rekening Koran' },
-            { type: 'sku', label: 'SKU / Keterangan Kerja' },
-            { type: 'surat_nikah', label: 'Buku / Surat Nikah' },
-            { type: 'ktp_pasangan', label: 'KTP Pasangan' }
-        ];
-
-        let allModalDocs = [];
-
-        // 1. Standard docs
-        standardDocsList.forEach(function(sDoc) {
-            let docInfo = false;
-            if (Array.isArray(documents)) {
-                docInfo = documents.find(d => d.type === sDoc.type);
-            }
-            allModalDocs.push({
-                name: sDoc.label,
-                is_custom: false,
-                doc: docInfo
-            });
-        });
-
-        // 2. Dynamic / custom docs
-        if (Array.isArray(documents)) {
-            documents.forEach(function(d) {
-                const isStandard = standardDocsList.some(s => s.type === d.type);
-                if (!isStandard) {
-                    allModalDocs.push({
-                        name: d.document_name || d.type,
-                        is_custom: true,
-                        doc: d
-                    });
-                }
-            });
-        }
-
-        allModalDocs.forEach(function(item, index) {
-            let docInfo = item.doc;
-            let docUrl = (docInfo && docInfo.path) ? formatStorageUrl(docInfo.path) : null;
-
-            let statusHtml = '';
-            if (!docInfo) {
-                statusHtml = '<span class="badge bg-secondary opacity-75"><i class="mdi mdi-minus-circle-outline me-1"></i>Belum Di-upload</span>';
-            } else if (docInfo.status === 'disetujui') {
-                statusHtml = '<span class="badge bg-success text-white"><i class="mdi mdi-check-circle me-1"></i>Disetujui</span>';
-            } else if (docInfo.status === 'revisi') {
-                statusHtml = `<span class="badge bg-warning text-dark"><i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi</span>`;
-                if (docInfo.catatan) {
-                    statusHtml += `<div class="text-danger small mt-1" style="font-size:0.75rem;"><strong>Catatan:</strong> ${docInfo.catatan}</div>`;
-                }
-            } else if (docInfo.status === 'ditolak') {
-                statusHtml = `<span class="badge bg-danger text-white"><i class="mdi mdi-close-circle me-1"></i>Ditolak</span>`;
-                if (docInfo.catatan) {
-                    statusHtml += `<div class="text-danger small mt-1" style="font-size:0.75rem;"><strong>Alasan:</strong> ${docInfo.catatan}</div>`;
-                }
-            } else {
-                statusHtml = '<span class="badge bg-info text-white"><i class="mdi mdi-clock-outline me-1"></i>Menunggu</span>';
-            }
-
-            let actionHtml = '';
-            if (docUrl) {
-                actionHtml = `
-                    <div class="d-flex justify-content-end gap-2">
-                        <a href="${docUrl}" target="_blank" class="btn-action-purple">
-                            <i class="mdi mdi-eye-outline me-1"></i>Lihat
-                        </a>
-                        <a href="${docUrl}" download class="btn-action-green">
-                            <i class="mdi mdi-download me-1"></i>Download
-                        </a>
-                    </div>`;
-            } else {
-                actionHtml = `<span class="text-muted small">-</span>`;
-            }
-
-            tbody.append(`
-                <tr>
-                    <td class="col-no-small fw-bold">${index + 1}</td>
-                    <td>
-                        <div class="doc-name-inline">
-                            <span class="doc-file-icon">
-                                <i class="mdi mdi-file-document-outline"></i>
-                            </span>
-                            <span>
-                                ${item.name}
-                                ${item.is_custom ? '<span class="badge bg-light text-primary border ms-1" style="font-size:0.65rem;">Dinamis</span>' : ''}
-                            </span>
-                        </div>
-                    </td>
-                    <td>
-                        ${statusHtml}
-                    </td>
-                    <td class="text-end">
-                        ${actionHtml}
-                    </td>
-                </tr>
-            `);
-        });
-
-    });
-
-
-
-    // SweetAlert modal confirmation removed as requested: button navigates directly
 });
 
 function showPaginationLoading(event) {

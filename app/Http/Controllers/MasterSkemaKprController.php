@@ -55,6 +55,15 @@ class MasterSkemaKprController extends Controller
     }
 
     /**
+     * Halaman form tambah skema KPR baru
+     */
+    public function create()
+    {
+        $banks = Banks::where('is_active', true)->orderBy('bank_name', 'asc')->get();
+        return view('master.skema_kpr.create', compact('banks'));
+    }
+
+    /**
      * Simpan skema KPR baru
      */
     public function store(Request $request)
@@ -87,12 +96,16 @@ class MasterSkemaKprController extends Controller
     }
 
     /**
-     * Detail skema KPR untuk modal edit (JSON)
+     * Halaman edit skema KPR (atau JSON jika request AJAX)
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         $skema = MasterSkemaKpr::with('bank')->findOrFail($id);
-        return response()->json($skema);
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json($skema);
+        }
+        $banks = Banks::where('is_active', true)->orderBy('bank_name', 'asc')->get();
+        return view('master.skema_kpr.edit', compact('skema', 'banks'));
     }
 
     /**

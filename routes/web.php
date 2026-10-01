@@ -678,6 +678,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/master-data-bank/{id}', [BankController::class, 'destroy'])->name('bank.destroy');
     // MASTER DATA SKEMA ANGSURAN KPR
     Route::get('/master-skema-kpr', [MasterSkemaKprController::class, 'index'])->name('master.skema-kpr.index');
+    Route::get('/master-skema-kpr/create', [MasterSkemaKprController::class, 'create'])->name('master.skema-kpr.create');
     Route::post('/master-skema-kpr/store', [MasterSkemaKprController::class, 'store'])->name('master.skema-kpr.store');
     Route::get('/master-skema-kpr/{id}/edit', [MasterSkemaKprController::class, 'edit'])->name('master.skema-kpr.edit');
     Route::put('/master-skema-kpr/{id}', [MasterSkemaKprController::class, 'update'])->name('master.skema-kpr.update');

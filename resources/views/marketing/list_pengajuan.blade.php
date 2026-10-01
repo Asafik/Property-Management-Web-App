@@ -2,203 +2,263 @@
 
 @section('title', 'Customer Booking - Properti Management')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
+@endpush
+
 @section('content')
 
     <style>
-        /* ===== LIST PENGAJUAN / USER BOOKING SPECIFIC STYLES ===== */
+        /* ===== COMPACT TABLE CARD PERSIS CATALOG UNIT / PERIZINAN ===== */
+        .compact-table-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+            transition: border-color 0.2s ease;
+            overflow: hidden;
+        }
+        .compact-table-card:hover {
+            border-color: #cbd5e1 !important;
+            box-shadow: none !important;
+        }
+
         .booking-id {
             display: inline-flex;
             align-items: center;
             gap: 0.45rem;
             color: #9a55ff;
             font-weight: 700;
+            font-size: 0.85rem;
         }
 
         .booking-id i {
-            font-size: 1rem;
+            font-size: 1.05rem;
         }
 
-        .customer-info {
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
+        /* Badge Styling - Solid 1 Warna, Tanpa Gradient, 6px Border Radius */
+        .badge, 
+        .table .badge,
+        .table tbody td .badge,
+        .badge-method, 
+        .badge-status,
+        .badge-gradient-success, 
+        .badge-gradient-primary, 
+        .badge-gradient-secondary {
+            border-radius: 6px !important;
+            padding: 0.35rem 0.65rem !important;
+            font-size: 0.76rem !important;
+            font-weight: 700 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 0.35rem !important;
+            white-space: nowrap !important;
+            line-height: 1.3 !important;
         }
 
-        .customer-initial {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #da8cff, #9a55ff);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 700;
-            flex-shrink: 0;
-            box-shadow: 0 2px 6px rgba(154, 85, 255, 0.2);
+        .badge-gradient-success {
+            background: #10b981 !important;
+            background-image: none !important;
+            color: #ffffff !important;
         }
 
-        .badge-method,
-        .badge-status {
-            padding: 0.25rem 0.65rem;
-            border-radius: 4px;
-            font-weight: 600;
-            font-size: 0.78rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
+        .badge-gradient-primary {
+            background: #0284c7 !important;
+            background-image: none !important;
+            color: #ffffff !important;
+        }
+
+        .badge-gradient-secondary {
+            background: #64748b !important;
+            background-image: none !important;
+            color: #ffffff !important;
+        }
+
+        /* Badge Method */
+        .badge-method {
+            background-image: none !important;
         }
 
         .badge-method.kpr {
-            background: linear-gradient(135deg, #17a2b8, #56c6d8);
-            color: #fff;
+            background: #0284c7 !important;
+            color: #ffffff !important;
         }
 
         .badge-method.cash {
-            background: linear-gradient(135deg, #28a745, #6bdc8b);
-            color: #fff;
+            background: #10b981 !important;
+            color: #ffffff !important;
         }
 
         .badge-method.cash-tempo {
-            background: linear-gradient(135deg, #ffb347, #ffcc33);
-            color: #fff;
+            background: #f59e0b !important;
+            color: #ffffff !important;
         }
 
-        .badge-status.booking {
-            background: #eef1f5;
-            color: #6c7383;
+        /* Badge Soft (Status) */
+        .badge-status {
+            background-image: none !important;
         }
 
-        .badge-status.diproses {
-            background: #fff4db;
-            color: #b78103;
+        .badge-status.booking,
+        .badge-status.draft {
+            background: #f1f5f9 !important;
+            color: #475569 !important;
+            border: 1px solid #cbd5e1 !important;
+        }
+
+        .badge-status.diproses,
+        .badge-status.review {
+            background: #eff6ff !important;
+            color: #1d4ed8 !important;
+            border: 1px solid #bfdbfe !important;
         }
 
         .badge-status.aktif {
-            background: #dff5e8;
-            color: #1d7f47;
-        }
-
-        .badge-status.review {
-            background: #e7f0ff;
-            color: #3366cc;
+            background: #ecfdf5 !important;
+            color: #059669 !important;
+            border: 1px solid #a7f3d0 !important;
         }
 
         .badge-status.pending {
-            background: #fce8e8;
-            color: #d9534f;
+            background: #fef2f2 !important;
+            color: #dc2626 !important;
+            border: 1px solid #fecaca !important;
         }
 
         .badge-status.complete {
-            background: linear-gradient(135deg, #43e97b, #38f9d7);
-            color: #ffffff;
+            background: #f0fdf4 !important;
+            color: #15803d !important;
+            border: 1px solid #bbf7d0 !important;
         }
 
-        .agent-sales {
-            display: flex;
-            align-items: center;
-            gap: 0.45rem;
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .agent-sales i {
-            font-size: 1.1rem;
-            color: #9a55ff;
-        }
-
+        /* Progress Bar (Sesuai Catalog Unit) */
         .progress-wrapper {
             min-width: 140px;
+        }
+
+        .progress-row {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        .progress-label {
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: #6c7383;
-            margin-bottom: 0;
-            min-width: 36px;
-            text-align: right;
-            flex-shrink: 0;
-        }
-
-        .custom-progress {
+        .progress {
             flex: 1;
             height: 8px;
-            background: #eceff3;
             border-radius: 4px;
+            background: #edf0f5;
             overflow: hidden;
-            position: relative;
+            margin-bottom: 0;
         }
 
-        .custom-progress-bar {
+        .progress-bar-custom {
             height: 100%;
             border-radius: 4px;
-            background: linear-gradient(90deg, #da8cff, #9a55ff);
-            transition: width 0.3s ease;
+            transition: width 0.4s ease;
         }
 
-        .custom-progress-bar.complete {
-            background: linear-gradient(90deg, #43e97b, #38f9d7);
+        .progress-green {
+            background: #9a55ff;
         }
 
+        .progress-dark-green {
+            background: #10b981;
+        }
+
+        .progress-percent {
+            min-width: 36px;
+            text-align: right;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        /* Action Buttons (Solid 1 Warna, 6px Border Radius) */
         .btn-action {
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             padding: 0;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 4px;
+            border-radius: 6px;
             margin: 0 2px;
             transition: all 0.2s ease;
             border: none;
             cursor: pointer;
             text-decoration: none;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
 
         .btn-action.method-kpr {
-            background: linear-gradient(135deg, #17a2b8, #56c6d8);
+            background: #0284c7;
             color: #fff;
         }
 
         .btn-action.method-cash {
-            background: linear-gradient(135deg, #28a745, #6bdc8b);
+            background: #10b981;
             color: #fff;
         }
 
         .btn-action.method-cash-tempo {
-            background: linear-gradient(135deg, #ffb347, #ffcc33);
+            background: #f59e0b;
             color: #fff;
         }
 
         .btn-action.method-complete {
-            background: linear-gradient(135deg, #43e97b, #38f9d7);
+            background: #059669;
             color: #fff;
-        }
-
-        .btn-action.view {
-            background: linear-gradient(135deg, #da8cff, #9a55ff);
-            color: #fff;
-        }
-
-        .btn-action.edit {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
         }
 
         .btn-action.delete {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
+            background: #ef4444;
             color: #fff;
         }
 
         .btn-action:hover {
+            opacity: 0.88;
             transform: translateY(-1px);
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Table Sesuai Catalog Unit */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: #f8fafc;
+            color: #9a55ff;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 0.85rem 0.65rem;
+            white-space: nowrap;
+        }
+
+        .table thead th i {
+            font-size: 0.82rem;
+            margin-left: 3px;
+        }
+
+        .table thead th.active-sort {
+            color: #7a3fcc;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            font-size: 0.85rem;
+            padding: 0.8rem 0.65rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #2c2e3f;
+            white-space: nowrap;
+        }
+
+        .table tbody tr:hover td {
+            background-color: #fcfaff;
         }
 
         /* Select2 Theme Alignment */
@@ -258,83 +318,74 @@
         }
     </style>
 
-    <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
+    <div class="container-fluid px-2 px-md-4 py-3">
 
-        <!-- Header Card Banner -->
-        <div class="row mb-3 mb-md-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-0 header-card">
-                    <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
-                        <div>
-                            <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
-                                Customer Booking
-                            </h3>
-                            <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                                Monitoring semua pengajuan KPR dan Cash
-                            </p>
-                        </div>
-                        <div class="d-none d-sm-block pe-2">
-                            <i class="mdi mdi-home-city-outline" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
-                        </div>
-                    </div>
-                </div>
+        <!-- Page Title & Subtitle (Tanpa Card Persis Catalog Unit / Perizinan) -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+            <div>
+                <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                    Customer Booking
+                </h2>
+                <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                    Monitoring semua pengajuan KPR dan Cash
+                </p>
             </div>
         </div>
 
-        <!-- Statistics Cards -->
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-md-3">
-                <div class="card shadow-sm border-0 h-100 mb-0">
-                    <div class="card-body d-flex justify-content-between align-items-center p-3">
-                        <div>
-                            <h3 class="text-dark mb-1 fw-bold">{{ $totalPengajuan ?? ($bookings->total() ?? $bookings->count()) }}</h3>
-                            <p class="text-muted mb-0">Total Pengajuan</p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-file-document-multiple-outline" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
+        <!-- 4 KPI Metrics Card Grid (UI Card Sesuai Catalog Unit - 1 Warna Solid, Tanpa Gradient) -->
+        <div class="dash-kpi-grid mb-4">
+            <!-- Card 1: Total Pengajuan (Ungu Solid) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon purple">
+                        <i class="mdi mdi-file-document-multiple-outline"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Total Pengajuan</div>
+                        <div class="dash-kpi-val">{{ $totalPengajuan ?? ($bookings->total() ?? $bookings->count()) }}</div>
+                        <div class="dash-kpi-sub">Seluruh Booking Masuk</div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-6 col-md-3">
-                <div class="card shadow-sm border-0 h-100 mb-0">
-                    <div class="card-body d-flex justify-content-between align-items-center p-3">
-                        <div>
-                            <h3 class="text-dark mb-1 fw-bold">{{ $totalKpr ?? 0 }}</h3>
-                            <p class="text-muted mb-0">KPR Diproses</p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-bank-outline" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
+            <!-- Card 2: KPR Diproses (Biru Solid) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon blue">
+                        <i class="mdi mdi-bank-outline"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">KPR Diproses</div>
+                        <div class="dash-kpi-val">{{ $totalKpr ?? 0 }}</div>
+                        <div class="dash-kpi-sub">Pengajuan Bank KPR</div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-6 col-md-3">
-                <div class="card shadow-sm border-0 h-100 mb-0">
-                    <div class="card-body d-flex justify-content-between align-items-center p-3">
-                        <div>
-                            <h3 class="text-dark mb-1 fw-bold">{{ $totalCash ?? 0 }}</h3>
-                            <p class="text-muted mb-0">Cash / Tempo</p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-cash-multiple" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
+            <!-- Card 3: Cash / Tempo (Amber / Kuning Solid) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon amber">
+                        <i class="mdi mdi-cash-multiple"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Cash / Tempo</div>
+                        <div class="dash-kpi-val">{{ $totalCash ?? 0 }}</div>
+                        <div class="dash-kpi-sub">Pembelian Tunai</div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-6 col-md-3">
-                <div class="card shadow-sm border-0 h-100 mb-0">
-                    <div class="card-body d-flex justify-content-between align-items-center p-3">
-                        <div>
-                            <h3 class="text-dark mb-1 fw-bold">{{ $totalLunas ?? 0 }}</h3>
-                            <p class="text-muted mb-0">Complete</p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-check-decagram-outline" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
+            <!-- Card 4: Complete (Hijau Solid) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon green">
+                        <i class="mdi mdi-check-decagram-outline"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Complete</div>
+                        <div class="dash-kpi-val">{{ $totalLunas ?? 0 }}</div>
+                        <div class="dash-kpi-sub">Transaksi Selesai</div>
                     </div>
                 </div>
             </div>
@@ -342,24 +393,28 @@
 
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div
-                        class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 py-3">
-                        <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f;">
-                            <i class="mdi mdi-format-list-bulleted me-2" style="color: #9a55ff;"></i>Daftar Pengajuan
-                        </h5>
+                <div class="card compact-table-card" style="background: #ffffff !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; box-shadow: none !important;">
+                    <div class="card-header bg-white d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center py-2.5 px-3 px-md-4 gap-2" style="border-bottom: 1px solid #e2e8f0 !important;">
+                        <div class="d-flex align-items-center gap-2">
+                            <div style="width: 32px; height: 32px; border-radius: 6px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
+                                <i class="mdi mdi-format-list-bulleted"></i>
+                            </div>
+                            <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Daftar Pengajuan</span>
+                        </div>
 
-                        <div class="d-flex flex-wrap gap-2">
-                            <button type="button" class="btn btn-sm btn-gradient-success" onclick="handleImport()">
-                                <i class="mdi mdi-upload me-1"></i>Import
+                        <div class="d-flex flex-wrap align-items-center gap-2">
+                            <button type="button" class="btn btn-sm d-inline-flex align-items-center gap-1 px-3 text-white fw-semibold" style="height: 32px; border-radius: 6px; background-color: #10b981; border: 1px solid #10b981;" onclick="handleImport()">
+                                <i class="mdi mdi-upload"></i>
+                                <span>Import</span>
                             </button>
-                            <button type="button" class="btn btn-sm btn-gradient-primary" onclick="handleExport()">
-                                <i class="mdi mdi-download me-1"></i>Export
+                            <button type="button" class="btn btn-sm d-inline-flex align-items-center gap-1 px-3 text-white fw-semibold" style="height: 32px; border-radius: 6px; background-color: #9a55ff; border: 1px solid #9a55ff;" onclick="handleExport()">
+                                <i class="mdi mdi-download"></i>
+                                <span>Export</span>
                             </button>
                         </div>
                     </div>
 
-                    <div class="card-body">
+                    <div class="card-body p-3 p-md-4">
                         <!-- Filter Section -->
                         <div class="filter-card mb-3">
                             <!-- DESKTOP VERSION -->
@@ -372,16 +427,15 @@
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" name="search" id="searchInput"
                                                         placeholder="Cari ID, nama, unit..." value="{{ request('search') }}"
-                                                        style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
-                                                    <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                        style="border-top-left-radius: 6px !important; border-bottom-left-radius: 6px !important; border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
+                                                    <button class="btn d-flex align-items-center justify-content-center px-3" 
                                                         type="submit" title="Cari"
-                                                        style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                        style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 6px !important; border-bottom-right-radius: 6px !important; height: 38px; box-shadow: none; background: #9a55ff !important; border: 1px solid #9a55ff !important; color: #fff;">
                                                         <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
                                                     </button>
                                                 </div>
                                             </div>
 
-                                            <!-- Status Dropdown -->
                                             <!-- Status Dropdown -->
                                             <div style="width: 160px;">
                                                 <select class="form-control select2" name="status" id="statusSelect" style="width: 100%;">
@@ -419,12 +473,14 @@
                                                     <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
                                                 </select>
                                             </div>
-                                            <button type="submit" class="btn btn-gradient-primary btn-icon-only"
-                                                title="Filter" onclick="showFilterLoading()">
+                                            <button type="submit" class="btn d-inline-flex align-items-center justify-content-center text-white"
+                                                title="Filter" onclick="showFilterLoading()"
+                                                style="width: 38px; height: 38px; border-radius: 6px; background: #9a55ff !important; border: 1px solid #9a55ff !important;">
                                                 <i class="mdi mdi-filter"></i>
                                             </button>
-                                            <a href="{{ url('marketing/list-pengajuan') }}" class="btn btn-gradient-secondary btn-icon-only"
-                                                title="Reset" onclick="showResetLoading(event)">
+                                            <a href="{{ url('marketing/list-pengajuan') }}" class="btn d-inline-flex align-items-center justify-content-center text-white"
+                                                title="Reset" onclick="showResetLoading(event)"
+                                                style="width: 38px; height: 38px; border-radius: 6px; background: #64748b !important; border: 1px solid #64748b !important;">
                                                 <i class="mdi mdi-refresh"></i>
                                             </a>
                                         </div>
@@ -440,10 +496,10 @@
                                             <div class="input-group">
                                                 <input type="text" class="form-control" name="search"
                                                     placeholder="Cari ID, nama, unit..." value="{{ request('search') }}"
-                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
-                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                    style="border-top-left-radius: 6px !important; border-bottom-left-radius: 6px !important; border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
+                                                <button class="btn d-flex align-items-center justify-content-center px-3" 
                                                     type="submit" title="Cari"
-                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 6px !important; border-bottom-right-radius: 6px !important; height: 38px; box-shadow: none; background: #9a55ff !important; border: 1px solid #9a55ff !important; color: #fff;">
                                                     <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
                                                 </button>
                                             </div>
@@ -480,12 +536,14 @@
                                         </div>
                                         <div class="col-6 mb-2">
                                             <div class="d-flex gap-2">
-                                                <button type="submit" class="btn btn-gradient-primary btn-icon-only flex-fill"
-                                                    title="Filter" onclick="showFilterLoading()">
+                                                <button type="submit" class="btn d-inline-flex align-items-center justify-content-center text-white flex-fill"
+                                                    title="Filter" onclick="showFilterLoading()"
+                                                    style="height: 38px; border-radius: 6px; background: #9a55ff !important; border: 1px solid #9a55ff !important;">
                                                     <i class="mdi mdi-filter"></i>
                                                 </button>
-                                                <a href="{{ url('marketing/list-pengajuan') }}" class="btn btn-gradient-secondary btn-icon-only flex-fill"
-                                                    title="Reset" onclick="showResetLoading(event)">
+                                                <a href="{{ url('marketing/list-pengajuan') }}" class="btn d-inline-flex align-items-center justify-content-center text-white flex-fill"
+                                                    title="Reset" onclick="showResetLoading(event)"
+                                                    style="height: 38px; border-radius: 6px; background: #64748b !important; border: 1px solid #64748b !important;">
                                                     <i class="mdi mdi-refresh"></i>
                                                 </a>
                                             </div>
@@ -556,14 +614,6 @@
                                         @php
                                             $customerName = $booking->customer->full_name ?? '-';
 
-                                            $initials = '';
-                                            foreach (explode(' ', trim($customerName)) as $word) {
-                                                if ($word !== '') {
-                                                    $initials .= strtoupper(substr($word, 0, 1));
-                                                }
-                                            }
-                                            $initials = substr($initials ?: 'C', 0, 2);
-
                                             $progress = match ($booking->status) {
                                                 'draft' => 10,
                                                 'pengajuan' => 20,
@@ -632,10 +682,7 @@
                                             </td>
 
                                             <td>
-                                                <div class="customer-info">
-                                                    <div class="customer-initial">{{ $initials }}</div>
-                                                    <span class="fw-bold">{{ $customerName }}</span>
-                                                </div>
+                                                <span class="fw-bold text-dark">{{ $customerName }}</span>
                                             </td>
 
                                             <td>
@@ -717,36 +764,21 @@
 
                                             <td>
                                                 <div class="progress-wrapper">
-                                                    <div class="custom-progress">
-                                                        <div class="custom-progress-bar {{ $progress == 100 ? 'complete' : '' }}"
-                                                            style="width: {{ $progress }}%;"></div>
+                                                    <div class="progress-row">
+                                                        <div class="progress">
+                                                            <div class="progress-bar-custom {{ $progress == 100 ? 'progress-dark-green' : 'progress-green' }}"
+                                                                style="width: {{ $progress }}%;"></div>
+                                                        </div>
+                                                        <div class="progress-percent">{{ $progress }}%</div>
                                                     </div>
-                                                    <div class="progress-label">{{ $progress }}%</div>
                                                 </div>
                                             </td>
 
                                             <td>
                                                 @if ($booking->sales)
-                                                    @php
-                                                        $salesName = $booking->sales->name;
-                                                        $sInitials = '';
-                                                        foreach (explode(' ', trim($salesName)) as $word) {
-                                                            if ($word !== '') {
-                                                                $sInitials .= strtoupper(substr($word, 0, 1));
-                                                            }
-                                                        }
-                                                        $sInitials = substr($sInitials ?: 'S', 0, 2);
-                                                    @endphp
-                                                    <div class="customer-info">
-                                                        <div class="customer-initial"
-                                                            style="background: linear-gradient(135deg, #667eea, #764ba2);">
-                                                            {{ $sInitials }}
-                                                        </div>
-                                                        <span>{{ $salesName }}</span>
-                                                    </div>
+                                                    <span class="fw-semibold text-dark">{{ $booking->sales->name }}</span>
                                                 @else
-                                                    <i class="mdi mdi-account-tie text-primary me-1"></i>
-                                                    -
+                                                    <span class="text-muted">-</span>
                                                 @endif
                                             </td>
 

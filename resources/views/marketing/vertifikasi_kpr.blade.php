@@ -13,9 +13,9 @@
 }
 
 .card {
-    border-radius: 14px !important;
-    border: none !important;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+    border-radius: 6px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     background: #ffffff;
     transition: all 0.3s ease;
 }
@@ -30,14 +30,14 @@
 }
 
 .customer-avatar {
-    width: 58px;
-    height: 58px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    background: #9a55ff;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+    box-shadow: none;
     flex-shrink: 0;
 }
 
@@ -58,10 +58,10 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 1.25rem;
-    background: #fbf9ff;
-    border: 1px solid #ede4ff;
-    padding: 0.75rem 1.25rem;
-    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 0.65rem 1rem;
+    border-radius: 6px;
 }
 
 .customer-unit-info .info-item {
@@ -84,29 +84,29 @@
 
 /* BADGES */
 .badge-gradient-success {
-    background: linear-gradient(135deg, #28c76f, #48da89) !important;
+    background: #10b981 !important;
     color: #fff !important;
-    padding: 0.4rem 0.75rem;
+    padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 700;
 }
 
 .badge-gradient-primary {
-    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+    background: #9a55ff !important;
     color: #fff !important;
-    padding: 0.4rem 0.75rem;
+    padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 700;
 }
 
 .badge-gradient-secondary {
-    background: #6c757d !important;
+    background: #64748b !important;
     color: #fff !important;
-    padding: 0.4rem 0.75rem;
+    padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 700;
 }
 
@@ -236,10 +236,29 @@
 }
 
 .transaksi-step.active .transaksi-step-icon {
-    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-    border: 3px solid #ffffff !important;
-    box-shadow: 0 0 0 2px #9a55ff;
-    color: #ffffff !important;
+    background: #ffffff !important;
+    border: 2.5px solid #f59e0b !important;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2) !important;
+    color: #64748b !important;
+    position: relative;
+}
+
+.transaksi-step.active .transaksi-step-icon::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 50%;
+    border: 2px dashed #f59e0b;
+    animation: stepSpinnerRotate 4s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes stepSpinnerRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .transaksi-step.rejected .transaksi-step-icon {
@@ -264,7 +283,16 @@ a.transaksi-step-icon:hover {
 }
 
 .transaksi-step.active a.transaksi-step-icon:hover {
-    box-shadow: 0 6px 16px rgba(154, 85, 255, 0.45) !important;
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.45) !important;
+}
+
+.transaksi-step.active .transaksi-step-title {
+    color: #b45309 !important;
+}
+
+.transaksi-step.active small {
+    color: #d97706 !important;
+    font-weight: 700;
 }
 
 .transaksi-step-title-link {
@@ -343,21 +371,21 @@ a.transaksi-step-icon:hover {
     align-items: center;
     gap: 0.85rem;
     background: #f8fafc;
-    border: 1px solid #edf0f5;
+    border: 1px solid #e2e8f0;
     padding: 0.65rem 0.85rem;
-    border-radius: 10px;
+    border-radius: 6px;
 }
 
 .transaksi-handler.verifier {
     background: #f0fdf4;
-    border-color: #dcfce7;
+    border-color: #bbf7d0;
 }
 
 .transaksi-handler-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    background: #6366f1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -367,7 +395,7 @@ a.transaksi-step-icon:hover {
 }
 
 .transaksi-handler.verifier .transaksi-handler-icon {
-    background: linear-gradient(135deg, #0ba360, #3cba92);
+    background: #10b981;
 }
 
 .transaksi-handler-role {
@@ -389,7 +417,7 @@ a.transaksi-step-icon:hover {
     align-items: center;
     gap: 0.75rem;
     padding: 0.85rem 1rem;
-    border-radius: 10px;
+    border-radius: 6px;
     font-size: 0.88rem;
     margin-bottom: 1.25rem;
 }
@@ -430,139 +458,221 @@ a.transaksi-step-icon:hover {
 
 .transaksi-doc-table thead th {
     background: #f8fafc;
-    color: #8b8fa3;
-    font-size: 0.82rem;
+    color: #475569;
+    font-size: 0.8rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
-    padding: 0.75rem 1rem;
-    border-bottom: 1.5px solid #edf0f5;
+    letter-spacing: 0.5px;
+    padding: 1rem 1.25rem;
+    border-bottom: 1.5px solid #e2e8f0;
 }
 
 .transaksi-doc-table tbody td {
-    padding: 0.85rem 1rem;
-    border-bottom: 1px solid #f1f3f7;
+    padding: 1.15rem 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
     font-size: 0.88rem;
     vertical-align: middle;
+}
+
+.transaksi-doc-table tbody tr:hover td {
+    background: #f8fafc;
 }
 
 .transaksi-doc-name {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.95rem;
 }
 
 .transaksi-doc-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: rgba(154, 85, 255, 0.1);
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    background: #f1f5f9;
     color: #9a55ff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     flex-shrink: 0;
 }
 
-.transaksi-doc-action {
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    display: inline-flex;
+.doc-action-group {
+    display: grid;
+    grid-template-columns: repeat(3, 36px);
+    gap: 6px;
     align-items: center;
-    justify-content: center;
-    border: 1.5px solid #9a55ff;
-    color: #9a55ff;
-    background: #ffffff;
+    width: fit-content;
+}
+
+.btn-approve-all {
+    background: #16a34a !important;
+    border: 1px solid #16a34a !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    border-radius: 6px !important;
     transition: all 0.2s ease;
-    text-decoration: none !important;
-    font-size: 1.05rem;
-    padding: 0;
     cursor: pointer;
 }
 
-.transaksi-doc-action:hover {
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-    transform: translateY(-1.5px);
+.btn-approve-all:hover {
+    background: #15803d !important;
+    border-color: #15803d !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
 }
 
-.transaksi-doc-action.btn-action-preview {
-    border-color: #9a55ff;
-    color: #9a55ff;
-    background: rgba(154, 85, 255, 0.06);
+.transaksi-doc-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    text-decoration: none !important;
+    font-size: 1.15rem;
+    padding: 0;
+    cursor: pointer;
+    border: none;
 }
-.transaksi-doc-action.btn-action-preview:hover {
+
+.transaksi-doc-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 1. Preview - Ungu Solid */
+.transaksi-doc-action.btn-action-preview {
     background: #9a55ff;
     color: #ffffff;
-    box-shadow: 0 4px 10px rgba(154, 85, 255, 0.25);
+    border: 1px solid #8b5cf6;
+}
+.transaksi-doc-action.btn-action-preview:hover {
+    background: #8435f7;
+    border-color: #7c3aed;
+    color: #ffffff;
 }
 
+/* 2. Setujui - Hijau Solid (sama persis dengan modal btn-success) */
 .transaksi-doc-action.btn-action-approve {
-    border-color: #10b981;
-    color: #10b981;
-    background: rgba(16, 185, 129, 0.06);
-}
-.transaksi-doc-action.btn-action-approve:hover,
-.transaksi-doc-action.btn-action-approve.active {
     background: #10b981;
     color: #ffffff;
-    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+    border: 1px solid #059669;
+}
+.transaksi-doc-action.btn-action-approve:hover {
+    background: #059669;
+    border-color: #047857;
+    color: #ffffff;
+}
+.transaksi-doc-action.btn-action-approve.active {
+    background: #059669;
+    border-color: #047857;
+    color: #ffffff;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #10b981;
 }
 
+/* 3. Minta Revisi - Kuning Solid (sama persis dengan modal btn-warning) */
 .transaksi-doc-action.btn-action-revisi {
-    border-color: #f59e0b;
-    color: #f59e0b;
-    background: rgba(245, 158, 11, 0.06);
+    background: #ffc107;
+    color: #212529;
+    border: 1px solid #e0a800;
 }
-.transaksi-doc-action.btn-action-revisi:hover,
+.transaksi-doc-action.btn-action-revisi:hover {
+    background: #e0a800;
+    border-color: #d39e00;
+    color: #212529;
+}
 .transaksi-doc-action.btn-action-revisi.active {
-    background: #f59e0b;
-    color: #ffffff;
-    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.25);
+    background: #e0a800;
+    border-color: #d39e00;
+    color: #212529;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #ffc107;
 }
 
+/* 4. Tolak - Merah/Pink Solid (sama persis dengan modal btn-danger) */
 .transaksi-doc-action.btn-action-reject {
-    border-color: #ef4444;
-    color: #ef4444;
-    background: rgba(239, 68, 68, 0.06);
-}
-.transaksi-doc-action.btn-action-reject:hover,
-.transaksi-doc-action.btn-action-reject.active {
-    background: #ef4444;
+    background: #f43f5e;
     color: #ffffff;
-    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25);
+    border: 1px solid #e11d48;
+}
+.transaksi-doc-action.btn-action-reject:hover {
+    background: #e11d48;
+    border-color: #be123c;
+    color: #ffffff;
+}
+.transaksi-doc-action.btn-action-reject.active {
+    background: #e11d48;
+    border-color: #be123c;
+    color: #ffffff;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #f43f5e;
 }
 
-.transaksi-doc-action.btn-action-reset {
-    border-color: #94a3b8;
-    color: #64748b;
-    background: rgba(100, 116, 139, 0.06);
+/* 5. Upload Pengganti - Biru Solid (sama persis dengan modal btn-info) */
+.transaksi-doc-action.btn-action-upload {
+    background: #0ea5e9;
+    color: #ffffff;
+    border: 1px solid #0284c7;
 }
-.transaksi-doc-action.btn-action-reset:hover {
+.transaksi-doc-action.btn-action-upload:hover {
+    background: #0284c7;
+    border-color: #0369a1;
+    color: #ffffff;
+}
+
+/* 6. Reset ke Pending - Abu-abu Solid (sama persis dengan modal btn-secondary) */
+.transaksi-doc-action.btn-action-reset {
     background: #64748b;
     color: #ffffff;
-    box-shadow: 0 4px 10px rgba(100, 116, 139, 0.25);
+    border: 1px solid #475569;
+}
+.transaksi-doc-action.btn-action-reset:hover {
+    background: #475569;
+    border-color: #334155;
+    color: #ffffff;
 }
 
 .transaksi-doc-action.disabled {
-    border-color: #e2e8f0;
-    color: #cbd5e1;
-    background: #f8fafc;
+    opacity: 0.45;
     cursor: not-allowed;
     transform: none !important;
     box-shadow: none !important;
 }
 
-.transaksi-doc-action.btn-action-upload {
-    border-color: #0284c7;
-    color: #0284c7;
-    background: rgba(2, 132, 199, 0.08);
+/* Document Status Badges with Rich Spacing & Tailored Colors */
+.badge-doc-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 6px;
+    white-space: nowrap;
 }
-.transaksi-doc-action.btn-action-upload:hover {
-    background: #0284c7;
-    color: #ffffff;
-    box-shadow: 0 4px 10px rgba(2, 132, 199, 0.25);
+
+.badge-doc-status.status-pending {
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.badge-doc-status.status-disetujui {
+    background: #ecfdf5;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.badge-doc-status.status-revisi {
+    background: #fff7ed;
+    color: #c2410c;
+    border: 1px solid #fed7aa;
+}
+
+.badge-doc-status.status-ditolak {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
 }
 
 .reupload-dropzone {
@@ -603,6 +713,119 @@ a.transaksi-step-icon:hover {
     gap: 10px;
 }
 
+/* MODAL PREVIEW COMPACT & HEADER BUTTONS */
+.modal-preview-compact {
+    max-width: 820px !important;
+    width: 92% !important;
+    margin: 1.75rem auto;
+}
+
+.modal-preview-compact .modal-content {
+    border-radius: 14px !important;
+    overflow: hidden;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18) !important;
+}
+
+.modal-preview-compact .modal-header {
+    background: #ffffff !important;
+    border-bottom: 1px solid #eef0f4 !important;
+    padding: 0.95rem 1.25rem !important;
+}
+
+.modal-preview-body-container {
+    background: #0f172a;
+    min-height: 360px;
+    max-height: 52vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-preview-compact #imgPreview {
+    max-width: 100%;
+    max-height: 50vh;
+    object-fit: contain;
+    display: block;
+    margin: auto;
+    border-radius: 6px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.modal-preview-compact #iframePreview {
+    width: 100%;
+    height: 52vh;
+    border: none;
+    display: block;
+}
+
+.modal-preview-compact #previewLoading,
+.modal-preview-compact #previewError {
+    height: 360px;
+}
+
+/* Fullscreen mode on toggle */
+.modal-dialog.modal-fullscreen {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    height: 100% !important;
+}
+
+.modal-dialog.modal-fullscreen .modal-content {
+    border-radius: 0 !important;
+    height: 100% !important;
+}
+
+.modal-dialog.modal-fullscreen .modal-preview-body-container {
+    min-height: auto;
+    max-height: calc(100vh - 125px) !important;
+    height: calc(100vh - 125px) !important;
+}
+
+.modal-dialog.modal-fullscreen #imgPreview {
+    max-height: calc(100vh - 140px) !important;
+}
+
+.modal-dialog.modal-fullscreen #iframePreview {
+    height: calc(100vh - 140px) !important;
+}
+
+.btn-modal-header-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1e293b !important;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.btn-modal-header-action:hover {
+    background: #e2e8f0;
+    color: #0f172a !important;
+    border-color: #94a3b8;
+    transform: translateY(-1px);
+}
+
+.btn-modal-header-action i {
+    font-size: 1.1rem;
+    color: #475569;
+}
+
+.btn-modal-header-action:hover i {
+    color: #0f172a;
+}
+
 /* SIDEBAR & SUMMARY */
 .transaksi-sticky {
     position: sticky;
@@ -620,13 +843,13 @@ a.transaksi-step-icon:hover {
 }
 
 .transaksi-status-banner.success {
-    background: linear-gradient(135deg, #eefcf3, #dcfce7);
+    background: #ecfdf5;
     color: #15803d;
     border: 1px solid #bbf7d0;
 }
 
 .transaksi-status-banner.warning {
-    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    background: #fffbeb;
     color: #b45309;
     border: 1px solid #fde68a;
 }
@@ -1020,7 +1243,7 @@ a.transaksi-step-icon:hover {
 }
 
 .transaksi-next-card input[type="radio"]:checked + .transaksi-next-label .transaksi-next-icon {
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    background: #9a55ff;
     color: #ffffff;
 }
 
@@ -1044,7 +1267,7 @@ a.transaksi-step-icon:hover {
     align-items: center;
     gap: 0.5rem;
     padding: 0.65rem 1.35rem;
-    border-radius: 10px;
+    border-radius: 6px;
     font-weight: 700;
     font-size: 0.88rem;
     border: none;
@@ -1054,14 +1277,15 @@ a.transaksi-step-icon:hover {
 }
 
 .transaksi-btn-primary {
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    background: #9a55ff;
     color: #ffffff;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+    box-shadow: none;
 }
 
 .transaksi-btn-primary:hover {
-    box-shadow: 0 6px 18px rgba(154, 85, 255, 0.4);
-    transform: translateY(-2px);
+    background: #8b3ffc;
+    box-shadow: none;
+    transform: translateY(-1px);
     color: #ffffff;
 }
 
@@ -1073,7 +1297,7 @@ a.transaksi-step-icon:hover {
 .transaksi-btn-secondary:hover {
     background: #e2e8f0;
     color: #334155;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
 }
 
 .transaksi-error-box {
@@ -1084,24 +1308,24 @@ a.transaksi-step-icon:hover {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    background: linear-gradient(135deg, #da8cff 0%, #9a55ff 100%);
+    background: #9a55ff;
     color: #ffffff !important;
     padding: 6px 14px;
-    border-radius: 8px;
+    border-radius: 6px;
     font-size: 0.83rem;
     font-weight: 700;
     text-decoration: none !important;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.28);
+    box-shadow: none;
     border: none;
     transition: all 0.25s ease;
     cursor: pointer;
 }
 
 .btn-cetak-ba-action:hover {
-    background: linear-gradient(135deg, #c96eff 0%, #8b3ffc 100%);
+    background: #8b3ffc;
     color: #ffffff !important;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(154, 85, 255, 0.42);
+    transform: translateY(-1px);
+    box-shadow: none;
 }
 
 .btn-cetak-ba-action i {
@@ -1345,7 +1569,7 @@ a.transaksi-step-icon:hover {
                                     @elseif ($verifikasiApproved)
                                         <span class="text-success fw-bold">Selesai</span>
                                     @else
-                                        Dalam Proses
+                                        <span class="fw-bold" style="color: #d97706;">Dalam Proses</span>
                                     @endif
                                 </small>
                             </div>
@@ -1577,32 +1801,32 @@ a.transaksi-step-icon:hover {
                             </div>
 
                             <!-- TOOLBAR STATUS & BULK ACTION -->
-                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 p-2.5 rounded-3" style="background: #f8fafc; border: 1px solid #eef2f6;">
-                                <div class="d-flex flex-wrap align-items-center gap-1.5" style="font-size: 0.78rem;">
-                                    <span class="badge bg-white text-dark border px-2 py-1 shadow-xs">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3.5 p-3 rounded-2" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px !important;">
+                                <div class="d-flex flex-wrap align-items-center gap-2" style="font-size: 0.8rem;">
+                                    <span class="badge bg-white text-dark border px-2.5 py-1.5 shadow-xs" style="border-radius: 6px; font-weight: 600;">
                                         Total: <strong id="statTotalDocs">{{ $totalDocs }}</strong>
                                     </span>
-                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
-                                        <i class="mdi mdi-check-circle me-0.5"></i> Disetujui: <strong id="statApprovedDocs">{{ $approvedDocs }}</strong>
+                                    <span class="badge border px-2.5 py-1.5" style="background: #ecfdf5; color: #15803d; border-color: #bbf7d0 !important; border-radius: 6px; font-weight: 600;">
+                                        <i class="mdi mdi-check-circle me-1"></i> Disetujui: <strong id="statApprovedDocs">{{ $approvedDocs }}</strong>
                                     </span>
-                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1">
-                                        <i class="mdi mdi-alert-circle me-0.5"></i> Revisi: <strong id="statRevisionDocs">{{ $revisionDocs }}</strong>
+                                    <span class="badge border px-2.5 py-1.5" style="background: #fff7ed; color: #c2410c; border-color: #fed7aa !important; border-radius: 6px; font-weight: 600;">
+                                        <i class="mdi mdi-alert-circle me-1"></i> Revisi: <strong id="statRevisionDocs">{{ $revisionDocs }}</strong>
                                     </span>
-                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">
-                                        <i class="mdi mdi-close-circle me-0.5"></i> Ditolak: <strong id="statRejectedDocs">{{ $rejectedDocs }}</strong>
+                                    <span class="badge border px-2.5 py-1.5" style="background: #fef2f2; color: #b91c1c; border-color: #fecaca !important; border-radius: 6px; font-weight: 600;">
+                                        <i class="mdi mdi-close-circle me-1"></i> Ditolak: <strong id="statRejectedDocs">{{ $rejectedDocs }}</strong>
                                     </span>
-                                    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">
-                                        <i class="mdi mdi-clock-outline me-0.5"></i> Pending: <strong id="statPendingDocs">{{ $pendingDocs }}</strong>
+                                    <span class="badge border px-2.5 py-1.5" style="background: #fffbeb; color: #b45309; border-color: #fde68a !important; border-radius: 6px; font-weight: 600;">
+                                        <i class="mdi mdi-clock-outline me-1"></i> Pending: <strong id="statPendingDocs">{{ $pendingDocs }}</strong>
                                     </span>
                                 </div>
 
                                 @if ($kprApp)
                                     <div id="btnApproveAllContainer" style="{{ $approvedDocs === $totalDocs ? 'display: none;' : '' }}">
                                         <button type="button" 
-                                            class="btn btn-xs btn-outline-success d-inline-flex align-items-center gap-1.5 py-1 px-2.5 rounded-2 fw-semibold btn-approve-all" 
+                                            class="btn btn-sm d-inline-flex align-items-center gap-1.5 py-1.5 px-3 fw-bold text-white btn-approve-all" 
                                             data-kpr-id="{{ $kprApp->id }}"
-                                            style="font-size: 0.78rem;">
-                                            <i class="mdi mdi-check-all fs-6"></i> Setujui Semua Dokumen
+                                            style="font-size: 0.82rem; background: #16a34a; border: 1px solid #16a34a; border-radius: 6px;">
+                                            <i class="mdi mdi-check-all fs-6 text-white"></i> Setujui Semua Dokumen
                                         </button>
                                     </div>
                                 @endif
@@ -1618,18 +1842,19 @@ a.transaksi-step-icon:hover {
                             <table class="table transaksi-doc-table align-middle mb-0">
                                 <thead>
                                     <tr>
-                                        <th style="width: 35%;">Nama Dokumen</th>
-                                        <th style="width: 22%;">Status</th>
-                                        <th style="width: 18%;">Tanggal Upload</th>
-                                        <th style="width: 25%;">Aksi Verifikasi</th>
+                                        <th style="width: 28%;">Nama Dokumen</th>
+                                        <th style="width: 18%;">Status</th>
+                                        <th style="width: 18%;">Diverifikasi Oleh</th>
+                                        <th style="width: 16%;">Tanggal Upload</th>
+                                        <th style="width: 20%;">Aksi Verifikasi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($documents as $doc)
                                         @php
-                                            $docLabel = $doc->document_name ?? strtoupper(str_replace('_', ' ', $doc->type));
-                                            $ext = strtolower(pathinfo($doc->path, PATHINFO_EXTENSION));
-                                            $status = strtolower($doc->status ?? 'pending');
+                                             $docLabel = $doc->document_name ?? strtoupper(str_replace('_', ' ', $doc->type));
+                                             $ext = strtolower(pathinfo($doc->path, PATHINFO_EXTENSION));
+                                             $status = strtolower($doc->status ?? 'pending');
                                         @endphp
                                         <tr id="doc-row-{{ $doc->id }}" class="doc-row-item">
                                             <td>
@@ -1645,69 +1870,71 @@ a.transaksi-step-icon:hover {
                                                     </div>
                                                     <div>
                                                         <div class="fw-semibold text-dark">{{ $docLabel }}</div>
-                                                        <div class="transaksi-muted small d-flex align-items-center gap-1" style="font-size: 0.76rem;">
-                                                            <span>{{ strtoupper(str_replace('_', ' ', $doc->type)) }}</span>
-                                                            <span id="doc-validator-info-{{ $doc->id }}" class="{{ ($status !== 'pending' && $doc->validator) ? '' : 'd-none' }}">
-                                                                • <span class="text-success"><i class="mdi mdi-account-check-outline"></i> {{ $doc->validator->name ?? 'Verifikator' }}</span>
-                                                            </span>
+                                                        <div class="transaksi-muted small" style="font-size: 0.76rem; letter-spacing: 0.2px;">
+                                                            {{ strtoupper(str_replace('_', ' ', $doc->type)) }}
                                                         </div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td id="doc-status-cell-{{ $doc->id }}">
                                                 @if ($status === 'disetujui')
-                                                    <span class="badge bg-success text-white px-2 py-1">
-                                                        <i class="mdi mdi-check-circle me-1"></i>Disetujui
+                                                    <span class="badge-doc-status status-disetujui">
+                                                        <i class="mdi mdi-check-circle"></i>Disetujui
                                                     </span>
                                                 @elseif ($status === 'revisi')
-                                                    <span class="badge bg-warning text-dark px-2 py-1">
-                                                        <i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi
+                                                    <span class="badge-doc-status status-revisi">
+                                                        <i class="mdi mdi-alert-circle"></i>Perlu Revisi
                                                     </span>
                                                     @if ($doc->catatan)
-                                                        <div class="text-danger small mt-1 doc-catatan-text" style="font-size: 0.78rem; line-height: 1.25;">
+                                                        <div class="text-danger small mt-1.5 doc-catatan-text" style="font-size: 0.78rem; line-height: 1.25;">
                                                             <i class="mdi mdi-information-outline me-0.5"></i><strong>Catatan:</strong> {{ $doc->catatan }}
                                                         </div>
                                                     @endif
-                                                    <div class="mt-1.5 doc-reupload-quick-btn">
+                                                    <div class="mt-2 doc-reupload-quick-btn">
                                                         <button type="button" 
-                                                            class="btn btn-xs btn-outline-warning py-1 px-2.5 rounded-pill btn-reupload-doc d-inline-flex align-items-center gap-1 shadow-sm"
+                                                            class="btn btn-xs py-1 px-2.5 btn-reupload-doc d-inline-flex align-items-center gap-1"
                                                             data-id="{{ $doc->id }}"
                                                             data-name="{{ $docLabel }}"
                                                             data-type="{{ $doc->type }}"
                                                             data-status="{{ $status }}"
                                                             data-catatan="{{ $doc->catatan ?? '' }}"
                                                             data-reupload-url="{{ route('kpr.document.reupload', $doc->id) }}"
-                                                            style="font-size: 0.74rem; font-weight: 600;">
+                                                            style="font-size: 0.74rem; font-weight: 600; border-radius: 6px; background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa;">
                                                             <i class="mdi mdi-cloud-upload-outline"></i> Upload Pengganti
                                                         </button>
                                                     </div>
                                                 @elseif ($status === 'ditolak')
-                                                    <span class="badge bg-danger text-white px-2 py-1">
-                                                        <i class="mdi mdi-close-circle me-1"></i>Ditolak
+                                                    <span class="badge-doc-status status-ditolak">
+                                                        <i class="mdi mdi-close-circle"></i>Ditolak
                                                     </span>
                                                     @if ($doc->catatan)
-                                                        <div class="text-danger small mt-1 doc-catatan-text" style="font-size: 0.78rem; line-height: 1.25;">
+                                                        <div class="text-danger small mt-1.5 doc-catatan-text" style="font-size: 0.78rem; line-height: 1.25;">
                                                             <i class="mdi mdi-close-circle-outline me-0.5"></i><strong>Alasan:</strong> {{ $doc->catatan }}
                                                         </div>
                                                     @endif
-                                                    <div class="mt-1.5 doc-reupload-quick-btn">
+                                                    <div class="mt-2 doc-reupload-quick-btn">
                                                         <button type="button" 
-                                                            class="btn btn-xs btn-outline-danger py-1 px-2.5 rounded-pill btn-reupload-doc d-inline-flex align-items-center gap-1 shadow-sm"
+                                                            class="btn btn-xs py-1 px-2.5 btn-reupload-doc d-inline-flex align-items-center gap-1"
                                                             data-id="{{ $doc->id }}"
                                                             data-name="{{ $docLabel }}"
                                                             data-type="{{ $doc->type }}"
                                                             data-status="{{ $status }}"
                                                             data-catatan="{{ $doc->catatan ?? '' }}"
                                                             data-reupload-url="{{ route('kpr.document.reupload', $doc->id) }}"
-                                                            style="font-size: 0.74rem; font-weight: 600;">
+                                                            style="font-size: 0.74rem; font-weight: 600; border-radius: 6px; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;">
                                                             <i class="mdi mdi-cloud-upload-outline"></i> Upload Pengganti
                                                         </button>
                                                     </div>
                                                 @else
-                                                    <span class="badge bg-secondary text-white px-2 py-1">
-                                                        <i class="mdi mdi-clock-outline me-1"></i>Pending
+                                                    <span class="badge-doc-status status-pending">
+                                                        <i class="mdi mdi-clock-outline"></i>Pending
                                                     </span>
                                                 @endif
+                                            </td>
+                                            <td id="doc-validator-cell-{{ $doc->id }}">
+                                                <span class="{{ ($status !== 'pending' && $doc->validator) ? 'text-dark fw-medium' : 'text-muted' }}" style="font-size: 0.85rem;">
+                                                    {{ ($status !== 'pending' && $doc->validator) ? ($doc->validator->name ?? 'Verifikator') : '-' }}
+                                                </span>
                                             </td>
                                             <td>
                                                 <span class="transaksi-muted" style="font-size: 0.83rem;">
@@ -1715,8 +1942,8 @@ a.transaksi-step-icon:hover {
                                                 </span>
                                             </td>
                                             <td id="doc-action-cell-{{ $doc->id }}">
-                                                <div class="d-flex align-items-center gap-1.5 flex-wrap doc-action-group">
-                                                    {{-- 1. Tombol Preview --}}
+                                                <div class="doc-action-group">
+                                                    {{-- Baris 1: 1. Preview --}}
                                                     <button type="button" 
                                                         class="transaksi-doc-action btn-action-preview btn-preview-doc" 
                                                         data-id="{{ $doc->id }}"
@@ -1730,7 +1957,7 @@ a.transaksi-step-icon:hover {
                                                         <i class="mdi mdi-eye-outline"></i>
                                                     </button>
 
-                                                    {{-- 2. Tombol Setujui --}}
+                                                    {{-- Baris 1: 2. Setujui --}}
                                                     <button type="button" 
                                                         class="transaksi-doc-action btn-action-approve btn-validate-doc {{ $status === 'disetujui' ? 'active' : '' }}" 
                                                         data-id="{{ $doc->id }}"
@@ -1740,7 +1967,7 @@ a.transaksi-step-icon:hover {
                                                         <i class="mdi mdi-check"></i>
                                                     </button>
 
-                                                    {{-- 3. Tombol Minta Revisi --}}
+                                                    {{-- Baris 1: 3. Minta Revisi --}}
                                                     <button type="button" 
                                                         class="transaksi-doc-action btn-action-revisi btn-validate-doc {{ $status === 'revisi' ? 'active' : '' }}" 
                                                         data-id="{{ $doc->id }}"
@@ -1751,7 +1978,7 @@ a.transaksi-step-icon:hover {
                                                         <i class="mdi mdi-pencil-outline"></i>
                                                     </button>
 
-                                                    {{-- 4. Tombol Tolak --}}
+                                                    {{-- Baris 2: 4. Tolak --}}
                                                     <button type="button" 
                                                         class="transaksi-doc-action btn-action-reject btn-validate-doc {{ $status === 'ditolak' ? 'active' : '' }}" 
                                                         data-id="{{ $doc->id }}"
@@ -1762,19 +1989,7 @@ a.transaksi-step-icon:hover {
                                                         <i class="mdi mdi-close"></i>
                                                     </button>
 
-                                                    @if ($status !== 'pending')
-                                                        {{-- 5. Tombol Reset ke Pending jika sudah diubah --}}
-                                                        <button type="button" 
-                                                            class="transaksi-doc-action btn-action-reset btn-validate-doc" 
-                                                            data-id="{{ $doc->id }}"
-                                                            data-status="pending"
-                                                            data-name="{{ $docLabel }}"
-                                                            title="Kembalikan Status ke Pending">
-                                                            <i class="mdi mdi-refresh"></i>
-                                                        </button>
-                                                    @endif
-
-                                                    {{-- 6. Tombol Upload Pengganti --}}
+                                                    {{-- Baris 2: 5. Upload Pengganti --}}
                                                     <button type="button" 
                                                         class="transaksi-doc-action btn-action-upload btn-reupload-doc" 
                                                         data-id="{{ $doc->id }}"
@@ -1786,12 +2001,24 @@ a.transaksi-step-icon:hover {
                                                         title="Upload Berkas Pengganti">
                                                         <i class="mdi mdi-cloud-upload-outline"></i>
                                                     </button>
+
+                                                    @if ($status !== 'pending')
+                                                        {{-- Baris 2: 6. Reset ke Pending jika sudah diubah --}}
+                                                        <button type="button" 
+                                                            class="transaksi-doc-action btn-action-reset btn-validate-doc" 
+                                                            data-id="{{ $doc->id }}"
+                                                            data-status="pending"
+                                                            data-name="{{ $docLabel }}"
+                                                            title="Kembalikan Status ke Pending">
+                                                            <i class="mdi mdi-refresh"></i>
+                                                        </button>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="text-center py-4 text-muted">
+                                            <td colspan="5" class="text-center py-4 text-muted">
                                                 <i class="mdi mdi-file-question-outline fs-3 d-block mb-1"></i>
                                                 Belum ada dokumen yang diunggah
                                             </td>
@@ -2190,58 +2417,68 @@ a.transaksi-step-icon:hover {
 
     {{-- MODAL PREVIEW DOKUMEN & VERIFIKASI --}}
     <div class="modal fade" id="modalPreviewDokumen" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-preview-compact">
             <div class="modal-content" style="border-radius:12px; overflow:hidden;">
-                <div class="modal-header">
+                <div class="modal-header py-2.5 px-3">
                     <div class="d-flex align-items-center gap-2">
                         <i class="mdi mdi-file-eye-outline" id="modalDocIcon" style="font-size:1.3rem;"></i>
-                        <h5 class="modal-title mb-0" id="modalDocLabel">Preview Dokumen</h5>
+                        <h5 class="modal-title mb-0" id="modalDocLabel" style="font-size: 1.02rem; font-weight: 700;">Preview Dokumen</h5>
                         <span class="badge bg-secondary ms-1" id="modalDocExt" style="font-size:0.7rem;"></span>
                         <span class="badge bg-secondary ms-1" id="modalDocStatusBadge" style="font-size:0.75rem;">Pending</span>
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <a href="#" id="btnOpenNewTabDoc" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary" title="Buka Dokumen di Tab Baru">
+                    <div class="d-flex align-items-center gap-1.5">
+                        {{-- Tombol Unduh Dokumen --}}
+                        <a href="#" id="btnDownloadDoc" class="btn-modal-header-action" download title="Unduh Dokumen">
+                            <i class="mdi mdi-download"></i>
+                            <span class="d-none d-sm-inline">Unduh</span>
+                        </a>
+
+                        {{-- Tombol Layar Penuh --}}
+                        <button type="button" id="btnToggleFullscreen" class="btn-modal-header-action" title="Layar Penuh">
+                            <i class="mdi mdi-fullscreen" id="iconFullscreen"></i>
+                            <span class="d-none d-sm-inline" id="textFullscreen">Layar Penuh</span>
+                        </button>
+
+                        {{-- Tombol Buka Tab Baru --}}
+                        <a href="#" id="btnOpenNewTabDoc" target="_blank" rel="noopener noreferrer" class="btn-modal-header-action" title="Buka di Tab Baru">
                             <i class="mdi mdi-open-in-new"></i>
                         </a>
-                        <a href="#" id="btnDownloadDoc" class="btn btn-sm btn-outline-secondary" download
-                            title="Download Dokumen">
-                            <i class="mdi mdi-download"></i>
-                        </a>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+                        {{-- Tombol Tutup --}}
+                        <button type="button" class="btn-close ms-1" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                 </div>
 
-                <div class="modal-body p-0" style="background:#f0f0f0; min-height:70vh; position:relative;">
+                <div class="modal-body p-0 modal-preview-body-container" style="position:relative;">
                     {{-- Loading --}}
-                    <div id="previewLoading" class="d-flex flex-column align-items-center justify-content-center gap-3"
-                        style="height:70vh;">
+                    <div id="previewLoading" class="d-flex flex-column align-items-center justify-content-center gap-3 w-100"
+                        style="height:360px;">
                         <div class="spinner-border text-primary" style="width:2.5rem;height:2.5rem;"></div>
-                        <span class="text-muted small">Memuat dokumen...</span>
+                        <span class="text-white-50 small">Memuat dokumen...</span>
                     </div>
 
                     {{-- Error --}}
                     <div id="previewError"
-                        class="d-none flex-column align-items-center justify-content-center gap-3 text-center p-4"
-                        style="height:70vh;">
-                        <i class="mdi mdi-file-alert-outline" style="font-size:3rem; color:#dc3545; opacity:.6;"></i>
+                        class="d-none flex-column align-items-center justify-content-center gap-3 text-center p-4 w-100"
+                        style="height:360px;">
+                        <i class="mdi mdi-file-alert-outline" style="font-size:3rem; color:#dc3545; opacity:.8;"></i>
                         <div>
                             <div class="fw-semibold text-danger">Dokumen tidak dapat ditampilkan</div>
-                            <small class="text-muted">Coba download untuk melihat isinya.</small>
+                            <small class="text-white-50">Coba unduh untuk melihat isinya.</small>
                         </div>
                         <a href="#" id="btnErrorDownload" class="btn btn-sm btn-primary" download>
-                            <i class="mdi mdi-download me-1"></i> Download Dokumen
+                            <i class="mdi mdi-download me-1"></i> Unduh Dokumen
                         </a>
                     </div>
 
                     {{-- PDF via iframe blob --}}
                     <iframe id="iframePreview" src="" class="d-none"
-                        style="width:100%; height:75vh; border:none; display:block;"></iframe>
+                        style="width:100%; border:none; display:block;"></iframe>
 
                     {{-- Gambar --}}
-                    <div id="divImagePreview" class="d-none align-items-center justify-content-center p-3"
-                        style="min-height:70vh; background:#1a1a1a;">
-                        <img id="imgPreview" src="" alt="Preview"
-                            style="max-width:100%; max-height:75vh; object-fit:contain; border-radius:4px; box-shadow:0 4px 24px rgba(0,0,0,.5);" />
+                    <div id="divImagePreview" class="d-none align-items-center justify-content-center p-2 w-100"
+                        style="background:#0f172a;">
+                        <img id="imgPreview" src="" alt="Preview" />
                     </div>
                 </div>
 
@@ -2253,22 +2490,22 @@ a.transaksi-step-icon:hover {
                         </div>
                     </div>
                     <div class="d-flex align-items-center gap-2 flex-wrap" id="modalVerifyButtons">
-                        <button type="button" class="btn btn-sm btn-info text-white btn-modal-reupload" id="btnModalReupload" title="Upload Berkas Pengganti Dokumen Ini">
+                        <button type="button" class="btn btn-sm btn-info text-white btn-modal-reupload" id="btnModalReupload" title="Upload Berkas Pengganti Dokumen Ini" style="border-radius: 6px; font-weight: 600;">
                             <i class="mdi mdi-cloud-upload-outline me-1"></i> Upload Pengganti
                         </button>
-                        <button type="button" class="btn btn-sm btn-success text-white btn-modal-validate" data-status="disetujui" title="Setujui Dokumen Ini">
+                        <button type="button" class="btn btn-sm btn-success text-white btn-modal-validate" data-status="disetujui" title="Setujui Dokumen Ini" style="border-radius: 6px; font-weight: 600;">
                             <i class="mdi mdi-check me-1"></i> Setujui
                         </button>
-                        <button type="button" class="btn btn-sm btn-warning text-dark btn-modal-validate" data-status="revisi" title="Minta Revisi Dokumen">
+                        <button type="button" class="btn btn-sm btn-warning text-dark btn-modal-validate" data-status="revisi" title="Minta Revisi Dokumen" style="border-radius: 6px; font-weight: 600;">
                             <i class="mdi mdi-pencil-outline me-1"></i> Minta Revisi
                         </button>
-                        <button type="button" class="btn btn-sm btn-danger text-white btn-modal-validate" data-status="ditolak" title="Tolak Dokumen">
+                        <button type="button" class="btn btn-sm btn-danger text-white btn-modal-validate" data-status="ditolak" title="Tolak Dokumen" style="border-radius: 6px; font-weight: 600;">
                             <i class="mdi mdi-close me-1"></i> Tolak
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary btn-modal-validate" data-status="pending" id="btnModalResetPending" title="Reset ke Status Pending">
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-modal-validate" data-status="pending" id="btnModalResetPending" title="Reset ke Status Pending" style="border-radius: 6px; font-weight: 600;">
                             <i class="mdi mdi-refresh me-1"></i> Reset
                         </button>
-                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal" style="border-radius: 6px; font-weight: 600;">Tutup</button>
                     </div>
                 </div>
             </div>
@@ -2278,10 +2515,10 @@ a.transaksi-step-icon:hover {
     {{-- MODAL UPLOAD PENGGANTI DOKUMEN --}}
     <div class="modal fade" id="modalReuploadDokumen" tabindex="-1" aria-hidden="true" style="z-index: 1065;">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius:14px; overflow:hidden; border:none; box-shadow: 0 15px 35px rgba(0,0,0,0.2);">
-                <div class="modal-header py-3 px-4" style="background: linear-gradient(135deg, #f8f9fa, #f1f3f5); border-bottom: 1.5px solid #edf0f5;">
+            <div class="modal-content" style="border-radius:6px; overflow:hidden; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                <div class="modal-header py-3 px-4" style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
                     <div class="d-flex align-items-center gap-2">
-                        <div style="width:36px; height:36px; border-radius:10px; background:rgba(154,85,255,0.12); color:#9a55ff; display:flex; align-items:center; justify-content:center; font-size:1.25rem;">
+                        <div style="width:36px; height:36px; border-radius:6px; background:#f3e8ff; color:#9a55ff; display:flex; align-items:center; justify-content:center; font-size:1.25rem;">
                             <i class="mdi mdi-cloud-upload-outline"></i>
                         </div>
                         <div>
@@ -2298,7 +2535,7 @@ a.transaksi-step-icon:hover {
                     
                     <div class="modal-body p-4">
                         {{-- Info Dokumen Saat Ini --}}
-                        <div class="p-3 mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
+                        <div class="p-3 mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;">
                             <div class="d-flex align-items-center justify-content-between mb-1">
                                 <span class="fw-bold text-dark" id="modalReuploadDocName">-</span>
                                 <span id="modalReuploadDocStatusBadge">-</span>
@@ -2353,13 +2590,13 @@ a.transaksi-step-icon:hover {
                         {{-- Catatan Perbaikan (Opsional) --}}
                         <div class="mb-0">
                             <label class="form-label fw-semibold text-dark small mb-1">Keterangan Tambahan / Perbaikan <span class="text-muted font-monospace fw-normal">(Opsional)</span></label>
-                            <textarea class="form-control" id="reuploadKeterangan" name="keterangan" rows="2" placeholder="Contoh: Berkas telah di-scan ulang dengan resolusi lebih tajam..." style="border-radius: 8px; font-size: 0.85rem;"></textarea>
+                            <textarea class="form-control" id="reuploadKeterangan" name="keterangan" rows="2" placeholder="Contoh: Berkas telah di-scan ulang dengan resolusi lebih tajam..." style="border-radius: 6px; font-size: 0.85rem;"></textarea>
                         </div>
                     </div>
 
                     <div class="modal-footer py-2.5 px-4 bg-light d-flex justify-content-between align-items-center">
-                        <button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-sm btn-gradient-primary px-3 d-inline-flex align-items-center gap-1.5" id="btnSubmitReupload" style="border-radius: 8px; font-weight: 600;">
+                        <button type="button" class="btn btn-sm btn-secondary px-3" data-bs-dismiss="modal" style="border-radius: 6px;">Batal</button>
+                        <button type="submit" class="btn btn-sm text-white px-3 d-inline-flex align-items-center gap-1.5" id="btnSubmitReupload" style="background: #9a55ff; border: 1px solid #9a55ff; border-radius: 6px; font-weight: 600;">
                             <i class="mdi mdi-cloud-upload-outline"></i> Upload & Simpan Berkas
                         </button>
                     </div>
@@ -2864,22 +3101,26 @@ a.transaksi-step-icon:hover {
             currentPreviewStatus = data.status;
             currentPreviewCatatan = data.catatan || '';
 
-            let badgeClass = 'bg-secondary text-white';
+            let badgeClass = 'badge-doc-status status-pending';
             let badgeText = 'Pending';
+            let badgeIcon = 'mdi-clock-outline';
             if (data.status === 'disetujui') {
-                badgeClass = 'bg-success text-white';
+                badgeClass = 'badge-doc-status status-disetujui';
                 badgeText = 'Disetujui';
+                badgeIcon = 'mdi-check-circle';
             } else if (data.status === 'revisi') {
-                badgeClass = 'bg-warning text-dark';
+                badgeClass = 'badge-doc-status status-revisi';
                 badgeText = 'Perlu Revisi';
+                badgeIcon = 'mdi-alert-circle';
             } else if (data.status === 'ditolak') {
-                badgeClass = 'bg-danger text-white';
+                badgeClass = 'badge-doc-status status-ditolak';
                 badgeText = 'Ditolak';
+                badgeIcon = 'mdi-close-circle';
             }
 
             $('#modalDocStatusBadge')
-                .attr('class', `badge ${badgeClass} ms-1`)
-                .text(badgeText);
+                .attr('class', `${badgeClass} ms-1`)
+                .html(`<i class="mdi ${badgeIcon}"></i> ${badgeText}`);
 
             if (data.catatan && (data.status === 'revisi' || data.status === 'ditolak')) {
                 $('#modalDocCatatanText').text(data.catatan);
@@ -2903,63 +3144,63 @@ a.transaksi-step-icon:hover {
             let catatanHtml = '';
 
             if (data.status === 'disetujui') {
-                statusBadge = '<span class="badge bg-success text-white px-2 py-1"><i class="mdi mdi-check-circle me-1"></i>Disetujui</span>';
+                statusBadge = '<span class="badge-doc-status status-disetujui"><i class="mdi mdi-check-circle"></i>Disetujui</span>';
             } else if (data.status === 'revisi') {
-                statusBadge = '<span class="badge bg-warning text-dark px-2 py-1"><i class="mdi mdi-alert-circle me-1"></i>Perlu Revisi</span>';
+                statusBadge = '<span class="badge-doc-status status-revisi"><i class="mdi mdi-alert-circle"></i>Perlu Revisi</span>';
                 if (data.catatan) {
-                    catatanHtml = `<div class="text-danger small mt-1 doc-catatan-text" style="font-size: 0.78rem; line-height: 1.25;"><i class="mdi mdi-information-outline me-0.5"></i><strong>Catatan:</strong> ${escapeHtml(data.catatan)}</div>`;
+                    catatanHtml = `<div class="text-danger small mt-1.5 doc-catatan-text" style="font-size: 0.78rem; line-height: 1.25;"><i class="mdi mdi-information-outline me-0.5"></i><strong>Catatan:</strong> ${escapeHtml(data.catatan)}</div>`;
                 }
                 const docLabel = $row.find('.btn-preview-doc').data('label') || 'Dokumen';
                 const docType = $row.find('.btn-reupload-doc').data('type') || '';
                 catatanHtml += `
-                    <div class="mt-1.5 doc-reupload-quick-btn">
+                    <div class="mt-2 doc-reupload-quick-btn">
                         <button type="button" 
-                            class="btn btn-xs btn-outline-warning py-1 px-2.5 rounded-pill btn-reupload-doc d-inline-flex align-items-center gap-1 shadow-sm"
+                            class="btn btn-xs py-1 px-2.5 btn-reupload-doc d-inline-flex align-items-center gap-1"
                             data-id="${docId}"
                             data-name="${escapeHtml(docLabel)}"
                             data-type="${escapeHtml(docType)}"
                             data-status="${data.status}"
                             data-catatan="${escapeHtml(data.catatan || '')}"
                             data-reupload-url="/transaksi/kpr/document/${docId}/reupload"
-                            style="font-size: 0.74rem; font-weight: 600;">
+                            style="font-size: 0.74rem; font-weight: 600; border-radius: 6px; background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa;">
                             <i class="mdi mdi-cloud-upload-outline"></i> Upload Pengganti
                         </button>
                     </div>
                 `;
             } else if (data.status === 'ditolak') {
-                statusBadge = '<span class="badge bg-danger text-white px-2 py-1"><i class="mdi mdi-close-circle me-1"></i>Ditolak</span>';
+                statusBadge = '<span class="badge-doc-status status-ditolak"><i class="mdi mdi-close-circle"></i>Ditolak</span>';
                 if (data.catatan) {
-                    catatanHtml = `<div class="text-danger small mt-1 doc-catatan-text" style="font-size: 0.78rem; line-height: 1.25;"><i class="mdi mdi-close-circle-outline me-0.5"></i><strong>Alasan:</strong> ${escapeHtml(data.catatan)}</div>`;
+                    catatanHtml = `<div class="text-danger small mt-1.5 doc-catatan-text" style="font-size: 0.78rem; line-height: 1.25;"><i class="mdi mdi-close-circle-outline me-0.5"></i><strong>Alasan:</strong> ${escapeHtml(data.catatan)}</div>`;
                 }
                 const docLabel = $row.find('.btn-preview-doc').data('label') || 'Dokumen';
                 const docType = $row.find('.btn-reupload-doc').data('type') || '';
                 catatanHtml += `
-                    <div class="mt-1.5 doc-reupload-quick-btn">
+                    <div class="mt-2 doc-reupload-quick-btn">
                         <button type="button" 
-                            class="btn btn-xs btn-outline-danger py-1 px-2.5 rounded-pill btn-reupload-doc d-inline-flex align-items-center gap-1 shadow-sm"
+                            class="btn btn-xs py-1 px-2.5 btn-reupload-doc d-inline-flex align-items-center gap-1"
                             data-id="${docId}"
                             data-name="${escapeHtml(docLabel)}"
                             data-type="${escapeHtml(docType)}"
                             data-status="${data.status}"
                             data-catatan="${escapeHtml(data.catatan || '')}"
                             data-reupload-url="/transaksi/kpr/document/${docId}/reupload"
-                            style="font-size: 0.74rem; font-weight: 600;">
+                            style="font-size: 0.74rem; font-weight: 600; border-radius: 6px; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;">
                             <i class="mdi mdi-cloud-upload-outline"></i> Upload Pengganti
                         </button>
                     </div>
                 `;
             } else {
-                statusBadge = '<span class="badge bg-secondary text-white px-2 py-1"><i class="mdi mdi-clock-outline me-1"></i>Pending</span>';
+                statusBadge = '<span class="badge-doc-status status-pending"><i class="mdi mdi-clock-outline"></i>Pending</span>';
             }
 
             $(`#doc-status-cell-${docId}`).html(statusBadge + catatanHtml);
 
-            // Update validator info under document name
-            const $validatorInfo = $(`#doc-validator-info-${docId}`);
+            // Update validator cell (plain text, no icon no badge)
+            const $validatorCell = $(`#doc-validator-cell-${docId}`);
             if (data.status !== 'pending' && data.validator_name) {
-                $validatorInfo.html(`• <span class="text-success"><i class="mdi mdi-account-check-outline"></i> ${escapeHtml(data.validator_name)}</span>`).removeClass('d-none');
+                $validatorCell.html(`<span class="text-dark fw-medium" style="font-size: 0.85rem;">${escapeHtml(data.validator_name)}</span>`);
             } else {
-                $validatorInfo.empty().addClass('d-none');
+                $validatorCell.html('<span class="text-muted" style="font-size: 0.85rem;">-</span>');
             }
 
             // Update data attributes on buttons for this row
@@ -3349,9 +3590,31 @@ a.transaksi-step-icon:hover {
         });
 
         // Bersihkan blob URL saat modal ditutup
+        // Fullscreen toggle on modal preview
+        $(document).on('click', '#btnToggleFullscreen', function(e) {
+            e.preventDefault();
+            const $dialog = $('#modalPreviewDokumen .modal-dialog');
+            $dialog.toggleClass('modal-fullscreen');
+            const isFull = $dialog.hasClass('modal-fullscreen');
+            if (isFull) {
+                $('#iconFullscreen').attr('class', 'mdi mdi-fullscreen-exit');
+                $('#textFullscreen').text('Kecilkan');
+                $(this).attr('title', 'Keluar Layar Penuh');
+            } else {
+                $('#iconFullscreen').attr('class', 'mdi mdi-fullscreen');
+                $('#textFullscreen').text('Layar Penuh');
+                $(this).attr('title', 'Layar Penuh');
+            }
+        });
+
         document.getElementById('modalPreviewDokumen').addEventListener('hidden.bs.modal', function() {
             resetPreviewState();
             currentPreviewDocId = null;
+            const $dialog = $(this).find('.modal-dialog');
+            $dialog.removeClass('modal-fullscreen');
+            $('#iconFullscreen').attr('class', 'mdi mdi-fullscreen');
+            $('#textFullscreen').text('Layar Penuh');
+            $('#btnToggleFullscreen').attr('title', 'Layar Penuh');
         });
 
         // ==========================================
