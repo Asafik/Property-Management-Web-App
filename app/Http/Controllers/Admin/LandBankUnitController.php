@@ -9,6 +9,7 @@ use App\Models\LandBank;
 use App\Models\LandBankUnit;
 use App\Models\Spk;
 use App\Models\SpkTermin;
+use App\Models\MasterBiayaLegalitas;
 use App\Imports\LandBankUnitImport;
 use Maatwebsite\Excel\Facades\Excel;
 class LandBankUnitController extends Controller
@@ -19,9 +20,10 @@ class LandBankUnitController extends Controller
         $land = LandBank::findOrFail($land_bank_id);
 
         if (!$land->canCreateKavling()) {
+            $detail = $land->getPerizinanPemecahanKavlingDetail();
             return redirect()->route('kavling.index')->with(
                 'error',
-                "Pembangunan & pengolahan lahan (PJU, Selokan, Jalan, dll) untuk proyek '{$land->name}' belum selesai (Status: {$land->development_status}). Selesaikan pengolahan lahan terlebih dahulu untuk dapat membuat unit kavling."
+                "Dokumen perizinan 'Proses Pemecahan SHGB Induk Perkavling' untuk proyek '{$land->name}' belum diproses (Status: {$detail['label']}). Silakan proses perizinan terlebih dahulu untuk dapat membuat unit kavling."
             );
         }
 
@@ -60,7 +62,16 @@ class LandBankUnitController extends Controller
         // Ambil data dengan pagination
         $units = $query->paginate($perPage)->withQueryString();
 
-        return view('properti.addkavling', compact('land', 'units', 'perPage'));
+        // Ambil data acuan tarif baku IJB dan AJB dari Master Data (Khusus Unit)
+        $masterIjb = MasterBiayaLegalitas::where('is_active', true)->where('kode_biaya', 'IJB-UNIT')->first()
+            ?? MasterBiayaLegalitas::where('is_active', true)->where('nama_biaya', 'like', '%ijb%unit%')->first();
+        $defaultIjbPrice = $masterIjb ? (int)$masterIjb->nominal_standar : 2000000;
+
+        $masterAjb = MasterBiayaLegalitas::where('is_active', true)->where('kode_biaya', 'AJB-UNIT')->first()
+            ?? MasterBiayaLegalitas::where('is_active', true)->where('nama_biaya', 'like', '%ajb%unit%')->first();
+        $defaultAjbPrice = $masterAjb ? (int)$masterAjb->nominal_standar : 1500000;
+
+        return view('properti.addkavling', compact('land', 'units', 'perPage', 'defaultIjbPrice', 'defaultAjbPrice'));
     }
 
     public function store(Request $request, $land_bank_id)
@@ -70,7 +81,7 @@ class LandBankUnitController extends Controller
         if (!$land->canCreateKavling()) {
             return back()->with(
                 'error',
-                "Pembangunan pengolahan lahan untuk proyek '{$land->name}' belum berstatus Selesai! Tidak dapat menambahkan unit kavling."
+                "Dokumen perizinan 'Proses Pemecahan SHGB Induk Perkavling' untuk proyek '{$land->name}' belum siap! Tidak dapat menambahkan unit kavling."
             );
         }
 
@@ -444,7 +455,7 @@ class LandBankUnitController extends Controller
         $land = LandBank::findOrFail($land_bank_id);
 
         if (!$land->canCreateKavling()) {
-            return redirect()->back()->with('error', "Pembangunan pengolahan lahan untuk proyek '{$land->name}' belum berstatus Selesai! Tidak dapat mengimpor unit kavling.");
+            return redirect()->back()->with('error', "Dokumen perizinan 'Proses Pemecahan SHGB Induk Perkavling' untuk proyek '{$land->name}' belum siap! Tidak dapat mengimpor unit kavling.");
         }
 
         $request->validate([

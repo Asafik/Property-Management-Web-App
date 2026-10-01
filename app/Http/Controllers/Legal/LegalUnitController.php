@@ -14,7 +14,7 @@ class LegalUnitController extends Controller
      */
     public function index(Request $request)
     {
-        $query = LandBankUnit::with(['landBank']);
+        $query = LandBankUnit::with(['landBank', 'progress.items', 'progress.opnameMingguan']);
 
         // Filter Berdasarkan Tanah / Proyek Asal
         if ($request->filled('land_bank_id') && $request->land_bank_id !== 'all') {
@@ -30,13 +30,18 @@ class LegalUnitController extends Controller
         if ($request->filled('legal_status') && $request->legal_status !== 'all') {
             $ls = $request->legal_status;
             if ($ls === 'selesai') {
-                $query->where('status', 'sold');
+                $query->where(function($q) {
+                    $q->whereNotNull('certificate_no')->where('certificate_no', '!=', '')
+                      ->orWhere('status', 'sold');
+                });
             } elseif ($ls === 'bpn') {
                 $query->where('status', 'booked');
             } elseif ($ls === 'notaris') {
                 $query->where('status', 'ready');
             } elseif ($ls === 'persiapan') {
-                $query->where('status', 'draft');
+                $query->where(function($q) {
+                    $q->whereNull('certificate_no')->orWhere('certificate_no', '');
+                })->whereNotIn('status', ['sold']);
             }
         }
 
@@ -45,7 +50,7 @@ class LegalUnitController extends Controller
             $query->where('jenis', $request->jenis);
         }
 
-        // Filter Pencarian (Kode Unit / Blok / Nomor / Nama / Proyek)
+        // Filter Pencarian (Kode Unit / Blok / Nomor / Nama / Proyek / Sertifikat)
         if ($request->filled('search')) {
             $keyword = trim($request->search);
             $query->where(function ($q) use ($keyword) {
@@ -53,6 +58,7 @@ class LegalUnitController extends Controller
                     ->orWhere('block', 'like', "%{$keyword}%")
                     ->orWhere('unit_number', 'like', "%{$keyword}%")
                     ->orWhere('unit_name', 'like', "%{$keyword}%")
+                    ->orWhere('certificate_no', 'like', "%{$keyword}%")
                     ->orWhereHas('landBank', function ($lq) use ($keyword) {
                         $lq->where('name', 'like', "%{$keyword}%")
                            ->orWhere('district', 'like', "%{$keyword}%")
@@ -64,8 +70,12 @@ class LegalUnitController extends Controller
         // KPI Ringkasan dari Keseluruhan Unit
         $allUnits = LandBankUnit::all();
         $totalUnit = $allUnits->count();
-        $totalLegalSelesai = $allUnits->where('status', 'sold')->count();
-        $totalProsesLegal = $allUnits->whereIn('status', ['booked', 'ready'])->count();
+        $totalLegalSelesai = $allUnits->filter(function($u) {
+            return (!empty($u->certificate_no) && trim($u->certificate_no) !== '') || $u->status === 'sold';
+        })->count();
+        $totalProsesLegal = $allUnits->filter(function($u) {
+            return empty($u->certificate_no) || trim($u->certificate_no) === '';
+        })->count();
         $totalSold = $allUnits->whereIn('status', ['sold', 'terjual'])->count();
 
         // Dropdown List Tanah / Proyek Asal dari Database Riil
@@ -92,4 +102,15 @@ class LegalUnitController extends Controller
             'totalSold'
         ));
     }
+
+    /**
+     * Halaman Detail Unit Legalitas (Halaman Sendiri / Standalone).
+     */
+    public function show($id)
+    {
+        $unit = LandBankUnit::with(['landBank', 'progress.items', 'progress.opnameMingguan', 'spk'])->findOrFail($id);
+
+        return view('legal_unit.show', compact('unit'));
+    }
 }
+

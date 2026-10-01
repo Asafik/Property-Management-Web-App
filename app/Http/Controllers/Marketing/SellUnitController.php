@@ -738,5 +738,23 @@ class SellUnitController extends Controller
             'rule'    => $calculation['rule'],
         ]);
     }
+
+    /**
+     * Halaman Detail Unit Sendiri (Catalog Unit)
+     */
+    public function show($id)
+    {
+        $unit = LandBankUnit::with([
+            'landBank',
+            'activeBooking',
+            'activeBooking.sales.position',
+            'activeBooking.sales.division',
+            'activeBooking.customer',
+            'activeBooking.customer.documents',
+            'agency',
+        ])->findOrFail($id);
+
+        return view('marketing.show_unit', compact('unit'));
+    }
 }
 

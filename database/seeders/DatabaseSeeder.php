@@ -42,6 +42,7 @@ class DatabaseSeeder extends Seeder
             MasterBiayaLegalitasSeeder::class,
             DevelopmentProgressItemsSeeder::class,
             PromoSeeder::class,
+            CustomerSeeder::class,
             // PraLandbankDocumentSeeder::class,
             // LandBankUnitSeeder::class,     // Dikeluarkan: seeder dummy tanah pasca
             // PerizinanTaskSeeder::class,    // Dikeluarkan: seeder dummy tugas tanah perizinan

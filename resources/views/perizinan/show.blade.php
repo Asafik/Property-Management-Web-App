@@ -191,14 +191,6 @@
             </p>
         </div>
         <div class="d-flex align-items-center gap-2 header-actions">
-            @if(!empty($canManage))
-                @if(!empty($project['is_finalized_to_pasca']) && !empty($project['land_bank_id']))
-                    <a href="{{ route('properti.edit', $project['land_bank_id']) }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-semibold" style="background: #10b981; border: 1px solid #10b981; border-radius: 8px; font-size: 0.85rem;" title="Buka data kawasan ini di Pasca Land Bank">
-                        <i class="mdi mdi-shield-check" style="font-size: 1.1rem; line-height: 1;"></i>
-                        <span>Buka di Pasca Land Bank</span>
-                    </a>
-                @endif
-            @endif
             <a href="{{ route('perizinan.index') }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-bold" style="border: 1px solid #64748b; background-color: #64748b; border-radius: 8px; font-size: 0.85rem; transition: all 0.2s ease;">
                 <i class="mdi mdi-arrow-left text-white" style="font-size: 1.1rem; line-height: 1;"></i>
                 <span>Kembali</span>

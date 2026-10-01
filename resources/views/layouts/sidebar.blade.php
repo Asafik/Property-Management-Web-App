@@ -188,6 +188,8 @@
 
             // Kelompok Marketing & Transaksi
             'Marketing'               => 10,
+            'Halaman Utama'           => 10.2,
+            'Sosial Media'            => 10.4,
             'User'                    => 11,
 
             // Kelompok KPR
@@ -230,6 +232,8 @@
 
             // Marketing
             'Marketing'               => 'Marketing',
+            'Halaman Utama'           => 'Marketing',
+            'Sosial Media'            => 'Marketing',
             'User'                    => 'Marketing',
 
             // KPR
@@ -274,6 +278,12 @@
             }
             if ($m->route === 'proyek.unit.index') {
                 return 9;
+            }
+            if ($m->route === 'marketing.landingpage.index' || $m->name === 'Halaman Utama') {
+                return 10.2;
+            }
+            if ($m->route === 'marketing.sosialmedia.index' || $m->name === 'Sosial Media') {
+                return 10.4;
             }
             return $menuSortWeight[$m->name] ?? $m->order ?? 99;
         });

@@ -518,6 +518,8 @@
                         $isDevSelesai = in_array(strtolower($land->development_status), ['selesai', 'done']) || $progress >= 100;
                         $isLegalValid = ($land->legal_status === 'verified') || $land->isFromPraLandbank();
                         $isCanKavling = $land->canCreateKavling();
+                        $izinDetail = $land->getPerizinanPemecahanKavlingDetail();
+                        $isIzinReady = $land->isIzinPecahKavlingReady();
                     @endphp
                     <div class="d-flex align-items-center justify-content-between mb-2">
                         <span class="fw-bold text-dark" style="font-size: 0.9rem;">Progres Pengolahan Lahan:</span>
@@ -584,17 +586,17 @@
                             @endif
                         </div>
 
-                        <!-- Rule 2: Pengolahan Lahan Selesai -->
+                        <!-- Rule 2: Izin Pemecahan Kavling (POIN-18) -->
                         <div class="d-flex align-items-center justify-content-between py-1">
-                            <span class="text-muted">2. Fisik Lahan:</span>
-                            @if($isDevSelesai)
+                            <span class="text-muted">2. Izin Pemecahan:</span>
+                            @if($isIzinReady)
                                 <span class="badge bg-soft-success text-success fw-bold rounded-2">
-                                    100% Selesai
+                                    {{ $izinDetail['label'] }}
                                 </span>
                             @else
-                                <span class="badge bg-soft-secondary text-muted rounded-2">
-                                    {{ $progress }}% / 100%
-                                </span>
+                                <a href="/perizinan/{{ $izinDetail['proyek_id'] ?? $land->id }}" class="badge bg-soft-warning text-warning fw-bold rounded-2 text-decoration-none" title="Klik untuk kelola perizinan">
+                                    {{ $izinDetail['label'] }}
+                                </a>
                             @endif
                         </div>
                     </div>
@@ -1437,23 +1439,30 @@
 
     window.showKavlingLockedInfo = function() {
         let isLegal = {{ ($land->legal_status === 'verified' || $land->isFromPraLandbank()) ? 'true' : 'false' }};
-        let isDev = {{ (in_array(strtolower($land->development_status), ['selesai', 'done']) || $land->overall_infrastructure_progress >= 100) ? 'true' : 'false' }};
+        let isIzin = {{ $land->isIzinPecahKavlingReady() ? 'true' : 'false' }};
 
         let msg = '';
-        if (!isLegal && !isDev) {
-            msg = 'Untuk membuka fitur Tambah Kavling, kedua syarat berikut harus dipenuhi:\n1. Dokumen Legalitas Tanah harus TERVERIFIKASI.\n2. Seluruh Fase Pengolahan Lahan harus 100% SELESAI.';
+        if (!isLegal && !isIzin) {
+            msg = 'Untuk membuka fitur Tambah Kavling, kedua syarat berikut harus dipenuhi:\n1. Dokumen Legalitas Tanah harus TERVERIFIKASI.\n2. Dokumen Perizinan POIN-18 (Proses Pemecahan SHGB Induk Perkavling) minimal sudah berstatus PROSES atau TERBIT.';
         } else if (!isLegal) {
-            msg = 'Pengolahan lahan telah selesai, namun status Legalitas Tanah masih belum Terverifikasi. Silakan lakukan validasi berkas legalitas terlebih dahulu.';
-        } else if (!isDev) {
-            msg = 'Legalitas tanah sudah terverifikasi, namun Pengolahan Lahan masih belum 100% selesai. Selesaikan Fase 1, 2, dan 3 terlebih dahulu.';
+            msg = 'Izin pemecahan telah siap, namun status Legalitas Tanah masih belum Terverifikasi. Silakan lakukan validasi berkas legalitas terlebih dahulu.';
+        } else if (!isIzin) {
+            msg = 'Legalitas tanah sudah terverifikasi, namun Dokumen Perizinan POIN-18 (Proses Pemecahan SHGB Induk Perkavling) belum diproses. Silakan ajukan / proses perizinan tersebut terlebih dahulu di menu Kelola Perizinan.';
         }
 
         Swal.fire({
             title: 'Syarat Tambah Kavling Terkunci',
             text: msg,
             icon: 'warning',
+            showCancelButton: true,
             confirmButtonColor: '#9a55ff',
-            confirmButtonText: 'Mengerti'
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="mdi mdi-file-document-edit-outline me-1"></i> Buka Perizinan Proyek',
+            cancelButtonText: 'Tutup'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/perizinan/{{ $izinDetail['proyek_id'] ?? $land->id }}`;
+            }
         });
     };
 

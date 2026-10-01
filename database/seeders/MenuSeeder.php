@@ -193,21 +193,26 @@ class MenuSeeder extends Seeder
         ])->positions()->attach($marketingRoles);
 
         Menu::create([
+            'name'      => 'Tugas Marketing',
+            'route'     => 'master.data.tugas-staff-marketing',
+            'parent_id' => $marketingMenu->id
+        ])->positions()->attach($marketingRoles);
+
+        // Halaman Utama & Sosial Media berdiri sendiri (Bukan Sub-Menu)
+        Menu::create([
             'name'      => 'Halaman Utama',
             'route'     => 'marketing.landingpage.index',
-            'parent_id' => $marketingMenu->id
+            'icon'      => 'mdi-web',
+            'parent_id' => null,
+            'order'     => 7.2
         ])->positions()->attach($marketingRoles);
 
         Menu::create([
             'name'      => 'Sosial Media',
             'route'     => 'marketing.sosialmedia.index',
-            'parent_id' => $marketingMenu->id
-        ])->positions()->attach($marketingRoles);
-
-        Menu::create([
-            'name'      => 'Tugas Marketing',
-            'route'     => 'master.data.tugas-staff-marketing',
-            'parent_id' => $marketingMenu->id
+            'icon'      => 'mdi-instagram',
+            'parent_id' => null,
+            'order'     => 7.4
         ])->positions()->attach($marketingRoles);
 
         // ================= 8. USER =================

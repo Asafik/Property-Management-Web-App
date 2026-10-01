@@ -117,6 +117,7 @@ Route::middleware(['auth'])->group(function () {
     */
 
     Route::get('/marketing/sell-unit', [SellUnitController::class, 'index'])->name('marketing.jual-unit');
+    Route::get('/marketing/sell-unit/{id}', [SellUnitController::class, 'show'])->name('marketing.jual-unit.show');
     Route::get('/marketing/unit', [\App\Http\Controllers\Marketing\UnitMarketingController::class, 'index'])->name('marketing.unit.index');
     Route::post('/marketing/unit/{id}/price', [\App\Http\Controllers\Marketing\UnitMarketingController::class, 'updatePrice'])->name('marketing.unit.updatePrice');
     Route::get('/marketing/landing-page', [\App\Http\Controllers\Marketing\LandingpageManagementController::class, 'index'])->name('marketing.landingpage.index');
@@ -416,7 +417,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/proyek', [\App\Http\Controllers\Admin\ProjectController::class, 'index'])->name('proyek.index');
     Route::get('/pengolahan-lahan', [\App\Http\Controllers\Admin\ProjectPengolahanLahanController::class, 'index'])->name('proyek.pengolahan-lahan.index');
     Route::get('/proyek-unit', [\App\Http\Controllers\Admin\ProjectUnitController::class, 'index'])->name('proyek.unit.index');
+    Route::post('/proyek-unit/assign-spk', [\App\Http\Controllers\Admin\ProjectUnitController::class, 'assignSpk'])->name('proyek.unit.assignSpk');
     Route::get('/legal-unit', [\App\Http\Controllers\Legal\LegalUnitController::class, 'index'])->name('legal.unit.index');
+    Route::get('/legal-unit/{id}', [\App\Http\Controllers\Legal\LegalUnitController::class, 'show'])->name('legal.unit.show');
 
     /*
     |--------------------------------------------------------------------------

@@ -146,51 +146,139 @@ public function kprDisbursements()
     return $this->hasMany(KprDisbursement::class, 'land_bank_unit_id')->orderBy('tanggal_cair', 'desc');
 }
 
-/**
- * Aksesor Legalitas Unit untuk Monitoring Legal
- */
-public function getLegalStatusKeyAttribute()
-{
-    if ($this->status === 'sold') {
-        return 'selesai';
+    public function getLatestOpnameAttribute()
+    {
+        if ($this->relationLoaded('progress') && $this->progress) {
+            if ($this->progress->relationLoaded('opnameMingguan')) {
+                return $this->progress->opnameMingguan->sortByDesc('minggu_ke')->first();
+            }
+            return $this->progress->opnameMingguan()->orderBy('minggu_ke', 'desc')->first();
+        } elseif ($this->progress) {
+            return $this->progress->opnameMingguan()->orderBy('minggu_ke', 'desc')->first();
+        }
+        return null;
     }
-    if ($this->status === 'booked') {
-        return 'bpn';
+
+    public function getRealConstructionProgressPercentageAttribute(): float
+    {
+        $latest = $this->latest_opname;
+        if ($latest && $latest->progress_kumulatif !== null && (float)$latest->progress_kumulatif > 0) {
+            return (float) $latest->progress_kumulatif;
+        }
+
+        // Cek progres dari item-item RAB (halaman proses_pembangunan)
+        if ($this->progress) {
+            $items = $this->progress->relationLoaded('items') 
+                ? $this->progress->items 
+                : $this->progress->items()->get();
+
+            if ($items && $items->count() > 0) {
+                $totalAnggaran = (float) $items->sum('total');
+                if ($totalAnggaran > 0) {
+                    $weightedDone = (float) $items->sum(function($item) {
+                        return ((float)$item->total) * (((float)($item->progress_persen ?? 0)) / 100);
+                    });
+                    $calculated = round(($weightedDone / $totalAnggaran) * 100, 1);
+                    if ($calculated > 0) {
+                        return $calculated;
+                    }
+                }
+                $avg = round((float) $items->avg('progress_persen'), 1);
+                if ($avg > 0) {
+                    return $avg;
+                }
+            }
+        }
+
+        $map = [
+            'belum_mulai' => 0.0,
+            'pondasi'     => 20.0,
+            'dinding'     => 40.0,
+            'atap'        => 60.0,
+            'finishing'   => 80.0,
+            'selesai'     => 100.0,
+        ];
+
+        $cp = strtolower(trim((string)$this->construction_progress));
+        return isset($map[$cp]) ? (float) $map[$cp] : 0.0;
     }
-    if ($this->status === 'ready') {
-        return 'notaris';
+
+    /**
+     * Total Nilai RAB Unit Pembangunan (Subtotal + PPN 10% persis formula halaman proses_pembangunan)
+     */
+    public function getTotalRabAttribute(): float
+    {
+        if ($this->progress) {
+            $items = $this->progress->relationLoaded('items') 
+                ? $this->progress->items 
+                : $this->progress->items()->get();
+
+            if ($items && $items->count() > 0) {
+                $subtotal = (float) $items->sum('total');
+                $ppn = round($subtotal * 0.1);
+                return $subtotal + $ppn;
+            }
+        }
+        return 0.0;
     }
-    return 'persiapan';
-}
 
-public function getLegalStatusLabelAttribute()
-{
-    $map = [
-        'selesai'   => 'SHM Terbit',
-        'bpn'       => 'Proses BPN',
-        'notaris'   => 'Validasi Notaris',
-        'persiapan' => 'Persiapan Berkas',
-    ];
-    return $map[$this->legal_status_key] ?? 'Persiapan Berkas';
-}
+    public function getTotalItemRabAttribute(): int
+    {
+        if ($this->progress) {
+            $items = $this->progress->relationLoaded('items') 
+                ? $this->progress->items 
+                : $this->progress->items()->get();
+            return $items ? $items->count() : 0;
+        }
+        return 0;
+    }
 
-public function getLegalProgressPercentageAttribute()
-{
-    $map = [
-        'selesai'   => 100,
-        'bpn'       => 70,
-        'notaris'   => 40,
-        'persiapan' => 15,
-    ];
-    return $map[$this->legal_status_key] ?? 15;
-}
+    /**
+     * Aksesor Legalitas Unit untuk Monitoring Legal
+     */
+    public function getLegalStatusKeyAttribute()
+    {
+        if (!empty($this->certificate_no)) {
+            return 'selesai';
+        }
+        if ($this->status === 'sold') {
+            return 'selesai';
+        }
+        if ($this->status === 'booked') {
+            return 'bpn';
+        }
+        if ($this->status === 'ready') {
+            return 'notaris';
+        }
+        return 'persiapan';
+    }
 
-public function getNoSertifikatAttribute()
-{
-    $district = $this->landBank->district ?? 'Kawasan';
-    $padId = str_pad($this->id, 4, '0', STR_PAD_LEFT);
-    return "SHM No. 0{$padId}/{$district}";
-}
+    public function getLegalStatusLabelAttribute()
+    {
+        $map = [
+            'selesai'   => 'SHM Terbit',
+            'bpn'       => 'Proses BPN',
+            'notaris'   => 'Validasi Notaris',
+            'persiapan' => 'Persiapan Berkas',
+        ];
+        return $map[$this->legal_status_key] ?? 'Persiapan Berkas';
+    }
+
+    public function getLegalProgressPercentageAttribute()
+    {
+        $map = [
+            'selesai'   => 100,
+            'bpn'       => 70,
+            'notaris'   => 40,
+            'persiapan' => 15,
+        ];
+        return $map[$this->legal_status_key] ?? 15;
+    }
+
+    public function getNoSertifikatAttribute()
+    {
+        return !empty($this->certificate_no) ? $this->certificate_no : null;
+    }
 
 public function getNoPbbAttribute()
 {

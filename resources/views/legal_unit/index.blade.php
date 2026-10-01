@@ -86,6 +86,18 @@
             font-weight: 600;
             text-align: right;
         }
+
+        /* Certificate Document Link Hover */
+        .cert-doc-link {
+            transition: all 0.15s ease;
+        }
+        .cert-doc-link:hover .cert-text {
+            color: #0284c7 !important;
+            text-decoration: underline !important;
+        }
+        .cert-doc-link:hover {
+            transform: translateY(-1px);
+        }
     </style>
 @endpush
 
@@ -269,9 +281,11 @@
                                     <th class="col-no text-center">No</th>
                                     <th>Kode / Unit</th>
                                     <th>Tanah / Proyek Asal</th>
-                                    <th>Tipe / Dimensi</th>
+                                    <th>Tipe</th>
                                     <th>Jenis</th>
-                                    <th style="min-width: 220px;">Legalitas & Sertifikat</th>
+                                    <th style="min-width: 120px;">Legalitas</th>
+                                    <th style="min-width: 150px;">Sertifikat</th>
+                                    <th style="min-width: 130px;">Pembangunan</th>
                                     <th class="col-status text-center">Status Unit</th>
                                     <th class="col-aksi text-center">Aksi</th>
                                 </tr>
@@ -327,9 +341,14 @@
                                             $legBadgeBorder = '#fde68a';
                                             $pColor = '#f59e0b';
                                         }
+
+                                        // Data Pembangunan & RAB
+                                        $progPct = (float) $u->real_construction_progress_percentage;
+                                        $progColor = $progPct >= 100 ? '#10b981' : ($progPct >= 50 ? '#0284c7' : ($progPct > 0 ? '#f59e0b' : '#94a3b8'));
+                                        $totalRab = (float) $u->total_rab;
                                     @endphp
                                     <tr class="unit-table-row" id="row_unit_{{ $u->id }}" 
-                                        data-search="{{ strtolower($u->unit_code . ' ' . $u->unit_name . ' ' . ($u->landBank->name ?? '') . ' ' . $u->block . ' ' . $u->type . ' ' . $u->jenis . ' ' . $u->no_sertifikat . ' ' . $u->legal_status_label . ' ' . $stLabel) }}">
+                                        data-search="{{ strtolower($u->unit_code . ' ' . $u->unit_name . ' ' . ($u->landBank->name ?? '') . ' ' . $u->block . ' ' . $u->type . ' ' . $u->jenis . ' ' . $u->certificate_no . ' ' . $u->legal_status_label . ' ' . $stLabel) }}">
                                         
                                         <td class="col-no fw-bold text-center">
                                             {{ $units->firstItem() + $index }}
@@ -354,12 +373,9 @@
                                         </td>
 
                                         <td>
-                                            <!-- TIPE & DIMENSI -->
+                                            <!-- TIPE -->
                                             <div class="fw-bold text-dark" style="font-size: 0.82rem;">
                                                 {{ $u->type ? 'Tipe ' . $u->type : '-' }}
-                                            </div>
-                                            <div class="text-secondary font-monospace" style="font-size: 0.75rem;">
-                                                LB: {{ $u->building_area ?? '-' }} m² | LT: {{ $u->area ?? '-' }} m²
                                             </div>
                                         </td>
 
@@ -378,19 +394,51 @@
                                             @endif
                                         </td>
 
+                                        <!-- KOLOM 1: LEGALITAS -->
                                         <td>
-                                            <!-- LEGALITAS & SERTIFIKAT -->
+                                            <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: {{ $legBadgeBg }}; color: {{ $legBadgeColor }}; border: 1px solid {{ $legBadgeBorder }};">
+                                                {{ $u->legal_status_label ?? 'Persiapan' }}
+                                            </span>
+                                        </td>
+
+                                        <!-- KOLOM 2: SERTIFIKAT -->
+                                        <td>
+                                            @if(!empty($u->certificate_no))
+                                                @if(!empty($u->file_certificate))
+                                                    <a href="javascript:void(0)" 
+                                                        class="fw-bold font-monospace text-decoration-none d-inline-flex align-items-center gap-1 cert-doc-link" 
+                                                        style="font-size: 0.83rem; max-width: 175px; color: #1e293b;"
+                                                        title="Klik untuk membuka dokumen fisik sertifikat"
+                                                        onclick="previewCertificateDoc('{{ asset($u->file_certificate) }}', '{{ addslashes($u->certificate_no) }}', '{{ addslashes($u->unit_code ?: ($u->block . '-' . $u->unit_number)) }}')">
+                                                        <i class="mdi mdi-certificate-outline text-success" style="font-size: 1.05rem;"></i>
+                                                        <span class="text-truncate cert-text" style="text-decoration: underline dotted #0284c7;">{{ $u->certificate_no }}</span>
+                                                    </a>
+                                                @else
+                                                    <div class="fw-bold text-dark font-monospace text-truncate d-inline-flex align-items-center gap-1" style="font-size: 0.83rem; max-width: 175px;" title="{{ $u->certificate_no }} (Dokumen fisik belum diunggah)">
+                                                        <i class="mdi mdi-certificate-outline text-muted" style="font-size: 1.05rem;"></i>
+                                                        <span class="text-truncate">{{ $u->certificate_no }}</span>
+                                                    </div>
+                                                @endif
+                                            @else
+                                                <span class="text-muted fw-semibold" style="font-size: 0.85rem;">-</span>
+                                            @endif
+                                        </td>
+
+                                        <!-- KOLOM 3: PROSES PEMBANGUNAN (RAB) -->
+                                        <td>
                                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                                <span class="badge py-0.5 px-2 fw-semibold" style="font-size: 0.72rem; border-radius: 4px; background-color: {{ $legBadgeBg }}; color: {{ $legBadgeColor }}; border: 1px solid {{ $legBadgeBorder }};">
-                                                    {{ $u->legal_status_label ?? 'Persiapan' }}
+                                                <span class="text-secondary fw-semibold" style="font-size: 0.72rem;">
+                                                    <i class="mdi mdi-hammer me-1 text-primary"></i>Fisik Bangun
                                                 </span>
-                                                <span class="fw-bold" style="font-size: 0.75rem; color: #334155;">{{ $legPct }}%</span>
+                                                <span class="fw-bold" style="font-size: 0.75rem; color: #1e293b;">
+                                                    {{ number_format($progPct, 1) }}%
+                                                </span>
                                             </div>
-                                            <div class="fw-semibold text-dark mb-1" style="font-size: 0.79rem;">
-                                                <i class="mdi mdi-certificate-outline me-1 text-primary"></i>{{ $u->no_sertifikat ?? '-' }}
-                                            </div>
-                                            <div class="progress" style="height: 5px; background-color: #e2e8f0; border-radius: 9999px;">
-                                                <div class="progress-bar rounded-pill" role="progressbar" style="width: {{ $legPct }}%; background-color: {{ $pColor }};"></div>
+                                            <div class="progress" style="height: 6px; background-color: #e2e8f0; border-radius: 9999px;">
+                                                <div class="progress-bar rounded-pill" role="progressbar" 
+                                                    style="width: {{ $progPct }}%; background-color: {{ $progColor }};" 
+                                                    aria-valuenow="{{ $progPct }}" aria-valuemin="0" aria-valuemax="100">
+                                                </div>
                                             </div>
                                         </td>
 
@@ -402,20 +450,19 @@
                                         </td>
 
                                         <td class="col-aksi text-center">
-                                            <!-- AKSI -->
-                                            <button type="button" 
-                                                class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-2.5 py-1.5 shadow-sm text-decoration-none fw-semibold" 
+                                            <!-- AKSI: Halaman Detail Sendiri -->
+                                            <a href="{{ route('legal.unit.show', $u->id) }}" 
+                                                class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center justify-content-center gap-1.5 px-3 py-1.5 shadow-sm text-decoration-none fw-semibold" 
                                                 style="border-radius: 6px; font-size: 0.8rem;" 
-                                                title="Lihat Detail Berkas Legalitas"
-                                                onclick="showDetailModal({{ json_encode($u) }})">
-                                                <i class="mdi mdi-file-document-outline" style="font-size: 0.95rem;"></i>
+                                                title="Buka Halaman Detail Legalitas & Berkas Unit">
+                                                <i class="mdi mdi-file-document-outline"></i>
                                                 <span>Detail</span>
-                                            </button>
+                                            </a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center text-muted py-4">
+                                        <td colspan="10" class="text-center text-muted py-4">
                                             <i class="mdi mdi-home-alert-outline me-2" style="font-size: 1.5rem;"></i>
                                             Tidak ada data unit legalitas yang sesuai dengan filter.
                                         </td>
@@ -423,7 +470,7 @@
                                 @endforelse
 
                                 <tr id="noResultsRow" style="display: none;">
-                                    <td colspan="8" class="text-center text-muted py-4">
+                                    <td colspan="10" class="text-center text-muted py-4">
                                         <i class="mdi mdi-magnify-close me-2" style="font-size: 1.5rem;"></i>
                                         Tidak ada unit legalitas yang cocok dengan kata kunci pencarian.
                                     </td>
@@ -451,80 +498,57 @@
 
 </div>
 
-<!-- Modal Detail Berkas Legalitas Unit -->
-<div class="modal fade" id="detailLegalModal" tabindex="-1" aria-labelledby="detailLegalModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+
+
+<!-- Modal Pratinjau Dokumen Sertifikat -->
+<div class="modal fade" id="previewCertModal" tabindex="-1" aria-labelledby="previewCertModalLabel" aria-hidden="true" style="z-index: 1070;">
+    <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 920px; width: 95%;">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
-            <div class="modal-header bg-light border-bottom py-3 px-4">
+            <div class="modal-header bg-light border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-2">
-                    <div class="d-flex align-items-center justify-content-center rounded-circle bg-primary text-white" style="width: 36px; height: 36px;">
-                        <i class="mdi mdi-file-certificate-outline" style="font-size: 1.2rem;"></i>
+                    <div class="d-flex align-items-center justify-content-center rounded-circle bg-success text-white" style="width: 36px; height: 36px;">
+                        <i class="mdi mdi-certificate-outline" style="font-size: 1.25rem;"></i>
                     </div>
                     <div>
-                        <h6 class="modal-title fw-bold text-dark mb-0" id="detailModalTitle">Detail Legalitas Unit</h6>
-                        <small class="text-muted" id="detailModalSubtitle">Informasi Sertifikat & Perizinan Unit</small>
+                        <h6 class="modal-title fw-bold text-dark mb-0" id="previewCertTitle">Dokumen Sertifikat</h6>
+                        <small class="text-muted" id="previewCertSubtitle">Nomor Sertifikat</small>
                     </div>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="#" id="previewCertExternalLink" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-3" style="border-radius: 6px; font-size: 0.8rem;">
+                        <i class="mdi mdi-open-in-new"></i>
+                        <span>Buka di Tab Baru</span>
+                    </a>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
             </div>
-            <div class="modal-body p-4">
-                
-                <div class="p-3 mb-3 rounded-3" style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <span class="text-secondary small fw-semibold">Progres Legalitas Unit</span>
-                        <span class="fw-bold small text-primary" id="modalProgressText">100%</span>
-                    </div>
-                    <div class="progress" style="height: 6px; background-color: #e2e8f0; border-radius: 9999px;">
-                        <div id="modalProgressBar" class="progress-bar rounded-pill bg-success" role="progressbar" style="width: 100%;"></div>
-                    </div>
+            <div class="modal-body p-0 position-relative" style="background-color: #0f172a; min-height: 480px;">
+                <!-- Loading indicator -->
+                <div id="previewCertLoading" class="position-absolute top-50 start-50 translate-middle text-center py-5">
+                    <div class="spinner-border text-light mb-2" role="status"></div>
+                    <div class="text-white-50 small">Memuat dokumen fisik sertifikat...</div>
                 </div>
-
-                <div class="detail-list">
-                    <div class="detail-item">
-                        <span class="detail-label">Tanah / Proyek Asal</span>
-                        <span class="detail-value text-primary" id="modalLandBank">-</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Kode & Blok Unit</span>
-                        <span class="detail-value font-monospace" id="modalUnitCode">-</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Tipe & Dimensi</span>
-                        <span class="detail-value" id="modalUnitType">-</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Jenis Properti</span>
-                        <span class="detail-value text-capitalize" id="modalUnitJenis">-</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Status Unit</span>
-                        <span class="detail-value text-capitalize" id="modalUnitStatus">-</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Status Legalitas</span>
-                        <span class="detail-value text-success" id="modalLegalStatus">-</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Nomor Sertifikat</span>
-                        <span class="detail-value fw-bold text-dark" id="modalNoSertifikat">-</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Nomor Objek Pajak (PBB)</span>
-                        <span class="detail-value font-monospace" id="modalNoPbb">-</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Nomor PBG / IMB Unit</span>
-                        <span class="detail-value font-monospace" id="modalNoPbg">-</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Status Pajak & Retribusi</span>
-                        <span class="detail-value text-success" id="modalStatusPajak">-</span>
-                    </div>
+                <!-- Container Image -->
+                <div id="previewCertImageContainer" class="d-none text-center p-3" style="max-height: 75vh; overflow: auto;">
+                    <img id="previewCertImage" src="" alt="Dokumen Sertifikat" class="img-fluid rounded shadow border" style="max-height: 70vh; object-fit: contain;">
                 </div>
-
+                <!-- Container PDF / iframe -->
+                <div id="previewCertIframeContainer" class="d-none w-100" style="height: 75vh;">
+                    <iframe id="previewCertIframe" src="" class="w-100 h-100 border-0" style="background-color: #ffffff;"></iframe>
+                </div>
+                <!-- Container Fallback jika format tidak didukung -->
+                <div id="previewCertFallback" class="d-none text-center py-5 px-3 text-white">
+                    <i class="mdi mdi-file-question-outline text-warning" style="font-size: 3.5rem;"></i>
+                    <h6 class="fw-bold mt-2 text-white">Pratinjau langsung tidak tersedia</h6>
+                    <p class="text-white-50 small mb-3">Format berkas dapat dibuka atau diunduh langsung melalui tombol di bawah ini.</p>
+                    <a href="#" id="previewCertDownloadBtn" target="_blank" class="btn btn-primary btn-sm px-4">
+                        <i class="mdi mdi-download me-1"></i>Unduh / Buka Dokumen
+                    </a>
+                </div>
             </div>
-            <div class="modal-footer bg-light border-top py-2 px-4">
-                <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Tutup</button>
+            <div class="modal-footer bg-light border-top py-2 px-4 d-flex justify-content-between">
+                <small class="text-muted" id="previewCertFooterInfo">Dokumen Fisik Sertifikat Tanah / Unit</small>
+                <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal" style="border-radius: 6px;">Tutup</button>
             </div>
         </div>
     </div>
@@ -552,36 +576,61 @@
         }
     }
 
-    function showDetailModal(unit) {
-        if (!unit) return;
+    function previewCertificateDoc(url, certNo, unitCode) {
+        if (!url) return;
 
-        document.getElementById('detailModalTitle').innerText = 'Unit ' + (unit.unit_code || ('Blok ' + unit.block));
-        document.getElementById('detailModalSubtitle').innerText = (unit.landBank ? unit.landBank.name : 'Tanah Kawasan') + ' • ' + (unit.unit_name || '');
-        
-        document.getElementById('modalLandBank').innerText = unit.landBank ? unit.landBank.name : '-';
-        document.getElementById('modalUnitCode').innerText = (unit.unit_code || '-') + ' (Blok ' + (unit.block || '-') + ' No. ' + (unit.unit_number || '-') + ')';
-        document.getElementById('modalUnitType').innerText = (unit.type ? 'Tipe ' + unit.type : '-') + ' (LB: ' + (unit.building_area || '-') + ' m² / LT: ' + (unit.area || '-') + ' m²)';
-        document.getElementById('modalUnitJenis').innerText = unit.jenis || '-';
-        document.getElementById('modalUnitStatus').innerText = unit.status || '-';
-        document.getElementById('modalLegalStatus').innerText = unit.legal_status_label || '-';
-        document.getElementById('modalNoSertifikat').innerText = unit.no_sertifikat || '-';
-        document.getElementById('modalNoPbb').innerText = unit.no_pbb || '-';
-        document.getElementById('modalNoPbg').innerText = unit.no_pbg || '-';
-        document.getElementById('modalStatusPajak').innerText = unit.status_pajak || '-';
+        document.getElementById('previewCertTitle').innerText = 'Dokumen Sertifikat — ' + (unitCode || 'Unit');
+        document.getElementById('previewCertSubtitle').innerText = 'Nomor Sertifikat: ' + (certNo || '-');
+        document.getElementById('previewCertExternalLink').href = url;
+        document.getElementById('previewCertDownloadBtn').href = url;
+        document.getElementById('previewCertFooterInfo').innerText = 'Berkas: ' + url.split('/').pop();
 
-        const pct = parseInt(unit.legal_progress_percentage || 0);
-        document.getElementById('modalProgressText').innerText = pct + '%';
-        const pBar = document.getElementById('modalProgressBar');
-        pBar.style.width = pct + '%';
-        if (pct >= 100) {
-            pBar.className = 'progress-bar rounded-pill bg-success';
-        } else if (pct >= 60) {
-            pBar.className = 'progress-bar rounded-pill bg-info';
+        const loading = document.getElementById('previewCertLoading');
+        const imgContainer = document.getElementById('previewCertImageContainer');
+        const iframeContainer = document.getElementById('previewCertIframeContainer');
+        const fallback = document.getElementById('previewCertFallback');
+        const img = document.getElementById('previewCertImage');
+        const iframe = document.getElementById('previewCertIframe');
+
+        loading.classList.remove('d-none');
+        imgContainer.classList.add('d-none');
+        iframeContainer.classList.add('d-none');
+        fallback.classList.add('d-none');
+
+        const cleanUrl = url.split('?')[0].toLowerCase();
+        const isImage = cleanUrl.endsWith('.jpg') || cleanUrl.endsWith('.jpeg') || cleanUrl.endsWith('.png') || cleanUrl.endsWith('.webp') || cleanUrl.endsWith('.gif');
+        const isPdf = cleanUrl.endsWith('.pdf');
+
+        if (isImage) {
+            img.onload = function() {
+                loading.classList.add('d-none');
+                imgContainer.classList.remove('d-none');
+            };
+            img.onerror = function() {
+                loading.classList.add('d-none');
+                fallback.classList.remove('d-none');
+            };
+            img.src = url;
+            if (img.complete && img.naturalWidth > 0) {
+                loading.classList.add('d-none');
+                imgContainer.classList.remove('d-none');
+            }
+        } else if (isPdf) {
+            iframe.onload = function() {
+                loading.classList.add('d-none');
+                iframeContainer.classList.remove('d-none');
+            };
+            iframe.src = url + '#toolbar=1';
+            setTimeout(() => {
+                loading.classList.add('d-none');
+                iframeContainer.classList.remove('d-none');
+            }, 600);
         } else {
-            pBar.className = 'progress-bar rounded-pill bg-warning';
+            loading.classList.add('d-none');
+            fallback.classList.remove('d-none');
         }
 
-        const modalEl = document.getElementById('detailLegalModal');
+        const modalEl = document.getElementById('previewCertModal');
         const modal = new bootstrap.Modal(modalEl);
         modal.show();
     }

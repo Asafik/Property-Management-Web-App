@@ -2,6 +2,10 @@
 
 @section('title', 'Marketing Jual Unit - Property Management App')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
+@endpush
+
 @section('content')
     <style>
         /* ===== JUAL UNIT SPECIFIC STYLES ===== */
@@ -13,12 +17,54 @@
         }
 
         .btn-outline-primary:hover {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
+            background: #9a55ff;
             color: #ffffff;
-            border-color: transparent;
+            border-color: #9a55ff;
         }
 
-        /* Badge Styling */
+        /* Solid Buttons - 1 Warna, Tanpa Gradient */
+        .btn-gradient-primary {
+            background: #9a55ff !important;
+            border-color: #9a55ff !important;
+            color: #ffffff !important;
+        }
+        .btn-gradient-primary:hover {
+            background: #8b3df5 !important;
+            border-color: #8b3df5 !important;
+            color: #ffffff !important;
+        }
+        .btn-gradient-secondary {
+            background: #64748b !important;
+            border-color: #64748b !important;
+            color: #ffffff !important;
+        }
+        .btn-gradient-secondary:hover {
+            background: #475569 !important;
+            border-color: #475569 !important;
+            color: #ffffff !important;
+        }
+        .btn-gradient-success {
+            background: #10b981 !important;
+            border-color: #10b981 !important;
+            color: #ffffff !important;
+        }
+        .btn-gradient-success:hover {
+            background: #059669 !important;
+            border-color: #059669 !important;
+            color: #ffffff !important;
+        }
+        .btn-gradient-danger {
+            background: #ef4444 !important;
+            border-color: #ef4444 !important;
+            color: #ffffff !important;
+        }
+        .btn-gradient-danger:hover {
+            background: #dc2626 !important;
+            border-color: #dc2626 !important;
+            color: #ffffff !important;
+        }
+
+        /* Badge Styling - Solid 1 Warna, Tanpa Gradient */
         .badge {
             padding: 0.35rem 0.6rem;
             font-size: 0.75rem;
@@ -36,28 +82,42 @@
         }
 
         .badge-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: #ffffff;
+            background: #10b981 !important;
+            color: #ffffff !important;
         }
 
         .badge-gradient-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+            background: #9a55ff !important;
             color: #ffffff !important;
         }
 
         .badge-gradient-secondary {
-            background: #6c757d !important;
+            background: #64748b !important;
             color: #ffffff !important;
         }
 
         .badge-gradient-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
+            background: #f59e0b !important;
+            color: #ffffff !important;
         }
 
         .badge-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: #ffffff;
+            background: #ef4444 !important;
+            color: #ffffff !important;
+        }
+
+        /* Card Compact Persis Perizinan */
+        .compact-table-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+            transition: border-color 0.2s ease;
+            overflow: hidden;
+        }
+        .compact-table-card:hover {
+            border-color: #cbd5e1 !important;
+            box-shadow: none !important;
         }
 
         /* ===== CSS DARI UI PERTAMA (UNTUK TABEL) ===== */
@@ -147,7 +207,7 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            background: #9a55ff;
             color: #fff;
             display: flex;
             align-items: center;
@@ -155,15 +215,15 @@
             font-size: 0.8rem;
             font-weight: 700;
             flex-shrink: 0;
-            box-shadow: 0 4px 10px rgba(154, 85, 255, 0.2);
+            box-shadow: 0 2px 6px rgba(154, 85, 255, 0.2);
         }
 
         .progress-green {
-            background: linear-gradient(to right, #28a745, #5dd17a);
+            background: #10b981;
         }
 
         .progress-dark-green {
-            background: linear-gradient(to right, #198754, #31b87a);
+            background: #059669;
         }
 
         .icon-text {
@@ -196,18 +256,18 @@
         }
 
         .btn-action.view {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
+            background: #9a55ff;
             color: #fff;
         }
 
         .btn-action.customer {
-            background: linear-gradient(135deg, #28a745, #5dd17a);
+            background: #10b981;
             color: #fff;
         }
 
         .btn-action.agent {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
+            background: #f59e0b;
+            color: #ffffff;
         }
 
         .action-group {
@@ -1285,100 +1345,96 @@
             background: #faf5ff;
         }
         .btn-view-toggle.active {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+            background: #9a55ff !important;
             color: #ffffff !important;
             border-color: #9a55ff !important;
             box-shadow: 0 2px 6px rgba(154, 85, 255, 0.25);
         }
     </style>
 
-    <div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
-        <!-- Header Card Banner -->
-        <div class="row mb-3 mb-md-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-0 header-card">
-                    <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
-                        <div>
-                            <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
-                                Marketing Jual Unit
-                            </h3>
-                            <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                                Kelola unit-unit yang siap dipasarkan ke customer
-                            </p>
-                        </div>
-                        <div class="d-none d-sm-block pe-2">
-                            <i class="mdi mdi-home-group" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
-                        </div>
+    <div class="container-fluid px-2 px-md-4 py-3">
+        <!-- Page Title & Subtitle (Tanpa Card Persis Halaman Perizinan) -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+            <div>
+                <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                    Catalog Unit
+                </h2>
+                <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                    Kelola unit-unit yang siap dipasarkan ke customer
+                </p>
+            </div>
+        </div>
+
+        <!-- 4 KPI Metrics Card Grid (UI Card Kita - 1 Warna Solid, Tanpa Gradient) -->
+        <div class="dash-kpi-grid mb-4">
+            <!-- Card 1: Total Unit (Ungu Solid) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon purple">
+                        <i class="mdi mdi-home-city"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Total Unit</div>
+                        <div class="dash-kpi-val">{{ $totalUnits }}</div>
+                        <div class="dash-kpi-sub">Seluruh Unit Terdaftar</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Tersedia (Hijau Solid) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon green">
+                        <i class="mdi mdi-check-circle-outline"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Unit Tersedia</div>
+                        <div class="dash-kpi-val">{{ $totalTersedia }}</div>
+                        <div class="dash-kpi-sub">Siap Dipasarkan</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Booking (Amber / Kuning Solid) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon amber">
+                        <i class="mdi mdi-bookmark-check-outline"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Unit Booking</div>
+                        <div class="dash-kpi-val">{{ $totalBooking }}</div>
+                        <div class="dash-kpi-sub">Proses Pengikatan</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Terjual (Biru Solid) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon blue">
+                        <i class="mdi mdi-cash-check"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Unit Terjual</div>
+                        <div class="dash-kpi-val">{{ $totalSold }}</div>
+                        <div class="dash-kpi-sub">Transaksi Selesai</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Statistics Cards -->
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-md-3">
-                <div class="card shadow-sm border-0 h-100 mb-0">
-                    <div class="card-body d-flex justify-content-between align-items-center p-3">
-                        <div>
-                            <h3 class="text-dark mb-1 fw-bold">{{ $totalUnits }}</h3>
-                            <p class="text-muted mb-0">Total Unit</p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-home-city" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="card shadow-sm border-0 h-100 mb-0">
-                    <div class="card-body d-flex justify-content-between align-items-center p-3">
-                        <div>
-                            <h3 class="text-dark mb-1 fw-bold">{{ $totalTersedia }}</h3>
-                            <p class="text-muted mb-0">Tersedia</p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-check-circle-outline" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="card shadow-sm border-0 h-100 mb-0">
-                    <div class="card-body d-flex justify-content-between align-items-center p-3">
-                        <div>
-                            <h3 class="text-dark mb-1 fw-bold">{{ $totalBooking }}</h3>
-                            <p class="text-muted mb-0">Booking</p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-bookmark-check-outline" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="card shadow-sm border-0 h-100 mb-0">
-                    <div class="card-body d-flex justify-content-between align-items-center p-3">
-                        <div>
-                            <h3 class="text-dark mb-1 fw-bold">{{ $totalSold }}</h3>
-                            <p class="text-muted mb-0">Terjual</p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-cash-check" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tabel Data -->
+        <!-- Tabel Data (Card Compact Meniru Persis Halaman Perizinan) -->
         <div class="row mt-2 mt-sm-2 mt-md-3">
             <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center py-3 px-3 px-md-4 gap-2 border-bottom">
-                        <h5 class="card-title mb-0" style="font-weight: 700; color: #2c2e3f; font-size: 1rem;">
-                            <i class="mdi mdi-format-list-bulleted me-2" style="color: #9a55ff;"></i>
-                            Daftar Unit
-                        </h5>
+                <div class="card compact-table-card" style="background: #ffffff !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; box-shadow: none !important;">
+                    <div class="card-header bg-white d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center py-2.5 px-3 px-md-4 gap-2" style="border-bottom: 1px solid #e2e8f0 !important;">
+                        <div class="d-flex align-items-center gap-2">
+                            <div style="width: 32px; height: 32px; border-radius: 6px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
+                                <i class="mdi mdi-format-list-bulleted"></i>
+                            </div>
+                            <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Daftar Unit</span>
+                        </div>
                         <div class="d-flex flex-wrap align-items-center gap-2">
                             <!-- Toggle View -->
                             <div class="d-flex align-items-center gap-1" id="viewToggleGroup" role="group">
@@ -1399,14 +1455,14 @@
                                     <i class="mdi mdi-map"></i><span>Siteplan</span>
                                 </button>
                             </div>
-                            <!-- Export Buttons -->
+                            <!-- Export Buttons (Solid Colors) -->
                             <a href="{{ route('marketing.jual-unit.export.excel') }}"
-                                class="btn btn-sm btn-gradient-success d-inline-flex align-items-center gap-1 px-3" style="height: 32px; border-radius: 6px;">
+                                class="btn btn-sm d-inline-flex align-items-center gap-1 px-3 text-white fw-semibold" style="height: 32px; border-radius: 6px; background-color: #10b981; border: 1px solid #10b981;">
                                 <i class="mdi mdi-file-excel"></i>
                                 <span>Excel</span>
                             </a>
                             <a href="{{ route('marketing.jual-unit.export.pdf') }}" 
-                                class="btn btn-sm btn-gradient-danger d-inline-flex align-items-center gap-1 px-3" style="height: 32px; border-radius: 6px;">
+                                class="btn btn-sm d-inline-flex align-items-center gap-1 px-3 text-white fw-semibold" style="height: 32px; border-radius: 6px; background-color: #ef4444; border: 1px solid #ef4444;">
                                 <i class="mdi mdi-file-pdf"></i>
                                 <span>PDF</span>
                             </a>
@@ -1836,34 +1892,9 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="action-group">
-                                                        <button class="btn-action view" title="Detail"
-                                                            data-bs-toggle="modal" data-bs-target="#detailUnitModal"
-                                                            data-unit_name="{{ $unit->unit_name ?? '-' }}"
-                                                            data-unit="{{ $unit->unit_code }}"
-                                                            data-unit_number="{{ $unit->unit_number ?? '-' }}"
-                                                            data-block="{{ $unit->block ?? '-' }}"
-                                                            data-jenis="{{ $unit->jenis ?? '-' }}"
-                                                            data-type="{{ $unit->type ?? '-' }}"
-                                                            data-address="{{ $unit->landBank->address ?? '-' }}"
-                                                            data-area="{{ $unit->area ?? 0 }}"
-                                                            data-building="{{ $unit->building_area ?? 0 }}"
-                                                            data-price="{{ $unit->price ?? 0 }}"
-                                                            data-certificate_no="{{ $unit->certificate_no ?? '' }}"
-                                                            data-certificate_doc="{{ $unit->file_certificate ? asset($unit->file_certificate) : '' }}"
-                                                            data-direction="{{ $unit->facing ?? '-' }}"
-                                                            data-status_raw="{{ $unit->status }}"
-                                                            data-status_text="{{ $statusText }}"
-                                                            data-construction="{{ $unit->construction_progress ?? 'belum_mulai' }}"
-                                                            data-has_booking="{{ $unit->activeBooking ? '1' : '0' }}"
-                                                            data-booking_id="{{ $unit->activeBooking->id ?? '' }}"
-                                                            data-customer="{{ $unit->activeBooking->customer->full_name ?? '-' }}"
-                                                            data-sales="{{ $unit->activeBooking->sales->name ?? '-' }}"
-                                                            data-booking_date="{{ $unit->activeBooking ? \Carbon\Carbon::parse($unit->activeBooking->booking_date)->format('d F Y') : '-' }}"
-                                                            data-booking_fee="{{ $unit->activeBooking->booking_fee ?? 0 }}"
-                                                            data-agent_fee="{{ $unit->activeBooking->agent_fee ?? 0 }}"
-                                                            data-booking_status="{{ $unit->activeBooking->status ?? '-' }}">
+                                                        <a href="{{ route('marketing.jual-unit.show', $unit->id) }}" class="btn-action view" title="Detail Unit">
                                                             <i class="mdi mdi-eye"></i>
-                                                        </button>
+                                                        </a>
                                                         @if (auth()->user()->position_id != 4)
                                                             <button class="btn-action customer" title="Booking Unit / Pilih Customer"
                                                                 onclick="openCustomerModal({{ $unit->id }})">
@@ -3838,35 +3869,9 @@
 
         function openUnitDetailFromObject(target) {
             if (!target || !target.unitId) return;
-            const data = {
-                unitName: target.unitName,
-                unitCode: target.unitCode,
-                unitNumber: target.unitNumber,
-                block: target.block,
-                jenis: target.jenis,
-                type: target.type,
-                address: target.address,
-                area: target.area,
-                building: target.building,
-                price: target.price,
-                direction: target.direction,
-                statusRaw: target.statusRaw,
-                statusText: target.statusText,
-                construction: target.construction,
-                hasBooking: target.hasBooking,
-                bookingId: target.bookingId,
-                customer: target.customer,
-                sales: target.sales,
-                bookingDate: target.bookingDate,
-                bookingFee: target.bookingFee,
-                agentFee: target.agentFee,
-                bookingStatus: target.bookingStatus
-            };
-
-            window.populateModalDirectly(data);
-            const modal = new bootstrap.Modal(document.getElementById('detailUnitModal'));
-            modal.show();
+            window.location.href = "{{ url('/marketing/sell-unit') }}/" + target.unitId;
         }
+
 
         // Buka modal detail saat bulatan di-KLIK (single click)
         let clickStartPos = { x: 0, y: 0 };

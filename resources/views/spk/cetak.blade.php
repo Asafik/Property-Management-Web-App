@@ -101,35 +101,67 @@
             position: relative;
         }
 
-        /* Official Kop Surat (Tanpa Logo - Rata Tengah) */
-        .kop-surat-box {
+        /* Official Kop Surat Resmi dengan Logo PT. GRAHA CIPTA SEJAHTERA */
+        .kop-surat-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px;
+            margin-bottom: 8px;
+        }
+
+        .kop-logo-box {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+        }
+
+        .kop-logo-img {
+            height: 72px;
+            max-width: 125px;
+            object-fit: contain;
+        }
+
+        .kop-text-box {
             text-align: center;
-            margin-bottom: 6px;
+            width: 100%;
+            padding: 0 85px;
         }
 
         .kop-company-title {
             font-family: 'Times New Roman', serif;
-            font-size: 16pt;
+            font-size: 18pt;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.8px;
             color: #000000;
-            margin: 0 0 4px 0;
+            margin: 0 0 2px 0;
             line-height: 1.2;
+        }
+
+        .kop-company-subtitle {
+            font-family: 'Times New Roman', serif;
+            font-size: 11pt;
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 2px 0;
         }
 
         .kop-company-desc {
             font-family: 'Times New Roman', serif;
-            font-size: 10pt;
+            font-size: 9.5pt;
             color: #1e293b;
             margin: 0;
             line-height: 1.35;
         }
 
         .kop-divider {
-            border-top: 3px solid #000000;
-            border-bottom: 1px solid #000000;
-            height: 4px;
+            border-top: 3.5px double #000000;
+            height: 0;
             margin-top: 8px;
             margin-bottom: 20px;
         }
@@ -314,8 +346,8 @@
             }
 
             .kop-divider {
-                border-top: 3px solid #000000 !important;
-                border-bottom: 1px solid #000000 !important;
+                border-top: 3.5px double #000000 !important;
+                border-bottom: none !important;
             }
 
             .table-termin-cetak thead th {
@@ -347,20 +379,31 @@
         </button>
     </div>
 
+    @php
+        $companyName = 'PT. GRAHA CIPTA SEJAHTERA';
+        $companySubtitle = 'Developer & General Contractor';
+        $companyAddress = 'Kantor : Jl. Letjen Sutoyo No. 99 A Jember';
+        $companyPhone = 'Telp. : 0331 - 331447, 0331 - 321533';
+        $logoPath = file_exists(public_path('images/logo1.png')) ? asset('images/logo1.png') : (file_exists(public_path('images/logo.jpeg')) ? asset('images/logo.jpeg') : null);
+    @endphp
+
     <!-- Paper Container -->
     <div class="print-container">
         
-        <!-- ================= KOP SURAT (RESMI TANPA LOGO) ================= -->
-        <div class="kop-surat-box">
-            <h2 class="kop-company-title">
-                {{ $spk->pihak_pertama_perusahaan ?: ($companySetting->company_name ?? ($companyProfile->name ?? 'PT. DEVELOPER PROPERTI INDONESIA')) }}
-            </h2>
-            <p class="kop-company-desc">
-                {{ $companySetting->address ?? ($companyProfile->address ?? 'Jl. Raya Utama Kawasan Perumahan') }}
-                @if($companySetting && $companySetting->city), {{ $companySetting->city }}@endif
-                <br>
-                Telp: {{ $companySetting->phone ?? ($companyProfile->phone ?? '-') }} | Email: {{ $companySetting->email ?? 'info@developer.com' }}
-            </p>
+        <!-- ================= KOP SURAT RESMI PT. GRAHA CIPTA SEJAHTERA ================= -->
+        <div class="kop-surat-wrapper">
+            @if($logoPath)
+                <div class="kop-logo-box">
+                    <img src="{{ $logoPath }}" alt="Logo {{ $companyName }}" class="kop-logo-img">
+                </div>
+            @endif
+            <div class="kop-text-box">
+                <h2 class="kop-company-title">{{ $companyName }}</h2>
+                <div class="kop-company-subtitle">{{ $companySubtitle }}</div>
+                <p class="kop-company-desc">
+                    {{ $companyAddress }} &nbsp;&nbsp; {{ $companyPhone }}
+                </p>
+            </div>
         </div>
         <div class="kop-divider"></div>
 
@@ -372,7 +415,7 @@
 
         <!-- ================= PEMBUKAAN ================= -->
         <p class="spk-text">
-            Pada hari ini, <strong>{{ \Carbon\Carbon::parse($spk->tanggal_spk)->isoFormat('dddd') }}</strong>, tanggal <strong>{{ \Carbon\Carbon::parse($spk->tanggal_spk)->isoFormat('D MMMM Y') }}</strong> ({{ \Carbon\Carbon::parse($spk->tanggal_spk)->format('d/m/Y') }}), bertempat di kantor <strong>{{ $spk->pihak_pertama_perusahaan ?: ($companySetting->company_name ?? 'Developer') }}</strong>, telah dibuat dan disepakati Surat Perintah Kerja oleh dan antara pihak-pihak di bawah ini:
+            Pada hari ini, <strong>{{ \Carbon\Carbon::parse($spk->tanggal_spk)->isoFormat('dddd') }}</strong>, tanggal <strong>{{ \Carbon\Carbon::parse($spk->tanggal_spk)->isoFormat('D MMMM Y') }}</strong> ({{ \Carbon\Carbon::parse($spk->tanggal_spk)->format('d/m/Y') }}), bertempat di kantor <strong>{{ $companyName }}</strong>, telah dibuat dan disepakati Surat Perintah Kerja oleh dan antara pihak-pihak di bawah ini:
         </p>
 
         <!-- ================= IDENTITAS PARA PIHAK ================= -->
@@ -382,7 +425,7 @@
                     <td style="width: 25px; font-weight: bold;">I.</td>
                     <td style="width: 145px;">Nama Perusahaan</td>
                     <td style="width: 15px;">:</td>
-                    <td><strong>{{ $spk->pihak_pertama_perusahaan ?: ($companySetting->company_name ?? 'Developer') }}</strong></td>
+                    <td><strong>{{ $companyName }}</strong></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -400,18 +443,18 @@
                     <td></td>
                     <td>Alamat</td>
                     <td>:</td>
-                    <td>{{ $spk->pihak_pertama_alamat ?: ($companySetting->address ?? '-') }}</td>
+                    <td>{{ $spk->pihak_pertama_alamat ?: 'Jl. Letjen Sutoyo No. 99 A Jember' }}</td>
                 </tr>
                 <tr>
                     <td></td>
                     <td>No. Telepon / HP</td>
                     <td>:</td>
-                    <td>{{ $spk->pihak_pertama_telepon ?: '-' }}</td>
+                    <td>{{ $spk->pihak_pertama_telepon ?: '0331 - 331447, 0331 - 321533' }}</td>
                 </tr>
                 <tr>
                     <td></td>
                     <td colspan="3" style="padding-top: 2px; padding-bottom: 6px;">
-                        Bertindak untuk dan atas nama <strong>{{ $spk->pihak_pertama_perusahaan ?: ($companySetting->company_name ?? 'Developer') }}</strong>, selanjutnya dalam perjanjian ini disebut sebagai <strong>PIHAK PERTAMA (Pemberi Tugas)</strong>.
+                        Bertindak untuk dan atas nama <strong>{{ $companyName }}</strong>, selanjutnya dalam perjanjian ini disebut sebagai <strong>PIHAK PERTAMA (Pemberi Tugas)</strong>.
                     </td>
                 </tr>
 
@@ -576,7 +619,7 @@
 
                     <td class="signature-col" style="width: 48%;">
                         <div class="fw-bold">PIHAK PERTAMA</div>
-                        <div class="text-muted" style="font-size: 9.5pt;">{{ $spk->pihak_pertama_perusahaan ?: ($companySetting->company_name ?? 'Developer') }}</div>
+                        <div class="text-muted" style="font-size: 9.5pt;">{{ $companyName }}</div>
                         <div class="sign-space" style="height: 83px;"></div>
                         <div class="sign-name">( {{ $spk->pihak_pertama_nama ?: 'Direktur Utama' }} )</div>
                         <div class="sign-title">{{ $spk->pihak_pertama_jabatan ?: 'Pemberi Tugas' }}</div>

@@ -197,7 +197,7 @@
                 <div class="dash-kpi-info">
                     <div class="dash-kpi-label">Siap Tambah Kavling</div>
                     <div class="dash-kpi-val">{{ $readyKavling ?? 0 }}</div>
-                    <div class="dash-kpi-sub">Infrastruktur 100% Selesai</div>
+                    <div class="dash-kpi-sub">Izin Pemecahan Siap</div>
                 </div>
             </div>
             <div class="dash-kpi-action green">
@@ -205,16 +205,16 @@
             </div>
         </div>
 
-        <!-- Card 3: Dalam Pengolahan Fisik (Kuning / Amber) -->
+        <!-- Card 3: Menunggu Izin Pemecahan (Kuning / Amber) -->
         <div class="dash-kpi-card">
             <div class="dash-kpi-left">
                 <div class="dash-kpi-icon amber">
-                    <i class="mdi mdi-progress-wrench"></i>
+                    <i class="mdi mdi-file-clock-outline"></i>
                 </div>
                 <div class="dash-kpi-info">
-                    <div class="dash-kpi-label">Dalam Pengolahan Fisik</div>
+                    <div class="dash-kpi-label">Menunggu Izin</div>
                     <div class="dash-kpi-val">{{ $processingLahan ?? 0 }}</div>
-                    <div class="dash-kpi-sub">Proses Infrastruktur Lahan</div>
+                    <div class="dash-kpi-sub">Proses Pemecahan SHGB</div>
                 </div>
             </div>
             <div class="dash-kpi-action amber">
@@ -440,13 +440,17 @@
                                         <td class="fw-semibold text-secondary">{{ number_format($remainingArea, 0, ',', '.') }} m²</td>
 
                                         <td class="text-center">
-                                            @if($canCreateKavling)
+                                            @if($devProgress >= 100 || in_array(strtolower($land->development_status ?? ''), ['selesai', 'done']))
                                                 <span class="badge bg-success text-white py-1 px-2.5 rounded-pill" style="font-size: 0.74rem;">
                                                     <i class="mdi mdi-check-circle me-1"></i>Selesai (100%)
                                                 </span>
+                                            @elseif($devProgress > 0)
+                                                <span class="badge bg-info text-white py-1 px-2.5 rounded-pill" style="font-size: 0.74rem;">
+                                                    <i class="mdi mdi-progress-wrench me-1"></i>Proses ({{ $devProgress }}%)
+                                                </span>
                                             @else
                                                 <span class="badge bg-warning text-dark py-1 px-2.5 rounded-pill" style="font-size: 0.74rem;">
-                                                    <i class="mdi mdi-progress-wrench me-1"></i>{{ $land->development_status ?? 'Proses' }} ({{ $devProgress }}%)
+                                                    <i class="mdi mdi-clock-outline me-1"></i>Belum (0%)
                                                 </span>
                                             @endif
                                         </td>
@@ -461,39 +465,42 @@
                                                     <i class="mdi mdi-calendar-clock me-1"></i>Booking
                                                 </span>
                                             @elseif(!$canCreateKavling)
-                                                <span class="badge-status processing">
-                                                    <i class="mdi mdi-progress-wrench me-1"></i>Dalam Pengolahan
+                                                <span class="badge-status processing" title="Menunggu Izin Pemecahan Kavling (POIN-18)">
+                                                    <i class="mdi mdi-file-clock-outline me-1"></i>Izin Pemecahan
                                                 </span>
                                             @else
                                                 <span class="badge-status available">
-                                                    <i class="mdi mdi-check-circle-outline me-1"></i>Tersedia
+                                                    <i class="mdi mdi-check-circle-outline me-1"></i>Siap Kavling
                                                 </span>
                                             @endif
                                         </td>
 
                                         <td class="col-aksi text-center">
-                                            @if($canCreateKavling)
-                                                <a href="{{ route('properti.buatKavling', ['land_bank_id' => $land->id]) }}"
-                                                   class="btn-action create"
-                                                   data-bs-toggle="tooltip"
-                                                   title="Buat Unit Kavling">
-                                                    <i class="mdi mdi-pencil-ruler"></i>
-                                                </a>
-                                            @else
-                                                <button type="button"
-                                                        class="btn-action locked"
-                                                        onclick="showLockedKavlingAlert('{{ addslashes($land->name) }}', '{{ $land->id }}', '{{ $land->development_status }}', '{{ $devProgress }}')"
-                                                        data-bs-toggle="tooltip"
-                                                        title="Pengolahan lahan belum selesai (Terkunci - Klik info)">
-                                                    <i class="mdi mdi-lock"></i>
-                                                </button>
-                                            @endif
+                                            <a href="{{ route('properti.buatKavling', ['land_bank_id' => $land->id]) }}"
+                                               class="btn-action create"
+                                               data-bs-toggle="tooltip"
+                                               title="Buat Unit Kavling">
+                                                <i class="mdi mdi-pencil-ruler"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="9" class="text-center text-muted py-4">
-                                            <i class="mdi mdi-information-outline me-2"></i> Tidak ada data tanah / landbank terverifikasi
+                                        <td colspan="9" class="text-center text-muted py-5">
+                                            <div class="d-flex flex-column align-items-center justify-content-center">
+                                                <div class="mb-2" style="width: 52px; height: 52px; border-radius: 50%; background: #f3e8ff; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="mdi mdi-vector-arrange-below" style="font-size: 1.6rem; color: #9a55ff;"></i>
+                                                </div>
+                                                <div class="fw-bold text-dark mt-1" style="font-size: 0.96rem;">Belum Ada Tanah yang Siap untuk Tambah Kavling</div>
+                                                <div class="small text-muted mt-1 text-center" style="max-width: 520px; line-height: 1.5;">
+                                                    Tanah akan otomatis muncul di halaman ini ketika dokumen perizinan <strong>POIN-18: Proses Pemecahan SHGB Induk Perkavling (Pasca Land Bank)</strong> sudah berstatus <strong>Proses</strong> atau <strong>Terbit</strong>.
+                                                </div>
+                                                <div class="mt-3">
+                                                    <a href="{{ route('perizinan.index') }}" class="btn btn-sm btn-gradient-primary px-3 text-white shadow-sm" style="border-radius: 6px;">
+                                                        <i class="mdi mdi-file-document-edit-outline me-1"></i> Buka Menu Perizinan
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforelse
@@ -599,35 +606,39 @@ function showPaginationLoading(event) {
     window.location.href = event.currentTarget.href;
 }
 
-function showLockedKavlingAlert(landName, landId, status, progress) {
+function showLockedKavlingAlert(landName, proyekId, status, progress) {
     Swal.fire({
         icon: 'warning',
-        title: 'Pengolahan Lahan Belum Selesai',
+        title: 'Izin Pemecahan Kavling Belum Siap',
         html: `<div class="text-start">
-            <p>Proyek <strong>${landName}</strong> belum dapat dibuatkan unit kavling karena proses <strong>pengolahan lahan & pembangunan infrastruktur</strong> (PJU, Selokan, Jalan, dll) masih belum selesai.</p>
+            <p>Proyek <strong>${landName}</strong> belum dapat dibuatkan unit kavling karena dokumen perizinan <strong>Proses Pemecahan SHGB Induk Perkavling (Pasca Land Bank)</strong> belum diproses.</p>
             <div class="p-3 bg-light rounded border mb-3">
                 <div class="d-flex justify-content-between mb-1 small">
-                    <span class="text-muted">Status Pembangunan:</span>
-                    <span class="badge bg-warning text-dark">${status || 'Proses'}</span>
+                    <span class="text-muted">Dokumen Perizinan:</span>
+                    <span class="fw-bold text-dark">POIN-18: Pemecahan SHGB Induk</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1 small">
+                    <span class="text-muted">Status Izin Saat Ini:</span>
+                    <span class="badge bg-warning text-dark">${status || 'Belum Diproses'}</span>
                 </div>
                 <div class="d-flex justify-content-between mb-2 small">
-                    <span class="text-muted">Progres Pekerjaan:</span>
-                    <span class="fw-bold text-primary">${progress}%</span>
+                    <span class="text-muted">Progres Berkas:</span>
+                    <span class="fw-bold text-primary">${progress || 0}%</span>
                 </div>
                 <div class="progress" style="height: 8px;">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: ${progress}%"></div>
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: ${progress || 0}%"></div>
                 </div>
             </div>
-            <p class="small text-muted mb-0"><i class="mdi mdi-information-outline me-1"></i>Selesaikan seluruh item pekerjaan pengolahan lahan di menu <strong>Semua Tanah Pasca Land Bank</strong> hingga 100% untuk membuka fitur Buat Kavling.</p>
+            <p class="small text-muted mb-0"><i class="mdi mdi-information-outline me-1"></i>Fitur Tambah Kavling akan otomatis terbuka ketika dokumen perizinan pemecahan kavling sudah minimal berstatus <strong>Proses</strong> atau <strong>Terbit</strong> (tanpa harus menunggu pengolahan lahan fisik selesai).</p>
         </div>`,
         showCancelButton: true,
         confirmButtonColor: '#9a55ff',
         cancelButtonColor: '#6c757d',
-        confirmButtonText: '<i class="mdi mdi-wrench me-1"></i> Kelola Pengolahan Lahan',
+        confirmButtonText: '<i class="mdi mdi-file-document-edit-outline me-1"></i> Kelola Perizinan Proyek',
         cancelButtonText: 'Tutup'
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = `/properti-pengolahan-lahan/${landId}`;
+            window.location.href = `/perizinan/${proyekId}`;
         }
     });
 }

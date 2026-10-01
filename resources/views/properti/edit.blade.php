@@ -2595,45 +2595,71 @@
                                         </div>
 
                                         @if($hasDenah)
-                                            <div class="p-2.5 px-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
-                                                <div class="d-flex align-items-center gap-2 mb-2">
-                                                    <div class="p-1.5 rounded-2 flex-shrink-0 bg-success bg-opacity-10 text-success">
-                                                        <i class="mdi mdi-file-check-outline" style="font-size: 1.25rem;"></i>
+                                            <div id="denahUploadedBox" class="p-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                                                <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap doc-uploaded-inner">
+                                                    <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1 me-2" style="min-width: 0;">
+                                                        <div class="p-2 rounded-2 flex-shrink-0" style="background: rgba(0, 201, 167, 0.15); color: #00c9a7;">
+                                                            <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
+                                                        </div>
+                                                        <div class="overflow-hidden" style="min-width: 0;">
+                                                            <span class="d-block fw-bold text-success text-truncate" id="denahStatusText" style="font-size: 0.85rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
+                                                            <small class="text-muted text-truncate d-block font-monospace" id="denahFileName" style="font-size: 0.74rem;">{{ basename($land->denah) }}</small>
+                                                        </div>
                                                     </div>
-                                                    <div class="overflow-hidden flex-grow-1">
-                                                        <span class="d-block fw-bold text-success" style="font-size: 0.82rem; line-height: 1.2;">Denah Terunggah</span>
-                                                        <small class="text-muted text-truncate d-block" style="font-size: 0.72rem;">{{ basename($land->denah) }}</small>
+                                                    <div class="d-flex align-items-center flex-shrink-0 doc-action-btns" style="gap: 8px;">
+                                                        <a href="{{ $denahUrl }}" target="_blank" id="denahViewLink" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 6px;">
+                                                            <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1; margin-right: 2px;"></i>
+                                                            <span>Lihat</span>
+                                                        </a>
+                                                        <button type="button" onclick="document.getElementById('upload_denah').click()" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 6px;">
+                                                            <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1; margin-right: 2px;"></i>
+                                                            <span>Ganti</span>
+                                                        </button>
                                                     </div>
                                                 </div>
-                                                <a href="{{ $denahUrl }}" target="_blank" class="btn btn-xs btn-success text-white py-1.5 px-3 d-flex align-items-center justify-content-center w-100 shadow-sm text-decoration-none mb-2" style="font-size: 0.78rem; font-weight: 600; border-radius: 6px;">
-                                                    <i class="mdi mdi-eye me-1"></i>Lihat Berkas Denah
-                                                </a>
+                                            </div>
+                                            <input type="file" name="denah" id="upload_denah" class="d-none" accept=".pdf,.jpg,.jpeg,.png,.webp,.svg" onchange="previewDenahFileChange(this)">
+                                        @else
+                                            <div id="denahEmptyBox">
+                                                <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.78rem; font-weight: 600;">
+                                                    <span>Upload Berkas Denah / Siteplan</span>
+                                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">JPG, PNG, WEBP, PDF (Maks 5MB)</span>
+                                                </label>
+                                                <div class="pratanah-file-upload-modern" onclick="document.getElementById('upload_denah').click()" style="cursor: pointer;">
+                                                    <div class="pratanah-file-label-modern py-2 px-3" style="border: 1.5px dashed #9a55ff; background: #faf5ff;">
+                                                        <i class="mdi mdi-cloud-upload" style="color: #9a55ff; font-size: 1.3rem;"></i>
+                                                        <div class="pratanah-file-info-modern">
+                                                            <span class="file-label-text fw-bold text-primary" style="font-size: 0.82rem;">Pilih Berkas Denah / Siteplan</span>
+                                                            <small style="font-size: 0.70rem; color: #8c98a4;">Format: JPG, PNG, WEBP, SVG, PDF (Maks 5MB)</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
-                                            <div class="pratanah-file-upload-modern">
-                                                <input type="file" name="denah" id="upload_denah" accept=".pdf,.jpg,.jpeg,.png,.webp,.svg">
-                                                <div class="pratanah-file-label-modern py-1 px-2" style="background: #f8fafc; border: 1px dashed #cbd5e1;">
-                                                    <i class="mdi mdi-cloud-sync" style="font-size: 1.1rem; color: #64748b;"></i>
-                                                    <div class="pratanah-file-info-modern">
-                                                        <span class="file-label-text text-secondary" style="font-size: 0.76rem; font-weight: 600;">Ganti Berkas Denah / Upload Ulang</span>
+                                            <div id="denahUploadedBox" class="p-3 rounded-3 mb-2" style="background: #f0fdf4; border: 1.5px solid #86efac; display: none;">
+                                                <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap doc-uploaded-inner">
+                                                    <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1 me-2" style="min-width: 0;">
+                                                        <div class="p-2 rounded-2 flex-shrink-0" style="background: rgba(0, 201, 167, 0.15); color: #00c9a7;">
+                                                            <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
+                                                        </div>
+                                                        <div class="overflow-hidden" style="min-width: 0;">
+                                                            <span class="d-block fw-bold text-success text-truncate" id="denahStatusText" style="font-size: 0.85rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
+                                                            <small class="text-muted text-truncate d-block font-monospace" id="denahFileName" style="font-size: 0.74rem;"></small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex align-items-center flex-shrink-0 doc-action-btns" style="gap: 8px;">
+                                                        <a href="#" target="_blank" id="denahViewLink" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 6px;">
+                                                            <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1; margin-right: 2px;"></i>
+                                                            <span>Lihat</span>
+                                                        </a>
+                                                        <button type="button" onclick="document.getElementById('upload_denah').click()" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 6px;">
+                                                            <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1; margin-right: 2px;"></i>
+                                                            <span>Ganti</span>
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
-                                        @else
-                                            <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.78rem; font-weight: 600;">
-                                                <span>Upload Berkas Denah / Siteplan</span>
-                                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">JPG, PNG, WEBP, PDF (Maks 5MB)</span>
-                                            </label>
-                                            <div class="pratanah-file-upload-modern">
-                                                <input type="file" name="denah" id="upload_denah" accept=".pdf,.jpg,.jpeg,.png,.webp,.svg">
-                                                <div class="pratanah-file-label-modern py-2 px-3" style="border: 1.5px dashed #9a55ff; background: #faf5ff;">
-                                                    <i class="mdi mdi-cloud-upload" style="color: #9a55ff; font-size: 1.3rem;"></i>
-                                                    <div class="pratanah-file-info-modern">
-                                                        <span class="file-label-text fw-bold text-primary" style="font-size: 0.82rem;">Pilih Berkas Denah / Siteplan</span>
-                                                        <small style="font-size: 0.70rem; color: #8c98a4;">Format: JPG, PNG, WEBP, SVG, PDF (Maks 5MB)</small>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <input type="file" name="denah" id="upload_denah" class="d-none" accept=".pdf,.jpg,.jpeg,.png,.webp,.svg" onchange="previewDenahFileChange(this)">
                                         @endif
                                     </div>
                                 </div>
@@ -3380,6 +3406,29 @@
                     statusTextEl.textContent = 'Berkas Baru Dipilih';
                     statusTextEl.className = 'd-block fw-bold text-primary text-truncate';
                 }
+            }
+        }
+
+        function previewDenahFileChange(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const fileUrl = URL.createObjectURL(file);
+                const fileNameEl = document.getElementById('denahFileName');
+                const statusTextEl = document.getElementById('denahStatusText');
+                const viewLinkEl = document.getElementById('denahViewLink');
+                const emptyBox = document.getElementById('denahEmptyBox');
+                const uploadedBox = document.getElementById('denahUploadedBox');
+
+                if (fileNameEl) fileNameEl.textContent = file.name;
+                if (statusTextEl) {
+                    statusTextEl.textContent = 'Berkas SK Resmi Terunggah';
+                    statusTextEl.className = 'd-block fw-bold text-success text-truncate';
+                }
+                if (viewLinkEl) {
+                    viewLinkEl.href = fileUrl;
+                }
+                if (emptyBox) emptyBox.style.display = 'none';
+                if (uploadedBox) uploadedBox.style.display = 'block';
             }
         }
     </script>

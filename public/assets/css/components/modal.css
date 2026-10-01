@@ -336,17 +336,14 @@
 html.modal-open,
 body.modal-open {
     overflow: hidden !important;
-    height: 100vh !important;
     padding-right: 0 !important;
-    touch-action: none;
 }
 
 body.modal-open .container-scroller,
 body.modal-open .main-panel,
 body.modal-open .content-wrapper,
 body.modal-open .page-body-wrapper {
-    overflow: hidden !important;
-    height: 100vh !important;
+    overflow: visible !important;
 }
 
 .modal {

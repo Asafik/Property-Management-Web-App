@@ -61,8 +61,16 @@
         }
         .compact-table-card .card-body,
         .card.compact-table-card .card-body {
-            padding: 0 !important;
+            padding: 0.75rem 1.25rem 1.15rem 1.25rem !important;
             background: #ffffff !important;
+        }
+
+        .filter-card {
+            margin-top: 0 !important;
+            margin-bottom: 0.6rem !important;
+        }
+        .filter-card form {
+            margin-bottom: 0 !important;
         }
 
         .price-badge-notset {
@@ -82,6 +90,28 @@
             font-weight: 700;
             font-size: 0.88rem;
             font-family: monospace;
+        }
+
+        /* Modal Set Harga Input Group Fix */
+        #modalSetHarga .input-group {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+        }
+        #modalSetHarga .input-group > .input-group-text {
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            border-right: none !important;
+            background-color: #f1f5f9 !important;
+            border-color: #cbd5e1 !important;
+        }
+        #modalSetHarga .input-group > .form-control {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-color: #cbd5e1 !important;
+        }
+        #modalSetHarga .input-group > .form-control:focus {
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
         }
     </style>
 @endpush
@@ -183,34 +213,48 @@
         </div>
     </div>
 
-    <!-- Main Container: Table & Filters -->
+    <!-- Main Container: Table & Filters (Sama Persis Perizinan) -->
     <div class="row">
         <div class="col-12">
-            <div class="card compact-table-card">
+            <div class="card compact-table-card" style="background: #ffffff !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; box-shadow: none !important;">
+                
+                <!-- Card Header (Sama Persis Perizinan) -->
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2" style="padding: 0.65rem 1.25rem !important; border-bottom: 1px solid #e2e8f0 !important;">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 32px; height: 32px; border-radius: 6px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
+                            <i class="mdi mdi-format-list-bulleted"></i>
+                        </div>
+                        <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Daftar Unit Marketing</span>
+                    </div>
+                </div>
+
                 <div class="card-body">
                     
-                    <!-- Toolbar Filter & Search -->
-                    <div class="p-3 border-bottom bg-white">
+                    <!-- Toolbar Filter & Search (Sama Persis Perizinan) -->
+                    <div class="filter-card">
                         <form method="GET" action="{{ route('marketing.unit.index') }}" id="filterForm">
-                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2.5">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
                                 
                                 <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                                     <!-- Search Input -->
-                                    <div class="search-input-group flex-grow-1" style="max-width: 260px;">
-                                        <div class="input-group input-group-sm">
-                                            <span class="input-group-text bg-light border-end-0">
-                                                <i class="mdi mdi-magnify text-muted"></i>
-                                            </span>
-                                            <input type="text" class="form-control border-start-0" 
-                                                   name="search" value="{{ request('search') }}" 
-                                                   placeholder="Cari kode unit, blok, nama..." 
-                                                   style="font-size: 0.84rem;">
+                                    <div style="min-width: 240px; max-width: 340px; flex: 1;">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="search" id="liveSearchInput"
+                                                placeholder="Cari kode unit, blok, nama..."
+                                                value="{{ request('search') }}"
+                                                onkeyup="applyLiveSearch(this.value)"
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                type="submit" title="Cari"
+                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                            </button>
                                         </div>
                                     </div>
 
                                     <!-- Filter Tanah / Proyek -->
-                                    <div style="width: 180px;">
-                                        <select class="form-select form-select-sm" name="land_bank_id" onchange="document.getElementById('filterForm').submit()">
+                                    <div style="min-width: 180px;">
+                                        <select class="form-control" name="land_bank_id" onchange="document.getElementById('filterForm').submit()">
                                             <option value="all">Semua Proyek</option>
                                             @foreach($landBanks as $lb)
                                                 <option value="{{ $lb->id }}" {{ request('land_bank_id') == $lb->id ? 'selected' : '' }}>
@@ -221,8 +265,8 @@
                                     </div>
 
                                     <!-- Filter Status Harga -->
-                                    <div style="width: 170px;">
-                                        <select class="form-select form-select-sm" name="status_harga" onchange="document.getElementById('filterForm').submit()">
+                                    <div style="width: 180px;">
+                                        <select class="form-control" name="status_harga" onchange="document.getElementById('filterForm').submit()">
                                             <option value="all" {{ request('status_harga') == 'all' ? 'selected' : '' }}>Semua Kondisi Harga</option>
                                             <option value="belum" {{ request('status_harga') == 'belum' ? 'selected' : '' }}>Belum Diset (Rp 0)</option>
                                             <option value="sudah" {{ request('status_harga') == 'sudah' ? 'selected' : '' }}>Sudah Diberi Harga</option>
@@ -231,7 +275,7 @@
 
                                     <!-- Filter Jenis Dropdown -->
                                     <div style="width: 130px;">
-                                        <select class="form-select form-select-sm" name="jenis" onchange="document.getElementById('filterForm').submit()">
+                                        <select class="form-control" name="jenis" onchange="document.getElementById('filterForm').submit()">
                                             <option value="all" {{ request('jenis') == 'all' ? 'selected' : '' }}>Semua Jenis</option>
                                             <option value="subsidi" {{ request('jenis') == 'subsidi' ? 'selected' : '' }}>Subsidi</option>
                                             <option value="komersil" {{ request('jenis') == 'komersil' ? 'selected' : '' }}>Komersil</option>
@@ -239,12 +283,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Action Filter / Reset Buttons -->
+                                <!-- Action Filter / Reset Buttons (Sama Persis Perizinan) -->
                                 <div class="d-flex align-items-center gap-2 ms-auto">
-                                    <button type="submit" class="btn btn-sm text-white px-3" style="background: #9a55ff; border-radius: 6px; font-weight: 600;" title="Terapkan Filter">
-                                        <i class="mdi mdi-filter me-1"></i>Filter
+                                    <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Terapkan Filter">
+                                        <i class="mdi mdi-filter"></i>
                                     </button>
-                                    <a href="{{ route('marketing.unit.index') }}" class="btn btn-sm btn-light border px-2.5" style="border-radius: 6px;" title="Reset Filter">
+                                    <a href="{{ route('marketing.unit.index') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset Filter">
                                         <i class="mdi mdi-refresh"></i>
                                     </a>
                                 </div>
@@ -260,9 +304,9 @@
                                     <th class="col-no text-center">No</th>
                                     <th>Kode / Unit</th>
                                     <th>Tanah / Proyek Asal</th>
-                                    <th>Tipe & Dimensi</th>
+                                    <th>Tipe</th>
                                     <th>Jenis</th>
-                                    <th style="min-width: 160px;">Harga Jual (Wewenang Marketing)</th>
+                                    <th style="min-width: 140px;">Harga Jual</th>
                                     <th class="col-status text-center">Status Jual</th>
                                     <th class="col-aksi text-center">Aksi Marketing</th>
                                 </tr>
@@ -294,8 +338,9 @@
                                         }
 
                                         $hasPrice = !empty($u->price) && $u->price > 0;
+                                        $searchKeywords = strtolower(($u->unit_code ?: '') . ' ' . ($u->block ?: '') . ' ' . ($u->unit_number ?: '') . ' ' . ($u->unit_name ?: '') . ' ' . ($u->landBank->name ?? '') . ' ' . ($u->type ? 'tipe ' . $u->type : '') . ' ' . ($u->jenis ?? ''));
                                     @endphp
-                                    <tr class="unit-table-row">
+                                    <tr class="unit-table-row" data-search="{{ $searchKeywords }}">
                                         
                                         <td class="col-no fw-bold text-center">
                                             {{ $units->firstItem() + $index }}
@@ -306,9 +351,11 @@
                                             <div class="fw-bold text-dark font-monospace" style="font-size: 0.88rem; line-height: 1.3;">
                                                 {{ $u->unit_code ?: ($u->block . '-' . $u->unit_number) }}
                                             </div>
-                                            <div class="text-secondary mt-0.5" style="font-size: 0.77rem; line-height: 1.3;">
-                                                {{ $u->unit_name ?: ('Blok ' . $u->block . ' No. ' . $u->unit_number) }}
-                                            </div>
+                                            @if($u->unit_name)
+                                                <div class="text-secondary mt-0.5" style="font-size: 0.77rem; line-height: 1.3;">
+                                                    {{ $u->unit_name }}
+                                                </div>
+                                            @endif
                                         </td>
 
                                         <td>
@@ -320,12 +367,9 @@
                                         </td>
 
                                         <td>
-                                            <!-- TIPE & DIMENSI -->
+                                            <!-- TIPE -->
                                             <div class="fw-bold text-dark" style="font-size: 0.82rem;">
                                                 {{ $u->type ? 'Tipe ' . $u->type : '-' }}
-                                            </div>
-                                            <div class="text-secondary font-monospace" style="font-size: 0.75rem;">
-                                                LB: {{ $u->building_area ?? '-' }} m² | LT: {{ $u->area ?? '-' }} m²
                                             </div>
                                         </td>
 
@@ -366,8 +410,8 @@
 
                                         <td class="col-aksi text-center">
                                             <!-- AKSI SET HARGA (MODAL TRIGGER) -->
-                                            <button type="button" class="btn btn-sm text-white d-inline-flex align-items-center gap-1 px-2.5 py-1.5 shadow-sm"
-                                                    style="background: {{ $hasPrice ? '#0284c7' : '#9a55ff' }}; border-radius: 6px; font-size: 0.8rem; font-weight: 600;"
+                                            <button type="button" class="btn btn-sm {{ $hasPrice ? 'btn-gradient-info' : 'btn-gradient-primary' }} d-inline-flex align-items-center justify-content-center gap-1.5 px-3 py-1.5 shadow-sm fw-semibold"
+                                                    style="border-radius: 6px; font-size: 0.8rem;"
                                                     data-bs-toggle="modal" data-bs-target="#modalSetHarga"
                                                     data-id="{{ $u->id }}"
                                                     data-code="{{ $u->unit_code ?: ($u->block . '-' . $u->unit_number) }}"
@@ -389,6 +433,13 @@
                                         </td>
                                     </tr>
                                 @endforelse
+
+                                <tr id="noResultsRow" style="display: none;">
+                                    <td colspan="8" class="text-center text-muted py-5">
+                                        <i class="mdi mdi-magnify-close me-2" style="font-size: 2rem; color: #94a3b8;"></i>
+                                        <p class="mt-2 mb-0">Tidak ada unit marketing yang cocok dengan kata kunci pencarian.</p>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -440,10 +491,13 @@
                             Harga Jual Unit (Rp) <span class="text-danger">*</span>
                         </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light fw-bold" style="font-size: 0.88rem;">Rp</span>
+                            <span class="input-group-text fw-bold px-3" 
+                                  style="font-size: 0.9rem; background-color: #f1f5f9; border: 1px solid #cbd5e1; border-right: none !important; border-top-left-radius: 6px !important; border-bottom-left-radius: 6px !important; border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; color: #334155; line-height: 1;">
+                                Rp
+                            </span>
                             <input type="text" inputmode="numeric" name="price" id="modalInputPrice" class="form-control" 
                                    placeholder="Contoh: 185.000.000" required autocomplete="off"
-                                   style="font-size: 0.95rem; font-weight: 600;">
+                                   style="font-size: 0.95rem; font-weight: 600; border: 1px solid #cbd5e1; border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 6px !important; border-bottom-right-radius: 6px !important; padding: 0.5rem 0.85rem;">
                         </div>
                         <small class="text-muted" style="font-size: 0.74rem;">Wewenang penuh bagian Marketing menentukan harga resmi ke konsumen.</small>
                     </div>
@@ -453,7 +507,7 @@
                         <label class="form-label fw-bold text-dark" style="font-size: 0.86rem;">
                             Status Pemasaran
                         </label>
-                        <select name="status" id="modalSelectStatus" class="form-select" style="font-size: 0.86rem;">
+                        <select name="status" id="modalSelectStatus" class="form-select" style="font-size: 0.86rem; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.5rem 0.85rem;">
                             <option value="ready">Ready to Sell (Siap Dipasarkan)</option>
                             <option value="draft">Draft (Tahan / Belum Dirilis)</option>
                             <option value="booked">Booked (Dalam Booking)</option>
@@ -464,9 +518,10 @@
 
                 </div>
                 <div class="modal-footer border-top py-2.5 px-4 bg-light d-flex justify-content-between">
-                    <button type="button" class="btn btn-sm btn-light border px-3" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-sm text-white px-4 fw-bold shadow-sm" style="background: #9a55ff; border-radius: 6px;">
-                        <i class="mdi mdi-content-save me-1"></i>Simpan Harga
+                    <button type="button" class="btn btn-sm btn-light border px-3" data-bs-dismiss="modal" style="border-radius: 6px;">Batal</button>
+                    <button type="submit" class="btn btn-sm btn-gradient-primary px-4 fw-bold shadow-sm d-inline-flex align-items-center gap-1.5" style="border-radius: 6px;">
+                        <i class="mdi mdi-content-save"></i>
+                        <span>Simpan Harga</span>
                     </button>
                 </div>
             </form>
@@ -548,6 +603,27 @@
             }
         }
     });
+
+    // Live search client-side persis Perizinan
+    function applyLiveSearch(keyword) {
+        keyword = (keyword || '').toLowerCase().trim();
+        const rows = document.querySelectorAll('.unit-table-row');
+        let visibleCount = 0;
+        rows.forEach(row => {
+            const searchData = row.getAttribute('data-search') || '';
+            if (!keyword || searchData.includes(keyword)) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        const noRes = document.getElementById('noResultsRow');
+        if (noRes) {
+            noRes.style.display = (visibleCount === 0 && keyword !== '') ? '' : 'none';
+        }
+    }
 </script>
 @endpush
 

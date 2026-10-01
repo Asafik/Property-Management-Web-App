@@ -874,12 +874,39 @@ class PerizinanController extends Controller
                 $paymentMethod = $pra->payment_method ? ucwords($pra->payment_method) : 'Termin / Cash';
                 
                 $landBankId = $pra->land_bank_id;
+                $foundLb = null;
                 if (!$landBankId) {
                     $foundLb = LandBank::where('name', $pra->land_name)->first();
                     if ($foundLb) {
                         $landBankId = $foundLb->id;
                     }
+                } else {
+                    $foundLb = LandBank::find($landBankId);
                 }
+
+                // Cek apakah status tanah sudah beralih ke SHGB Induk (dari LandBank atau dari task SHGB Induk Selesai)
+                $hasShgbInduk = false;
+                if ($foundLb && in_array(strtoupper(trim($foundLb->ownership_status ?? '')), ['HGB', 'SHGB', 'SHGB INDUK'])) {
+                    $hasShgbInduk = true;
+                }
+                if (!$hasShgbInduk && in_array(strtoupper(trim($pra->ownership_status ?? '')), ['HGB', 'SHGB', 'SHGB INDUK'])) {
+                    $hasShgbInduk = true;
+                }
+                if (!$hasShgbInduk) {
+                    $shgbTaskDone = PerizinanTask::where(function($q) use ($pra) {
+                        $q->where('proyek_id', $pra->id)
+                          ->orWhere('proyek_nama', $pra->land_name);
+                    })->where(function($q) {
+                        $q->where('nama_tugas', 'like', '%SHGB Induk%')
+                          ->orWhere('nama_tugas', 'like', '%Buku HGB%');
+                    })->whereIn('status', ['Selesai', 'Terbit'])->exists();
+
+                    if ($shgbTaskDone) {
+                        $hasShgbInduk = true;
+                    }
+                }
+
+                $ownershipStatus = $hasShgbInduk ? 'SHGB Induk' : ($pra->ownership_status ?: 'SHGB Induk');
 
                 $projects->push([
                     'id'                     => $pra->id,
@@ -890,7 +917,7 @@ class PerizinanController extends Controller
                     'pt'                     => 'PT Graha Cipta Sejahtera',
                     'lokasi'                 => $lokasi,
                     'luas'                   => number_format($pra->area ?? 0, 0, ',', '.') . ' m²',
-                    'ownership_status'       => $pra->ownership_status ?: 'SHGB Induk',
+                    'ownership_status'       => $ownershipStatus,
                     'payment_method'         => $paymentMethod,
                     'deal_price'             => $pra->deal_price,
                     'target_selesai'         => '-',

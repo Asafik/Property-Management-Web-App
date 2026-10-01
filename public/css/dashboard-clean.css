@@ -120,6 +120,7 @@
 .dash-kpi-icon.purple { background-color: #f3e8ff; color: #9333ea; }
 .dash-kpi-icon.blue { background-color: #e0f2fe; color: #0284c7; }
 .dash-kpi-icon.green { background-color: #dcfce7; color: #16a34a; }
+.dash-kpi-icon.amber { background-color: #fef3c7; color: #d97706; }
 .dash-kpi-icon.rose { background-color: #ffe4e6; color: #e11d48; }
 
 .dash-kpi-info {
@@ -172,6 +173,8 @@
 .dash-kpi-action.blue:hover { background-color: #0284c7; color: #ffffff; text-decoration: none; }
 .dash-kpi-action.green { background-color: #dcfce7; color: #16a34a; }
 .dash-kpi-action.green:hover { background-color: #16a34a; color: #ffffff; text-decoration: none; }
+.dash-kpi-action.amber { background-color: #fef3c7; color: #d97706; }
+.dash-kpi-action.amber:hover { background-color: #d97706; color: #ffffff; text-decoration: none; }
 .dash-kpi-action.rose { background-color: #ffe4e6; color: #e11d48; }
 .dash-kpi-action.rose:hover { background-color: #e11d48; color: #ffffff; text-decoration: none; }
 

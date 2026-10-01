@@ -280,10 +280,15 @@ class PropertyController extends Controller
 
 public function kavlingindex(Request $request)
 {
-    $query = LandBank::where(function($q) {
+    // Hanya tanah yang izin pemecahannya (POIN-18) sudah minimal Proses / Terbit yang muncul di halaman Tambah Kavling
+    $allCandidateLands = LandBank::where(function($q) {
         $q->where('legal_status', 'verified')
           ->orWhereIn('name', \App\Models\PraLandbank::pluck('land_name'));
-    });
+    })->with(['units', 'infrastructures'])->get();
+
+    $readyLandIds = $allCandidateLands->filter(fn($l) => $l->canCreateKavling())->pluck('id')->toArray();
+
+    $query = LandBank::whereIn('id', $readyLandIds);
 
     // Filter Search Nama & Lokasi
     if ($request->filled('search')) {
@@ -301,14 +306,7 @@ public function kavlingindex(Request $request)
         } elseif ($request->status == 'booking') {
             $query->where('status', 'booking');
         } elseif ($request->status == 'available') {
-            $query->whereNotIn('status', ['sold', 'booking'])
-                  ->whereIn('development_status', ['Selesai', 'done']);
-        } elseif ($request->status == 'processing') {
-            $query->whereNotIn('status', ['sold', 'booking'])
-                  ->where(function($sq) {
-                      $sq->whereNull('development_status')
-                         ->orWhereNotIn('development_status', ['Selesai', 'done']);
-                  });
+            $query->whereNotIn('status', ['sold', 'booking']);
         }
     }
 
@@ -336,15 +334,10 @@ public function kavlingindex(Request $request)
     $lands = $query->paginate($perPage)->withQueryString();
 
     // 4 KPI Metrics
-    $allLands = LandBank::where(function($q) {
-        $q->where('legal_status', 'verified')
-          ->orWhereIn('name', \App\Models\PraLandbank::pluck('land_name'));
-    })->with(['units', 'infrastructures'])->get();
-
-    $totalVerified = $allLands->count();
-    $readyKavling = $allLands->filter(fn($l) => $l->canCreateKavling())->count();
+    $totalVerified = $allCandidateLands->count();
+    $readyKavling = count($readyLandIds);
     $processingLahan = max(0, $totalVerified - $readyKavling);
-    $totalLuasLahan = $allLands->sum('area');
+    $totalLuasLahan = $allCandidateLands->sum('area');
 
     return view('properti.kavling', compact(
         'lands',

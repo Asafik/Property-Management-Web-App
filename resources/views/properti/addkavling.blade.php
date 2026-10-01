@@ -820,6 +820,50 @@ body.modal-open .page-body-wrapper {
     box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
 }
 
+/* Kavling Rupiah Input Box */
+.kavling-rupiah-box {
+    display: flex !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    border: 1px solid #ebedf2 !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+    height: 38px !important;
+    transition: all 0.2s ease !important;
+}
+
+.kavling-rupiah-box:focus-within {
+    border-color: #b66dff !important;
+    box-shadow: 0 0 0 3px rgba(182, 109, 255, 0.15) !important;
+}
+
+.kavling-rupiah-box .rupiah-prefix {
+    background: #f8f9fa !important;
+    color: #6c757d !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    padding: 0 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-right: 1px solid #ebedf2 !important;
+    user-select: none !important;
+}
+
+.kavling-rupiah-box input.rupiah-input {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 12px !important;
+    font-size: 0.875rem !important;
+    color: #495057 !important;
+    flex: 1 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: transparent !important;
+}
+
 /* SPK Rupiah Input Group */
 .spk-rupiah-box {
     display: flex !important;
@@ -1113,10 +1157,6 @@ body.modal-open .page-body-wrapper {
                     </h5>
 
                     <div class="d-flex flex-wrap align-items-center gap-2">
-                        <button type="button" class="btn btn-sm btn-gradient-info text-white px-3 py-1.5" data-bs-toggle="modal" data-bs-target="#modalSpkUnit" style="border-radius: 6px;">
-                            Atur SPK
-                        </button>
-
                         <button type="button" class="btn btn-sm btn-gradient-primary text-white px-3 py-1.5" data-bs-toggle="modal" data-bs-target="#tambahUnitModal" style="border-radius: 6px;">
                             + Tambah Unit
                         </button>
@@ -1246,9 +1286,10 @@ body.modal-open .page-body-wrapper {
                                     <th>Kode Unit</th>
                                     <th>Luas Tanah</th>
                                     <th>Jenis & Tipe</th>
+                                    <th>Biaya IJB</th>
+                                    <th>Biaya AJB</th>
                                     <th>No. Sertifikat</th>
                                     <th class="text-center" style="width: 120px;">Dokumen</th>
-                                    <th class="text-center" style="width: 130px;">SPK</th>
                                     <th class="text-center" style="width: 100px;">Status</th>
                                     <th class="text-center" style="width: 120px;">Aksi</th>
                                 </tr>
@@ -1292,6 +1333,18 @@ body.modal-open .page-body-wrapper {
                                         </td>
 
                                         <td>
+                                            <span class="fw-semibold text-dark font-monospace" style="font-size: 0.82rem;">
+                                                Rp {{ number_format($unit->ijb_price ?? 0, 0, ',', '.') }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="fw-semibold text-dark font-monospace" style="font-size: 0.82rem;">
+                                                Rp {{ number_format($unit->ajb_price ?? 0, 0, ',', '.') }}
+                                            </span>
+                                        </td>
+
+                                        <td>
                                             @if($unit->certificate_no)
                                                 <span class="fw-semibold text-dark" style="font-size: 0.82rem;">
                                                     <i class="mdi mdi-certificate text-warning me-1"></i>{{ $unit->certificate_no }}
@@ -1311,34 +1364,6 @@ body.modal-open .page-body-wrapper {
                                             @endif
                                         </td>
 
-                                        <td class="text-center">
-                                            @if ($unit->no_spk)
-                                                @php
-                                                    $spkDocUrl = null;
-                                                    if (!empty($unit->dokumen_spk)) {
-                                                        $cleanSpk = ltrim($unit->dokumen_spk, '/');
-                                                        $spkDocUrl = asset(str_starts_with($cleanSpk, 'uploads/') ? $cleanSpk : 'uploads/' . $cleanSpk);
-                                                    }
-                                                    $spkRecord = \App\Models\Spk::where('no_spk', $unit->no_spk)->first();
-                                                @endphp
-
-                                                @if ($spkRecord)
-                                                    <a href="{{ route('spk.cetak', $spkRecord->id) }}" target="_blank" class="text-primary text-decoration-none fw-bold" style="font-size: 0.85rem;" title="Cetak / Buka Surat Resmi SPK {{ $unit->no_spk }} (Kontraktor: {{ $unit->kontraktor ?? '-' }})">
-                                                        {{ $unit->no_spk }}
-                                                    </a>
-                                                @elseif ($spkDocUrl)
-                                                    <a href="{{ $spkDocUrl }}" target="_blank" class="text-primary text-decoration-none fw-bold" style="font-size: 0.85rem;" title="Buka berkas PDF SPK {{ $unit->no_spk }} (Kontraktor: {{ $unit->kontraktor ?? '-' }})">
-                                                        {{ $unit->no_spk }}
-                                                    </a>
-                                                @else
-                                                    <span class="text-dark fw-bold" style="font-size: 0.85rem;">{{ $unit->no_spk }}</span>
-                                                @endif
-
-
-                                            @else
-                                                <span class="text-muted small">-</span>
-                                            @endif
-                                        </td>
 
                                         <td class="text-center">
                                             @php
@@ -1375,19 +1400,6 @@ body.modal-open .page-body-wrapper {
                                                 <button type="button" class="btn-action btn-action-edit" data-bs-toggle="modal" data-bs-target="#editUnitModal{{ $unit->id }}" title="Edit">
                                                     <i class="mdi mdi-pencil"></i>
                                                 </button>
-
-                                                @php
-                                                    $isUnitSoldOrDone = in_array(strtolower($unit->status ?? ''), ['sold', 'soldout']) || strtolower($unit->construction_progress ?? '') === 'selesai';
-                                                @endphp
-                                                @if($isUnitSoldOrDone)
-                                                    <button type="button" class="btn-action btn-action-view" disabled title="Pembangunan Selesai / Unit Sold Out" style="opacity: 0.45; cursor: not-allowed;">
-                                                        <i class="mdi mdi-progress-check"></i>
-                                                    </button>
-                                                @else
-                                                    <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id, 'unit_id' => $unit->id]) }}" class="btn-action btn-action-view" title="Progress Unit">
-                                                        <i class="mdi mdi-progress-check"></i>
-                                                    </a>
-                                                @endif
 
                                                 <form action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}" method="POST" class="d-inline delete-form">
                                                     @csrf
@@ -1448,34 +1460,98 @@ body.modal-open .page-body-wrapper {
                                                                         <input type="number" name="area" class="form-control" value="{{ $unit->area }}" placeholder="60" min="1" step="any" required>
                                                                     </div>
 
-                                                                    <!-- Baris 4: Sertifikat Unit -->
+                                                                    <!-- Baris: Biaya IJB & Biaya AJB -->
                                                                     <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Biaya IJB</label>
+                                                                        <div class="kavling-rupiah-box">
+                                                                            <span class="rupiah-prefix">Rp</span>
+                                                                            <input type="text" name="ijb_price" class="rupiah-input price-format" 
+                                                                                value="{{ number_format($unit->ijb_price ?: ($defaultIjbPrice ?? 2000000), 0, ',', '.') }}" 
+                                                                                placeholder="2.000.000">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Biaya AJB</label>
+                                                                        <div class="kavling-rupiah-box">
+                                                                            <span class="rupiah-prefix">Rp</span>
+                                                                            <input type="text" name="ajb_price" class="rupiah-input price-format" 
+                                                                                value="{{ number_format($unit->ajb_price ?: ($defaultAjbPrice ?? 1500000), 0, ',', '.') }}" 
+                                                                                placeholder="1.500.000">
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <!-- Baris 4: Nomor Sertifikat (Kolom Tersendiri) -->
+                                                                    <div class="col-12">
                                                                         <label class="form-label fw-bold small mb-1">Nomor Sertifikat</label>
                                                                         <input type="text" name="certificate_no" class="form-control" value="{{ $unit->certificate_no }}" placeholder="Contoh: SHGB No. 1234">
                                                                     </div>
-                                                                    <div class="col-12 col-md-6">
+
+                                                                    <!-- Baris 5: Dokumen Sertifikat (Kolom Tersendiri) -->
+                                                                    <div class="col-12">
                                                                         <label class="form-label fw-bold small mb-1">Dokumen Sertifikat</label>
-                                                                        <div class="spk-upload-box py-2 px-3">
-                                                                            <input type="file" name="file_certificate" accept=".pdf,image/*" onchange="updateCertFileName(this, 'certFileNameEdit{{ $unit->id }}')">
-                                                                            <div class="d-flex align-items-center justify-content-start gap-2.5">
-                                                                                <div class="rounded-circle p-1.5 bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
-                                                                                    <i class="mdi mdi-file-certificate fs-5"></i>
-                                                                                </div>
-                                                                                <div class="text-start overflow-hidden">
-                                                                                    <span class="fw-bold text-dark d-block text-truncate" id="certFileNameEdit{{ $unit->id }}" style="font-size: 0.8rem;">
-                                                                                        {{ $unit->file_certificate ? 'Ganti: ' . basename($unit->file_certificate) : 'Pilih berkas sertifikat atau seret ke sini' }}
-                                                                                    </span>
-                                                                                    <small class="text-muted" style="font-size: 0.7rem;">PDF / Scan Gambar (Maks 5MB)</small>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
                                                                         @if($unit->file_certificate)
-                                                                            <div class="mt-1.5 d-flex align-items-center justify-content-between px-1">
-                                                                                <a href="{{ asset($unit->file_certificate) }}" target="_blank" class="small text-primary text-decoration-none fw-bold d-inline-flex align-items-center gap-1">
-                                                                                    <i class="mdi mdi-open-in-new"></i>Buka Berkas Saat Ini
-                                                                                </a>
-                                                                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25" style="font-size: 0.68rem;"><i class="mdi mdi-check-circle-outline me-0.5"></i>Tersimpan</span>
+                                                                            <!-- State: Berkas Sudah Terunggah -->
+                                                                            <div id="certUploadedBoxEdit{{ $unit->id }}" class="rounded-3 mb-1" style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 14px 20px; min-height: 64px;">
+                                                                                <div class="d-flex align-items-center justify-content-between gap-3">
+                                                                                    <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1" style="min-width: 0;">
+                                                                                        <div class="p-2 rounded-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="background: rgba(0, 201, 167, 0.15); color: #00c9a7; width: 38px; height: 38px;">
+                                                                                            <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
+                                                                                        </div>
+                                                                                        <div class="overflow-hidden" style="min-width: 0;">
+                                                                                            <span class="d-block fw-bold text-success text-truncate" id="certStatusTextEdit{{ $unit->id }}" style="font-size: 0.88rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="d-flex align-items-center flex-shrink-0" style="gap: 8px;">
+                                                                                        <a href="{{ asset($unit->file_certificate) }}" target="_blank" id="certViewLinkEdit{{ $unit->id }}" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                                                            <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                                                            <span>Lihat</span>
+                                                                                        </a>
+                                                                                        <button type="button" onclick="document.getElementById('fileCertEdit{{ $unit->id }}').click()" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                                                            <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                                                            <span>Ganti</span>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
                                                                             </div>
+                                                                            <input type="file" name="file_certificate" id="fileCertEdit{{ $unit->id }}" class="d-none" accept=".pdf,image/*" onchange="previewCertUpload(this, 'edit', '{{ $unit->id }}')">
+                                                                        @else
+                                                                            <!-- State: Belum Ada Berkas -->
+                                                                            <div id="certEmptyBoxEdit{{ $unit->id }}" class="spk-upload-box py-2.5 px-3.5" onclick="document.getElementById('fileCertEdit{{ $unit->id }}').click()" style="cursor: pointer; min-height: 64px; display: flex; align-items: center;">
+                                                                                <div class="d-flex align-items-center justify-content-start gap-2.5 w-100">
+                                                                                    <div class="rounded-circle p-1.5 bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 34px; height: 34px;">
+                                                                                        <i class="mdi mdi-file-certificate fs-5"></i>
+                                                                                    </div>
+                                                                                    <div class="text-start overflow-hidden">
+                                                                                        <span class="fw-bold text-dark d-block text-truncate" style="font-size: 0.8rem;">Pilih berkas sertifikat atau seret ke sini</span>
+                                                                                        <small class="text-muted" style="font-size: 0.7rem;">PDF / Scan Gambar (Maks 5MB)</small>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <!-- Box Hijau Setelah File Dipilih -->
+                                                                            <div id="certUploadedBoxEdit{{ $unit->id }}" class="rounded-3 mb-1" style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 14px 20px; min-height: 64px; display: none;">
+                                                                                <div class="d-flex align-items-center justify-content-between gap-3">
+                                                                                    <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1" style="min-width: 0;">
+                                                                                        <div class="p-2 rounded-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="background: rgba(0, 201, 167, 0.15); color: #00c9a7; width: 38px; height: 38px;">
+                                                                                            <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
+                                                                                        </div>
+                                                                                        <div class="overflow-hidden" style="min-width: 0;">
+                                                                                            <span class="d-block fw-bold text-success text-truncate" id="certStatusTextEdit{{ $unit->id }}" style="font-size: 0.88rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="d-flex align-items-center flex-shrink-0" style="gap: 8px;">
+                                                                                        <a href="#" target="_blank" id="certViewLinkEdit{{ $unit->id }}" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                                                            <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                                                            <span>Lihat</span>
+                                                                                        </a>
+                                                                                        <button type="button" onclick="document.getElementById('fileCertEdit{{ $unit->id }}').click()" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                                                            <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                                                            <span>Ganti</span>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <input type="file" name="file_certificate" id="fileCertEdit{{ $unit->id }}" class="d-none" accept=".pdf,image/*" onchange="previewCertUpload(this, 'edit', '{{ $unit->id }}')">
                                                                         @endif
                                                                     </div>
 
@@ -1502,7 +1578,7 @@ body.modal-open .page-body-wrapper {
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="10" class="text-center text-muted py-4">
+                                        <td colspan="11" class="text-center text-muted py-4">
                                             <i class="mdi mdi-alert-circle-outline d-block mb-1" style="font-size: 2rem; color: #da8cff;"></i>
                                             Belum ada data unit kavling untuk tanah induk ini.
                                         </td>
@@ -2071,25 +2147,72 @@ body.modal-open .page-body-wrapper {
                                     <input type="number" name="area" class="form-control" placeholder="60" min="1" step="any" required>
                                 </div>
 
-                                <!-- Baris 4: Sertifikat Unit -->
+                                <!-- Baris: Biaya IJB & Biaya AJB -->
                                 <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Biaya IJB</label>
+                                    <div class="kavling-rupiah-box">
+                                        <span class="rupiah-prefix">Rp</span>
+                                        <input type="text" name="ijb_price" class="rupiah-input price-format" 
+                                            value="{{ number_format($defaultIjbPrice ?? 2000000, 0, ',', '.') }}" 
+                                            placeholder="2.000.000">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Biaya AJB</label>
+                                    <div class="kavling-rupiah-box">
+                                        <span class="rupiah-prefix">Rp</span>
+                                        <input type="text" name="ajb_price" class="rupiah-input price-format" 
+                                            value="{{ number_format($defaultAjbPrice ?? 1500000, 0, ',', '.') }}" 
+                                            placeholder="1.500.000">
+                                    </div>
+                                </div>
+
+                                <!-- Baris 4: Nomor Sertifikat (Kolom Tersendiri) -->
+                                <div class="col-12">
                                     <label class="form-label fw-bold small mb-1">Nomor Sertifikat</label>
                                     <input type="text" name="certificate_no" class="form-control" placeholder="Contoh: SHGB No. 1234">
                                 </div>
-                                <div class="col-12 col-md-6">
+
+                                <!-- Baris 5: Dokumen Sertifikat (Kolom Tersendiri) -->
+                                <div class="col-12">
                                     <label class="form-label fw-bold small mb-1">Dokumen Sertifikat</label>
-                                    <div class="spk-upload-box py-2 px-3">
-                                        <input type="file" name="file_certificate" accept=".pdf,image/*" onchange="updateCertFileName(this, 'certFileNameTambah')">
-                                        <div class="d-flex align-items-center justify-content-start gap-2.5">
-                                            <div class="rounded-circle p-1.5 bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+                                    <!-- Box Kosong (Sebelum Upload) -->
+                                    <div id="certEmptyBoxTambah" class="spk-upload-box py-2.5 px-3.5" onclick="document.getElementById('fileCertTambah').click()" style="cursor: pointer; min-height: 64px; display: flex; align-items: center;">
+                                        <div class="d-flex align-items-center justify-content-start gap-2.5 w-100">
+                                            <div class="rounded-circle p-1.5 bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 34px; height: 34px;">
                                                 <i class="mdi mdi-file-certificate fs-5"></i>
                                             </div>
                                             <div class="text-start overflow-hidden">
-                                                <span class="fw-bold text-dark d-block text-truncate" id="certFileNameTambah" style="font-size: 0.8rem;">Pilih berkas sertifikat atau seret ke sini</span>
+                                                <span class="fw-bold text-dark d-block text-truncate" style="font-size: 0.8rem;">Pilih berkas sertifikat atau seret ke sini</span>
                                                 <small class="text-muted" style="font-size: 0.7rem;">PDF / Scan Gambar (Maks 5MB)</small>
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Box Hijau Setelah File Dipilih -->
+                                    <div id="certUploadedBoxTambah" class="rounded-3 mb-1" style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 14px 20px; min-height: 64px; display: none;">
+                                        <div class="d-flex align-items-center justify-content-between gap-3">
+                                            <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1" style="min-width: 0;">
+                                                <div class="p-2 rounded-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="background: rgba(0, 201, 167, 0.15); color: #00c9a7; width: 38px; height: 38px;">
+                                                    <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
+                                                </div>
+                                                <div class="overflow-hidden" style="min-width: 0;">
+                                                    <span class="d-block fw-bold text-success text-truncate" id="certStatusTextTambah" style="font-size: 0.88rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center flex-shrink-0" style="gap: 8px;">
+                                                <a href="#" target="_blank" id="certViewLinkTambah" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                    <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                    <span>Lihat</span>
+                                                </a>
+                                                <button type="button" onclick="document.getElementById('fileCertTambah').click()" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                    <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                    <span>Ganti</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="file" name="file_certificate" id="fileCertTambah" class="d-none" accept=".pdf,image/*" onchange="previewCertUpload(this, 'tambah')">
                                 </div>
 
                                 <!-- Baris 5: Keterangan Tambahan (Textarea) -->
@@ -2179,169 +2302,7 @@ body.modal-open .page-body-wrapper {
     </div>
 </div>
 
-<!-- MODAL: ATUR / TERBITKAN SPK KE MULTI-UNIT KAVLING -->
-<div class="modal fade" id="modalSpkUnit" tabindex="-1" aria-labelledby="modalSpkUnitLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="d-inline-flex p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
-                        <i class="mdi mdi-file-document-edit-outline fs-4"></i>
-                    </div>
-                    <div>
-                        <h5 class="modal-title fw-bold text-dark mb-0" id="modalSpkUnitLabel" style="font-size: 1.1rem;">Atur SPK Unit Kavling</h5>
-                        <small class="text-muted" style="font-size: 0.78rem;">Terbitkan kontrak SPK borongan ke multi-unit kavling terpilih</small>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center gap-2">
-                    <a href="{{ route('spk.create', ['land_bank_id' => $land->id]) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 shadow-sm" style="border-radius: 6px; font-weight: 600; font-size: 0.8rem;" title="Buka Form Pembuatan SPK Lengkap & Rincian Termin">
-                        <i class="mdi mdi-open-in-new"></i>
-                        <span>Buat Form SPK Lengkap</span>
-                    </a>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-            </div>
 
-            <div class="modal-body p-3 p-md-4" style="max-height: 70vh; overflow-y: auto;">
-                <form id="formAssignSpkModal" action="{{ route('properti.kavling.assignSpk', $land->id) }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-
-                    <div class="row g-3 mb-3">
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-bold small text-dark mb-1">Nomor SPK <span class="text-danger">*</span></label>
-                            <input type="text" name="no_spk" class="form-control" placeholder="Contoh: SPK/2026/IX/001" required>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-bold small text-dark mb-1">Nama Kontraktor <span class="text-danger">*</span></label>
-                            <input type="text" name="kontraktor" class="form-control" placeholder="Nama kontraktor/pemborong..." required>
-                        </div>
-
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-bold small text-dark mb-1 d-flex align-items-center justify-content-between">
-                                <span>Nilai SPK per Unit (Rp) <span class="text-danger">*</span></span>
-                                <i class="mdi mdi-information-outline text-primary fs-6" title="Nilai borongan ini otomatis masuk ke perhitungan HPP Bangunan Unit di Modul Keuangan & Project Accounting."></i>
-                            </label>
-                            <div class="spk-rupiah-box">
-                                <span class="spk-prefix">Rp</span>
-                                <input type="text" name="nilai_kontrak" id="modalSpkNilaiKontrak" class="rupiah-spk-input" placeholder="0" required autocomplete="off">
-                            </div>
-                            <div class="spk-total-summary-box" id="modalSpkTotalCalculation">
-                                <i class="mdi mdi-calculator"></i>
-                                <span>Total SPK: <strong>Rp 0</strong> (0 unit dipilih)</span>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-6">
-                            <label class="form-label fw-bold small text-dark mb-1">Tanggal SPK</label>
-                            <input type="date" name="tanggal_spk" class="form-control" value="{{ date('Y-m-d') }}">
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label fw-bold small text-dark mb-1">Keterangan / Ruang Lingkup</label>
-                            <input type="text" name="description" class="form-control" placeholder="Contoh: Pembangunan unit rumah standar tipe 36...">
-                        </div>
-
-                        <div class="col-12">
-                            <label class="form-label fw-bold small text-dark mb-1">Upload Berkas Dokumen SPK (PDF)</label>
-                            <div class="spk-upload-box">
-                                <input type="file" id="uploadDokumenSpkInput" name="dokumen_spk" accept=".pdf">
-                                <div class="d-flex align-items-center justify-content-center gap-3">
-                                    <div class="rounded-circle p-2 bg-danger bg-opacity-10 text-danger d-inline-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
-                                        <i class="mdi mdi-file-pdf-box fs-4"></i>
-                                    </div>
-                                    <div class="text-start">
-                                        <span class="fw-bold text-dark d-block" id="dokumenSpkFileName" style="font-size: 0.85rem;">Pilih berkas PDF atau seret ke sini</span>
-                                        <small class="text-muted" style="font-size: 0.75rem;">Format PDF maksimal 15MB</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Pilih Multi-Unit Kavling -->
-                    <div class="border rounded-3 p-3 bg-light">
-                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2 pb-2 border-bottom">
-                            <div>
-                                <h6 class="fw-bold text-dark mb-0" style="font-size: 0.88rem;">Pilih Unit Kavling <span class="text-danger">*</span></h6>
-                                <small class="text-muted" id="spkUnitCounter">0 unit dipilih</small>
-                            </div>
-                            <div class="d-flex align-items-center gap-1.5">
-                                <button type="button" class="btn btn-sm btn-light border text-primary fw-semibold px-2.5 py-1 d-inline-flex align-items-center gap-1 shadow-sm" id="btnSelectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px; background: #ffffff; border-color: #cbd5e1 !important;">
-                                    <i class="mdi mdi-checkbox-multiple-marked-outline text-primary"></i>
-                                    <span>Pilih Semua</span>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-light border text-muted fw-semibold px-2.5 py-1 d-inline-flex align-items-center gap-1 shadow-sm" id="btnUnselectAllSpkUnits" style="font-size: 0.78rem; border-radius: 6px; background: #ffffff; border-color: #cbd5e1 !important;">
-                                    <i class="mdi mdi-checkbox-multiple-blank-outline"></i>
-                                    <span>Hapus Semua</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Search Unit di Modal -->
-                        <div class="mb-2">
-                            <div class="d-flex align-items-stretch" style="border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden; background: #ffffff;">
-                                <input type="text" class="form-control border-0 shadow-none px-3" id="filterSpkUnitSearch"
-                                    placeholder="Cari nomor unit / blok / tipe..."
-                                    style="height: 38px; font-size: 0.85rem; border-radius: 0 !important;">
-                                <div class="px-3 d-flex align-items-center justify-content-center bg-light text-muted border-start">
-                                    <i class="mdi mdi-magnify fs-5"></i>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Daftar Unit Checkbox List -->
-                        <div class="spk-unit-selection-grid" style="max-height: 230px; overflow-y: auto; padding-right: 5px;">
-                            <div class="row g-2" id="spkUnitListContainer">
-                                @forelse ($land->units as $u)
-                                    @php
-                                        $uBlok = $u->block ?? (explode('.', $u->unit_code)[0] ?? '-');
-                                        $uNomor = $u->unit_number ?? (explode('.', $u->unit_code)[1] ?? '-');
-                                        $uKode = $u->unit_code ?? ($uBlok . '.' . $uNomor);
-                                    @endphp
-                                    <div class="col-md-4 col-sm-6 spk-unit-item-col" data-code="{{ strtolower($uKode) }}" data-name="{{ strtolower($u->unit_name ?? '') }}" data-type="{{ strtolower($u->type ?? '') }}">
-                                        <label class="d-flex align-items-start gap-2 p-2 rounded-3 border bg-white h-100 shadow-sm spk-unit-card" style="cursor: pointer;">
-                                            <input type="checkbox" name="unit_ids[]" value="{{ $u->id }}" class="form-check-input mt-1 spk-unit-checkbox">
-                                            <div class="flex-grow-1" style="font-size: 12px; line-height: 1.3;">
-                                                <div class="fw-bold text-dark d-flex justify-content-between align-items-center">
-                                                    <span>{{ $uKode }}</span>
-                                                    <span class="badge bg-light text-muted border py-0 px-1" style="font-size: 10px;">{{ $u->type }}</span>
-                                                </div>
-                                                <div class="text-muted small text-truncate" style="max-width: 130px;">{{ $u->unit_name ?: 'Unit' }}</div>
-                                                @if($u->no_spk)
-                                                    <div class="text-primary mt-1" style="font-size: 10px;" title="SPK: {{ $u->no_spk }}">
-                                                        SPK: {{ $u->no_spk }}
-                                                    </div>
-                                                @else
-                                                    <div class="text-muted mt-1" style="font-size: 10px;">
-                                                        Belum ada SPK
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </label>
-                                    </div>
-                                @empty
-                                    <div class="col-12 text-center py-4 text-muted">
-                                        <i class="mdi mdi-home-alert-outline fs-3 d-block mb-1"></i>
-                                        Belum ada unit kavling untuk lahan ini.
-                                    </div>
-                                @endforelse
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <div class="modal-footer border-top py-2.5 px-4 d-flex justify-content-end gap-2 bg-white">
-                <button type="button" class="btn btn-sm btn-light border px-3" data-bs-dismiss="modal">
-                    Batal
-                </button>
-                <button type="submit" form="formAssignSpkModal" class="btn btn-sm btn-gradient-primary fw-bold text-white px-3 shadow-sm">
-                    <i class="mdi mdi-check-all me-1"></i>Simpan SPK
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal Detail Unit Lengkap (Legal View) -->
 <div class="modal fade modal-detail-unit" id="detailUnitModalLegal" tabindex="-1">
@@ -3681,21 +3642,6 @@ $(document).ready(function() {
         }
     });
 
-    // File change SPK PDF
-    $('#uploadDokumenSpkInput').on('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            if (file.size > 10 * 1024 * 1024) {
-                Swal.fire('Error', 'Ukuran file PDF maksimal 10MB!', 'error');
-                $(this).val('');
-                $('#dokumenSpkFileName').text('Pilih berkas PDF atau seret ke sini');
-                return;
-            }
-            $('#dokumenSpkFileName').html('<span class="text-primary fw-bold"><i class="mdi mdi-file-pdf me-1 text-danger"></i>' + file.name + '</span>');
-        } else {
-            $('#dokumenSpkFileName').text('Pilih berkas PDF atau seret ke sini');
-        }
-    });
 
     // Price formatting
     $(document).on('keyup', '.price-format', function() {
@@ -3749,94 +3695,6 @@ $(document).ready(function() {
         this.submit();
     });
 
-    // SPK Unit Multi-Select Controls & Live Calculation
-    function formatRupiahSpk(angka) {
-        var number_string = angka.replace(/[^,\d]/g, '').toString(),
-            split = number_string.split(','),
-            sisa = split[0].length % 3,
-            rupiah = split[0].substr(0, sisa),
-            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-        if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
-        }
-
-        return split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-    }
-
-    function updateSpkCalculation() {
-        const count = $('.spk-unit-checkbox:checked').length;
-        $('#spkUnitCounter').text(count + ' unit dipilih');
-
-        const rawVal = $('#modalSpkNilaiKontrak').val() || '0';
-        const numVal = parseInt(rawVal.replace(/[^0-9]/g, ''), 10) || 0;
-        const totalVal = numVal * count;
-
-        $('#modalSpkTotalCalculation').html(
-            '<i class="mdi mdi-calculator me-1"></i>Total SPK: <strong class="ms-1">Rp ' + totalVal.toLocaleString('id-ID') + '</strong> <span class="text-muted ms-1">(' + count + ' unit dipilih)</span>'
-        );
-    }
-
-    $(document).on('keyup', '#modalSpkNilaiKontrak', function() {
-        $(this).val(formatRupiahSpk($(this).val()));
-        updateSpkCalculation();
-    });
-
-    $(document).on('change', '.spk-unit-checkbox', function() {
-        updateSpkCalculation();
-        if ($(this).is(':checked')) {
-            $(this).closest('.spk-unit-card').addClass('is-selected border-primary');
-        } else {
-            $(this).closest('.spk-unit-card').removeClass('is-selected border-primary');
-        }
-    });
-
-    $('#btnSelectAllSpkUnits').on('click', function() {
-        $('.spk-unit-item-col:visible .spk-unit-checkbox').prop('checked', true).trigger('change');
-    });
-
-    $('#btnUnselectAllSpkUnits').on('click', function() {
-        $('.spk-unit-checkbox').prop('checked', false).trigger('change');
-    });
-
-    $('#filterSpkUnitSearch').on('keyup', function() {
-        const q = $(this).val().toLowerCase();
-        $('.spk-unit-item-col').each(function() {
-            const code = $(this).data('code') || '';
-            const name = $(this).data('name') || '';
-            const type = $(this).data('type') || '';
-            if (code.includes(q) || name.includes(q) || type.includes(q)) {
-                $(this).removeClass('d-none');
-            } else {
-                $(this).addClass('d-none');
-            }
-        });
-    });
-
-    // Submit Form SPK
-    $('#formAssignSpkModal').on('submit', function(e) {
-        const selectedCount = $('.spk-unit-checkbox:checked').length;
-        if (selectedCount === 0) {
-            e.preventDefault();
-            Swal.fire('Peringatan', 'Silakan pilih minimal 1 unit kavling yang akan dihubungkan dengan SPK ini!', 'warning');
-            return false;
-        }
-
-        const rawVal = $('#modalSpkNilaiKontrak').val() || '';
-        if (!rawVal || rawVal === '0') {
-            e.preventDefault();
-            Swal.fire('Peringatan', 'Silakan masukkan Nilai SPK per Unit kavling agar masuk ke perhitungan HPP!', 'warning');
-            return false;
-        }
-
-        Swal.fire({
-            title: 'Menerbitkan SPK...',
-            text: 'Menghubungkan nomor SPK dan menghitung HPP unit-unit terpilih',
-            allowOutsideClick: false,
-            didOpen: () => Swal.showLoading()
-        });
-    });
 });
 
 // Konfirmasi Hapus SweetAlert
@@ -3855,6 +3713,36 @@ function confirmDelete(btn, code) {
             btn.closest('form').submit();
         }
     });
+}
+
+// Preview Upload Sertifikat (Tampilan Kotak Hijau + Lihat & Ganti)
+function previewCertUpload(input, mode, unitId = null) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const fileUrl = URL.createObjectURL(file);
+
+        if (mode === 'tambah') {
+            const emptyBox = document.getElementById('certEmptyBoxTambah');
+            const uploadedBox = document.getElementById('certUploadedBoxTambah');
+            const fileNameEl = document.getElementById('certFileNameTambah');
+            const viewLinkEl = document.getElementById('certViewLinkTambah');
+
+            if (fileNameEl) fileNameEl.textContent = file.name;
+            if (viewLinkEl) viewLinkEl.href = fileUrl;
+            if (emptyBox) emptyBox.style.display = 'none';
+            if (uploadedBox) uploadedBox.style.display = 'block';
+        } else if (mode === 'edit' && unitId) {
+            const emptyBox = document.getElementById('certEmptyBoxEdit' + unitId);
+            const uploadedBox = document.getElementById('certUploadedBoxEdit' + unitId);
+            const fileNameEl = document.getElementById('certFileNameEdit' + unitId);
+            const viewLinkEl = document.getElementById('certViewLinkEdit' + unitId);
+
+            if (fileNameEl) fileNameEl.textContent = file.name;
+            if (viewLinkEl) viewLinkEl.href = fileUrl;
+            if (emptyBox) emptyBox.style.display = 'none';
+            if (uploadedBox) uploadedBox.style.display = 'block';
+        }
+    }
 }
 </script>
 @endpush
