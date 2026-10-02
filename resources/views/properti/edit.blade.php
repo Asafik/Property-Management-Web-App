@@ -2054,7 +2054,7 @@
                                             <option value="">-- Pilih Perusahaan --</option>
                                             @foreach ($companies as $company)
                                                 <option value="{{ $company->id }}"
-                                                    {{ old('company_profile_id', $land->company_profile_id ?? ($companies->first()->id ?? '')) == $company->id ? 'selected' : '' }}>
+                                                    {{ old('company_profile_id', $land->company_profile_id) == $company->id ? 'selected' : '' }}>
                                                     {{ $company->name }}
                                                 </option>
                                             @endforeach

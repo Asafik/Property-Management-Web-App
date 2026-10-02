@@ -110,6 +110,18 @@ class PropertyController extends Controller
             $item->load('notaris');
         }
 
+        // Sinkronkan PT Mitra jika di PraLandbank sudah dipilih namun di land_banks belum, atau sebaliknya
+        if (empty($item->company_profile_id) && $pra && !empty($pra->company_profile_id)) {
+            $item->update([
+                'company_profile_id' => $pra->company_profile_id,
+            ]);
+            $item->load('companyProfile');
+        } elseif (!empty($item->company_profile_id) && $pra && empty($pra->company_profile_id)) {
+            $pra->update([
+                'company_profile_id' => $item->company_profile_id,
+            ]);
+        }
+
         // Ambil data perizinan resmi atas nama PT (hasil alur pengindukan & perizinan)
         $perizinanDocs = $this->getPerizinanDocumentsForProperty($item);
 
@@ -360,6 +372,16 @@ public function updateCompanyAjax(Request $request, $id)
             'company_profile_id' => $request->company_profile_id
         ]);
 
+        // Sinkronkan juga ke data PraLandbank terkait
+        $pra = \App\Models\PraLandbank::where('land_bank_id', $land->id)
+            ->orWhere('land_name', $land->name)
+            ->first();
+        if ($pra) {
+            $pra->update([
+                'company_profile_id' => $request->company_profile_id
+            ]);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'PT Mitra berhasil diperbarui!'
@@ -459,6 +481,7 @@ public function update(Request $request, $id)
             ?? \App\Models\PraLandbank::where('land_name', $land->name)->first();
         if ($pra) {
             $pra->update([
+                'company_profile_id' => $request->company_profile_id ?: null,
                 'address'  => $request->lokasi,
                 'village'  => $request->kelurahan,
                 'district' => $request->kecamatan,

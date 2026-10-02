@@ -2088,6 +2088,20 @@ public function store(Request $request)
                 'company_profile_id' => $request->company_profile_id
             ]);
 
+            // Sinkronkan secara dinamis ke Pasca Land Bank jika sudah ada record-nya
+            $land = null;
+            if ($record->land_bank_id) {
+                $land = LandBank::find($record->land_bank_id);
+            }
+            if (!$land) {
+                $land = LandBank::where('name', $record->land_name)->first();
+            }
+            if ($land) {
+                $land->update([
+                    'company_profile_id' => $request->company_profile_id
+                ]);
+            }
+
             $autoLandBank = $record->fresh(['documents.documentType'])->syncToPascaLandbank();
 
             return response()->json([
