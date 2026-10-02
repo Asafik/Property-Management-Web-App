@@ -15,6 +15,9 @@ class CustomerSeeder extends Seeder
 {
     public function run(): void
     {
+        $unit = LandBankUnit::first();
+        $landBank = $unit ? $unit->landBank : \App\Models\LandBank::first();
+
         // 1. Buat Customer Lengkap
         $customer = Customer::updateOrCreate(
             ['nik' => '3578011205930002'],
@@ -73,8 +76,8 @@ class CustomerSeeder extends Seeder
                 'father_name' => 'Bambang Hidayat',
                 'mother_name' => 'Sri Wahyuni',
 
-                'land_bank_id' => 2,
-                'unit_id' => 1,
+                'land_bank_id' => $landBank?->id,
+                'unit_id' => $unit?->id,
             ]
         );
 
