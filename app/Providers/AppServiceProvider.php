@@ -14,6 +14,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $storagePaths = [
+            storage_path('framework/views'),
+            storage_path('framework/cache/data'),
+            storage_path('framework/sessions'),
+            storage_path('logs'),
+        ];
+
+        foreach ($storagePaths as $path) {
+            if (!is_dir($path)) {
+                @mkdir($path, 0755, true);
+            }
+        }
+
         if (file_exists(app_path('helpers.php'))) {
             require_once app_path('helpers.php');
         }
