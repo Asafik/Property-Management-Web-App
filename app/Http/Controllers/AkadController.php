@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Akad;
 use App\Models\KprApplication;
 use App\Models\CompanyProfile;
+use App\Models\Notaris;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
@@ -172,7 +173,9 @@ class AkadController extends Controller
             ? $existingAkad->no_akad 
             : $this->generateNoAkadKPR($bookingId);
 
-        return view('marketing.akad_closing', compact('kpr', 'noAkadDraf', 'existingAkad'));
+        $notarisList = Notaris::where('is_active', true)->orderBy('nama_notaris', 'asc')->get();
+
+        return view('marketing.akad_closing', compact('kpr', 'noAkadDraf', 'existingAkad', 'notarisList'));
     }
 
     public function cetakAkad($id)

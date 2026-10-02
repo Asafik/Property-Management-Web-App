@@ -236,10 +236,10 @@
 }
 
 .transaksi-step.active .transaksi-step-icon {
-    background: #ffffff !important;
+    background: #e2e8f0 !important;
     border: 2.5px solid #f59e0b !important;
     box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2) !important;
-    color: #64748b !important;
+    color: #d97706 !important;
     position: relative;
 }
 

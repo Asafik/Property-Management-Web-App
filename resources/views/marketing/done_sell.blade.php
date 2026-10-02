@@ -8,44 +8,44 @@
             color: #2c2e3f;
         }
 
-        /* ===== CARD ===== */
+        /* ===== CARD (SERAGAM DENGAN HALAMAN SERAH TERIMA & AKAD KPR) ===== */
         .sold-unit-page .card {
-            border: 0;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 18px rgba(44, 46, 63, 0.05);
-            transition: box-shadow 0.25s ease;
-            background: #fff;
+            border-radius: 6px !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+            background: #ffffff;
+            transition: all 0.3s ease;
+            margin-bottom: 1.25rem;
         }
 
         .sold-unit-page .card:hover {
             transform: none !important;
-            box-shadow: 0 8px 20px rgba(154, 85, 255, 0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
         }
 
         .sold-unit-page .card-header {
             background: #ffffff;
-            border-bottom: 1px solid #f0edf7;
-            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #f1f3f7;
+            padding: 1rem 1.5rem;
         }
 
         .sold-unit-page .card-body {
-            padding: 1.25rem;
+            padding: 1.5rem !important;
         }
 
         .sold-unit-page .card-title {
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 700;
             color: #2c2e3f;
             margin-bottom: 0;
             display: flex;
             align-items: center;
-            gap: 8px;
-            letter-spacing: 0.2px;
+            gap: 0.55rem;
         }
 
         .sold-unit-page .card-title i {
             color: #9a55ff !important;
-            font-size: 1.1rem;
+            font-size: 1.35rem;
         }
 
         /* ===== HEADER STATUS ===== */
@@ -73,13 +73,13 @@
             width: 64px;
             height: 64px;
             border-radius: 12px;
-            background: linear-gradient(135deg, #28a745, #5cb85c);
+            background: #16a34a;
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            box-shadow: 0 6px 14px rgba(40, 167, 69, 0.18);
+            box-shadow: none;
         }
 
         .sold-status-icon i {
@@ -106,10 +106,10 @@
         .sold-unit-box {
             min-width: 110px;
             padding: 0.85rem 1rem;
-            background: linear-gradient(135deg, #f8f4ff, #f2ecff);
-            border: 1px solid #eadfff;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.08);
+            box-shadow: none;
         }
 
         .sold-unit-label {
@@ -128,7 +128,7 @@
             justify-content: center;
             gap: 0.35rem;
             padding: 0.45rem 0.75rem;
-            background: linear-gradient(135deg, #28a745, #5cb85c);
+            background: #16a34a;
             color: #fff;
             font-size: 0.95rem;
             font-weight: 800;
@@ -141,9 +141,9 @@
 
         /* ===== INFO BOX ===== */
         .info-box {
-            background: linear-gradient(135deg, #faf8ff, #f3ecff);
-            border: 1px solid #eee6ff;
-            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
             padding: 1.15rem 1.2rem;
             height: 100%;
         }
@@ -206,16 +206,16 @@
         }
 
         .customer-avatar {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #9a55ff, #b57cff);
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+            background: #9a55ff;
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            box-shadow: 0 10px 20px rgba(154, 85, 255, 0.18);
+            box-shadow: none;
         }
 
         .customer-avatar i {
@@ -242,7 +242,7 @@
             align-items: center;
             gap: 0.35rem;
             padding: 0.45rem 0.8rem;
-            border-radius: 999px;
+            border-radius: 6px;
             font-size: 0.76rem;
             font-weight: 700;
             line-height: 1;
@@ -250,22 +250,22 @@
         }
 
         .badge-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
+            background: #16a34a;
             color: white;
         }
 
         .badge-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d);
-            color: #2c2e3f;
+            background: #eab308;
+            color: white;
         }
 
         .badge-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
+            background: #0284c7;
             color: white;
         }
 
         .badge-primary {
-            background: linear-gradient(135deg, #9a55ff, #da8cff);
+            background: #9a55ff;
             color: white;
         }
 
@@ -344,7 +344,7 @@
             width: 30px;
             height: 30px;
             border-radius: 6px;
-            background: linear-gradient(135deg, #9a55ff, #da8cff);
+            background: #9a55ff;
             color: white;
             display: inline-flex;
             align-items: center;
@@ -369,8 +369,8 @@
 
         /* ===== PRICE ===== */
         .price-summary {
-            background: linear-gradient(135deg, #fcfbff, #f5f1ff);
-            border: 1px solid #eee6ff;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 12px;
             padding: 1rem 1rem 0.9rem;
         }
@@ -408,73 +408,84 @@
             color: #28a745 !important;
         }
 
-        /* ===== TIMELINE ===== */
-        .timeline-completed {
+        /* ===== TIMELINE RIWAYAT TRANSAKSI ===== */
+        .sold-unit-page .timeline-completed {
             position: relative;
-            padding-left: 28px;
+            padding-left: 38px !important;
+            margin-top: 0.5rem;
         }
 
-        .timeline-completed::before {
+        .sold-unit-page .timeline-completed::before {
             content: '';
             position: absolute;
-            left: 7px;
-            top: 8px;
-            bottom: 8px;
-            width: 2px;
-            background: linear-gradient(to bottom, rgba(40, 167, 69, 0.35), rgba(40, 167, 69, 0.65));
+            left: 10px !important;
+            top: 6px !important;
+            bottom: 6px !important;
+            width: 2px !important;
+            background: #bbf7d0 !important;
         }
 
-        .timeline-item {
+        .sold-unit-page .timeline-item {
             position: relative;
-            padding-bottom: 1.25rem;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            padding-bottom: 1.4rem !important;
+            margin-bottom: 0 !important;
         }
 
-        .timeline-item:last-child {
-            padding-bottom: 0;
+        .sold-unit-page .timeline-item:last-child {
+            padding-bottom: 0.25rem !important;
         }
 
-        .timeline-item::before {
+        .sold-unit-page .timeline-item::before {
             content: '';
             position: absolute;
-            left: -27px;
-            top: 3px;
-            width: 14px;
-            height: 14px;
-            box-sizing: border-box;
-            border-radius: 50%;
-            background: #28a745;
-            border: 3px solid #ffffff;
-            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+            left: -34px !important;
+            top: 2px !important;
+            width: 14px !important;
+            height: 14px !important;
+            box-sizing: border-box !important;
+            border-radius: 50% !important;
+            background: #16a34a !important;
+            border: 3px solid #ffffff !important;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.25) !important;
+            z-index: 2;
         }
 
-        .timeline-date {
-            font-size: 0.78rem;
-            color: #28a745;
-            font-weight: 800;
-            margin-bottom: 0.15rem;
+        .sold-unit-page .timeline-date {
+            display: inline-block !important;
+            font-size: 0.78rem !important;
+            color: #16a34a !important;
+            font-weight: 800 !important;
+            margin-bottom: 0.25rem !important;
+            line-height: 1.2 !important;
         }
 
-        .timeline-title {
-            font-size: 1rem;
-            font-weight: 800;
-            color: #2c2e3f;
-            margin-bottom: 0.15rem;
-            line-height: 1.35;
+        .sold-unit-page .timeline-title {
+            display: block !important;
+            font-size: 0.95rem !important;
+            font-weight: 800 !important;
+            color: #1e293b !important;
+            margin-bottom: 0.25rem !important;
+            line-height: 1.35 !important;
         }
 
-        .timeline-desc {
-            font-size: 0.88rem;
-            color: #6c7383;
-            line-height: 1.5;
+        .sold-unit-page .timeline-desc {
+            display: block !important;
+            font-size: 0.84rem !important;
+            color: #64748b !important;
+            line-height: 1.5 !important;
+            margin-bottom: 0 !important;
         }
 
         /* ===== BUTTON ===== */
         .btn {
             font-size: 0.88rem;
-            padding: 0.72rem 1.05rem;
-            border-radius: 12px;
+            padding: 0.65rem 1.05rem;
+            border-radius: 6px;
             font-weight: 700;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
             border: none;
             display: inline-flex;
             align-items: center;
@@ -484,12 +495,22 @@
 
         .btn:hover {
             transform: none;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
         }
 
-        .btn-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            color: white;
+        .btn-primary,
+        .btn-gradient-primary {
+            background: #9a55ff !important;
+            color: #ffffff !important;
+            border: 1px solid #9a55ff !important;
+            box-shadow: none !important;
+        }
+
+        .btn-primary:hover,
+        .btn-gradient-primary:hover {
+            background: #8833ff !important;
+            border-color: #8833ff !important;
+            color: #ffffff !important;
         }
 
         .btn-outline-primary {
@@ -499,9 +520,9 @@
         }
 
         .btn-outline-primary:hover {
-            background: linear-gradient(135deg, #9a55ff, #da8cff);
+            background: #9a55ff;
             color: white;
-            border-color: transparent;
+            border-color: #9a55ff;
         }
 
         .btn-outline-secondary {
@@ -517,8 +538,15 @@
         }
 
         .btn-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: white;
+            background: #16a34a !important;
+            color: white !important;
+            border: 1px solid #16a34a !important;
+        }
+
+        .btn-success:hover {
+            background: #15803d !important;
+            border-color: #15803d !important;
+            color: white !important;
         }
 
         /* ===== ADDITIONAL INFO ===== */
@@ -527,9 +555,9 @@
             align-items: center;
             gap: 0.6rem;
             padding: 0.85rem 0.95rem;
-            background: #fcfbff;
-            border: 1px solid #f0eaff;
-            border-radius: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
             height: 100%;
         }
 
@@ -539,9 +567,9 @@
         }
 
         .note-box {
-            background: linear-gradient(135deg, #faf8ff, #f6f2ff);
-            border: 1px solid #efe7ff;
-            border-radius: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
             padding: 1rem 1rem 0.9rem;
         }
 
@@ -564,160 +592,259 @@
             flex-wrap: wrap;
         }
 
-        /* ===== RESPONSIVE ===== */
+        /* ===== RESPONSIVE (TABLET & MOBILE) ===== */
         @media (max-width: 991.98px) {
             .sold-unit-page .card-header,
             .sold-unit-page .card-body {
                 padding: 1rem;
             }
 
-            .sold-status-title {
-                font-size: 1.25rem;
+            .customer-header {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 1rem !important;
             }
 
-            .customer-name {
-                font-size: 1.15rem;
+            .customer-unit-info {
+                width: 100% !important;
+                justify-content: flex-start !important;
+                gap: 1.5rem !important;
+            }
+
+            .action-wrap {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 0.75rem !important;
+            }
+
+            .action-wrap > div:first-child,
+            .action-right {
+                width: 100% !important;
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 0.5rem !important;
+            }
+
+            .action-wrap .btn,
+            .action-right .btn {
+                flex: 1 1 auto !important;
+                justify-content: center !important;
             }
         }
 
         @media (max-width: 767.98px) {
-            .sold-unit-page .container-fluid {
-                padding-left: 0.75rem !important;
-                padding-right: 0.75rem !important;
+            .sold-unit-page {
+                padding: 0.5rem !important;
             }
 
-            .sold-status-main {
-                align-items: flex-start;
+            .sold-unit-page .card {
+                margin-bottom: 0.75rem !important;
             }
 
-            .sold-status-left {
-                width: 100%;
+            .sold-unit-page .card-header {
+                padding: 0.85rem 0.9rem !important;
             }
 
-            .sold-unit-box {
-                width: 100%;
-                min-width: 100%;
-                text-align: left;
-                padding: 0.85rem 0.9rem;
+            .sold-unit-page .card-body {
+                padding: 0.85rem 0.9rem !important;
             }
 
-            .sold-unit-code {
-                width: 100%;
+            .sold-unit-page .card-title {
+                font-size: 0.92rem !important;
             }
 
+            /* Customer Header */
+            .customer-avatar {
+                width: 50px !important;
+                height: 50px !important;
+                min-width: 50px !important;
+            }
+
+            .customer-avatar i {
+                font-size: 1.6rem !important;
+            }
+
+            .customer-name {
+                font-size: 1.12rem !important;
+                flex-wrap: wrap !important;
+                gap: 0.35rem !important;
+            }
+
+            .customer-booking {
+                font-size: 0.8rem !important;
+            }
+
+            .customer-unit-info {
+                display: grid !important;
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 0.5rem !important;
+                width: 100% !important;
+                padding: 0.6rem 0.75rem !important;
+            }
+
+            .customer-unit-info .info-item {
+                min-width: 0 !important;
+            }
+
+            .customer-unit-info .info-item small {
+                font-size: 0.7rem !important;
+            }
+
+            .customer-unit-info .info-item span {
+                font-size: 0.82rem !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+
+            /* Info Box & Rows */
+            .info-box {
+                padding: 0.85rem 0.9rem !important;
+            }
+
+            .info-row {
+                flex-direction: column !important;
+                gap: 0.15rem !important;
+                margin-bottom: 0.65rem !important;
+            }
+
+            .info-label {
+                width: 100% !important;
+                min-width: 100% !important;
+                font-size: 0.76rem !important;
+                margin-bottom: 0 !important;
+            }
+
+            .info-value {
+                font-size: 0.88rem !important;
+            }
+
+            /* Price & Payment */
+            .price-summary {
+                padding: 0.85rem !important;
+            }
+
+            .price-row {
+                font-size: 0.86rem !important;
+                margin-bottom: 0.65rem !important;
+            }
+
+            .payment-stat-box {
+                padding: 0.85rem 1rem !important;
+            }
+
+            .payment-stat-val {
+                font-size: 1.15rem !important;
+            }
+
+            /* Document list */
+            .document-list {
+                grid-template-columns: 1fr !important;
+            }
+
+            .document-item {
+                padding: 0.75rem 0.8rem !important;
+            }
+
+            /* QR Portal Card */
+            .qr-portal-row {
+                flex-direction: column !important;
+                text-align: center !important;
+            }
+
+            .qr-portal-actions {
+                width: 100% !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+            }
+
+            .qr-portal-actions .input-group {
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+
+            .qr-portal-actions a.btn {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+
+            /* Tables horizontal scroll touch */
+            .table-responsive {
+                -webkit-overflow-scrolling: touch !important;
+                overflow-x: auto !important;
+            }
+
+            .table-responsive table {
+                min-width: 650px !important;
+            }
+
+            /* Action Buttons at bottom */
             .action-wrap,
             .action-right {
-                width: 100%;
+                width: 100% !important;
+                flex-direction: column !important;
+                gap: 0.5rem !important;
             }
 
-            .action-right .btn,
-            .action-wrap > div:first-child,
-            .action-wrap > div:first-child .btn {
-                width: 100%;
+            .action-wrap .btn,
+            .action-right .btn {
+                width: 100% !important;
+                margin-left: 0 !important;
+                justify-content: center !important;
             }
         }
 
         @media (max-width: 575.98px) {
             .sold-unit-page .card-header {
-                padding: 0.9rem 0.9rem;
+                padding: 0.75rem 0.85rem !important;
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.5rem !important;
             }
 
-            .sold-unit-page .card-body,
-            .sold-status-card .card-body,
-            .action-card .card-body {
-                padding: 0.9rem;
+            .sold-unit-page .card-header > div:last-child {
+                width: 100% !important;
             }
 
-            .sold-status-left {
-                gap: 0.85rem;
-                align-items: flex-start;
+            .sold-unit-page .card-header > div:last-child .btn,
+            .sold-unit-page .card-header > div:last-child a.btn {
+                width: 100% !important;
+                justify-content: center !important;
             }
 
-            .sold-status-icon {
-                width: 56px;
-                height: 56px;
-                border-radius: 10px;
-            }
-
-            .sold-status-icon i {
-                font-size: 1.6rem;
-            }
-
-            .sold-status-title {
-                font-size: 1.05rem;
-            }
-
-            .sold-status-meta {
-                font-size: 0.82rem;
-            }
-
-            .customer-summary {
-                align-items: flex-start;
+            .sold-unit-page .card-body {
+                padding: 0.75rem 0.85rem !important;
             }
 
             .customer-avatar {
-                width: 58px;
-                height: 58px;
+                width: 44px !important;
+                height: 44px !important;
+                min-width: 44px !important;
             }
 
             .customer-avatar i {
-                font-size: 1.6rem;
+                font-size: 1.4rem !important;
             }
 
             .customer-name {
-                font-size: 1.05rem;
+                font-size: 1.05rem !important;
             }
 
-            .info-row {
-                flex-direction: column;
-                gap: 0.15rem;
-                margin-bottom: 0.75rem;
+            .customer-unit-info {
+                grid-template-columns: 1fr 1fr !important;
             }
 
-            .info-label {
-                width: 100%;
-                min-width: 100%;
-                font-size: 0.78rem;
+            .customer-unit-info .info-item:last-child {
+                grid-column: span 2 !important;
             }
 
-            .info-value {
-                font-size: 0.9rem;
+            .action-wrap > div:first-child a.btn + a.btn {
+                margin-top: 0.4rem !important;
             }
 
-            .document-item {
-                padding: 0.85rem 0.85rem;
-            }
-
-            .document-name {
-                font-size: 0.9rem;
-            }
-
-            .price-row {
-                flex-direction: column;
-                gap: 0.18rem;
-                margin-bottom: 0.75rem;
-            }
-
-            .price-row span:last-child {
-                text-align: left;
-            }
-
-            .timeline-title {
-                font-size: 0.94rem;
-            }
-
-            .timeline-desc {
-                font-size: 0.84rem;
-            }
-
-            .badge {
-                font-size: 0.72rem;
-                padding: 0.42rem 0.7rem;
-            }
-
-            .btn {
-                width: 100%;
-                padding: 0.8rem 1rem;
+            .modal-dialog {
+                margin: 0.5rem !important;
+                max-width: calc(100% - 1rem) !important;
             }
         }
 
@@ -888,19 +1015,19 @@
         }
 
         .badge-status-pills.selesai {
-            background: linear-gradient(135deg, #28c76f, #48da89);
+            background: #16a34a;
             color: #fff;
-            box-shadow: 0 2px 6px rgba(40, 199, 111, 0.2);
+            box-shadow: none;
         }
 
         .badge-status-pills.diproses {
-            background: linear-gradient(135deg, #9a55ff, #da8cff);
+            background: #9a55ff;
             color: #fff;
-            box-shadow: 0 2px 6px rgba(154, 85, 255, 0.2);
+            box-shadow: none;
         }
 
         .badge-status-pills.pengecekan {
-            background: linear-gradient(135deg, #00cfe8, #48da89);
+            background: #0284c7;
             color: #fff;
         }
 
@@ -973,7 +1100,7 @@
         }
 
         .btn-update-complaint:hover {
-            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            background: #9a55ff;
             color: #fff;
             border-color: #9a55ff;
             transform: translateY(-1px);
@@ -1204,6 +1331,97 @@
             color: #475569 !important;
             margin-bottom: 0.35rem !important;
         }
+
+        /* CUSTOMER HEADER CARD (Matching Akad & Serah Terima) */
+        .customer-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+            background: #9a55ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: none;
+            flex-shrink: 0;
+        }
+
+        .customer-avatar i {
+            font-size: 2rem;
+            color: #ffffff;
+        }
+
+        .customer-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2c2e3f;
+        }
+
+        .customer-booking {
+            font-size: 0.88rem;
+            color: #8b8fa3;
+            font-weight: 600;
+        }
+
+        .customer-unit-info {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1.25rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 0.65rem 1rem;
+            border-radius: 6px;
+        }
+
+        .customer-unit-info .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .customer-unit-info .info-item small {
+            font-size: 0.75rem;
+            color: #8b8fa3;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .customer-unit-info .info-item span {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #2c2e3f;
+        }
+
+        .customer-unit-info .info-item span.highlight {
+            color: #9a55ff;
+        }
+
+        /* BADGES */
+        .badge-gradient-success {
+            background: #10b981 !important;
+            color: #fff !important;
+            padding: 0.35rem 0.65rem;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .badge-gradient-primary {
+            background: #9a55ff !important;
+            color: #fff !important;
+            padding: 0.35rem 0.65rem;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .badge-gradient-secondary {
+            background: #64748b !important;
+            color: #fff !important;
+            padding: 0.35rem 0.65rem;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            font-weight: 700;
+        }
     </style>
 
     @php
@@ -1259,30 +1477,57 @@
     @endphp
 
     <div class="container-fluid p-2 p-sm-3 p-md-4 sold-unit-page">
-        <!-- Header dengan Status TERJUAL -->
-        <div class="row mb-3">
+        <!-- Header Customer & Unit (Persis Akad & Serah Terima) -->
+        <div class="row mb-4">
             <div class="col-12">
-                <div class="card sold-status-card">
+                <div class="card">
                     <div class="card-body">
-                        <div class="sold-status-main">
-                            <div class="sold-status-left">
-                                <div class="sold-status-icon">
-                                    <i class="mdi mdi-check"></i>
+                        <div
+                            class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="customer-avatar">
+                                    <i class="mdi mdi-account text-white" style="font-size: 2rem;"></i>
                                 </div>
                                 <div>
-                                    <h4 class="sold-status-title">UNIT TELAH TERJUAL</h4>
-                                    <div class="sold-status-meta">
-                                        <span><i class="mdi mdi-calendar me-1"></i> Closing: {{ $closingDate }}</span>
-                                        <span class="badge badge-success">SELESAI</span>
-                                    </div>
+                                    <h4 class="customer-name mb-1 d-flex align-items-center flex-wrap gap-2">
+                                        {{ $booking->customer->full_name ?? '-' }}
+                                        @php
+                                            $jenis = strtolower($unit->jenis ?? '');
+                                            $badgeClass =
+                                                $jenis == 'subsidi'
+                                                    ? 'badge-gradient-success'
+                                                    : ($jenis == 'komersil'
+                                                        ? 'badge-gradient-primary'
+                                                        : 'badge-gradient-secondary');
+                                        @endphp
+                                        <span class="badge {{ $badgeClass }} ms-2"
+                                            style="font-size: 0.8rem; padding: 0.35rem 0.65rem; border-radius: 6px;">
+                                            <i class="mdi mdi-home-outline me-1"></i>
+                                            {{ strtoupper($unit->jenis ?? '-') }}
+                                        </span>
+                                        <span class="badge bg-success-subtle text-success ms-1 fw-bold"
+                                            style="font-size: 0.8rem; padding: 0.35rem 0.65rem; border-radius: 6px; border: 1px solid #bbf7d0;">
+                                            <i class="mdi mdi-check-decagram me-1"></i> TERJUAL
+                                        </span>
+                                    </h4>
+                                    <p class="customer-booking mb-0">Booking ID: {{ $booking->booking_code ?? '-' }} &bull; Closing: {{ $closingDate }}</p>
                                 </div>
                             </div>
 
-                            <div class="sold-unit-box">
-                                <span class="sold-unit-label">Unit</span>
-                                <span class="sold-unit-code">
-                                    <i class="mdi mdi-home"></i> {{ $unit->unit_code ?? '-' }}
-                                </span>
+                            <div class="customer-unit-info">
+                                <div class="info-item">
+                                    <small>Unit</small>
+                                    <span>Tipe {{ $unit->type ?? ($unit->unit_name ?? '-') }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <small>Blok/No</small>
+                                    <span>{{ $unit->unit_code ?? '-' }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <small>Harga Unit</small>
+                                    <span class="highlight">Rp
+                                        {{ number_format($unit->price ?? ($booking->total_price ?? 0), 0, ',', '.') }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1978,19 +2223,19 @@
                                                     @if($isUtj)
                                                         <div class="d-inline-flex align-items-center gap-1">
                                                             <a href="{{ route('cetak.kuitansi_utj', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
-                                                                <i class="mdi mdi-printer"></i> Cetak Kwitansi
+                                                                <i class="mdi mdi-printer"></i> Cetak
                                                             </a>
-                                                            <a href="{{ route('cetak.kuitansi_utj.wa', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 px-2 py-1" title="Kirim Kuitansi ke WhatsApp" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
-                                                                <i class="mdi mdi-whatsapp"></i> WA
+                                                            <a href="{{ route('cetak.kuitansi_utj.wa', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 px-2.5 py-1" title="Kirim Kuitansi ke WhatsApp" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
+                                                                <i class="mdi mdi-whatsapp"></i> Kirim
                                                             </a>
                                                         </div>
                                                     @elseif($purchaseType !== 'kpr')
                                                         <div class="d-inline-flex align-items-center gap-1">
                                                             <a href="{{ route('cetak.invoice_cash', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
-                                                                <i class="mdi mdi-printer"></i> Cetak Kwitansi
+                                                                <i class="mdi mdi-printer"></i> Cetak
                                                             </a>
-                                                            <a href="{{ route('cetak.invoice_wa', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 px-2 py-1" title="Kirim Invoice ke WhatsApp" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
-                                                                <i class="mdi mdi-whatsapp"></i> WA
+                                                            <a href="{{ route('cetak.invoice_wa', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 px-2.5 py-1" title="Kirim Invoice ke WhatsApp" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
+                                                                <i class="mdi mdi-whatsapp"></i> Kirim
                                                             </a>
                                                         </div>
                                                     @else
@@ -2028,10 +2273,10 @@
                                                 <td class="text-center">
                                                     <div class="d-inline-flex align-items-center gap-1">
                                                         <a href="{{ route('cetak.kuitansi_utj', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
-                                                            <i class="mdi mdi-printer"></i> Cetak Kwitansi
+                                                            <i class="mdi mdi-printer"></i> Cetak
                                                         </a>
-                                                        <a href="{{ route('cetak.kuitansi_utj.wa', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 px-2 py-1" title="Kirim Kuitansi ke WhatsApp" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
-                                                            <i class="mdi mdi-whatsapp"></i> WA
+                                                        <a href="{{ route('cetak.kuitansi_utj.wa', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 px-2.5 py-1" title="Kirim Kuitansi ke WhatsApp" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
+                                                            <i class="mdi mdi-whatsapp"></i> Kirim
                                                         </a>
                                                     </div>
                                                 </td>
@@ -2065,7 +2310,7 @@
                                                 <td class="text-center">
                                                     @if($purchaseType !== 'kpr')
                                                         <a href="{{ route('cetak.invoice_cash', $booking->id) }}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 px-2.5 py-1" style="border-radius: 6px; font-size: 0.78rem; font-weight: 600;">
-                                                            <i class="mdi mdi-printer"></i> Cetak Kwitansi
+                                                            <i class="mdi mdi-printer"></i> Cetak
                                                         </a>
                                                     @else
                                                         <span class="text-muted small">-</span>
@@ -2140,48 +2385,37 @@
             </div>
         </div>
 
-        <!-- Row: Modul Complaint / Keluhan & Garansi -->
+        <!-- Row: Card 1 - Barcode & QR Code Pengaduan Konsumen -->
         <div class="row mt-3">
             <div class="col-12">
-                <div class="card complaint-table-card border-0 shadow-sm" style="border-radius: 16px; overflow: hidden;">
+                <div class="card">
                     @php
                         $complaints = $booking->complaints ?? collect([]);
                         $complaintIdentifier = $booking->booking_code ?: $booking->id;
                         $complaintUrl = $complaintUrl ?? route('complaint.customer.form', $complaintIdentifier);
                         if (!isset($qrCodeSvg) || empty($qrCodeSvg)) {
                             try {
-                                $qrCodeSvg = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(125)->color(79, 70, 229)->generate($complaintUrl);
+                                $qrCodeSvg = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(125)->color(154, 85, 255)->generate($complaintUrl);
                             } catch (\Exception $e) {
                                 $qrCodeSvg = null;
                             }
                         }
                     @endphp
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2 py-3 border-bottom">
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="p-2 rounded-3" style="background: rgba(154, 85, 255, 0.1); color: #9a55ff;">
-                                <i class="mdi mdi-shield-home fs-5"></i>
-                            </span>
-                            <div>
-                                <h5 class="card-title mb-0 fw-bold" style="color: #2c2e3f;">
-                                    KELUHAN & KLAIM GARANSI (COMPLAINT)
-                                </h5>
-                                <small class="text-muted">Akses mandiri pengaduan pembeli via Barcode / QR Code & pencatatan maintenance</small>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-2 flex-wrap">
-                            <a href="{{ route('complaint.barcode.print', $booking->id) }}" target="_blank" class="btn btn-outline-dark btn-sm shadow-sm px-3 fw-bold d-flex align-items-center gap-1">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <h5 class="card-title">
+                            <i class="mdi mdi-qrcode-scan"></i>
+                            BARCODE & PORTAL PENGADUAN KONSUMEN
+                        </h5>
+                        <div>
+                            <a href="{{ route('complaint.barcode.print', $booking->id) }}" target="_blank" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm" style="border-radius: 6px;">
                                 <i class="mdi mdi-printer me-1"></i> Cetak Stiker QR
                             </a>
-                            <button type="button" class="btn btn-gradient-primary btn-sm shadow-sm px-3 fw-bold d-flex align-items-center gap-1" onclick="openAddComplaintModal(event)">
-                                <i class="mdi mdi-plus-circle me-1"></i> + Input Internal (Staff)
-                            </button>
                         </div>
                     </div>
 
-                    <!-- Banner Barcode / QR Code Pembeli -->
-                    <div class="p-3 p-md-4" style="background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%); border-bottom: 1px solid #e5e9f5;">
-                        <div class="row align-items-center g-3">
-                            <div class="col-auto text-center">
+                    <div class="card-body">
+                        <div class="row align-items-center g-3 qr-portal-row">
+                            <div class="col-12 col-md-auto text-center d-flex justify-content-center">
                                 <div class="p-2 bg-white rounded-3 shadow-sm d-inline-flex flex-column align-items-center border" style="width: 140px;">
                                     <div style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
                                         @if($qrCodeSvg)
@@ -2195,22 +2429,22 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="col">
+                            <div class="col-12 col-md">
                                 <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                                    <span class="badge px-2 py-1 text-white fw-bold" style="background: linear-gradient(135deg, #6366f1, #4f46e5); font-size: 0.72rem; letter-spacing: 0.5px;">
+                                    <span class="badge px-2 py-1 text-white fw-bold" style="background: #9a55ff; font-size: 0.72rem; letter-spacing: 0.5px; border-radius: 4px;">
                                         PORTAL KHUSUS PEMBELI RUMAH
                                     </span>
-                                    <span class="badge bg-light text-dark border font-monospace" style="font-size: 0.72rem;">
+                                    <span class="badge bg-light text-dark border font-monospace" style="font-size: 0.72rem; border-radius: 4px;">
                                         Unit: {{ $unit->unit_name ?? '-' }} (Blok {{ $unit->unit_code ?? '-' }})
                                     </span>
                                 </div>
-                                <h6 class="fw-bold mb-1" style="color: #1e1b4b;">Link & Barcode Pengaduan Mandiri Konsumen</h6>
+                                <h6 class="fw-bold mb-1" style="color: #2c2e3f;">Link & Barcode Pengaduan Mandiri Konsumen</h6>
                                 <p class="text-muted small mb-2" style="max-width: 680px; line-height: 1.45;">
                                     Konsumen (<strong>{{ $booking->customer->full_name ?? 'Pembeli' }}</strong>) dapat mengisi keluhan, melampirkan foto kerusakan langsung dari kamera HP, dan mengecek tiket garansi secara mandiri tanpa login admin. Bagikan link atau cetak stiker barcode untuk ditempel pada unit rumah.
                                 </p>
                                 
-                                <div class="d-flex align-items-center gap-2 flex-wrap" style="max-width: 650px;">
-                                    <div class="input-group input-group-sm flex-nowrap" style="max-width: 440px;">
+                                <div class="d-flex align-items-center gap-2 flex-wrap qr-portal-actions" style="max-width: 650px;">
+                                    <div class="input-group input-group-sm flex-nowrap qr-input-group" style="max-width: 440px;">
                                         <span class="input-group-text bg-white text-muted border-end-0">
                                             <i class="mdi mdi-link-variant"></i>
                                         </span>
@@ -2219,11 +2453,30 @@
                                             <i class="mdi mdi-content-copy me-1"></i> Salin Link
                                         </button>
                                     </div>
-                                    <a href="{{ $complaintUrl }}" target="_blank" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 shadow-sm px-2.5">
+                                    <a href="{{ $complaintUrl }}" target="_blank" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 shadow-sm px-2.5" style="border-radius: 6px;">
                                         <i class="mdi mdi-open-in-new"></i> Buka Form Konsumen
                                     </a>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row: Card 2 - Modul Complaint / Keluhan & Garansi -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="card complaint-table-card">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <h5 class="card-title">
+                            <i class="mdi mdi-shield-home"></i>
+                            KELUHAN & KLAIM GARANSI (COMPLAINT)
+                        </h5>
+                        <div>
+                            <button type="button" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm" onclick="openAddComplaintModal(event)" style="border-radius: 6px;">
+                                <i class="mdi mdi-plus-circle me-1"></i> + Input Internal (Staff)
+                            </button>
                         </div>
                     </div>
 
@@ -2332,10 +2585,7 @@
                                     Unit dalam kondisi baik dan masa garansi aktif berjalan. Konsumen dapat melakukan scan QR di atas atau Anda dapat mencatat keluhan internal.
                                 </p>
                                 <div class="d-inline-flex gap-2">
-                                    <a href="{{ $complaintUrl }}" target="_blank" class="btn btn-outline-primary btn-sm px-3">
-                                        <i class="mdi mdi-cellphone-check me-1"></i> Buka Form Konsumen
-                                    </a>
-                                    <button type="button" class="btn btn-gradient-primary btn-sm px-3" onclick="openAddComplaintModal(event)">
+                                    <button type="button" class="btn btn-primary btn-sm px-3" onclick="openAddComplaintModal(event)" style="border-radius: 6px;">
                                         <i class="mdi mdi-plus-circle me-1"></i> + Input Internal (Staff)
                                     </button>
                                 </div>
@@ -2470,7 +2720,7 @@
                         <span class="small text-muted" id="lblItemCount">Total: <strong>1 keluhan</strong></span>
                         <div class="d-flex gap-2">
                             <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-2 fw-semibold" data-dismiss="modal" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-gradient-primary btn-sm px-4 fw-semibold text-white shadow-sm rounded-2" id="btnSubmitComplaints">
+                            <button type="submit" class="btn btn-primary btn-sm px-4 fw-semibold text-white shadow-sm rounded-2" id="btnSubmitComplaints">
                                 <i class="mdi mdi-send me-1"></i> Ajukan Keluhan
                             </button>
                         </div>
@@ -2546,7 +2796,7 @@
                     </div>
                     <div class="modal-footer bg-white border-top py-2.5 px-3 px-md-4 d-flex justify-content-end gap-2">
                         <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-2 fw-semibold" data-dismiss="modal" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-gradient-primary btn-sm px-4 fw-semibold text-white shadow-sm rounded-2">
+                        <button type="submit" class="btn btn-primary btn-sm px-4 fw-semibold text-white shadow-sm rounded-2">
                             <i class="mdi mdi-content-save me-1"></i> Simpan Progress
                         </button>
                     </div>

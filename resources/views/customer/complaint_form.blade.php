@@ -1,578 +1,1080 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Layanan Pengaduan & Klaim Garansi Unit - {{ $unit->unit_name ?? 'Rumah' }}</title>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Material Design Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css">
+@extends('home.layouts.partials.app')
 
-    <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-dark: #3730a3;
-            --primary-light: #eef2ff;
-            --accent: #06b6d4;
-            --dark: #0f172a;
-            --gray-subtle: #f8fafc;
-            --border-color: #e2e8f0;
+@section('title', 'Layanan Pengaduan & Klaim Garansi Unit - ' . ($unit->unit_name ?? 'Rumah'))
+
+@push('styles')
+<style>
+    .complaint-page {
+        min-height: 100vh;
+        background: #f1f5f9;
+        padding: 3rem 1.25rem 5rem;
+    }
+
+    .complaint-container {
+        max-width: 760px;
+        margin: 0 auto;
+    }
+
+    /* ===== UNIFIED 1 SINGLE CARD ===== */
+    .complaint-single-card {
+        background: #ffffff;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 15px 35px -5px rgba(15, 23, 42, 0.06), 0 5px 15px rgba(0, 0, 0, 0.03);
+        overflow: hidden;
+    }
+
+    /* ===== HERO HEADER OF THE CARD ===== */
+    .card-hero-header {
+        background: linear-gradient(145deg, #1e293b, #0f172a);
+        padding: 2.75rem 2rem 2.25rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .complaint-logo-badge {
+        width: 74px;
+        height: 74px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 3px solid var(--gold, #c9973a);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.15rem;
+        overflow: hidden;
+        box-shadow: 0 6px 20px rgba(201, 151, 58, 0.3);
+    }
+
+    .complaint-logo-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .complaint-hero-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.35rem 0.95rem;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.12);
+        color: #f1f5f9;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        margin-bottom: 0.85rem;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .complaint-hero-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.85rem;
+        color: #ffffff;
+        margin-bottom: 0.45rem;
+        line-height: 1.25;
+    }
+
+    .complaint-hero-sub {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.75);
+        max-width: 520px;
+        margin: 0 auto;
+        line-height: 1.55;
+    }
+
+    /* ===== BODY OF THE CARD ===== */
+    .card-hero-body {
+        padding: 2.25rem 2.25rem 2.5rem;
+    }
+
+    /* ===== SECTION BLOCKS ===== */
+    .form-section-block {
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .form-section-block:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+
+    .section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    .section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 0.15rem;
+    }
+
+    .section-sub {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin: 0;
+    }
+
+    /* ===== UNIT BANNER ===== */
+    .unit-banner-box {
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 1.15rem 1.35rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    .warranty-tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.4rem 0.85rem;
+        border-radius: 4px;
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+
+    .warranty-active {
+        background: #ecfdf5;
+        color: #059669;
+        border: 1px solid #a7f3d0;
+    }
+
+    .warranty-expired {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+
+    /* ===== FORM CONTROLS ===== */
+    .form-group-custom {
+        margin-bottom: 1.25rem;
+    }
+
+    .form-group-custom:last-child {
+        margin-bottom: 0;
+    }
+
+    .form-label-custom {
+        display: block;
+        font-size: 0.84rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.45rem;
+    }
+
+    .form-label-custom .req {
+        color: #ef4444;
+    }
+
+    .form-control-custom {
+        width: 100%;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+        font-size: 0.92rem;
+        color: #0f172a;
+        background-color: #ffffff;
+        transition: all 0.2s ease;
+        outline: none;
+        font-family: inherit;
+    }
+
+    .form-control-custom:focus {
+        border-color: #9a55ff;
+        box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15);
+    }
+
+    /* ===== CUSTOM DROPDOWN (BERSIH TANPA ICON & EMOJI) ===== */
+    .custom-select-wrapper {
+        position: relative;
+        user-select: none;
+        width: 100%;
+    }
+
+    .custom-select-trigger {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+        font-size: 0.92rem;
+        font-weight: 500;
+        color: #0f172a;
+        background: #ffffff;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .custom-select-trigger:hover {
+        border-color: #94a3b8;
+        background: #fafafa;
+    }
+
+    .custom-select-wrapper.is-open .custom-select-trigger {
+        border-color: #9a55ff;
+        box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15);
+    }
+
+    .custom-select-value {
+        color: #0f172a;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .custom-select-value.text-muted {
+        color: #94a3b8;
+    }
+
+    .custom-select-arrow {
+        width: 8px;
+        height: 8px;
+        border-right: 2px solid #64748b;
+        border-bottom: 2px solid #64748b;
+        transform: rotate(45deg);
+        transition: transform 0.2s ease, border-color 0.2s ease;
+        margin-left: 0.5rem;
+        flex-shrink: 0;
+        display: inline-block;
+    }
+
+    .custom-select-wrapper.is-open .custom-select-arrow {
+        transform: rotate(-135deg);
+        border-color: #9a55ff;
+    }
+
+    .custom-select-menu {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 6px;
+        box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        max-height: 250px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        display: none;
+        padding: 5px;
+    }
+
+    .custom-select-wrapper.is-open .custom-select-menu {
+        display: block;
+        animation: dropFade 0.2s ease-out forwards;
+    }
+
+    @keyframes dropFade {
+        from { opacity: 0; transform: translateY(-4px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .custom-option {
+        padding: 0.7rem 0.9rem;
+        font-size: 0.88rem;
+        color: #334155;
+        border-radius: 4px;
+        cursor: pointer;
+        min-height: 42px;
+        display: flex;
+        align-items: center;
+        transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .custom-option:hover {
+        background: #f8fafc;
+        color: #0f172a;
+    }
+
+    .custom-option.is-selected {
+        background: #f1f5f9;
+        color: #0f172a;
+        font-weight: 700;
+    }
+
+    /* ===== REPEATER ITEM BOX ===== */
+    .complaint-item-box {
+        background: #faf8ff;
+        border: 1.5px solid #eee6ff;
+        border-radius: 6px;
+        padding: 1.35rem;
+        margin-bottom: 1.25rem;
+        transition: border-color 0.2s ease;
+    }
+
+    .complaint-item-box:hover {
+        border-color: #ddd0ff;
+    }
+
+    .complaint-item-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.15rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px dashed #d8c8fc;
+    }
+
+    .item-number-tag {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #1e1b4b;
+    }
+
+    .btn-remove-item {
+        background: transparent;
+        border: 1px solid #fecaca;
+        color: #ef4444;
+        border-radius: 4px;
+        padding: 0.35rem 0.75rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-remove-item:hover {
+        background: #fef2f2;
+        border-color: #ef4444;
+    }
+
+    /* ===== UPLOAD AREA ===== */
+    .photo-upload-area {
+        border: 2px dashed #cbd5e1;
+        border-radius: 6px;
+        padding: 1.35rem 1rem;
+        text-align: center;
+        background: #ffffff;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .photo-upload-area:hover {
+        border-color: #9a55ff;
+        background: #faf5ff;
+    }
+
+    .photo-preview-image {
+        max-height: 140px;
+        border-radius: 6px;
+        object-fit: cover;
+        display: none;
+        margin: 0.85rem auto 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-add-complaint {
+        width: 100%;
+        background: #ffffff;
+        border: 2px dashed #9a55ff;
+        color: #9a55ff;
+        border-radius: 6px;
+        padding: 0.9rem;
+        font-weight: 700;
+        font-size: 0.92rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+    }
+
+    .btn-add-complaint:hover {
+        background: #faf5ff;
+        color: #7c3aed;
+    }
+
+    .btn-submit-complaint {
+        width: 100%;
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        color: #ffffff;
+        border: 1.5px solid var(--gold, #c9973a);
+        border-radius: 6px;
+        padding: 1rem 1.5rem;
+        font-size: 1.02rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
+        text-align: center;
+    }
+
+    .btn-submit-complaint:hover {
+        background: #0f172a;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 25px rgba(15, 23, 42, 0.3);
+        color: #ffffff;
+    }
+
+    .faq-info-card {
+        background: #f8fafc;
+        border-radius: 6px;
+        padding: 1.25rem 1.5rem;
+        border: 1px solid #e2e8f0;
+        font-size: 0.85rem;
+    }
+
+    .faq-info-card ul {
+        margin: 0;
+        padding-left: 1.25rem;
+        color: #64748b;
+        line-height: 1.6;
+    }
+
+    /* ===== FORM 2-COLUMN GRID ===== */
+    .form-grid-2col {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
+
+    .unit-owner-col {
+        text-align: right;
+    }
+
+    /* ===== RESPONSIVE (TABLET & MOBILE) ===== */
+    @media (max-width: 768px) {
+        .complaint-page {
+            padding: 1.25rem 0.75rem 3.5rem;
         }
 
-        * {
-            box-sizing: border-box;
+        .complaint-single-card {
+            border-radius: 8px;
         }
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f1f5f9;
-            color: #334155;
-            line-height: 1.5;
-            padding-bottom: 60px;
+        .card-hero-header {
+            padding: 2rem 1.25rem 1.5rem;
         }
 
-        .header-hero {
-            background: linear-gradient(135deg, #3730a3 0%, #4f46e5 50%, #4338ca 100%);
-            color: #ffffff;
-            padding: 36px 20px 70px;
-            position: relative;
-            overflow: hidden;
+        .complaint-logo-badge {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 0.85rem;
         }
 
-        .header-hero::after {
-            content: '';
-            position: absolute;
-            bottom: -30px;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: #f1f5f9;
-            border-top-left-radius: 36px;
-            border-top-right-radius: 36px;
+        .complaint-hero-title {
+            font-size: 1.45rem;
+            line-height: 1.3;
         }
 
-        .main-container {
-            max-width: 720px;
-            margin: -50px auto 0;
-            padding: 0 16px;
-            position: relative;
-            z-index: 10;
+        .complaint-hero-sub {
+            font-size: 0.84rem;
         }
 
-        .card-custom {
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            margin-bottom: 20px;
-            overflow: hidden;
-            transition: all 0.2s ease;
+        .card-hero-body {
+            padding: 1.35rem 1rem 1.75rem;
         }
 
-        .card-custom-header {
-            padding: 16px 20px;
-            background: #ffffff;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .unit-banner-box {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.85rem;
+            padding: 1rem;
         }
 
-        .card-custom-body {
-            padding: 20px;
+        .unit-owner-col {
+            text-align: left;
+            width: 100%;
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 0.65rem;
         }
 
-        .unit-info-badge {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 14px 18px;
+        .form-grid-2col {
+            grid-template-columns: 1fr;
+            gap: 1rem;
         }
 
-        .warranty-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            border-radius: 6px;
+        /* Prevent auto-zoom on iOS Safari */
+        .form-control-custom,
+        .custom-select-trigger {
+            font-size: 16px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .complaint-page {
+            padding: 0.65rem 0.4rem 2.5rem;
+        }
+
+        .complaint-single-card {
+            border-radius: 8px;
+        }
+
+        .card-hero-header {
+            padding: 1.5rem 0.85rem 1.25rem;
+        }
+
+        .complaint-logo-badge {
+            width: 56px;
+            height: 56px;
+            margin-bottom: 0.65rem;
+        }
+
+        .complaint-hero-title {
+            font-size: 1.25rem;
+        }
+
+        .complaint-hero-pill {
+            font-size: 0.68rem;
+            padding: 0.25rem 0.65rem;
+        }
+
+        .complaint-hero-sub {
             font-size: 0.8rem;
-            font-weight: 700;
         }
 
-        .warranty-active {
-            background: #ecfdf5;
-            color: #059669;
-            border: 1px solid #a7f3d0;
+        .card-hero-body {
+            padding: 1.15rem 0.75rem 1.5rem;
         }
 
-        .warranty-expired {
-            background: #fef2f2;
-            color: #dc2626;
-            border: 1px solid #fecaca;
+        .section-head {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.35rem;
         }
 
-        .form-label {
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: #1e293b;
-            margin-bottom: 6px;
+        .warranty-tag {
+            font-size: 0.72rem;
+            padding: 0.3rem 0.6rem;
         }
 
-        .form-control, .form-select {
-            border-radius: 12px;
-            border: 1.5px solid #cbd5e1;
-            padding: 11px 15px;
+        .complaint-item-box {
+            padding: 0.95rem 0.75rem;
+            border-radius: 6px;
+        }
+
+        .photo-upload-area {
+            padding: 1rem 0.75rem;
+        }
+
+        .btn-add-complaint {
+            font-size: 0.86rem;
+            padding: 0.75rem;
+        }
+
+        .btn-submit-complaint {
             font-size: 0.92rem;
-            color: #1e293b;
-            transition: all 0.2s;
-            background-color: #ffffff;
+            padding: 0.85rem 1rem;
+            border-radius: 6px;
         }
 
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
-            outline: none;
+        .faq-info-card {
+            padding: 1rem 0.85rem;
+            font-size: 0.8rem;
         }
 
-        .item-box {
-            background: #ffffff;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 18px;
-            position: relative;
-            margin-bottom: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-            transition: border-color 0.2s ease;
+        .faq-info-card ul {
+            padding-left: 1rem;
         }
+    }
+</style>
+@endpush
 
-        .item-box:hover {
-            border-color: #cbd5e1;
-        }
+@section('content')
 
-        .item-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 14px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed #e2e8f0;
-        }
+{{-- Tanpa Navbar Sesuai Permintaan --}}
 
-        .upload-area {
-            border: 2px dashed #cbd5e1;
-            border-radius: 14px;
-            padding: 16px;
-            text-align: center;
-            background: #f8fafc;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-        }
+<div class="complaint-page">
+    <div class="complaint-container">
 
-        .upload-area:hover {
-            border-color: var(--primary);
-            background: var(--primary-light);
-        }
+        <!-- UNIFIED 1 SINGLE CARD -->
+        <div class="complaint-single-card">
+            
+            <!-- HEADER OF THE CARD -->
+            <div class="card-hero-header">
+                <!-- Logo Perusahaan Resmi -->
+                <div class="complaint-logo-badge">
+                    <img src="{{ asset('images/logo.jpeg') }}" alt="Logo Graha Cipta Sejahtera" class="complaint-logo-img">
+                </div>
 
-        .preview-img {
-            max-height: 120px;
-            border-radius: 10px;
-            object-fit: cover;
-            display: none;
-            margin: 10px auto 0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-submit {
-            background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
-            color: #ffffff;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 14px;
-            font-size: 1rem;
-            font-weight: 700;
-            width: 100%;
-            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
-            transition: all 0.2s;
-        }
-
-        .btn-submit:hover {
-            background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%);
-            transform: translateY(-1px);
-            box-shadow: 0 12px 20px -3px rgba(79, 70, 229, 0.4);
-            color: #ffffff;
-        }
-
-        .btn-add-item {
-            background: #ffffff;
-            border: 2px dashed var(--primary);
-            color: var(--primary);
-            border-radius: 14px;
-            padding: 12px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            width: 100%;
-            transition: all 0.2s;
-        }
-
-        .btn-add-item:hover {
-            background: var(--primary-light);
-            color: var(--primary-dark);
-        }
-
-        .faq-card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 18px 20px;
-            border: 1px solid #e2e8f0;
-            font-size: 0.85rem;
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Hero Header -->
-    <header class="header-hero text-center">
-        <div class="d-inline-flex align-items-center gap-2 mb-2 px-3 py-1 rounded-pill" style="background: rgba(255, 255, 255, 0.18); backdrop-filter: blur(8px);">
-            <i class="mdi mdi-shield-home-outline text-warning fs-5"></i>
-            <span class="small fw-bold text-white tracking-wide">LAYANAN PURNA JUAL & GARANSI</span>
-        </div>
-        <h1 class="h3 fw-bold mb-1 text-white">Form Pengaduan & Keluhan Unit</h1>
-        <p class="text-white-50 small mb-0">Sampaikan keluhan kondisi fisik atau fasilitas rumah Anda langsung ke Tim Maintenance</p>
-    </header>
-
-    <main class="main-container">
-        <!-- Alert Messages -->
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show rounded-4 shadow-sm border-0 mb-3" role="alert">
-                <i class="mdi mdi-alert-circle me-1"></i> {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="complaint-hero-pill">
+                    <span>LAYANAN PURNA JUAL & GARANSI</span>
+                </div>
+                <h1 class="complaint-hero-title">Form Pengaduan & Keluhan Unit</h1>
+                <p class="complaint-hero-sub">
+                    Sampaikan keluhan kondisi fisik atau fasilitas rumah Anda langsung ke Tim Maintenance Graha Cipta Sejahtera untuk penanganan resmi.
+                </p>
             </div>
-        @endif
 
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm border-0 mb-3" role="alert">
-                <i class="mdi mdi-check-circle me-1"></i> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        <!-- Card: Data Unit Rumah -->
-        <div class="card card-custom">
-            <div class="card-custom-header">
-                <div class="d-flex align-items-center gap-2">
-                    <span class="p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
-                        <i class="mdi mdi-home-city fs-5"></i>
-                    </span>
-                    <div>
-                        <h6 class="fw-bold mb-0 text-dark">Data Kepemilikan Unit</h6>
-                        <small class="text-muted">Informasi rumah yang diajukan pengaduan</small>
+            <!-- BODY OF THE CARD -->
+            <div class="card-hero-body">
+                
+                <!-- Alert Notifikasi -->
+                @if(session('error'))
+                    <div style="background: #fef2f2; border: 1.5px solid #fecaca; border-radius: 6px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; color: #991b1b; font-size: 0.88rem;">
+                        {{ session('error') }}
                     </div>
-                </div>
-                <div>
-                    @if($garansiStatus === 'Aktif')
-                        <span class="warranty-pill warranty-active">
-                            <i class="mdi mdi-shield-check"></i> Garansi Aktif ({{ $garansiDaysLeft }} hari)
-                        </span>
-                    @else
-                        <span class="warranty-pill warranty-expired">
-                            <i class="mdi mdi-shield-alert"></i> Masa Garansi Berakhir
-                        </span>
-                    @endif
-                </div>
-            </div>
-            <div class="card-custom-body">
-                <div class="unit-info-badge">
-                    <div class="row g-2 align-items-center">
-                        <div class="col-8">
-                            <div class="fw-bold text-dark fs-6">{{ $unit->unit_name ?? 'Unit Rumah' }}</div>
-                            <div class="small text-muted mb-1">
-                                Perumahan: <strong class="text-dark">{{ $unit->landBank->name ?? '-' }}</strong>
+                @endif
+
+                @if(session('success'))
+                    <div style="background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 6px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; color: #065f46; font-size: 0.88rem;">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                <!-- SECTION 1: DATA KEPEMILIKAN UNIT -->
+                <div class="form-section-block">
+                    <div class="section-head">
+                        <div>
+                            <h2 class="section-title">Data Kepemilikan Unit</h2>
+                            <p class="section-sub">Informasi unit rumah yang diajukan pengaduan</p>
+                        </div>
+                        <div>
+                            @if($garansiStatus === 'Aktif')
+                                <span class="warranty-tag warranty-active">
+                                    Garansi Aktif ({{ $garansiDaysLeft }} hari)
+                                </span>
+                            @else
+                                <span class="warranty-tag warranty-expired">
+                                    Masa Garansi Berakhir
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="unit-banner-box">
+                        <div>
+                            <div style="font-size: 1.1rem; font-weight: 800; color: #0f172a; margin-bottom: 0.2rem;">
+                                {{ $unit->unit_name ?? 'Unit Rumah' }}
                             </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="badge bg-primary text-white font-monospace px-2.5 py-1">Blok {{ $unit->unit_code ?? '-' }}</span>
-                                <span class="badge bg-secondary bg-opacity-10 text-secondary">Tipe {{ $unit->type ?? 'Standar' }}</span>
+                            <div style="font-size: 0.84rem; color: #64748b; margin-bottom: 0.5rem;">
+                                Perumahan: <strong style="color: #1e293b;">{{ $unit->landBank->name ?? '-' }}</strong>
+                            </div>
+                            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                                <span style="background: #9a55ff; color: #fff; font-family: monospace; font-size: 0.72rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 6px;">
+                                    Blok {{ $unit->unit_code ?? '-' }}
+                                </span>
+                                <span style="background: #ffffff; color: #475569; border: 1px solid #e2e8f0; font-size: 0.72rem; font-weight: 600; padding: 0.25rem 0.6rem; border-radius: 6px;">
+                                    Tipe {{ $unit->type ?? 'Standar' }}
+                                </span>
                             </div>
                         </div>
-                        <div class="col-4 text-end">
-                            <small class="text-muted d-block" style="font-size: 0.75rem;">Pemilik Terdaftar:</small>
-                            <span class="fw-bold text-dark d-block text-truncate" title="{{ $customer->full_name ?? '-' }}">
+                        <div class="unit-owner-col">
+                            <small style="color: #8b8fa3; font-size: 0.75rem; display: block;">Pemilik Terdaftar:</small>
+                            <span style="font-weight: 700; color: #0f172a; font-size: 0.95rem; display: block;">
                                 {{ $customer->full_name ?? '-' }}
                             </span>
-                            <small class="text-muted font-monospace" style="font-size: 0.72rem;">#{{ $booking->booking_code ?? $booking->id }}</small>
+                            <small style="color: #64748b; font-family: monospace; font-size: 0.75rem;">
+                                #{{ $booking->booking_code ?? $booking->id }}
+                            </small>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Form Pengaduan -->
-        <form action="{{ route('complaint.customer.store', $booking->booking_code ?: $booking->id) }}" method="POST" enctype="multipart/form-data" id="complaintForm">
-            @csrf
+                <!-- FORMULIR PENGADUAN KONSUMEN -->
+                <form action="{{ route('complaint.customer.store', $booking->booking_code ?: $booking->id) }}" method="POST" enctype="multipart/form-data" id="complaintForm">
+                    @csrf
 
-            <!-- Card: Kontak Pelapor -->
-            <div class="card card-custom">
-                <div class="card-custom-header">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="p-2 rounded-3 bg-info bg-opacity-10 text-info">
-                            <i class="mdi mdi-account-circle fs-5"></i>
-                        </span>
-                        <div>
-                            <h6 class="fw-bold mb-0 text-dark">Kontak Pelapor / Pemilik</h6>
-                            <small class="text-muted">Untuk konfirmasi jadwal survei & update perbaikan</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-custom-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Nama Pelapor <span class="text-danger">*</span></label>
-                            <input type="text" name="nama_pelapor" class="form-control" value="{{ old('nama_pelapor', $customer->full_name ?? '') }}" placeholder="Nama Anda" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">No. WhatsApp / HP Aktif <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0" style="border-radius: 12px 0 0 12px;">
-                                    <i class="mdi mdi-whatsapp text-success fs-5"></i>
-                                </span>
-                                <input type="tel" name="no_whatsapp" class="form-control border-start-0" style="border-radius: 0 12px 12px 0;" value="{{ old('no_whatsapp', $customer->phone ?? '') }}" placeholder="08xxxxxxxxxx" required>
+                    <!-- SECTION 2: KONTAK PELAPOR -->
+                    <div class="form-section-block">
+                        <div class="section-head">
+                            <div>
+                                <h2 class="section-title">Kontak Pelapor / Pemilik</h2>
+                                <p class="section-sub">Untuk konfirmasi jadwal survei & update penanganan</p>
                             </div>
-                            <div class="form-text" style="font-size: 0.75rem;">Tim teknisi akan menghubungi melalui nomor ini sebelum datang ke lokasi.</div>
                         </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Card: Rincian Keluhan -->
-            <div class="card card-custom">
-                <div class="card-custom-header">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="p-2 rounded-3 bg-danger bg-opacity-10 text-danger">
-                            <i class="mdi mdi-wrench fs-5"></i>
-                        </span>
-                        <div>
-                            <h6 class="fw-bold mb-0 text-dark">Rincian Titik Kerusakan / Keluhan</h6>
-                            <small class="text-muted">Bisa mengajukan lebih dari satu kerusakan sekaligus</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-custom-body">
-                    <div id="itemsContainer">
-                        <!-- Item 0 (Default) -->
-                        <div class="item-box" data-index="0">
-                            <div class="item-header">
-                                <span class="fw-bold text-dark item-badge">
-                                    <i class="mdi mdi-numeric-1-circle text-primary me-1 fs-5 align-middle"></i> Titik Keluhan #1
-                                </span>
-                                <button type="button" class="btn btn-sm btn-outline-danger btn-remove-item d-none" onclick="removeItem(this)">
-                                    <i class="mdi mdi-trash-can-outline"></i> Hapus
-                                </button>
+                        <div class="form-grid-2col">
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">Nama Pelapor <span class="req">*</span></label>
+                                <input type="text" name="nama_pelapor" class="form-control-custom" value="{{ old('nama_pelapor', $customer->full_name ?? '') }}" placeholder="Nama Anda" required>
                             </div>
+                            <div class="form-group-custom">
+                                <label class="form-label-custom">No. WhatsApp / HP Aktif <span class="req">*</span></label>
+                                <input type="tel" name="no_whatsapp" class="form-control-custom" value="{{ old('no_whatsapp', $customer->phone ?? '') }}" placeholder="08xxxxxxxxxx" required>
+                                <small style="font-size: 0.74rem; color: #8b8fa3; display: block; margin-top: 0.35rem;">
+                                    Tim teknisi akan menghubungi nomor ini sebelum inspeksi ke lokasi unit.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
 
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Kategori Masalah <span class="text-danger">*</span></label>
-                                    <select name="items[0][kategori]" class="form-select" required>
-                                        <option value="">-- Pilih Bagian Rusak --</option>
-                                        <option value="kebocoran">Kebocoran Atap / Plafon / Talang</option>
-                                        <option value="sanitasi_pipa">Sanitasi, Kran Bocor & Saluran Pembuangan</option>
-                                        <option value="kelistrikan">Kelistrikan, Stopkontak, MCB & Lampu</option>
-                                        <option value="pintu_jendela">Kusen, Daun Pintu, Jendela & Kunci</option>
-                                        <option value="struktur_dinding">Dinding Retak / Plesteran Mengelupas</option>
-                                        <option value="finishing_cat">Keramik Lantai / Cat Dinding Terkelupas</option>
-                                        <option value="lainnya">Lainnya / Masalah Umum</option>
-                                    </select>
+                    <!-- SECTION 3: RINCIAN TITIK KERUSAKAN -->
+                    <div class="form-section-block">
+                        <div class="section-head">
+                            <div>
+                                <h2 class="section-title">Rincian Titik Kerusakan / Keluhan</h2>
+                                <p class="section-sub">Anda dapat mengajukan lebih dari satu kerusakan sekaligus</p>
+                            </div>
+                        </div>
+
+                        <div id="itemsContainer">
+                            <!-- Item #0 (Default) -->
+                            <div class="complaint-item-box" data-index="0">
+                                <div class="complaint-item-header">
+                                    <span class="item-number-tag item-badge">
+                                        Titik Keluhan #1
+                                    </span>
+                                    <button type="button" class="btn-remove-item d-none" onclick="removeItem(this)">
+                                        Hapus
+                                    </button>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Tingkat Urgensi</label>
-                                    <select name="items[0][prioritas]" class="form-select">
-                                        <option value="sedang">Sedang (Bisa dijadwalkan)</option>
-                                        <option value="tinggi">Tinggi (Perlu penanganan segera)</option>
-                                        <option value="darurat">Darurat (Air meluap / korsleting / bocor deras)</option>
-                                        <option value="rendah">Rendah (Penyempurnaan estetika)</option>
-                                    </select>
+
+                                <div class="form-grid-2col" style="margin-bottom: 1rem;">
+                                    
+                                    <!-- Custom Select Kategori (Tanpa Icon & Emoji) -->
+                                    <div class="form-group-custom">
+                                        <label class="form-label-custom">Kategori Masalah <span class="req">*</span></label>
+                                        <div class="custom-select-wrapper" id="wrapper_kategori_0">
+                                            <div class="custom-select-trigger" onclick="toggleDropdown('wrapper_kategori_0')">
+                                                <span class="custom-select-value text-muted" id="trigger_text_kategori_0">
+                                                    -- Pilih Bagian Rusak --
+                                                </span>
+                                                <span class="custom-select-arrow"></span>
+                                            </div>
+                                            <div class="custom-select-menu">
+                                                <div class="custom-option" data-value="kebocoran" onclick="selectDropdownOption('wrapper_kategori_0', 'kebocoran', 'Kebocoran Atap / Plafon / Talang')">
+                                                    Kebocoran Atap / Plafon / Talang
+                                                </div>
+                                                <div class="custom-option" data-value="sanitasi_pipa" onclick="selectDropdownOption('wrapper_kategori_0', 'sanitasi_pipa', 'Sanitasi, Kran Bocor & Saluran Pembuangan')">
+                                                    Sanitasi, Kran Bocor & Saluran Pembuangan
+                                                </div>
+                                                <div class="custom-option" data-value="kelistrikan" onclick="selectDropdownOption('wrapper_kategori_0', 'kelistrikan', 'Kelistrikan, Stopkontak, MCB & Lampu')">
+                                                    Kelistrikan, Stopkontak, MCB & Lampu
+                                                </div>
+                                                <div class="custom-option" data-value="pintu_jendela" onclick="selectDropdownOption('wrapper_kategori_0', 'pintu_jendela', 'Kusen, Daun Pintu, Jendela & Kunci')">
+                                                    Kusen, Daun Pintu, Jendela & Kunci
+                                                </div>
+                                                <div class="custom-option" data-value="struktur_dinding" onclick="selectDropdownOption('wrapper_kategori_0', 'struktur_dinding', 'Dinding Retak / Plesteran Mengelupas')">
+                                                    Dinding Retak / Plesteran Mengelupas
+                                                </div>
+                                                <div class="custom-option" data-value="finishing_cat" onclick="selectDropdownOption('wrapper_kategori_0', 'finishing_cat', 'Keramik Lantai / Cat Dinding Terkelupas')">
+                                                    Keramik Lantai / Cat Dinding Terkelupas
+                                                </div>
+                                                <div class="custom-option" data-value="lainnya" onclick="selectDropdownOption('wrapper_kategori_0', 'lainnya', 'Lainnya / Masalah Umum')">
+                                                    Lainnya / Masalah Umum
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="items[0][kategori]" id="input_kategori_0" required>
+                                        </div>
+                                    </div>
+
+                                    <!-- Custom Select Urgensi (Tanpa Icon & Emoji) -->
+                                    <div class="form-group-custom">
+                                        <label class="form-label-custom">Tingkat Urgensi</label>
+                                        <div class="custom-select-wrapper" id="wrapper_prioritas_0">
+                                            <div class="custom-select-trigger" onclick="toggleDropdown('wrapper_prioritas_0')">
+                                                <span class="custom-select-value" id="trigger_text_prioritas_0">
+                                                    Sedang (Bisa dijadwalkan)
+                                                </span>
+                                                <span class="custom-select-arrow"></span>
+                                            </div>
+                                            <div class="custom-select-menu">
+                                                <div class="custom-option is-selected" data-value="sedang" onclick="selectDropdownOption('wrapper_prioritas_0', 'sedang', 'Sedang (Bisa dijadwalkan)')">
+                                                    Sedang (Bisa dijadwalkan)
+                                                </div>
+                                                <div class="custom-option" data-value="tinggi" onclick="selectDropdownOption('wrapper_prioritas_0', 'tinggi', 'Tinggi (Perlu penanganan segera)')">
+                                                    Tinggi (Perlu penanganan segera)
+                                                </div>
+                                                <div class="custom-option" data-value="darurat" onclick="selectDropdownOption('wrapper_prioritas_0', 'darurat', 'Darurat (Air meluap / korsleting / bocor deras)')">
+                                                    Darurat (Air meluap / korsleting / bocor deras)
+                                                </div>
+                                                <div class="custom-option" data-value="rendah" onclick="selectDropdownOption('wrapper_prioritas_0', 'rendah', 'Rendah (Penyempurnaan estetika)')">
+                                                    Rendah (Penyempurnaan estetika)
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="items[0][prioritas]" id="input_prioritas_0" value="sedang">
+                                        </div>
+                                    </div>
+
                                 </div>
-                                <div class="col-12">
-                                    <label class="form-label">Judul / Ringkasan Masalah <span class="text-danger">*</span></label>
-                                    <input type="text" name="items[0][judul_keluhan]" class="form-control" placeholder="Contoh: Plafon kamar utama bocor saat hujan deras" required>
+
+                                <div class="form-group-custom">
+                                    <label class="form-label-custom">Judul / Ringkasan Masalah <span class="req">*</span></label>
+                                    <input type="text" name="items[0][judul_keluhan]" class="form-control-custom" placeholder="Contoh: Plafon kamar utama bocor saat hujan deras" required>
                                 </div>
-                                <div class="col-12">
-                                    <label class="form-label">Deskripsi & Posisi Titik Kerusakan <span class="text-danger">*</span></label>
-                                    <textarea name="items[0][deskripsi]" rows="3" class="form-control" placeholder="Jelaskan secara detail di ruangan mana letak kerusakannya dan gejalanya..." required></textarea>
+
+                                <div class="form-group-custom">
+                                    <label class="form-label-custom">Deskripsi & Posisi Titik Kerusakan <span class="req">*</span></label>
+                                    <textarea name="items[0][deskripsi]" rows="3" class="form-control-custom" placeholder="Jelaskan secara detail di ruangan mana letak kerusakannya dan gejalanya..." required></textarea>
                                 </div>
-                                <div class="col-12">
-                                    <label class="form-label">Foto / Bukti Kerusakan (Opsional tapi sangat disarankan)</label>
-                                    <div class="upload-area" onclick="triggerFileInput(0)">
-                                        <i class="mdi mdi-camera-plus-outline fs-2 text-muted d-block mb-1"></i>
-                                        <span class="small text-dark fw-bold d-block">Klik untuk ambil foto dari Kamera atau Galeri</span>
-                                        <small class="text-muted">Format: JPG, PNG, WEBP (Maks 10MB)</small>
-                                        <input type="file" name="items[0][foto_keluhan]" id="fileInput_0" accept="image/*" capture="environment" class="d-none" onchange="previewImage(this, 0)">
-                                        <img src="" id="previewImg_0" class="preview-img" alt="Preview Foto">
+
+                                <div class="form-group-custom">
+                                    <label class="form-label-custom">Foto / Bukti Kerusakan (Opsional tapi disarankan)</label>
+                                    <div class="photo-upload-area" onclick="triggerFileInput(0)">
+                                        <span style="font-size: 0.88rem; font-weight: 700; color: #1e293b; display: block; margin-bottom: 0.25rem;">Klik untuk ambil foto dari Kamera atau Galeri</span>
+                                        <small style="color: #8b8fa3; font-size: 0.76rem;">Format: JPG, PNG, WEBP (Maks 10MB)</small>
+                                        <input type="file" name="items[0][foto_keluhan]" id="fileInput_0" accept="image/*" capture="environment" style="display: none;" onchange="previewImage(this, 0)">
+                                        <img src="" id="previewImg_0" class="photo-preview-image" alt="Preview Foto">
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Button Tambah Titik Keluhan -->
-                    <button type="button" class="btn btn-add-item mb-2" onclick="addNewItem()">
-                        <i class="mdi mdi-plus-circle-outline me-1"></i> + Tambah Titik Kerusakan Lain
-                    </button>
-                </div>
-            </div>
-
-            <!-- Submit Button Card -->
-            <div class="card card-custom p-3 bg-white border-0 shadow-sm text-center">
-                <button type="submit" class="btn btn-submit d-flex align-items-center justify-content-center gap-2" id="submitBtn">
-                    <i class="mdi mdi-send-check fs-5"></i> Kirim Pengaduan / Klaim Garansi Sekarang
-                </button>
-                <div class="mt-2 text-muted" style="font-size: 0.78rem;">
-                    <i class="mdi mdi-lock-outline"></i> Data keluhan Anda akan langsung tercatat dan ditugaskan ke supervisor lapangan.
-                </div>
-            </div>
-        </form>
-
-        <!-- Informasi Kebijakan Garansi -->
-        <div class="faq-card mt-3">
-            <h6 class="fw-bold text-dark d-flex align-items-center gap-1.5 mb-2">
-                <i class="mdi mdi-information-outline text-primary"></i> Ketentuan Klaim Garansi Purna Jual
-            </h6>
-            <ul class="text-muted ps-3 mb-0" style="line-height: 1.6;">
-                <li>Masa garansi pemeliharaan unit berlaku selama <strong>100 hari</strong> terhitung sejak Berita Acara Serah Terima (BAST).</li>
-                <li>Garansi mencakup kebocoran atap, instalasi air bersih/kotor, instalasi listrik standar, dan retak rambut plesteran dinding akibat susut bangunan.</li>
-                <li>Garansi <strong>tidak mencakup</strong> renovasi mandiri yang dilakukan konsumen di luar spesifikasi bawaan developer.</li>
-                <li>Tim pengawas / teknisi akan melakukan konfirmasi kunjungan dalam waktu <strong>1x24 jam kerja</strong> setelah laporan diterima.</li>
-            </ul>
-        </div>
-    </main>
-
-    <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        let itemIndex = 0;
-
-        function triggerFileInput(idx) {
-            const input = document.getElementById('fileInput_' + idx);
-            if (input) input.click();
-        }
-
-        function previewImage(input, idx) {
-            const preview = document.getElementById('previewImg_' + idx);
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function addNewItem() {
-            itemIndex++;
-            const container = document.getElementById('itemsContainer');
-            const itemHtml = `
-                <div class="item-box" data-index="${itemIndex}">
-                    <div class="item-header">
-                        <span class="fw-bold text-dark item-badge">
-                            <i class="mdi mdi-numeric-${itemIndex + 1}-circle text-primary me-1 fs-5 align-middle"></i> Titik Keluhan #${itemIndex + 1}
-                        </span>
-                        <button type="button" class="btn btn-sm btn-outline-danger btn-remove-item" onclick="removeItem(this)">
-                            <i class="mdi mdi-trash-can-outline"></i> Hapus
+                        <!-- Tombol Tambah Titik Kerusakan -->
+                        <button type="button" class="btn-add-complaint" onclick="addNewItem()">
+                            + Tambah Titik Kerusakan Lain
                         </button>
                     </div>
 
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Kategori Masalah <span class="text-danger">*</span></label>
-                            <select name="items[${itemIndex}][kategori]" class="form-select" required>
-                                <option value="">-- Pilih Bagian Rusak --</option>
-                                <option value="kebocoran">Kebocoran Atap / Plafon / Talang</option>
-                                <option value="sanitasi_pipa">Sanitasi, Kran Bocor & Saluran Pembuangan</option>
-                                <option value="kelistrikan">Kelistrikan, Stopkontak, MCB & Lampu</option>
-                                <option value="pintu_jendela">Kusen, Daun Pintu, Jendela & Kunci</option>
-                                <option value="struktur_dinding">Dinding Retak / Plesteran Mengelupas</option>
-                                <option value="finishing_cat">Keramik Lantai / Cat Dinding Terkelupas</option>
-                                <option value="lainnya">Lainnya / Masalah Umum</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Tingkat Urgensi</label>
-                            <select name="items[${itemIndex}][prioritas]" class="form-select">
-                                <option value="sedang">Sedang (Bisa dijadwalkan)</option>
-                                <option value="tinggi">Tinggi (Perlu penanganan segera)</option>
-                                <option value="darurat">Darurat (Air meluap / korsleting / bocor deras)</option>
-                                <option value="rendah">Rendah (Penyempurnaan estetika)</option>
-                            </select>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Judul / Ringkasan Masalah <span class="text-danger">*</span></label>
-                            <input type="text" name="items[${itemIndex}][judul_keluhan]" class="form-control" placeholder="Contoh: Kran cuci piring bocor" required>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Deskripsi & Posisi Titik Kerusakan <span class="text-danger">*</span></label>
-                            <textarea name="items[${itemIndex}][deskripsi]" rows="3" class="form-control" placeholder="Jelaskan detail posisi kerusakan..." required></textarea>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Foto / Bukti Kerusakan (Opsional)</label>
-                            <div class="upload-area" onclick="triggerFileInput(${itemIndex})">
-                                <i class="mdi mdi-camera-plus-outline fs-2 text-muted d-block mb-1"></i>
-                                <span class="small text-dark fw-bold d-block">Klik untuk ambil foto dari Kamera atau Galeri</span>
-                                <small class="text-muted">Format: JPG, PNG, WEBP (Maks 10MB)</small>
-                                <input type="file" name="items[${itemIndex}][foto_keluhan]" id="fileInput_${itemIndex}" accept="image/*" capture="environment" class="d-none" onchange="previewImage(this, ${itemIndex})">
-                                <img src="" id="previewImg_${itemIndex}" class="preview-img" alt="Preview Foto">
-                            </div>
+                    <!-- SECTION 4: SUBMIT BUTTON -->
+                    <div style="margin-top: 2rem; margin-bottom: 2rem; text-align: center;">
+                        <button type="submit" class="btn-submit-complaint" id="submitBtn">
+                            Kirim Pengaduan / Klaim Garansi Sekarang
+                        </button>
+                        <div style="font-size: 0.78rem; color: #8b8fa3; margin-top: 0.75rem;">
+                            Data keluhan Anda akan langsung tercatat dan ditugaskan ke supervisor lapangan.
                         </div>
                     </div>
+                </form>
+
+                <!-- SECTION 5: INFORMASI KEBIJAKAN GARANSI -->
+                <div class="faq-info-card">
+                    <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">
+                        Ketentuan Klaim Garansi Purna Jual
+                    </div>
+                    <ul>
+                        <li>Masa garansi pemeliharaan unit berlaku selama <strong>100 hari</strong> terhitung sejak Berita Acara Serah Terima (BAST).</li>
+                        <li>Garansi mencakup kebocoran atap, instalasi air bersih/kotor, instalasi listrik standar, dan retak rambut plesteran dinding akibat susut bangunan.</li>
+                        <li>Garansi <strong>tidak mencakup</strong> renovasi mandiri yang dilakukan konsumen di luar spesifikasi bawaan developer.</li>
+                        <li>Tim pengawas / teknisi akan melakukan konfirmasi kunjungan dalam waktu <strong>1x24 jam kerja</strong> setelah laporan diterima.</li>
+                    </ul>
                 </div>
-            `;
-            container.insertAdjacentHTML('beforeend', itemHtml);
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{{-- Footer Publik --}}
+@include('home.layouts.footer')
+
+@endsection
+
+@push('scripts')
+<script>
+    let itemIndex = 0;
+
+    /* ===== CUSTOM DROPDOWN LOGIC (CLEAN WITHOUT ICONS/EMOJIS) ===== */
+    function toggleDropdown(wrapperId) {
+        const wrapper = document.getElementById(wrapperId);
+        if (!wrapper) return;
+        const isOpen = wrapper.classList.contains('is-open');
+        
+        // Close all other dropdowns
+        document.querySelectorAll('.custom-select-wrapper').forEach(w => {
+            if (w !== wrapper) w.classList.remove('is-open');
+        });
+
+        if (isOpen) {
+            wrapper.classList.remove('is-open');
+        } else {
+            wrapper.classList.add('is-open');
+        }
+    }
+
+    function selectDropdownOption(wrapperId, value, displayText) {
+        const wrapper = document.getElementById(wrapperId);
+        if (!wrapper) return;
+
+        // Set hidden input value
+        const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+        if (hiddenInput) {
+            hiddenInput.value = value;
+        }
+
+        // Set trigger text
+        const triggerText = wrapper.querySelector('.custom-select-value');
+        if (triggerText) {
+            triggerText.textContent = displayText;
+            triggerText.classList.remove('text-muted');
+        }
+
+        // Update active class on options
+        wrapper.querySelectorAll('.custom-option').forEach(opt => {
+            if (opt.getAttribute('data-value') === value) {
+                opt.classList.add('is-selected');
+            } else {
+                opt.classList.remove('is-selected');
+            }
+        });
+
+        // Close dropdown
+        wrapper.classList.remove('is-open');
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.custom-select-wrapper')) {
+            document.querySelectorAll('.custom-select-wrapper').forEach(w => w.classList.remove('is-open'));
+        }
+    });
+
+    /* ===== PHOTO PREVIEW & FILE TRIGGER ===== */
+    function triggerFileInput(idx) {
+        const input = document.getElementById('fileInput_' + idx);
+        if (input) input.click();
+    }
+
+    function previewImage(input, idx) {
+        const preview = document.getElementById('previewImg_' + idx);
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    /* ===== DYNAMIC REPEATER ITEMS ===== */
+    function addNewItem() {
+        itemIndex++;
+        const container = document.getElementById('itemsContainer');
+        const itemHtml = `
+            <div class="complaint-item-box" data-index="${itemIndex}">
+                <div class="complaint-item-header">
+                    <span class="item-number-tag item-badge">
+                        Titik Keluhan #${itemIndex + 1}
+                    </span>
+                    <button type="button" class="btn-remove-item" onclick="removeItem(this)">
+                        Hapus
+                    </button>
+                </div>
+
+                <div class="form-grid-2col" style="margin-bottom: 1rem;">
+                    
+                    <!-- Custom Select Kategori -->
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">Kategori Masalah <span class="req">*</span></label>
+                        <div class="custom-select-wrapper" id="wrapper_kategori_${itemIndex}">
+                            <div class="custom-select-trigger" onclick="toggleDropdown('wrapper_kategori_${itemIndex}')">
+                                <span class="custom-select-value text-muted" id="trigger_text_kategori_${itemIndex}">
+                                    -- Pilih Bagian Rusak --
+                                </span>
+                                <span class="custom-select-arrow"></span>
+                            </div>
+                            <div class="custom-select-menu">
+                                <div class="custom-option" data-value="kebocoran" onclick="selectDropdownOption('wrapper_kategori_${itemIndex}', 'kebocoran', 'Kebocoran Atap / Plafon / Talang')">
+                                    Kebocoran Atap / Plafon / Talang
+                                </div>
+                                <div class="custom-option" data-value="sanitasi_pipa" onclick="selectDropdownOption('wrapper_kategori_${itemIndex}', 'sanitasi_pipa', 'Sanitasi, Kran Bocor & Saluran Pembuangan')">
+                                    Sanitasi, Kran Bocor & Saluran Pembuangan
+                                </div>
+                                <div class="custom-option" data-value="kelistrikan" onclick="selectDropdownOption('wrapper_kategori_${itemIndex}', 'kelistrikan', 'Kelistrikan, Stopkontak, MCB & Lampu')">
+                                    Kelistrikan, Stopkontak, MCB & Lampu
+                                </div>
+                                <div class="custom-option" data-value="pintu_jendela" onclick="selectDropdownOption('wrapper_kategori_${itemIndex}', 'pintu_jendela', 'Kusen, Daun Pintu, Jendela & Kunci')">
+                                    Kusen, Daun Pintu, Jendela & Kunci
+                                </div>
+                                <div class="custom-option" data-value="struktur_dinding" onclick="selectDropdownOption('wrapper_kategori_${itemIndex}', 'struktur_dinding', 'Dinding Retak / Plesteran Mengelupas')">
+                                    Dinding Retak / Plesteran Mengelupas
+                                </div>
+                                <div class="custom-option" data-value="finishing_cat" onclick="selectDropdownOption('wrapper_kategori_${itemIndex}', 'finishing_cat', 'Keramik Lantai / Cat Dinding Terkelupas')">
+                                    Keramik Lantai / Cat Dinding Terkelupas
+                                </div>
+                                <div class="custom-option" data-value="lainnya" onclick="selectDropdownOption('wrapper_kategori_${itemIndex}', 'lainnya', 'Lainnya / Masalah Umum')">
+                                    Lainnya / Masalah Umum
+                                </div>
+                            </div>
+                            <input type="hidden" name="items[${itemIndex}][kategori]" id="input_kategori_${itemIndex}" required>
+                        </div>
+                    </div>
+
+                    <!-- Custom Select Urgensi -->
+                    <div class="form-group-custom">
+                        <label class="form-label-custom">Tingkat Urgensi</label>
+                        <div class="custom-select-wrapper" id="wrapper_prioritas_${itemIndex}">
+                            <div class="custom-select-trigger" onclick="toggleDropdown('wrapper_prioritas_${itemIndex}')">
+                                <span class="custom-select-value" id="trigger_text_prioritas_${itemIndex}">
+                                    Sedang (Bisa dijadwalkan)
+                                </span>
+                                <span class="custom-select-arrow"></span>
+                            </div>
+                            <div class="custom-select-menu">
+                                <div class="custom-option is-selected" data-value="sedang" onclick="selectDropdownOption('wrapper_prioritas_${itemIndex}', 'sedang', 'Sedang (Bisa dijadwalkan)')">
+                                    Sedang (Bisa dijadwalkan)
+                                </div>
+                                <div class="custom-option" data-value="tinggi" onclick="selectDropdownOption('wrapper_prioritas_${itemIndex}', 'tinggi', 'Tinggi (Perlu penanganan segera)')">
+                                    Tinggi (Perlu penanganan segera)
+                                </div>
+                                <div class="custom-option" data-value="darurat" onclick="selectDropdownOption('wrapper_prioritas_${itemIndex}', 'darurat', 'Darurat (Air meluap / korsleting / bocor deras)')">
+                                    Darurat (Air meluap / korsleting / bocor deras)
+                                </div>
+                                <div class="custom-option" data-value="rendah" onclick="selectDropdownOption('wrapper_prioritas_${itemIndex}', 'rendah', 'Rendah (Penyempurnaan estetika)')">
+                                    Rendah (Penyempurnaan estetika)
+                                </div>
+                            </div>
+                            <input type="hidden" name="items[${itemIndex}][prioritas]" id="input_prioritas_${itemIndex}" value="sedang">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-group-custom">
+                    <label class="form-label-custom">Judul / Ringkasan Masalah <span class="req">*</span></label>
+                    <input type="text" name="items[${itemIndex}][judul_keluhan]" class="form-control-custom" placeholder="Contoh: Kran cuci piring bocor" required>
+                </div>
+
+                <div class="form-group-custom">
+                    <label class="form-label-custom">Deskripsi & Posisi Titik Kerusakan <span class="req">*</span></label>
+                    <textarea name="items[${itemIndex}][deskripsi]" rows="3" class="form-control-custom" placeholder="Jelaskan detail posisi kerusakan..." required></textarea>
+                </div>
+
+                <div class="form-group-custom">
+                    <label class="form-label-custom">Foto / Bukti Kerusakan (Opsional)</label>
+                    <div class="photo-upload-area" onclick="triggerFileInput(${itemIndex})">
+                        <span style="font-size: 0.88rem; font-weight: 700; color: #1e293b; display: block; margin-bottom: 0.25rem;">Klik untuk ambil foto dari Kamera atau Galeri</span>
+                        <small style="color: #8b8fa3; font-size: 0.76rem;">Format: JPG, PNG, WEBP (Maks 10MB)</small>
+                        <input type="file" name="items[${itemIndex}][foto_keluhan]" id="fileInput_${itemIndex}" accept="image/*" capture="environment" style="display: none;" onchange="previewImage(this, ${itemIndex})">
+                        <img src="" id="previewImg_${itemIndex}" class="photo-preview-image" alt="Preview Foto">
+                    </div>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', itemHtml);
+        updateRemoveButtons();
+    }
+
+    function removeItem(btn) {
+        const itemBox = btn.closest('.complaint-item-box');
+        if (itemBox) {
+            itemBox.remove();
+            renumberItems();
             updateRemoveButtons();
         }
+    }
 
-        function removeItem(btn) {
-            const itemBox = btn.closest('.item-box');
-            if (itemBox) {
-                itemBox.remove();
-                renumberItems();
-                updateRemoveButtons();
+    function renumberItems() {
+        const items = document.querySelectorAll('#itemsContainer .complaint-item-box');
+        items.forEach((item, index) => {
+            const badge = item.querySelector('.item-badge');
+            if (badge) {
+                badge.textContent = `Titik Keluhan #${index + 1}`;
             }
-        }
-
-        function renumberItems() {
-            const items = document.querySelectorAll('#itemsContainer .item-box');
-            items.forEach((item, index) => {
-                const badge = item.querySelector('.item-badge');
-                if (badge) {
-                    badge.innerHTML = `<i class="mdi mdi-numeric-${index + 1}-circle text-primary me-1 fs-5 align-middle"></i> Titik Keluhan #${index + 1}`;
-                }
-            });
-        }
-
-        function updateRemoveButtons() {
-            const items = document.querySelectorAll('#itemsContainer .item-box');
-            const removeButtons = document.querySelectorAll('#itemsContainer .btn-remove-item');
-            if (items.length > 1) {
-                removeButtons.forEach(btn => btn.classList.remove('d-none'));
-            } else {
-                removeButtons.forEach(btn => btn.classList.add('d-none'));
-            }
-        }
-
-        document.getElementById('complaintForm').addEventListener('submit', function() {
-            const btn = document.getElementById('submitBtn');
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Mengirim Pengaduan...';
-            btn.disabled = true;
         });
-    </script>
-</body>
-</html>
+    }
+
+    function updateRemoveButtons() {
+        const items = document.querySelectorAll('#itemsContainer .complaint-item-box');
+        const removeButtons = document.querySelectorAll('#itemsContainer .btn-remove-item');
+        if (items.length > 1) {
+            removeButtons.forEach(btn => btn.classList.remove('d-none'));
+        } else {
+            removeButtons.forEach(btn => btn.classList.add('d-none'));
+        }
+    }
+
+    document.getElementById('complaintForm').addEventListener('submit', function() {
+        const btn = document.getElementById('submitBtn');
+        btn.textContent = 'Mengirim Pengaduan...';
+        btn.disabled = true;
+    });
+</script>
+@endpush

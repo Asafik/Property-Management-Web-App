@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Berita Acara & Perjanjian Akad KPR - {{ $booking->booking_code ?? 'AKAD-KPR' }}</title>
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo.jpeg') }}">
+    <link rel="shortcut icon" href="{{ asset('images/logo.jpeg') }}">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Material Design Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css">
@@ -101,39 +103,73 @@
             position: relative;
         }
 
-        /* Header Kop Surat */
-        .header-kop {
-            text-align: center;
-            border-bottom: 2.5px solid #111827;
-            padding-bottom: 12px;
+        /* KOP SURAT RESMI PT. GRAHA CIPTA SEJAHTERA (PATEN) */
+        .document-header {
             margin-bottom: 16px;
+            border-bottom: 3.5px double #004b93;
+            padding-bottom: 12px;
             position: relative;
         }
 
-        .header-kop .company-name {
-            font-size: 15pt;
-            font-weight: bold;
+        .document-header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 75px;
+        }
+
+        .header-logo-left {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+        }
+
+        .document-header-logo {
+            height: 72px;
+            max-width: 130px;
+            object-fit: contain;
+        }
+
+        .document-header-text {
+            text-align: center;
+            width: 100%;
+            padding: 0 65px;
+        }
+
+        .company-main-title {
+            color: #004b93 !important;
+            font-size: 24px !important;
+            font-weight: 900 !important;
             text-transform: uppercase;
             letter-spacing: 0.8px;
-            color: #0f172a;
+            margin: 0 0 2px 0;
+            font-family: 'Montserrat', 'Arial Black', sans-serif !important;
+            -webkit-font-smoothing: antialiased;
+            text-align: center;
         }
 
-        .header-kop .company-address {
-            font-size: 9.5pt;
-            color: #334155;
-            margin-top: 3px;
-            font-family: 'Times New Roman', Times, serif;
+        .company-sub-title {
+            color: #002d62 !important;
+            font-size: 15px !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.3px;
+            margin: 0 0 4px 0;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif !important;
+            text-align: center;
         }
 
-        .header-kop .company-contact {
-            font-size: 9pt;
-            color: #475569;
-            margin-top: 2px;
-        }
-
-        .double-line {
-            border-top: 1px solid #111827;
-            margin-top: 2px;
+        .company-address {
+            color: #000000 !important;
+            margin: 0;
+            font-size: 11.5px !important;
+            font-weight: 600;
+            line-height: 1.35;
+            font-family: Arial, Helvetica, sans-serif !important;
+            text-align: center;
         }
 
         /* Document Title */
@@ -285,6 +321,18 @@
                 box-shadow: none !important;
             }
 
+            .document-header {
+                border-bottom: 3.5px double #004b93 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .company-main-title,
+            .company-sub-title {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
             @page {
                 size: A4 portrait;
                 margin: 15mm 15mm 15mm 15mm;
@@ -316,12 +364,18 @@
 
     <div class="print-container">
         
-        <!-- Header Kop Surat -->
-        <div class="header-kop">
-            <div class="company-name">{{ $companyProfile->company_name ?? 'PROPERTY MANAGEMENT & DEVELOPMENT' }}</div>
-            <div class="company-address">{{ $companyProfile->address ?? 'Jl. Raya Utama Properti No. 88, Kawasan Mandiri Terpadu' }}</div>
-            <div class="company-contact">Telp: {{ $companyProfile->phone ?? '(021) 7890-1234' }} | Email: {{ $companyProfile->email ?? 'legal@propertymanagement.co.id' }} | Website: www.propertymanagement.co.id</div>
-            <div class="double-line"></div>
+        <!-- KOP SURAT DENGAN LOGO RESMI PT. GRAHA CIPTA SEJAHTERA -->
+        <div class="document-header">
+            <div class="document-header-inner">
+                <div class="header-logo-left">
+                    <img src="{{ asset('images/logo1.png') }}" alt="Logo PT. Graha Cipta Sejahtera" class="document-header-logo">
+                </div>
+                <div class="document-header-text">
+                    <h2 class="company-main-title">{{ $companyProfile->name ?? $companyProfile->company_name ?? 'PT. GRAHA CIPTA SEJAHTERA' }}</h2>
+                    <div class="company-sub-title">Developer &amp; General Contractor</div>
+                    <p class="company-address">Kantor : {{ $companyProfile->address ?? 'Jl. Letjen Sutoyo No. 99 A Jember' }} &nbsp;&nbsp; Telp. : {{ $companyProfile->phone ?? '0331 - 331447, 0331 - 321533' }}</p>
+                </div>
+            </div>
         </div>
 
         <!-- Document Title -->
@@ -370,7 +424,7 @@
             <tr>
                 <td class="field-name">Nama Perusahaan</td>
                 <td class="field-colon">:</td>
-                <td class="field-value">{{ $companyProfile->company_name ?? 'PT. PROPERTI MANAGEMENT DEVELOPER' }}</td>
+                <td class="field-value">{{ $companyProfile->name ?? $companyProfile->company_name ?? 'PT. GRAHA CIPTA SEJAHTERA' }}</td>
             </tr>
             <tr>
                 <td class="field-name">Nama Perumahan / Proyek</td>

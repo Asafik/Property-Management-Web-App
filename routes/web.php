@@ -83,7 +83,7 @@ Route::post('/buku-tamu', [LandingpageController::class, 'storeBukuTamu'])->name
 // ==========================================
 Route::get('/pengaduan/{identifier}', [ComplaintController::class, 'customerForm'])->name('complaint.customer.form');
 Route::post('/pengaduan/{identifier}', [ComplaintController::class, 'customerStore'])->name('complaint.customer.store');
-Route::get('/pengaduan/{identifier}/sukses/{ticket}', [ComplaintController::class, 'customerSuccess'])->name('complaint.customer.success');
+Route::get('/pengaduan/{identifier}/sukses/{ticket}', [ComplaintController::class, 'customerSuccess'])->where('ticket', '.*')->name('complaint.customer.success');
 Route::get('/pengaduan/cetak-barcode/{bookingId}', [ComplaintController::class, 'printBarcodeSticker'])->name('complaint.barcode.print');
 
 /*

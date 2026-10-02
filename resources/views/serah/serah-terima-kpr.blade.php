@@ -14,9 +14,9 @@
 }
 
 .card {
-    border-radius: 14px !important;
-    border: none !important;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+    border-radius: 6px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     background: #ffffff;
     transition: all 0.3s ease;
 }
@@ -31,19 +31,19 @@
 }
 
 .customer-avatar {
-    width: 58px;
-    height: 58px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    background: #9a55ff;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+    box-shadow: none;
     flex-shrink: 0;
 }
 
 .customer-avatar i {
-    font-size: 2.2rem;
+    font-size: 2rem;
     color: #ffffff;
 }
 
@@ -64,10 +64,10 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 1.25rem;
-    background: #fbf9ff;
-    border: 1px solid #ede4ff;
-    padding: 0.75rem 1.25rem;
-    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 0.65rem 1rem;
+    border-radius: 6px;
 }
 
 .customer-unit-info .info-item {
@@ -88,31 +88,35 @@
     color: #2c2e3f;
 }
 
+.customer-unit-info .info-item span.highlight {
+    color: #9a55ff;
+}
+
 /* BADGES */
 .badge-gradient-success {
-    background: linear-gradient(135deg, #28c76f, #48da89) !important;
+    background: #10b981 !important;
     color: #fff !important;
-    padding: 0.4rem 0.75rem;
+    padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 700;
 }
 
 .badge-gradient-primary {
-    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+    background: #9a55ff !important;
     color: #fff !important;
-    padding: 0.4rem 0.75rem;
+    padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 700;
 }
 
 .badge-gradient-secondary {
-    background: #6c757d !important;
+    background: #64748b !important;
     color: #fff !important;
-    padding: 0.4rem 0.75rem;
+    padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 700;
 }
 
@@ -146,6 +150,11 @@
 .transaksi-progress-top .transaksi-muted {
     color: #64748b !important;
     font-weight: 500;
+}
+
+.transaksi-progress-top .step-counter-purple {
+    color: #9a55ff !important;
+    font-weight: 700 !important;
 }
 
 .transaksi-progress {
@@ -223,6 +232,45 @@
     border: 3px solid #ffffff !important;
     box-shadow: 0 0 0 1px #28c76f;
     color: #ffffff !important;
+}
+
+.transaksi-step.active:not(.completed) .transaksi-step-icon {
+    background: #e2e8f0 !important;
+    border: 2.5px solid #f59e0b !important;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2) !important;
+    color: #d97706 !important;
+    position: relative;
+}
+
+.transaksi-step.active:not(.completed) .transaksi-step-icon::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 50%;
+    border: 2px dashed #f59e0b;
+    animation: stepSpinnerRotate 4s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes stepSpinnerRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.transaksi-step.active:not(.completed) a.transaksi-step-icon:hover {
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.45) !important;
+}
+
+.transaksi-step.active:not(.completed) .transaksi-step-title {
+    color: #b45309 !important;
+}
+
+.transaksi-step.active:not(.completed) small {
+    color: #d97706 !important;
+    font-weight: 700;
 }
 
 a.transaksi-step-icon {
@@ -308,26 +356,80 @@ a.transaksi-step-icon:hover {
     font-size: 0.98rem;
 }
 
+/* HANDLER GROUP */
+.transaksi-handler-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
 .transaksi-handler {
     display: flex;
     align-items: center;
     gap: 0.85rem;
     background: #f8fafc;
-    border: 1px solid #edf0f5;
-    padding: 0.75rem 1rem;
-    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 0.65rem 0.85rem;
+    border-radius: 6px;
+}
+
+.transaksi-handler.verifier {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
 }
 
 .transaksi-handler-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    background: #6366f1;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.transaksi-handler.verifier .transaksi-handler-icon {
+    background: #10b981;
+}
+
+.transaksi-handler-role {
+    font-size: 0.72rem;
+    color: #64748b;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.transaksi-handler-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* DOCUMENT STATUS BADGES */
+.badge-doc-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.badge-doc-status.status-pending {
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.badge-doc-status.status-disetujui {
+    background: #ecfdf5;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
 }
 
 /* INLINE ALERTS */
@@ -336,7 +438,7 @@ a.transaksi-step-icon:hover {
     align-items: center;
     gap: 0.75rem;
     padding: 0.85rem 1rem;
-    border-radius: 10px;
+    border-radius: 6px;
     font-size: 0.88rem;
     margin-bottom: 1.25rem;
 }
@@ -347,26 +449,26 @@ a.transaksi-step-icon:hover {
 }
 
 .transaksi-inline-alert.success {
-    background: #eefcf3;
-    border: 1px solid #cbf4d8;
-    color: #1b7a42;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #15803d;
 }
 
 .transaksi-inline-alert.warning {
-    background: #fff9ed;
-    border: 1px solid #ffe6be;
-    color: #b26b00;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #b45309;
 }
 
 .transaksi-inline-alert.info {
-    background: #f3f8ff;
-    border: 1px solid #dbeafe;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
     color: #1d4ed8;
 }
 
 .transaksi-inline-alert.danger {
     background: #fef2f2;
-    border: 1px solid #fed7d7;
+    border: 1px solid #fecaca;
     color: #b91c1c;
 }
 
@@ -415,42 +517,6 @@ a.transaksi-step-icon:hover {
 }
 
 /* SPECIFIC SERAH TERIMA STYLES */
-.jenis-badge {
-    background: linear-gradient(135deg, #ebf9eb, #d1f3d1);
-    color: #28a745;
-    border: 1px solid #9ce0a6;
-    display: inline-flex;
-    align-items: center;
-    padding: 0.35rem 0.85rem;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    gap: 6px;
-}
-
-.payment-method-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0.6rem;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    gap: 4px;
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
-    color: #ffffff;
-}
-
-.header-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.3rem 0.7rem;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    gap: 4px;
-    white-space: nowrap;
-}
-
 .serah-form-group {
     margin-bottom: 1rem;
 }
@@ -465,8 +531,8 @@ a.transaksi-step-icon:hover {
 
 .serah-form-control {
     width: 100%;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
     padding: 0.65rem 0.85rem;
     font-size: 0.88rem;
     color: #2c2e3f;
@@ -511,14 +577,14 @@ select.serah-form-control {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 0.9rem 1rem;
-    background: #fbf9ff;
-    border: 2px solid #ede4ff;
-    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.25s ease;
     margin-bottom: 0;
-    min-height: 56px;
+    min-height: 52px;
 }
 
 .survey-check-icon {
@@ -536,7 +602,7 @@ select.serah-form-control {
 .survey-checkbox-input:checked + .survey-checkbox-label {
     border-color: #9a55ff;
     background: #f5eeff;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.15);
+    box-shadow: none;
 }
 
 .survey-checkbox-input:checked + .survey-checkbox-label .survey-check-icon {
@@ -544,20 +610,39 @@ select.serah-form-control {
 }
 
 .doc-badge {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d);
-    color: #2c2e3f;
-    padding: 0.3rem 0.65rem;
-    border-radius: 999px;
-    font-size: 0.7rem;
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.72rem;
     font-weight: 700;
     white-space: nowrap;
     transition: all 0.25s ease;
 }
 
 .survey-checkbox-input:checked + .survey-checkbox-label .doc-badge {
-    background: linear-gradient(135deg, #9a55ff, #da8cff);
+    background: #9a55ff;
     color: #ffffff;
-    box-shadow: 0 2px 6px rgba(154, 85, 255, 0.25);
+    border-color: #9a55ff;
+    box-shadow: none;
+}
+
+/* READ-ONLY KONDISI TERPENUHI: GREEN STATE (data dari RAP, tidak bisa diubah) */
+.survey-checkbox-wrapper.is-terpenuhi .survey-checkbox-label {
+    border-color: #86efac;
+    background: #f0fdf4;
+    box-shadow: none;
+}
+
+.survey-checkbox-wrapper.is-terpenuhi .survey-check-icon {
+    color: #16a34a;
+}
+
+.survey-checkbox-wrapper.is-terpenuhi .doc-badge {
+    background: #dcfce7;
+    color: #15803d;
+    border-color: #86efac;
 }
 
 /* AGREEMENT GREEN CHECKBOX (ON / OFF) */
@@ -567,8 +652,8 @@ select.serah-form-control {
     gap: 10px;
     padding: 0.85rem 1rem;
     background: #f8fafc;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.25s ease;
     margin-bottom: 0;
@@ -589,8 +674,8 @@ select.serah-form-control {
 
 .survey-checkbox-input:checked + .agreement-checkbox-label {
     background: #f0fdf4;
-    border-color: #22c55e;
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.18);
+    border-color: #86efac;
+    box-shadow: none;
 }
 
 .survey-checkbox-input:checked + .agreement-checkbox-label .agreement-icon {
@@ -622,7 +707,7 @@ select.serah-form-control {
     padding: 0.75rem 1rem;
     background: #ffffff;
     border: 1.5px dashed #cbd5e1;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -660,12 +745,12 @@ select.serah-form-control {
     font-weight: 700;
     background: rgba(154, 85, 255, 0.1);
     padding: 3px 8px;
-    border-radius: 6px;
+    border-radius: 4px;
 }
 
 .serah-btn {
     border: none;
-    border-radius: 10px;
+    border-radius: 6px;
     font-size: 0.92rem;
     font-weight: 700;
     padding: 0.75rem 1.5rem;
@@ -680,45 +765,16 @@ select.serah-form-control {
 }
 
 .serah-btn-success {
-    background: linear-gradient(135deg, #28c76f, #48da89);
+    background: #10b981;
     color: #fff;
-    box-shadow: 0 4px 12px rgba(40, 199, 111, 0.25);
+    box-shadow: none;
 }
 
 .serah-btn-success:hover {
+    background: #059669;
     color: #fff;
-    box-shadow: 0 6px 18px rgba(40, 199, 111, 0.4);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     transform: translateY(-2px);
-}
-
-.approval-check-green .check-label {
-    border-color: #d1f2dc;
-    background: #f6fcf8;
-}
-
-.approval-check-green .check-label:hover {
-    border-color: #28c76f;
-    background: #edf9f3;
-}
-
-.approval-check-green .check-icon {
-    background: #eefcf3;
-    color: #28c76f;
-}
-
-.approval-check-green input[type="checkbox"]:checked + .check-label {
-    border-color: #28c76f;
-    background: #eefcf3;
-    box-shadow: 0 4px 12px rgba(40, 199, 111, 0.15);
-}
-
-.approval-check-green input[type="checkbox"]:checked + .check-label .check-icon {
-    background: #28c76f;
-    color: #ffffff;
-}
-
-.approval-check-green input[type="checkbox"]:checked + .check-label .check-text {
-    color: #15803d;
 }
 
 /* =========================================================
@@ -809,6 +865,50 @@ select.serah-form-control {
         font-size: 0.82rem;
     }
 }
+/* UPLOAD BOX: same as addkavling spk-upload-box */
+.serah-upload-box {
+    position: relative;
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
+    background: #f8fafc;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+}
+
+.serah-upload-box:hover {
+    border-color: #9a55ff;
+    background: #faf5ff;
+}
+
+.serah-upload-box input[type="file"] {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.serah-upload-box > div {
+    pointer-events: none;
+}
+
+.serah-uploaded-box {
+    background: #f0fdf4;
+    border: 1.5px solid #86efac;
+    border-radius: 10px;
+    padding: 12px 16px;
+    min-height: 64px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
 </style>
 
     <div class="transaksi-page">
@@ -820,7 +920,7 @@ select.serah-form-control {
                             class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="customer-avatar">
-                                    <i class="mdi mdi-account text-white" style="font-size: 2.2rem;"></i>
+                                    <i class="mdi mdi-account text-white" style="font-size: 2rem;"></i>
                                 </div>
                                 <div>
                                     <h4 class="customer-name mb-1 d-flex align-items-center gap-2">
@@ -833,27 +933,21 @@ select.serah-form-control {
                                                     : ($jenis == 'komersil'
                                                         ? 'badge-gradient-primary'
                                                         : 'badge-gradient-secondary');
-                                            $icon =
-                                                $jenis == 'subsidi'
-                                                    ? 'mdi-home-assistant'
-                                                    : ($jenis == 'komersil'
-                                                        ? 'mdi-office-building'
-                                                        : 'mdi-help-circle-outline');
                                         @endphp
-                                        <span class="header-badge {{ $badgeClass }}">
-                                            <i class="mdi {{ $icon }}"></i>
+                                        <span class="badge {{ $badgeClass }} ms-2"
+                                            style="font-size: 0.8rem; padding: 0.35rem 0.65rem; border-radius: 6px;">
+                                            <i class="mdi mdi-home-outline me-1"></i>
                                             {{ strtoupper($application->unit->jenis ?? '-') }}
                                         </span>
                                     </h4>
-                                    <p class="customer-booking mb-0">Id Booking:
-                                        {{ $application->booking->booking_code ?? '-' }}</p>
+                                    <p class="customer-booking mb-0">Booking ID: {{ $application->booking->booking_code ?? '-' }}</p>
                                 </div>
                             </div>
 
                             <div class="customer-unit-info">
                                 <div class="info-item">
                                     <small>Unit</small>
-                                    <span>{{ $application->unit->unit_name }}</span>
+                                    <span>Tipe {{ $application->unit->type ?? ($application->unit->unit_name ?? '-') }}</span>
                                 </div>
                                 <div class="info-item">
                                     <small>Blok/No</small>
@@ -861,257 +955,9 @@ select.serah-form-control {
                                 </div>
                                 <div class="info-item">
                                     <small>Harga Unit</small>
-                                    <span class="text-primary fw-bold">Rp
+                                    <span class="highlight">Rp
                                         {{ number_format($application->unit->price ?? 0, 0, ',', '.') }}</span>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-12 col-lg-8 mb-4 mb-lg-0">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <div class="transaksi-section-title">
-                            <i class="mdi mdi-timeline-text"></i>
-                            <span>Tahapan Serah Terima Unit</span>
-                        </div>
-
-                        @php
-                            $jenis = strtolower($application->unit->jenis ?? '');
-                            $isSubsidi = $jenis === 'subsidi';
-                            $totalSteps = 7;
-
-                            $unit = $application->unit ?? null;
-                            $spkDone = !empty($unit?->no_spk) || !empty($unit?->dokumen_spk) || !empty($unit?->kontraktor);
-                            $status = strtolower($unit->construction_progress ?? '');
-                            $pembangunanDone = $status == 'selesai';
-                            $surveyDone = true;
-                            $akadDone = true;
-                            $serahTerimaDone =
-                                $application->booking->status == 'completed' &&
-                                !empty($application->booking->serah_terima_date);
-
-                            $completedCount = 2; // Pengajuan + Verifikasi
-                            if ($spkDone) $completedCount++;
-                            if ($pembangunanDone) $completedCount++;
-                            if ($surveyDone) $completedCount++;
-                            if ($akadDone) $completedCount++;
-                            if ($serahTerimaDone) $completedCount++;
-
-                            $progressWidth = intval(($completedCount / $totalSteps) * 100);
-                            $stepStyle = 'style="grid-template-columns: repeat(' . $totalSteps . ', 1fr);"';
-                        @endphp
-
-                        <div class="transaksi-progress-top">
-                            <span class="transaksi-muted">Progress Transaksi</span>
-                            <span>Tahap {{ $completedCount }} dari {{ $totalSteps }}</span>
-                        </div>
-
-                        <div class="transaksi-progress">
-                            <div class="transaksi-progress-bar" style="width: {{ $progressWidth }}%;"></div>
-                        </div>
-
-                        @php
-                            $bookingId = $application->booking_id ?? optional($application->booking)->id;
-                            $unitId = $application->unit_id ?? optional($application->unit)->id;
-                            $landBankId = optional($application->unit)->land_bank_id ?? 1;
-
-                            $urlPengajuan = $bookingId ? route('pengajuan.show', $bookingId) : '#';
-                            $urlVerifikasi = $bookingId ? route('transaksi.kpr.approve', $bookingId) : '#';
-
-                            $spkModel = null;
-                            if ($application->unit) {
-                                $spkModel = \App\Models\Spk::where('land_bank_unit_id', $application->unit->id)
-                                    ->orWhere(function ($q) use ($application) {
-                                        if (!empty($application->unit->no_spk)) {
-                                            $q->where('no_spk', $application->unit->no_spk);
-                                        } else {
-                                            $q->whereRaw('0 = 1');
-                                        }
-                                    })->first();
-                            }
-                            $urlSpk = $spkModel ? route('spk.show', $spkModel->id) : route('spk.index');
-
-                            $urlPembangunan = route('properti.progress', [
-                                'land_bank_id' => $landBankId,
-                                'unit_id' => $unitId,
-                            ]);
-
-                            $urlSurvey = route('kpr.survey', $application->id);
-                            $urlAkad = $bookingId ? url('/transaksi/kpr/akad-kpr/' . $bookingId) : '#';
-                            $urlSerahTerima = route('kpr.serahterima', $application->id);
-                        @endphp
-
-                        <div class="transaksi-steps" {!! $stepStyle !!}>
-                            {{-- Tahap 1: Pengajuan --}}
-                            <div class="transaksi-step completed">
-                                <a href="{{ $urlPengajuan }}" class="transaksi-step-icon" title="Buka Halaman Pengajuan KPR">
-                                    <i class="mdi mdi-check"></i>
-                                </a>
-                                <a href="{{ $urlPengajuan }}" class="transaksi-step-title-link" title="Buka Halaman Pengajuan KPR">
-                                    <span class="transaksi-step-title">Pengajuan</span>
-                                </a>
-                                <small>{{ \Carbon\Carbon::parse($application->created_at)->translatedFormat('j F Y') }}</small>
-                            </div>
-
-                            {{-- Tahap 2: Verifikasi --}}
-                            <div class="transaksi-step completed">
-                                <a href="{{ $urlVerifikasi }}" class="transaksi-step-icon" title="Buka Halaman Verifikasi KPR">
-                                    <i class="mdi mdi-check"></i>
-                                </a>
-                                <a href="{{ $urlVerifikasi }}" class="transaksi-step-title-link" title="Buka Halaman Verifikasi KPR">
-                                    <span class="transaksi-step-title">Verifikasi</span>
-                                </a>
-                                <small>{{ $application->submitted_at ? \Carbon\Carbon::parse($application->submitted_at)->translatedFormat('j F Y') : '-' }}</small>
-                            </div>
-
-                            {{-- Tahap 3: SPK --}}
-                            <div class="transaksi-step {{ $spkDone ? 'completed' : '' }}">
-                                <a href="{{ $urlSpk }}" class="transaksi-step-icon" title="{{ $spkModel ? 'Lihat Detail SPK (' . $spkModel->no_spk . ')' : 'Buka Manajemen SPK Kontraktor' }}">
-                                    @if ($spkDone)
-                                        <i class="mdi mdi-check"></i>
-                                    @else
-                                        <i class="mdi mdi-clipboard-text"></i>
-                                    @endif
-                                </a>
-                                <a href="{{ $urlSpk }}" class="transaksi-step-title-link" title="{{ $spkModel ? 'Lihat Detail SPK (' . $spkModel->no_spk . ')' : 'Buka Manajemen SPK Kontraktor' }}">
-                                    <span class="transaksi-step-title">SPK</span>
-                                </a>
-                                <small>
-                                    @if ($spkDone)
-                                        Selesai
-                                    @else
-                                        Menunggu
-                                    @endif
-                                </small>
-                            </div>
-
-                            @php
-                                $statusText = [
-                                    'belum_mulai' => 'Belum mulai pembangunan',
-                                    'pondasi' => 'Tahap pondasi',
-                                    'dinding' => 'Tahap dinding',
-                                    'atap' => 'Tahap atap',
-                                    'finishing' => 'Tahap finishing',
-                                    'selesai' => 'Pembangunan selesai',
-                                ];
-                            @endphp
-
-                            {{-- Tahap 4: Pembangunan --}}
-                            <div class="transaksi-step {{ $pembangunanDone ? 'completed' : '' }}">
-                                <a href="{{ $urlPembangunan }}" class="transaksi-step-icon" title="Buka Monitoring Progress Pembangunan Unit">
-                                    @if ($pembangunanDone)
-                                        <i class="mdi mdi-check"></i>
-                                    @else
-                                        <i class="mdi mdi-home-city"></i>
-                                    @endif
-                                </a>
-                                <a href="{{ $urlPembangunan }}" class="transaksi-step-title-link" title="Buka Monitoring Progress Pembangunan Unit">
-                                    <span class="transaksi-step-title">Pembangunan</span>
-                                </a>
-                                <small>{{ $statusText[$status] ?? 'Belum mulai pembangunan' }}</small>
-                            </div>
-
-                            {{-- Tahap 5: Survey --}}
-                            <div class="transaksi-step completed">
-                                <a href="{{ $urlSurvey }}" class="transaksi-step-icon" title="Buka Halaman Hasil Survey Lapangan KPR">
-                                    <i class="mdi mdi-check"></i>
-                                </a>
-                                <a href="{{ $urlSurvey }}" class="transaksi-step-title-link" title="Buka Halaman Hasil Survey Lapangan KPR">
-                                    <span class="transaksi-step-title">Survey</span>
-                                </a>
-                                <small>{{ $application->updated_at ? \Carbon\Carbon::parse($application->updated_at)->translatedFormat('j F Y') : '-' }}</small>
-                            </div>
-
-                            {{-- Tahap 6: Akad --}}
-                            <div class="transaksi-step completed">
-                                <a href="{{ $urlAkad }}" class="transaksi-step-icon" title="Buka Halaman Akad KPR">
-                                    <i class="mdi mdi-check"></i>
-                                </a>
-                                <a href="{{ $urlAkad }}" class="transaksi-step-title-link" title="Buka Halaman Akad KPR">
-                                    <span class="transaksi-step-title">Akad</span>
-                                </a>
-                                <small>{{ $application->akad_at ? \Carbon\Carbon::parse($application->akad_at)->translatedFormat('j F Y') : '-' }}</small>
-                            </div>
-
-                            {{-- Tahap 7: Serah Terima --}}
-                            <div class="transaksi-step active {{ $serahTerimaDone ? 'completed' : '' }}">
-                                <a href="{{ $urlSerahTerima }}" class="transaksi-step-icon" title="Halaman Serah Terima Unit (Saat Ini)">
-                                    @if ($serahTerimaDone)
-                                        <i class="mdi mdi-check"></i>
-                                    @else
-                                        <i class="mdi mdi-key"></i>
-                                    @endif
-                                </a>
-                                <a href="{{ $urlSerahTerima }}" class="transaksi-step-title-link" title="Halaman Serah Terima Unit (Saat Ini)">
-                                    <span class="transaksi-step-title">Serah Terima</span>
-                                </a>
-                                <small>
-                                    @if ($serahTerimaDone)
-                                        {{ \Carbon\Carbon::parse($application->booking->serah_terima_date)->translatedFormat('d F Y') }}
-                                    @else
-                                        Dalam Proses
-                                    @endif
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <div class="transaksi-section-title">
-                            <i class="mdi mdi-cash-multiple"></i>
-                            <span>Status KPR</span>
-                        </div>
-
-                        <div class="transaksi-detail-list">
-                            <div class="transaksi-detail-item">
-                                <span>Harga Unit</span>
-                                <span>Rp {{ number_format($application->unit->price ?? 0, 0, ',', '.') }}</span>
-                            </div>
-                            <div class="transaksi-detail-item">
-                                <span>Uang Muka (DP)</span>
-                                <span class="highlight">Rp
-                                    {{ number_format($application->booking->booking_fee ?? 0, 0, ',', '.') }}</span>
-                            </div>
-                            <div class="transaksi-detail-item">
-                                <span>Bank</span>
-                                <span>{{ $application->bank->bank_name ?? '-' }}</span>
-                            </div>
-                            <div class="transaksi-detail-item">
-                                <span>Status KPR</span>
-                                <span>
-                                    <span class="payment-method-badge badge-gradient-success text-white">
-                                        <i class="mdi mdi-check-circle-outline"></i>Disetujui
-                                    </span>
-                                </span>
-                            </div>
-                            <div class="transaksi-detail-item">
-                                <span>Promo</span>
-                                <span>{{ $application->promo_name ?? '-' }}</span>
-                            </div>
-                            <div class="transaksi-detail-item">
-                                <span>Nilai Promo</span>
-                                <span>Rp {{ number_format($application->promo_value ?? 0, 0, ',', '.') }}</span>
-                            </div>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <small class="transaksi-muted d-block mb-2">Ditangani oleh</small>
-                        <div class="transaksi-handler">
-                            <div class="transaksi-handler-icon">
-                                <i class="mdi mdi-account-tie"></i>
-                            </div>
-                            <div>
-                                <div class="fw-bold">{{ $application->booking->sales->name ?? ($booking->sales->name ?? ($application->unit->activeBooking->sales->name ?? 'Staff Marketing')) }}</div>
                             </div>
                         </div>
                     </div>
@@ -1122,9 +968,205 @@ select.serah-form-control {
         <form action="{{ route('serah-terima.store', $booking->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            <div class="row mt-4 align-items-start">
-                <div class="col-12 col-lg-8 mb-4 mb-lg-0">
-                    <div class="card shadow-sm border-0">
+            <div class="row mt-4 g-4">
+                <!-- LEFT COLUMN: FLOW & FORM -->
+                <div class="col-12 col-lg-8 d-flex flex-column gap-4">
+                    
+                    <!-- CARD 1: TAHAPAN KPR -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="transaksi-section-title">
+                                <i class="mdi mdi-timeline-text"></i>
+                                <span>Tahapan KPR</span>
+                            </div>
+
+                            @php
+                                $jenis = strtolower($application->unit->jenis ?? '');
+                                $isSubsidi = $jenis === 'subsidi';
+                                $totalSteps = 7;
+
+                                $unit = $application->unit ?? null;
+                                $spkDone = !empty($unit?->no_spk) || !empty($unit?->dokumen_spk) || !empty($unit?->kontraktor);
+                                $status = strtolower($unit->construction_progress ?? '');
+                                $devDone = $status == 'selesai';
+                                $pembangunanDone = $devDone;
+                                $surveyDone = !empty($application->rekomendasi) || strtolower($application->status_survey ?? '') == 'done' || ($application->booking->status_survey ?? 0) == 1;
+                                $akadDone = !empty(optional($application->booking->akad)->tanggal_akad) || !empty($application->akad_at);
+                                $serahTerimaDone =
+                                    $application->booking->status == 'completed' &&
+                                    !empty($application->booking->serah_terima_date);
+
+                                $currentStep = $serahTerimaDone ? 7 : 6;
+                                $progressWidth = intval(($currentStep / $totalSteps) * 100);
+                                $stepStyle = 'style="grid-template-columns: repeat(' . $totalSteps . ', 1fr);"';
+                            @endphp
+
+                            <div class="transaksi-progress-top">
+                                <span class="transaksi-muted">Progress Proses</span>
+                                <span class="step-counter-purple">Tahap {{ $currentStep }} dari {{ $totalSteps }}</span>
+                            </div>
+
+                            <div class="transaksi-progress">
+                                <div class="transaksi-progress-bar" style="width: {{ $progressWidth }}%;"></div>
+                            </div>
+
+                            @php
+                                $bookingId = $application->booking_id ?? optional($application->booking)->id;
+                                $unitId = $application->unit_id ?? optional($application->unit)->id;
+                                $landBankId = optional($application->unit)->land_bank_id ?? 1;
+
+                                $urlPengajuan = $bookingId ? route('pengajuan.show', $bookingId) : '#';
+                                $urlVerifikasi = $bookingId ? route('transaksi.kpr.approve', $bookingId) : '#';
+
+                                $spkModel = null;
+                                if ($application->unit) {
+                                    $spkModel = \App\Models\Spk::where('land_bank_unit_id', $application->unit->id)
+                                        ->orWhere(function ($q) use ($application) {
+                                            if (!empty($application->unit->no_spk)) {
+                                                $q->where('no_spk', $application->unit->no_spk);
+                                            } else {
+                                                $q->whereRaw('0 = 1');
+                                            }
+                                        })->first();
+                                }
+                                $urlSpk = $spkModel ? route('spk.show', $spkModel->id) : route('spk.index');
+
+                                $urlPembangunan = route('properti.progress', [
+                                    'land_bank_id' => $landBankId,
+                                    'unit_id' => $unitId,
+                                ]);
+
+                                $urlSurvey = route('kpr.survey', $application->id);
+                                $urlAkad = $bookingId ? url('/transaksi/kpr/akad-kpr/' . $bookingId) : '#';
+                                $urlSerahTerima = route('kpr.serahterima', $application->id);
+                            @endphp
+
+                            <div class="transaksi-steps" {!! $stepStyle !!}>
+                                {{-- Tahap 1: Pengajuan --}}
+                                <div class="transaksi-step completed">
+                                    <a href="{{ $urlPengajuan }}" class="transaksi-step-icon" title="Buka Halaman Pengajuan KPR">
+                                        <i class="mdi mdi-check"></i>
+                                    </a>
+                                    <a href="{{ $urlPengajuan }}" class="transaksi-step-title-link" title="Buka Halaman Pengajuan KPR">
+                                        <span class="transaksi-step-title">Pengajuan</span>
+                                    </a>
+                                    <small>{{ \Carbon\Carbon::parse($application->created_at)->translatedFormat('j F Y') }}</small>
+                                </div>
+
+                                {{-- Tahap 2: Verifikasi --}}
+                                <div class="transaksi-step completed">
+                                    <a href="{{ $urlVerifikasi }}" class="transaksi-step-icon" title="Buka Halaman Verifikasi KPR">
+                                        <i class="mdi mdi-check"></i>
+                                    </a>
+                                    <a href="{{ $urlVerifikasi }}" class="transaksi-step-title-link" title="Buka Halaman Verifikasi KPR">
+                                        <span class="transaksi-step-title">Verifikasi</span>
+                                    </a>
+                                    <small>{{ $application->submitted_at ? \Carbon\Carbon::parse($application->submitted_at)->translatedFormat('j F Y') : '-' }}</small>
+                                </div>
+
+                                {{-- Tahap 3: SPK --}}
+                                <div class="transaksi-step {{ $spkDone ? 'completed' : '' }}">
+                                    <a href="{{ $urlSpk }}" class="transaksi-step-icon" title="{{ $spkModel ? 'Lihat Detail SPK (' . $spkModel->no_spk . ')' : 'Buka Manajemen SPK Kontraktor' }}">
+                                        @if ($spkDone)
+                                            <i class="mdi mdi-check"></i>
+                                        @else
+                                            <i class="mdi mdi-clipboard-text"></i>
+                                        @endif
+                                    </a>
+                                    <a href="{{ $urlSpk }}" class="transaksi-step-title-link" title="{{ $spkModel ? 'Lihat Detail SPK (' . $spkModel->no_spk . ')' : 'Buka Manajemen SPK Kontraktor' }}">
+                                        <span class="transaksi-step-title">SPK</span>
+                                    </a>
+                                    <small>
+                                        @if ($spkDone)
+                                            Selesai
+                                        @else
+                                            Menunggu
+                                        @endif
+                                    </small>
+                                </div>
+
+                                @php
+                                    $statusText = [
+                                        'belum_mulai' => 'Belum mulai pembangunan',
+                                        'pondasi' => 'Tahap pondasi',
+                                        'dinding' => 'Tahap dinding',
+                                        'atap' => 'Tahap atap',
+                                        'finishing' => 'Tahap finishing',
+                                        'selesai' => 'Pembangunan selesai',
+                                    ];
+                                @endphp
+
+                                {{-- Tahap 4: Pembangunan --}}
+                                <div class="transaksi-step {{ $pembangunanDone ? 'completed' : '' }}">
+                                    <a href="{{ $urlPembangunan }}" class="transaksi-step-icon" title="Buka Monitoring Progress Pembangunan Unit">
+                                        @if ($pembangunanDone)
+                                            <i class="mdi mdi-check"></i>
+                                        @else
+                                            <i class="mdi mdi-home-city"></i>
+                                        @endif
+                                    </a>
+                                    <a href="{{ $urlPembangunan }}" class="transaksi-step-title-link" title="Buka Monitoring Progress Pembangunan Unit">
+                                        <span class="transaksi-step-title">Pembangunan</span>
+                                    </a>
+                                    <small>{{ $statusText[$status] ?? 'Belum mulai pembangunan' }}</small>
+                                </div>
+
+                                {{-- Tahap 5: Survey --}}
+                                <div class="transaksi-step completed">
+                                    <a href="{{ $urlSurvey }}" class="transaksi-step-icon" title="Buka Halaman Hasil Survey Lapangan KPR">
+                                        <i class="mdi mdi-check"></i>
+                                    </a>
+                                    <a href="{{ $urlSurvey }}" class="transaksi-step-title-link" title="Buka Halaman Hasil Survey Lapangan KPR">
+                                        <span class="transaksi-step-title">Survey</span>
+                                    </a>
+                                    <small>{{ $application->updated_at ? \Carbon\Carbon::parse($application->updated_at)->translatedFormat('j F Y') : '-' }}</small>
+                                </div>
+
+                                {{-- Tahap 6: Akad --}}
+                                <div class="transaksi-step completed">
+                                    <a href="{{ $urlAkad }}" class="transaksi-step-icon" title="Buka Halaman Akad KPR">
+                                        <i class="mdi mdi-check"></i>
+                                    </a>
+                                    <a href="{{ $urlAkad }}" class="transaksi-step-title-link" title="Buka Halaman Akad KPR">
+                                        <span class="transaksi-step-title">Akad</span>
+                                    </a>
+                                    <small>
+                                        @if($application->akad_at)
+                                            {{ \Carbon\Carbon::parse($application->akad_at)->translatedFormat('j F Y') }}
+                                        @elseif(optional($application->booking->akad)->tanggal_akad)
+                                            {{ \Carbon\Carbon::parse($application->booking->akad->tanggal_akad)->translatedFormat('j F Y') }}
+                                        @else
+                                            Selesai
+                                        @endif
+                                    </small>
+                                </div>
+
+                                {{-- Tahap 7: Serah Terima --}}
+                                <div class="transaksi-step {{ $serahTerimaDone ? 'completed' : 'active' }}">
+                                    <a href="{{ $urlSerahTerima }}" class="transaksi-step-icon" title="Halaman Serah Terima Unit (Saat Ini)">
+                                        @if ($serahTerimaDone)
+                                            <i class="mdi mdi-check"></i>
+                                        @else
+                                            <i class="mdi mdi-key"></i>
+                                        @endif
+                                    </a>
+                                    <a href="{{ $urlSerahTerima }}" class="transaksi-step-title-link" title="Halaman Serah Terima Unit (Saat Ini)">
+                                        <span class="transaksi-step-title">Serah Terima</span>
+                                    </a>
+                                    <small>
+                                        @if ($serahTerimaDone)
+                                            {{ \Carbon\Carbon::parse($application->booking->serah_terima_date)->translatedFormat('d F Y') }}
+                                        @else
+                                            Dalam Proses
+                                        @endif
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD 2: FORM SERAH TERIMA UNIT -->
+                    <div class="card">
                         <div class="card-body p-3 p-md-4">
                             <div class="transaksi-section-title">
                                 <i class="mdi mdi-key"></i>
@@ -1195,48 +1237,37 @@ select.serah-form-control {
                                 ]);
                             @endphp
 
-                            <div class="card border-0 mb-3" style="background: #faf7ff; border: 1.5px solid #e9d5ff !important; border-radius: 12px;">
-                                <div class="card-body p-3 p-md-4">
-                                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(154, 85, 255, 0.15); color: #9a55ff; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
-                                                <i class="mdi mdi-checkbox-marked-circle-outline"></i>
-                                            </div>
-                                            <div>
-                                                <h6 class="fw-bold text-dark mb-0" style="font-size: 0.95rem;">Checklist Kondisi Unit</h6>
-                                                <small class="text-muted">Kondisi fisik unit diverifikasi langsung pada <strong>Progress Pembangunan RAP</strong></small>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center gap-2 flex-wrap">
-                                            <span class="badge {{ $isAllReady ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning' }} px-3 py-1.5 rounded-pill fw-bold" style="font-size: 0.8rem; border: 1px solid {{ $isAllReady ? '#bbf7d0' : '#fef08a' }};">
-                                                <i class="mdi {{ $isAllReady ? 'mdi-check-decagram' : 'mdi-alert-circle' }} me-1"></i>
-                                                {{ $terpenuhi }}/{{ $totalKondisi }} Kondisi Terpenuhi
-                                            </span>
-                                            <a href="{{ $urlProgressRap }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;">
-                                                <i class="mdi mdi-open-in-new"></i> Buka Progress RAP
-                                            </a>
-                                        </div>
-                                    </div>
-
-                                    <div class="row g-2">
-                                        @foreach ($kondisiItems as $field => $label)
-                                            @php
-                                                $ok = empty($savedChecklist) ? true : !empty($savedChecklist[$field]);
-                                            @endphp
-                                            <div class="col-12 col-md-6">
-                                                <div class="d-flex align-items-center justify-content-between px-3 py-2 bg-white rounded-3 border" style="border-color: #ede4ff !important;">
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <i class="mdi {{ $ok ? 'mdi-check-circle text-success' : 'mdi-close-circle text-danger' }}" style="font-size: 1.15rem;"></i>
-                                                        <span class="small fw-semibold text-dark">{{ $label }}</span>
-                                                    </div>
-                                                    <span class="badge {{ $ok ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }} rounded-pill" style="font-size: 0.68rem;">
-                                                        {{ $ok ? 'Terpenuhi' : 'Belum' }}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
+                            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
+                                <div class="transaksi-section-title mb-0">
+                                    <i class="mdi mdi-checkbox-marked-circle-outline"></i>
+                                    <span>Checklist Kondisi Unit</span>
                                 </div>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <span class="badge {{ $isAllReady ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning' }} px-3 py-1.5 fw-bold" style="font-size: 0.8rem; border-radius: 6px; border: 1px solid {{ $isAllReady ? '#bbf7d0' : '#fef08a' }};">
+                                        <i class="mdi {{ $isAllReady ? 'mdi-check-decagram' : 'mdi-alert-circle' }} me-1"></i>
+                                        {{ $terpenuhi }}/{{ $totalKondisi }} Kondisi Terpenuhi
+                                    </span>
+                                    <a href="{{ $urlProgressRap }}" target="_blank" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 5px;" title="Buka Progress Pembangunan RAP">
+                                        <i class="mdi mdi-open-in-new" style="font-size: 0.95rem; line-height: 1;"></i>
+                                        <span>Buka Progress RAP</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            {{-- Read-only: UI sama dengan Dokumen yang Diserahkan, tidak bisa diubah (data dari RAP) --}}
+                            <div class="survey-checklist-grid" style="pointer-events: none; user-select: none;">
+                                @foreach ($kondisiItems as $field => $label)
+                                    @php $ok = empty($savedChecklist) ? true : !empty($savedChecklist[$field]); @endphp
+                                    <div class="survey-checkbox-wrapper {{ $ok ? 'is-terpenuhi' : '' }}" style="{{ $ok ? '' : 'border-color: #fca5a5 !important; background: #fff5f5;' }}">
+                                        <div class="survey-checkbox-label d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="mdi {{ $ok ? 'mdi-check-circle survey-check-icon' : 'mdi-close-circle' }}" style="font-size: 1.15rem; {{ $ok ? '' : 'color: #ef4444;' }}"></i>
+                                                <span class="survey-check-text">{{ $label }}</span>
+                                            </div>
+                                            <span class="doc-badge">{{ $ok ? 'Terpenuhi' : 'Belum' }}</span>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
 
                             <hr class="my-4">
@@ -1278,35 +1309,89 @@ select.serah-form-control {
                             </div>
 
                             <div class="row g-3">
+                                {{-- Upload 1: Foto Penyerahan Kunci --}}
                                 <div class="col-12 col-md-6">
                                     <div class="serah-form-group mb-0">
                                         <label class="serah-form-label">Foto Penyerahan Kunci</label>
-                                        <div class="serah-file-upload-modern">
-                                            <input type="file" name="foto_serah_kunci" accept=".jpg,.jpeg,.png">
-                                            <div class="serah-file-label-modern">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="serah-file-info-modern">
-                                                    <span>Upload Foto Kunci</span>
-                                                    <small>Format: JPG, PNG (Max 5MB)</small>
+
+                                        {{-- Empty state --}}
+                                        <div id="emptyBoxKunci" class="serah-upload-box" onclick="document.getElementById('fotoKunciInput').click()">
+                                            <input type="file" name="foto_serah_kunci" id="fotoKunciInput" accept=".jpg,.jpeg,.png" onchange="serahFilePreview(this, 'kunci')">
+                                            <div class="d-flex align-items-center gap-2 w-100">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:36px;height:36px;background:rgba(154,85,255,0.1);color:#9a55ff;">
+                                                    <i class="mdi mdi-camera-plus" style="font-size:1.2rem;"></i>
                                                 </div>
-                                                <span class="serah-file-size" style="display:none;"></span>
+                                                <div>
+                                                    <span class="fw-bold text-dark d-block" style="font-size:0.84rem;">Pilih foto penyerahan kunci</span>
+                                                    <small class="text-muted" style="font-size:0.72rem;">JPG, PNG (Maks 5MB)</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {{-- Uploaded state --}}
+                                        <div id="uploadedBoxKunci" class="serah-uploaded-box">
+                                            <div class="d-flex align-items-center gap-2 overflow-hidden flex-grow-1" style="min-width:0;">
+                                                <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width:38px;height:38px;border-radius:8px;background:rgba(0,201,167,0.15);color:#00c9a7;">
+                                                    <i class="mdi mdi-image-check" style="font-size:1.35rem;"></i>
+                                                </div>
+                                                <div class="overflow-hidden" style="min-width:0;">
+                                                    <span class="fw-bold text-success d-block text-truncate" id="fileNameKunci" style="font-size:0.85rem;"></span>
+                                                    <small class="text-muted" id="fileSizeKunci" style="font-size:0.72rem;"></small>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center flex-shrink-0" style="gap: 8px;">
+                                                <a href="#" target="_blank" id="viewLinkKunci" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                    <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                    <span>Lihat</span>
+                                                </a>
+                                                <button type="button" onclick="document.getElementById('fotoKunciInput').click()" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                    <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                    <span>Ganti</span>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
+                                {{-- Upload 2: Foto Bersama Unit --}}
                                 <div class="col-12 col-md-6">
                                     <div class="serah-form-group mb-0">
                                         <label class="serah-form-label">Foto Bersama Unit</label>
-                                        <div class="serah-file-upload-modern">
-                                            <input type="file" name="foto_unit" accept=".jpg,.jpeg,.png">
-                                            <div class="serah-file-label-modern">
-                                                <i class="mdi mdi-cloud-upload"></i>
-                                                <div class="serah-file-info-modern">
-                                                    <span>Upload Foto Unit</span>
-                                                    <small>Format: JPG, PNG (Max 5MB)</small>
+
+                                        {{-- Empty state --}}
+                                        <div id="emptyBoxUnit" class="serah-upload-box" onclick="document.getElementById('fotoUnitInput').click()">
+                                            <input type="file" name="foto_unit" id="fotoUnitInput" accept=".jpg,.jpeg,.png" onchange="serahFilePreview(this, 'unit')">
+                                            <div class="d-flex align-items-center gap-2 w-100">
+                                                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:36px;height:36px;background:rgba(154,85,255,0.1);color:#9a55ff;">
+                                                    <i class="mdi mdi-camera-plus" style="font-size:1.2rem;"></i>
                                                 </div>
-                                                <span class="serah-file-size" style="display:none;"></span>
+                                                <div>
+                                                    <span class="fw-bold text-dark d-block" style="font-size:0.84rem;">Pilih foto bersama unit</span>
+                                                    <small class="text-muted" style="font-size:0.72rem;">JPG, PNG (Maks 5MB)</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {{-- Uploaded state --}}
+                                        <div id="uploadedBoxUnit" class="serah-uploaded-box">
+                                            <div class="d-flex align-items-center gap-2 overflow-hidden flex-grow-1" style="min-width:0;">
+                                                <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width:38px;height:38px;border-radius:8px;background:rgba(0,201,167,0.15);color:#00c9a7;">
+                                                    <i class="mdi mdi-image-check" style="font-size:1.35rem;"></i>
+                                                </div>
+                                                <div class="overflow-hidden" style="min-width:0;">
+                                                    <span class="fw-bold text-success d-block text-truncate" id="fileNameUnit" style="font-size:0.85rem;"></span>
+                                                    <small class="text-muted" id="fileSizeUnit" style="font-size:0.72rem;"></small>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center flex-shrink-0" style="gap: 8px;">
+                                                <a href="#" target="_blank" id="viewLinkUnit" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                    <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                    <span>Lihat</span>
+                                                </a>
+                                                <button type="button" onclick="document.getElementById('fotoUnitInput').click()" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                    <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                    <span>Ganti</span>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -1324,8 +1409,89 @@ select.serah-form-control {
                     </div>
                 </div>
 
-                <div class="col-12 col-lg-4 mb-4 mb-lg-0">
-                    <div class="card shadow-sm border-0 sticky-top" style="top: 20px; z-index: 5;">
+                <!-- RIGHT COLUMN: SIDEBAR DETAILS & SUBMISSION -->
+                <div class="col-12 col-lg-4 d-flex flex-column gap-4">
+                    
+                    <!-- SIDEBAR CARD 1: DETAIL KPR -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="transaksi-section-title">
+                                <i class="mdi mdi-bank-outline"></i>
+                                <span>Detail KPR</span>
+                            </div>
+
+                            <div class="transaksi-detail-list">
+                                <div class="transaksi-detail-item">
+                                    <span>Bank Tujuan</span>
+                                    <span>{{ $application->bank->bank_name ?? '-' }}</span>
+                                </div>
+                                <div class="transaksi-detail-item">
+                                    <span>Harga Unit</span>
+                                    <span>Rp {{ number_format($application->harga_unit ?? ($application->unit->price ?? 0), 0, ',', '.') }}</span>
+                                </div>
+                                @if(($application->promo_value ?? 0) > 0 || !empty($application->promo_name))
+                                <div class="transaksi-detail-item">
+                                    <span>Promo</span>
+                                    <span class="text-primary fw-bold">{{ $application->promo_name ?? 'Promo Spesial' }}</span>
+                                </div>
+                                <div class="transaksi-detail-item">
+                                    <span>Diskon Promo</span>
+                                    <span class="text-danger fw-bold">- Rp {{ number_format($application->promo_value ?? 0, 0, ',', '.') }}</span>
+                                </div>
+                                @endif
+
+                                <div class="transaksi-detail-item">
+                                    <span>Total DP yang Dibayar</span>
+                                    <span style="color: #2563eb; font-weight: 700;">
+                                        Rp {{ number_format($application->dp ?? ($application->booking->booking_fee ?? 0), 0, ',', '.') }}
+                                    </span>
+                                </div>
+
+                                <div class="transaksi-detail-item">
+                                    <span>Jumlah Pinjaman (Plafond)</span>
+                                    <span>Rp {{ number_format($application->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span>
+                                </div>
+                                <div class="transaksi-detail-item">
+                                    <span>Tenor</span>
+                                    <span>{{ $application->tenor ?? '-' }} Tahun</span>
+                                </div>
+                                <div class="transaksi-detail-item">
+                                    <span>Angsuran / bln</span>
+                                    <span class="highlight">Rp {{ number_format($application->estimasi_angsuran ?? 0, 0, ',', '.') }}</span>
+                                </div>
+                            </div>
+
+                            <hr class="my-3">
+
+                            <small class="transaksi-muted d-block mb-2 fw-semibold">Pihak yang Menangani</small>
+                            <div class="transaksi-handler-group">
+                                <!-- MARKETING (PENGAJU) -->
+                                <div class="transaksi-handler">
+                                    <div class="transaksi-handler-icon">
+                                        <i class="mdi mdi-account-tie"></i>
+                                    </div>
+                                    <div>
+                                        <div class="transaksi-handler-role">Marketing / Sales (Pengaju)</div>
+                                        <div class="transaksi-handler-name">{{ $application->booking->sales->name ?? ($booking->sales->name ?? ($application->unit->activeBooking->sales->name ?? 'Staff Marketing')) }}</div>
+                                    </div>
+                                </div>
+
+                                <!-- VERIFIKATOR -->
+                                <div class="transaksi-handler verifier">
+                                    <div class="transaksi-handler-icon">
+                                        <i class="mdi mdi-shield-check"></i>
+                                    </div>
+                                    <div>
+                                        <div class="transaksi-handler-role">Petugas Verifikasi</div>
+                                        <div class="transaksi-handler-name">{{ $application->verifier->name ?? 'Admin Verifikator' }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SIDEBAR CARD 2: INFORMASI & PERSETUJUAN SERAH TERIMA -->
+                    <div class="card sticky-top" style="top: 20px; z-index: 5;">
                         <div class="card-body p-3 p-md-4">
                             <div class="transaksi-section-title">
                                 <i class="mdi mdi-clipboard-text-outline"></i>
@@ -1409,27 +1575,33 @@ select.serah-form-control {
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('.serah-file-upload-modern input[type="file"]').change(function(e) {
-                const file = e.target.files[0];
-                const $container = $(this).closest('.serah-file-upload-modern');
-                const label = $container.find('.serah-file-info-modern span');
-                const sizeSpan = $container.find('.serah-file-size');
+            // Foto upload preview — dual state (persis addkavling)
+            window.serahFilePreview = function(input, key) {
+                const file = input.files[0];
+                const capKey      = key.charAt(0).toUpperCase() + key.slice(1);
+                const emptyBox    = document.getElementById('emptyBox'    + capKey);
+                const uploadedBox = document.getElementById('uploadedBox' + capKey);
+                const fileName    = document.getElementById('fileName'    + capKey);
+                const fileSize    = document.getElementById('fileSize'    + capKey);
+                const viewLink    = document.getElementById('viewLink'    + capKey);
 
                 if (file) {
-                    const fileName = file.name;
-                    const fileSize = (file.size / (1024 * 1024)).toFixed(2);
-
-                    label.text(fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName);
-                    sizeSpan.text(fileSize + ' MB').show();
-                } else {
-                    if ($(this).attr('name') === 'foto_serah_kunci') {
-                        label.text('Upload Foto Kunci');
-                    } else {
-                        label.text('Upload Foto Unit');
+                    fileName.textContent = file.name;
+                    fileSize.textContent = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+                    if (viewLink) {
+                        viewLink.href = URL.createObjectURL(file);
                     }
-                    sizeSpan.text('').hide();
+                    emptyBox.style.display    = 'none';
+                    uploadedBox.style.display = 'flex';
+                } else {
+                    if (viewLink) {
+                        viewLink.href = '#';
+                    }
+                    emptyBox.style.display    = 'flex';
+                    uploadedBox.style.display = 'none';
                 }
-            });
+            };
+
 
             // Notifikasi Sukses Setelah Refresh
             @if (session('success'))

@@ -4,43 +4,35 @@
 
 @section('content')
 <style>
-.card {
-    transition: all 0.3s ease;
-    margin-bottom: 1rem;
-    border: none !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+/* ===== COMPACT TABLE CARD PERSIS DAFTAR USER KPR ===== */
+.card.compact-table-card,
+.compact-table-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
 }
-.card:hover { box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important; }
 
-.card-header {
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    border-bottom: 1px solid #e9ecef;
-    padding: 0.75rem;
+.compact-table-card .card-body {
+    padding: 0.85rem 1.25rem 1.25rem 1.25rem !important;
+    background: #ffffff !important;
 }
-@media (min-width: 576px) { .card-header { padding: 1rem; } }
-@media (min-width: 768px) { .card-header { padding: 1.2rem; } }
-
-.card-body { padding: 0.75rem; }
-@media (min-width: 576px) { .card-body { padding: 1rem; } }
-@media (min-width: 768px) { .card-body { padding: 1.2rem; } }
-
-.card-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #9a55ff;
-    margin-bottom: 0;
-}
-@media (min-width: 576px) { .card-title { font-size: 1rem; } }
-@media (min-width: 768px) { .card-title { font-size: 1.1rem; } }
 
 .filter-card {
     background: #ffffff;
-    border-radius: 12px;
+    border-radius: 0;
     padding: 0;
-    margin-bottom: 1.25rem;
+    margin-top: 0 !important;
+    margin-bottom: 0.85rem !important;
     border: none;
 }
+.filter-card form {
+    margin-bottom: 0 !important;
+}
 
+/* Search Input Group in Filter */
 .search-input-group {
     display: flex !important;
     flex-wrap: nowrap !important;
@@ -52,8 +44,8 @@
 .search-input-group .form-control {
     height: 38px !important;
     min-height: 38px !important;
-    border-top-left-radius: 8px !important;
-    border-bottom-left-radius: 8px !important;
+    border-top-left-radius: 6px !important;
+    border-bottom-left-radius: 6px !important;
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
     border: 1.5px solid #e2e8f0 !important;
@@ -69,8 +61,8 @@
     min-height: 38px !important;
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
-    border-top-right-radius: 8px !important;
-    border-bottom-right-radius: 8px !important;
+    border-top-right-radius: 6px !important;
+    border-bottom-right-radius: 6px !important;
     padding: 0 0.95rem !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -78,19 +70,25 @@
     box-shadow: none !important;
     border: none !important;
     font-size: 1.15rem !important;
+    background: #9a55ff !important;
     color: #ffffff !important;
     margin: 0 !important;
     flex-shrink: 0;
+    transition: opacity 0.2s;
+}
+.search-input-group .btn-search-submit:hover {
+    opacity: 0.9;
 }
 
 .search-input-group:focus-within .form-control {
     border-color: #9a55ff !important;
-    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
 }
 
+/* SELECT2 ENHANCEMENTS */
 .select2-container--bootstrap-5 .select2-selection {
     border: 1.5px solid #e2e8f0 !important;
-    border-radius: 8px !important;
+    border-radius: 6px !important;
     min-height: 38px !important;
     height: 38px !important;
     padding: 0.35rem 0.75rem !important;
@@ -120,267 +118,249 @@
 
 .select2-container--bootstrap-5 .select2-dropdown {
     border-color: #e2e8f0 !important;
-    border-radius: 8px !important;
+    border-radius: 6px !important;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
 }
 
-.select2-container--bootstrap-5 .select2-results__option {
-    padding: 0.55rem 0.8rem !important;
-    font-size: 0.86rem !important;
-    font-weight: 600 !important;
+/* TABLE UNIT PERSIS DAFTAR USER KPR */
+.table-unit {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0;
 }
-
-.select2-container--bootstrap-5 .select2-results__option--selected {
-    background-color: #f3e8ff !important;
-    color: #7e22ce !important;
-}
-
-.select2-container--bootstrap-5 .select2-results__option--highlighted {
-    background: #9a55ff !important;
-    color: #ffffff !important;
-}
-
-.form-control, .form-select {
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    background-color: #ffffff;
-    color: #2c2e3f;
-}
-.form-control:focus, .form-select:focus {
-    border-color: #9a55ff;
-    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-    outline: none;
-}
-.btn {
-    font-size: 0.85rem;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    font-family: 'Nunito', sans-serif;
-    border: none;
-}
-.btn:hover {
-    transform: translateY(-2px);
-}
-
-.btn-gradient-primary {
-    background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-    color: #ffffff !important;
-}
-.btn-gradient-secondary {
-    background: #6c757d !important;
-    color: #ffffff !important;
-}
-.btn-icon-only {
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    flex-shrink: 0;
-}
-
-.btn-gradient-warning {
-    background: linear-gradient(135deg, #ffb822, #ff9f43) !important;
-    color: #ffffff !important;
-    border: none !important;
-    box-shadow: 0 4px 10px rgba(255, 184, 34, 0.25) !important;
-    width: auto !important;
-    min-width: fit-content !important;
-    height: auto !important;
-    min-height: 34px !important;
-    padding: 0.45rem 1rem !important;
-    font-size: 0.82rem !important;
+.table-unit thead th {
+    background: #f8fafc !important;
+    color: #475569 !important;
     font-weight: 700 !important;
-    white-space: nowrap !important;
-    border-radius: 8px !important;
-    text-decoration: none !important;
-}
-.btn-gradient-warning:hover {
-    background: linear-gradient(135deg, #ffaa00, #ff8c00) !important;
-    color: #ffffff !important;
-    box-shadow: 0 6px 15px rgba(255, 184, 34, 0.35) !important;
-    transform: translateY(-2px);
-}
-
-.table thead th {
-    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-    color: #9a55ff;
-    font-weight: 700;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 2px solid #edf2f9;
-    padding: 0.9rem 0.75rem;
+    font-size: 0.76rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    padding: 0.75rem 0.75rem !important;
+    vertical-align: middle;
     white-space: nowrap;
 }
-.table tbody td {
-    padding: 0.85rem 0.75rem;
-    vertical-align: middle;
-    border-bottom: 1px solid #f2f4f8;
-    color: #2c2e3f;
-    font-size: 0.88rem;
+.table-unit thead th.sortable {
+    cursor: pointer;
+    user-select: none;
 }
-.table tbody tr { transition: all 0.2s ease; }
-.table tbody tr:hover { background-color: #faf8ff; }
+.table-unit thead th.sortable:hover {
+    color: #9a55ff !important;
+}
+.table-unit thead th.active-sort {
+    color: #9a55ff !important;
+}
+.table-unit thead th i {
+    font-size: 0.82rem;
+    margin-left: 3px;
+    opacity: 0.6;
+}
+.table-unit thead th:hover i,
+.table-unit thead th.active-sort i {
+    opacity: 1;
+}
 
-.customer-avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
-    color: #ffffff;
-    display: flex;
+.table-unit tbody td {
+    padding: 0.75rem 0.75rem !important;
+    vertical-align: middle;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #f1f5f9 !important;
+    color: #334155;
+}
+.table-unit tbody tr:hover {
+    background-color: #f8fafc !important;
+}
+
+/* User Avatar Box */
+.user-avatar-box {
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    background-color: #f3e8ff;
+    color: #9333ea;
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.18);
     flex-shrink: 0;
 }
 
-.badge-status {
-    padding: 0.45rem 0.85rem;
-    border-radius: 20px;
+/* Clean Badges 6px Radius */
+.badge-clean {
+    border-radius: 6px !important;
+    padding: 0.35rem 0.65rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+    white-space: nowrap !important;
+    line-height: 1.3 !important;
+    border: 1px solid transparent;
+}
+.badge-clean.status-approved {
+    background: #ecfdf5 !important;
+    color: #059669 !important;
+    border-color: #a7f3d0 !important;
+}
+.badge-clean.status-survey {
+    background: #e0f2fe !important;
+    color: #0284c7 !important;
+    border-color: #bae6fd !important;
+}
+.badge-clean.status-akad {
+    background: #f5f3ff !important;
+    color: #7c3aed !important;
+    border-color: #ddd6fe !important;
+}
+.badge-clean.status-default {
+    background: #f8fafc !important;
+    color: #475569 !important;
+    border-color: #e2e8f0 !important;
+}
+
+/* PROGRESS BAR (PERSIS CATALOG UNIT) */
+.progress-wrapper {
+    min-width: 130px;
+    max-width: 160px;
+    margin: 0 auto;
+}
+
+.progress-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.progress-wrapper .progress,
+.progress-row .progress {
+    flex: 1;
+    height: 8px;
+    border-radius: 4px;
+    background: #edf0f5;
+    overflow: hidden;
+    margin-bottom: 0;
+}
+
+.progress-bar-custom {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+
+.progress-green {
+    background-color: #10b981 !important;
+}
+
+.progress-dark-green {
+    background-color: #059669 !important;
+}
+
+.progress-percent {
+    min-width: 36px;
+    text-align: right;
+    font-size: 0.78rem;
     font-weight: 700;
-    font-size: 0.76rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    letter-spacing: 0.3px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-}
-.badge-verified {
-    background: linear-gradient(135deg, #28c76f, #1fa75a) !important;
-    color: #ffffff !important;
-    box-shadow: 0 2px 8px rgba(40, 199, 111, 0.3) !important;
-}
-.badge-survey {
-    background: linear-gradient(135deg, #00cfe8, #1e9ff2) !important;
-    color: #ffffff !important;
-    box-shadow: 0 2px 8px rgba(0, 207, 232, 0.3) !important;
-}
-.badge-akad {
-    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-    color: #ffffff !important;
-    box-shadow: 0 2px 8px rgba(154, 85, 255, 0.3) !important;
-}
-.badge-default {
-    background: linear-gradient(135deg, #82868b, #6c757d) !important;
-    color: #ffffff !important;
+    color: #64748b;
 }
 
-.badge-gradient-primary {
-    background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-    color: #fff;
-    font-weight: 600;
-    font-size: 0.75rem;
-    padding: 0.4rem 0.7rem;
-    border-radius: 6px;
-    display: inline-flex;
-    align-items: center;
-}
-.badge-gradient-success {
-    background: linear-gradient(to right, #84d9d2, #07cdae) !important;
-    color: #fff;
-    font-weight: 600;
-    font-size: 0.75rem;
-    padding: 0.4rem 0.7rem;
-    border-radius: 6px;
-    display: inline-flex;
-    align-items: center;
-}
-.badge-gradient-secondary {
-    background: linear-gradient(to right, #e0e0e0, #bdbdbd) !important;
-    color: #424242;
-    font-weight: 600;
-    font-size: 0.75rem;
-    padding: 0.4rem 0.7rem;
-    border-radius: 6px;
-    display: inline-flex;
-    align-items: center;
-}
-
-.pagination { margin-bottom: 0; gap: 5px; }
-.page-item .page-link {
-    border-radius: 8px !important;
-    border: 1px solid #e9ecef;
-    color: #2c2e3f;
-    font-weight: 600;
-    padding: 0.5rem 0.85rem;
-    font-size: 0.85rem;
+/* Action Button Proses Akad */
+.btn-proses-akad {
+    background-color: #f59e0b !important;
+    border: 1px solid #d97706 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 0.78rem !important;
+    border-radius: 6px !important;
+    padding: 0.4rem 0.85rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+    text-decoration: none !important;
+    box-shadow: 0 1px 3px rgba(245, 158, 11, 0.25) !important;
     transition: all 0.2s ease;
 }
-.page-item.active .page-link {
-    background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-    border-color: #9a55ff;
-    color: #ffffff;
-    box-shadow: 0 4px 10px rgba(154, 85, 255, 0.25);
+.btn-proses-akad:hover {
+    background-color: #d97706 !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(245, 158, 11, 0.35) !important;
 }
-.page-item .page-link:hover {
-    background-color: #f3e8ff;
-    color: #9a55ff;
-    border-color: #da8cff;
+
+/* Pagination */
+.pagination { margin: 0; gap: 3px; }
+.page-item .page-link {
+    border: 1px solid #e2e8f0;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.78rem;
+    color: #64748b;
+    background-color: #ffffff;
+    border-radius: 6px !important;
+    min-width: 32px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+}
+.page-item.active .page-link {
+    background: #9a55ff !important;
+    border-color: #9a55ff !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+}
+.pagination-info {
+    font-size: 0.82rem;
+    color: #64748b;
+    font-weight: 500;
 }
 </style>
 
-<div class="container-fluid p-2 p-sm-3 p-md-4">
+<div class="container-fluid px-2 px-md-4 py-3">
 
-    <div class="row mb-3 mb-sm-3 mb-md-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h4 class="text-dark mb-1">
-                            <i class="mdi mdi-bank me-2" style="color: #9a55ff;"></i>Daftar User KPR Terverifikasi
-                        </h4>
-                        <p class="text-muted mb-0">
-                            Persiapan & Pemrosesan Akad KPR Konsumen
-                        </p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-home-account" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                    </div>
-                </div>
-            </div>
+    <!-- Page Title & Subtitle (Persis Daftar User KPR) -->
+    <div class="row align-items-center mb-4">
+        <div class="col">
+            <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                Daftar User KPR Terverifikasi
+            </h2>
+            <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                Persiapan & Pemrosesan Akad KPR Konsumen
+            </p>
         </div>
     </div>
 
-    <div class="row mt-2 mt-sm-2 mt-md-3">
+    <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
-                    <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2"></i>Data Customer KPR Terverifikasi
-                    </h5>
+            <div class="card compact-table-card">
+                <div class="card-header bg-white d-flex align-items-center gap-2 py-2.5 px-3 px-md-4" style="border-bottom: 1px solid #e2e8f0 !important;">
+                    <div style="width: 32px; height: 32px; border-radius: 6px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
+                        <i class="mdi mdi-account-group"></i>
+                    </div>
+                    <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Data Customer KPR Terverifikasi</span>
                 </div>
 
                 <div class="card-body">
-
+                    <!-- Filter Section -->
                     <div class="filter-card mb-3">
                         <form method="GET" action="{{ route('customer.kpr.survey') }}" id="filterForm">
+                            <!-- FILTER DESKTOP -->
                             <div class="filter-row-desktop d-none d-md-block">
                                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
                                     <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                        <!-- Search Input -->
                                         <div style="min-width: 220px; max-width: 280px; flex: 1;">
                                             <div class="input-group search-input-group">
                                                 <input type="text" name="search" value="{{ request('search') }}"
                                                     class="form-control" placeholder="Cari nama user...">
-                                                <button class="btn btn-gradient-primary btn-search-submit" 
+                                                <button class="btn btn-search-submit" 
                                                     type="submit" title="Cari">
                                                     <i class="mdi mdi-magnify"></i>
                                                 </button>
                                             </div>
                                         </div>
 
-                                        <div style="width: 170px;">
+                                        <!-- Filter Status Dropdown -->
+                                        <div style="width: 190px;">
                                             <select name="status" class="form-control select2" id="statusSelect" style="width: 100%;">
                                                 <option value="">Semua Status</option>
                                                 <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Terverifikasi</option>
@@ -390,6 +370,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- Right Side: Limit Dropdown + Filter & Reset Buttons -->
                                     <div class="d-flex align-items-center gap-2 ms-auto">
                                         <div style="width: 90px;">
                                             <select name="per_page" class="form-control select2" id="perPageSelect" style="width: 100%;">
@@ -399,19 +380,22 @@
                                             </select>
                                         </div>
                                         <button type="submit"
-                                            class="btn btn-gradient-primary btn-icon-only"
-                                            id="filterBtn" title="Filter" onclick="showFilterLoading()">
+                                            class="btn d-inline-flex align-items-center justify-content-center text-white"
+                                            id="filterBtn" title="Filter" onclick="showFilterLoading()"
+                                            style="width: 38px; height: 38px; border-radius: 6px; background: #9a55ff !important; border: 1px solid #9a55ff !important;">
                                             <i class="mdi mdi-filter"></i>
                                         </button>
                                         <a href="{{ route('customer.kpr.survey') }}"
-                                            class="btn btn-gradient-secondary btn-icon-only"
-                                            title="Reset" onclick="showResetLoading(event)">
+                                            class="btn d-inline-flex align-items-center justify-content-center text-white"
+                                            title="Reset" onclick="showResetLoading(event)"
+                                            style="width: 38px; height: 38px; border-radius: 6px; background: #64748b !important; border: 1px solid #64748b !important; text-decoration: none;">
                                             <i class="mdi mdi-refresh"></i>
                                         </a>
                                     </div>
                                 </div>
                             </div>
 
+                            <!-- FILTER MOBILE -->
                             <div class="d-block d-md-none">
                                 <div class="row g-2">
                                     <div class="col-12 mb-2">
@@ -419,7 +403,7 @@
                                             <input type="text" name="search_mobile"
                                                 value="{{ request('search') }}" class="form-control"
                                                 placeholder="Cari nama user..." id="searchMobile">
-                                            <button class="btn btn-gradient-primary btn-search-submit" 
+                                            <button class="btn btn-search-submit" 
                                                 type="submit" title="Cari">
                                                 <i class="mdi mdi-magnify"></i>
                                             </button>
@@ -442,16 +426,16 @@
                                     </div>
                                     <div class="col-6">
                                         <button type="submit"
-                                            class="btn btn-gradient-primary w-100 d-inline-flex align-items-center justify-content-center"
+                                            class="btn text-white w-100 d-inline-flex align-items-center justify-content-center"
                                             id="filterBtnMobile" title="Filter"
-                                            onclick="showFilterLoading()" style="height: 38px;">
+                                            onclick="showFilterLoading()" style="height: 38px; border-radius: 6px; background: #9a55ff !important; border: 1px solid #9a55ff !important;">
                                             <i class="mdi mdi-filter me-1"></i>Filter
                                         </button>
                                     </div>
                                     <div class="col-6">
                                         <a href="{{ route('customer.kpr.survey') }}"
-                                            class="btn btn-gradient-secondary w-100 d-inline-flex align-items-center justify-content-center"
-                                            title="Reset" onclick="showResetLoading(event)" style="height: 38px; text-decoration: none;">
+                                            class="btn text-white w-100 d-inline-flex align-items-center justify-content-center"
+                                            title="Reset" onclick="showResetLoading(event)" style="height: 38px; border-radius: 6px; background: #64748b !important; border: 1px solid #64748b !important; text-decoration: none;">
                                             <i class="mdi mdi-refresh me-1"></i>Reset
                                         </a>
                                     </div>
@@ -460,25 +444,26 @@
                         </form>
                     </div>
 
+                    <!-- Table Responsive -->
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
+                        <table class="table table-hover align-middle table-unit mb-0" id="unitTable">
                             <thead>
                                 <tr>
-                                    <th class="text-center">No</th>
-                                    <th class="sortable" data-field="name" data-direction="{{ request('sort', 'latest') == 'name_asc' ? 'asc' : 'desc' }}" style="cursor:pointer;">
+                                    <th class="text-center" style="width: 50px;">No</th>
+                                    <th class="sortable {{ in_array(request('sort'), ['name_asc', 'name_desc']) ? 'active-sort' : '' }}" data-field="name" data-direction="{{ request('sort', 'latest') == 'name_asc' ? 'asc' : 'desc' }}">
                                         Nama User
-                                        <i class="mdi {{ request('sort') == 'name_asc' ? 'mdi-sort-alphabetical-ascending' : (request('sort') == 'name_desc' ? 'mdi-sort-alphabetical-descending' : 'mdi-sort') }}"></i>
+                                        <i class="mdi {{ request('sort') == 'name_asc' ? 'mdi-arrow-up' : (request('sort') == 'name_desc' ? 'mdi-arrow-down' : 'mdi-swap-vertical') }}"></i>
                                     </th>
-                                    <th class="sortable" data-field="unit" data-direction="{{ request('sort', 'latest') == 'unit_asc' ? 'asc' : 'desc' }}" style="cursor:pointer;">
+                                    <th class="sortable {{ in_array(request('sort'), ['unit_asc', 'unit_desc']) ? 'active-sort' : '' }}" data-field="unit" data-direction="{{ request('sort', 'latest') == 'unit_asc' ? 'asc' : 'desc' }}">
                                         Nama - Unit
-                                        <i class="mdi {{ request('sort') == 'unit_asc' ? 'mdi-sort-alphabetical-ascending' : (request('sort') == 'unit_desc' ? 'mdi-sort-alphabetical-descending' : 'mdi-sort') }}"></i>
+                                        <i class="mdi {{ request('sort') == 'unit_asc' ? 'mdi-arrow-up' : (request('sort') == 'unit_desc' ? 'mdi-arrow-down' : 'mdi-swap-vertical') }}"></i>
                                     </th>
                                     <th>Jenis & Tipe</th>
                                     <th>Bank</th>
                                     <th class="text-center">Status Bangunan</th>
                                     <th class="text-center">Status KPR</th>
                                     <th class="text-center">Tanggal Verifikasi</th>
-                                    <th class="text-center">Aksi</th>
+                                    <th class="text-center" style="min-width: 130px;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -507,92 +492,94 @@
                                             'pondasi' => 'background:#ffedd5; color:#c2410c; border:1px solid #fed7aa;',
                                             default => 'background:#f1f5f9; color:#64748b; border:1px solid #e2e8f0;',
                                         };
+
+                                        $isUnitSoldOut = in_array(strtolower($application->unit->status ?? ''), ['sold', 'soldout']) || in_array(strtolower($application->status ?? ''), ['akad', 'completed', 'sold', 'done']);
                                     @endphp
                                     <tr>
-                                        <td class="text-center fw-bold">{{ $kprApplications->firstItem() + $index }}</td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="customer-avatar me-2">{{ $initials }}</div>
-                                                <span class="fw-bold">{{ $application->customer->full_name ?? '-' }}</span>
-                                            </div>
+                                        <td class="text-center fw-bold text-muted" style="font-size: 0.82rem;">
+                                            {{ $loop->iteration + (($kprApplications->currentPage() - 1) * $kprApplications->perPage()) }}
                                         </td>
                                         <td>
-                                            <div class="unit-info">
-                                                <span class="unit-name fw-bold">
-                                                    <i class="mdi mdi-home-outline text-primary me-1"></i>
-                                                    {{ $application->unit->unit_name ?? '-' }} - {{ $application->unit->unit_code ?? '-' }}
-                                                </span>
+                                            <span class="fw-bold text-dark" style="font-size: 0.88rem;">
+                                                {{ $application->customer->full_name ?? '-' }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-1.5">
+                                                <span class="fw-bold text-dark" style="font-size: 0.88rem;">{{ $application->unit->unit_name ?? '-' }}</span>
+                                                <span class="badge bg-light text-dark border fw-bold px-1.5 py-0.5" style="font-size: 0.72rem; border-radius: 4px;">{{ $application->unit->unit_code ?? '-' }}</span>
                                             </div>
                                         </td>
                                         <td>
                                             @php
                                                 $jenis = strtolower($application->unit->jenis ?? '');
-                                                $badgeClass = $jenis == 'subsidi' ? 'badge-gradient-success' : 'badge-gradient-primary';
-                                                $icon = $jenis == 'subsidi' ? 'mdi-home-assistant' : 'mdi-office-building';
+                                                $tipe = $application->unit->type ?? '-';
                                             @endphp
-                                            <span class="badge {{ $badgeClass }}">
-                                                <i class="mdi {{ $icon }} me-1"></i>
-                                                {{ ucfirst($jenis) }} - {{ $application->unit->type ?? '-' }}
+                                            @if ($jenis == 'subsidi')
+                                                <span class="badge" style="background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; border-radius: 6px; font-weight: 600; font-size: 0.75rem;">
+                                                    <i class="mdi mdi-home-assistant me-1"></i>Subsidi - {{ $tipe }}
+                                                </span>
+                                            @elseif ($jenis == 'komersil')
+                                                <span class="badge" style="background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; border-radius: 6px; font-weight: 600; font-size: 0.75rem;">
+                                                    <i class="mdi mdi-office-building me-1"></i>Komersil - {{ $tipe }}
+                                                </span>
+                                            @else
+                                                <span class="badge" style="background-color: #f8fafc; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; font-weight: 600; font-size: 0.75rem;">
+                                                    <i class="mdi mdi-help-circle-outline me-1"></i>{{ ($jenis ?: '-') . ' - ' . $tipe }}
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <span class="fw-bold text-dark" style="font-size: 0.85rem;">
+                                                {{ $application->bank->bank_name ?? '-' }}
                                             </span>
                                         </td>
                                         <td>
-                                            <div class="d-flex align-items-center">
-                                                <i class="mdi mdi-bank-outline text-primary me-2" style="font-size: 1.1rem;"></i>
-                                                <span class="fw-bold">{{ $application->bank->bank_name ?? '-' }}</span>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="d-flex flex-column align-items-center justify-content-center gap-1" style="min-width: 120px;">
-                                                <span class="badge px-2.5 py-1 fw-bold rounded-pill" style="{{ $badgeProgColor }} font-size: 0.76rem;">
-                                                    <i class="mdi {{ $progStatus === 'selesai' ? 'mdi-check-decagram' : 'mdi-home-city-outline' }} me-1"></i>{{ $statusLabel }} ({{ $progPercent }}%)
-                                                </span>
-                                                <div class="progress w-100" style="height: 5px; border-radius: 10px; background: #e2e8f0; overflow: hidden; max-width: 110px;">
-                                                    <div class="progress-bar {{ $progPercent === 100 ? 'bg-success' : ($progPercent >= 50 ? 'bg-primary' : 'bg-warning') }}"
-                                                         role="progressbar"
-                                                         style="width: {{ $progPercent }}%;"
-                                                         aria-valuenow="{{ $progPercent }}"
-                                                         aria-valuemin="0"
-                                                         aria-valuemax="100"></div>
+                                            <div class="progress-wrapper" title="{{ $statusLabel }} ({{ $progPercent }}%)">
+                                                <div class="progress-row">
+                                                    <div class="progress">
+                                                        <div class="progress-bar-custom {{ $progPercent >= 100 ? 'progress-dark-green' : 'progress-green' }}"
+                                                            style="width: {{ $progPercent }}%;"></div>
+                                                    </div>
+                                                    <div class="progress-percent">{{ $progPercent }}%</div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            @php
-                                                $isUnitSoldOut = in_array(strtolower($application->unit->status ?? ''), ['sold', 'soldout']) || in_array(strtolower($application->status ?? ''), ['akad', 'completed', 'sold', 'done']);
-                                            @endphp
                                             @if ($isUnitSoldOut)
-                                                <span class="badge-status badge-akad" style="background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff;">
-                                                    <i class="mdi mdi-home-lock me-1"></i>Sold Out
+                                                <span class="badge-clean status-akad">
+                                                    <i class="mdi mdi-home-lock"></i>Sold Out
                                                 </span>
                                             @elseif ($application->status === 'approved' || $application->status === 'dokumen')
-                                                <span class="badge-status badge-verified">
-                                                    <i class="mdi mdi-check-circle-outline me-1"></i>Terverifikasi
+                                                <span class="badge-clean status-approved">
+                                                    <i class="mdi mdi-check-circle-outline"></i>Terverifikasi
                                                 </span>
                                             @elseif ($application->status === 'survey')
-                                                <span class="badge-status badge-survey">
-                                                    <i class="mdi mdi-map-marker-check-outline me-1"></i>Survey
+                                                <span class="badge-clean status-survey">
+                                                    <i class="mdi mdi-map-marker-check-outline"></i>Survey
                                                 </span>
                                             @else
-                                                <span class="badge-status badge-default">
-                                                    <i class="mdi mdi-progress-question me-1"></i>{{ ucfirst($application->status ?? '-') }}
+                                                <span class="badge-clean status-default">
+                                                    <i class="mdi mdi-progress-question"></i>{{ ucfirst($application->status ?? '-') }}
                                                 </span>
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            <div class="d-inline-flex align-items-center">
-                                                <i class="mdi mdi-calendar-month-outline text-muted me-1" style="font-size: 1rem;"></i>
+                                            <div class="d-inline-flex align-items-center text-muted" style="font-size: 0.82rem;">
+                                                <i class="mdi mdi-calendar-month-outline me-1"></i>
                                                 <span>{{ optional($application->updated_at)->format('d M Y') ?? '-' }}</span>
                                             </div>
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center">
                                                 @if ($isUnitSoldOut)
-                                                    <button type="button" class="btn btn-sm d-inline-flex align-items-center justify-content-center px-3 py-1.5" disabled title="Unit telah Akad / Sold Out" style="background: #f5f3ff; color: #7c3aed; border: 1.5px solid #8b5cf6; font-weight: 700; border-radius: 8px; min-height: 34px; cursor: not-allowed; box-shadow: 0 2px 6px rgba(139, 92, 246, 0.12);">
-                                                        <i class="mdi mdi-home-lock me-1.5" style="font-size: 1.05rem; color: #7c3aed;"></i>Sold Out
+                                                    <button type="button" class="btn btn-sm d-inline-flex align-items-center justify-content-center px-2.5 py-1.5" disabled style="background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; font-weight: 600; border-radius: 6px; font-size: 0.78rem; gap: 4px; cursor: not-allowed;">
+                                                        <i class="mdi mdi-home-lock"></i>Sold Out
                                                     </button>
                                                 @else
-                                                    <a href="{{ route('kpr.approve', $application->booking_id ?? $application->id) }}" class="btn btn-gradient-warning btn-sm d-inline-flex align-items-center justify-content-center px-3 py-1.5" title="Proses Akad KPR" onclick="showProcessLoading(event)" style="font-weight: 700; border-radius: 8px; border: 1.5px solid #d97706; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25); min-height: 34px; text-decoration: none;">
-                                                        <i class="mdi mdi-handshake-outline me-1.5" style="font-size: 1.05rem;"></i>Proses Akad
+                                                    <a href="{{ route('kpr.approve', $application->booking_id ?? $application->id) }}" class="btn-proses-akad" title="Proses Akad KPR" onclick="showProcessLoading(event)">
+                                                        <i class="mdi mdi-handshake-outline"></i>
+                                                        <span>Proses Akad</span>
                                                     </a>
                                                 @endif
                                             </div>
@@ -600,16 +587,17 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center text-muted py-4">Tidak ada data user KPR terverifikasi</td>
+                                        <td colspan="9" class="text-center text-muted py-4">Tidak ada data user KPR terverifikasi</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
 
+                    <!-- Pagination Section -->
                     @if(($kprApplications->total() ?? 0) > 0)
-                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
-                            <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.85rem;">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3 pt-2">
+                            <div class="pagination-info mb-2 mb-sm-0">
                                 Menampilkan {{ $kprApplications->firstItem() ?? 1 }} - {{ $kprApplications->lastItem() ?? 1 }} dari {{ $kprApplications->total() }} data
                             </div>
                             <nav aria-label="Page navigation">

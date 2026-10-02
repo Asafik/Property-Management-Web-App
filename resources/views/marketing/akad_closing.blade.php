@@ -14,9 +14,9 @@
 }
 
 .card {
-    border-radius: 14px !important;
-    border: none !important;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+    border-radius: 6px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
     background: #ffffff;
     transition: all 0.3s ease;
 }
@@ -31,15 +31,20 @@
 }
 
 .customer-avatar {
-    width: 58px;
-    height: 58px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
+    background: #9a55ff;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+    box-shadow: none;
     flex-shrink: 0;
+}
+
+.customer-avatar i {
+    font-size: 2rem;
+    color: #ffffff;
 }
 
 .customer-name {
@@ -59,10 +64,10 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 1.25rem;
-    background: #fbf9ff;
-    border: 1px solid #ede4ff;
-    padding: 0.75rem 1.25rem;
-    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 0.65rem 1rem;
+    border-radius: 6px;
 }
 
 .customer-unit-info .info-item {
@@ -83,31 +88,35 @@
     color: #2c2e3f;
 }
 
+.customer-unit-info .info-item span.highlight {
+    color: #9a55ff;
+}
+
 /* BADGES */
 .badge-gradient-success {
-    background: linear-gradient(135deg, #28c76f, #48da89) !important;
+    background: #10b981 !important;
     color: #fff !important;
-    padding: 0.4rem 0.75rem;
+    padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 700;
 }
 
 .badge-gradient-primary {
-    background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+    background: #9a55ff !important;
     color: #fff !important;
-    padding: 0.4rem 0.75rem;
+    padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 700;
 }
 
 .badge-gradient-secondary {
-    background: #6c757d !important;
+    background: #64748b !important;
     color: #fff !important;
-    padding: 0.4rem 0.75rem;
+    padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 700;
 }
 
@@ -143,6 +152,11 @@
     font-weight: 500;
 }
 
+.transaksi-progress-top .step-counter-purple {
+    color: #9a55ff !important;
+    font-weight: 700 !important;
+}
+
 .transaksi-progress {
     height: 8px;
     background: #eef1f6;
@@ -173,16 +187,6 @@
     height: 2.5px;
     background: #e2e8f0;
     z-index: 1;
-}
-
-@media (max-width: 767px) {
-    .transaksi-steps {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 1.25rem 0.5rem;
-    }
-    .transaksi-steps::before {
-        display: none !important;
-    }
 }
 
 .transaksi-step {
@@ -228,6 +232,45 @@
     border: 3px solid #ffffff !important;
     box-shadow: 0 0 0 1px #28c76f;
     color: #ffffff !important;
+}
+
+.transaksi-step.active:not(.completed) .transaksi-step-icon {
+    background: #e2e8f0 !important;
+    border: 2.5px solid #f59e0b !important;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2) !important;
+    color: #d97706 !important;
+    position: relative;
+}
+
+.transaksi-step.active:not(.completed) .transaksi-step-icon::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 50%;
+    border: 2px dashed #f59e0b;
+    animation: stepSpinnerRotate 4s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes stepSpinnerRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.transaksi-step.active:not(.completed) a.transaksi-step-icon:hover {
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.45) !important;
+}
+
+.transaksi-step.active:not(.completed) .transaksi-step-title {
+    color: #b45309 !important;
+}
+
+.transaksi-step.active:not(.completed) small {
+    color: #d97706 !important;
+    font-weight: 700;
 }
 
 a.transaksi-step-icon {
@@ -324,21 +367,21 @@ a.transaksi-step-icon:hover {
     align-items: center;
     gap: 0.85rem;
     background: #f8fafc;
-    border: 1px solid #edf0f5;
+    border: 1px solid #e2e8f0;
     padding: 0.65rem 0.85rem;
-    border-radius: 10px;
+    border-radius: 6px;
 }
 
 .transaksi-handler.verifier {
     background: #f0fdf4;
-    border-color: #dcfce7;
+    border-color: #bbf7d0;
 }
 
 .transaksi-handler-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    background: #6366f1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -348,7 +391,7 @@ a.transaksi-step-icon:hover {
 }
 
 .transaksi-handler.verifier .transaksi-handler-icon {
-    background: linear-gradient(135deg, #0ba360, #3cba92);
+    background: #10b981;
 }
 
 .transaksi-handler-role {
@@ -370,7 +413,7 @@ a.transaksi-step-icon:hover {
     align-items: center;
     gap: 0.75rem;
     padding: 0.85rem 1rem;
-    border-radius: 10px;
+    border-radius: 6px;
     font-size: 0.88rem;
     margin-bottom: 1.25rem;
 }
@@ -381,100 +424,164 @@ a.transaksi-step-icon:hover {
 }
 
 .transaksi-inline-alert.success {
-    background: #eefcf3;
-    border: 1px solid #cbf4d8;
-    color: #1b7a42;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #15803d;
 }
 
 .transaksi-inline-alert.warning {
-    background: #fff9ed;
-    border: 1px solid #ffe6be;
-    color: #b26b00;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #b45309;
 }
 
 .transaksi-inline-alert.info {
-    background: #f3f8ff;
-    border: 1px solid #dbeafe;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
     color: #1d4ed8;
 }
 
 .transaksi-inline-alert.danger {
     background: #fef2f2;
-    border: 1px solid #fed7d7;
+    border: 1px solid #fecaca;
     color: #b91c1c;
 }
 
-/* DOCUMENT TABLE */
+/* DOCUMENT TABLE (Sama persis dengan vertifikasi-kpr) */
 .transaksi-doc-table {
     width: 100%;
 }
 
 .transaksi-doc-table thead th {
     background: #f8fafc;
-    color: #8b8fa3;
-    font-size: 0.82rem;
+    color: #475569;
+    font-size: 0.8rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
-    padding: 0.75rem 1rem;
-    border-bottom: 1.5px solid #edf0f5;
+    letter-spacing: 0.5px;
+    padding: 1rem 1.25rem;
+    border-bottom: 1.5px solid #e2e8f0;
 }
 
 .transaksi-doc-table tbody td {
-    padding: 0.85rem 1rem;
-    border-bottom: 1px solid #f1f3f7;
+    padding: 1.15rem 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
     font-size: 0.88rem;
     vertical-align: middle;
+}
+
+.transaksi-doc-table tbody tr:hover td {
+    background: #f8fafc;
 }
 
 .transaksi-doc-name {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.95rem;
 }
 
 .transaksi-doc-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: rgba(154, 85, 255, 0.1);
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    background: #f1f5f9;
     color: #9a55ff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     flex-shrink: 0;
 }
 
 .transaksi-doc-action {
     width: 36px;
     height: 36px;
-    border-radius: 8px;
+    border-radius: 6px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1.5px solid #9a55ff;
-    color: #9a55ff;
-    background: #ffffff;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
     text-decoration: none !important;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
+    padding: 0;
+    cursor: pointer;
+    border: none;
 }
 
 .transaksi-doc-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* 1. Preview - Ungu Solid (sama dengan vertifikasi-kpr) */
+.transaksi-doc-action.btn-action-preview {
     background: #9a55ff;
     color: #ffffff;
-    box-shadow: 0 4px 10px rgba(154, 85, 255, 0.25);
-    transform: translateY(-2px);
+    border: 1px solid #8b5cf6;
+}
+.transaksi-doc-action.btn-action-preview:hover {
+    background: #8435f7;
+    border-color: #7c3aed;
+    color: #ffffff;
+}
+
+/* 2. Print - Biru Solid */
+.transaksi-doc-action.btn-action-print {
+    background: #0ea5e9;
+    color: #ffffff;
+    border: 1px solid #0284c7;
+}
+.transaksi-doc-action.btn-action-print:hover {
+    background: #0284c7;
+    border-color: #0369a1;
+    color: #ffffff;
 }
 
 .transaksi-doc-action.disabled {
-    border-color: #e2e8f0;
-    color: #cbd5e1;
-    background: #f8fafc;
+    background: #f1f5f9 !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #94a3b8 !important;
+    opacity: 0.6;
     cursor: not-allowed;
     transform: none !important;
     box-shadow: none !important;
+}
+
+/* Document Status Badges with Rich Spacing & Tailored Colors (Sama persis dengan vertifikasi-kpr) */
+.badge-doc-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.badge-doc-status.status-pending {
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.badge-doc-status.status-disetujui {
+    background: #ecfdf5;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+a.badge-doc-status {
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+}
+
+a.badge-doc-status.status-disetujui:hover {
+    background: #d1fae5 !important;
+    border-color: #86efac !important;
+    color: #166534 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(16, 185, 129, 0.25) !important;
 }
 
 /* SIDEBAR & SUMMARY */
@@ -488,19 +595,19 @@ a.transaksi-step-icon:hover {
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    border-radius: 10px;
+    border-radius: 6px;
     font-weight: 700;
     font-size: 0.88rem;
 }
 
 .transaksi-status-banner.success {
-    background: linear-gradient(135deg, #eefcf3, #dcfce7);
+    background: #ecfdf5;
     color: #15803d;
     border: 1px solid #bbf7d0;
 }
 
 .transaksi-status-banner.warning {
-    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    background: #fffbeb;
     color: #b45309;
     border: 1px solid #fde68a;
 }
@@ -514,8 +621,10 @@ a.transaksi-step-icon:hover {
 
 .transaksi-summary-box {
     padding: 0.85rem;
-    border-radius: 10px;
+    border-radius: 6px;
     text-align: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
 }
 
 .transaksi-summary-box.success {
@@ -530,8 +639,25 @@ a.transaksi-step-icon:hover {
 }
 
 .transaksi-summary-box.success .value {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: #15803d;
+    font-weight: 800;
+}
+
+.transaksi-summary-box.primary {
+    background: #f5f3ff;
+    border: 1px solid #ddd6fe;
+}
+
+.transaksi-summary-box.primary .label {
+    font-size: 0.75rem;
+    color: #7c3aed;
+    font-weight: 600;
+}
+
+.transaksi-summary-box.primary .value {
+    font-size: 1.1rem;
+    color: #6d28d9;
     font-weight: 800;
 }
 
@@ -547,8 +673,20 @@ a.transaksi-step-icon:hover {
 }
 
 .transaksi-summary-box.danger .value {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: #b91c1c;
+    font-weight: 800;
+}
+
+.transaksi-summary-box .label {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.transaksi-summary-box .value {
+    font-size: 1.1rem;
+    color: #1e293b;
     font-weight: 800;
 }
 
@@ -605,8 +743,8 @@ a.transaksi-step-icon:hover {
     align-items: flex-start;
     gap: 0.85rem;
     padding: 1.15rem;
-    border-radius: 12px;
-    border: 2px solid #e2e8f0;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
     background: #ffffff;
     cursor: pointer;
     transition: all 0.25s ease;
@@ -617,7 +755,7 @@ a.transaksi-step-icon:hover {
 .akad-choice-icon {
     width: 44px;
     height: 44px;
-    border-radius: 10px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -626,13 +764,13 @@ a.transaksi-step-icon:hover {
 }
 
 .akad-choice-card.success .akad-choice-icon {
-    background: #eefcf3;
-    color: #28c76f;
+    background: #f0fdf4;
+    color: #10b981;
 }
 
 .akad-choice-card.danger .akad-choice-icon {
     background: #fef2f2;
-    color: #ea5455;
+    color: #ef4444;
 }
 
 .akad-choice-content {
@@ -659,41 +797,41 @@ a.transaksi-step-icon:hover {
 }
 
 .akad-choice-card.success input[type="radio"]:checked + .akad-choice-label {
-    border-color: #28c76f;
-    background: #f6fcf8;
-    box-shadow: 0 6px 18px rgba(40, 199, 111, 0.15);
+    border-color: #10b981;
+    background: #f0fdf4;
+    box-shadow: none;
 }
 
 .akad-choice-card.success input[type="radio"]:checked + .akad-choice-label .akad-choice-check {
-    color: #28c76f;
+    color: #10b981;
 }
 
 .akad-choice-card.danger input[type="radio"]:checked + .akad-choice-label {
-    border-color: #ea5455;
-    background: #fff8f8;
-    box-shadow: 0 6px 18px rgba(234, 84, 85, 0.15);
+    border-color: #ef4444;
+    background: #fef2f2;
+    box-shadow: none;
 }
 
 .akad-choice-card.danger input[type="radio"]:checked + .akad-choice-label .akad-choice-check {
-    color: #ea5455;
+    color: #ef4444;
 }
 
 /* AKAD FORM SHELL */
 .akad-form-shell {
     display: none;
-    border-radius: 12px;
+    border-radius: 6px;
     padding: 1.25rem;
     margin-top: 1.25rem;
 }
 
 .akad-form-shell.success {
-    background: #f6fcf8;
-    border: 1.5px solid #d1f2dc;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
 }
 
 .akad-form-shell.danger {
-    background: #fff8f8;
-    border: 1.5px solid #fed7d7;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
 }
 
 .akad-form-title {
@@ -711,12 +849,12 @@ a.transaksi-step-icon:hover {
 }
 
 .akad-form-group {
-    margin-bottom: 1rem;
+    margin-bottom: 1.15rem;
 }
 
 .akad-form-label {
     display: block;
-    font-size: 0.85rem;
+    font-size: 0.86rem;
     font-weight: 700;
     color: #2c2e3f;
     margin-bottom: 0.4rem;
@@ -724,8 +862,8 @@ a.transaksi-step-icon:hover {
 
 .akad-form-control {
     width: 100%;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
     padding: 0.65rem 0.85rem;
     font-size: 0.88rem;
     color: #2c2e3f;
@@ -762,13 +900,13 @@ a.transaksi-step-icon:hover {
     padding: 0.75rem 1rem;
     background: #ffffff;
     border: 1.5px dashed #cbd5e1;
-    border-radius: 8px;
+    border-radius: 6px;
     transition: all 0.2s ease;
 }
 
 .verifikasi-file-upload:hover .verifikasi-file-label {
     border-color: #9a55ff;
-    background: #fbf9ff;
+    background: #f8fafc;
 }
 
 .verifikasi-file-label i {
@@ -805,18 +943,18 @@ a.transaksi-step-icon:hover {
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 1rem;
-    border-radius: 10px;
-    border: 1.5px solid #e2e8f0;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
     background: #ffffff;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
     margin-bottom: 0;
 }
 
 .akad-next-icon {
     width: 36px;
     height: 36px;
-    border-radius: 8px;
+    border-radius: 6px;
     background: #f1f5f9;
     color: #64748b;
     display: flex;
@@ -851,11 +989,11 @@ a.transaksi-step-icon:hover {
 
 .akad-next-card input[type="radio"]:checked + .akad-next-label {
     border-color: #9a55ff;
-    background: #faf7ff;
+    background: #f5eeff;
 }
 
 .akad-next-card input[type="radio"]:checked + .akad-next-label .akad-next-icon {
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    background: #9a55ff;
     color: #ffffff;
 }
 
@@ -878,10 +1016,10 @@ a.transaksi-step-icon:hover {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.65rem 1.35rem;
-    border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
     font-weight: 700;
-    font-size: 0.88rem;
+    font-size: 0.92rem;
     border: none;
     cursor: pointer;
     transition: all 0.25s ease;
@@ -889,14 +1027,13 @@ a.transaksi-step-icon:hover {
 }
 
 .transaksi-btn-primary {
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    background: #9a55ff;
     color: #ffffff;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+    box-shadow: none;
 }
 
 .transaksi-btn-primary:hover {
-    box-shadow: 0 6px 18px rgba(154, 85, 255, 0.4);
-    transform: translateY(-2px);
+    background: #873cf4;
     color: #ffffff;
 }
 
@@ -908,7 +1045,6 @@ a.transaksi-step-icon:hover {
 .transaksi-btn-secondary:hover {
     background: #e2e8f0;
     color: #334155;
-    transform: translateY(-2px);
 }
 
 /* CETAK DOKUMEN AKAD BUTTON */
@@ -917,29 +1053,216 @@ a.transaksi-step-icon:hover {
     align-items: center;
     gap: 0.5rem;
     padding: 0.45rem 1rem;
-    border-radius: 8px;
+    border-radius: 6px;
     font-size: 0.82rem;
     font-weight: 700;
     color: #ffffff !important;
-    background: linear-gradient(135deg, #da8cff, #9a55ff);
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.25);
+    background: #9a55ff;
+    box-shadow: none;
     text-decoration: none !important;
     transition: all 0.25s ease;
     border: none;
 }
 
 .btn-cetak-akad-action:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(154, 85, 255, 0.4);
+    background: #873cf4;
     color: #ffffff !important;
 }
 
 .btn-cetak-akad-action i {
     font-size: 1.05rem;
 }
+
+/* RESPONSIVE DESIGN ENHANCEMENTS */
+@media (max-width: 991.98px) {
+    .transaksi-steps {
+        overflow-x: auto;
+        display: flex !important;
+        justify-content: flex-start;
+        gap: 1.25rem;
+        padding: 0.5rem 0.25rem 1rem 0.25rem;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .transaksi-steps::-webkit-scrollbar {
+        height: 5px;
+    }
+    .transaksi-steps::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 10px;
+    }
+    .transaksi-steps::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+
+    .transaksi-steps::before {
+        top: 24px;
+        left: 20px;
+        width: 650px;
+    }
+
+    .transaksi-step {
+        flex: 0 0 115px;
+        scroll-snap-align: start;
+    }
+
+    .transaksi-step-title {
+        white-space: normal !important;
+        font-size: 0.82rem;
+    }
+
+    .transaksi-sticky {
+        position: static !important;
+        top: 0;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .card-body {
+        padding: 1.1rem !important;
+    }
+
+    .customer-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 1rem !important;
+    }
+
+    .customer-avatar {
+        width: 48px;
+        height: 48px;
+    }
+
+    .customer-avatar i {
+        font-size: 1.7rem !important;
+    }
+
+    .customer-name {
+        font-size: 1.1rem;
+    }
+
+    .customer-unit-info {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        padding: 0.65rem 0.85rem !important;
+        gap: 0.5rem !important;
+    }
+
+    .customer-unit-info .info-item small {
+        font-size: 0.68rem;
+    }
+
+    .customer-unit-info .info-item span {
+        font-size: 0.82rem;
+    }
+
+    .transaksi-summary-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .transaksi-btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .customer-unit-info {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        text-align: center;
+    }
+
+    .transaksi-summary-box .value {
+        font-size: 0.95rem;
+    }
+    
+    .transaksi-summary-box .label {
+        font-size: 0.7rem;
+    }
+}
+
+/* SELECT2 STYLES FOR NOTARIS (Sama persis dengan master/catalog unit) */
+.select2-container--bootstrap-5 .select2-selection {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    min-height: 40px !important;
+    padding: 0.35rem 0.75rem !important;
+    font-family: inherit !important;
+    background-color: #ffffff !important;
+    display: flex !important;
+    align-items: center !important;
+    transition: all 0.2s ease !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+    color: #2c2e3f !important;
+    font-size: 0.88rem !important;
+    font-weight: 600 !important;
+    padding-left: 0 !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+    height: 38px !important;
+    right: 10px !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection:hover,
+.select2-container--bootstrap-5.select2-container--focus .select2-selection,
+.select2-container--bootstrap-5.select2-container--open .select2-selection {
+    border-color: #9a55ff !important;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15) !important;
+}
+
+.select2-container--bootstrap-5 .select2-dropdown {
+    border-color: #e2e8f0 !important;
+    border-radius: 6px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+    overflow: hidden !important;
+    z-index: 1055 !important;
+}
+
+.select2-container--bootstrap-5 .select2-search--dropdown {
+    padding: 0.5rem !important;
+}
+
+.select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    padding: 0.4rem 0.65rem !important;
+    font-size: 0.85rem !important;
+}
+
+.select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field:focus {
+    border-color: #9a55ff !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(154, 85, 255, 0.15) !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__option {
+    padding: 0.55rem 0.85rem !important;
+    font-size: 0.86rem !important;
+    font-weight: 600 !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__option--selected {
+    background-color: #f3e8ff !important;
+    color: #7e22ce !important;
+}
+
+.select2-container--bootstrap-5 .select2-results__option--highlighted {
+    background: #9a55ff !important;
+    color: #ffffff !important;
+}
 </style>
 
     @php
+        $notarisList = $notarisList ?? \App\Models\Notaris::where('is_active', true)->orderBy('nama_notaris', 'asc')->get();
         $documentsCount = $kpr->documents->whereNotNull('path')->count();
         $missingDocuments = max(0, 8 - $documentsCount);
         $akadSelesai = optional($kpr->booking->akad)->status === 'selesai';
@@ -952,13 +1275,8 @@ a.transaksi-step-icon:hover {
         $devDone = $status == 'selesai';
 
         $totalSteps = 7;
-        $completedCount = 2; // Pengajuan + Verifikasi
-        if ($spkDone) $completedCount++;
-        if ($devDone) $completedCount++;
-        if ($surveyDone) $completedCount++;
-        if ($akadSelesai) $completedCount++;
-
-        $progressWidth = intval(($completedCount / $totalSteps) * 100);
+        $currentStep = $akadSelesai ? 7 : 6;
+        $progressWidth = intval(($currentStep / $totalSteps) * 100);
     @endphp
 
     <div class="transaksi-page">
@@ -970,7 +1288,7 @@ a.transaksi-step-icon:hover {
                             class="customer-header d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="customer-avatar">
-                                    <i class="mdi mdi-account text-white" style="font-size: 2.2rem;"></i>
+                                    <i class="mdi mdi-account text-white" style="font-size: 2rem;"></i>
                                 </div>
                                 <div>
                                     <h4 class="customer-name mb-1 d-flex align-items-center gap-2">
@@ -985,7 +1303,7 @@ a.transaksi-step-icon:hover {
                                                         : 'badge-gradient-secondary');
                                         @endphp
                                         <span class="badge {{ $badgeClass }} ms-2"
-                                            style="font-size: 0.85rem; padding: 0.4rem 1rem;">
+                                            style="font-size: 0.8rem; padding: 0.35rem 0.65rem; border-radius: 6px;">
                                             <i class="mdi mdi-home-outline me-1"></i>
                                             {{ strtoupper($kpr->booking->unit->jenis ?? '-') }}
                                         </span>
@@ -1006,7 +1324,7 @@ a.transaksi-step-icon:hover {
                                 </div>
                                 <div class="info-item">
                                     <small>Harga Unit</small>
-                                    <span class="text-primary fw-bold">Rp
+                                    <span class="highlight">Rp
                                         {{ number_format($kpr->unit->price ?? 0, 0, ',', '.') }}</span>
                                 </div>
                             </div>
@@ -1030,7 +1348,7 @@ a.transaksi-step-icon:hover {
 
                         <div class="transaksi-progress-top">
                             <span class="transaksi-muted">Progress Proses</span>
-                            <span>Tahap {{ $completedCount }} dari {{ $totalSteps }}</span>
+                            <span class="step-counter-purple">Tahap {{ $currentStep }} dari {{ $totalSteps }}</span>
                         </div>
 
                         <div class="transaksi-progress">
@@ -1143,8 +1461,12 @@ a.transaksi-step-icon:hover {
                                 <small>{{ $surveyDone ? 'Selesai' : 'Menunggu' }}</small>
                             </div>
 
+                            @php
+                                $serahTerimaDone = !empty(optional($kpr->booking->serahTerima)->id);
+                            @endphp
+
                             {{-- Tahap 6: Akad --}}
-                            <div class="transaksi-step active {{ $akadSelesai ? 'completed' : '' }}">
+                            <div class="transaksi-step {{ $akadSelesai ? 'completed' : 'active' }}">
                                 <a href="{{ $urlAkad }}" class="transaksi-step-icon" title="Halaman Akad KPR (Saat Ini)">
                                     @if ($akadSelesai)
                                         <i class="mdi mdi-check"></i>
@@ -1159,14 +1481,18 @@ a.transaksi-step-icon:hover {
                             </div>
 
                             {{-- Tahap 7: Serah Terima --}}
-                            <div class="transaksi-step">
+                            <div class="transaksi-step {{ $serahTerimaDone ? 'completed' : ($akadSelesai ? 'active' : '') }}">
                                 <a href="{{ $urlSerahTerima }}" class="transaksi-step-icon" title="Buka Halaman Serah Terima Unit">
-                                    <i class="mdi mdi-home-outline"></i>
+                                    @if ($serahTerimaDone)
+                                        <i class="mdi mdi-check"></i>
+                                    @else
+                                        <i class="mdi mdi-home-outline"></i>
+                                    @endif
                                 </a>
                                 <a href="{{ $urlSerahTerima }}" class="transaksi-step-title-link" title="Buka Halaman Serah Terima Unit">
                                     <span class="transaksi-step-title">Serah Terima</span>
                                 </a>
-                                <small>Menunggu</small>
+                                <small>{{ $serahTerimaDone ? 'Selesai' : ($akadSelesai ? 'Siap Diproses' : 'Menunggu') }}</small>
                             </div>
                         </div>
                     </div>
@@ -1229,9 +1555,13 @@ a.transaksi-step-icon:hover {
 
                                         <td>
                                             @if ($kpr->berita_acara)
-                                                <span class="badge bg-success px-2.5 py-1.5" style="border-radius: 6px;">Lengkap</span>
+                                                <span class="badge-doc-status status-disetujui">
+                                                    <i class="mdi mdi-check-circle"></i>Lengkap
+                                                </span>
                                             @else
-                                                <span class="badge bg-warning text-dark px-2.5 py-1.5" style="border-radius: 6px;">Menunggu</span>
+                                                <span class="badge-doc-status status-pending">
+                                                    <i class="mdi mdi-clock-outline"></i>Menunggu
+                                                </span>
                                             @endif
                                         </td>
 
@@ -1244,7 +1574,7 @@ a.transaksi-step-icon:hover {
                                         <td class="text-center">
                                             @if ($kpr->berita_acara)
                                                 <a href="{{ asset('uploads/' . $kpr->berita_acara) }}" target="_blank"
-                                                    class="transaksi-doc-action" title="Lihat Berita Acara">
+                                                    class="transaksi-doc-action btn-action-preview" title="Lihat Berita Acara">
                                                     <i class="mdi mdi-eye-outline"></i>
                                                 </a>
                                             @else
@@ -1272,11 +1602,13 @@ a.transaksi-step-icon:hover {
 
                                         <td>
                                             @if ($surveyDone)
-                                                <span class="badge bg-success px-2.5 py-1.5" style="border-radius: 6px;">
-                                                    Selesai ({{ $kpr->rekomendasi ?? 'Layak' }})
+                                                <span class="badge-doc-status status-disetujui">
+                                                    <i class="mdi mdi-check-circle"></i>Selesai ({{ $kpr->rekomendasi ?? 'Layak' }})
                                                 </span>
                                             @else
-                                                <span class="badge bg-warning text-dark px-2.5 py-1.5" style="border-radius: 6px;">Menunggu Survey</span>
+                                                <span class="badge-doc-status status-pending">
+                                                    <i class="mdi mdi-clock-outline"></i>Menunggu Survey
+                                                </span>
                                             @endif
                                         </td>
 
@@ -1289,7 +1621,7 @@ a.transaksi-step-icon:hover {
                                         <td class="text-center">
                                             @if ($surveyDone)
                                                 <a href="{{ route('kpr.survey.cetak', $kpr->id) }}" target="_blank"
-                                                    class="transaksi-doc-action" title="Lihat & Cetak Laporan Hasil Survey" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;">
+                                                    class="transaksi-doc-action btn-action-print" title="Lihat & Cetak Laporan Hasil Survey">
                                                     <i class="mdi mdi-printer"></i>
                                                 </a>
                                             @else
@@ -1377,16 +1709,23 @@ a.transaksi-step-icon:hover {
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="akad-form-group">
-                                            <label class="akad-form-label">Tanggal Akad</label>
-                                            <input type="date" class="akad-form-control" name="tanggal_akad"
+                                            <label class="akad-form-label">Tanggal Akad <span class="text-danger">*</span></label>
+                                            <input type="date" class="akad-form-control" name="tanggal_akad" id="tanggal_akad"
                                                 value="{{ optional($kpr->booking->akad)->tanggal_akad ?? '2025-03-20' }}">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="akad-form-group">
-                                            <label class="akad-form-label">Lokasi Akad</label>
-                                            <input type="text" class="akad-form-control" name="lokasi_akad"
-                                                value="{{ optional($kpr->booking->akad)->lokasi_akad ?? 'Kantor Notaris Siti, SH' }}">
+                                            <label class="akad-form-label">Lokasi Akad <span class="text-danger">*</span></label>
+                                            @php
+                                                $savedLokasi = optional($kpr->booking->akad)->lokasi_akad;
+                                                $savedNotaris = optional($kpr->booking->akad)->nama_notaris;
+                                                $firstNotarisName = $notarisList->first()->nama_notaris ?? '';
+                                                $initialNotarisName = $savedNotaris ?: $firstNotarisName;
+                                                $defaultLokasi = $savedLokasi ?: ($initialNotarisName ? 'Kantor Notaris ' . $initialNotarisName : 'Kantor Notaris');
+                                            @endphp
+                                            <input type="text" class="akad-form-control" name="lokasi_akad" id="lokasi_akad"
+                                                value="{{ $defaultLokasi }}">
                                         </div>
                                     </div>
                                 </div>
@@ -1394,9 +1733,22 @@ a.transaksi-step-icon:hover {
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="akad-form-group">
-                                            <label class="akad-form-label">Nama Notaris</label>
-                                            <input type="text" class="akad-form-control" name="nama_notaris"
-                                                value="{{ optional($kpr->booking->akad)->nama_notaris ?? 'Siti Nurhaliza, SH' }}">
+                                            <label class="akad-form-label">Nama Notaris <span class="text-danger">*</span></label>
+                                            <select class="form-control select2-notaris" name="nama_notaris" id="nama_notaris" style="width: 100%;" required>
+                                                <option value="">-- Cari & Pilih Notaris Rekanan --</option>
+                                                @foreach ($notarisList as $item)
+                                                    @php
+                                                        $isSelected = ($savedNotaris && ($savedNotaris === $item->nama_notaris || str_contains($savedNotaris, $item->nama_notaris))) 
+                                                            || (!$savedNotaris && $loop->first);
+                                                    @endphp
+                                                    <option value="{{ $item->nama_notaris }}" {{ $isSelected ? 'selected' : '' }}>
+                                                        {{ $item->nama_notaris }}
+                                                    </option>
+                                                @endforeach
+                                                @if ($savedNotaris && !$notarisList->contains('nama_notaris', $savedNotaris))
+                                                    <option value="{{ $savedNotaris }}" selected>{{ $savedNotaris }}</option>
+                                                @endif
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -1418,8 +1770,19 @@ a.transaksi-step-icon:hover {
                                             <span>Cetak / Unduh Format Dokumen Akad</span>
                                         </a>
                                     </div>
-                                    <div class="verifikasi-file-upload">
-                                        <input type="file" name="dokumen_akad" accept=".jpg,.jpeg,.png,.pdf">
+
+                                    @php
+                                        $hasDokumenAkad = !empty(optional($kpr->booking->akad)->dokumen);
+                                        $dokumenAkadUrl = '#';
+                                        $dokumenAkadName = 'Upload Dokumen Akad';
+                                        if ($hasDokumenAkad) {
+                                            $dokumenAkadUrl = asset('uploads/' . $kpr->booking->akad->dokumen);
+                                            $dokumenAkadName = basename($kpr->booking->akad->dokumen);
+                                        }
+                                    @endphp
+
+                                    <!-- State 1: Belum Ada Berkas / Box Upload Kosong -->
+                                    <div id="dokumen_akad_empty_box" class="verifikasi-file-upload" onclick="document.getElementById('inputDokumenAkad').click()" style="cursor: pointer; {{ $hasDokumenAkad ? 'display: none;' : '' }}">
                                         <div class="verifikasi-file-label">
                                             <i class="mdi mdi-cloud-upload"></i>
                                             <div class="verifikasi-file-info">
@@ -1428,6 +1791,36 @@ a.transaksi-step-icon:hover {
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- State 2: Box Berkas Terunggah (Persis Halaman Survey) -->
+                                    <div id="dokumen_akad_uploaded_box" class="rounded-3 mb-0" style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 12px 14px; min-height: 64px; {{ $hasDokumenAkad ? '' : 'display: none;' }}">
+                                        <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                                            <div class="d-flex align-items-center gap-2 overflow-hidden flex-grow-1" style="min-width: 0;">
+                                                <div class="p-2 rounded-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="background: rgba(0, 201, 167, 0.15); color: #00c9a7; width: 38px; height: 38px;">
+                                                    <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
+                                                </div>
+                                                <div class="overflow-hidden" style="min-width: 0;">
+                                                    <span class="d-block fw-bold text-success text-truncate" id="dokumen_akad_status_text" style="font-size: 0.85rem; line-height: 1.2;">
+                                                        {{ $hasDokumenAkad ? $dokumenAkadName : 'Berkas Dokumen Akad Terunggah' }}
+                                                    </span>
+                                                    <small class="text-muted" id="dokumen_akad_size_text">{{ $hasDokumenAkad ? 'Berkas Tersimpan' : '' }}</small>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center flex-shrink-0" style="gap: 6px;">
+                                                <a href="{{ $dokumenAkadUrl }}" target="_blank" id="dokumen_akad_view_link" class="btn btn-sm text-white fw-bold px-2.5 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 4px; text-decoration: none; {{ $hasDokumenAkad ? '' : 'display: none;' }}">
+                                                    <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                    <span>Lihat</span>
+                                                </a>
+                                                <button type="button" onclick="document.getElementById('inputDokumenAkad').click()" class="btn btn-sm text-white fw-bold px-2.5 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                    <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                    <span>Ganti</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Input File Asli -->
+                                    <input type="file" name="dokumen_akad" id="inputDokumenAkad" class="d-none" accept=".jpg,.jpeg,.png,.pdf" onchange="previewAkadFile(this, 'dokumen_akad')">
                                 </div>
 
                                 <div class="akad-form-group mb-0">
@@ -1464,8 +1857,18 @@ a.transaksi-step-icon:hover {
 
                                 <div class="akad-form-group">
                                     <label class="akad-form-label">Upload Dokumen Pendukung</label>
-                                    <div class="verifikasi-file-upload">
-                                        <input type="file" name="dokumen_tolak" accept=".jpg,.jpeg,.png,.pdf">
+                                    @php
+                                        $hasDokumenTolak = !empty(optional($kpr->booking->akad)->dokumen) && optional($kpr->booking->akad)->status === 'batal';
+                                        $dokumenTolakUrl = '#';
+                                        $dokumenTolakName = 'Upload Dokumen Pendukung';
+                                        if ($hasDokumenTolak) {
+                                            $dokumenTolakUrl = asset('uploads/' . $kpr->booking->akad->dokumen);
+                                            $dokumenTolakName = basename($kpr->booking->akad->dokumen);
+                                        }
+                                    @endphp
+
+                                    <!-- State 1: Belum Ada Berkas -->
+                                    <div id="dokumen_tolak_empty_box" class="verifikasi-file-upload" onclick="document.getElementById('inputDokumenTolak').click()" style="cursor: pointer; {{ $hasDokumenTolak ? 'display: none;' : '' }}">
                                         <div class="verifikasi-file-label">
                                             <i class="mdi mdi-cloud-upload"></i>
                                             <div class="verifikasi-file-info">
@@ -1474,6 +1877,35 @@ a.transaksi-step-icon:hover {
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- State 2: Box Berkas Terunggah -->
+                                    <div id="dokumen_tolak_uploaded_box" class="rounded-3 mb-0" style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 12px 14px; min-height: 64px; {{ $hasDokumenTolak ? '' : 'display: none;' }}">
+                                        <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                                            <div class="d-flex align-items-center gap-2 overflow-hidden flex-grow-1" style="min-width: 0;">
+                                                <div class="p-2 rounded-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="background: rgba(0, 201, 167, 0.15); color: #00c9a7; width: 38px; height: 38px;">
+                                                    <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
+                                                </div>
+                                                <div class="overflow-hidden" style="min-width: 0;">
+                                                    <span class="d-block fw-bold text-success text-truncate" id="dokumen_tolak_status_text" style="font-size: 0.85rem; line-height: 1.2;">
+                                                        {{ $hasDokumenTolak ? $dokumenTolakName : 'Berkas Pendukung Terunggah' }}
+                                                    </span>
+                                                    <small class="text-muted" id="dokumen_tolak_size_text">{{ $hasDokumenTolak ? 'Berkas Tersimpan' : '' }}</small>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center flex-shrink-0" style="gap: 6px;">
+                                                <a href="{{ $dokumenTolakUrl }}" target="_blank" id="dokumen_tolak_view_link" class="btn btn-sm text-white fw-bold px-2.5 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 4px; text-decoration: none; {{ $hasDokumenTolak ? '' : 'display: none;' }}">
+                                                    <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                    <span>Lihat</span>
+                                                </a>
+                                                <button type="button" onclick="document.getElementById('inputDokumenTolak').click()" class="btn btn-sm text-white fw-bold px-2.5 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                    <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                    <span>Ganti</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <input type="file" name="dokumen_tolak" id="inputDokumenTolak" class="d-none" accept=".jpg,.jpeg,.png,.pdf" onchange="previewAkadFile(this, 'dokumen_tolak')">
                                 </div>
 
                                 <div class="akad-form-group">
@@ -1725,36 +2157,46 @@ a.transaksi-step-icon:hover {
                                 <li>
                                     <i class="mdi mdi-calendar-outline"></i>
                                     <span>Rencana akad:
-                                        {{ optional($kpr->booking->akad)->tanggal_akad
-                                            ? \Carbon\Carbon::parse($kpr->booking->akad->tanggal_akad)->translatedFormat('d F Y')
-                                            : '20 Maret 2025' }}
+                                        <span id="sidebarTanggalAkad">
+                                            {{ optional($kpr->booking->akad)->tanggal_akad
+                                                ? \Carbon\Carbon::parse($kpr->booking->akad->tanggal_akad)->translatedFormat('d F Y')
+                                                : '20 Maret 2025' }}
+                                        </span>
                                     </span>
                                 </li>
                                 <li>
                                     <i class="mdi mdi-map-marker-outline"></i>
                                     <span>Lokasi:
-                                        {{ optional($kpr->booking->akad)->lokasi_akad ?? 'Kantor Notaris Siti, SH' }}
+                                        <span id="sidebarLokasiAkad">
+                                            {{ optional($kpr->booking->akad)->lokasi_akad ?? 'Kantor Notaris Siti, SH' }}
+                                        </span>
                                     </span>
                                 </li>
                                 <li>
                                     <i class="mdi mdi-account-tie-outline"></i>
                                     <span>Notaris:
-                                        {{ optional($kpr->booking->akad)->nama_notaris ?? 'Siti Nurhaliza, SH' }}
+                                        <span id="sidebarNotarisName">
+                                            {{ optional($kpr->booking->akad)->nama_notaris ?? ($notarisList->first()->nama_notaris ?? 'Siti Nurhaliza, SH') }}
+                                        </span>
                                     </span>
                                 </li>
 
                                 <li>
                                     <i class="mdi mdi-file-document-outline"></i>
-                                    <span>
+                                    <span class="d-inline-flex align-items-center flex-wrap">
                                         Dokumen:
-                                        @if (optional($kpr->booking->akad)->dokumen)
-                                            <a href="{{ asset('uploads/' . $kpr->booking->akad->dokumen) }}"
-                                                target="_blank" class="btn btn-sm btn-primary ms-2">
-                                                Lihat
-                                            </a>
-                                        @else
-                                            <span class="text-muted">Belum tersedia</span>
-                                        @endif
+                                        <span id="sidebarDokumenWrap">
+                                            @if (optional($kpr->booking->akad)->dokumen)
+                                                <a href="{{ asset('uploads/' . $kpr->booking->akad->dokumen) }}"
+                                                    target="_blank" id="sidebarDokumenLink" class="badge-doc-status status-disetujui ms-2"
+                                                    style="padding: 4px 10px; font-size: 0.78rem; cursor: pointer; border-radius: 6px;"
+                                                    title="Buka & Lihat Berita Acara Akad">
+                                                    <i class="mdi mdi-check-circle"></i> Berita Acara Akad
+                                                </a>
+                                            @else
+                                                <span class="text-muted ms-1">Belum tersedia</span>
+                                            @endif
+                                        </span>
                                     </span>
                                 </li>
                             </ul>
@@ -1846,20 +2288,81 @@ a.transaksi-step-icon:hover {
             const $statusInput = $('#statusAkadInput');
             const $formSelesai = $('#formSelesai');
             const $formTunda = $('#formTunda');
+            const $selectNotaris = $('#nama_notaris');
+
+            // Inisialisasi Select2 untuk Notaris (Searchable & Tags support)
+            function initNotarisSelect2() {
+                if ($selectNotaris.length) {
+                    $selectNotaris.select2({
+                        theme: 'bootstrap-5',
+                        placeholder: '-- Cari & Pilih Notaris Rekanan --',
+                        allowClear: true,
+                        width: '100%',
+                        tags: true
+                    });
+                }
+            }
+
+            initNotarisSelect2();
+
+            // Handler perubahan pilihan notaris -> auto-fill Lokasi Akad menyesuaikan nama notaris
+            $selectNotaris.on('change select2:select', function() {
+                const notarisName = $(this).val();
+
+                if (notarisName) {
+                    let nama = notarisName.trim();
+                    let kantorText = nama.toLowerCase().startsWith('notaris') 
+                        ? 'Kantor ' + nama 
+                        : 'Kantor Notaris ' + nama;
+                    $('#lokasi_akad').val(kantorText);
+                    $('#sidebarLokasiAkad').text(kantorText);
+                    $('#sidebarNotarisName').text(nama);
+                }
+            });
+
+            // Sinkronisasi realtime field Lokasi & Tanggal ke Sidebar
+            $('#lokasi_akad').on('input', function() {
+                $('#sidebarLokasiAkad').text($(this).val() || '-');
+            });
+
+            $('#tanggal_akad').on('change', function() {
+                if ($(this).val()) {
+                    try {
+                        const d = new Date($(this).val());
+                        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+                        $('#sidebarTanggalAkad').text(d.toLocaleDateString('id-ID', options));
+                    } catch(e) {}
+                }
+            });
+
+            // Trigger sinkronisasi awal saat halaman dimuat
+            if ($selectNotaris.val()) {
+                const notarisName = $selectNotaris.val().trim();
+                $('#sidebarNotarisName').text(notarisName);
+                if (!$('#lokasi_akad').val()) {
+                    let kantorText = notarisName.toLowerCase().startsWith('notaris') 
+                        ? 'Kantor ' + notarisName 
+                        : 'Kantor Notaris ' + notarisName;
+                    $('#lokasi_akad').val(kantorText);
+                    $('#sidebarLokasiAkad').text(kantorText);
+                }
+            }
 
             function switchAkad(type) {
                 if (type === 'completed') {
                     $statusInput.val('completed');
-                    $formSelesai.stop(true, true).slideDown(180);
+                    $formSelesai.stop(true, true).slideDown(180, function() {
+                        initNotarisSelect2();
+                    });
                     $formTunda.stop(true, true).slideUp(180);
-                    $('#nomor_akad_selesai').attr('name', 'nomor_akad');
+                    $('#no_akad').attr('name', 'nomor_akad');
                     $('#nomor_akad_tunda').removeAttr('name');
                 } else if (type === 'cancelled') {
                     $statusInput.val('cancelled');
                     $formTunda.stop(true, true).slideDown(180);
                     $formSelesai.stop(true, true).slideUp(180);
                     $('#nomor_akad_tunda').attr('name', 'nomor_akad');
-                    $('#nomor_akad_selesai').removeAttr('name');
+                    $('#no_akad').removeAttr('name');
                 }
             }
 
@@ -1875,16 +2378,45 @@ a.transaksi-step-icon:hover {
                 }
             });
 
-            $(document).on('change', 'input[type="file"]', function(e) {
-                const file = e.target.files[0];
-                const $container = $(this).closest('.verifikasi-file-upload');
-
-                if (file) {
+            window.previewAkadFile = function(input, field) {
+                if (input.files && input.files[0]) {
+                    const file = input.files[0];
+                    const fileUrl = URL.createObjectURL(file);
                     const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
-                    $container.find('.verifikasi-file-info span').text(file.name);
-                    $container.find('.verifikasi-file-info small').text(sizeInMB + ' MB');
+
+                    const emptyBox = document.getElementById(field + '_empty_box');
+                    const uploadedBox = document.getElementById(field + '_uploaded_box');
+                    const statusTextEl = document.getElementById(field + '_status_text');
+                    const sizeTextEl = document.getElementById(field + '_size_text');
+                    const viewLinkEl = document.getElementById(field + '_view_link');
+
+                    if (statusTextEl) {
+                        statusTextEl.textContent = file.name;
+                    }
+                    if (sizeTextEl) {
+                        sizeTextEl.textContent = sizeInMB + ' MB';
+                    }
+                    if (viewLinkEl) {
+                        viewLinkEl.href = fileUrl;
+                        viewLinkEl.style.display = 'inline-flex';
+                    }
+                    if (emptyBox) emptyBox.style.display = 'none';
+                    if (uploadedBox) uploadedBox.style.display = 'block';
+
+                    if (field === 'dokumen_akad') {
+                        const $wrap = $('#sidebarDokumenWrap');
+                        if ($wrap.length) {
+                            $wrap.html(`
+                                <a href="${fileUrl}" target="_blank" id="sidebarDokumenLink" class="badge-doc-status status-disetujui ms-2"
+                                    style="padding: 4px 10px; font-size: 0.78rem; cursor: pointer; border-radius: 6px;"
+                                    title="Buka & Lihat Berita Acara Akad">
+                                    <i class="mdi mdi-check-circle"></i> Berita Acara Akad
+                                </a>
+                            `);
+                        }
+                    }
                 }
-            });
+            };
         });
     </script>
 @endpush

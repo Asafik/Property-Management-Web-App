@@ -230,10 +230,10 @@
 }
 
 .transaksi-step.active:not(.completed) .transaksi-step-icon {
-    background: #ffffff !important;
+    background: #e2e8f0 !important;
     border: 2.5px solid #f59e0b !important;
     box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2) !important;
-    color: #64748b !important;
+    color: #d97706 !important;
     position: relative;
 }
 
@@ -1492,48 +1492,61 @@ a.transaksi-step-icon:hover {
                                         <div class="col-12 col-sm-6 col-md-4">
                                             <div class="transaksi-form-group mb-0">
                                                 <label class="transaksi-form-label">{{ $label }}</label>
-                                                @if ($application->$field)
-                                                    @php
-                                                        $photoUrl = file_exists(public_path('uploads/' . $application->$field))
-                                                            ? asset('uploads/' . $application->$field)
-                                                            : (file_exists(storage_path('app/public/' . $application->$field)) ? asset('storage/' . $application->$field) : asset($application->$field));
-                                                    @endphp
-                                                    <div class="p-2.5 px-3 bg-white rounded-3 border d-flex flex-column gap-2" style="border-color: #cbd5e1 !important;">
-                                                        <div class="d-flex align-items-center gap-2">
-                                                            <div class="rounded-2 bg-success bg-opacity-10 text-success p-1.5 d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
-                                                                <i class="mdi mdi-image-check text-success fs-5"></i>
+                                                @php
+                                                    $hasPhoto = !empty($application->$field);
+                                                    $photoUrl = '#';
+                                                    if ($hasPhoto) {
+                                                        if (file_exists(public_path('uploads/' . $application->$field))) {
+                                                            $photoUrl = asset('uploads/' . $application->$field);
+                                                        } elseif (file_exists(storage_path('app/public/' . $application->$field))) {
+                                                            $photoUrl = asset('storage/' . $application->$field);
+                                                        } elseif (file_exists(public_path($application->$field))) {
+                                                            $photoUrl = asset($application->$field);
+                                                        } else {
+                                                            $photoUrl = asset('uploads/' . $application->$field);
+                                                        }
+                                                    }
+                                                @endphp
+
+                                                <!-- State 1: Belum Ada Berkas / Box Upload Kosong -->
+                                                <div id="{{ $field }}_empty_box" class="transaksi-file-upload" onclick="document.getElementById('{{ $field }}_input').click()" style="cursor: pointer; min-height: 64px; {{ $hasPhoto ? 'display: none;' : '' }}">
+                                                    <div class="transaksi-file-label" style="min-height: 64px;">
+                                                        <i class="mdi mdi-camera"></i>
+                                                        <div class="transaksi-file-info">
+                                                            <span>Upload Foto</span>
+                                                            <small>Format: JPG, PNG</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- State 2: Box Hijau Berkas Terunggah (Persis addkavling.blade.php) -->
+                                                <div id="{{ $field }}_uploaded_box" class="rounded-3 mb-0" style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 12px 14px; min-height: 64px; {{ $hasPhoto ? '' : 'display: none;' }}">
+                                                    <div class="d-flex align-items-center justify-content-between gap-2">
+                                                        <div class="d-flex align-items-center gap-2 overflow-hidden flex-grow-1" style="min-width: 0;">
+                                                            <div class="p-2 rounded-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="background: rgba(0, 201, 167, 0.15); color: #00c9a7; width: 38px; height: 38px;">
+                                                                <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
                                                             </div>
-                                                            <div style="min-width: 0; flex: 1;">
-                                                                <span class="fw-bold text-dark d-block text-truncate survey-file-title" style="font-size: 0.82rem;">Foto Tersimpan</span>
-                                                                <small class="text-success fw-semibold d-block text-truncate survey-file-subtitle" style="font-size: 0.72rem;">
-                                                                    <i class="mdi mdi-check-circle me-1"></i>Sudah diunggah
-                                                                </small>
+                                                            <div class="overflow-hidden" style="min-width: 0;">
+                                                                <span class="d-block fw-bold text-success text-truncate" id="{{ $field }}_status_text" style="font-size: 0.85rem; line-height: 1.2;">
+                                                                    Berkas SK Resmi Terunggah
+                                                                </span>
                                                             </div>
                                                         </div>
-                                                        <div class="d-flex align-items-center gap-2 pt-2 border-top" style="border-color: #f1f5f9 !important;">
-                                                            <a href="{{ $photoUrl }}" target="_blank" class="btn btn-sm btn-outline-primary flex-fill py-1 px-2 d-inline-flex align-items-center justify-content-center gap-1 text-decoration-none" style="font-size: 0.76rem; border-radius: 6px; font-weight: 600;">
-                                                                <i class="mdi mdi-eye-outline"></i>
-                                                                <span>Lihat Foto</span>
+                                                        <div class="d-flex align-items-center flex-shrink-0" style="gap: 6px;">
+                                                            <a href="{{ $photoUrl }}" target="_blank" id="{{ $field }}_view_link" class="btn btn-sm text-white fw-bold px-2.5 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 4px; text-decoration: none;">
+                                                                <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                                <span>Lihat</span>
                                                             </a>
-                                                            <label class="btn btn-sm btn-outline-secondary flex-fill py-1 px-2 d-inline-flex align-items-center justify-content-center gap-1 mb-0" style="font-size: 0.76rem; border-radius: 6px; font-weight: 600; cursor: pointer;">
-                                                                <i class="mdi mdi-camera-flip-outline"></i>
-                                                                <span>Ganti Foto</span>
-                                                                <input type="file" name="{{ $field }}" accept=".jpg,.jpeg,.png" style="display: none;" class="survey-file-input">
-                                                            </label>
+                                                            <button type="button" onclick="document.getElementById('{{ $field }}_input').click()" class="btn btn-sm text-white fw-bold px-2.5 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                                <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                                <span>Ganti</span>
+                                                            </button>
                                                         </div>
                                                     </div>
-                                                @else
-                                                    <div class="transaksi-file-upload">
-                                                        <input type="file" name="{{ $field }}" accept=".jpg,.jpeg,.png" class="survey-file-input">
-                                                        <div class="transaksi-file-label">
-                                                            <i class="mdi mdi-camera"></i>
-                                                            <div class="transaksi-file-info">
-                                                                <span>Upload Foto</span>
-                                                                <small>Format: JPG, PNG</small>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endif
+                                                </div>
+
+                                                <!-- Input File Asli (Tersembunyi) -->
+                                                <input type="file" name="{{ $field }}" id="{{ $field }}_input" class="d-none survey-file-input" accept=".jpg,.jpeg,.png" onchange="previewSurveyPhoto(this, '{{ $field }}', '{{ $label }}')">
                                             </div>
                                         </div>
                                     @endforeach
@@ -1704,28 +1717,26 @@ a.transaksi-step-icon:hover {
                     return baseName.slice(0, allowedBase) + '...' + extension;
                 }
 
-                $(document).on('change', 'input[type="file"]', function(e) {
-                    const file = e.target.files[0];
-                    const $group = $(this).closest('.transaksi-form-group');
-                    const $container = $(this).closest('.transaksi-file-upload');
-                    
-                    if (file) {
-                        const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
-                        const displayName = truncateFileName(file.name, 22);
-                        if ($container.length) {
-                            $container.find('.transaksi-file-info span').text(displayName);
-                            $container.find('.transaksi-file-info small').text(sizeInMB + ' MB (Siap upload)');
-                        } else {
-                            $group.find('.survey-file-title').text(displayName);
-                            $group.find('.survey-file-subtitle').removeClass('text-success').addClass('text-primary').html('<i class="mdi mdi-file-check me-1"></i>' + sizeInMB + ' MB (Foto baru dipilih)');
+                window.previewSurveyPhoto = function(input, field, label) {
+                    if (input.files && input.files[0]) {
+                        const file = input.files[0];
+                        const fileUrl = URL.createObjectURL(file);
+
+                        const emptyBox = document.getElementById(field + '_empty_box');
+                        const uploadedBox = document.getElementById(field + '_uploaded_box');
+                        const statusTextEl = document.getElementById(field + '_status_text');
+                        const viewLinkEl = document.getElementById(field + '_view_link');
+
+                        if (statusTextEl) {
+                            statusTextEl.textContent = 'Berkas SK Resmi Terunggah';
                         }
-                    } else {
-                        if ($container.length) {
-                            $container.find('.transaksi-file-info span').text('Upload Foto');
-                            $container.find('.transaksi-file-info small').text('Format: JPG, PNG');
+                        if (viewLinkEl) {
+                            viewLinkEl.href = fileUrl;
                         }
+                        if (emptyBox) emptyBox.style.display = 'none';
+                        if (uploadedBox) uploadedBox.style.display = 'block';
                     }
-                });
+                };
 
                 $('#formSurveyKpr').on('submit', function(e) {
                     e.preventDefault();
