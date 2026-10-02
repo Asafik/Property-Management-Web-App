@@ -63,42 +63,170 @@
         background: #059669 !important;
         color: #ffffff !important;
     }
+    .btn-kembali-proyek {
+        border-radius: 8px !important;
+        font-size: 0.85rem;
+        font-weight: 700;
+        border: 1px solid #64748b !important;
+        background-color: #64748b !important;
+        color: #ffffff !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        transition: all 0.15s ease;
+        text-decoration: none !important;
+    }
+    .btn-kembali-proyek:hover {
+        background-color: #475569 !important;
+        border-color: #475569 !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* Video Preview Card Kecil */
+    .video-preview-card {
+        width: 120px;
+        height: 165px;
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+        background-color: #1e1b4b;
+        border: 1px solid #cbd5e1;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 8px;
+        text-decoration: none !important;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+        flex-shrink: 0;
+    }
+    .video-preview-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(124, 58, 237, 0.2);
+        border-color: #7c3aed;
+    }
+    .video-preview-thumb {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .video-preview-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.1) 40%, rgba(15, 23, 42, 0.8) 100%);
+        pointer-events: none;
+    }
+    .video-play-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        color: #7c3aed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        transition: transform 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+    }
+    .video-preview-card:hover .video-play-btn {
+        transform: translate(-50%, -50%) scale(1.1);
+        background-color: #7c3aed;
+        color: #ffffff;
+    }
+    .video-badge-pill {
+        font-size: 0.65rem;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 4px;
+        z-index: 2;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        align-self: flex-start;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    .video-bottom-info {
+        z-index: 2;
+        font-size: 0.68rem;
+        font-weight: 600;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+    }
+
+    /* Metric View & Like Boxes */
+    .metric-stat-box {
+        border-radius: 8px;
+        padding: 0.55rem 0.95rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        min-width: 125px;
+    }
+    .metric-stat-box.view-box {
+        background-color: #f0f9ff;
+        border: 1px solid #bae6fd;
+    }
+    .metric-stat-box.like-box {
+        background-color: #fef2f2;
+        border: 1px solid #fecaca;
+    }
+    .metric-stat-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+    .metric-stat-box.view-box .metric-stat-icon {
+        background-color: #e0f2fe;
+        color: #0284c7;
+    }
+    .metric-stat-box.like-box .metric-stat-icon {
+        background-color: #fee2e2;
+        color: #dc2626;
+    }
+    .metric-stat-number {
+        font-size: 1.15rem;
+        font-weight: 800;
+        line-height: 1.1;
+    }
+    .metric-stat-box.view-box .metric-stat-number {
+        color: #0369a1;
+    }
+    .metric-stat-box.like-box .metric-stat-number {
+        color: #b91c1c;
+    }
+    .metric-stat-title {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #64748b;
+        letter-spacing: 0.3px;
+    }
 </style>
 @endpush
 
 @section('content')
 <div class="container-fluid px-2 px-md-4 py-3">
 
-    <!-- Top Navigation & Action -->
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
-        <div class="d-flex align-items-center gap-2">
-            <a href="{{ route('marketing.sosialmedia.index') }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1.5 px-3 py-1.5" style="border-radius: 6px; font-weight: 600;">
-                <i class="mdi mdi-arrow-left"></i>
-                <span>Kembali ke Daftar Tugas</span>
-            </a>
-            <span class="badge bg-light text-secondary border px-2 py-1" style="font-size: 0.74rem;">
-                TUGAS ID #{{ $task->id }}
-            </span>
-        </div>
-
-        <div class="d-flex align-items-center gap-2">
-            @if(!$task->link_postingan)
-            <button type="button" class="btn btn-sm btn-solid-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 shadow-sm" onclick="bukaModalSetorTugas({{ $task->id }}, '{{ addslashes($task->nama_tugas) }}')">
-                <i class="mdi mdi-upload fs-6"></i>
-                <span>Setor Link Tugas Ini</span>
-            </button>
-            @else
-            <a href="{{ $task->link_postingan }}" target="_blank" class="btn btn-sm btn-solid-success d-inline-flex align-items-center gap-1.5 px-3 py-1.5 shadow-sm">
-                <i class="mdi mdi-play-circle fs-6"></i>
-                <span>Tonton Video Tayang</span>
-            </a>
-            @endif
-        </div>
-    </div>
-
-    <!-- Header Banner Tugas -->
-    <div class="detail-card p-4">
-        <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+    <!-- Header Banner Tugas (Dengan Tombol Kembali Terintegrasi di Kanan) -->
+    <div class="detail-card p-4 mb-3">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
             <div>
                 <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                     @if($task->link_postingan)
@@ -128,6 +256,14 @@
                 <p class="text-muted mb-0" style="font-size: 0.88rem;">
                     Ditugaskan kepada: <strong class="text-dark">{{ $task->employee->name ?? 'Staff Marketing' }}</strong> ({{ $task->employee->position->name ?? 'Marketing' }}) &bull; Dibuat pada {{ $task->created_at ? $task->created_at->format('d M Y, H:i') . ' WIB' : '-' }}
                 </p>
+            </div>
+
+            <!-- Tombol Kembali ke Daftar Tugas (Rapi di Kanan) -->
+            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                <a href="{{ route('marketing.sosialmedia.tugas') }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm btn-kembali-proyek">
+                    <i class="mdi mdi-arrow-left text-white" style="font-size: 1.05rem; line-height: 1;"></i>
+                    <span>Kembali ke Daftar Tugas</span>
+                </a>
             </div>
         </div>
     </div>
@@ -177,76 +313,128 @@
                 </div>
             </div>
 
-            <!-- Card 2: Bahan Materi Promosi -->
-            <div class="detail-card">
-                <div class="detail-card-header d-flex align-items-center justify-content-between">
-                    <h5 class="fw-bold text-dark mb-0" style="font-size: 0.95rem;">
-                        <i class="mdi mdi-folder-google-drive text-success me-1"></i> Bahan Materi Promosi & Aset Digital
-                    </h5>
-                </div>
-                <div class="detail-card-body">
-                    <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3 p-3 rounded-2" style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
-                        <div>
-                            <div class="fw-bold text-dark mb-0.5" style="font-size: 0.88rem;">
-                                Google Drive: Foto Brosur & Footage Video Unit
-                            </div>
-                            <small class="text-muted">Aset visual resmi dari pengembang untuk bahan materi editing video promosi Anda.</small>
-                        </div>
-                        <a href="https://drive.google.com" target="_blank" class="btn btn-sm btn-outline-secondary py-1.5 px-3 d-inline-flex align-items-center gap-1.5" style="border-radius: 6px; font-size: 0.8rem; font-weight: 600;">
-                            <i class="mdi mdi-download text-success"></i>
-                            <span>Buka Google Drive</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
 
             <!-- Card 3: Bukti Setoran (Jika Sudah Disetor) -->
             @if($task->link_postingan)
+            @php
+                $videoUrl = $task->link_postingan;
+                $thumbnailUrl = null;
+                $platformBadge = 'Video';
+                $platformColor = '#475569';
+                $platformIcon = 'mdi-video';
+
+                if (preg_match('/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i', $videoUrl, $ytMatches)) {
+                    $thumbnailUrl = "https://img.youtube.com/vi/" . $ytMatches[1] . "/hqdefault.jpg";
+                    $platformBadge = 'YouTube';
+                    $platformColor = '#ef4444';
+                    $platformIcon = 'mdi-youtube';
+                } elseif (preg_match('/(?:instagram\.com\/(?:p|reel|reels)\/([a-zA-Z0-9_-]+))/i', $videoUrl, $igMatches)) {
+                    $platformBadge = 'Instagram Reels';
+                    $platformColor = '#e1306c';
+                    $platformIcon = 'mdi-instagram';
+                } elseif (preg_match('/tiktok\.com/i', $videoUrl)) {
+                    $platformBadge = 'TikTok';
+                    $platformColor = '#0f172a';
+                    $platformIcon = 'mdi-music-note';
+                }
+            @endphp
             <div class="detail-card">
                 <div class="detail-card-header d-flex align-items-center justify-content-between">
                     <h5 class="fw-bold text-dark mb-0" style="font-size: 0.95rem;">
                         <i class="mdi mdi-check-decagram text-success me-1"></i> Bukti Setoran Penugasan
                     </h5>
-                    <span class="badge bg-success-subtle text-success fw-bold px-2 py-1" style="font-size: 0.74rem;">
-                        Terverifikasi Selesai
+                    <span class="badge py-1.5 px-2.5 fw-semibold" style="font-size: 0.76rem; border-radius: 6px; background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
+                        <i class="mdi mdi-check-circle me-1"></i>Terverifikasi Selesai
                     </span>
                 </div>
                 <div class="detail-card-body">
-                    <div class="row g-3">
-                        <div class="col-md-7">
-                            <label class="text-muted small fw-semibold d-block mb-1">Tautan URL Video yang Disetor:</label>
-                            <div class="p-2.5 rounded-2 mb-2 d-flex align-items-center justify-content-between gap-2" style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
-                                <a href="{{ $task->link_postingan }}" target="_blank" class="text-primary text-truncate fw-semibold small text-decoration-none">
-                                    <i class="mdi mdi-link-variant me-1"></i>{{ $task->link_postingan }}
-                                </a>
-                                <a href="{{ $task->link_postingan }}" target="_blank" class="btn btn-xs btn-outline-primary py-0.5 px-2" style="font-size: 0.72rem; border-radius: 4px;">
-                                    Buka
-                                </a>
+                    <div class="row g-4 align-items-start">
+                        
+                        <!-- Preview Card Kecil Thumbnail Video -->
+                        <div class="col-auto">
+                            <label class="text-muted small fw-semibold d-block mb-2">Preview Video:</label>
+                            <a href="{{ $task->link_postingan }}" target="_blank" class="video-preview-card" title="Klik untuk memutar video asli">
+                                @if($thumbnailUrl)
+                                    <img src="{{ $thumbnailUrl }}" alt="Video Thumbnail" class="video-preview-thumb">
+                                @else
+                                    <div class="video-preview-thumb" style="background: #1e1b4b; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+                                        <i class="mdi {{ $platformIcon }}" style="font-size: 2.8rem; color: #818cf8;"></i>
+                                        <span style="font-size: 0.65rem; color: #c7d2fe; font-weight: 600;">{{ $platformBadge }}</span>
+                                    </div>
+                                @endif
+                                <div class="video-preview-overlay"></div>
+                                
+                                <span class="video-badge-pill" style="background-color: {{ $platformColor }}; color: #ffffff;">
+                                    <i class="mdi {{ $platformIcon }}"></i>{{ $platformBadge }}
+                                </span>
+                                
+                                <div class="video-play-btn">
+                                    <i class="mdi mdi-play"></i>
+                                </div>
+                                
+                                <div class="video-bottom-info">
+                                    <i class="mdi mdi-open-in-new me-0.5"></i>Tonton Video
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Kolom Detail Tautan & Metrik (View & Like) -->
+                        <div class="col">
+                            <!-- Tautan URL Video -->
+                            <div class="mb-3">
+                                <label class="text-muted small fw-semibold d-block mb-2">Tautan URL Video yang Disetor:</label>
+                                <div class="p-2 px-3 rounded-2 d-flex align-items-center justify-content-between gap-3" style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
+                                    <a href="{{ $task->link_postingan }}" target="_blank" class="text-primary text-truncate fw-semibold small text-decoration-none d-flex align-items-center gap-2" style="max-width: calc(100% - 110px);" title="{{ $task->link_postingan }}">
+                                        <i class="mdi mdi-link-variant text-secondary fs-6"></i>
+                                        <span class="text-truncate">{{ $task->link_postingan }}</span>
+                                    </a>
+                                    <a href="{{ $task->link_postingan }}" target="_blank" class="btn btn-sm btn-solid-primary d-inline-flex align-items-center gap-1 px-3 py-1 flex-shrink-0" style="border-radius: 6px; font-size: 0.78rem;">
+                                        <i class="mdi mdi-open-in-new"></i>
+                                        <span>Buka Link</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Metrik Performa: View & Like -->
+                            <div class="mb-3">
+                                <label class="text-muted small fw-semibold d-block mb-2">Performa Tayangan Video:</label>
+                                <div class="d-flex align-items-center gap-4">
+                                    <!-- Metric Box: View -->
+                                    <div class="metric-stat-box view-box">
+                                        <div class="metric-stat-icon">
+                                            <i class="mdi mdi-eye"></i>
+                                        </div>
+                                        <div>
+                                            <div class="metric-stat-number">{{ number_format($task->views ?: 0, 0, ',', '.') }}</div>
+                                            <div class="metric-stat-title">View</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Metric Box: Like -->
+                                    <div class="metric-stat-box like-box">
+                                        <div class="metric-stat-icon">
+                                            <i class="mdi mdi-heart"></i>
+                                        </div>
+                                        <div>
+                                            <div class="metric-stat-number">{{ number_format($task->likes ?: 0, 0, ',', '.') }}</div>
+                                            <div class="metric-stat-title">Like</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             @if($task->catatan_setor)
-                            <label class="text-muted small fw-semibold d-block mb-1">Catatan dari Staff Marketing:</label>
-                            <p class="text-dark small mb-0 p-2.5 rounded-2" style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
-                                {{ $task->catatan_setor }}
-                            </p>
-                            @endif
-                        </div>
-
-                        <div class="col-md-5">
-                            <label class="text-muted small fw-semibold d-block mb-1">Performa Tayangan:</label>
-                            <div class="d-flex align-items-center gap-2 mb-2">
-                                <div class="p-2.5 rounded-2 flex-grow-1 text-center" style="background-color: #f0f9ff; border: 1px solid #bae6fd;">
-                                    <div class="fw-bold text-primary" style="font-size: 1.1rem;">{{ number_format($task->views ?: 0, 0, ',', '.') }}</div>
-                                    <small class="text-muted" style="font-size: 0.72rem;">Tayangan (Views)</small>
-                                </div>
-                                <div class="p-2.5 rounded-2 flex-grow-1 text-center" style="background-color: #fef2f2; border: 1px solid #fecaca;">
-                                    <div class="fw-bold text-danger" style="font-size: 1.1rem;">{{ number_format($task->likes ?: 0, 0, ',', '.') }}</div>
-                                    <small class="text-muted" style="font-size: 0.72rem;">Suka (Likes)</small>
-                                </div>
+                            <div class="mb-2">
+                                <label class="text-muted small fw-semibold d-block mb-1">Catatan dari Staff Marketing:</label>
+                                <p class="text-dark small mb-0 p-2.5 rounded-2" style="background-color: #f8fafc; border: 1px solid #e2e8f0;">
+                                    {{ $task->catatan_setor }}
+                                </p>
                             </div>
-                            <small class="text-muted d-block text-center" style="font-size: 0.72rem;">
-                                Disetor pada: {{ $task->tanggal_setor ? \Carbon\Carbon::parse($task->tanggal_setor)->format('d M Y, H:i') . ' WIB' : '-' }}
-                            </small>
+                            @endif
+
+                            <div class="text-muted mt-2" style="font-size: 0.75rem;">
+                                <i class="mdi mdi-calendar-check text-success me-1"></i>Disetor pada: <span class="fw-semibold text-secondary">{{ $task->tanggal_setor ? \Carbon\Carbon::parse($task->tanggal_setor)->format('d M Y, H:i') . ' WIB' : '-' }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -309,7 +497,7 @@
 
             <!-- Box Aksi Setor Tugas (Jika Belum Selesai) -->
             @if(!$task->link_postingan)
-            <div class="detail-card" style="border-left: 4px solid #f59e0b !important;">
+            <div class="detail-card">
                 <div class="detail-card-body">
                     <h6 class="fw-bold text-dark mb-1" style="font-size: 0.92rem;">
                         <i class="mdi mdi-upload text-warning me-1"></i> Siap Menyetorkan Link?
@@ -411,6 +599,7 @@
         </div>
     </div>
 </div>
+
 @endsection
 
 @push('scripts')
@@ -473,3 +662,4 @@
     }
 </script>
 @endpush
+

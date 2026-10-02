@@ -631,7 +631,9 @@
                                             </div>
                                             <div>
                                                 <div class="fw-bold text-dark mb-0">{{ $st->employee->name ?? 'Staff Marketing' }}</div>
-                                                <small class="text-muted">{{ $st->employee->position->name ?? 'Marketing' }}</small>
+                                                @if(isset($st->employee->position->name) && strcasecmp(trim($st->employee->position->name), trim($st->employee->name ?? '')) !== 0)
+                                                    <small class="text-muted">{{ $st->employee->position->name }}</small>
+                                                @endif
                                             </div>
                                         </div>
                                     </td>

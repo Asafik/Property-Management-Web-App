@@ -35,8 +35,9 @@ class MenuSeeder extends Seeder
         // Role Groups
         $allRoles       = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id, $legal?->id, $staffLegal?->id, $staffKpr?->id, $keuanganStaff?->id, $kepalaProyek?->id, $staffProyek?->id]));
         $marketingRoles = array_values(array_filter([$admin?->id, $marketing?->id, $staffMarketing?->id]));
+        $marketingLeaderRoles = array_values(array_filter([$admin?->id, $marketing?->id]));
         $legalRoles     = array_values(array_filter([$admin?->id, $legal?->id, $staffLegal?->id]));
-        $landbankRoles  = array_values(array_filter([$admin?->id, $legal?->id, $staffLegal?->id, $keuanganStaff?->id, $marketing?->id]));
+        $landbankRoles  = array_values(array_filter([$admin?->id, $legal?->id, $staffLegal?->id, $keuanganStaff?->id]));
         $adminOnly      = array_values(array_filter([$admin?->id]));
         $kprTransaksiRoles = array_values(array_filter([$admin?->id, $staffKpr?->id]));
         $proyekRoles    = array_values(array_unique(array_filter([$admin?->id, $kepalaProyek?->id, $staffProyek?->id])));
@@ -196,9 +197,9 @@ class MenuSeeder extends Seeder
             'name'      => 'Tugas Marketing',
             'route'     => 'master.data.tugas-staff-marketing',
             'parent_id' => $marketingMenu->id
-        ])->positions()->attach($marketingRoles);
+        ])->positions()->attach($marketingLeaderRoles);
 
-        // Halaman Utama & Sosial Media berdiri sendiri (Bukan Sub-Menu)
+        // Halaman Utama berdiri sendiri (Bukan Sub-Menu)
         Menu::create([
             'name'      => 'Halaman Utama',
             'route'     => 'marketing.landingpage.index',
@@ -207,13 +208,36 @@ class MenuSeeder extends Seeder
             'order'     => 7.2
         ])->positions()->attach($marketingRoles);
 
-        Menu::create([
+        // Sosial Media dengan 3 Sub-Menu: Tugas, Tugas Selesai, Analisa
+        $sosialMedia = Menu::create([
             'name'      => 'Sosial Media',
-            'route'     => 'marketing.sosialmedia.index',
+            'route'     => null,
             'icon'      => 'mdi-instagram',
             'parent_id' => null,
             'order'     => 7.4
+        ]);
+        $sosialMedia->positions()->attach($marketingRoles);
+
+        Menu::create([
+            'name'      => 'Tugas',
+            'route'     => 'marketing.sosialmedia.tugas',
+            'parent_id' => $sosialMedia->id,
+            'order'     => 1
         ])->positions()->attach($marketingRoles);
+
+        Menu::create([
+            'name'      => 'Tugas Selesai',
+            'route'     => 'marketing.sosialmedia.selesai',
+            'parent_id' => $sosialMedia->id,
+            'order'     => 2
+        ])->positions()->attach($marketingRoles);
+
+        Menu::create([
+            'name'      => 'Analisa',
+            'route'     => 'marketing.sosialmedia.analisa',
+            'parent_id' => $sosialMedia->id,
+            'order'     => 3
+        ])->positions()->attach($marketingLeaderRoles);
 
         // ================= 8. USER =================
         $userMenu = Menu::create([
@@ -369,7 +393,7 @@ class MenuSeeder extends Seeder
             'name'      => 'Data Notaris',
             'route'     => 'notaris.index',
             'parent_id' => $master->id
-        ])->positions()->attach(array_values(array_filter([$admin?->id, $marketing?->id, $keuanganStaff?->id])));
+        ])->positions()->attach(array_values(array_filter([$admin?->id, $legal?->id, $staffLegal?->id, $keuanganStaff?->id])));
 
         $masterMenus = [
             'promo.index'                => 'Promo',

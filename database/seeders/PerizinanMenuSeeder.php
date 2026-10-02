@@ -54,8 +54,10 @@ class PerizinanMenuSeeder extends Seeder
             );
         }
 
-        if (!empty($allPositionIds)) {
-            $menu->positions()->sync($allPositionIds);
+        $targetPositionIds = Position::whereIn('name', ['Admin', 'Kepala Legal', 'Staff Legal'])->pluck('id')->toArray();
+
+        if (!empty($targetPositionIds)) {
+            $menu->positions()->sync($targetPositionIds);
         }
     }
 }

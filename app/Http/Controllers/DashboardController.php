@@ -622,7 +622,7 @@ class DashboardController extends Controller
 
         // 3. RECENT TRANSACTIONS / BOOKINGS
         $recentBookings = Booking::with(['customer', 'unit.landBank', 'sales'])
-            ->when(!$isKepalaMarketing, function($q) use ($user) {
+            ->when(!$isKepalaMarketing && $user, function($q) use ($user) {
                 $q->where('sales_id', $user->id);
             })
             ->latest()
@@ -634,6 +634,13 @@ class DashboardController extends Controller
             ->latest()
             ->paginate(4, ['*'], 'project_page')
             ->withQueryString();
+
+        // 4b. 5 Unit Siap Jual (Status Tersedia) dari Catalog Unit
+        $readyCatalogUnits = LandBankUnit::with(['landBank'])
+            ->whereIn('status', ['ready', 'tersedia', 'available', 'draft'])
+            ->latest()
+            ->take(5)
+            ->get();
 
         $projects->getCollection()->transform(function($lb) {
             $units = $lb->units;
@@ -689,7 +696,7 @@ class DashboardController extends Controller
                     $eq->where('position_id', '!=', 1);
                 })
                 ->latest()
-                ->take(8)
+                ->take(5)
                 ->get();
             $totalTasks = MarketingTask::whereHas('employee', function($eq) {
                 $eq->where('position_id', '!=', 1);
@@ -697,12 +704,42 @@ class DashboardController extends Controller
             $completedTasks = MarketingTask::whereHas('employee', function($eq) {
                 $eq->where('position_id', '!=', 1);
             })->where('status', 'selesai')->count();
-            $pendingTasks = MarketingTask::whereHas('employee', function($eq) {
-                $eq->where('position_id', '!=', 1);
-            })->where('status', '!=', 'selesai')->count();
+            // Top Video / Tugas Sosmed dengan Views Paling Banyak
+            $topViewedTasks = MarketingTask::with('employee')
+                ->where('views', '>', 0)
+                ->orderByDesc('views')
+                ->take(5)
+                ->get();
+            if ($topViewedTasks->isEmpty()) {
+                $topViewedTasks = MarketingTask::with('employee')
+                    ->orderByDesc('views')
+                    ->take(5)
+                    ->get();
+            }
+
+            // Total akumulasi Views & Likes seluruh video promosi marketing
+            $totalMarketingViews = (int) MarketingTask::sum('views');
+            $totalMarketingLikes = (int) MarketingTask::sum('likes');
+
+            // Monitoring Rekap Kinerja per Staf Marketing
+            $staffTaskSummary = Employee::where('division_id', 1)
+                ->where('position_id', '!=', 1)
+                ->withCount([
+                    'marketingTasks as total_tasks',
+                    'marketingTasks as completed_tasks' => fn($q) => $q->where('status', 'selesai'),
+                    'marketingTasks as pending_tasks' => fn($q) => $q->where(fn($sq) => $sq->whereNull('status')->orWhere('status', '!=', 'selesai')),
+                    'bookings as total_bookings'
+                ])
+                ->withSum(['marketingTasks as total_views' => fn($q) => $q->where('status', 'selesai')], 'views')
+                ->get();
+        } else {
+            $topViewedTasks = collect();
+            $staffTaskSummary = collect();
+            $totalMarketingViews = 0;
+            $totalMarketingLikes = 0;
         }
 
-        // 5b. TAGIHAN AKUISISI LAHAN (YANG HARUS DIBAYARKAN & DITRANSFERKAN)
+        // Tagihan Akuisisi Lahan dialihkan khusus ke modul Keuangan & Legal
         $landBills = collect();
         $totalTagihanLahan = 0;
         $totalTagihanLunas = 0;
@@ -710,79 +747,30 @@ class DashboardController extends Controller
         $countTagihanPending = 0;
         $countTagihanLunas = 0;
 
-        if ($isKepalaMarketing) {
-            $landBills = \App\Models\PraLandbank::with(['payments'])
-                ->where(function($q) {
-                    $q->whereIn('status', ['fase3', 'approved'])
-                      ->orWhereHas('payments');
-                })
-                ->latest()
-                ->get()
-                ->map(function($land) {
-                    $firstPayment = $land->payments->first();
-                    $totalNominal = (float) $land->payments->sum('amount');
-                    if ($totalNominal == 0) {
-                        $totalNominal = (float)($land->deal_price ?? 0) 
-                            + (float)($land->cost_ijb ?? 0) 
-                            + (float)($land->cost_tax ?? 0) 
-                            + (float)($land->cost_broker ?? 0) 
-                            + (float)($land->cost_other ?? 0);
-                    }
-                    $hasProof = !empty($land->receipt_file) 
-                        || !empty($land->tax_pph_file) 
-                        || ($land->payments->whereNotNull('file_path')->count() > 0);
-                    $isLunas = ($firstPayment && $firstPayment->status === 'lunas') || $hasProof;
-                    
-                    return (object) [
-                        'id'               => $land->id,
-                        'land_name'        => $land->land_name,
-                        'owner_name'       => $land->owner_name ?? ($land->land_owner ?? '-'),
-                        'ownership_status' => $land->ownership_status,
-                        'payment_method'   => $land->payment_method ?? 'cash',
-                        'nominal'          => $totalNominal,
-                        'bank_name'        => $firstPayment->bank_name ?? 'BCA',
-                        'account_number'   => $firstPayment->account_number ?? '-',
-                        'account_name'     => $firstPayment->account_name ?? ($land->owner_name ?? '-'),
-                        'due_date'         => $firstPayment->due_date ?? null,
-                        'file_path'        => $firstPayment->file_path ?? $land->receipt_file,
-                        'has_proof'        => $hasProof,
-                        'is_lunas'         => $isLunas,
-                        'status'           => $land->status
-                    ];
-                });
-
-            $totalTagihanLahan   = $landBills->sum('nominal');
-            $totalTagihanLunas   = $landBills->where('is_lunas', true)->sum('nominal');
-            $totalTagihanPending = $landBills->where('is_lunas', false)->sum('nominal');
-            $countTagihanPending = $landBills->where('is_lunas', false)->count();
-            $countTagihanLunas   = $landBills->where('is_lunas', true)->count();
-        }
-
-        // 6. STAFF MARKETING SPECIFIC DATA
-        $myTotalBookings = 0;
-        $mySoldUnits = 0;
-        $myActiveBookings = 0;
-        $myTotalFee = 0;
-        $myTotalCustomers = 0;
-        $myTasks = [];
+        // 6. STAFF MARKETING SPECIFIC DATA (TUGAS & SOSIAL MEDIA PROMOSI)
+        $myTotalTasks = 0;
         $myPendingTasks = 0;
+        $myCompletedTasksCount = 0;
+        $myTotalViews = 0;
+        $myTotalLikes = 0;
+        $myTasks = collect();
+        $myCompletedTasks = collect();
 
         if (!$isKepalaMarketing) {
-            $myBookingsQuery = Booking::where('sales_id', $user->id);
-            $myTotalBookings = (clone $myBookingsQuery)->count();
-            $mySoldUnits = (clone $myBookingsQuery)->where(function($q) {
-                $q->whereHas('unit', fn($uq) => $uq->whereIn('status', ['sold', 'soldout']))
-                  ->orWhereIn('status', ['completed', 'sold', 'lunas']);
+            $myTasksQuery = MarketingTask::where('employee_id', $user->id ?? 0);
+            $myTotalTasks = (clone $myTasksQuery)->count();
+            $myTasks = (clone $myTasksQuery)->where(function($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'selesai');
+            })->latest()->take(6)->get();
+            $myPendingTasks = (clone $myTasksQuery)->where(function($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'selesai');
             })->count();
-            $myActiveBookings = (clone $myBookingsQuery)->whereIn('status', ['pending', 'proses', 'aktif', 'approved'])->count();
-            $myTotalFee = (float) (clone $myBookingsQuery)->where(function($q) {
-                $q->whereHas('unit', fn($uq) => $uq->whereIn('status', ['sold', 'soldout']))
-                  ->orWhereIn('status', ['completed', 'sold', 'lunas']);
-            })->sum('agent_fee');
-            $myTotalCustomers = (clone $myBookingsQuery)->distinct('customer_id')->count('customer_id');
-
-            $myTasks = MarketingTask::where('employee_id', $user->id)->latest()->take(10)->get();
-            $myPendingTasks = MarketingTask::where('employee_id', $user->id)->where('status', '!=', 'selesai')->count();
+            
+            $myCompletedTasksQuery = (clone $myTasksQuery)->where('status', 'selesai')->whereNotNull('link_postingan');
+            $myCompletedTasks = (clone $myCompletedTasksQuery)->latest('tanggal_setor')->take(8)->get();
+            $myCompletedTasksCount = (clone $myCompletedTasksQuery)->count();
+            $myTotalViews = (int) (clone $myCompletedTasksQuery)->sum('views');
+            $myTotalLikes = (int) (clone $myCompletedTasksQuery)->sum('likes');
         }
 
         return view('dashboard_marketing', compact(
@@ -809,19 +797,24 @@ class DashboardController extends Controller
             'totalTasks',
             'completedTasks',
             'pendingTasks',
+            'topViewedTasks',
+            'staffTaskSummary',
+            'totalMarketingViews',
+            'totalMarketingLikes',
             'landBills',
             'totalTagihanLahan',
             'totalTagihanLunas',
             'totalTagihanPending',
             'countTagihanPending',
             'countTagihanLunas',
-            'myTotalBookings',
-            'mySoldUnits',
-            'myActiveBookings',
-            'myTotalFee',
-            'myTotalCustomers',
+            'myTotalTasks',
+            'myPendingTasks',
+            'myCompletedTasksCount',
+            'myTotalViews',
+            'myTotalLikes',
             'myTasks',
-            'myPendingTasks'
+            'myCompletedTasks',
+            'readyCatalogUnits'
         ));
     }
 

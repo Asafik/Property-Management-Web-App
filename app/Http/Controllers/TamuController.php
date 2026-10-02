@@ -16,7 +16,10 @@ class TamuController extends Controller
     //
     public function index(Request $request)
     {
-        $marketingTasks = MarketingTask::all();
+        // Hanya tampilkan tugas kategori "proyeksi" di dropdown Tamu / User Proyeksi
+        $marketingTasks = MarketingTask::where('kategori', \App\Models\MarketingTask::KATEGORI_PROYEKSI)
+                            ->orderBy('nama_tugas')
+                            ->get();
         $agents = Employee::where('position_id', 2)->get();
         $projects = LandBank::with('units')->get();
         $units = LandBankUnit::all(); // ambil semua unit

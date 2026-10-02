@@ -136,11 +136,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/marketing/landing-page', [\App\Http\Controllers\Marketing\LandingpageManagementController::class, 'index'])->name('marketing.landingpage.index');
     Route::get('/marketing/landing-page/{id}/edit', [\App\Http\Controllers\Marketing\LandingpageManagementController::class, 'edit'])->name('marketing.landingpage.edit');
     Route::put('/marketing/landing-page/{id}', [\App\Http\Controllers\Marketing\LandingpageManagementController::class, 'update'])->name('marketing.landingpage.update');
+    // Sosial Media Marketing (3 Sub-Menu: Tugas, Tugas Selesai, Analisa)
     Route::get('/marketing/sosial-media', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'index'])->name('marketing.sosialmedia.index');
+    Route::get('/marketing/sosial-media/tugas', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'tugas'])->name('marketing.sosialmedia.tugas');
+    Route::get('/marketing/sosial-media/selesai', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'selesai'])->name('marketing.sosialmedia.selesai');
+    Route::get('/marketing/sosial-media/analisa', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'analisa'])->name('marketing.sosialmedia.analisa');
     Route::get('/marketing/sosial-media/task/{id}', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'showTask'])->name('marketing.sosialmedia.task.show');
     Route::post('/marketing/sosial-media/submit-task', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'submitTask'])->name('marketing.sosialmedia.submitTask');
     Route::post('/marketing/sosial-media/task', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'storeTask'])->name('marketing.sosialmedia.task.store');
     Route::put('/marketing/sosial-media/task/{id}', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'updateTask'])->name('marketing.sosialmedia.task.update');
+    Route::put('/marketing/sosial-media/task/{id}/metrics', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'updateMetrics'])->name('marketing.sosialmedia.task.metrics');
+    Route::post('/marketing/sosial-media/sync-all', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'syncAll'])->name('marketing.sosialmedia.syncAll');
+    Route::post('/marketing/sosial-media/task/{id}/sync', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'syncSingleTask'])->name('marketing.sosialmedia.task.sync');
     Route::delete('/marketing/sosial-media/task/{id}', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'destroyTask'])->name('marketing.sosialmedia.task.destroy');
     Route::post('/marketing/sosial-media/store', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'store'])->name('marketing.sosialmedia.store');
     Route::post('/marketing/sosial-media/{id}/sync', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'sync'])->name('marketing.sosialmedia.sync');
@@ -902,6 +909,7 @@ Route::middleware(['auth'])->group(function () {
     // Master data laporan job staf marketing
     Route::get('/job-staff-marketing', [JobStaffMarketingController::class, 'index'])->name('master.data.tugas-staff-marketing');
     Route::get('/job-staff-marketing/create', [JobStaffMarketingController::class, 'create'])->name('marketing.create');
+    Route::get('/job-staff-marketing/{id}/edit', [JobStaffMarketingController::class, 'edit'])->name('marketing.tugas.edit');
     Route::post('/job-staff-marketing/store', [JobStaffMarketingController::class, 'store'])->name('marketing.tugas.store');
     Route::delete('/job-staff-marketing/{id}', [JobStaffMarketingController::class, 'destroy'])->name('marketing.tugas.destroy');
     Route::put('/job-staff-marketing/{id}', [JobStaffMarketingController::class, 'update'])->name('marketing.tugas.update');

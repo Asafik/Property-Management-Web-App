@@ -28,7 +28,10 @@ class LandingpageController extends Controller
         if ($agents->isEmpty()) {
             $agents = Employee::all();
         }
-        $marketingTasks = MarketingTask::all();
+        // Hanya tampilkan tugas kategori "proyeksi" di buku tamu landing page
+        $marketingTasks = MarketingTask::where('kategori', \App\Models\MarketingTask::KATEGORI_PROYEKSI)
+                            ->orderBy('nama_tugas')
+                            ->get();
 
         $selectedProjectId = $request->get('project_id', $projects->first()->id ?? null);
         $selectedUnitId = $request->get('unit_id', null);
