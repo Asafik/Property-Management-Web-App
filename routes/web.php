@@ -57,6 +57,10 @@ use App\Http\Controllers\DocumentTypeController;
 use App\Http\Controllers\SpkController;
 use App\Http\Controllers\Finance\InvoiceMasterController;
 use App\Http\Controllers\Finance\ProjectAccountingController;
+use App\Http\Controllers\Finance\JurnalUmumController;
+use App\Http\Controllers\Finance\ArusKasController;
+use App\Http\Controllers\Finance\LabaRugiController;
+use App\Http\Controllers\Finance\NeracaController;
 use App\Http\Controllers\MasterDokumenPerizinanController;
 use App\Http\Controllers\MasterBiayaLegalitasController;
 use App\Http\Controllers\MasterSkemaKprController;
@@ -511,6 +515,28 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/keuangan/pencairan-kpr', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'index'])->name('finance.kpr-disbursement.index');
     Route::post('/keuangan/pencairan-kpr/store', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'store'])->name('finance.kpr-disbursement.store');
     Route::delete('/keuangan/pencairan-kpr/{id}', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'destroy'])->name('finance.kpr-disbursement.destroy');
+
+    // 1. Buku Jurnal Umum (General Journal)
+    Route::get('/keuangan/jurnal-umum', [JurnalUmumController::class, 'index'])->name('keuangan.jurnal.index');
+    Route::post('/keuangan/jurnal-umum', [JurnalUmumController::class, 'store'])->name('keuangan.jurnal.store');
+    Route::get('/keuangan/jurnal-umum/detail/{id}', [JurnalUmumController::class, 'show'])->name('keuangan.jurnal.show');
+    Route::get('/keuangan/jurnal-umum/cetak', [JurnalUmumController::class, 'cetak'])->name('keuangan.jurnal.cetak');
+    Route::post('/keuangan/jurnal-umum/sync', [JurnalUmumController::class, 'sync'])->name('keuangan.jurnal.sync');
+    Route::delete('/keuangan/jurnal-umum/{id}', [JurnalUmumController::class, 'destroy'])->name('keuangan.jurnal.destroy');
+
+    // 2. Laporan Arus Kas (Cash Flow)
+    Route::get('/keuangan/arus-kas', [ArusKasController::class, 'index'])->name('keuangan.arus-kas.index');
+    Route::post('/keuangan/arus-kas/manual', [ArusKasController::class, 'storeManual'])->name('keuangan.arus-kas.store-manual');
+    Route::delete('/keuangan/arus-kas/manual/{id}', [ArusKasController::class, 'destroyManual'])->name('keuangan.arus-kas.destroy-manual');
+    Route::get('/keuangan/arus-kas/cetak', [ArusKasController::class, 'cetak'])->name('keuangan.arus-kas.cetak');
+
+    // 3. Laporan Laba Rugi (Profit & Loss)
+    Route::get('/keuangan/laba-rugi', [LabaRugiController::class, 'index'])->name('keuangan.laba-rugi.index');
+    Route::get('/keuangan/laba-rugi/cetak', [LabaRugiController::class, 'cetak'])->name('keuangan.laba-rugi.cetak');
+
+    // 4. Neraca Keuangan (Balance Sheet)
+    Route::get('/keuangan/neraca', [NeracaController::class, 'index'])->name('keuangan.neraca.index');
+    Route::get('/keuangan/neraca/cetak', [NeracaController::class, 'cetak'])->name('keuangan.neraca.cetak');
 
 
 

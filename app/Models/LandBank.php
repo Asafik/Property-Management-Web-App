@@ -83,6 +83,11 @@ class LandBank extends Model
         return $this->belongsTo(Notaris::class, 'notaris_id');
     }
 
+    public function getNamaLandBankAttribute(): ?string
+    {
+        return $this->attributes['name'] ?? null;
+    }
+
     public function notaris()
     {
         return $this->belongsTo(Notaris::class, 'notaris_id');
