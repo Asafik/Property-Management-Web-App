@@ -8,78 +8,205 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 
+use App\Models\MarketingTask;
+use App\Models\Employee;
+
 class SosialMediaController extends Controller
 {
     /**
-     * Tampilkan Halaman Monitoring Sosial Media (100% NON-DATABASE, MURNI SESSION UJI COBA)
+     * Tampilkan Halaman Monitoring & Setoran Tugas Sosial Media (Database Tersambung Nyata)
      */
     public function index(Request $request)
     {
-        // Ambil data postingan promosi dari SESSION (tidak menyentuh Database)
-        $rawPosts = session('marketing_social_posts', []);
-        $posts = collect($rawPosts);
+        $user = auth()->user();
 
-        // 1. Siapkan Rentang 7 Hari Terakhir untuk Label Grafik
-        $daysRange = 7;
-        $dateLabels = [];
-        $dateKeys = [];
-        for ($i = $daysRange - 1; $i >= 0; $i--) {
-            $dt = Carbon::today()->subDays($i);
-            $dateKeys[] = $dt->toDateString();
-            $dateLabels[] = $dt->translatedFormat('d M');
+        // 1. Ambil Tugas Belum Disetor (Pending) dari DB
+        $pendingTasksQuery = MarketingTask::where(function($q) {
+            $q->whereNull('link_postingan')->orWhere('link_postingan', '');
+        })->where('status', '!=', 'Selesai');
+
+        if ($user && ($user->position_id == 2 || str_contains(strtolower($user->position?->name ?? ''), 'staff') || strtolower($user->username ?? '') === 'marketing')) {
+            $pendingTasksQuery->where('employee_id', $user->id);
+        }
+        $pendingTasks = $pendingTasksQuery->latest()->get();
+
+        // 2. Ambil Tugas Sudah Disetor (Selesai) dari DB
+        $completedTasksQuery = MarketingTask::with('employee')
+            ->whereNotNull('link_postingan')
+            ->where('link_postingan', '!=', '');
+
+        if ($user && ($user->position_id == 2 || str_contains(strtolower($user->position?->name ?? ''), 'staff') || strtolower($user->username ?? '') === 'marketing')) {
+            $completedTasksQuery->where('employee_id', $user->id);
+        }
+        $completedTasks = $completedTasksQuery->latest('tanggal_setor')->get();
+
+        // 3. Seluruh Rekap Tim (untuk Tab Mode Admin)
+        $allStaffTasks = MarketingTask::with('employee')->latest()->get();
+        $marketingStaffList = Employee::whereHas('position', function ($query) {
+            $query->where('name', 'like', '%marketing%');
+        })->get();
+        $allEmployees = Employee::with('position')->orderBy('name')->get();
+
+        // 4. Hitung Metrik Ringkasan
+        $totalPendingCount = $pendingTasks->count();
+        $totalCompletedCount = $completedTasks->count();
+        $totalViews = (int) $completedTasks->sum('views');
+        $totalLikes = (int) $completedTasks->sum('likes');
+
+        $chartViews = $totalCompletedCount > 0
+            ? [round($totalViews * 0.1), round($totalViews * 0.25), round($totalViews * 0.4), round($totalViews * 0.6), round($totalViews * 0.75), round($totalViews * 0.9), $totalViews]
+            : [0, 0, 0, 0, 0, 0, 0];
+
+        $chartLikes = $totalCompletedCount > 0
+            ? [round($totalLikes * 0.1), round($totalLikes * 0.25), round($totalLikes * 0.4), round($totalLikes * 0.6), round($totalLikes * 0.75), round($totalLikes * 0.9), $totalLikes]
+            : [0, 0, 0, 0, 0, 0, 0];
+
+        return view('marketing.sosialmedia.index', compact(
+            'pendingTasks',
+            'completedTasks',
+            'allStaffTasks',
+            'marketingStaffList',
+            'allEmployees',
+            'totalPendingCount',
+            'totalCompletedCount',
+            'totalViews',
+            'totalLikes',
+            'chartViews',
+            'chartLikes'
+        ));
+    }
+
+    /**
+     * Simpan Setoran Link Postingan Tugas ke Database
+     */
+    public function submitTask(Request $request)
+    {
+        $request->validate([
+            'task_id' => 'required|exists:marketing_tasks,id',
+            'platform' => 'required|string|max:50',
+            'link_postingan' => 'required|url|max:500',
+            'catatan_setor' => 'nullable|string|max:1000',
+        ], [
+            'task_id.required' => 'ID Tugas wajib disertakan.',
+            'platform.required' => 'Pilih platform media sosial.',
+            'link_postingan.required' => 'Link postingan video wajib diisi.',
+            'link_postingan.url' => 'Format link URL tidak valid (harus diawali http:// atau https://).',
+        ]);
+
+        $task = MarketingTask::findOrFail($request->task_id);
+        
+        $task->update([
+            'platform' => $request->platform,
+            'link_postingan' => $request->link_postingan,
+            'catatan_setor' => $request->catatan_setor,
+            'tanggal_setor' => now(),
+            'status' => 'Selesai',
+        ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Link bukti setoran berhasil disimpan ke database!',
+                'task' => $task
+            ]);
         }
 
-        // 2. Siapkan Data Agregat Harian
-        $dailyViews = array_fill_keys($dateKeys, 0);
-        $dailyLikes = array_fill_keys($dateKeys, 0);
+        return redirect()->route('marketing.sosialmedia.index')->with('success', 'Link bukti setoran berhasil disimpan ke database!');
+    }
 
-        // 3. Dataset Per Postingan untuk Filter Dropdown
-        $postDatasets = [];
+    /**
+     * Buat Tugas Marketing Baru oleh Admin
+     */
+    public function storeTask(Request $request)
+    {
+        $request->validate([
+            'employee_id' => 'required',
+            'nama_tugas' => 'required|string|max:255',
+            'platform' => 'nullable|string|max:100',
+            'deadline' => 'nullable|date',
+            'deskripsi' => 'nullable|string',
+        ]);
 
-        foreach ($posts as $post) {
-            $postViewData = array_fill_keys($dateKeys, 0);
-            $postLikeData = array_fill_keys($dateKeys, 0);
+        $task = MarketingTask::create([
+            'employee_id' => $request->employee_id,
+            'nama_tugas' => $request->nama_tugas,
+            'platform' => $request->platform ?: 'Instagram Reels / TikTok',
+            'deadline' => $request->deadline,
+            'deskripsi' => $request->deskripsi,
+            'status' => 'Pending',
+        ]);
 
-            $logs = $post['logs'] ?? [];
-            foreach ($logs as $date => $logVal) {
-                if (isset($postViewData[$date])) {
-                    $postViewData[$date] = (int)($logVal['views'] ?? 0);
-                    $postLikeData[$date] = (int)($logVal['likes'] ?? 0);
-
-                    $dailyViews[$date] += (int)($logVal['views'] ?? 0);
-                    $dailyLikes[$date] += (int)($logVal['likes'] ?? 0);
-                }
-            }
-
-            $postDatasets[] = [
-                'id' => $post['id'],
-                'title' => $post['title'],
-                'shortcode' => $post['shortcode'],
-                'pegawai' => $post['pegawai_name'],
-                'views' => array_values($postViewData),
-                'likes' => array_values($postLikeData),
-            ];
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Tugas promosi berhasil ditambahkan ke database!',
+                'task' => $task
+            ]);
         }
 
-        // 4. Ringkasan Metrik
-        $summary = [
-            'total_posts' => $posts->count(),
-            'total_views' => $posts->sum('total_views'),
-            'total_likes' => $posts->sum('total_likes'),
-            'total_comments' => $posts->sum('total_comments'),
-        ];
+        return redirect()->route('marketing.sosialmedia.index')->with('success', 'Tugas promosi berhasil ditambahkan ke database!');
+    }
 
-        $chartData = [
-            'labels' => $dateLabels,
-            'aggregate_views' => array_values($dailyViews),
-            'aggregate_likes' => array_values($dailyLikes),
-            'post_datasets' => $postDatasets,
-        ];
+    /**
+     * Tampilkan Halaman Detail Tugas Promosi (Halaman Tersendiri)
+     */
+    public function showTask($id)
+    {
+        $task = MarketingTask::with('employee.position')->findOrFail($id);
 
-        // Konversi ke object agar kompatibel dengan sintaks blade $post->field
-        $posts = $posts->map(fn($p) => (object)$p);
+        return view('marketing.sosialmedia.show', compact('task'));
+    }
 
-        return view('marketing.sosialmedia.index', compact('posts', 'chartData', 'summary'));
+    /**
+     * Update Tugas Marketing oleh Admin
+     */
+    public function updateTask(Request $request, $id)
+    {
+        $task = MarketingTask::findOrFail($id);
+
+        $request->validate([
+            'employee_id' => 'required',
+            'nama_tugas' => 'required|string|max:255',
+            'platform' => 'nullable|string|max:100',
+            'deadline' => 'nullable|date',
+            'deskripsi' => 'nullable|string',
+        ]);
+
+        $task->update([
+            'employee_id' => $request->employee_id,
+            'nama_tugas' => $request->nama_tugas,
+            'platform' => $request->platform ?: $task->platform,
+            'deadline' => $request->deadline,
+            'deskripsi' => $request->deskripsi,
+        ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Tugas promosi berhasil diperbarui di database!',
+                'task' => $task
+            ]);
+        }
+
+        return redirect()->route('marketing.sosialmedia.index')->with('success', 'Tugas promosi berhasil diperbarui di database!');
+    }
+
+    /**
+     * Hapus Tugas Marketing oleh Admin
+     */
+    public function destroyTask(Request $request, $id)
+    {
+        $task = MarketingTask::findOrFail($id);
+        $task->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Tugas promosi berhasil dihapus dari database!'
+            ]);
+        }
+
+        return redirect()->route('marketing.sosialmedia.index')->with('success', 'Tugas promosi berhasil dihapus dari database!');
     }
 
     /**

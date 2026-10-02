@@ -35,7 +35,7 @@
             white-space: nowrap !important;
         }
         .table-proyek .col-aksi {
-            width: 140px;
+            width: 175px;
             text-align: center;
             white-space: nowrap !important;
         }
@@ -74,25 +74,51 @@
             margin-bottom: 0 !important;
         }
 
-        /* Modal Checklist Styling */
-        .profile-check-item {
-            display: flex;
+        /* Action Buttons with Text */
+        .btn-action-badge {
+            display: inline-flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0.6rem 0.85rem;
-            border-radius: 8px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            margin-bottom: 0.5rem;
-            transition: all 0.2s ease;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.79rem;
+            font-weight: 600;
+            line-height: 1;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none !important;
+            cursor: pointer;
+            border: 1px solid transparent;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            white-space: nowrap;
         }
-        .profile-check-item.is-valid {
-            background: #f0fdf4;
-            border-color: #bbf7d0;
+        .btn-action-badge i {
+            font-size: 0.95rem;
+            line-height: 1;
         }
-        .profile-check-item.is-invalid {
-            background: #fef2f2;
-            border-color: #fecaca;
+        .btn-action-badge:hover {
+            transform: translateY(-1px);
+        }
+        .btn-action-badge.btn-lahan {
+            background-color: #fffbeb;
+            border-color: #fde68a;
+            color: #b45309 !important;
+        }
+        .btn-action-badge.btn-lahan:hover {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-color: #d97706;
+            color: #ffffff !important;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+        }
+        .btn-action-badge.btn-spk {
+            background-color: #eff6ff;
+            border-color: #bfdbfe;
+            color: #1d4ed8 !important;
+        }
+        .btn-action-badge.btn-spk:hover {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-color: #1d4ed8;
+            color: #ffffff !important;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
         }
     </style>
 @endpush
@@ -102,21 +128,13 @@
 <div class="container-fluid px-2 px-md-4 py-3">
 
     <!-- Page Title & Subtitle -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
-        <div>
-            <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
-                Manajemen Proyek
-            </h2>
-            <p class="text-muted mb-0" style="font-size: 0.88rem;">
-                Kelola profil kawasan proyek, denah siteplan, dan kelengkapan dokumen legalitas secara terpusat.
-            </p>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-            <a href="{{ route('properti') }}" class="btn btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-2 fw-semibold shadow-sm" style="border-radius: 6px; font-size: 0.86rem;">
-                <i class="mdi mdi-plus-circle-outline fs-6"></i>
-                <span>Tambah Proyek Baru</span>
-            </a>
-        </div>
+    <div class="mb-4">
+        <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+            Manajemen Proyek
+        </h2>
+        <p class="text-muted mb-0" style="font-size: 0.88rem;">
+            Kelola profil kawasan proyek, denah siteplan, dan kelengkapan dokumen legalitas secara terpusat.
+        </p>
     </div>
 
     <!-- 4 KPI Metrics Card Grid (Dashboard Clean Aesthetic) -->
@@ -201,7 +219,13 @@
                         <div style="width: 32px; height: 32px; border-radius: 6px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
                             <i class="mdi mdi-city-variant-outline"></i>
                         </div>
-                        <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Daftar Proyek Kawasan & Status Profil</span>
+                        <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Daftar Proyek Kawasan</span>
+                    </div>
+                    <div>
+                        <a href="{{ route('properti') }}" class="btn btn-gradient-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 fw-semibold shadow-sm text-decoration-none" style="border-radius: 6px; font-size: 0.82rem; height: 36px; white-space: nowrap;">
+                            <i class="mdi mdi-plus-circle-outline fs-6"></i>
+                            <span>Tambah Proyek Baru</span>
+                        </a>
                     </div>
                 </div>
 
@@ -277,45 +301,20 @@
                         <table class="table table-hover align-middle table-proyek mb-0">
                             <thead>
                                 <tr>
-                                    <th class="col-no text-center">No</th>
-                                    <th>Nama Proyek & Pengembang</th>
+                                    <th class="col-no text-center" style="width: 40px;">No</th>
+                                    <th>Nama Proyek</th>
+                                    <th>Pengembang (PT)</th>
                                     <th>Lokasi Kawasan</th>
-                                    <th>Luas & Denah Siteplan</th>
-                                    <th style="width: 170px;">Kelengkapan Profil</th>
-                                    <th class="text-center" style="width: 100px;">Dokumen</th>
+                                    <th>Luas Lahan</th>
+                                    <th class="text-center" style="width: 130px;">Denah Siteplan</th>
                                     <th style="width: 130px;">Pengolahan Lahan</th>
-                                    <th class="col-aksi text-center">Aksi</th>
+                                    <th class="col-aksi text-center" style="width: 175px;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($projects as $index => $item)
                                     @php
-                                        $score = $item->profile_score;
-                                        $isComplete = $item->isProfileComplete();
-                                        $missing = $item->getMissingProfileFields();
-                                        $docCount = $item->merged_documents->count();
                                         $devPercent = (int) $item->overall_infrastructure_progress;
-
-                                        // Warna progress profil
-                                        if ($score >= 100) {
-                                            $barColor = '#10b981';
-                                            $badgeText = 'Lengkap 100%';
-                                            $badgeBg = '#ecfdf5';
-                                            $badgeColor = '#059669';
-                                            $badgeBorder = '#a7f3d0';
-                                        } elseif ($score >= 60) {
-                                            $barColor = '#f59e0b';
-                                            $badgeText = count($missing) . ' Field Kurang';
-                                            $badgeBg = '#fffbeb';
-                                            $badgeColor = '#b45309';
-                                            $badgeBorder = '#fde68a';
-                                        } else {
-                                            $barColor = '#ef4444';
-                                            $badgeText = 'Belum Lengkap';
-                                            $badgeBg = '#fef2f2';
-                                            $badgeColor = '#b91c1c';
-                                            $badgeBorder = '#fecaca';
-                                        }
                                     @endphp
                                     <tr class="proyek-table-row" id="row_proyek_{{ $item->id }}" 
                                         data-search="{{ strtolower($item->name . ' ' . ($item->companyProfile->name ?? '') . ' ' . ($item->address ?? '') . ' ' . ($item->city ?? '') . ' ' . ($item->district ?? '')) }}">
@@ -325,117 +324,75 @@
                                         </td>
 
                                         <td>
-                                            <div class="fw-bold text-dark" style="line-height: 1.35; font-size: 0.88rem;">
+                                            <a href="{{ route('properti.edit', $item->id) }}" class="fw-bold text-dark text-decoration-none" style="line-height: 1.35; font-size: 0.88rem;" title="Edit Profil Proyek">
                                                 {{ $item->name }}
-                                            </div>
-                                            <div class="text-secondary mt-0.5 d-flex align-items-center gap-1" style="font-size: 0.77rem; line-height: 1.3;">
-                                                <i class="mdi mdi-domain" style="font-size: 0.85rem; color: #94a3b8;"></i>
-                                                <span>{{ $item->companyProfile->name ?? 'PT Pengembang Belum Dipilih' }}</span>
+                                            </a>
+                                        </td>
+
+                                        <td>
+                                            <div style="font-size: 0.83rem; font-weight: 600; color: #334155;">
+                                                {{ $item->companyProfile->name ?? 'Belum Dipilih' }}
                                             </div>
                                         </td>
 
                                         <td>
-                                            <div class="text-secondary" style="font-size: 0.82rem; line-height: 1.35;">
-                                                <i class="mdi mdi-map-marker-outline text-danger me-0.5"></i>
+                                            <div style="font-size: 0.85rem; font-weight: 600; color: #1e293b; line-height: 1.35;">
                                                 {{ $item->district ? $item->district . ', ' : '' }}{{ $item->city ?: ($item->address ?: 'Lokasi belum diisi') }}
                                             </div>
-                                            @if($item->lat && $item->lng)
-                                                <small class="text-muted d-block mt-0.5" style="font-size: 0.72rem;">
-                                                    <i class="mdi mdi-crosshairs-gps text-primary me-0.5"></i>{{ round($item->lat, 4) }}, {{ round($item->lng, 4) }}
-                                                </small>
-                                            @else
-                                                <small class="text-warning d-block mt-0.5" style="font-size: 0.72rem;">
-                                                    <i class="mdi mdi-alert-circle-outline me-0.5"></i>Peta belum ditandai
-                                                </small>
+                                            @if($item->address && ($item->district || $item->city))
+                                                <div class="text-muted text-truncate" style="font-size: 0.74rem; max-width: 220px;" title="{{ $item->address }}">
+                                                    {{ $item->address }}
+                                                </div>
                                             @endif
                                         </td>
 
                                         <td>
-                                            <div class="d-flex flex-column gap-1">
-                                                <span class="badge bg-light text-dark px-2 py-1 border font-monospace" style="font-size: 0.76rem; width: fit-content;">
-                                                    <i class="mdi mdi-texture-box text-muted me-1"></i>{{ number_format($item->area ?? 0, 0, ',', '.') }} m²
-                                                </span>
-                                                @if($item->denah)
-                                                    <a href="{{ asset($item->denah) }}" target="_blank" class="text-primary text-decoration-none d-inline-flex align-items-center gap-1" style="font-size: 0.75rem; font-weight: 600;">
-                                                        <i class="mdi mdi-floor-plan"></i>
-                                                        <span>Lihat Siteplan</span>
-                                                    </a>
-                                                @else
-                                                    <span class="text-muted d-inline-flex align-items-center gap-1" style="font-size: 0.74rem;">
-                                                        <i class="mdi mdi-file-excel-outline text-danger"></i>
-                                                        <span>Siteplan Kosong</span>
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </td>
-
-                                        <td>
-                                            <div class="d-flex align-items-center justify-content-between mb-1">
-                                                <button type="button" class="btn p-0 border-0 text-start" 
-                                                    data-bs-toggle="modal" 
-                                                    data-bs-target="#modalChecklistProfil{{ $item->id }}"
-                                                    title="Klik untuk melihat checklist kelengkapan profil">
-                                                    <span class="badge py-1 px-2 fw-semibold" 
-                                                        style="font-size: 0.72rem; border-radius: 6px; background-color: {{ $badgeBg }}; color: {{ $badgeColor }}; border: 1px solid {{ $badgeBorder }}; cursor: pointer;">
-                                                        <i class="mdi {{ $score >= 100 ? 'mdi-check' : 'mdi-alert-circle-outline' }} me-0.5"></i>{{ $badgeText }}
-                                                    </span>
-                                                </button>
-                                                <span class="fw-bold" style="font-size: 0.75rem; color: #334155;">{{ $score }}%</span>
-                                            </div>
-                                            <div class="progress" style="height: 6px; background-color: #e2e8f0; border-radius: 9999px;">
-                                                <div class="progress-bar rounded-pill" role="progressbar" style="width: {{ $score }}%; background-color: {{ $barColor }};"></div>
-                                            </div>
+                                            <span class="badge bg-light text-dark px-2 py-1 border font-monospace" style="font-size: 0.76rem; width: fit-content;">
+                                                <i class="mdi mdi-texture-box text-muted me-1"></i>{{ number_format($item->area ?? 0, 0, ',', '.') }} m²
+                                            </span>
                                         </td>
 
                                         <td class="text-center">
-                                            <button type="button" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 px-2.5 py-1 border shadow-none" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#modalDokumenProyek{{ $item->id }}"
-                                                style="border-radius: 6px; font-size: 0.76rem;"
-                                                title="Lihat Berkas Dokumen Legalitas">
-                                                <i class="mdi mdi-file-document-multiple-outline text-primary"></i>
-                                                <span class="fw-bold">{{ $docCount }}</span>
-                                            </button>
+                                            @if($item->denah)
+                                                <a href="{{ asset($item->denah) }}" target="_blank" class="text-primary text-decoration-none d-inline-flex align-items-center gap-1 fw-semibold" style="font-size: 0.76rem;" title="Buka Denah Siteplan">
+                                                    <i class="mdi mdi-floor-plan text-primary fs-6"></i>
+                                                    <span>Lihat Siteplan</span>
+                                                </a>
+                                            @else
+                                                <span class="text-muted d-inline-flex align-items-center gap-1" style="font-size: 0.74rem;">
+                                                    <i class="mdi mdi-file-excel-outline text-danger"></i>
+                                                    <span>Siteplan Kosong</span>
+                                                </span>
+                                            @endif
                                         </td>
 
                                         <td>
-                                            <div class="d-flex align-items-center gap-1.5 mb-1">
-                                                <div class="progress flex-grow-1" style="height: 5px; background-color: #e2e8f0; border-radius: 9999px;">
+                                            <div class="d-flex align-items-center gap-1.5">
+                                                <div class="progress flex-grow-1" style="height: 6px; background-color: #e2e8f0; border-radius: 9999px;">
                                                     <div class="progress-bar rounded-pill bg-primary" role="progressbar" style="width: {{ $devPercent }}%;"></div>
                                                 </div>
-                                                <span style="font-size: 0.72rem; font-weight: 700; color: #475569;">{{ $devPercent }}%</span>
+                                                <span style="font-size: 0.75rem; font-weight: 700; color: #475569;">{{ $devPercent }}%</span>
                                             </div>
-                                            <a href="{{ route('properti.pengolahanLahan', $item->id) }}" class="text-decoration-none text-muted d-inline-flex align-items-center gap-1" style="font-size: 0.73rem; font-weight: 600;" title="Buka Detail Pengolahan Lahan Fisik">
-                                                <i class="mdi mdi-hard-hat text-warning"></i>
-                                                <span>Fisik Lahan</span>
-                                            </a>
                                         </td>
 
                                         <td class="col-aksi text-center">
-                                            <div class="d-flex align-items-center justify-content-center gap-1.5">
-                                                <!-- Edit / Lengkapi Profil -->
-                                                <a href="{{ route('properti.edit', $item->id) }}" 
-                                                    class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 px-2.5 py-1.5 shadow-sm text-decoration-none fw-semibold" 
-                                                    style="border-radius: 6px; font-size: 0.78rem;"
-                                                    title="Lengkapi & Edit Profil Proyek">
-                                                    <i class="mdi mdi-pencil" style="font-size: 0.85rem;"></i>
-                                                    <span>Profil</span>
-                                                </a>
-
+                                            <div class="d-inline-flex align-items-center justify-content-center gap-2">
                                                 <!-- Shortcut ke Pengolahan Lahan -->
                                                 <a href="{{ route('properti.pengolahanLahan', $item->id) }}" 
-                                                    class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center px-2 py-1.5 border shadow-none" 
-                                                    style="border-radius: 6px; font-size: 0.85rem;"
+                                                    class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 py-1 px-2.5 fw-semibold shadow-sm text-decoration-none" 
+                                                    style="border-radius: 6px; font-size: 0.78rem;"
                                                     title="Kelola Pengolahan Lahan (Cut & Fill, Jalan, Utilitas)">
-                                                    <i class="mdi mdi-hard-hat text-warning"></i>
+                                                    <i class="mdi mdi-hard-hat" style="font-size: 0.88rem;"></i>
+                                                    <span>Kelola</span>
                                                 </a>
 
                                                 <!-- Shortcut ke SPK Kontraktor -->
                                                 <a href="{{ route('spk.index', ['land_bank_id' => $item->id]) }}" 
-                                                    class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center px-2 py-1.5 border shadow-none" 
-                                                    style="border-radius: 6px; font-size: 0.85rem;"
+                                                    class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 py-1 px-2.5 fw-semibold shadow-sm text-decoration-none" 
+                                                    style="border-radius: 6px; font-size: 0.78rem;"
                                                     title="Kelola SPK Kontraktor Proyek Ini">
-                                                    <i class="mdi mdi-file-sign text-info"></i>
+                                                    <i class="mdi mdi-file-sign" style="font-size: 0.88rem;"></i>
+                                                    <span>SPK</span>
                                                 </a>
                                             </div>
                                         </td>
@@ -464,181 +421,7 @@
             </div>
         </div>
     </div>
-
 </div>
-
-<!-- MODALS PER PROJECT -->
-@foreach ($projects as $item)
-    
-    <!-- Modal 1: Checklist Kelengkapan Profil Proyek -->
-    <div class="modal fade" id="modalChecklistProfil{{ $item->id }}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
-                <div class="modal-header bg-white border-bottom px-4 py-3">
-                    <div class="d-flex align-items-center gap-2">
-                        <div style="width: 34px; height: 34px; border-radius: 8px; background: #eff6ff; color: #1d4ed8; display: flex; align-items: center; justify-content: center; font-size: 1.15rem;">
-                            <i class="mdi mdi-clipboard-check-outline"></i>
-                        </div>
-                        <div>
-                            <h5 class="modal-title fw-bold text-dark mb-0" style="font-size: 1rem;">Status Profil Proyek</h5>
-                            <small class="text-muted" style="font-size: 0.78rem;">{{ $item->name }}</small>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                
-                <div class="modal-body px-4 py-3">
-                    <!-- Skor Header -->
-                    <div class="d-flex align-items-center justify-content-between p-3 mb-3" style="background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
-                        <div>
-                            <div class="text-muted small fw-semibold" style="font-size: 0.75rem; text-transform: uppercase;">Tingkat Kelengkapan</div>
-                            <div class="fw-bold text-dark" style="font-size: 1.25rem;">{{ $item->profile_score }}% Lengkap</div>
-                        </div>
-                        <span class="badge py-1 px-3 fw-bold" style="font-size: 0.78rem; border-radius: 6px; background-color: {{ $item->profile_score >= 100 ? '#ecfdf5' : '#fffbeb' }}; color: {{ $item->profile_score >= 100 ? '#059669' : '#b45309' }}; border: 1px solid {{ $item->profile_score >= 100 ? '#a7f3d0' : '#fde68a' }};">
-                            {{ $item->profile_score >= 100 ? 'Siap Operasional' : 'Perlu Dilengkapi' }}
-                        </span>
-                    </div>
-
-                    <!-- Checklist Items -->
-                    <div class="mb-2">
-                        <div class="fw-bold text-dark mb-2" style="font-size: 0.83rem;">Rincian 6 Parameter Profil Proyek:</div>
-                        @foreach ($item->core_profile_checklist as $chk)
-                            <div class="profile-check-item {{ $chk['is_filled'] ? 'is-valid' : 'is-invalid' }}">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="mdi {{ $chk['icon'] }}" style="font-size: 1.1rem; color: {{ $chk['is_filled'] ? '#16a34a' : '#dc2626' }};"></i>
-                                    <div>
-                                        <div class="fw-semibold text-dark" style="font-size: 0.82rem;">{{ $chk['label'] }}</div>
-                                        <small class="text-muted" style="font-size: 0.73rem;">
-                                            {{ $chk['val'] ?? 'Belum diisi / belum diunggah' }}
-                                        </small>
-                                    </div>
-                                </div>
-                                <div>
-                                    @if ($chk['is_filled'])
-                                        <span class="badge bg-success py-1 px-2" style="font-size: 0.7rem; border-radius: 4px;">
-                                            <i class="mdi mdi-check"></i> Sudah Ada
-                                        </span>
-                                    @else
-                                        <span class="badge bg-danger py-1 px-2" style="font-size: 0.7rem; border-radius: 4px;">
-                                            <i class="mdi mdi-close"></i> Belum
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="modal-footer bg-light px-4 py-2.5 border-top d-flex justify-content-between">
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-3" data-bs-dismiss="modal" style="border-radius: 6px;">
-                        Tutup
-                    </button>
-                    <a href="{{ route('properti.edit', $item->id) }}" class="btn btn-sm btn-gradient-primary fw-semibold px-3 d-inline-flex align-items-center gap-1" style="border-radius: 6px;">
-                        <i class="mdi mdi-pencil"></i>
-                        <span>Lengkapi Profil Sekarang</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal 2: Daftar Dokumen Legalitas Proyek -->
-    <div class="modal fade" id="modalDokumenProyek{{ $item->id }}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
-                <div class="modal-header bg-white border-bottom px-4 py-3">
-                    <div class="d-flex align-items-center gap-2">
-                        <div style="width: 34px; height: 34px; border-radius: 8px; background: #f3e8ff; color: #9333ea; display: flex; align-items: center; justify-content: center; font-size: 1.15rem;">
-                            <i class="mdi mdi-file-document-multiple-outline"></i>
-                        </div>
-                        <div>
-                            <h5 class="modal-title fw-bold text-dark mb-0" style="font-size: 1rem;">Dokumen Legalitas Kawasan</h5>
-                            <small class="text-muted" style="font-size: 0.78rem;">{{ $item->name }}</small>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body px-4 py-3">
-                    @if ($item->merged_documents->count() > 0)
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0" style="font-size: 0.83rem;">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th width="5%" class="text-center">No</th>
-                                        <th width="30%">Jenis Dokumen</th>
-                                        <th>Nomor Berkas</th>
-                                        <th width="18%" class="text-center">Status</th>
-                                        <th width="15%" class="text-center">Berkas</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($item->merged_documents as $idx => $doc)
-                                        @php
-                                            $stDoc = strtolower($doc->status ?? 'pending');
-                                            if ($stDoc === 'verified' || $stDoc === 'approved') {
-                                                $dBadge = 'bg-success';
-                                                $dLabel = 'Terverifikasi';
-                                            } elseif ($stDoc === 'rejected') {
-                                                $dBadge = 'bg-danger';
-                                                $dLabel = 'Ditolak / Revisi';
-                                            } else {
-                                                $dBadge = 'bg-warning text-dark';
-                                                $dLabel = 'Menunggu Review';
-                                            }
-                                        @endphp
-                                        <tr>
-                                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                                            <td>
-                                                <div class="fw-semibold text-dark">{{ $doc->documentType->name ?? ($doc->name ?? 'Dokumen Legalitas') }}</div>
-                                            </td>
-                                            <td>
-                                                <span class="font-monospace text-secondary">{{ $doc->document_number ?: '-' }}</span>
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="badge {{ $dBadge }} py-1 px-2" style="font-size: 0.72rem; border-radius: 4px;">
-                                                    {{ $dLabel }}
-                                                </span>
-                                            </td>
-                                            <td class="text-center">
-                                                @if ($doc->file_path)
-                                                    <a href="{{ asset($doc->file_path) }}" target="_blank" class="btn btn-sm btn-outline-primary py-0.5 px-2" style="font-size: 0.72rem; border-radius: 4px;">
-                                                        <i class="mdi mdi-download"></i> Unduh
-                                                    </a>
-                                                @else
-                                                    <span class="text-muted small">-</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @else
-                        <div class="text-center text-muted py-4">
-                            <i class="mdi mdi-file-document-outline me-1" style="font-size: 2rem; color: #cbd5e1;"></i>
-                            <p class="mb-2 mt-1">Belum ada berkas dokumen legalitas yang terunggah untuk proyek ini.</p>
-                            <a href="{{ route('properti.edit', $item->id) }}" class="btn btn-sm btn-gradient-primary px-3 fw-semibold" style="border-radius: 6px;">
-                                <i class="mdi mdi-upload me-1"></i> Unggah Dokumen Sekarang
-                            </a>
-                        </div>
-                    @endif
-                </div>
-
-                <div class="modal-footer bg-light px-4 py-2.5 border-top d-flex justify-content-between">
-                    <button type="button" class="btn btn-sm btn-outline-secondary px-3" data-bs-dismiss="modal" style="border-radius: 6px;">
-                        Tutup
-                    </button>
-                    <a href="{{ route('properti.edit', $item->id) }}" class="btn btn-sm btn-gradient-primary fw-semibold px-3 d-inline-flex align-items-center gap-1" style="border-radius: 6px;">
-                        <i class="mdi mdi-pencil"></i>
-                        <span>Kelola / Unggah Dokumen</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-@endforeach
 
 @push('scripts')
 <script>

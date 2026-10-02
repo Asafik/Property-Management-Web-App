@@ -186,6 +186,9 @@ class DashboardController extends Controller
         // 1. Proyek Terbaru (5 proyek yang sedang dikelola)
         $recentProjects = LandBank::with(['companyProfile', 'units'])->latest()->take(5)->get();
 
+        // 1b. Tanah Pasca Land Bank (Tanah yang sudah diakuisisi & masuk pasca)
+        $pascaProjects = LandBank::with(['companyProfile', 'units', 'documents.documentType'])->latest()->take(5)->get();
+
         // 2. Status Unit (Real Metrik Kavling & Unit)
         $unitReady   = LandBankUnit::whereIn('status', ['ready', 'tersedia', 'available'])->count();
         $unitBooking = LandBankUnit::whereIn('status', ['booked', 'booking'])->count();
@@ -204,6 +207,12 @@ class DashboardController extends Controller
             'sold_pct'    => $totalAllUnits > 0 ? round(($unitSold / $totalAllUnits) * 100, 1) : 0,
             'kpr_pct'     => $totalAllUnits > 0 ? round(($unitKpr / $totalAllUnits) * 100, 1) : 0,
         ];
+
+        // 2b. 5 Unit Terbaru dari Halaman Catalog Unit
+        $recentCatalogUnits = LandBankUnit::with(['landBank', 'activeBooking.customer'])
+            ->latest()
+            ->take(5)
+            ->get();
 
         // 3. Status Perizinan (Ringkasan perizinan proyek dari Master Dokumen & PerizinanTask)
         $masterDocs = \App\Models\MasterDokumenPerizinan::orderBy('urutan', 'asc')->take(5)->get();
@@ -259,6 +268,32 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // 4b. Status & Tahapan KPR (5 Pengajuan KPR Terbaru)
+        $recentKprBookings = Booking::with([
+            'customer',
+            'unit.landBank',
+            'kprApplication.bank',
+            'kprApplication.documents',
+            'sales'
+        ])
+        ->where(function($q) {
+            $q->where('purchase_type', 'kpr')
+              ->orWhere('purchase_type', 'KPR');
+        })
+        ->latest()
+        ->take(5)
+        ->get();
+
+        // 4c. Transaksi Booking Terkini (5 Booking Terbaru Semua Skema Bayar)
+        $recentAllBookings = Booking::with([
+            'customer',
+            'unit.landBank',
+            'sales'
+        ])
+        ->latest()
+        ->take(5)
+        ->get();
+
         // 5. Tugas Tim Terbaru
         $recentTeamTasks = \App\Models\PerizinanTask::with(['employee.division', 'employee.position'])
             ->latest('last_activity_at')
@@ -298,10 +333,14 @@ class DashboardController extends Controller
             'filterOptions',
             'menus',
             'recentProjects',
+            'pascaProjects',
             'unitStats',
+            'recentCatalogUnits',
             'perizinanSummary',
             'perizinanRows',
             'recentUnitProgress',
+            'recentKprBookings',
+            'recentAllBookings',
             'recentTeamTasks',
             'financeSummary'
         ));

@@ -11,6 +11,12 @@ class MarketingTask extends Model
         'employee_id',
         'nama_tugas',
         'deskripsi',
+        'platform',
+        'link_postingan',
+        'catatan_setor',
+        'tanggal_setor',
+        'views',
+        'likes',
         'deadline',
         'status',
     ];

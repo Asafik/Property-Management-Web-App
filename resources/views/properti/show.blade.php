@@ -635,22 +635,37 @@
                                         $shgbUrl = $resolveDocUrl($fileShgbInduk);
                                     @endphp
                                     @if($fileShgbInduk && $shgbUrl)
-                                        <div class="mt-auto p-2.5 rounded-3 bg-success bg-opacity-10 border border-success border-opacity-25 d-flex align-items-center justify-content-between gap-2">
-                                            <div class="d-flex align-items-center gap-2 overflow-hidden">
-                                                <i class="mdi mdi-file-pdf-box text-danger fs-4"></i>
-                                                <span class="text-truncate fw-semibold text-success small" style="font-size: 0.80rem;">Scan Sertifikat SHGB Induk PT</span>
+                                        <div class="rounded-3 mt-auto mb-1" style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 14px 20px; min-height: 64px;">
+                                            <div class="d-flex align-items-center justify-content-between gap-3">
+                                                <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1" style="min-width: 0;">
+                                                    <div class="p-2 rounded-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="background: rgba(0, 201, 167, 0.15); color: #00c9a7; width: 38px; height: 38px; border-radius: 6px;">
+                                                        <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
+                                                    </div>
+                                                    <div class="overflow-hidden" style="min-width: 0;">
+                                                        <span class="d-block fw-bold text-success text-truncate" style="font-size: 0.88rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center flex-shrink-0">
+                                                    <a href="{{ $shgbUrl }}" target="_blank" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                        <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                        <span>Lihat</span>
+                                                    </a>
+                                                </div>
                                             </div>
-                                            <a href="{{ $shgbUrl }}" target="_blank" class="btn btn-xs btn-success text-white py-1.5 px-3 rounded-2 d-inline-flex align-items-center gap-1.5 shadow-xs" style="font-size: 0.75rem; font-weight: 600;">
-                                                <i class="fas fa-eye"></i> <span>Lihat Berkas</span>
-                                            </a>
                                         </div>
                                     @else
-                                        <div class="mt-auto p-2.5 rounded-3 bg-light border d-flex align-items-center justify-content-between gap-2">
-                                            <div class="d-flex align-items-center gap-2 overflow-hidden">
-                                                <i class="mdi mdi-clock-outline text-muted fs-5"></i>
-                                                <span class="text-truncate text-muted small" style="font-size: 0.80rem;">Scan SHGB Induk belum diunggah</span>
+                                        <div class="rounded-3 mt-auto mb-1" style="background: #f8fafc; border: 1.5px dashed #cbd5e1; padding: 14px 20px; min-height: 64px;">
+                                            <div class="d-flex align-items-center justify-content-between gap-3">
+                                                <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1" style="min-width: 0;">
+                                                    <div class="p-2 rounded-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="background: #f1f5f9; color: #94a3b8; width: 38px; height: 38px; border-radius: 6px;">
+                                                        <i class="mdi mdi-file-document-outline" style="font-size: 1.35rem;"></i>
+                                                    </div>
+                                                    <div class="overflow-hidden" style="min-width: 0;">
+                                                        <span class="d-block fw-semibold text-muted text-truncate" style="font-size: 0.85rem; line-height: 1.2;">Scan SHGB Induk belum diunggah</span>
+                                                    </div>
+                                                </div>
+                                                <span class="badge bg-light text-muted border px-2.5 py-1" style="font-size: 0.72rem; border-radius: 4px;">Belum Ada</span>
                                             </div>
-                                            <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 0.70rem;">Belum Ada</span>
                                         </div>
                                     @endif
                                 </div>
@@ -753,26 +768,37 @@
                                         $asalUrl = $resolveDocUrl($asalDocFile);
                                     @endphp
                                     @if($asalDocFile && $asalUrl)
-                                        <div class="mt-auto p-2.5 rounded-3 bg-primary bg-opacity-10 border border-primary border-opacity-25 d-flex align-items-center justify-content-between gap-2">
-                                            <div class="d-flex align-items-center gap-2 overflow-hidden">
-                                                <i class="mdi mdi-file-document-outline text-primary fs-4"></i>
-                                                <span class="text-truncate fw-semibold text-primary small" style="font-size: 0.80rem;">
-                                                    {{ $certAsalFile ? 'Scan Sertifikat Alas Hak Asal' : ($pbbAsalFile ? 'Scan SPPT PBB Asal' : 'Scan Dokumen Asal') }}
-                                                </span>
-                                            </div>
-                                            <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
-                                                <a href="{{ $asalUrl }}" target="_blank" class="btn btn-xs btn-primary text-white py-1.5 px-3 rounded-2 d-inline-flex align-items-center gap-1.5 shadow-xs" style="font-size: 0.75rem; font-weight: 600;">
-                                                    <i class="fas fa-eye"></i> <span>Lihat Berkas</span>
-                                                </a>
+                                        <div class="rounded-3 mt-auto mb-1" style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 14px 20px; min-height: 64px;">
+                                            <div class="d-flex align-items-center justify-content-between gap-3">
+                                                <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1" style="min-width: 0;">
+                                                    <div class="p-2 rounded-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="background: rgba(0, 201, 167, 0.15); color: #00c9a7; width: 38px; height: 38px; border-radius: 6px;">
+                                                        <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
+                                                    </div>
+                                                    <div class="overflow-hidden" style="min-width: 0;">
+                                                        <span class="d-block fw-bold text-success text-truncate" style="font-size: 0.88rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center flex-shrink-0">
+                                                    <a href="{{ $asalUrl }}" target="_blank" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                        <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                        <span>Lihat</span>
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     @else
-                                        <div class="mt-auto p-2.5 rounded-3 bg-light border d-flex align-items-center justify-content-between gap-2">
-                                            <div class="d-flex align-items-center gap-2 overflow-hidden">
-                                                <i class="mdi mdi-clock-outline text-muted fs-5"></i>
-                                                <span class="text-truncate text-muted small" style="font-size: 0.80rem;">Dokumen asal belum diunggah</span>
+                                        <div class="rounded-3 mt-auto mb-1" style="background: #f8fafc; border: 1.5px dashed #cbd5e1; padding: 14px 20px; min-height: 64px;">
+                                            <div class="d-flex align-items-center justify-content-between gap-3">
+                                                <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1" style="min-width: 0;">
+                                                    <div class="p-2 rounded-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="background: #f1f5f9; color: #94a3b8; width: 38px; height: 38px; border-radius: 6px;">
+                                                        <i class="mdi mdi-file-document-outline" style="font-size: 1.35rem;"></i>
+                                                    </div>
+                                                    <div class="overflow-hidden" style="min-width: 0;">
+                                                        <span class="d-block fw-semibold text-muted text-truncate" style="font-size: 0.85rem; line-height: 1.2;">Dokumen asal belum diunggah</span>
+                                                    </div>
+                                                </div>
+                                                <span class="badge bg-light text-muted border px-2.5 py-1" style="font-size: 0.72rem; border-radius: 4px;">Belum Ada</span>
                                             </div>
-                                            <span class="badge bg-light text-muted border px-2 py-1" style="font-size: 0.70rem;">Belum Ada</span>
                                         </div>
                                     @endif
                                 </div>
@@ -975,50 +1001,140 @@
                         <!-- Section Fasilitas Sekitar Lahan -->
                         <div class="row mt-4 pt-3 border-top">
                             <div class="col-12">
-                                <h6 class="fw-bold text-dark border-bottom pb-2 mb-3 d-flex align-items-center gap-1.5">
-                                    <i class="mdi mdi-storefront-outline text-warning fs-5"></i> Fasilitas Umum Sekitar Lahan
-                                </h6>
-                                <div class="row g-2">
+                                <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
+                                    <h6 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2" style="font-size: 0.95rem;">
+                                        <div class="p-1.5 rounded-2 d-inline-flex align-items-center justify-content-center" style="background: #fef3c7; color: #d97706; width: 30px; height: 30px;">
+                                            <i class="mdi mdi-storefront-outline fs-5"></i>
+                                        </div>
+                                        <span>Fasilitas Umum Sekitar Lahan</span>
+                                    </h6>
+                                    <span class="text-muted small" style="font-size: 0.78rem;">Akses fasilitas publik terdekat</span>
+                                </div>
+
+                                <div class="row g-3">
+                                    <!-- 1. Dekat Sekolah -->
                                     <div class="col-6 col-md-4 col-lg-2">
-                                        <div class="p-2.5 rounded-2 border text-center h-100 d-flex flex-column align-items-center justify-content-center gap-1" style="background: {{ $item->facility_school ? '#f8fdf9' : '#fafafa' }}; border-color: {{ $item->facility_school ? '#bbf7d0' : '#e5e7eb' }} !important;">
-                                            <i class="mdi mdi-school fs-4 {{ $item->facility_school ? 'text-primary' : 'text-muted' }}"></i>
-                                            <span class="small fw-semibold text-dark">Dekat Sekolah</span>
-                                            {!! $item->facility_school ? '<span class="badge bg-success-subtle text-success py-0.5 px-1.5" style="font-size: 0.68rem;"><i class="mdi mdi-check me-0.5"></i>Tersedia</span>' : '<span class="badge bg-light text-muted py-0.5 px-1.5" style="font-size: 0.68rem;">-</span>' !!}
+                                        <div class="h-100 p-3 rounded-3 text-center d-flex flex-column align-items-center justify-content-center gap-2" 
+                                             style="background: #ffffff; border: 1.5px solid {{ $item->facility_school ? '#86efac' : '#e2e8f0' }}; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: all 0.2s ease;">
+                                            <div class="d-flex align-items-center justify-content-center" 
+                                                 style="width: 44px; height: 44px; border-radius: 8px; background: {{ $item->facility_school ? '#ede9fe' : '#f1f5f9' }}; color: {{ $item->facility_school ? '#7c3aed' : '#94a3b8' }};">
+                                                <i class="mdi mdi-school" style="font-size: 1.45rem;"></i>
+                                            </div>
+                                            <span style="font-size: 0.84rem; font-weight: 700; color: #0f172a; line-height: 1.2;">Dekat Sekolah</span>
+                                            @if($item->facility_school)
+                                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 700; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
+                                                    <i class="mdi mdi-check-circle" style="font-size: 0.82rem;"></i> Tersedia
+                                                </span>
+                                            @else
+                                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 600; background: #f8fafc; color: #94a3b8; border: 1px solid #e2e8f0;">
+                                                    <i class="mdi mdi-minus-circle-outline" style="font-size: 0.82rem;"></i> Belum Ada
+                                                </span>
+                                            @endif
                                         </div>
                                     </div>
+
+                                    <!-- 2. Rumah Sakit -->
                                     <div class="col-6 col-md-4 col-lg-2">
-                                        <div class="p-2.5 rounded-2 border text-center h-100 d-flex flex-column align-items-center justify-content-center gap-1" style="background: {{ $item->facility_hospital ? '#f8fdf9' : '#fafafa' }}; border-color: {{ $item->facility_hospital ? '#bbf7d0' : '#e5e7eb' }} !important;">
-                                            <i class="mdi mdi-hospital-building fs-4 {{ $item->facility_hospital ? 'text-danger' : 'text-muted' }}"></i>
-                                            <span class="small fw-semibold text-dark">Rumah Sakit</span>
-                                            {!! $item->facility_hospital ? '<span class="badge bg-success-subtle text-success py-0.5 px-1.5" style="font-size: 0.68rem;"><i class="mdi mdi-check me-0.5"></i>Tersedia</span>' : '<span class="badge bg-light text-muted py-0.5 px-1.5" style="font-size: 0.68rem;">-</span>' !!}
+                                        <div class="h-100 p-3 rounded-3 text-center d-flex flex-column align-items-center justify-content-center gap-2" 
+                                             style="background: #ffffff; border: 1.5px solid {{ $item->facility_hospital ? '#86efac' : '#e2e8f0' }}; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: all 0.2s ease;">
+                                            <div class="d-flex align-items-center justify-content-center" 
+                                                 style="width: 44px; height: 44px; border-radius: 8px; background: {{ $item->facility_hospital ? '#ffe4e6' : '#f1f5f9' }}; color: {{ $item->facility_hospital ? '#e11d48' : '#94a3b8' }};">
+                                                <i class="mdi mdi-hospital-building" style="font-size: 1.45rem;"></i>
+                                            </div>
+                                            <span style="font-size: 0.84rem; font-weight: 700; color: #0f172a; line-height: 1.2;">Rumah Sakit</span>
+                                            @if($item->facility_hospital)
+                                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 700; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
+                                                    <i class="mdi mdi-check-circle" style="font-size: 0.82rem;"></i> Tersedia
+                                                </span>
+                                            @else
+                                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 600; background: #f8fafc; color: #94a3b8; border: 1px solid #e2e8f0;">
+                                                    <i class="mdi mdi-minus-circle-outline" style="font-size: 0.82rem;"></i> Belum Ada
+                                                </span>
+                                            @endif
                                         </div>
                                     </div>
+
+                                    <!-- 3. Pasar -->
                                     <div class="col-6 col-md-4 col-lg-2">
-                                        <div class="p-2.5 rounded-2 border text-center h-100 d-flex flex-column align-items-center justify-content-center gap-1" style="background: {{ $item->facility_market ? '#f8fdf9' : '#fafafa' }}; border-color: {{ $item->facility_market ? '#bbf7d0' : '#e5e7eb' }} !important;">
-                                            <i class="mdi mdi-store-outline fs-4 {{ $item->facility_market ? 'text-warning' : 'text-muted' }}"></i>
-                                            <span class="small fw-semibold text-dark">Pasar</span>
-                                            {!! $item->facility_market ? '<span class="badge bg-success-subtle text-success py-0.5 px-1.5" style="font-size: 0.68rem;"><i class="mdi mdi-check me-0.5"></i>Tersedia</span>' : '<span class="badge bg-light text-muted py-0.5 px-1.5" style="font-size: 0.68rem;">-</span>' !!}
+                                        <div class="h-100 p-3 rounded-3 text-center d-flex flex-column align-items-center justify-content-center gap-2" 
+                                             style="background: #ffffff; border: 1.5px solid {{ $item->facility_market ? '#86efac' : '#e2e8f0' }}; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: all 0.2s ease;">
+                                            <div class="d-flex align-items-center justify-content-center" 
+                                                 style="width: 44px; height: 44px; border-radius: 8px; background: {{ $item->facility_market ? '#fef3c7' : '#f1f5f9' }}; color: {{ $item->facility_market ? '#d97706' : '#94a3b8' }};">
+                                                <i class="mdi mdi-store-outline" style="font-size: 1.45rem;"></i>
+                                            </div>
+                                            <span style="font-size: 0.84rem; font-weight: 700; color: #0f172a; line-height: 1.2;">Pasar</span>
+                                            @if($item->facility_market)
+                                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 700; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
+                                                    <i class="mdi mdi-check-circle" style="font-size: 0.82rem;"></i> Tersedia
+                                                </span>
+                                            @else
+                                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 600; background: #f8fafc; color: #94a3b8; border: 1px solid #e2e8f0;">
+                                                    <i class="mdi mdi-minus-circle-outline" style="font-size: 0.82rem;"></i> Belum Ada
+                                                </span>
+                                            @endif
                                         </div>
                                     </div>
+
+                                    <!-- 4. Transportasi -->
                                     <div class="col-6 col-md-4 col-lg-2">
-                                        <div class="p-2.5 rounded-2 border text-center h-100 d-flex flex-column align-items-center justify-content-center gap-1" style="background: {{ $item->facility_transport ? '#f8fdf9' : '#fafafa' }}; border-color: {{ $item->facility_transport ? '#bbf7d0' : '#e5e7eb' }} !important;">
-                                            <i class="mdi mdi-bus fs-4 {{ $item->facility_transport ? 'text-info' : 'text-muted' }}"></i>
-                                            <span class="small fw-semibold text-dark">Transportasi</span>
-                                            {!! $item->facility_transport ? '<span class="badge bg-success-subtle text-success py-0.5 px-1.5" style="font-size: 0.68rem;"><i class="mdi mdi-check me-0.5"></i>Tersedia</span>' : '<span class="badge bg-light text-muted py-0.5 px-1.5" style="font-size: 0.68rem;">-</span>' !!}
+                                        <div class="h-100 p-3 rounded-3 text-center d-flex flex-column align-items-center justify-content-center gap-2" 
+                                             style="background: #ffffff; border: 1.5px solid {{ $item->facility_transport ? '#86efac' : '#e2e8f0' }}; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: all 0.2s ease;">
+                                            <div class="d-flex align-items-center justify-content-center" 
+                                                 style="width: 44px; height: 44px; border-radius: 8px; background: {{ $item->facility_transport ? '#e0f2fe' : '#f1f5f9' }}; color: {{ $item->facility_transport ? '#0284c7' : '#94a3b8' }};">
+                                                <i class="mdi mdi-bus" style="font-size: 1.45rem;"></i>
+                                            </div>
+                                            <span style="font-size: 0.84rem; font-weight: 700; color: #0f172a; line-height: 1.2;">Transportasi</span>
+                                            @if($item->facility_transport)
+                                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 700; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
+                                                    <i class="mdi mdi-check-circle" style="font-size: 0.82rem;"></i> Tersedia
+                                                </span>
+                                            @else
+                                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 600; background: #f8fafc; color: #94a3b8; border: 1px solid #e2e8f0;">
+                                                    <i class="mdi mdi-minus-circle-outline" style="font-size: 0.82rem;"></i> Belum Ada
+                                                </span>
+                                            @endif
                                         </div>
                                     </div>
+
+                                    <!-- 5. Mall / Swalayan -->
                                     <div class="col-6 col-md-4 col-lg-2">
-                                        <div class="p-2.5 rounded-2 border text-center h-100 d-flex flex-column align-items-center justify-content-center gap-1" style="background: {{ $item->facility_mall ? '#f8fdf9' : '#fafafa' }}; border-color: {{ $item->facility_mall ? '#bbf7d0' : '#e5e7eb' }} !important;">
-                                            <i class="mdi mdi-cart-outline fs-4 {{ $item->facility_mall ? 'text-success' : 'text-muted' }}"></i>
-                                            <span class="small fw-semibold text-dark">Mall / Swalayan</span>
-                                            {!! $item->facility_mall ? '<span class="badge bg-success-subtle text-success py-0.5 px-1.5" style="font-size: 0.68rem;"><i class="mdi mdi-check me-0.5"></i>Tersedia</span>' : '<span class="badge bg-light text-muted py-0.5 px-1.5" style="font-size: 0.68rem;">-</span>' !!}
+                                        <div class="h-100 p-3 rounded-3 text-center d-flex flex-column align-items-center justify-content-center gap-2" 
+                                             style="background: #ffffff; border: 1.5px solid {{ $item->facility_mall ? '#86efac' : '#e2e8f0' }}; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: all 0.2s ease;">
+                                            <div class="d-flex align-items-center justify-content-center" 
+                                                 style="width: 44px; height: 44px; border-radius: 8px; background: {{ $item->facility_mall ? '#dcfce7' : '#f1f5f9' }}; color: {{ $item->facility_mall ? '#16a34a' : '#94a3b8' }};">
+                                                <i class="mdi mdi-cart-outline" style="font-size: 1.45rem;"></i>
+                                            </div>
+                                            <span style="font-size: 0.84rem; font-weight: 700; color: #0f172a; line-height: 1.2;">Mall / Swalayan</span>
+                                            @if($item->facility_mall)
+                                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 700; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
+                                                    <i class="mdi mdi-check-circle" style="font-size: 0.82rem;"></i> Tersedia
+                                                </span>
+                                            @else
+                                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 600; background: #f8fafc; color: #94a3b8; border: 1px solid #e2e8f0;">
+                                                    <i class="mdi mdi-minus-circle-outline" style="font-size: 0.82rem;"></i> Belum Ada
+                                                </span>
+                                            @endif
                                         </div>
                                     </div>
+
+                                    <!-- 6. Bank / ATM -->
                                     <div class="col-6 col-md-4 col-lg-2">
-                                        <div class="p-2.5 rounded-2 border text-center h-100 d-flex flex-column align-items-center justify-content-center gap-1" style="background: {{ $item->facility_bank ? '#f8fdf9' : '#fafafa' }}; border-color: {{ $item->facility_bank ? '#bbf7d0' : '#e5e7eb' }} !important;">
-                                            <i class="mdi mdi-bank-outline fs-4 {{ $item->facility_bank ? 'text-secondary' : 'text-muted' }}"></i>
-                                            <span class="small fw-semibold text-dark">Bank / ATM</span>
-                                            {!! $item->facility_bank ? '<span class="badge bg-success-subtle text-success py-0.5 px-1.5" style="font-size: 0.68rem;"><i class="mdi mdi-check me-0.5"></i>Tersedia</span>' : '<span class="badge bg-light text-muted py-0.5 px-1.5" style="font-size: 0.68rem;">-</span>' !!}
+                                        <div class="h-100 p-3 rounded-3 text-center d-flex flex-column align-items-center justify-content-center gap-2" 
+                                             style="background: #ffffff; border: 1.5px solid {{ $item->facility_bank ? '#86efac' : '#e2e8f0' }}; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: all 0.2s ease;">
+                                            <div class="d-flex align-items-center justify-content-center" 
+                                                 style="width: 44px; height: 44px; border-radius: 8px; background: {{ $item->facility_bank ? '#ccfbf1' : '#f1f5f9' }}; color: {{ $item->facility_bank ? '#0f766e' : '#94a3b8' }};">
+                                                <i class="mdi mdi-bank-outline" style="font-size: 1.45rem;"></i>
+                                            </div>
+                                            <span style="font-size: 0.84rem; font-weight: 700; color: #0f172a; line-height: 1.2;">Bank / ATM</span>
+                                            @if($item->facility_bank)
+                                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 700; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
+                                                    <i class="mdi mdi-check-circle" style="font-size: 0.82rem;"></i> Tersedia
+                                                </span>
+                                            @else
+                                                <span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 600; background: #f8fafc; color: #94a3b8; border: 1px solid #e2e8f0;">
+                                                    <i class="mdi mdi-minus-circle-outline" style="font-size: 0.82rem;"></i> Belum Ada
+                                                </span>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

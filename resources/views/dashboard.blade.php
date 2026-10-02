@@ -69,7 +69,7 @@
                     <div class="dash-kpi-sub">Kavling & Unit Bangunan</div>
                 </div>
             </div>
-            <a href="{{ route('marketing.jual-unit') }}" class="dash-kpi-action blue" title="Lihat Unit">
+            <a href="{{ route('proyek.unit.index') }}" class="dash-kpi-action blue" title="Lihat Unit Proyek">
                 <i class="mdi mdi-arrow-right"></i>
             </a>
         </div>
@@ -125,7 +125,7 @@
                         <p class="dash-panel-subtitle">5 proyek terbaru yang sedang dikelola</p>
                     </div>
                 </div>
-                <a href="{{ route('proyek.index') }}" class="dash-link-all">
+                <a href="{{ route('proyek.unit.index') }}" class="dash-link-all">
                     Lihat Semua <i class="mdi mdi-arrow-right"></i>
                 </a>
             </div>
@@ -185,7 +185,7 @@
                                     </div>
                                 </td>
                                 <td style="text-align: center;">
-                                    <a href="{{ route('proyek.index') }}" class="dash-action-btn" title="Kelola Proyek">
+                                    <a href="{{ route('proyek.unit.index') }}" class="dash-action-btn" title="Kelola Unit Proyek">
                                         <i class="mdi mdi-dots-horizontal"></i>
                                     </a>
                                 </td>
@@ -200,81 +200,100 @@
             </div>
         </div>
 
-        <!-- Tabel Kanan: Status Perizinan (LEBIH VISUAL DENGAN BADGE & STAT SUMMARY) -->
+        <!-- Tabel Kanan: Daftar Tanah (Pasca Land Bank) (Simple & Seimbang dengan Tabel Kiri) -->
         <div class="dash-panel">
             <div class="dash-panel-header">
                 <div class="dash-panel-title-wrap">
-                    <div class="dash-panel-icon">
-                        <i class="mdi mdi-file-document-edit-outline"></i>
+                    <div class="dash-panel-icon" style="background-color: #ede9fe; color: #7c3aed;">
+                        <i class="mdi mdi-office-building-marker-outline"></i>
                     </div>
                     <div>
-                        <h2 class="dash-panel-title">Status Perizinan</h2>
-                        <p class="dash-panel-subtitle">Ringkasan pengurusan izin di semua proyek</p>
+                        <h2 class="dash-panel-title">Daftar Tanah (Pasca Land Bank)</h2>
+                        <p class="dash-panel-subtitle">5 tanah / kawasan yang sudah diakuisisi</p>
                     </div>
                 </div>
-                <a href="{{ route('perizinan.index') }}" class="dash-link-all">
+                <a href="{{ route('properti-all') }}" class="dash-link-all">
                     Lihat Semua <i class="mdi mdi-arrow-right"></i>
                 </a>
             </div>
 
-            <!-- Ringkasan Visual Status Perizinan (Mini Badges) -->
-            <div class="dash-perizinan-summary">
-                <div class="dash-perizinan-box gray">
-                    <div class="label">Total Izin</div>
-                    <div class="num">{{ $perizinanSummary['total'] ?? 0 }}</div>
-                </div>
-                <div class="dash-perizinan-box green">
-                    <div class="label">Selesai</div>
-                    <div class="num">{{ $perizinanSummary['selesai'] ?? 0 }}</div>
-                </div>
-                <div class="dash-perizinan-box blue">
-                    <div class="label">Berjalan</div>
-                    <div class="num">{{ $perizinanSummary['berjalan'] ?? 0 }}</div>
-                </div>
-                <div class="dash-perizinan-box rose">
-                    <div class="label">Tertunda</div>
-                    <div class="num">{{ $perizinanSummary['tertunda'] ?? 0 }}</div>
-                </div>
-            </div>
-
-            <!-- Tabel Data Status Perizinan dengan Badge Warna Tegas -->
+            <!-- Tabel Data Tanah Pasca Land Bank (Simple & Kompak) -->
             <div class="dash-table-wrap">
                 <table class="dash-table">
                     <thead>
                         <tr>
                             <th style="width: 28px; text-align: center;">No</th>
-                            <th>Jenis Perizinan</th>
-                            <th style="text-align: center;">Total</th>
-                            <th style="text-align: center;">Selesai</th>
-                            <th style="text-align: center;">Berjalan</th>
-                            <th style="text-align: center;">Tertunda</th>
+                            <th>Nama Properti</th>
+                            <th>Lokasi</th>
+                            <th>Luas</th>
+                            <th style="text-align: center;">Legalitas</th>
+                            <th>Tahap</th>
+                            <th>Progress</th>
                             <th style="width: 32px; text-align: center;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($perizinanRows as $idx => $pz)
+                        @forelse($pascaProjects as $pIndex => $pasca)
+                            @php
+                                $tahapPasca = $pasca->development_status ?: 'Perencanaan';
+                                $badgePasca = match(strtolower($tahapPasca)) {
+                                    'selesai' => 'green',
+                                    'sedang dibangun', 'pembangunan' => 'blue',
+                                    'perizinan' => 'sky',
+                                    'legal' => 'teal',
+                                    'pemasaran' => 'orange',
+                                    default => 'gray'
+                                };
+                                $progPasca = $pasca->overall_progress_percentage;
+                                $isVerified = ($pasca->legal_status === 'verified') || $pasca->isFromPraLandbank();
+                            @endphp
                             <tr>
-                                <td style="font-weight: 700; text-align: center;">{{ $idx + 1 }}</td>
-                                <td style="font-weight: 700; color: #0f172a;">{{ $pz['nama'] }}</td>
-                                <td style="text-align: center; font-weight: 700; color: #334155;">{{ $pz['total'] }}</td>
-                                <td style="text-align: center;">
-                                    <span class="dash-pill-count {{ $pz['selesai'] > 0 ? 'green' : 'gray' }}">{{ $pz['selesai'] }}</span>
+                                <td style="font-weight: 700; text-align: center;">{{ $pIndex + 1 }}</td>
+                                <td>
+                                    <a href="{{ route('properti.show', $pasca->id) }}" style="font-weight: 700; color: #0f172a; text-decoration: none;" class="hover-primary" title="Lihat detail properti">
+                                        {{ $pasca->name }}
+                                    </a>
+                                    <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 1px;">
+                                        {{ $pasca->companyProfile?->name ?? ($pasca->zoning ?? 'Kawasan Perumahan') }}
+                                    </div>
+                                </td>
+                                <td style="color: #64748b;">
+                                    {{ $pasca->city ?? ($pasca->district ?? 'Jember') }}
+                                </td>
+                                <td style="color: #475569; font-weight: 500;">
+                                    @if($pasca->area >= 10000)
+                                        {{ number_format($pasca->area / 10000, 1, ',', '.') }} Ha
+                                    @else
+                                        {{ number_format($pasca->area, 0, ',', '.') }} m²
+                                    @endif
                                 </td>
                                 <td style="text-align: center;">
-                                    <span class="dash-pill-count {{ $pz['berjalan'] > 0 ? 'blue' : 'gray' }}">{{ $pz['berjalan'] }}</span>
+                                    @if($isVerified)
+                                        <span class="dash-badge green">Terverifikasi</span>
+                                    @else
+                                        <span class="dash-badge sky">Proses</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <span class="dash-badge {{ $badgePasca }}">{{ $tahapPasca }}</span>
+                                </td>
+                                <td>
+                                    <div class="dash-progress-wrap">
+                                        <div class="dash-progress-bar-bg" style="width: 70px;">
+                                            <div class="dash-progress-bar-fill" style="width: {{ $progPasca }}%; background-color: {{ $progPasca >= 70 ? '#7c3aed' : ($progPasca >= 40 ? '#0284c7' : '#ea580c') }};"></div>
+                                        </div>
+                                        <span style="font-size: 0.68rem; font-weight: 700; color: #334155;">{{ $progPasca }}%</span>
+                                    </div>
                                 </td>
                                 <td style="text-align: center;">
-                                    <span class="dash-pill-count {{ $pz['tertunda'] > 0 ? 'rose' : 'gray' }}">{{ $pz['tertunda'] }}</span>
-                                </td>
-                                <td style="text-align: center;">
-                                    <a href="{{ route('perizinan.index') }}" class="dash-action-btn" title="Detail Perizinan">
+                                    <a href="{{ route('properti.show', $pasca->id) }}" class="dash-action-btn" title="Detail Pasca Land Bank">
                                         <i class="mdi mdi-dots-horizontal"></i>
                                     </a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" style="text-align: center; color: #94a3b8; padding: 24px;">Belum ada data status perizinan</td>
+                                <td colspan="8" style="text-align: center; color: #94a3b8; padding: 24px;">Belum ada data tanah pasca land bank</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -287,7 +306,7 @@
     <!-- 4. BARIS 2: STATUS UNIT (COMPACT) & PROGRES PEMBANGUNAN (BERBASIS UNIT) -->
     <div class="dash-row-grid">
         
-        <!-- Kartu Kiri: Status Unit (COMPACT & TIDAK TERLALU TINGGI) -->
+        <!-- Kartu Kiri: Status Unit (5 Unit Terbaru dari Catalog Unit) -->
         <div class="dash-panel">
             <div class="dash-panel-header">
                 <div class="dash-panel-title-wrap">
@@ -296,7 +315,7 @@
                     </div>
                     <div>
                         <h2 class="dash-panel-title">Status Unit</h2>
-                        <p class="dash-panel-subtitle">Ringkasan status unit di seluruh proyek</p>
+                        <p class="dash-panel-subtitle">5 unit terbaru dari katalog unit properti</p>
                     </div>
                 </div>
                 <a href="{{ route('marketing.jual-unit') }}" class="dash-link-all">
@@ -304,77 +323,103 @@
                 </a>
             </div>
 
-            <!-- 4 Mini Cards Grid (COMPACT PADDING) -->
-            <div class="dash-unit-grid">
-                
-                <!-- 1. Tersedia -->
-                <div class="dash-unit-card green">
-                    <div class="dash-unit-card-head">
-                        <div class="dash-unit-icon green">
-                            <i class="mdi mdi-home-circle"></i>
-                        </div>
-                        <span class="dash-unit-name">Tersedia</span>
-                    </div>
-                    <div class="dash-unit-val">{{ number_format($unitStats['ready']) }}</div>
-                    <div class="dash-unit-pct green">
-                        ● {{ $unitStats['ready_pct'] }}%
-                    </div>
+            <!-- Mini Summary Status Badges (Kompak seperti Status Perizinan) -->
+            <div class="dash-perizinan-summary">
+                <div class="dash-perizinan-box green">
+                    <div class="label">Tersedia</div>
+                    <div class="num">{{ $unitStats['ready'] }}</div>
                 </div>
-
-                <!-- 2. Booking -->
-                <div class="dash-unit-card blue">
-                    <div class="dash-unit-card-head">
-                        <div class="dash-unit-icon blue">
-                            <i class="mdi mdi-bookmark-check"></i>
-                        </div>
-                        <span class="dash-unit-name">Booking</span>
-                    </div>
-                    <div class="dash-unit-val">{{ number_format($unitStats['booking']) }}</div>
-                    <div class="dash-unit-pct blue">
-                        ● {{ $unitStats['booking_pct'] }}%
-                    </div>
+                <div class="dash-perizinan-box blue">
+                    <div class="label">Booking</div>
+                    <div class="num">{{ $unitStats['booking'] }}</div>
                 </div>
-
-                <!-- 3. Terjual -->
-                <div class="dash-unit-card purple">
-                    <div class="dash-unit-card-head">
-                        <div class="dash-unit-icon purple">
-                            <i class="mdi mdi-home-lock"></i>
-                        </div>
-                        <span class="dash-unit-name">Terjual</span>
-                    </div>
-                    <div class="dash-unit-val">{{ number_format($unitStats['sold']) }}</div>
-                    <div class="dash-unit-pct purple">
-                        ● {{ $unitStats['sold_pct'] }}%
-                    </div>
+                <div class="dash-perizinan-box purple">
+                    <div class="label">Terjual</div>
+                    <div class="num">{{ $unitStats['sold'] }}</div>
                 </div>
-
-                <!-- 4. Dipesan KPR -->
-                <div class="dash-unit-card amber">
-                    <div class="dash-unit-card-head">
-                        <div class="dash-unit-icon amber">
-                            <i class="mdi mdi-file-document-check"></i>
-                        </div>
-                        <span class="dash-unit-name">KPR</span>
-                    </div>
-                    <div class="dash-unit-val">{{ number_format($unitStats['kpr']) }}</div>
-                    <div class="dash-unit-pct amber">
-                        ● {{ $unitStats['kpr_pct'] }}%
-                    </div>
+                <div class="dash-perizinan-box amber">
+                    <div class="label">KPR</div>
+                    <div class="num">{{ $unitStats['kpr'] }}</div>
                 </div>
-
             </div>
 
-            <!-- Visual Proposi Bar (Rasio Keseluruhan Unit) -->
-            <div class="dash-unit-ratio">
-                <span>Rasio Komposisi Unit:</span>
-                <div class="dash-ratio-bar">
-                    <div class="dash-ratio-segment" style="width: {{ $unitStats['ready_pct'] }}%; background-color: #10b981;" title="Tersedia {{ $unitStats['ready_pct'] }}%"></div>
-                    <div class="dash-ratio-segment" style="width: {{ $unitStats['booking_pct'] }}%; background-color: #3b82f6;" title="Booking {{ $unitStats['booking_pct'] }}%"></div>
-                    <div class="dash-ratio-segment" style="width: {{ $unitStats['sold_pct'] }}%; background-color: #a855f7;" title="Terjual {{ $unitStats['sold_pct'] }}%"></div>
-                    <div class="dash-ratio-segment" style="width: {{ $unitStats['kpr_pct'] }}%; background-color: #f59e0b;" title="KPR {{ $unitStats['kpr_pct'] }}%"></div>
-                </div>
-                <span style="font-weight: 700; color: #334155;">Total {{ number_format($unitStats['total']) }}</span>
+            <!-- Tabel Data 5 Unit Terbaru dari Catalog Unit -->
+            <div class="dash-table-wrap">
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 28px; text-align: center;">No</th>
+                            <th>Unit / Proyek</th>
+                            <th>Tipe / Jenis</th>
+                            <th>Harga Jual</th>
+                            <th style="text-align: center;">Status</th>
+                            <th style="width: 32px; text-align: center;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($recentCatalogUnits as $cuIdx => $cu)
+                            @php
+                                $cuStatus = strtolower($cu->status ?? 'ready');
+                                $cuBadge = match(true) {
+                                    in_array($cuStatus, ['ready', 'tersedia', 'available', 'draft']) => 'green',
+                                    in_array($cuStatus, ['booked', 'booking']) => 'yellow',
+                                    in_array($cuStatus, ['sold', 'terjual']) => 'purple',
+                                    default => 'gray'
+                                };
+                                $cuLabel = match(true) {
+                                    in_array($cuStatus, ['ready', 'tersedia', 'available', 'draft']) => 'Tersedia',
+                                    in_array($cuStatus, ['booked', 'booking']) => 'Booking',
+                                    in_array($cuStatus, ['sold', 'terjual']) => 'Terjual',
+                                    default => ucfirst($cuStatus)
+                                };
+                            @endphp
+                            <tr>
+                                <td style="font-weight: 700; text-align: center;">{{ $cuIdx + 1 }}</td>
+                                <td>
+                                    <div style="font-weight: 700; color: #0f172a;">
+                                        Blok {{ $cu->block }}.{{ $cu->unit_number }} {{ $cu->unit_name }}
+                                    </div>
+                                    <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 1px;">
+                                        {{ $cu->landBank?->name ?? 'Proyek' }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="color: #334155; font-weight: 600; font-size: 0.76rem;">
+                                        {{ $cu->type ? 'Tipe ' . $cu->type : 'Standar' }}
+                                    </div>
+                                    <div style="font-size: 0.68rem; color: #64748b;">
+                                        {{ $cu->jenis ? ucfirst($cu->jenis) : 'Komersil' }}
+                                    </div>
+                                </td>
+                                <td>
+                                    @if(!empty($cu->price) && $cu->price > 0)
+                                        <span style="font-weight: 700; color: #16a34a; font-size: 0.8rem;">
+                                            Rp {{ number_format($cu->price, 0, ',', '.') }}
+                                        </span>
+                                    @else
+                                        <span style="color: #94a3b8; font-size: 0.72rem; font-style: italic;">
+                                            Belum Diset
+                                        </span>
+                                    @endif
+                                </td>
+                                <td style="text-align: center;">
+                                    <span class="dash-badge {{ $cuBadge }}">
+                                        {{ $cuLabel }}
+                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <a href="{{ route('marketing.jual-unit') }}" class="dash-action-btn" title="Lihat di Katalog Unit">
+                                        <i class="mdi mdi-dots-horizontal"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #94a3b8; padding: 24px;">Belum ada data unit di katalog</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -390,7 +435,7 @@
                         <p class="dash-panel-subtitle">Progress pembangunan per unit properti</p>
                     </div>
                 </div>
-                <a href="{{ route('marketing.jual-unit') }}" class="dash-link-all">
+                <a href="{{ route('proyek.unit.index') }}" class="dash-link-all">
                     Lihat Semua <i class="mdi mdi-arrow-right"></i>
                 </a>
             </div>
@@ -416,7 +461,9 @@
                             <tr>
                                 <td style="font-weight: 700; text-align: center;">{{ $uIdx + 1 }}</td>
                                 <td>
-                                    <div style="font-weight: 700; color: #0f172a;">Blok {{ $u->block }}.{{ $u->unit_number }} {{ $u->unit_name }}</div>
+                                    <a href="{{ route('proyek.unit.index', ['search' => $u->block . '.' . $u->unit_number]) }}" style="font-weight: 700; color: #0f172a; text-decoration: none;" class="hover-primary" title="Buka di Unit Proyek">
+                                        Blok {{ $u->block }}.{{ $u->unit_number }} {{ $u->unit_name }}
+                                    </a>
                                     <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 1px;">{{ $u->landBank?->name ?? 'Proyek' }}</div>
                                 </td>
                                 <td style="color: #64748b; font-weight: 500;">
@@ -450,7 +497,7 @@
                                     @endif
                                 </td>
                                 <td style="text-align: center;">
-                                    <a href="{{ route('marketing.jual-unit') }}" class="dash-action-btn" title="Detail Unit">
+                                    <a href="{{ route('proyek.unit.index', ['search' => $u->block . '.' . $u->unit_number]) }}" class="dash-action-btn" title="Buka di Unit Proyek">
                                         <i class="mdi mdi-dots-horizontal"></i>
                                     </a>
                                 </td>
@@ -467,7 +514,234 @@
 
     </div>
 
-    <!-- 5. BARIS 3: TUGAS TIM TERBARU & RINGKASAN PENJUALAN & KEUANGAN (SEIMBANG & RAPI) -->
+    <!-- 5. BARIS 3: MARKETING & TRANSAKSI (STATUS KPR DI KIRI & 5 BOOKING TERKINI DI KANAN) -->
+    <div class="dash-row-grid">
+        
+        <!-- Kartu Kiri: Status & Tahapan KPR (5 Booking KPR Terbaru) -->
+        <div class="dash-panel">
+            <div class="dash-panel-header">
+                <div class="dash-panel-title-wrap">
+                    <div class="dash-panel-icon" style="background-color: #ede9fe; color: #7c3aed;">
+                        <i class="mdi mdi-bank-check"></i>
+                    </div>
+                    <div>
+                        <h2 class="dash-panel-title">Status & Tahapan KPR</h2>
+                        <p class="dash-panel-subtitle">5 pengajuan KPR & status tahapan bank</p>
+                    </div>
+                </div>
+                <a href="{{ route('customer.kpr') }}" class="dash-link-all">
+                    Lihat Semua <i class="mdi mdi-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Tabel Data 5 KPR Terbaru -->
+            <div class="dash-table-wrap">
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 28px; text-align: center;">No</th>
+                            <th>Konsumen / Unit</th>
+                            <th>Proyek</th>
+                            <th>Bank / Tipe</th>
+                            <th style="text-align: center;">Tahapan KPR</th>
+                            <th style="width: 32px; text-align: center;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($recentKprBookings as $kIdx => $kpr)
+                            @php
+                                $kprApp = $kpr->kprApplication;
+                                $appStatus = strtolower($kprApp?->status ?? '');
+                                $revisiCount = $kprApp?->documents?->where('status', 'revisi')->count() ?? 0;
+                                $isAkadDone = ($kpr->status_akad === 'done') 
+                                    || in_array(strtolower($kpr->status ?? ''), ['completed', 'sold', 'lunas', 'akad_selesai']) 
+                                    || in_array($appStatus, ['akad', 'completed', 'lunas']);
+
+                                if ($isAkadDone) {
+                                    $kprBadge = 'green';
+                                    $kprLabel = 'Akad Selesai';
+                                } elseif ($appStatus === 'approved') {
+                                    $kprBadge = 'teal';
+                                    $kprLabel = 'SP3K Disetujui';
+                                } elseif ($appStatus === 'survey') {
+                                    $kprBadge = 'blue';
+                                    $kprLabel = 'Survey Bank';
+                                } elseif ($revisiCount > 0) {
+                                    $kprBadge = 'amber';
+                                    $kprLabel = 'Revisi Berkas (' . $revisiCount . ')';
+                                } elseif ($appStatus === 'rejected') {
+                                    $kprBadge = 'red';
+                                    $kprLabel = 'Ditolak Bank';
+                                } elseif ($kprApp) {
+                                    $kprBadge = 'sky';
+                                    $kprLabel = 'Verifikasi Berkas';
+                                } else {
+                                    $kprBadge = 'gray';
+                                    $kprLabel = 'Booking Awal';
+                                }
+                            @endphp
+                            <tr>
+                                <td style="font-weight: 700; text-align: center;">{{ $kIdx + 1 }}</td>
+                                <td>
+                                    <div style="font-weight: 700; color: #0f172a;">
+                                        {{ $kpr->customer->full_name ?? ($kpr->customer->name ?? '-') }}
+                                    </div>
+                                    <div style="font-size: 0.68rem; color: #64748b; margin-top: 1px;">
+                                        Blok {{ $kpr->unit?->block ?? '-' }}.{{ $kpr->unit?->unit_number ?? '-' }} {{ $kpr->unit?->unit_name ?? '' }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="color: #334155; font-weight: 600; font-size: 0.74rem;">
+                                        {{ $kpr->unit?->landBank?->name ?? 'Proyek' }}
+                                    </div>
+                                    <div style="font-size: 0.68rem; color: #94a3b8;">
+                                        {{ $kpr->unit?->landBank?->city ?? 'Jember' }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="font-weight: 600; color: #1e293b; font-size: 0.74rem;">
+                                        {{ $kprApp?->bank?->name ?? 'Bank Pengajuan' }}
+                                    </div>
+                                    <div style="font-size: 0.68rem; color: #64748b;">
+                                        {{ $kpr->unit?->jenis ? ucfirst($kpr->unit->jenis) : 'Subsidi' }} {{ $kpr->unit?->type ? 'T.' . $kpr->unit->type : '' }}
+                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                    <span class="dash-badge {{ $kprBadge }}">
+                                        {{ $kprLabel }}
+                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <a href="{{ route('transaksi.kpr.approve', $kpr->id) }}" class="dash-action-btn" title="Detail Verifikasi KPR">
+                                        <i class="mdi mdi-dots-horizontal"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #94a3b8; padding: 24px;">Belum ada pengajuan KPR aktif</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Kartu Kanan: Transaksi Booking Terkini (5 Booking Terbaru Semua Skema) -->
+        <div class="dash-panel">
+            <div class="dash-panel-header">
+                <div class="dash-panel-title-wrap">
+                    <div class="dash-panel-icon" style="background-color: #e0f2fe; color: #0284c7;">
+                        <i class="mdi mdi-clipboard-text-clock-outline"></i>
+                    </div>
+                    <div>
+                        <h2 class="dash-panel-title">Transaksi Booking Terkini</h2>
+                        <p class="dash-panel-subtitle">5 transaksi booking unit (KPR, Cash & Tempo)</p>
+                    </div>
+                </div>
+                <a href="{{ route('marketing.list_pengajuan') }}" class="dash-link-all">
+                    Lihat Semua <i class="mdi mdi-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- Tabel Data 5 Booking Terkini -->
+            <div class="dash-table-wrap">
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 28px; text-align: center;">No</th>
+                            <th>Konsumen</th>
+                            <th>Unit / Proyek</th>
+                            <th>Skema Bayar</th>
+                            <th>Harga / UTJ</th>
+                            <th style="text-align: center;">Status Unit</th>
+                            <th style="width: 32px; text-align: center;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($recentAllBookings as $bIdx => $bk)
+                            @php
+                                $ptype = strtolower($bk->purchase_type ?? 'kpr');
+                                $skemaBadge = match(true) {
+                                    str_contains($ptype, 'tempo') => 'orange',
+                                    str_contains($ptype, 'cash') => 'green',
+                                    default => 'blue'
+                                };
+                                $skemaLabel = match(true) {
+                                    str_contains($ptype, 'tempo') => 'Cash Tempo',
+                                    str_contains($ptype, 'cash') => 'Cash Keras',
+                                    default => 'KPR'
+                                };
+
+                                $uStat = strtolower($bk->unit?->status ?? 'booked');
+                                $unitBadge = match(true) {
+                                    in_array($uStat, ['sold', 'terjual']) => 'purple',
+                                    in_array($uStat, ['booked', 'booking']) => 'yellow',
+                                    in_array($uStat, ['ready', 'tersedia']) => 'green',
+                                    default => 'gray'
+                                };
+                                $unitLabel = match(true) {
+                                    in_array($uStat, ['sold', 'terjual']) => 'Terjual',
+                                    in_array($uStat, ['booked', 'booking']) => 'Booking',
+                                    in_array($uStat, ['ready', 'tersedia']) => 'Tersedia',
+                                    default => ucfirst($uStat)
+                                };
+                            @endphp
+                            <tr>
+                                <td style="font-weight: 700; text-align: center;">{{ $bIdx + 1 }}</td>
+                                <td>
+                                    <div style="font-weight: 700; color: #0f172a;">
+                                        {{ $bk->customer->full_name ?? ($bk->customer->name ?? '-') }}
+                                    </div>
+                                    <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 1px;">
+                                        Sales: {{ $bk->sales?->name ?? '-' }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="font-weight: 600; color: #1e293b; font-size: 0.76rem;">
+                                        Blok {{ $bk->unit?->block ?? '-' }}.{{ $bk->unit?->unit_number ?? '-' }} {{ $bk->unit?->unit_name ?? '' }}
+                                    </div>
+                                    <div style="font-size: 0.68rem; color: #64748b;">
+                                        {{ $bk->unit?->landBank?->name ?? 'Proyek' }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="dash-badge {{ $skemaBadge }}">
+                                        {{ $skemaLabel }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div style="font-weight: 700; color: #16a34a; font-size: 0.78rem;">
+                                        Rp {{ number_format($bk->unit?->price ?? 0, 0, ',', '.') }}
+                                    </div>
+                                    <div style="font-size: 0.68rem; color: #64748b;">
+                                        UTJ: Rp {{ number_format($bk->booking_fee ?? 0, 0, ',', '.') }}
+                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                    <span class="dash-badge {{ $unitBadge }}">
+                                        {{ $unitLabel }}
+                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <a href="{{ route('marketing.list_pengajuan') }}" class="dash-action-btn" title="Detail Pengajuan Booking">
+                                        <i class="mdi mdi-dots-horizontal"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: #94a3b8; padding: 24px;">Belum ada transaksi booking tercatat</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 6. BARIS 4: TUGAS TIM TERBARU & RINGKASAN PENJUALAN & KEUANGAN (SEIMBANG & RAPI) -->
     <div class="dash-row-grid stretch">
         
         <!-- Kartu Kiri: Tugas Tim Terbaru (Rapat & Seimbang) -->
