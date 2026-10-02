@@ -86,6 +86,36 @@ class ArusKasController extends Controller
     }
 
     /**
+     * Form Halaman Sendiri untuk Input Kas Masuk (BKM) & Kas Keluar (BKK)
+     */
+    public function create(Request $request)
+    {
+        $type = strtoupper($request->get('type', 'BKM'));
+        if (!in_array($type, ['BKM', 'BKK'])) {
+            $type = 'BKM';
+        }
+
+        $landBanks = LandBank::orderBy('name')->get();
+
+        $cashBankAccounts = ChartOfAccount::active()
+            ->where('sub_category', 'Kas & Bank')
+            ->orderBy('code')
+            ->get();
+
+        $contraAccounts = ChartOfAccount::active()
+            ->where('sub_category', '!=', 'Kas & Bank')
+            ->orderBy('code')
+            ->get();
+
+        return view('keuangan.arus_kas.create', compact(
+            'type',
+            'landBanks',
+            'cashBankAccounts',
+            'contraAccounts'
+        ));
+    }
+
+    /**
      * Tambah Transaksi Kas Manual (Quick BKM / BKK)
      */
     public function storeManual(Request $request)
@@ -136,7 +166,7 @@ class ArusKasController extends Controller
                 'total_amount'       => $request->amount,
                 'proof_file'         => $proofPath,
                 'is_auto_generated'  => false,
-                'created_by'         => auth()->id(),
+                'created_by'         => \App\Models\User::where('id', auth()->id())->value('id'),
             ]);
 
             $this->syncService->createJournalItems(
@@ -148,7 +178,7 @@ class ArusKasController extends Controller
             );
 
             DB::commit();
-            return redirect()->back()->with('success', "Transaksi Kas {$entryNumber} berhasil dicatat.");
+            return redirect()->route('keuangan.arus-kas.index')->with('success', "Transaksi Kas {$entryNumber} berhasil dicatat.");
         } catch (\Throwable $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Gagal mencatat transaksi kas: ' . $e->getMessage())->withInput();

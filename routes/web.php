@@ -518,6 +518,7 @@ Route::middleware(['auth'])->group(function () {
 
     // 1. Buku Jurnal Umum (General Journal)
     Route::get('/keuangan/jurnal-umum', [JurnalUmumController::class, 'index'])->name('keuangan.jurnal.index');
+    Route::get('/keuangan/jurnal-umum/create', [JurnalUmumController::class, 'create'])->name('keuangan.jurnal.create');
     Route::post('/keuangan/jurnal-umum', [JurnalUmumController::class, 'store'])->name('keuangan.jurnal.store');
     Route::get('/keuangan/jurnal-umum/detail/{id}', [JurnalUmumController::class, 'show'])->name('keuangan.jurnal.show');
     Route::get('/keuangan/jurnal-umum/cetak', [JurnalUmumController::class, 'cetak'])->name('keuangan.jurnal.cetak');
@@ -526,6 +527,7 @@ Route::middleware(['auth'])->group(function () {
 
     // 2. Laporan Arus Kas (Cash Flow)
     Route::get('/keuangan/arus-kas', [ArusKasController::class, 'index'])->name('keuangan.arus-kas.index');
+    Route::get('/keuangan/arus-kas/create', [ArusKasController::class, 'create'])->name('keuangan.arus-kas.create');
     Route::post('/keuangan/arus-kas/manual', [ArusKasController::class, 'storeManual'])->name('keuangan.arus-kas.store-manual');
     Route::delete('/keuangan/arus-kas/manual/{id}', [ArusKasController::class, 'destroyManual'])->name('keuangan.arus-kas.destroy-manual');
     Route::get('/keuangan/arus-kas/cetak', [ArusKasController::class, 'cetak'])->name('keuangan.arus-kas.cetak');

@@ -101,6 +101,22 @@ class JurnalUmumController extends Controller
     }
 
     /**
+     * Halaman Buat Voucher / Jurnal Baru (Dedicated Create Page)
+     */
+    public function create(Request $request)
+    {
+        $type = strtoupper($request->get('type', 'BKM'));
+        if (!in_array($type, ['BKM', 'BKK', 'JRN'])) {
+            $type = 'BKM';
+        }
+
+        $landBanks = LandBank::orderBy('name')->get();
+        $accounts  = ChartOfAccount::active()->orderBy('code')->get();
+
+        return view('keuangan.jurnal_umum.create', compact('type', 'landBanks', 'accounts'));
+    }
+
+    /**
      * Simpan Entri Jurnal Manual / Voucher
      */
     public function store(Request $request)
@@ -156,7 +172,7 @@ class JurnalUmumController extends Controller
                 'total_amount'       => $request->amount,
                 'proof_file'         => $proofPath,
                 'is_auto_generated'  => false,
-                'created_by'         => auth()->id(),
+                'created_by'         => \App\Models\User::where('id', auth()->id())->value('id'),
             ]);
 
             $this->syncService->createJournalItems(
@@ -168,7 +184,7 @@ class JurnalUmumController extends Controller
             );
 
             DB::commit();
-            return redirect()->back()->with('success', "Entri voucher {$entryNumber} berhasil disimpan.");
+            return redirect()->route('keuangan.jurnal.index')->with('success', "Entri voucher {$entryNumber} berhasil disimpan.");
         } catch (\Throwable $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Gagal menyimpan jurnal: ' . $e->getMessage())->withInput();

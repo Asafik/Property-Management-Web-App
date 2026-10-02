@@ -4,49 +4,246 @@
 
 @push('styles')
 <style>
-    .header-card {
-        border-radius: 12px;
-        border: none;
+    /* Card Dasar Konsisten */
+    .ak-card {
+        border-radius: 6px !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
         background: #ffffff;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
     }
-    .kpi-card {
-        border-radius: 10px;
-        border: 1px solid #edf2f7;
+
+    /* 4 KPI Cards (Persis Dashboard & Arus Kas) */
+    .dash-kpi-card {
         background: #ffffff;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
-        transition: all 0.25s ease;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
+        padding: 1rem 1.15rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.2s ease;
+        height: 100%;
     }
-    .kpi-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.07);
+    .dash-kpi-card:hover {
+        border-color: #cbd5e1 !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06) !important;
     }
-    .kpi-icon-wrap {
-        width: 44px;
-        height: 44px;
-        border-radius: 10px;
+    .dash-kpi-left {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        min-width: 0;
+    }
+    .dash-kpi-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 6px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.35rem;
+        font-size: 1.4rem;
+        flex-shrink: 0;
     }
+    .dash-kpi-icon.purple { background-color: #f3e8ff; color: #9333ea; }
+    .dash-kpi-icon.blue { background-color: #e0f2fe; color: #0284c7; }
+    .dash-kpi-icon.green { background-color: #dcfce7; color: #16a34a; }
+    .dash-kpi-icon.rose { background-color: #ffe4e6; color: #e11d48; }
+
+    .dash-kpi-info {
+        min-width: 0;
+    }
+    .dash-kpi-label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #64748b;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .dash-kpi-val {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.2;
+        margin-top: 2px;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .dash-kpi-sub {
+        font-size: 0.72rem;
+        color: #94a3b8;
+        margin-top: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Compact Table Card persis Catalog Unit */
+    .card.compact-table-card,
+    .compact-table-card {
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px !important;
+        box-shadow: none !important;
+        transition: border-color 0.2s ease;
+        overflow: hidden;
+    }
+    .card.compact-table-card:hover,
+    .compact-table-card:hover {
+        border-color: #cbd5e1 !important;
+        box-shadow: none !important;
+    }
+    .compact-table-card .card-body,
+    .card.compact-table-card .card-body {
+        padding: 0.85rem 1.25rem !important;
+        background: #ffffff !important;
+    }
+
     .filter-card {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 1rem;
+        margin-top: 0 !important;
+        margin-bottom: 0.85rem !important;
     }
     .filter-card .form-control,
     .filter-card .form-select {
-        border: 1px solid #d1d5db;
+        border: 1px solid #cbd5e1;
         border-radius: 6px;
         font-size: 0.85rem;
     }
-    .badge-soft {
-        border-radius: 6px;
+    .filter-card .form-control:focus,
+    .filter-card .form-select:focus {
+        border-color: #9a55ff;
+        box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12);
+    }
+
+    /* Action Filter / Reset Buttons persis Catalog Unit */
+    .btn-icon-only {
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        min-height: 38px !important;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 6px !important;
+        transition: all 0.2s ease;
+        box-shadow: none !important;
+    }
+    .btn-icon-only i {
+        font-size: 1.15rem !important;
+        margin: 0 !important;
+        line-height: 1 !important;
+    }
+    .btn-gradient-primary {
+        background: #9a55ff !important;
+        border: 1px solid #9a55ff !important;
+        color: #ffffff !important;
+    }
+    .btn-gradient-primary:hover {
+        background: #8b3df5 !important;
+        border-color: #8b3df5 !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+    }
+    .btn-gradient-secondary {
+        background: #64748b !important;
+        border: 1px solid #64748b !important;
+        color: #ffffff !important;
+    }
+    .btn-gradient-secondary:hover {
+        background: #475569 !important;
+        border-color: #475569 !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+    }
+
+    /* Buttons Solid Colors */
+    .btn-solid-purple {
+        background: #9a55ff !important;
+        border: 1px solid #9a55ff !important;
+        color: #ffffff !important;
         font-weight: 600;
-        padding: 5px 10px;
-        font-size: 0.78rem;
+        border-radius: 6px !important;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.2s ease;
+    }
+    .btn-solid-purple:hover {
+        background: #8435f5 !important;
+        border-color: #8435f5 !important;
+        color: #ffffff !important;
+    }
+
+    .btn-outline-neutral {
+        background: #ffffff !important;
+        border: 1.5px solid #cbd5e1 !important;
+        color: #475569 !important;
+        font-weight: 600;
+        border-radius: 6px !important;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.2s ease;
+    }
+    .btn-outline-neutral:hover {
+        background: #f8fafc !important;
+        color: #1e293b !important;
+    }
+
+    /* SPK Rupiah Box */
+    .spk-rupiah-box {
+        display: flex !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+        height: 38px !important;
+        transition: all 0.2s ease !important;
+    }
+    .spk-rupiah-box:focus-within {
+        border-color: #9a55ff !important;
+        box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
+    }
+    .spk-rupiah-box .spk-prefix {
+        background: #f8fafc !important;
+        color: #475569 !important;
+        font-weight: 700 !important;
+        font-size: 0.85rem !important;
+        padding: 0 14px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-right: 1px solid #cbd5e1 !important;
+        user-select: none !important;
+    }
+    .spk-rupiah-box input.rupiah-spk-input {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        padding: 0 12px !important;
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        color: #1e293b !important;
+        flex: 1 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: transparent !important;
+    }
+
+    .badge-soft {
+        border-radius: 4px;
+        font-weight: 600;
+        padding: 4px 8px;
+        font-size: 0.74rem;
     }
     .badge-soft-success {
         background: #e6f9ed;
@@ -124,12 +321,11 @@
 @section('content')
 <div class="container-fluid px-3 py-2">
     {{-- Header Banner --}}
-    <div class="card header-card mb-3">
+    <div class="card ak-card mb-3">
         <div class="card-body p-3">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                 <div>
                     <div class="d-flex align-items-center gap-2 mb-1">
-                        <span class="badge badge-soft-primary"><i class="mdi mdi-book-open-page-variant-outline me-1"></i>Akuntansi ERP</span>
                         <span class="text-muted" style="font-size: 0.8rem;"><i class="mdi mdi-calendar-range me-1"></i>Periode: {{ $startDate ? date('d M Y', strtotime($startDate)) : 'Semua' }} s/d {{ $endDate ? date('d M Y', strtotime($endDate)) : 'Hari Ini' }}</span>
                     </div>
                     <h4 class="mb-0 fw-bold text-dark">Buku Jurnal Umum</h4>
@@ -139,20 +335,20 @@
                     {{-- Form Sinkronisasi Otomatis --}}
                     <form action="{{ route('keuangan.jurnal.sync') }}" method="POST" id="formSyncJurnal" class="d-inline">
                         @csrf
-                        <button type="button" class="btn btn-outline-primary btn-sm fw-semibold px-3 py-2" id="btnSyncJurnal" title="Tarik data transaksi otomatis dari booking, kas tempo, KPR, SPK mandor, dan pra-landbank">
+                        <button type="button" class="btn btn-outline-neutral btn-sm px-3 py-2" id="btnSyncJurnal" title="Tarik data transaksi otomatis dari booking, kas tempo, KPR, SPK mandor, dan pra-landbank">
                             <i class="mdi mdi-sync me-1"></i> Sinkronkan Transaksi
                         </button>
                     </form>
 
                     {{-- Cetak Jurnal --}}
-                    <a href="{{ route('keuangan.jurnal.cetak', request()->query()) }}" target="_blank" class="btn btn-outline-secondary btn-sm fw-semibold px-3 py-2">
+                    <a href="{{ route('keuangan.jurnal.cetak', request()->query()) }}" target="_blank" class="btn btn-outline-neutral btn-sm px-3 py-2">
                         <i class="mdi mdi-printer me-1"></i> Cetak Jurnal
                     </a>
 
-                    {{-- Tambah Jurnal Manual --}}
-                    <button type="button" class="btn btn-primary btn-sm fw-semibold px-3 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalTambahJurnal">
+                    {{-- Tambah Jurnal Manual (Halaman Sendiri) --}}
+                    <a href="{{ route('keuangan.jurnal.create') }}" class="btn btn-solid-purple btn-sm px-3 py-2 shadow-sm">
                         <i class="mdi mdi-plus-circle me-1"></i> Catat Voucher / Jurnal
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -160,19 +356,19 @@
 
     {{-- Flash Notifications --}}
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" role="alert">
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" style="border-radius: 6px;" role="alert">
             <i class="mdi mdi-check-circle me-2"></i> {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
     @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" style="border-radius: 6px;" role="alert">
             <i class="mdi mdi-alert-circle me-2"></i> {{ session('error') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
     @if(isset($errors) && $errors->any())
-        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm" style="border-radius: 6px;" role="alert">
             <i class="mdi mdi-alert me-2"></i> <strong>Mohon periksa kesalahan input:</strong>
             <ul class="mb-0 mt-1">
                 @foreach($errors->all() as $err)
@@ -183,144 +379,150 @@
         </div>
     @endif
 
-    {{-- KPI Cards --}}
+    {{-- 4 KPI Cards (Persis Style Dashboard & Arus Kas) --}}
     <div class="row g-3 mb-3">
-        <div class="col-6 col-lg-3">
-            <div class="card kpi-card p-3">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <span class="text-muted d-block small mb-1">Total Transaksi</span>
-                        <h4 class="fw-bold mb-0 text-dark">{{ number_format($totalEntries) }}</h4>
-                        <div class="mt-1 small text-muted" style="font-size: 0.75rem;">
+        <!-- 1. Total Transaksi (Purple) -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon purple">
+                        <i class="mdi mdi-receipt-text-outline"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Total Transaksi</div>
+                        <div class="dash-kpi-val">{{ number_format($totalEntries) }}</div>
+                        <div class="dash-kpi-sub">
                             <span class="text-primary fw-semibold">{{ $autoCount }} Otomatis</span> &bull; <span>{{ $manualCount }} Manual</span>
                         </div>
                     </div>
-                    <div class="kpi-icon-wrap bg-primary-subtle text-primary">
-                        <i class="mdi mdi-receipt-text"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Total Debit (Green) -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon green">
+                        <i class="mdi mdi-arrow-down-bold"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Total Debit</div>
+                        <div class="dash-kpi-val" style="color: #16a34a;">Rp {{ number_format($totalDebit, 0, ',', '.') }}</div>
+                        <div class="dash-kpi-sub"><span class="badge badge-soft-success">Sisi Debit</span></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-6 col-lg-3">
-            <div class="card kpi-card p-3">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <span class="text-muted d-block small mb-1">Total Debit</span>
-                        <h4 class="fw-bold mb-0 text-success">Rp {{ number_format($totalDebit, 0, ',', '.') }}</h4>
-                        <span class="badge badge-soft-success mt-1">Sisi Debit</span>
+        <!-- 3. Total Kredit (Rose) -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon rose">
+                        <i class="mdi mdi-arrow-up-bold"></i>
                     </div>
-                    <div class="kpi-icon-wrap bg-success-subtle text-success">
-                        <i class="mdi mdi-arrow-down-bold-circle-outline"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-6 col-lg-3">
-            <div class="card kpi-card p-3">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <span class="text-muted d-block small mb-1">Total Kredit</span>
-                        <h4 class="fw-bold mb-0 text-danger">Rp {{ number_format($totalCredit, 0, ',', '.') }}</h4>
-                        <span class="badge badge-soft-danger mt-1">Sisi Kredit</span>
-                    </div>
-                    <div class="kpi-icon-wrap bg-danger-subtle text-danger">
-                        <i class="mdi mdi-arrow-up-bold-circle-outline"></i>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Total Kredit</div>
+                        <div class="dash-kpi-val" style="color: #e11d48;">Rp {{ number_format($totalCredit, 0, ',', '.') }}</div>
+                        <div class="dash-kpi-sub"><span class="badge badge-soft-danger">Sisi Kredit</span></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-6 col-lg-3">
-            <div class="card kpi-card p-3">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <span class="text-muted d-block small mb-1">Keseimbangan (Balance)</span>
-                        @if($isBalanced)
-                            <h5 class="fw-bold mb-0 text-success"><i class="mdi mdi-check-all me-1"></i>SEIMBANG</h5>
-                            <span class="badge badge-soft-success mt-1">Selisih: Rp 0</span>
-                        @else
-                            <h5 class="fw-bold mb-0 text-danger"><i class="mdi mdi-alert-circle me-1"></i>SELISIH</h5>
-                            <span class="badge badge-soft-danger mt-1">Rp {{ number_format(abs($totalDebit - $totalCredit), 0, ',', '.') }}</span>
-                        @endif
-                    </div>
-                    <div class="kpi-icon-wrap {{ $isBalanced ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }}">
+        <!-- 4. Keseimbangan (Blue / Green) -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon {{ $isBalanced ? 'green' : 'rose' }}">
                         <i class="mdi mdi-scale-balance"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Keseimbangan (Balance)</div>
+                        @if($isBalanced)
+                            <div class="dash-kpi-val" style="color: #16a34a;">SEIMBANG</div>
+                            <div class="dash-kpi-sub"><span class="badge badge-soft-success">Selisih: Rp 0</span></div>
+                        @else
+                            <div class="dash-kpi-val" style="color: #e11d48;">SELISIH</div>
+                            <div class="dash-kpi-sub"><span class="badge badge-soft-danger">Rp {{ number_format(abs($totalDebit - $totalCredit), 0, ',', '.') }}</span></div>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- Filter Panel --}}
-    <div class="card filter-card mb-3">
-        <form method="GET" action="{{ route('keuangan.jurnal.index') }}" id="filterForm">
-            <div class="row g-2 align-items-end">
-                <div class="col-12 col-md-2">
-                    <label class="form-label small fw-semibold text-secondary mb-1">Mulai Tanggal</label>
-                    <input type="date" name="start_date" class="form-control" value="{{ $startDate }}">
-                </div>
-                <div class="col-12 col-md-2">
-                    <label class="form-label small fw-semibold text-secondary mb-1">Sampai Tanggal</label>
-                    <input type="date" name="end_date" class="form-control" value="{{ $endDate }}">
-                </div>
-                <div class="col-12 col-md-2">
-                    <label class="form-label small fw-semibold text-secondary mb-1">Proyek / Landbank</label>
-                    <select name="land_bank_id" class="form-select">
-                        <option value="">Semua Proyek</option>
-                        @foreach($landBanks as $lb)
-                            <option value="{{ $lb->id }}" {{ $landBankId == $lb->id ? 'selected' : '' }}>
-                                {{ $lb->nama_land_bank }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-12 col-md-2">
-                    <label class="form-label small fw-semibold text-secondary mb-1">Tipe Transaksi</label>
-                    <select name="type" class="form-select">
-                        <option value="all">Semua Tipe</option>
-                        <option value="inflow" {{ $type === 'inflow' ? 'selected' : '' }}>Kas Masuk (BKM)</option>
-                        <option value="outflow" {{ $type === 'outflow' ? 'selected' : '' }}>Kas Keluar (BKK)</option>
-                        <option value="general" {{ $type === 'general' ? 'selected' : '' }}>Jurnal Umum (JRN)</option>
-                    </select>
-                </div>
-                <div class="col-12 col-md-2">
-                    <label class="form-label small fw-semibold text-secondary mb-1">Sumber Modul</label>
-                    <select name="source_module" class="form-select">
-                        <option value="all">Semua Sumber</option>
-                        <option value="manual" {{ $source === 'manual' ? 'selected' : '' }}>Manual Voucher</option>
-                        <option value="booking_payment" {{ $source === 'booking_payment' ? 'selected' : '' }}>Booking / UTJ</option>
-                        <option value="cash_tempo" {{ $source === 'cash_tempo' ? 'selected' : '' }}>Angsuran Cash Tempo</option>
-                        <option value="kpr_disbursement" {{ $source === 'kpr_disbursement' ? 'selected' : '' }}>Pencairan KPR</option>
-                        <option value="spk_termin" {{ $source === 'spk_termin' ? 'selected' : '' }}>SPK Mandor / Konstruksi</option>
-                        <option value="infrastructure" {{ $source === 'infrastructure' ? 'selected' : '' }}>Infrastruktur Lahan</option>
-                        <option value="pra_landbank" {{ $source === 'pra_landbank' ? 'selected' : '' }}>Pra-Landbank</option>
-                        <option value="invoice" {{ $source === 'invoice' ? 'selected' : '' }}>Invoice Konsumen</option>
-                    </select>
-                </div>
-                <div class="col-12 col-md-2 d-flex gap-1">
-                    <button type="submit" class="btn btn-primary btn-sm w-100 py-2 fw-semibold">
-                        <i class="mdi mdi-filter me-1"></i> Filter
-                    </button>
-                    <a href="{{ route('keuangan.jurnal.index') }}" class="btn btn-light btn-sm px-2 py-2" title="Reset Filter">
-                        <i class="mdi mdi-refresh"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="row mt-2">
-                <div class="col-12">
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text bg-white border-end-0"><i class="mdi mdi-magnify text-muted"></i></span>
-                        <input type="text" name="search" class="form-control border-start-0" placeholder="Cari No. Voucher, deskripsi transaksi, atau nama konsumen/vendor..." value="{{ $search }}">
+    {{-- Filter Panel (Persis Catalog Unit & Arus Kas) --}}
+    <div class="card compact-table-card filter-card mb-3">
+        <div class="card-body">
+            <form method="GET" action="{{ route('keuangan.jurnal.index') }}" id="filterForm">
+                <div class="row g-2 align-items-end">
+                    <div class="col-12 col-sm-6 col-md-2">
+                        <label class="form-label small fw-semibold text-secondary mb-1">Mulai Tanggal</label>
+                        <input type="date" name="start_date" class="form-control" value="{{ $startDate }}">
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2">
+                        <label class="form-label small fw-semibold text-secondary mb-1">Sampai Tanggal</label>
+                        <input type="date" name="end_date" class="form-control" value="{{ $endDate }}">
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2">
+                        <label class="form-label small fw-semibold text-secondary mb-1">Proyek / Landbank</label>
+                        <select name="land_bank_id" class="form-select">
+                            <option value="">Semua Proyek</option>
+                            @foreach($landBanks as $lb)
+                                <option value="{{ $lb->id }}" {{ $landBankId == $lb->id ? 'selected' : '' }}>
+                                    {{ $lb->nama_land_bank }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2">
+                        <label class="form-label small fw-semibold text-secondary mb-1">Tipe Transaksi</label>
+                        <select name="type" class="form-select">
+                            <option value="all">Semua Tipe</option>
+                            <option value="inflow" {{ $type === 'inflow' ? 'selected' : '' }}>Kas Masuk (BKM)</option>
+                            <option value="outflow" {{ $type === 'outflow' ? 'selected' : '' }}>Kas Keluar (BKK)</option>
+                            <option value="general" {{ $type === 'general' ? 'selected' : '' }}>Jurnal Umum (JRN)</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2">
+                        <label class="form-label small fw-semibold text-secondary mb-1">Sumber Modul</label>
+                        <select name="source_module" class="form-select">
+                            <option value="all">Semua Sumber</option>
+                            <option value="manual" {{ $source === 'manual' ? 'selected' : '' }}>Manual Voucher</option>
+                            <option value="booking_payment" {{ $source === 'booking_payment' ? 'selected' : '' }}>Booking / UTJ</option>
+                            <option value="cash_tempo" {{ $source === 'cash_tempo' ? 'selected' : '' }}>Angsuran Cash Tempo</option>
+                            <option value="kpr_disbursement" {{ $source === 'kpr_disbursement' ? 'selected' : '' }}>Pencairan KPR</option>
+                            <option value="spk_termin" {{ $source === 'spk_termin' ? 'selected' : '' }}>SPK Mandor / Konstruksi</option>
+                            <option value="infrastructure" {{ $source === 'infrastructure' ? 'selected' : '' }}>Infrastruktur Lahan</option>
+                            <option value="pra_landbank" {{ $source === 'pra_landbank' ? 'selected' : '' }}>Pra-Landbank</option>
+                            <option value="invoice" {{ $source === 'invoice' ? 'selected' : '' }}>Invoice Konsumen</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-2 d-flex align-items-end gap-1">
+                        <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Filter Data">
+                            <i class="mdi mdi-filter"></i>
+                        </button>
+                        <a href="{{ route('keuangan.jurnal.index') }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset Filter">
+                            <i class="mdi mdi-refresh"></i>
+                        </a>
                     </div>
                 </div>
-            </div>
-        </form>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-white border-end-0" style="border-radius: 6px 0 0 6px; border: 1px solid #cbd5e1; border-right: none;"><i class="mdi mdi-magnify text-muted"></i></span>
+                            <input type="text" name="search" class="form-control border-start-0" style="border-radius: 0 6px 6px 0; border: 1px solid #cbd5e1; border-left: none;" placeholder="Cari No. Voucher, deskripsi transaksi, atau nama konsumen/vendor..." value="{{ $search }}">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 
     {{-- Main Table Card --}}
-    <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+    <div class="card compact-table-card border-0 mb-3" style="border-radius: 6px !important; overflow: hidden;">
         <div class="table-responsive">
             <table class="table table-hover table-jurnal align-middle mb-0">
                 <thead>
@@ -444,9 +646,9 @@
                                     <i class="mdi mdi-book-open-outline text-muted" style="font-size: 3.5rem;"></i>
                                     <h5 class="fw-bold text-secondary mt-3 mb-1">Belum Ada Transaksi Jurnal</h5>
                                     <p class="text-muted small mb-3">Klik tombol <strong>"Sinkronkan Transaksi"</strong> untuk menarik transaksi proyek atau <strong>"Catat Voucher"</strong> untuk mencatat manual.</p>
-                                    <button type="button" class="btn btn-primary btn-sm px-4" data-bs-toggle="modal" data-bs-target="#modalTambahJurnal">
+                                    <a href="{{ route('keuangan.jurnal.create') }}" class="btn btn-solid-purple btn-sm px-4">
                                         <i class="mdi mdi-plus-circle me-1"></i> Catat Jurnal Baru
-                                    </button>
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -463,152 +665,10 @@
     </div>
 </div>
 
-{{-- Modal Tambah Jurnal / Voucher Baru --}}
-<div class="modal fade" id="modalTambahJurnal" tabindex="-1" aria-labelledby="modalTambahJurnalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <form action="{{ route('keuangan.jurnal.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-header bg-primary text-white p-3">
-                    <h5 class="modal-title fw-bold" id="modalTambahJurnalLabel">
-                        <i class="mdi mdi-plus-circle-outline me-1"></i> Catat Entri Voucher / Jurnal Keuangan
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    {{-- Pilihan Tipe Voucher --}}
-                    <div class="mb-3">
-                        <label class="form-label fw-bold small text-dark mb-2">Pilih Jenis Voucher</label>
-                        <div class="row g-2">
-                            <div class="col-4">
-                                <input type="radio" class="btn-check" name="voucher_type" id="vTypeBKM" value="BKM" checked onchange="updateVoucherLabels('BKM')">
-                                <label class="btn btn-outline-success w-100 py-2 d-flex flex-column align-items-center" for="vTypeBKM">
-                                    <i class="mdi mdi-arrow-down-bold fs-4 mb-1"></i>
-                                    <span class="fw-bold">BKM (Kas Masuk)</span>
-                                    <small class="text-muted" style="font-size: 0.7rem;">Penerimaan Uang</small>
-                                </label>
-                            </div>
-                            <div class="col-4">
-                                <input type="radio" class="btn-check" name="voucher_type" id="vTypeBKK" value="BKK" onchange="updateVoucherLabels('BKK')">
-                                <label class="btn btn-outline-danger w-100 py-2 d-flex flex-column align-items-center" for="vTypeBKK">
-                                    <i class="mdi mdi-arrow-up-bold fs-4 mb-1"></i>
-                                    <span class="fw-bold">BKK (Kas Keluar)</span>
-                                    <small class="text-muted" style="font-size: 0.7rem;">Pengeluaran Dana</small>
-                                </label>
-                            </div>
-                            <div class="col-4">
-                                <input type="radio" class="btn-check" name="voucher_type" id="vTypeJRN" value="JRN" onchange="updateVoucherLabels('JRN')">
-                                <label class="btn btn-outline-primary w-100 py-2 d-flex flex-column align-items-center" for="vTypeJRN">
-                                    <i class="mdi mdi-book-edit fs-4 mb-1"></i>
-                                    <span class="fw-bold">Jurnal Penyesuaian</span>
-                                    <small class="text-muted" style="font-size: 0.7rem;">Non-Kas / Mutasi</small>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-secondary">Tanggal Transaksi <span class="text-danger">*</span></label>
-                            <input type="date" name="entry_date" class="form-control" value="{{ date('Y-m-d') }}" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-secondary">Alokasi Proyek (Opsional)</label>
-                            <select name="land_bank_id" class="form-select">
-                                <option value="">Kantor Pusat / Umum</option>
-                                @foreach($landBanks as $lb)
-                                    <option value="{{ $lb->id }}">{{ $lb->nama_land_bank }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    {{-- Form Akun Debit & Kredit --}}
-                    <div class="card bg-light border-0 p-3 mb-3" style="border-radius: 8px;">
-                        <h6 class="fw-bold text-dark mb-2" style="font-size: 0.85rem;"><i class="mdi mdi-swap-horizontal me-1"></i>Pasangan Rekening Akun (Double Entry)</h6>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label small fw-semibold text-success" id="labelDebitAccount">Akun Masuk / Penerima (DEBIT) <span class="text-danger">*</span></label>
-                                <select name="debit_account_id" id="debit_account_id" class="form-select" required>
-                                    <option value="">-- Pilih Akun Debit --</option>
-                                    @foreach($accounts as $acc)
-                                        <option value="{{ $acc->id }}">[{{ $acc->code }}] {{ $acc->name }} ({{ $acc->sub_category }})</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-semibold text-danger" id="labelCreditAccount">Akun Sumber / Pengirim (KREDIT) <span class="text-danger">*</span></label>
-                                <select name="credit_account_id" id="credit_account_id" class="form-select" required>
-                                    <option value="">-- Pilih Akun Kredit --</option>
-                                    @foreach($accounts as $acc)
-                                        <option value="{{ $acc->id }}">[{{ $acc->code }}] {{ $acc->name }} ({{ $acc->sub_category }})</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-secondary">Nominal (Rp) <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text fw-bold">Rp</span>
-                                <input type="number" name="amount" class="form-control fw-bold" placeholder="0" min="1" step="any" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-secondary">Kategori Arus Kas</label>
-                            <select name="cash_flow_category" class="form-select">
-                                <option value="operating">Aktivitas Operasi (Operasional, Penerimaan Konsumen)</option>
-                                <option value="investing">Aktivitas Investasi / Proyek (Lahan, SPK, Infrastruktur)</option>
-                                <option value="financing">Aktivitas Pendanaan (Bank, Modal, Dividen)</option>
-                                <option value="none">Bukan Arus Kas Langsung (Non-Kas)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-secondary" id="labelPartyName">Diterima Dari / Dibayarkan Kepada</label>
-                            <input type="text" name="party_name" class="form-control" placeholder="Contoh: PT Semen Perkasa / Bpk. Rudi">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-secondary">Metode Pembayaran</label>
-                            <select name="payment_method" class="form-select">
-                                <option value="Transfer Bank">Transfer Bank</option>
-                                <option value="Tunai / Kas">Tunai / Kas</option>
-                                <option value="Cek / Giro">Cek / Giro</option>
-                                <option value="Lainnya">Lainnya</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Keterangan / Uraian Transaksi <span class="text-danger">*</span></label>
-                        <textarea name="description" class="form-control" rows="2" placeholder="Tuliskan uraian tujuan pengeluaran / penerimaan secara rinci..." required></textarea>
-                    </div>
-
-                    <div class="mb-0">
-                        <label class="form-label small fw-semibold text-secondary">Lampiran Bukti Transaksi (Kuitansi / Struk / Nota)</label>
-                        <input type="file" name="proof_file" class="form-control" accept=".jpg,.jpeg,.png,.pdf">
-                        <div class="form-text text-muted" style="font-size: 0.72rem;">Format: JPG, PNG, PDF. Ukuran maks 5MB.</div>
-                    </div>
-                </div>
-                <div class="modal-footer bg-light p-3">
-                    <button type="button" class="btn btn-light btn-sm fw-semibold" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary btn-sm fw-semibold px-4">
-                        <i class="mdi mdi-content-save me-1"></i> Simpan Voucher
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 {{-- Modal Detail Voucher Slip --}}
 <div class="modal fade" id="modalDetailVoucher" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-md">
-        <div class="modal-content border-0 shadow">
+        <div class="modal-content border-0 shadow" style="border-radius: 6px; overflow: hidden;">
             <div class="modal-header border-bottom-0 pb-0">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -619,8 +679,8 @@
                 </div>
             </div>
             <div class="modal-footer bg-light p-3">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-primary btn-sm" onclick="window.print()"><i class="mdi mdi-printer me-1"></i>Cetak Slip</button>
+                <button type="button" class="btn btn-outline-neutral btn-sm px-3" data-bs-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-solid-purple btn-sm px-3 shadow-sm" onclick="window.print()"><i class="mdi mdi-printer me-1"></i>Cetak Slip</button>
             </div>
         </div>
     </div>
