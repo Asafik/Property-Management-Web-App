@@ -642,7 +642,7 @@ class PerizinanController extends Controller
         $migratedToPasca = false;
         if ($isPoin17 && ($statusStr === 'Terbit' || $inputStatus === 'Terbit' || $progress >= 100)) {
             if ($record instanceof PraLandbank) {
-                $companyId = \App\Models\CompanyProfile::first()->id ?? null;
+                $companyId = $record->company_profile_id ?? null;
                 $totalArea = $record->field_area ?: ($record->area ?: 0);
 
                 $landBank = null;
@@ -658,7 +658,7 @@ class PerizinanController extends Controller
                     'company_profile_id'        => $companyId,
                     'certificate_no'            => $request->no_izin ?: ($record->certificate_no ?: ($record->land_name . ' (SHGB Induk PT)')),
                     'ownership_status'          => 'SHGB',
-                    'certificate_owner'         => 'PT Graha Cipta Sejahtera',
+                    'certificate_owner'         => $record->companyProfile->name ?? ($record->owner_name ?: '-'),
                     'custom_workflow_docs'      => $currentDocs,
                     'area'                      => $totalArea,
                     'remaining_area'            => $totalArea,
@@ -760,8 +760,8 @@ class PerizinanController extends Controller
             ], 404);
         }
 
-        // Ambil ID profil perusahaan default
-        $companyId = \App\Models\CompanyProfile::first()->id ?? null;
+        // Ambil ID profil perusahaan dari record (null jika belum dipilih)
+        $companyId = $record->company_profile_id ?? null;
         $totalArea = $record->field_area ?: ($record->area ?: 0);
 
         // Buat atau update data di LandBank (Pasca Land Bank)

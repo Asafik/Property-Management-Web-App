@@ -425,7 +425,7 @@ public function update(Request $request, $id)
         
         $land->update([
             'name' => $request->namaTanah,
-            'company_profile_id' => $request->company_profile_id ?? 1,
+            'company_profile_id' => $request->company_profile_id ?: null,
             'ownership_status' => $request->statusKepemilikan ?? 'SHGB',
             'address' => $request->lokasi,
             'village' => $request->kelurahan,

@@ -1891,8 +1891,8 @@ public function store(Request $request)
     {
         $record = PraLandbank::findOrFail($id);
 
-        // Ambil ID profil perusahaan dari record atau master default
-        $companyId = $record->company_profile_id ?? (\App\Models\CompanyProfile::first()->id ?? null);
+        // Ambil ID profil perusahaan dari record (null jika belum dipilih)
+        $companyId = $record->company_profile_id ?? null;
         $totalArea = $record->field_area ?: ($record->area ?: 0);
 
         // Buat atau update data di LandBank (Pasca Land Bank)

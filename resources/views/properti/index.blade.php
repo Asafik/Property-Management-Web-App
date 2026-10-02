@@ -789,7 +789,7 @@
                                     @endif
                                 </div>
                                 <small class="text-muted">
-                                    <i class="mdi mdi-office-building me-1"></i>{{ $item->companyProfile->name ?? 'Perusahaan Mitra Tidak Terdaftar' }}
+                                    <i class="mdi mdi-office-building me-1"></i>{{ $item->companyProfile->name ?? '-' }}
                                 </small>
                             </div>
                         </div>

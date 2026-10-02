@@ -1,4 +1,4 @@
-﻿@extends('layouts.partial.app')
+@extends('layouts.partial.app')
 
 @section('title', 'Detail Properti - ' . $item->name)
 
@@ -248,7 +248,7 @@
                     Detail Properti: {{ $item->name }}
                 </h2>
                 <p class="text-muted mb-0" style="font-size: 0.88rem;">
-                    {{ $item->companyProfile->name ?? 'PT. Graha Cipta Sejahtera' }} &bull; {{ $item->city ?: 'Jember' }} &bull; Luas: {{ number_format($item->area ?? 0, 0, ',', '.') }} m²
+                    {{ $item->companyProfile->name ?? '-' }} &bull; {{ $item->city ?: 'Jember' }} &bull; Luas: {{ number_format($item->area ?? 0, 0, ',', '.') }} m²
                 </p>
             </div>
             <div class="d-flex align-items-center gap-2">
@@ -396,7 +396,7 @@
                                     </tr>
                                     <tr>
                                         <td class="text-muted">Perusahaan Pengembang</td>
-                                        <td class="fw-semibold text-dark">: {{ $item->companyProfile->name ?? 'PT. Graha Cipta Sejahtera' }}</td>
+                                        <td class="fw-semibold text-dark">: {{ $item->companyProfile->name ?? '-' }}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-muted">Status Kepemilikan</td>
@@ -581,7 +581,7 @@
                                                 <td class="col-lbl">Atas Nama Sertifikat</td>
                                                 <td class="col-sep">:</td>
                                                 <td class="col-val fw-bold">
-                                                    <i class="fas fa-building text-primary me-1"></i> {{ $item->companyProfile->name ?? 'PT. Graha Cipta Sejahtera' }}
+                                                    <i class="fas fa-building text-primary me-1"></i> {{ $item->companyProfile->name ?? '-' }}
                                                 </td>
                                             </tr>
                                             <tr>
