@@ -299,6 +299,34 @@ class MenuSeeder extends Seeder
             'order'     => 6
         ])->positions()->attach($keuanganRoles);
 
+        Menu::create([
+            'name'      => 'Arus Kas (Cash Flow)',
+            'route'     => 'keuangan.arus-kas.index',
+            'parent_id' => $keuangan->id,
+            'order'     => 7
+        ])->positions()->attach($keuanganRoles);
+
+        Menu::create([
+            'name'      => 'Buku Jurnal Umum',
+            'route'     => 'keuangan.jurnal.index',
+            'parent_id' => $keuangan->id,
+            'order'     => 8
+        ])->positions()->attach($keuanganRoles);
+
+        Menu::create([
+            'name'      => 'Laporan Laba Rugi',
+            'route'     => 'keuangan.laba-rugi.index',
+            'parent_id' => $keuangan->id,
+            'order'     => 9
+        ])->positions()->attach($keuanganRoles);
+
+        Menu::create([
+            'name'      => 'Neraca Keuangan',
+            'route'     => 'keuangan.neraca.index',
+            'parent_id' => $keuangan->id,
+            'order'     => 10
+        ])->positions()->attach($keuanganRoles);
+
         // ================= 11. MASTER DATA (ADMIN ONLY) =================
         $master = Menu::create([
             'name'  => 'Master Data',

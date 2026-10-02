@@ -12,10 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $admin = Position::where('name', 'Admin')->first();
-        $keuanganStaff = Position::where('name', 'Staff Keuangan')->first();
-        $roles = array_values(array_filter([$admin?->id, $keuanganStaff?->id, 1, 7]));
-        $roles = array_unique($roles);
+        $roles = [];
+        if (\Illuminate\Support\Facades\Schema::hasTable('positions')) {
+            $roles = Position::whereIn('name', ['Admin', 'Staff Keuangan'])
+                ->orWhereIn('id', [1, 7])
+                ->pluck('id')
+                ->toArray();
+        }
 
         $keuangan = Menu::where('name', 'Keuangan')->whereNull('parent_id')->first();
         if (!$keuangan) {
@@ -24,6 +27,9 @@ return new class extends Migration
                 'icon'  => 'mdi-cash-register',
                 'order' => 10,
             ]);
+        }
+
+        if (!empty($roles)) {
             $keuangan->positions()->syncWithoutDetaching($roles);
         }
 
@@ -66,7 +72,10 @@ return new class extends Migration
                     'order'     => $sub['order'],
                 ]);
             }
-            $menu->positions()->syncWithoutDetaching($roles);
+
+            if (!empty($roles)) {
+                $menu->positions()->syncWithoutDetaching($roles);
+            }
         }
     }
 

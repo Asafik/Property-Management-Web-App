@@ -43,6 +43,7 @@ class DatabaseSeeder extends Seeder
             DevelopmentProgressItemsSeeder::class,
             PromoSeeder::class,
             CustomerSeeder::class,
+            ChartOfAccountSeeder::class,
             // PraLandbankDocumentSeeder::class,
             // LandBankUnitSeeder::class,     // Dikeluarkan: seeder dummy tanah pasca
             // PerizinanTaskSeeder::class,    // Dikeluarkan: seeder dummy tugas tanah perizinan
