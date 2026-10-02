@@ -121,7 +121,7 @@ class PropertyController extends Controller
                 'company_profile_id' => $item->company_profile_id,
             ]);
         }
-
+        
         // Ambil data perizinan resmi atas nama PT (hasil alur pengindukan & perizinan)
         $perizinanDocs = $this->getPerizinanDocumentsForProperty($item);
 
