@@ -50,14 +50,15 @@ class CustomerController extends Controller
 
             $customer = Customer::create([
                 'customer_id' => $this->generateCustomerId(),
-                'full_name' => $request->full_name,
-                'nickname' => $request->nickname,
-                'nik' => $request->nik,
-                'no_kk' => $request->no_kk,
-                'birthplace' => $request->birthplace,
-                'date_birth' => $request->date_birth,
-                'age' => $request->age,
-                'gender' => $request->gender,
+                'guest_id'    => $request->guest_id,
+                'full_name'   => $request->full_name,
+                'nickname'    => $request->nickname,
+                'nik'         => $request->nik,
+                'no_kk'       => $request->no_kk,
+                'birthplace'  => $request->birthplace,
+                'date_birth'  => $request->date_birth,
+                'age'         => $request->age,
+                'gender'      => $request->gender,
                 'religion' => $request->religion,
                 'nationality' => $request->nationality,
                 'marital_status' => $request->marital_status,
@@ -85,6 +86,7 @@ class CustomerController extends Controller
                 'main_income' => $request->main_income ? (int) preg_replace('/[^\d]/', '', $request->main_income) : null,
                 'side_income' => $request->side_income ? (int) preg_replace('/[^\d]/', '', $request->side_income) : null,
                 'npwp' => $request->npwp,
+                'status_kelengkapan' => (!empty($request->nik)) ? 'lengkap' : 'belum_lengkap',
                 'domicile_province' => $request->domicile_province,
                 'domicile_city' => $request->domicile_city,
                 'domicile_subdistrict' => $request->domicile_subdistrict,
@@ -147,18 +149,35 @@ class CustomerController extends Controller
 
     public function customerData(Request $request)
     {
-        $query = Customer::query();
+        $query = Customer::with(['guest.employee', 'guest.marketingTask']);
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('full_name', 'like', "%{$search}%")
-                    ->orWhere('customer_id', 'like', "%{$search}%");
+                    ->orWhere('customer_id', 'like', "%{$search}%")
+                    ->orWhereHas('guest.employee', function($eq) use ($search) {
+                        $eq->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
         if ($request->filled('pekerjaan')) {
             $query->where('job_status', $request->pekerjaan);
+        }
+
+        if ($request->filled('status_kelengkapan')) {
+            if ($request->status_kelengkapan === 'lengkap') {
+                $query->where(function($q) {
+                    $q->where('status_kelengkapan', 'lengkap')
+                      ->orWhereNotNull('nik');
+                });
+            } elseif ($request->status_kelengkapan === 'belum_lengkap') {
+                $query->where(function($q) {
+                    $q->where('status_kelengkapan', 'belum_lengkap')
+                      ->orWhereNull('status_kelengkapan');
+                })->whereNull('nik');
+            }
         }
 
         $sortField = $request->get('sortField', 'created_at');
@@ -174,12 +193,20 @@ class CustomerController extends Controller
         $perPage = $request->get('per_page', 10);
         $customers = $query->paginate($perPage)->withQueryString();
 
-        return view('customer.customer', compact('customers'));
+        $totalCustomer = Customer::count();
+        $customerLengkap = Customer::where('status_kelengkapan', 'lengkap')->orWhereNotNull('nik')->count();
+        $customerBelumLengkap = Customer::where(function($q) {
+            $q->where('status_kelengkapan', 'belum_lengkap')
+              ->orWhereNull('status_kelengkapan');
+        })->whereNull('nik')->count();
+        $customerBooking = \App\Models\Booking::where('status', 'active')->distinct('customer_id')->count('customer_id');
+
+        return view('customer.customer', compact('customers', 'totalCustomer', 'customerLengkap', 'customerBelumLengkap', 'customerBooking'));
     }
 
     public function detailCustomer($id)
     {
-        $customer = Customer::with(['units', 'documents'])->findOrFail($id);
+        $customer = Customer::with(['units', 'documents', 'guest.employee', 'guest.marketingTask'])->findOrFail($id);
         return view('customer.detail_customer', compact('customer'));
     }
 
@@ -259,6 +286,7 @@ class CustomerController extends Controller
                 'main_income' => $request->main_income ? (int) preg_replace('/[^\d]/', '', $request->main_income) : null,
                 'side_income' => $request->side_income ? (int) preg_replace('/[^\d]/', '', $request->side_income) : null,
                 'npwp' => $request->npwp,
+                'status_kelengkapan' => (!empty($request->nik)) ? 'lengkap' : ($customer->status_kelengkapan ?? 'belum_lengkap'),
                 'domicile_province' => $request->domicile_province,
                 'domicile_city' => $request->domicile_city,
                 'domicile_subdistrict' => $request->domicile_subdistrict,

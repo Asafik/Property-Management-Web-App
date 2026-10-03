@@ -2,41 +2,40 @@
 
 @section('title', 'Data User / Customer - Property Management App')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
+@endpush
+
 @section('content')
 <style>
-    .card {
-        border-radius: 12px !important;
-        border: none !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
+    /* Card Compact Persis Catalog Unit */
+    .compact-table-card {
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        box-shadow: none !important;
+        transition: border-color 0.2s ease;
+        overflow: hidden;
+    }
+    .compact-table-card:hover {
+        border-color: #cbd5e1 !important;
+        box-shadow: none !important;
     }
 
-    .stat-card-custom {
-        border-radius: 12px;
-        border: none;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        transition: all 0.2s ease;
-    }
-
-    .stat-card-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(154, 85, 255, 0.12);
-    }
-
+    /* Filter Card Modern (Persis Catalog Unit) */
     .filter-card {
-        padding: 0.85rem 1rem !important;
-        margin-bottom: 1rem !important;
-        background: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
     }
 
     .form-control, .form-select, select.form-control {
-        border: 1px solid #e9ecef;
-        border-radius: 8px !important;
-        padding: 0.6rem 0.8rem;
-        font-size: 0.88rem;
-        color: #2c2e3f;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px !important;
+        padding: 0.55rem 0.8rem;
+        font-size: 0.85rem;
+        color: #1e293b;
         background-color: #ffffff;
         height: auto;
         min-height: 38px;
@@ -49,28 +48,53 @@
         outline: none;
     }
 
+    /* Solid Buttons - 1 Warna, Tanpa Gradient Persis Catalog Unit */
     .btn-gradient-primary {
-        background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+        background: #7c3aed !important;
+        border-color: #7c3aed !important;
         color: #ffffff !important;
-        border: none;
+        border-radius: 6px;
+    }
+    .btn-gradient-primary:hover {
+        background: #6d28d9 !important;
+        border-color: #6d28d9 !important;
+        color: #ffffff !important;
     }
 
     .btn-gradient-secondary {
-        background: #6c757d !important;
+        background: #64748b !important;
+        border-color: #64748b !important;
         color: #ffffff !important;
-        border: none;
+        border-radius: 6px;
+    }
+    .btn-gradient-secondary:hover {
+        background: #475569 !important;
+        border-color: #475569 !important;
+        color: #ffffff !important;
     }
 
     .btn-gradient-success {
-        background: linear-gradient(135deg, #28a745, #5cb85c) !important;
+        background: #10b981 !important;
+        border-color: #10b981 !important;
         color: #ffffff !important;
-        border: none;
+        border-radius: 6px;
+    }
+    .btn-gradient-success:hover {
+        background: #059669 !important;
+        border-color: #059669 !important;
+        color: #ffffff !important;
     }
 
     .btn-gradient-danger {
-        background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+        background: #ef4444 !important;
+        border-color: #ef4444 !important;
         color: #ffffff !important;
-        border: none;
+        border-radius: 6px;
+    }
+    .btn-gradient-danger:hover {
+        background: #dc2626 !important;
+        border-color: #dc2626 !important;
+        color: #ffffff !important;
     }
 
     .btn-icon-only {
@@ -80,7 +104,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border-radius: 8px;
+        border-radius: 6px;
         flex-shrink: 0;
     }
 
@@ -93,35 +117,36 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border-radius: 8px;
+        border-radius: 6px;
     }
 
     .btn-icon-only-mobile i {
         font-size: 1.15rem;
     }
 
+    /* Table Styles Persis Catalog Unit */
     .table thead th {
-        background: #f8f9fc !important;
-        color: #4b49ac !important;
+        background: #f8fafc !important;
+        color: #475569 !important;
         font-weight: 700;
-        font-size: 0.82rem;
+        font-size: 0.78rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        padding: 1rem 0.85rem;
-        border-bottom: 2px solid #edf2f9;
+        padding: 0.85rem 0.85rem;
+        border-bottom: 1px solid #e2e8f0;
         white-space: nowrap;
     }
 
     .table tbody td {
-        padding: 0.9rem 0.85rem;
+        padding: 0.85rem 0.85rem;
         font-size: 0.88rem;
-        color: #2c2e3f;
+        color: #334155;
         border-bottom: 1px solid #f1f5f9;
         vertical-align: middle;
     }
 
     .table-hover tbody tr:hover {
-        background-color: #fcfaff;
+        background-color: #f8fafc;
     }
 
     .avatar-circle {
@@ -139,6 +164,7 @@
         margin-right: 0.5rem;
     }
 
+    /* Tombol Aksi Persis (Jangan Diubah Sesuai Instruksi User) */
     .btn-action {
         width: 32px;
         height: 32px;
@@ -169,13 +195,13 @@
 
     .modal-content {
         border: none;
-        border-radius: 16px;
+        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
     }
 
     .modal-header {
-        background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
+        background: #7c3aed !important;
         color: white !important;
         padding: 1.1rem 1.5rem;
         border-bottom: none;
@@ -207,7 +233,7 @@
         user-select: none;
     }
     .sortable:hover {
-        color: #9a55ff !important;
+        color: #7c3aed !important;
     }
 
     /* Select2 Theme Alignment */
@@ -217,21 +243,21 @@
         padding: 0.375rem 0.75rem !important;
         display: flex !important;
         align-items: center !important;
-        border-color: #ebedf2 !important;
+        border-color: #e2e8f0 !important;
         border-radius: 6px !important;
-        font-size: 0.875rem !important;
+        font-size: 0.85rem !important;
         background-color: #ffffff !important;
         transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     }
     .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
         line-height: 1.5 !important;
         padding-left: 0 !important;
-        color: #3b3f5c !important;
+        color: #1e293b !important;
     }
     .select2-container--bootstrap-5.select2-container--focus .select2-selection,
     .select2-container--bootstrap-5.select2-container--open .select2-selection {
-        border-color: #bfa5fa !important;
-        box-shadow: 0 0 0 0.2rem rgba(154, 85, 255, 0.12) !important;
+        border-color: #7c3aed !important;
+        box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.15) !important;
     }
 
     /* Select2 Dropdown Options Soft Hover & Active */
@@ -248,130 +274,121 @@
         color: #3b3f5c !important;
         transition: background-color 0.15s ease, color 0.15s ease;
     }
-    /* Hover / Highlighted (Soft Pastel Tint) */
     .select2-container--bootstrap-5 .select2-results__option--highlighted,
     .select2-container--bootstrap-5 .select2-results__option--highlighted.select2-results__option--selectable {
-        background-color: #f6f1ff !important;
-        color: #792fe0 !important;
+        background-color: #f3e8ff !important;
+        color: #7c3aed !important;
     }
-    /* Active / Selected (Soft Purple Tint) */
     .select2-container--bootstrap-5 .select2-results__option[aria-selected="true"],
     .select2-container--bootstrap-5 .select2-results__option--selected {
-        background-color: #eee4ff !important;
-        color: #6b21a8 !important;
+        background-color: #ede9fe !important;
+        color: #6d28d9 !important;
         font-weight: 600 !important;
-    }
-    .select2-container--bootstrap-5 .select2-results__option--selected.select2-results__option--highlighted {
-        background-color: #e4d3fe !important;
-        color: #581c87 !important;
     }
 </style>
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
 
-    <!-- Header Card Banner -->
-    <div class="row mb-3 mb-sm-3 mb-md-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0 header-card">
-                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
-                            Data User / Customer
-                        </h3>
-                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                            Kelola data pembeli dan pemilik unit properti
-                        </p>
-                    </div>
-                    <div class="d-none d-sm-block pe-2">
-                        <i class="mdi mdi-account-multiple" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
-                    </div>
+    <!-- Header Title (Persis Catalog Unit) -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <div>
+            <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                Data User / Customer
+            </h2>
+            <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                Kelola data pembeli dan pemilik unit properti
+            </p>
+        </div>
+    </div>
+
+    <!-- 4 KPI Metrics Card Grid (Persis Catalog Unit) -->
+    <div class="dash-kpi-grid mb-4">
+        <!-- Card 1: Total Customer (Ungu) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon purple">
+                    <i class="mdi mdi-account-group"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Total User / Customer</div>
+                    <div class="dash-kpi-val">{{ $totalCustomer ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Seluruh Pembeli Terdaftar</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Lengkap (Hijau) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon green">
+                    <i class="mdi mdi-account-check"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Data Lengkap</div>
+                    <div class="dash-kpi-val">{{ $customerLengkap ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Siap Transaksi & Booking</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Belum Lengkap (Amber / Kuning) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon amber">
+                    <i class="mdi mdi-account-alert"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Belum Lengkap</div>
+                    <div class="dash-kpi-val">{{ $customerBelumLengkap ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Perlu Dilengkapi NIK/KTP</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Aktif Booking (Biru) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon blue">
+                    <i class="mdi mdi-home-account"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Aktif Booking Unit</div>
+                    <div class="dash-kpi-val">{{ $customerBooking ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Memiliki Unit Properti</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Statistic Cards - Style Dashboard -->
-    <div class="row g-3 mb-4">
-        <div class="col-6 col-md-3">
-            <div class="card stat-card-custom shadow-sm border-0 h-100 mb-0">
-                <div class="card-body d-flex justify-content-between align-items-center p-3">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold">{{ $totalCustomer ?? 0 }}</h3>
-                        <p class="text-muted mb-0">Total User / Customer</p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-account-group" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-6 col-md-3">
-            <div class="card stat-card-custom shadow-sm border-0 h-100 mb-0">
-                <div class="card-body d-flex justify-content-between align-items-center p-3">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold">{{ $customerAktif ?? 0 }}</h3>
-                        <p class="text-muted mb-0">User / Customer Aktif</p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-account-check" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-6 col-md-3">
-            <div class="card stat-card-custom shadow-sm border-0 h-100 mb-0">
-                <div class="card-body d-flex justify-content-between align-items-center p-3">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold">{{ $customerCash ?? 0 }}</h3>
-                        <p class="text-muted mb-0">Pembeli Cash</p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-cash-multiple" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-6 col-md-3">
-            <div class="card stat-card-custom shadow-sm border-0 h-100 mb-0">
-                <div class="card-body d-flex justify-content-between align-items-center p-3">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold">{{ $customerKpr ?? 0 }}</h3>
-                        <p class="text-muted mb-0">Pembeli KPR</p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-bank" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tabel Data Customer & Filter -->
+    <!-- Tabel Data (Card Compact Meniru Persis Catalog Unit) -->
     <div class="row">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-3 p-3">
-                    <h5 class="card-title mb-0 fw-bold">
-                        <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>Daftar User
-                    </h5>
-                    <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-gradient-success d-inline-flex align-items-center gap-1" onclick="$('#modalImportCustomer').modal('show')">
-                            <i class="mdi mdi-import"></i> <span class="d-none d-sm-inline">Import</span>
+            <div class="card compact-table-card">
+                <div class="card-header bg-white d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center py-2.5 px-3 px-md-4 gap-2" style="border-bottom: 1px solid #e2e8f0 !important;">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 32px; height: 32px; border-radius: 6px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
+                            <i class="mdi mdi-format-list-bulleted"></i>
+                        </div>
+                        <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Daftar User</span>
+                    </div>
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <button class="btn btn-sm d-inline-flex align-items-center gap-1 px-3 text-white fw-semibold" style="height: 32px; border-radius: 6px; background-color: #10b981; border: 1px solid #10b981;" onclick="$('#modalImportCustomer').modal('show')">
+                            <i class="mdi mdi-file-excel"></i>
+                            <span>Import</span>
                         </button>
-                        <button class="btn btn-gradient-danger d-inline-flex align-items-center gap-1" onclick="$('#modalExportCustomer').modal('show')">
-                            <i class="mdi mdi-export"></i> <span class="d-none d-sm-inline">Export</span>
+                        <button class="btn btn-sm d-inline-flex align-items-center gap-1 px-3 text-white fw-semibold" style="height: 32px; border-radius: 6px; background-color: #ef4444; border: 1px solid #ef4444;" onclick="$('#modalExportCustomer').modal('show')">
+                            <i class="mdi mdi-file-pdf"></i>
+                            <span>Export</span>
                         </button>
-                        <a href="{{ route('customer.create') }}" class="btn btn-gradient-primary d-inline-flex align-items-center gap-1">
-                            <i class="mdi mdi-account-multiple-plus-outline"></i> <span>Tambah User Baru</span>
+                        <a href="{{ route('customer.create') }}" class="btn btn-sm d-inline-flex align-items-center gap-1 px-3 text-white fw-semibold" style="height: 32px; border-radius: 6px; background-color: #7c3aed; border: 1px solid #7c3aed;">
+                            <i class="mdi mdi-account-plus"></i>
+                            <span>Tambah User Baru</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="card-body p-3">
-                    <!-- FILTER SECTION (PERSIS DASHBOARD) -->
+                <div class="card-body p-3 p-md-4">
+                    <!-- Filter Section Persis Catalog Unit -->
                     <div class="filter-card mb-3">
 
                         <!-- DESKTOP & TABLET VERSION -->
@@ -492,7 +509,7 @@
                                             <i class="mdi mdi-swap-vertical"></i>
                                         @endif
                                     </th>
-                                    <th class="sortable" style="min-width: 200px;" data-field="full_name" data-direction="{{ request('sortField') == 'full_name' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
+                                    <th class="sortable" style="min-width: 190px;" data-field="full_name" data-direction="{{ request('sortField') == 'full_name' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
                                         Nama User
                                         @if(request('sortField') == 'full_name')
                                             <i class="mdi mdi-{{ request('sortDirection') == 'asc' ? 'arrow-up' : 'arrow-down' }}"></i>
@@ -500,6 +517,7 @@
                                             <i class="mdi mdi-swap-vertical"></i>
                                         @endif
                                     </th>
+                                    <th style="min-width: 140px;">Status Data</th>
                                     <th class="sortable" style="min-width: 180px;" data-field="email" data-direction="{{ request('sortField') == 'email' ? (request('sortDirection') == 'asc' ? 'desc' : 'asc') : 'asc' }}">
                                         Email
                                         @if(request('sortField') == 'email')
@@ -529,23 +547,24 @@
                             </thead>
                             <tbody>
                                 @forelse($customers as $index => $customer)
-                                    @php
-                                        $initials = collect(explode(' ', trim($customer->full_name)))
-                                            ->filter()
-                                            ->take(2)
-                                            ->map(fn($w) => strtoupper(substr($w, 0, 1)))
-                                            ->implode('');
-                                    @endphp
                                     <tr>
                                         <td class="text-center fw-bold" style="width: 50px;">{{ $customers->firstItem() + $index }}</td>
                                         <td class="fw-bold text-dark">
                                             {{ $customer->customer_id ?? '-' }}
                                         </td>
                                         <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="avatar-circle">{{ $initials ?: 'US' }}</div>
-                                                <div class="fw-bold text-dark">{{ $customer->full_name }}</div>
-                                            </div>
+                                            <span class="fw-bold text-dark">{{ $customer->full_name }}</span>
+                                        </td>
+                                        <td>
+                                            @if($customer->is_lengkap)
+                                                <span class="badge" style="background: #e6f9f0; color: #00875a; border: 1px solid #b3eccf; font-weight: 600; font-size: 0.78rem; padding: 5px 10px; border-radius: 6px;">
+                                                    <i class="mdi mdi-check-circle me-1"></i>Lengkap
+                                                </span>
+                                            @else
+                                                <a href="{{ route('customer.edit', $customer->id) }}" class="badge text-decoration-none" style="background: #fff8e6; color: #b45309; border: 1px solid #fde68a; font-weight: 600; font-size: 0.78rem; padding: 5px 10px; border-radius: 6px; display: inline-flex; align-items: center; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#fef3c7'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='#fff8e6'; this.style.transform='none';" title="Data belum lengkap. Klik untuk melengkapi data">
+                                                    <i class="mdi mdi-alert-circle me-1"></i>Belum Lengkap <i class="mdi mdi-pencil-box-outline ms-1" style="font-size: 0.85rem;"></i>
+                                                </a>
+                                            @endif
                                         </td>
                                         <td>
                                             @if($customer->email)
@@ -587,7 +606,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted py-5">
+                                        <td colspan="8" class="text-center text-muted py-5">
                                             <i class="mdi mdi-account-off-outline" style="font-size: 3rem; color: #9a55ff; opacity: 0.3;"></i>
                                             <p class="mt-2 mb-0 fw-bold">Tidak ada data customer yang tersedia.</p>
                                         </td>
@@ -597,14 +616,57 @@
                         </table>
                     </div>
 
-                    <!-- PAGINATION -->
+                    <!-- PAGINATION - COMPACT PERSIS CATALOG UNIT -->
                     @if ($customers instanceof \Illuminate\Pagination\LengthAwarePaginator && $customers->total() > 0)
-                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3 pt-2">
                             <div class="pagination-info mb-2 mb-sm-0 text-muted small">
                                 Menampilkan {{ $customers->firstItem() }} - {{ $customers->lastItem() }} dari {{ $customers->total() }} data user
                             </div>
                             <nav aria-label="Page navigation">
-                                {{ $customers->appends(request()->query())->links('pagination::bootstrap-4') }}
+                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0">
+                                    {{-- Previous Page Link --}}
+                                    @if ($customers->onFirstPage())
+                                        <li class="page-item disabled" aria-disabled="true">
+                                            <span class="page-link" aria-label="Previous">
+                                                <i class="mdi mdi-chevron-left"></i>
+                                            </span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $customers->appends(request()->query())->previousPageUrl() }}" rel="prev" aria-label="Previous">
+                                                <i class="mdi mdi-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Pagination Elements --}}
+                                    @foreach ($customers->getUrlRange(max(1, $customers->currentPage() - 2), min($customers->lastPage(), $customers->currentPage() + 2)) as $page => $url)
+                                        @if ($page == $customers->currentPage())
+                                            <li class="page-item active" aria-current="page">
+                                                <span class="page-link" style="background-color: #7c3aed; border-color: #7c3aed;">{{ $page }}</span>
+                                            </li>
+                                        @else
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                            </li>
+                                        @endif
+                                    @endforeach
+
+                                    {{-- Next Page Link --}}
+                                    @if ($customers->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $customers->appends(request()->query())->nextPageUrl() }}" rel="next" aria-label="Next">
+                                                <i class="mdi mdi-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled" aria-disabled="true">
+                                            <span class="page-link" aria-label="Next">
+                                                <i class="mdi mdi-chevron-right"></i>
+                                            </span>
+                                        </li>
+                                    @endif
+                                </ul>
                             </nav>
                         </div>
                     @endif

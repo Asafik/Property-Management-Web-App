@@ -2642,8 +2642,12 @@
                                 <select class="form-control select2-customer-modal" id="select_customer_id" name="customer_id" style="width: 100%;" required>
                                     <option value="">-- Cari & Pilih Customer (ID / Nama) --</option>
                                     @foreach ($customers as $c)
-                                        <option value="{{ $c->id }}" data-id="{{ $c->customer_id ?? '' }}">
+                                        @php
+                                            $isLengkap = $c->is_lengkap;
+                                        @endphp
+                                        <option value="{{ $c->id }}" data-id="{{ $c->customer_id ?? '' }}" data-lengkap="{{ $isLengkap ? '1' : '0' }}" {{ !$isLengkap ? 'disabled' : '' }}>
                                             @if(!empty($c->customer_id)) [{{ $c->customer_id }}] @endif {{ $c->full_name }}
+                                            @if(!$isLengkap) (Belum Lengkap - Wajib Lengkapi Data) @endif
                                         </option>
                                     @endforeach
                                 </select>
@@ -4104,6 +4108,15 @@
                         icon: 'warning',
                         title: 'Customer Belum Dipilih',
                         text: 'Silakan cari dan pilih Customer terlebih dahulu!'
+                    });
+                    return;
+                }
+                let selectedCustOpt = $('#select_customer_id option:selected');
+                if (selectedCustOpt.data('lengkap') === 0 || selectedCustOpt.data('lengkap') === '0') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Data Customer Belum Lengkap',
+                        text: 'Customer ini belum melengkapi data identitas (NIK/KTP/Alamat). Silakan lengkapi data customer di menu Data Customer terlebih dahulu sebelum melakukan transaksi booking unit!'
                     });
                     return;
                 }

@@ -338,14 +338,41 @@
     }
 
     /* KTP Scanner & OCR Styles */
-    .ktp-dropzone:hover {
-        background-color: #f3e8ff !important;
-        border-color: #9a55ff !important;
+    .ktp-dropzone-box {
+        border: 2px dashed #c4b5fd;
+        background: #faf5ff;
+        border-radius: 8px;
+        transition: all 0.25s ease;
+        cursor: pointer;
     }
-    .ktp-dropzone.dragover {
-        background-color: #ede9fe !important;
+    .ktp-dropzone-box:hover {
+        background-color: #f5f0ff !important;
         border-color: #7c3aed !important;
-        transform: scale(1.01);
+        box-shadow: 0 4px 14px rgba(124, 58, 237, 0.08);
+    }
+    .ktp-dropzone-box.dragover {
+        background-color: #ede9fe !important;
+        border-color: #6d28d9 !important;
+        border-style: solid;
+        transform: scale(1.005);
+    }
+    .ktp-preview-frame {
+        position: relative;
+        background: #0f172a;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 190px;
+    }
+    .ktp-preview-frame img {
+        width: 100%;
+        max-height: 230px;
+        object-fit: contain;
+        display: block;
     }
     .ktp-scan-laser {
         position: absolute;
@@ -353,14 +380,40 @@
         left: 0;
         width: 100%;
         height: 3px;
-        background: linear-gradient(90deg, transparent, #9a55ff, #da8cff, #9a55ff, transparent);
-        box-shadow: 0 0 12px 3px rgba(154, 85, 255, 0.75);
-        animation: ktpScanAnimation 1.6s ease-in-out infinite alternate;
+        background: linear-gradient(90deg, transparent, #a855f7, #ec4899, #a855f7, transparent);
+        box-shadow: 0 0 14px 4px rgba(168, 85, 247, 0.85);
+        animation: ktpScanAnimation 1.5s ease-in-out infinite alternate;
         pointer-events: none;
+        z-index: 5;
     }
     @keyframes ktpScanAnimation {
-        0% { top: 5%; }
-        100% { top: 92%; }
+        0% { top: 4%; }
+        100% { top: 94%; }
+    }
+    .ktp-field-group {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.9rem;
+        margin-bottom: 0.75rem;
+    }
+    .ktp-field-group-header {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-bottom: 0.65rem;
+        padding-bottom: 0.35rem;
+        border-bottom: 1px dashed #e2e8f0;
+    }
+    .ktp-input-icon {
+        background: #f8fafc;
+        border-right: none;
+        color: #7c3aed;
+        font-size: 0.95rem;
+        border-radius: 6px 0 0 6px !important;
     }
 </style>
 
@@ -486,18 +539,22 @@
                             <!-- TAB 1: PRIBADI -->
                             <div class="custom-tab-pane active" id="pribadi">
                                 <!-- Banner Panduan Auto-Fill KTP -->
-                                <div class="p-3 rounded-3 mb-3 d-flex flex-wrap align-items-center justify-content-between gap-2" style="background: linear-gradient(135deg, #f5f3ff, #ede9fe); border: 1px solid #ddd6fe;">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 38px; height: 38px; background: #8b5cf6; color: white;">
+                                <div class="mb-3 d-flex flex-wrap align-items-center justify-content-between shadow-sm" style="background: linear-gradient(135deg, #f5f3ff, #ede9fe); border: 1px solid #ddd6fe; border-radius: 8px; padding: 0.9rem 1.25rem; gap: 0.75rem;">
+                                    <div class="d-flex align-items-center">
+                                        <div class="d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px; background: linear-gradient(135deg, #7c3aed, #9a55ff); color: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.22); margin-right: 14px;">
                                             <i class="mdi mdi-card-account-details-outline fs-5"></i>
                                         </div>
                                         <div>
-                                            <div class="fw-bold text-dark" style="font-size: 0.88rem;">Auto-Fill Data dari Foto e-KTP</div>
-                                            <div class="text-muted" style="font-size: 0.76rem;">Scan atau upload foto e-KTP untuk mengisi NIK, Nama, Tanggal Lahir, Alamat, dll secara otomatis.</div>
+                                            <div class="fw-bold text-dark" style="font-size: 0.9rem; margin-bottom: 2px;">
+                                                Auto-Fill Data dari Foto e-KTP
+                                            </div>
+                                            <div class="text-muted" style="font-size: 0.78rem;">
+                                                Scan atau upload foto e-KTP untuk mengisi NIK, Nama, Tanggal Lahir, Alamat, dll secara otomatis.
+                                            </div>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-sm text-white fw-bold d-inline-flex align-items-center gap-1 shadow-sm" id="btnScanKtpTab1" style="background: #7c3aed; border-radius: 6px; font-size: 0.8rem; padding: 0.4rem 0.85rem;">
-                                        <i class="mdi mdi-camera-plus-outline"></i>
+                                    <button type="button" class="btn btn-sm text-white fw-bold d-inline-flex align-items-center shadow-sm" id="btnScanKtpTab1" style="background: #7c3aed; border-radius: 6px; font-size: 0.82rem; padding: 0.5rem 1rem; border: none;">
+                                        <i class="mdi mdi-camera-plus-outline" style="margin-right: 8px; font-size: 1rem;"></i>
                                         <span>Scan KTP Sekarang</span>
                                     </button>
                                 </div>
@@ -903,208 +960,273 @@
 
 <!-- MODAL SCAN KTP / OCR AUTO-FILL -->
 <div class="modal fade" id="modalKtpScanner" tabindex="-1" aria-labelledby="modalKtpScannerLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content" style="border-radius: 14px; border: none; box-shadow: 0 15px 35px rgba(0,0,0,0.18);">
-            <div class="modal-header border-bottom py-3 px-4" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9);">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="d-flex align-items-center justify-content-center rounded-3" style="width: 38px; height: 38px; background: linear-gradient(135deg, #7c3aed, #9a55ff); color: white;">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="border-radius: 8px; border: none; box-shadow: 0 15px 35px rgba(0,0,0,0.18);">
+            <div class="modal-header border-bottom py-3 px-4" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-top-left-radius: 8px; border-top-right-radius: 8px;">
+                <div class="d-flex align-items-center">
+                    <div class="d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; background: linear-gradient(135deg, #7c3aed, #9a55ff); color: white; border-radius: 8px; margin-right: 14px; box-shadow: 0 4px 10px rgba(124, 58, 237, 0.2);">
                         <i class="mdi mdi-card-account-details-outline fs-4"></i>
                     </div>
                     <div>
-                        <h5 class="modal-title fw-bold text-dark mb-0" id="modalKtpScannerLabel" style="font-size: 1.05rem;">
+                        <h5 class="modal-title fw-bold text-dark" id="modalKtpScannerLabel" style="font-size: 1.05rem; margin-bottom: 2px; line-height: 1.25;">
                             Scan & Auto-Fill Data e-KTP
                         </h5>
-                        <small class="text-muted" style="font-size: 0.75rem;">Ekstrak otomatis NIK, Nama, Tanggal Lahir, Alamat, dll dari foto e-KTP</small>
+                        <div class="text-muted" style="font-size: 0.76rem; line-height: 1.3;">
+                            Upload foto e-KTP untuk mengisi otomatis NIK, Nama, Tanggal Lahir, dan Alamat
+                        </div>
                     </div>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body p-4">
-                <!-- Sumber Input: Upload File vs Kamera -->
-                <ul class="nav nav-pills nav-fill mb-3 p-1 rounded-3" style="background: #f1f5f9;" id="ktpSourceTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active fw-semibold py-2 d-flex align-items-center justify-content-center gap-2" id="tab-upload-btn" data-bs-toggle="pill" data-bs-target="#tab-upload" type="button" role="tab" style="border-radius: 8px; font-size: 0.85rem;">
-                            <i class="mdi mdi-file-image-outline fs-5"></i> Upload Foto KTP
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link fw-semibold py-2 d-flex align-items-center justify-content-center gap-2" id="tab-camera-btn" data-bs-toggle="pill" data-bs-target="#tab-camera" type="button" role="tab" style="border-radius: 8px; font-size: 0.85rem;">
-                            <i class="mdi mdi-camera-outline fs-5"></i> Ambil dari Kamera
-                        </button>
-                    </li>
-                </ul>
+            <div class="modal-body p-3 p-md-4">
+                <!-- STEP 1: CONTAINER INPUT / UPLOAD SUMBER -->
+                <div id="ktpUploadSection">
+                    <ul class="nav nav-pills nav-fill mb-3 p-1 rounded-2" style="background: #f1f5f9;" id="ktpSourceTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active fw-semibold py-2 d-flex align-items-center justify-content-center" id="tab-upload-btn" data-bs-toggle="pill" data-bs-target="#tab-upload" type="button" role="tab" style="border-radius: 6px; font-size: 0.85rem;">
+                                <i class="mdi mdi-file-image-outline fs-5" style="margin-right: 8px;"></i> <span>Upload Foto KTP</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-semibold py-2 d-flex align-items-center justify-content-center" id="tab-camera-btn" data-bs-toggle="pill" data-bs-target="#tab-camera" type="button" role="tab" style="border-radius: 6px; font-size: 0.85rem;">
+                                <i class="mdi mdi-camera-outline fs-5" style="margin-right: 8px;"></i> <span>Ambil dari Kamera</span>
+                            </button>
+                        </li>
+                    </ul>
 
-                <div class="tab-content" id="ktpSourceTabContent">
-                    <!-- Tab 1: Upload File -->
-                    <div class="tab-pane fade show active" id="tab-upload" role="tabpanel">
-                        <div class="ktp-dropzone p-4 text-center rounded-3 border-2 border-dashed" id="ktpDropzone" style="border-color: #cbd5e1; background: #faf5ff; cursor: pointer; transition: all 0.2s ease;">
-                            <input type="file" id="ktpFileInput" accept="image/*" class="d-none">
-                            <i class="mdi mdi-cloud-upload-outline text-primary mb-2" style="font-size: 3rem;"></i>
-                            <h6 class="fw-bold text-dark mb-1">Klik atau Tarik Foto e-KTP ke sini</h6>
-                            <p class="text-muted small mb-2">Mendukung format JPG, PNG, WEBP (Bisa juga tekan <strong>Ctrl + V</strong> untuk paste gambar)</p>
-                            <span class="badge px-3 py-1.5" style="background: #ede9fe; color: #7c3aed; font-weight: 600;">
-                                <i class="mdi mdi-lightning-bolt me-1"></i>Pindai Otomatis dengan AI OCR
-                            </span>
-                        </div>
-                    </div>
+                    <div class="tab-content" id="ktpSourceTabContent">
+                        <!-- Tab 1: Upload File Dropzone -->
+                        <div class="tab-pane fade show active" id="tab-upload" role="tabpanel">
+                            <div class="ktp-dropzone-box p-4 p-md-5 text-center" id="ktpDropzone">
+                                <input type="file" id="ktpFileInput" accept="image/*" class="d-none">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 shadow-sm" style="width: 72px; height: 72px; background: #ede9fe; color: #7c3aed;">
+                                    <i class="mdi mdi-cloud-upload-outline" style="font-size: 2.4rem;"></i>
+                                </div>
+                                <h5 class="fw-bold text-dark mb-1">Tarik & Lepas Foto e-KTP di Sini</h5>
+                                <p class="text-muted small mb-3">atau klik tombol di bawah untuk memilih file gambar dari komputer Anda</p>
 
-                    <!-- Tab 2: Kamera -->
-                    <div class="tab-pane fade" id="tab-camera" role="tabpanel">
-                        <div class="text-center rounded-3 p-2 bg-dark position-relative overflow-hidden" style="min-height: 240px;">
-                            <video id="ktpCameraVideo" autoplay playsinline class="w-100 rounded-2" style="max-height: 280px; object-fit: contain; background: #000;"></video>
-                            <div class="ktp-camera-overlay" id="ktpCameraOverlay" style="display: none; position: absolute; top: 8%; left: 8%; right: 8%; bottom: 8%; border: 2px dashed rgba(255,255,255,0.75); border-radius: 12px; pointer-events: none;">
-                                <span class="badge bg-dark bg-opacity-75 text-white position-absolute top-0 start-50 translate-middle-x mt-2">
-                                    Posisikan KTP di dalam bingkai
-                                </span>
+                                <button type="button" class="btn btn-primary text-white fw-bold px-4 py-2 mb-3 shadow-sm d-inline-flex align-items-center" onclick="$('#ktpFileInput').trigger('click')" style="background: linear-gradient(135deg, #7c3aed, #9a55ff); border: none; border-radius: 6px; font-size: 0.88rem;">
+                                    <i class="mdi mdi-folder-open-outline" style="margin-right: 8px; font-size: 1.1rem;"></i>
+                                    <span>Pilih Foto KTP</span>
+                                </button>
+
+                                <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 text-muted small mt-2">
+                                    <span class="badge" style="background: #f1f5f9; color: #475569; font-weight: 500; font-size: 0.74rem; border-radius: 4px;">
+                                        <i class="mdi mdi-check text-success me-1"></i>Format: JPG, PNG, WEBP
+                                    </span>
+                                    <span class="badge" style="background: #f1f5f9; color: #475569; font-weight: 500; font-size: 0.74rem; border-radius: 4px;">
+                                        <i class="mdi mdi-check text-success me-1"></i>Maksimal 10 MB
+                                    </span>
+                                    <span class="badge" style="background: #ede9fe; color: #7c3aed; font-weight: 600; font-size: 0.74rem; border-radius: 4px;">
+                                        <i class="mdi mdi-content-paste me-1"></i>Bisa tekan Ctrl + V (Paste)
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-center gap-2 mt-3">
-                            <button type="button" class="btn btn-outline-secondary btn-sm" id="btnStartCamera">
-                                <i class="mdi mdi-camera-switch me-1"></i>Buka Kamera
-                            </button>
-                            <button type="button" class="btn btn-primary btn-sm text-white px-3 fw-bold" id="btnCaptureCamera" disabled>
-                                <i class="mdi mdi-camera me-1"></i>Ambil Foto
-                            </button>
-                            <button type="button" class="btn btn-outline-danger btn-sm" id="btnStopCamera" style="display: none;">
-                                <i class="mdi mdi-stop me-1"></i>Tutup
-                            </button>
+
+                        <!-- Tab 2: Kamera -->
+                        <div class="tab-pane fade" id="tab-camera" role="tabpanel">
+                            <div class="text-center rounded-2 p-2 bg-dark position-relative overflow-hidden" style="min-height: 260px;">
+                                <video id="ktpCameraVideo" autoplay playsinline class="w-100 rounded-2" style="max-height: 300px; object-fit: contain; background: #000;"></video>
+                                <div class="ktp-camera-overlay" id="ktpCameraOverlay" style="display: none; position: absolute; top: 8%; left: 8%; right: 8%; bottom: 8%; border: 2px dashed rgba(255,255,255,0.75); border-radius: 8px; pointer-events: none;">
+                                    <span class="badge bg-dark bg-opacity-75 text-white position-absolute top-0 start-50 translate-middle-x mt-2" style="border-radius: 4px;">
+                                        Posisikan KTP di dalam bingkai
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-wrap justify-content-center align-items-center mt-3" style="gap: 10px;">
+                                <button type="button" class="btn btn-sm text-white fw-bold d-inline-flex align-items-center shadow-sm" id="btnStartCamera" style="background: #7c3aed; border-radius: 6px; padding: 0.5rem 1.25rem; border: none; font-size: 0.85rem;">
+                                    <i class="mdi mdi-camera-switch" style="margin-right: 8px; font-size: 1.05rem;"></i>
+                                    <span>Buka Kamera</span>
+                                </button>
+                                <button type="button" class="btn btn-sm text-white fw-bold d-inline-flex align-items-center shadow-sm" id="btnCaptureCamera" style="display: none; background: linear-gradient(135deg, #7c3aed, #9a55ff); border: none; border-radius: 6px; padding: 0.5rem 1.25rem; font-size: 0.85rem;">
+                                    <i class="mdi mdi-camera" style="margin-right: 8px; font-size: 1.05rem;"></i>
+                                    <span>Ambil Foto</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Preview Area & Progress Scan -->
-                <div id="ktpPreviewWrapper" class="mt-3 p-3 rounded-3 border" style="background: #ffffff; display: none;">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="fw-bold text-dark small d-flex align-items-center gap-1">
-                            <i class="mdi mdi-image-check text-success"></i> Foto KTP yang Dipindai
-                        </span>
-                        <button type="button" class="btn btn-sm btn-outline-secondary py-0.5 px-2" id="btnResetKtpScan" style="font-size: 0.76rem;">
-                            <i class="mdi mdi-refresh me-1"></i>Ganti Foto
-                        </button>
-                    </div>
+                <!-- STEP 2: PROSES & VERIFIKASI (SIDE-BY-SIDE 2-COLUMN LAYOUT) -->
+                <div id="ktpProcessSection" style="display: none;">
+                    <div class="row g-3">
+                        <!-- KOLOM KIRI: PREVIEW FOTO KTP & STATUS OCR -->
+                        <div class="col-12 col-lg-5" id="ktpPreviewWrapper">
+                            <div class="p-3 bg-light rounded-2 border h-100 d-flex flex-column justify-content-between" style="border-radius: 8px !important;">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2.5">
+                                        <div class="fw-bold text-dark small d-flex align-items-center gap-1.5">
+                                            <i class="mdi mdi-card-account-details text-primary fs-6"></i>
+                                            <span>Foto KTP Terunggah</span>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2.5 d-inline-flex align-items-center gap-1" id="btnResetKtpScan" style="font-size: 0.75rem; border-radius: 6px;">
+                                            <i class="mdi mdi-refresh"></i>
+                                            <span>Ganti Foto</span>
+                                        </button>
+                                    </div>
 
-                    <div class="position-relative text-center bg-light rounded-2 p-2 overflow-hidden" style="max-height: 220px;">
-                        <img id="ktpImagePreview" src="" alt="Preview KTP" class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
-                        <!-- Scanline Laser Effect -->
-                        <div id="ktpScanline" class="ktp-scan-laser" style="display: none;"></div>
-                    </div>
+                                    <!-- KTP Photo Frame -->
+                                    <div class="ktp-preview-frame mb-3">
+                                        <img id="ktpImagePreview" src="" alt="Preview KTP">
+                                        <!-- Scanline Laser Effect -->
+                                        <div id="ktpScanline" class="ktp-scan-laser" style="display: none;"></div>
+                                    </div>
 
-                    <!-- Progress Bar OCR -->
-                    <div id="ktpOcrProgressWrapper" class="mt-3" style="display: none;">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="small fw-semibold text-primary" id="ktpOcrStatusText">
-                                <span class="spinner-border spinner-border-sm me-1" role="status"></span>Menganalisis KTP...
-                            </span>
-                            <span class="small fw-bold text-primary" id="ktpOcrPercent">0%</span>
-                        </div>
-                        <div class="progress" style="height: 6px; border-radius: 10px; background: #e2e8f0;">
-                            <div id="ktpOcrProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%; background: linear-gradient(90deg, #7c3aed, #9a55ff);"></div>
-                        </div>
-                    </div>
-                </div>
+                                    <!-- Status & Progress Bar Card -->
+                                    <div id="ktpOcrProgressWrapper" class="p-3 border mb-3" style="background: #faf5ff; border-color: #ddd6fe !important; border-radius: 8px !important; transition: all 0.3s ease;">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="small fw-semibold text-dark d-flex align-items-center" id="ktpOcrStatusText" style="font-size: 0.82rem;">
+                                                <span class="spinner-border spinner-border-sm text-primary" role="status" style="width: 0.95rem; height: 0.95rem; margin-right: 8px;"></span>
+                                                <span>Menganalisis KTP...</span>
+                                            </span>
+                                            <span class="badge" id="ktpOcrPercentBadge" style="background: #ede9fe; color: #7c3aed; font-weight: 700; font-size: 0.76rem; border-radius: 6px; padding: 4px 8px;">
+                                                <span id="ktpOcrPercent">0%</span>
+                                            </span>
+                                        </div>
+                                        <div id="ktpOcrBarContainer" class="progress mt-2.5" style="height: 6px; border-radius: 6px; background: #e2e8f0; margin-top: 10px;">
+                                            <div id="ktpOcrProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%; background: linear-gradient(90deg, #7c3aed, #9a55ff); border-radius: 6px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                <!-- Form Verifikasi Data Hasil Ekstraksi OCR -->
-                <div id="ktpResultWrapper" class="mt-3" style="display: none;">
-                    <div class="alert alert-success d-flex align-items-center py-2 px-3 mb-3 rounded-3" style="font-size: 0.82rem;">
-                        <i class="mdi mdi-check-circle fs-5 me-2 text-success"></i>
-                        <div><strong>Berhasil!</strong> Data berhasil dibaca dari foto KTP. Periksa atau koreksi hasil di bawah jika diperlukan:</div>
-                    </div>
+                                <!-- Accordion Raw OCR Text -->
+                                <div class="pt-2 border-top">
+                                    <a class="text-muted small text-decoration-none d-flex align-items-center justify-content-between" data-bs-toggle="collapse" href="#collapseRawOcr" role="button" style="font-size: 0.74rem;">
+                                        <span><i class="mdi mdi-code-tags me-1"></i>Lihat teks mentah OCR</span>
+                                        <i class="mdi mdi-chevron-down"></i>
+                                    </a>
+                                    <div class="collapse text-start mt-2" id="collapseRawOcr">
+                                        <textarea id="ocr_raw_text" class="form-control form-control-sm font-monospace text-muted" rows="4" readonly style="font-size: 0.72rem; background: #ffffff; border-radius: 6px;"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div class="row g-2" style="font-size: 0.84rem;">
-                        <div class="col-12 col-md-6">
-                            <label class="form-label small mb-1 fw-bold text-dark">NIK (16 Digit) <span class="text-danger">*</span></label>
-                            <input type="text" id="ocr_nik" class="form-control form-control-sm fw-bold font-monospace text-primary" maxlength="16" placeholder="3271xxxxxxxxxxxx">
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label small mb-1 fw-bold text-dark">Nama Lengkap <span class="text-danger">*</span></label>
-                            <input type="text" id="ocr_full_name" class="form-control form-control-sm fw-bold text-uppercase" placeholder="Nama Sesuai KTP">
-                        </div>
-                        <div class="col-6 col-md-6">
-                            <label class="form-label small mb-1 fw-bold text-dark">Tempat Lahir</label>
-                            <input type="text" id="ocr_birthplace" class="form-control form-control-sm text-uppercase" placeholder="Kota/Kabupaten">
-                        </div>
-                        <div class="col-6 col-md-6">
-                            <label class="form-label small mb-1 fw-bold text-dark">Tanggal Lahir</label>
-                            <input type="date" id="ocr_date_birth" class="form-control form-control-sm">
-                        </div>
-                        <div class="col-6 col-md-4">
-                            <label class="form-label small mb-1 fw-bold text-dark">Jenis Kelamin</label>
-                            <select id="ocr_gender" class="form-select form-select-sm">
-                                <option value="">-- Pilih --</option>
-                                <option value="L">Laki-laki</option>
-                                <option value="P">Perempuan</option>
-                            </select>
-                        </div>
-                        <div class="col-6 col-md-4">
-                            <label class="form-label small mb-1 fw-bold text-dark">Agama</label>
-                            <select id="ocr_religion" class="form-select form-select-sm">
-                                <option value="">-- Pilih --</option>
-                                <option value="Islam">Islam</option>
-                                <option value="Kristen">Kristen</option>
-                                <option value="Katolik">Katolik</option>
-                                <option value="Hindu">Hindu</option>
-                                <option value="Buddha">Buddha</option>
-                                <option value="Lainnya">Lainnya</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label class="form-label small mb-1 fw-bold text-dark">Status Perkawinan</label>
-                            <select id="ocr_marital_status" class="form-select form-select-sm">
-                                <option value="">-- Pilih --</option>
-                                <option value="BELUM KAWIN">BELUM KAWIN</option>
-                                <option value="KAWIN">KAWIN</option>
-                                <option value="CERAI HIDUP">CERAI HIDUP</option>
-                                <option value="CERAI MATI">CERAI MATI</option>
-                            </select>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label small mb-1 fw-bold text-dark">Alamat Lengkap</label>
-                            <input type="text" id="ocr_address" class="form-control form-control-sm" placeholder="Nama Jalan, Blok, No. Rumah">
-                        </div>
-                        <div class="col-4 col-md-2">
-                            <label class="form-label small mb-1 fw-bold text-dark">RT</label>
-                            <input type="text" id="ocr_rt" class="form-control form-control-sm" placeholder="001">
-                        </div>
-                        <div class="col-4 col-md-2">
-                            <label class="form-label small mb-1 fw-bold text-dark">RW</label>
-                            <input type="text" id="ocr_rw" class="form-control form-control-sm" placeholder="002">
-                        </div>
-                        <div class="col-4 col-md-4">
-                            <label class="form-label small mb-1 fw-bold text-dark">Kelurahan / Desa</label>
-                            <input type="text" id="ocr_village" class="form-control form-control-sm" placeholder="Kelurahan">
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label class="form-label small mb-1 fw-bold text-dark">Kecamatan</label>
-                            <input type="text" id="ocr_subdistrict" class="form-control form-control-sm" placeholder="Kecamatan">
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label small mb-1 fw-bold text-dark">Kota / Kabupaten</label>
-                            <input type="text" id="ocr_city" class="form-control form-control-sm" placeholder="Kota / Kabupaten">
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label small mb-1 fw-bold text-dark">Provinsi</label>
-                            <input type="text" id="ocr_province" class="form-control form-control-sm" placeholder="Provinsi">
-                        </div>
-                    </div>
+                        <!-- KOLOM KANAN: HASIL EKSTRAKSI & VERIFIKASI -->
+                        <div class="col-12 col-lg-7">
+                            <div id="ktpResultWrapper" style="display: none;">
+                                <div class="alert alert-success d-flex align-items-center py-2 px-3 mb-2.5" style="border-radius: 6px; font-size: 0.82rem; background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534;">
+                                    <i class="mdi mdi-check-circle-outline fs-5 me-2 text-success flex-shrink-0"></i>
+                                    <div><strong>Ekstraksi Selesai!</strong> Periksa atau koreksi hasil pembacaan sebelum diterapkan:</div>
+                                </div>
 
-                    <!-- Accordion Raw Text OCR (Opsional) -->
-                    <div class="mt-2 text-end">
-                        <a class="text-muted small text-decoration-none" data-bs-toggle="collapse" href="#collapseRawOcr" role="button" style="font-size: 0.74rem;">
-                            <i class="mdi mdi-code-tags me-1"></i>Lihat teks mentah pembacaan OCR
-                        </a>
-                        <div class="collapse text-start mt-2" id="collapseRawOcr">
-                            <textarea id="ocr_raw_text" class="form-control form-control-sm font-monospace text-muted" rows="4" readonly style="font-size: 0.72rem; background: #f8fafc;"></textarea>
+                                <!-- GROUP 1: IDENTITAS DIRI -->
+                                <div class="ktp-field-group">
+                                    <div class="ktp-field-group-header">
+                                        <i class="mdi mdi-account-circle-outline text-primary"></i>
+                                        <span>1. Data Identitas Pribadi</span>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-12 col-sm-6">
+                                            <label class="form-label small mb-1 fw-bold text-dark">NIK (16 Digit) <span class="text-danger">*</span></label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text ktp-input-icon"><i class="mdi mdi-card-account-details-outline"></i></span>
+                                                <input type="text" id="ocr_nik" class="form-control form-control-sm fw-bold font-monospace text-primary" maxlength="16" placeholder="3271xxxxxxxxxxxx" style="border-radius: 0 6px 6px 0;">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <label class="form-label small mb-1 fw-bold text-dark">Nama Lengkap <span class="text-danger">*</span></label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text ktp-input-icon"><i class="mdi mdi-account-outline"></i></span>
+                                                <input type="text" id="ocr_full_name" class="form-control form-control-sm fw-bold text-uppercase" placeholder="Nama Sesuai KTP" style="border-radius: 0 6px 6px 0;">
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-sm-6">
+                                            <label class="form-label small mb-1 fw-bold text-dark">Tempat Lahir</label>
+                                            <input type="text" id="ocr_birthplace" class="form-control form-control-sm text-uppercase" placeholder="Contoh: Jakarta" style="border-radius: 6px;">
+                                        </div>
+                                        <div class="col-6 col-sm-6">
+                                            <label class="form-label small mb-1 fw-bold text-dark">Tanggal Lahir</label>
+                                            <input type="date" id="ocr_date_birth" class="form-control form-control-sm" style="border-radius: 6px;">
+                                        </div>
+                                        <div class="col-12 col-sm-4">
+                                            <label class="form-label small mb-1 fw-bold text-dark">Jenis Kelamin</label>
+                                            <select id="ocr_gender" class="form-select form-select-sm" style="border-radius: 6px;">
+                                                <option value="">-- Pilih --</option>
+                                                <option value="L">Laki-laki</option>
+                                                <option value="P">Perempuan</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6 col-sm-4">
+                                            <label class="form-label small mb-1 fw-bold text-dark">Agama</label>
+                                            <select id="ocr_religion" class="form-select form-select-sm" style="border-radius: 6px;">
+                                                <option value="">-- Pilih --</option>
+                                                <option value="Islam">Islam</option>
+                                                <option value="Kristen">Kristen</option>
+                                                <option value="Katolik">Katolik</option>
+                                                <option value="Hindu">Hindu</option>
+                                                <option value="Buddha">Buddha</option>
+                                                <option value="Lainnya">Lainnya</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6 col-sm-4">
+                                            <label class="form-label small mb-1 fw-bold text-dark">Status Perkawinan</label>
+                                            <select id="ocr_marital_status" class="form-select form-select-sm" style="border-radius: 6px;">
+                                                <option value="">-- Pilih --</option>
+                                                <option value="BELUM KAWIN">BELUM KAWIN</option>
+                                                <option value="KAWIN">KAWIN</option>
+                                                <option value="CERAI HIDUP">CERAI HIDUP</option>
+                                                <option value="CERAI MATI">CERAI MATI</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- GROUP 2: ALAMAT E-KTP -->
+                                <div class="ktp-field-group mb-0">
+                                    <div class="ktp-field-group-header">
+                                        <i class="mdi mdi-map-marker-outline text-primary"></i>
+                                        <span>2. Data Alamat Sesuai e-KTP</span>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-12">
+                                            <label class="form-label small mb-1 fw-bold text-dark">Alamat Lengkap</label>
+                                            <input type="text" id="ocr_address" class="form-control form-control-sm" placeholder="Nama Jalan, Gang, Blok, No. Rumah" style="border-radius: 6px;">
+                                        </div>
+                                        <div class="col-6 col-sm-3">
+                                            <label class="form-label small mb-1 fw-bold text-dark">RT</label>
+                                            <input type="text" id="ocr_rt" class="form-control form-control-sm" placeholder="001" style="border-radius: 6px;">
+                                        </div>
+                                        <div class="col-6 col-sm-3">
+                                            <label class="form-label small mb-1 fw-bold text-dark">RW</label>
+                                            <input type="text" id="ocr_rw" class="form-control form-control-sm" placeholder="002" style="border-radius: 6px;">
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <label class="form-label small mb-1 fw-bold text-dark">Kelurahan / Desa</label>
+                                            <input type="text" id="ocr_village" class="form-control form-control-sm" placeholder="Kelurahan" style="border-radius: 6px;">
+                                        </div>
+                                        <div class="col-12 col-sm-4">
+                                            <label class="form-label small mb-1 fw-bold text-dark">Kecamatan</label>
+                                            <input type="text" id="ocr_subdistrict" class="form-control form-control-sm" placeholder="Kecamatan" style="border-radius: 6px;">
+                                        </div>
+                                        <div class="col-12 col-sm-4">
+                                            <label class="form-label small mb-1 fw-bold text-dark">Kota / Kabupaten</label>
+                                            <input type="text" id="ocr_city" class="form-control form-control-sm" placeholder="Kota / Kabupaten" style="border-radius: 6px;">
+                                        </div>
+                                        <div class="col-12 col-sm-4">
+                                            <label class="form-label small mb-1 fw-bold text-dark">Provinsi</label>
+                                            <input type="text" id="ocr_province" class="form-control form-control-sm" placeholder="Provinsi" style="border-radius: 6px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="modal-footer border-top py-2.5 px-4 bg-light d-flex justify-content-between">
-                <button type="button" class="btn btn-sm btn-light border px-3" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-sm text-white px-4 fw-bold shadow-sm" id="btnApplyKtpToForm" disabled style="background: linear-gradient(135deg, #7c3aed, #9a55ff); border-radius: 6px;">
-                    <i class="mdi mdi-check-all me-1"></i>Terapkan ke Formulir Customer
-                </button>
+            <div class="modal-footer border-top py-2.5 px-4 bg-light d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div class="text-muted small d-none d-sm-block" style="font-size: 0.76rem;">
+                    <i class="mdi mdi-shield-check-outline text-success me-1"></i>Data otomatis dapat disesuaikan kembali di formulir.
+                </div>
+                <div class="d-flex align-items-center gap-2 ms-auto">
+                    <button type="button" class="btn btn-sm btn-light border px-3" data-bs-dismiss="modal" style="border-radius: 6px;">Batal</button>
+                    <button type="button" class="btn btn-sm text-white px-4 fw-bold shadow-sm" id="btnApplyKtpToForm" disabled style="background: linear-gradient(135deg, #7c3aed, #9a55ff); border: none; border-radius: 6px;">
+                        <i class="mdi mdi-check-all me-1"></i>Terapkan ke Formulir Customer
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1545,6 +1667,10 @@ $(document).ready(function() {
     $('#btnOpenKtpScanner, #btnScanKtpTab1').on('click', function() {
         const modal = getKtpModalInstance();
         if (modal) {
+            if (!currentScannedKtpFile) {
+                $('#ktpUploadSection').show();
+                $('#ktpProcessSection').hide();
+            }
             modal.show();
         }
     });
@@ -1606,11 +1732,18 @@ $(document).ready(function() {
 
     // Reset / Ganti Foto
     $('#btnResetKtpScan').on('click', function() {
-        $('#ktpPreviewWrapper').hide();
+        $('#ktpProcessSection').hide();
+        $('#ktpUploadSection').slideDown();
         $('#ktpResultWrapper').hide();
         $('#btnApplyKtpToForm').prop('disabled', true);
         $('#ktpFileInput').val('');
         currentScannedKtpFile = null;
+
+        // Reset state progress box
+        $('#ktpOcrProgressWrapper').css({ 'background': '#faf5ff', 'border-color': '#ddd6fe' });
+        $('#ktpOcrPercentBadge').css({ 'background': '#ede9fe', 'color': '#7c3aed' }).text('0%');
+        $('#ktpOcrProgressBar').css('width', '0%');
+        $('#ktpOcrBarContainer').show();
     });
 
     // Helper global pintar untuk memilih value pada dropdown (tahan case, alias, dan teks)
@@ -1732,13 +1865,21 @@ $(document).ready(function() {
 
         currentScannedKtpFile = file;
 
+        // Switch dari panel upload ke panel proses & verifikasi
+        $('#ktpUploadSection').hide();
+        $('#ktpProcessSection').show();
+        $('#ktpResultWrapper').hide();
+        $('#btnApplyKtpToForm').prop('disabled', true);
+
+        // Reset progress UI ke kondisi awal pemindaian
+        $('#ktpOcrProgressWrapper').css({ 'background': '#faf5ff', 'border-color': '#ddd6fe' });
+        $('#ktpOcrPercentBadge').css({ 'background': '#ede9fe', 'color': '#7c3aed' }).text('0%');
+        $('#ktpOcrProgressBar').css('width', '0%');
+        $('#ktpOcrBarContainer').show();
+
         const reader = new FileReader();
         reader.onload = function(e) {
             const previewImg = document.getElementById('ktpImagePreview');
-            $('#ktpPreviewWrapper').show();
-            $('#ktpResultWrapper').hide();
-            $('#btnApplyKtpToForm').prop('disabled', true);
-
             let triggered = false;
             function runOcr() {
                 if (triggered) return;
@@ -1766,8 +1907,7 @@ $(document).ready(function() {
             const video = document.getElementById('ktpCameraVideo');
             video.srcObject = cameraStream;
             $('#ktpCameraOverlay').show();
-            $('#btnCaptureCamera').prop('disabled', false);
-            $('#btnStopCamera').show();
+            $('#btnCaptureCamera').show().prop('disabled', false);
             $(this).hide();
         } catch (err) {
             console.error('Error camera:', err);
@@ -1787,12 +1927,9 @@ $(document).ready(function() {
             if (video) video.srcObject = null;
         }
         $('#ktpCameraOverlay').hide();
-        $('#btnCaptureCamera').prop('disabled', true);
-        $('#btnStopCamera').hide();
+        $('#btnCaptureCamera').hide().prop('disabled', true);
         $('#btnStartCamera').show();
     }
-
-    $('#btnStopCamera').on('click', stopCamera);
 
     // Ambil Snapshot dari Kamera
     $('#btnCaptureCamera').on('click', function() {
@@ -1909,7 +2046,12 @@ $(document).ready(function() {
             $('#ktpScanline').hide();
             $('#ktpOcrProgressBar').css('width', '100%');
             $('#ktpOcrPercent').text('100%');
-            $('#ktpOcrStatusText').html('<i class="mdi mdi-check-circle text-success me-1"></i>Ekstraksi teks selesai!');
+
+            // Tampilan sukses yang bersih, rapi & elegan
+            $('#ktpOcrProgressWrapper').css({ 'background': '#f0fdf4', 'border-color': '#bbf7d0' });
+            $('#ktpOcrStatusText').html('<i class="mdi mdi-check-circle" style="color: #16a34a; font-size: 1.15rem; margin-right: 8px;"></i><span class="fw-bold text-success" style="font-size: 0.82rem;">Ekstraksi data e-KTP selesai!</span>');
+            $('#ktpOcrPercentBadge').css({ 'background': '#dcfce7', 'color': '#15803d' }).html('<i class="mdi mdi-check me-1"></i>100% Selesai');
+            $('#ktpOcrBarContainer').slideUp(250);
 
             const rawText = ret.data.text || '';
             const parsedData = parseKtpText(rawText);
@@ -1939,7 +2081,10 @@ $(document).ready(function() {
         } catch (err) {
             console.error('OCR Error:', err);
             $('#ktpScanline').hide();
-            $('#ktpOcrStatusText').html('<span class="text-danger"><i class="mdi mdi-alert-circle me-1"></i>Gagal memproses gambar.</span>');
+            $('#ktpOcrProgressWrapper').css({ 'background': '#fffbeb', 'border-color': '#fde68a' });
+            $('#ktpOcrStatusText').html('<i class="mdi mdi-alert-circle" style="color: #d97706; font-size: 1.15rem; margin-right: 8px;"></i><span class="fw-bold text-warning" style="font-size: 0.82rem;">Pembacaan perlu diperiksa</span>');
+            $('#ktpOcrPercentBadge').css({ 'background': '#fef3c7', 'color': '#b45309' }).text('Cek Hasil');
+            $('#ktpOcrBarContainer').slideUp(250);
 
             Swal.fire({
                 icon: 'warning',

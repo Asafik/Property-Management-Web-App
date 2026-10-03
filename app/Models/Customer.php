@@ -9,9 +9,10 @@ class Customer extends Model
     //
 protected $fillable = [
     'customer_id',
+    'status_kelengkapan',
     'guest_id',
-    'land_bank_id',   // ✅ tambahin ini
-    'unit_id',        // ✅ tambahin ini
+    'land_bank_id',
+    'unit_id',
 
     'full_name',
     'nickname',
@@ -44,6 +45,33 @@ protected $fillable = [
     'domicile_province','domicile_city','domicile_subdistrict','domicile_village',
     'domicile_rt','domicile_rw','domicile_postal_code','domicile_address',
 ];
+
+public static function generateCustomerId(): string
+{
+    $today = now()->format('Ymd');
+    $lastCustomer = self::whereDate('created_at', now()->today())
+        ->orderBy('id', 'desc')
+        ->first();
+
+    if ($lastCustomer && $lastCustomer->customer_id) {
+        $lastNumber = intval(substr($lastCustomer->customer_id, -3));
+        $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+    } else {
+        $newNumber = '001';
+    }
+
+    return 'CUST-' . $today . '-' . $newNumber;
+}
+
+public function getIsLengkapAttribute(): bool
+{
+    if ($this->status_kelengkapan === 'lengkap') {
+        return true;
+    }
+    // Jika ada NIK valid, otomatis dianggap lengkap
+    return !empty($this->nik);
+}
+
 public function units()
 {
     return $this->hasMany(LandBankUnit::class, 'customer_id','id');

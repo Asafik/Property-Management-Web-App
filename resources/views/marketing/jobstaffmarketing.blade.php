@@ -556,11 +556,12 @@
                             <thead>
                                 <tr>
                                     <th class="text-center" width="4%">No</th>
-                                    <th width="18%">Nama Staff</th>
-                                    <th width="26%">Nama Tugas</th>
-                                    <th width="15%">Kategori</th>
-                                    <th width="14%">Deadline</th>
-                                    <th class="text-center" width="9%">Status</th>
+                                    <th width="16%">Nama Staff</th>
+                                    <th width="22%">Nama Tugas</th>
+                                    <th width="17%">Target &amp; Capaian</th>
+                                    <th width="13%">Kategori</th>
+                                    <th width="11%">Deadline</th>
+                                    <th class="text-center" width="8%">Status</th>
                                     <th class="text-center col-aksi" width="14%">Aksi</th>
                                 </tr>
                             </thead>
@@ -577,6 +578,31 @@
                                             <div class="d-flex align-items-center">
                                                 <i class="mdi mdi-clipboard-text-outline text-primary me-2" style="font-size: 1.1rem; color: #9a55ff !important;"></i>
                                                 <span class="fw-bold text-dark">{{ $item->nama_tugas }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @php
+                                                $targetJml = (int) ($item->target_jumlah ?? 1);
+                                                $realisasiJml = $item->realisasi_aktual;
+                                                $satuan = $item->satuan_target ?: 'Item';
+                                                $persen = $item->persentase_capaian;
+                                                $barColor = $persen >= 100 ? '#10b981' : ($persen > 0 ? '#3b82f6' : '#94a3b8');
+                                            @endphp
+                                            <div style="min-width: 140px;">
+                                                <div class="d-flex align-items-center justify-content-between mb-1" style="font-size:0.8rem;">
+                                                    <span class="fw-bold text-dark">
+                                                        {{ $realisasiJml }} <span class="text-muted fw-normal" style="font-size:0.75rem;">/ {{ $targetJml }} {{ $satuan }}</span>
+                                                    </span>
+                                                    <span class="fw-bold ms-2" style="color: {{ $barColor }}; font-size:0.75rem;">
+                                                        {{ $persen }}%
+                                                    </span>
+                                                </div>
+                                                <div class="progress" style="height: 6px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                                    <div class="progress-bar" role="progressbar" 
+                                                         style="width: {{ $persen }}%; background-color: {{ $barColor }}; border-radius: 4px;" 
+                                                         aria-valuenow="{{ $persen }}" aria-valuemin="0" aria-valuemax="100">
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
                                         <td>
@@ -636,7 +662,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted py-5">
+                                        <td colspan="8" class="text-center text-muted py-5">
                                             <i class="mdi mdi-clipboard-text-off-outline" style="font-size: 3rem; color: #5046e5; opacity: 0.3;"></i>
                                             <p class="mt-2 mb-0 fw-bold">Belum ada data tugas untuk staff marketing.</p>
                                         </td>
