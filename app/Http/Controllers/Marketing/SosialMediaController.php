@@ -172,14 +172,17 @@ class SosialMediaController extends Controller
             $initialLikes = round($initialViews * (rand(8, 16) / 100));
         }
 
+        $targetJml = max(1, (int) ($task->target_jumlah ?? 1));
         $task->update([
-            'platform' => $request->platform,
-            'link_postingan' => $request->link_postingan,
-            'catatan_setor' => $request->catatan_setor,
-            'tanggal_setor' => now(),
-            'status' => 'Selesai',
-            'views' => $initialViews,
-            'likes' => $initialLikes,
+            'platform'         => $request->platform,
+            'link_postingan'   => $request->link_postingan,
+            'catatan_setor'    => $request->catatan_setor,
+            'tanggal_setor'    => now(),
+            'status'           => 'Selesai',
+            'realisasi_jumlah' => $targetJml,
+            'satuan_target'    => ($task->satuan_target && $task->satuan_target !== 'Item') ? $task->satuan_target : 'Video',
+            'views'            => $initialViews,
+            'likes'            => $initialLikes,
         ]);
 
         if ($request->ajax() || $request->wantsJson()) {

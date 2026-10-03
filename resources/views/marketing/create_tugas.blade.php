@@ -281,7 +281,63 @@
                                 </small>
                             </div>
 
-                            {{-- 5. Status --}}
+                            {{-- 5. Target Angka & Satuan Rencana --}}
+                            <div class="{{ $isEdit ? 'col-md-4' : 'col-md-6' }}">
+                                <label class="form-label-custom">
+                                    Target Angka Rencana <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" name="target_jumlah" id="targetJumlahInput" class="form-control form-control-custom"
+                                           value="{{ old('target_jumlah', $task->target_jumlah ?? 1) }}" min="1" required
+                                           placeholder="Contoh: 5, 10, 20">
+                                    <span class="input-group-text bg-light text-muted border-start-0" style="border: 1px solid #cbd5e1; border-top-right-radius: 5px !important; border-bottom-right-radius: 5px !important; font-size: 0.82rem;">
+                                        Target
+                                    </span>
+                                </div>
+                                <small class="text-muted d-block mt-1" style="font-size:0.74rem;">
+                                    Misal target <b>5</b> video atau <b>10</b> calon pembeli.
+                                </small>
+                            </div>
+
+                            <div class="{{ $isEdit ? 'col-md-4' : 'col-md-6' }}">
+                                <label class="form-label-custom">
+                                    Satuan Target <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" name="satuan_target" id="satuanTargetInput" list="listSatuanTarget" class="form-control form-control-custom"
+                                       value="{{ old('satuan_target', $task->satuan_target ?? ($currKategori === 'proyeksi' ? 'Calon Pembeli' : 'Video')) }}" required
+                                       placeholder="Contoh: Video, Calon Pembeli, Konten">
+                                <datalist id="listSatuanTarget">
+                                    <option value="Video">
+                                    <option value="Calon Pembeli">
+                                    <option value="Konten Postingan">
+                                    <option value="Leads / Prospek">
+                                    <option value="Kunjungan / Survey">
+                                    <option value="Item">
+                                </datalist>
+                                <small class="text-muted d-block mt-1" style="font-size:0.74rem;">
+                                    Bisa pilih opsi rekomendasi atau ketik nama satuan bebas.
+                                </small>
+                            </div>
+
+                            @if($isEdit)
+                            <div class="col-md-4">
+                                <label class="form-label-custom">
+                                    Realisasi Tercapai Saat Ini
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" name="realisasi_jumlah" id="realisasiJumlahInput" class="form-control form-control-custom"
+                                           value="{{ old('realisasi_jumlah', $task->realisasi_jumlah ?? 0) }}" min="0">
+                                    <span class="input-group-text bg-light text-muted border-start-0" style="border: 1px solid #cbd5e1; border-top-right-radius: 5px !important; border-bottom-right-radius: 5px !important; font-size: 0.82rem;">
+                                        Tercapai
+                                    </span>
+                                </div>
+                                <small class="text-muted d-block mt-1" style="font-size:0.74rem;">
+                                    Jumlah capaian yang telah diselesaikan staf.
+                                </small>
+                            </div>
+                            @endif
+
+                            {{-- 6. Status --}}
                             <div class="col-12">
                                 <label class="form-label-custom">
                                     Status <span class="text-danger">*</span>
@@ -313,7 +369,7 @@
                                 </div>
                             </div>
 
-                            {{-- 6. Deskripsi / Instruksi --}}
+                            {{-- 7. Deskripsi / Instruksi --}}
                             <div class="col-12">
                                 <label class="form-label-custom">
                                     Instruksi / Deskripsi Tugas
@@ -366,6 +422,19 @@ $(document).ready(function () {
         placeholder: '-- Pilih Kategori Tugas --',
         minimumResultsForSearch: Infinity,
         width: '100%'
+    }).on('change', function () {
+        var kat = $(this).val();
+        var satuanInput = $('#satuanTargetInput');
+        var curVal = satuanInput.val().trim();
+        if (!curVal || curVal === 'Video' || curVal === 'Calon Pembeli' || curVal === 'Item') {
+            if (kat === 'sosmed') {
+                satuanInput.val('Video');
+            } else if (kat === 'proyeksi') {
+                satuanInput.val('Calon Pembeli');
+            } else {
+                satuanInput.val('Item');
+            }
+        }
     });
 
     // Sync status pills → hidden input

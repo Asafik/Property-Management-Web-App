@@ -15,6 +15,7 @@ class Guest extends Model
         'source',
         'land_bank_id',
         'unit_id',
+        'budget',
         'marketing_task_id',
         'notes',
         'status',

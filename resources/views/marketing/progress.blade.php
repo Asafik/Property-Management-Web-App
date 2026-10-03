@@ -221,18 +221,30 @@
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
 
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-3" role="alert" style="border-radius: 6px; background: #ecfdf5; color: #065f46;">
+            <i class="mdi mdi-check-circle me-1"></i> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     <!-- Header Judul & Tombol Kembali -->
     <div class="row mb-3 mb-sm-3 mb-md-4">
         <div class="col-12">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 px-1">
                 <div>
                     <h3 class="text-dark mb-1 fw-bold">
-                        <i class="mdi mdi-chart-timeline-variant me-2" style="color: #9a55ff;"></i>Detail Progress Tugas
+                        <i class="mdi mdi-chart-timeline-variant me-2" style="color: #7c3aed;"></i>Detail Progress Tugas
                     </h3>
-                    <p class="text-muted mb-0">Informasi detail tugas dan daftar prospek yang didapatkan</p>
+                    <p class="text-muted mb-0">Informasi detail target rencana, realisasi capaian, dan daftar prospek</p>
                 </div>
-                <div>
-                    <a href="{{ route('master.data.tugas-staff-marketing') }}" class="btn btn-gradient-secondary d-inline-flex align-items-center gap-1" style="height: 38px; padding: 0.5rem 1rem;">
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn d-inline-flex align-items-center gap-1 shadow-sm"
+                            style="background-color: #7c3aed; color: #ffffff; border: none; height: 38px; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600;"
+                            data-bs-toggle="modal" data-bs-target="#updateProgressModal">
+                        <i class="mdi mdi-pencil-box-outline"></i> Update Realisasi &amp; Status
+                    </button>
+                    <a href="{{ route('master.data.tugas-staff-marketing') }}" class="btn btn-gradient-secondary d-inline-flex align-items-center gap-1" style="height: 38px; padding: 0.5rem 1rem; border-radius: 6px;">
                         <i class="mdi mdi-arrow-left"></i> Kembali ke Daftar Tugas
                     </a>
                 </div>
@@ -244,10 +256,17 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-white p-3 border-bottom">
+                <div class="card-header bg-white p-3 border-bottom d-flex align-items-center justify-content-between">
                     <h5 class="card-title mb-0 fw-bold">
-                        <i class="mdi mdi-clipboard-text-outline me-2 text-primary"></i>Informasi Penugasan
+                        <i class="mdi mdi-clipboard-text-outline me-2 text-primary"></i>Informasi Penugasan &amp; Target Rencana
                     </h5>
+                    @php
+                        $persen = $task->persentase_capaian;
+                        $badgeColor = $persen >= 100 ? '#10b981' : ($persen > 0 ? '#3b82f6' : '#64748b');
+                    @endphp
+                    <span class="badge" style="background: {{ $persen >= 100 ? '#d1fae5' : '#eff6ff' }}; color: {{ $badgeColor }}; font-weight: 700; font-size: 0.82rem; padding: 5px 12px; border-radius: 30px;">
+                        Capaian: {{ $persen }}%
+                    </span>
                 </div>
                 <div class="card-body p-3">
                     <div class="row g-3">
@@ -262,6 +281,40 @@
                             <div class="info-card-item">
                                 <div class="info-card-label"><i class="mdi mdi-account-tie"></i>Ditugaskan Kepada</div>
                                 <div class="info-card-value">{{ $task->employee->name ?? 'Tidak ada staff' }}</div>
+                            </div>
+                        </div>
+
+                        {{-- TARGET vs REALISASI CARDS --}}
+                        <div class="col-12 col-md-4">
+                            <div class="info-card-item" style="border-left: 3px solid #7c3aed;">
+                                <div class="info-card-label"><i class="mdi mdi-bullseye-arrow" style="color: #7c3aed;"></i>Target Rencana</div>
+                                <div class="info-card-value" style="color: #7c3aed;">
+                                    {{ $task->target_jumlah ?? 1 }} <span style="font-size: 0.82rem; font-weight: normal; color: #64748b;">{{ $task->satuan_target ?: 'Item' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <div class="info-card-item" style="border-left: 3px solid {{ $persen >= 100 ? '#10b981' : '#3b82f6' }};">
+                                <div class="info-card-label"><i class="mdi mdi-check-decagram" style="color: {{ $persen >= 100 ? '#10b981' : '#3b82f6' }};"></i>Realisasi Tercapai</div>
+                                <div class="info-card-value" style="color: {{ $persen >= 100 ? '#10b981' : '#3b82f6' }};">
+                                    {{ $task->realisasi_aktual }} <span style="font-size: 0.82rem; font-weight: normal; color: #64748b;">{{ $task->satuan_target ?: 'Item' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <div class="info-card-item">
+                                <div class="info-card-label"><i class="mdi mdi-chart-line"></i>Progres Capaian</div>
+                                <div class="mt-1">
+                                    <div class="d-flex justify-content-between mb-1" style="font-size: 0.8rem; font-weight: 700;">
+                                        <span>{{ $task->realisasi_aktual }} / {{ $task->target_jumlah ?? 1 }}</span>
+                                        <span style="color: {{ $badgeColor }};">{{ $persen }}%</span>
+                                    </div>
+                                    <div class="progress" style="height: 7px; background: #e2e8f0; border-radius: 4px;">
+                                        <div class="progress-bar" style="width: {{ $persen }}%; background-color: {{ $badgeColor }}; border-radius: 4px;"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -488,5 +541,73 @@
     </div>
 </div>
 @endforeach
+
+<!-- Modal Update Realisasi & Status Progres -->
+<div class="modal fade" id="updateProgressModal" tabindex="-1" aria-labelledby="updateProgressModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px; overflow: hidden; border: none;">
+            <div class="modal-header" style="background-color: #7c3aed !important; background-image: none !important; color: #ffffff !important; padding: 1rem 1.25rem;">
+                <h5 class="modal-title fw-bold" id="updateProgressModalLabel" style="color: #ffffff !important; font-size: 1.05rem;">
+                    <i class="mdi mdi-chart-line-variant me-2"></i>Update Realisasi &amp; Status Tugas
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: brightness(0) invert(1);"></button>
+            </div>
+            <form action="{{ route('marketing.tugas.update-progress', $task->id) }}" method="POST">
+                @csrf
+                <div class="modal-body p-3 p-md-4">
+                    <div class="alert alert-light border mb-3 p-2" style="font-size: 0.82rem; border-radius: 6px;">
+                        <div class="text-muted">Target Rencana:</div>
+                        <div class="fw-bold text-dark fs-6">{{ $task->target_jumlah ?? 1 }} {{ $task->satuan_target ?: 'Item' }}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark" style="font-size: 0.83rem;">
+                            Realisasi Capaian Saat Ini (Angka) <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input type="number" name="realisasi_jumlah" class="form-control"
+                                   value="{{ old('realisasi_jumlah', $task->realisasi_aktual) }}" min="0" required
+                                   style="border: 1px solid #cbd5e1; border-radius: 5px 0 0 5px; height: 42px;">
+                            <span class="input-group-text bg-light text-muted" style="border: 1px solid #cbd5e1; border-radius: 0 5px 5px 0; font-size: 0.85rem;">
+                                {{ $task->satuan_target ?: 'Item' }}
+                            </span>
+                        </div>
+                        <small class="text-muted d-block mt-1" style="font-size: 0.74rem;">
+                            Masukkan jumlah yang sudah berhasil dicapai hingga saat ini.
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-dark" style="font-size: 0.83rem;">
+                            Status Tugas <span class="text-danger">*</span>
+                        </label>
+                        <select name="status" class="form-select" required style="border: 1px solid #cbd5e1; border-radius: 5px; height: 42px; font-size: 0.88rem;">
+                            <option value="Pending" {{ old('status', $task->status) === 'Pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="Proses" {{ old('status', $task->status) === 'Proses' ? 'selected' : '' }}>Proses</option>
+                            <option value="Selesai" {{ old('status', $task->status) === 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label fw-bold text-dark" style="font-size: 0.83rem;">
+                            Catatan Perkembangan / Keterangan
+                        </label>
+                        <textarea name="catatan_setor" class="form-control" rows="3"
+                                  placeholder="Tuliskan catatan perkembangan realisasi tugas..."
+                                  style="border: 1px solid #cbd5e1; border-radius: 5px; font-size: 0.88rem;">{{ old('catatan_setor', $task->catatan_setor) }}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-top p-3 d-flex justify-content-between">
+                    <button type="button" class="btn btn-light border px-3 py-2 fw-semibold" data-bs-dismiss="modal" style="border-radius: 5px; font-size: 0.85rem;">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn px-4 py-2 fw-semibold shadow-sm text-white" style="background-color: #7c3aed; border: none; border-radius: 5px; font-size: 0.88rem;">
+                        <i class="mdi mdi-content-save-check me-1"></i> Simpan Perkembangan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @endsection

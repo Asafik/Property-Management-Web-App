@@ -335,6 +335,14 @@ class SellUnitController extends Controller
 
         $unit = LandBankUnit::findOrFail($unitId);
 
+        // CEK KELENGKAPAN DATA CUSTOMER
+        $customer = Customer::findOrFail($request->customer_id);
+        if (!$customer->is_lengkap) {
+            return response()->json([
+                'message' => "Customer '{$customer->full_name}' belum melengkapi data identitas (NIK/KTP/Alamat). Silakan lengkapi data customer di menu Data Customer terlebih dahulu sebelum melakukan transaksi booking unit."
+            ], 422);
+        }
+
         // CEK STATUS UNIT (hanya tolak jika sudah sold)
         if ($unit->status === 'sold') {
             return response()->json([

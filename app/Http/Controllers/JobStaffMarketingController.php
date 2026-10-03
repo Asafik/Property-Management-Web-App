@@ -59,66 +59,78 @@ class JobStaffMarketingController extends Controller
     }
 
 
-public function store(Request $request)
-{
-    $request->validate([
-        'employee_id' => 'required',
-        'kategori'    => 'required|in:sosmed,proyeksi,umum',
-        'nama_tugas'  => 'required',
-        'deskripsi'   => 'nullable',
-        'deadline'    => 'required|date',
-        'status'      => 'required|in:Pending,Proses,Selesai',
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'employee_id'   => 'required',
+            'kategori'      => 'required|in:sosmed,proyeksi,umum',
+            'nama_tugas'    => 'required|string|max:255',
+            'target_jumlah' => 'nullable|integer|min:1',
+            'satuan_target' => 'nullable|string|max:50',
+            'deskripsi'     => 'nullable',
+            'deadline'      => 'required|date',
+            'status'        => 'required|in:Pending,Proses,Selesai',
+        ]);
 
-    if ($request->employee_id === 'all') {
-        $marketingStaff = Employee::whereHas('position', function ($q) {
-            $q->where('name', 'Staff Marketing');
-        })->get();
+        $targetJumlah = max(1, (int) $request->input('target_jumlah', 1));
+        $satuanTarget = $request->input('satuan_target') ?: 'Item';
 
-        foreach ($marketingStaff as $staff) {
-            $task = MarketingTask::create([
-                'employee_id' => $staff->id,
-                'kategori'    => $request->kategori,
-                'nama_tugas'  => $request->nama_tugas,
-                'deskripsi'   => $request->deskripsi,
-                'deadline'    => $request->deadline,
-                'status'      => $request->status,
-            ]);
+        if ($request->employee_id === 'all') {
+            $marketingStaff = Employee::whereHas('position', function ($q) {
+                $q->where('name', 'Staff Marketing');
+            })->get();
 
+            foreach ($marketingStaff as $staff) {
+                $task = MarketingTask::create([
+                    'employee_id'      => $staff->id,
+                    'kategori'         => $request->kategori,
+                    'nama_tugas'       => $request->nama_tugas,
+                    'target_jumlah'    => $targetJumlah,
+                    'satuan_target'    => $satuanTarget,
+                    'realisasi_jumlah' => 0,
+                    'deskripsi'        => $request->deskripsi,
+                    'deadline'         => $request->deadline,
+                    'status'           => $request->status,
+                ]);
+
+                try {
+                    $staff->notify(new NewTaskNotification($task));
+                } catch (\Exception $e) {
+                    // Ignore notification error
+                }
+            }
+
+            return redirect()->route('master.data.tugas-staff-marketing')->with('success', 'Tugas berhasil didelegasikan ke semua staff marketing (' . $marketingStaff->count() . ' orang).');
+        }
+
+        $request->validate([
+            'employee_id' => 'exists:employees,id',
+        ]);
+
+        $task = MarketingTask::create([
+            'employee_id'      => $request->employee_id,
+            'kategori'         => $request->kategori,
+            'nama_tugas'       => $request->nama_tugas,
+            'target_jumlah'    => $targetJumlah,
+            'satuan_target'    => $satuanTarget,
+            'realisasi_jumlah' => 0,
+            'deskripsi'        => $request->deskripsi,
+            'deadline'         => $request->deadline,
+            'status'           => $request->status,
+        ]);
+
+        $employee = Employee::find($request->employee_id);
+        if ($employee) {
             try {
-                $staff->notify(new NewTaskNotification($task));
+                $employee->notify(new NewTaskNotification($task));
             } catch (\Exception $e) {
                 // Ignore notification error
             }
         }
 
-        return redirect()->route('master.data.tugas-staff-marketing')->with('success', 'Tugas berhasil didelegasikan ke semua staff marketing (' . $marketingStaff->count() . ' orang).');
+        return redirect()->route('master.data.tugas-staff-marketing')->with('success', 'Tugas berhasil ditambahkan.');
     }
 
-    $request->validate([
-        'employee_id' => 'exists:employees,id',
-    ]);
-
-    $task = MarketingTask::create([
-        'employee_id' => $request->employee_id,
-        'kategori'    => $request->kategori,
-        'nama_tugas'  => $request->nama_tugas,
-        'deskripsi'   => $request->deskripsi,
-        'deadline'    => $request->deadline,
-        'status'      => $request->status,
-    ]);
-
-    $employee = Employee::find($request->employee_id);
-    if ($employee) {
-        try {
-            $employee->notify(new NewTaskNotification($task));
-        } catch (\Exception $e) {
-            // Ignore notification error
-        }
-    }
-
-    return redirect()->route('master.data.tugas-staff-marketing')->with('success', 'Tugas berhasil ditambahkan.');
-}
     public function destroy($id)
     {
         $tugas = MarketingTask::findOrFail($id);
@@ -126,25 +138,37 @@ public function store(Request $request)
 
         return redirect()->route('master.data.tugas-staff-marketing')->with('success', 'Tugas berhasil dihapus.');
     }
+
     public function update(Request $request, $id)
     {
         $request->validate([
-            'employee_id' => 'required|exists:employees,id',
-            'kategori'    => 'required|in:sosmed,proyeksi,umum',
-            'nama_tugas'  => 'required',
-            'deskripsi'   => 'nullable',
-            'deadline'    => 'required|date',
-            'status'      => 'required|in:Pending,Proses,Selesai',
+            'employee_id'      => 'required|exists:employees,id',
+            'kategori'         => 'required|in:sosmed,proyeksi,umum',
+            'nama_tugas'       => 'required|string|max:255',
+            'target_jumlah'    => 'nullable|integer|min:1',
+            'satuan_target'    => 'nullable|string|max:50',
+            'realisasi_jumlah' => 'nullable|integer|min:0',
+            'deskripsi'        => 'nullable',
+            'deadline'         => 'required|date',
+            'status'           => 'required|in:Pending,Proses,Selesai',
         ]);
 
         $tugas = MarketingTask::findOrFail($id);
+
+        $targetJumlah = max(1, (int) $request->input('target_jumlah', $tugas->target_jumlah ?? 1));
+        $satuanTarget = $request->input('satuan_target') ?: ($tugas->satuan_target ?? 'Item');
+        $realisasi    = $request->has('realisasi_jumlah') ? (int) $request->input('realisasi_jumlah') : ($tugas->realisasi_jumlah ?? 0);
+
         $tugas->update([
-            'employee_id' => $request->employee_id,
-            'kategori'    => $request->kategori,
-            'nama_tugas'  => $request->nama_tugas,
-            'deskripsi'   => $request->deskripsi,
-            'deadline'    => $request->deadline,
-            'status'      => $request->status,
+            'employee_id'      => $request->employee_id,
+            'kategori'         => $request->kategori,
+            'nama_tugas'       => $request->nama_tugas,
+            'target_jumlah'    => $targetJumlah,
+            'satuan_target'    => $satuanTarget,
+            'realisasi_jumlah' => $realisasi,
+            'deskripsi'        => $request->deskripsi,
+            'deadline'         => $request->deadline,
+            'status'           => $request->status,
         ]);
 
         return redirect()->route('master.data.tugas-staff-marketing')->with('success', 'Tugas berhasil diperbarui.');
@@ -174,10 +198,28 @@ public function store(Request $request)
         return view('marketing.create_tugas', compact('task', 'marketingStaff', 'kategoriList'));
     }
 
-
     public function progress($id)
-{
-    $task = MarketingTask::with(['employee', 'guest'])->findOrFail($id);
-    return view('marketing.progress', compact('task'));
-}
+    {
+        $task = MarketingTask::with(['employee', 'guest'])->findOrFail($id);
+        return view('marketing.progress', compact('task'));
+    }
+
+    public function updateProgress(Request $request, $id)
+    {
+        $request->validate([
+            'realisasi_jumlah' => 'required|integer|min:0',
+            'status'           => 'required|in:Pending,Proses,Selesai',
+            'catatan_setor'    => 'nullable|string|max:1000',
+        ]);
+
+        $task = MarketingTask::findOrFail($id);
+
+        $task->update([
+            'realisasi_jumlah' => (int) $request->realisasi_jumlah,
+            'status'           => $request->status,
+            'catatan_setor'    => $request->catatan_setor,
+        ]);
+
+        return redirect()->back()->with('success', 'Progress realisasi capaian tugas berhasil diperbarui.');
+    }
 }

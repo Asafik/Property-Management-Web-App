@@ -569,12 +569,15 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('/customer/guest', [TamuController::class, 'index'])->name('customer.tamu');
+    Route::get('/customer/guest/create', [TamuController::class, 'create'])->name('customer.tamu.create');
     Route::post('/customer/guest/store', [TamuController::class, 'store'])->name('customer.tamu.store');
+    Route::get('/customer/guest/{id}', [TamuController::class, 'show'])->name('customer.tamu.show');
+    Route::get('/customer/guest/{id}/edit', [TamuController::class, 'edit'])->name('customer.tamu.edit');
+    Route::put('/customer/guest/{id}', [TamuController::class, 'update'])->name('customer.tamu.update');
+    Route::get('/customer/guest/{id}/edit-ajax', [TamuController::class, 'editAjax'])->name('customer.tamu.edit-ajax');
     Route::post('/customer/guest/follow-up', [TamuController::class, 'followUp'])->name('customer.tamu.followup');
     Route::post('/customer/guest/{id}/convert', [TamuController::class, 'convert'])
         ->name('costomer.guests.convert');
-    Route::get('/customer/guest/{id}/edit', [TamuController::class, 'editAjax']);
-    Route::put('/customer/guest/{id}', [TamuController::class, 'update']);
     Route::delete('/customer/guest/{id}', [TamuController::class, 'destroy'])->name('customer.tamu.destroy');
 
 
@@ -914,6 +917,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/job-staff-marketing/{id}', [JobStaffMarketingController::class, 'destroy'])->name('marketing.tugas.destroy');
     Route::put('/job-staff-marketing/{id}', [JobStaffMarketingController::class, 'update'])->name('marketing.tugas.update');
     Route::get('/job-staff-marketing/progress/{id}', [JobStaffMarketingController::class, 'progress'])->name('marketing.tugas.progress');
+    Route::post('/job-staff-marketing/progress/{id}', [JobStaffMarketingController::class, 'updateProgress'])->name('marketing.tugas.update-progress');
 
     /*
     |--------------------------------------------------------------------------
