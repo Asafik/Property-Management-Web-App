@@ -303,7 +303,7 @@
                 {{ $item['nama_izin'] ?: 'Dokumen Perizinan Baru' }}
             </h2>
             <p class="text-muted mb-0" style="font-size: 0.85rem;">
-                {{ $project['pt'] }} &bull; {{ $project['lokasi'] }} &bull; Luas: {{ $project['luas'] }}
+                <span id="headerPtDisplay" class="fw-bold text-dark">{{ $record->companyProfile->name ?? $project['pt'] }}</span> &bull; {{ $project['lokasi'] }} &bull; Luas: {{ $project['luas'] }}
             </p>
         </div>
 
@@ -337,6 +337,7 @@
         $isTerbit = in_array($rawStatus, ['Terbit', 'Selesai']);
         $isPoin17Doc = (!empty($item['kode_dokumen']) && strtoupper(trim($item['kode_dokumen'])) === 'POIN-17') 
             || (!empty($item['master_id']) && $item['master_id'] == 11) 
+            || ($item_id == 11 || $item_id == '11')
             || str_contains(strtolower($item['nama_izin'] ?? ''), 'shgb induk') 
             || str_contains(strtolower($item['nama_izin'] ?? ''), 'hgb induk selesai');
     @endphp
@@ -383,6 +384,39 @@
                             <input type="text" name="nama_izin" class="form-control form-control-custom fw-semibold" 
                                    value="{{ old('nama_izin', $item['nama_izin']) }}" 
                                    placeholder="Contoh: Rekomendasi Peil Banjir, PKKPR, PBG..." required>
+                        </div>
+
+                        <!-- Perusahaan Developer / PT Pemegang Hak Dokumen & Legalitas -->
+                        <div class="mb-3">
+                            <label class="form-label-custom d-flex justify-content-between align-items-center">
+                                <span class="d-inline-flex align-items-center gap-1.5">
+                                    <i class="mdi mdi-office-building text-primary" style="font-size: 1.1rem;"></i>
+                                    <span>Perusahaan Developer / PT Pemegang Hak Dokumen</span>
+                                </span>
+                                <small class="text-muted" style="font-size: 0.72rem;">
+                                    PT untuk legalitas & balik nama sertifikat kawasan
+                                </small>
+                            </label>
+                            <select name="company_profile_id" id="inpCompanyProfileId" class="form-select form-select-custom fw-semibold" onchange="updatePtDisplay(this)">
+                                <option value="">-- Pilih Perusahaan / PT Developer --</option>
+                                @foreach($companies as $comp)
+                                    @php
+                                        $selectedCompanyId = old('company_profile_id', $record->company_profile_id ?? ($project['company_profile_id'] ?? null));
+                                    @endphp
+                                    <option value="{{ $comp->id }}" data-name="{{ $comp->name }}" {{ (string)$selectedCompanyId === (string)$comp->id ? 'selected' : '' }}>
+                                        {{ $comp->name }} {{ $comp->phone ? '• ' . $comp->phone : '' }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="d-flex align-items-center justify-content-between mt-1 px-1">
+                                <small class="text-muted" style="font-size: 0.72rem;">
+                                    <i class="mdi mdi-information-outline me-0.5"></i>
+                                    PT saat ini: <strong class="text-dark" id="txtCurrentPtLabel">{{ $record->companyProfile->name ?? ($project['pt'] ?? 'Belum ditentukan') }}</strong>
+                                </small>
+                                <a href="{{ route('company-profile.index') }}" target="_blank" class="text-decoration-none small text-primary fw-semibold" style="font-size: 0.72rem;">
+                                    <i class="mdi mdi-plus-box-outline me-0.5"></i>Kelola Master PT
+                                </a>
+                            </div>
                         </div>
 
                         <!-- Status Dokumen & Progres Otomatis -->
@@ -1174,6 +1208,18 @@
         inp.value = '';
         uploadedSyaratMap[newIdx] = false;
         recalcProgressAuto(true);
+    }
+
+    function updatePtDisplay(selectElem) {
+        if (!selectElem) return;
+        var selectedOption = selectElem.options[selectElem.selectedIndex];
+        if (selectedOption && selectedOption.dataset.name) {
+            var ptName = selectedOption.dataset.name;
+            var currentPtLabel = document.getElementById('txtCurrentPtLabel');
+            if (currentPtLabel) currentPtLabel.textContent = ptName;
+            var headerPt = document.getElementById('headerPtDisplay');
+            if (headerPt) headerPt.textContent = ptName;
+        }
     }
 </script>
 @endpush

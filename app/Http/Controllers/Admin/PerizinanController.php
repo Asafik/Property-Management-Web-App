@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CompanyProfile;
 use App\Models\LandBank;
 use App\Models\PraLandbank;
 use App\Models\MasterDokumenPerizinan;
@@ -222,13 +223,15 @@ class PerizinanController extends Controller
         // Ambil model lahan proyek (PraLandbank atau LandBank)
         $record = null;
         if (!empty($project['pra_id'])) {
-            $record = PraLandbank::find($project['pra_id']);
+            $record = PraLandbank::with('companyProfile')->find($project['pra_id']);
         } elseif (!empty($project['land_bank_id'])) {
-            $record = LandBank::find($project['land_bank_id']);
+            $record = LandBank::with('companyProfile')->find($project['land_bank_id']);
         }
         if (!$record) {
-            $record = PraLandbank::find($project['id']) ?? LandBank::find($project['id']);
+            $record = PraLandbank::with('companyProfile')->find($project['id']) ?? LandBank::with('companyProfile')->find($project['id']);
         }
+
+        $companies = CompanyProfile::orderBy('name')->get();
 
         // Muat custom_workflow_docs dari lahan jika ada
         $customDocs = $record ? ($record->custom_workflow_docs ?? []) : [];
@@ -305,7 +308,7 @@ class PerizinanController extends Controller
             }
         }
 
-        return view('perizinan.kelola', compact('project', 'item', 'item_id'));
+        return view('perizinan.kelola', compact('project', 'item', 'item_id', 'companies', 'record'));
     }
 
     /**
@@ -330,15 +333,16 @@ class PerizinanController extends Controller
         }
 
         $request->validate([
-            'nama_izin'      => 'nullable|string|max:255',
-            'status'         => 'required|string',
-            'progress'       => 'nullable|integer|min:0|max:100',
-            'no_izin'        => 'nullable|string|max:255',
-            'tanggal'        => 'nullable|string',
-            'instansi'       => 'nullable|string|max:255',
-            'target_selesai' => 'nullable|string',
-            'catatan'        => 'nullable|string',
-            'file_dokumen'   => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:20480',
+            'nama_izin'          => 'nullable|string|max:255',
+            'company_profile_id' => 'nullable|exists:company_profiles,id',
+            'status'             => 'required|string',
+            'progress'           => 'nullable|integer|min:0|max:100',
+            'no_izin'            => 'nullable|string|max:255',
+            'tanggal'            => 'nullable|string',
+            'instansi'           => 'nullable|string|max:255',
+            'target_selesai'     => 'nullable|string',
+            'catatan'            => 'nullable|string',
+            'file_dokumen'       => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:20480',
         ]);
 
         // 1. Ambil Model Lahan (PraLandbank atau LandBank) untuk custom_workflow_docs
@@ -352,12 +356,56 @@ class PerizinanController extends Controller
             $record = PraLandbank::find($project['id']) ?? LandBank::find($project['id']);
         }
 
-        $currentDocs = $record ? ($record->custom_workflow_docs ?? []) : [];
-        if (!is_array($currentDocs)) $currentDocs = [];
-
         $namaTugas = $request->filled('nama_izin') 
             ? $request->nama_izin 
             : ($item['nama_izin'] ?? 'Dokumen Perizinan Kawasan');
+
+        // Deteksi awal apakah ini dokumen Poin 17 (SHGB Induk an. PT)
+        $isPoin17 = false;
+        if (!empty($item['kode_dokumen']) && strtoupper(trim($item['kode_dokumen'])) === 'POIN-17') {
+            $isPoin17 = true;
+        } elseif (!empty($item['master_id']) && $item['master_id'] == 11) {
+            $isPoin17 = true;
+        } elseif ($item_id == 11 || $item_id == '11') {
+            $isPoin17 = true;
+        } else {
+            $namaLower = strtolower($namaTugas);
+            if (str_contains($namaLower, 'shgb induk') || str_contains($namaLower, 'hgb induk selesai') || (str_contains($namaLower, 'balik nama') && str_contains($namaLower, 'pt'))) {
+                $isPoin17 = true;
+            }
+        }
+
+        // Ambil data Company jika dipilih & Update PT pada record lahan
+        $chosenCompany = null;
+        if ($request->filled('company_profile_id')) {
+            $chosenCompany = CompanyProfile::find($request->company_profile_id);
+            if ($record && $chosenCompany) {
+                $record->company_profile_id = $chosenCompany->id;
+                if ($record instanceof LandBank || ($record instanceof PraLandbank && $isPoin17)) {
+                    $record->certificate_owner = $chosenCompany->name;
+                }
+                $record->save();
+
+                // Sinkronisasi company ke pasangan lahan
+                if ($record instanceof PraLandbank && !empty($record->land_bank_id)) {
+                    $lb = LandBank::find($record->land_bank_id);
+                    if ($lb) {
+                        $lb->company_profile_id = $chosenCompany->id;
+                        $lb->certificate_owner = $chosenCompany->name;
+                        $lb->save();
+                    }
+                } elseif ($record instanceof LandBank) {
+                    $pra = PraLandbank::where('land_bank_id', $record->id)->first();
+                    if ($pra) {
+                        $pra->company_profile_id = $chosenCompany->id;
+                        $pra->save();
+                    }
+                }
+            }
+        }
+
+        $currentDocs = $record ? ($record->custom_workflow_docs ?? []) : [];
+        if (!is_array($currentDocs)) $currentDocs = [];
 
         // Cari index doc yang cocok di custom_workflow_docs
         $existingDocIndex = -1;
@@ -627,22 +675,12 @@ class PerizinanController extends Controller
         $task->save();
 
         // 8. OPSI 1: Otomatis Migrasi ke Pasca Land Bank saat SHGB Induk an. PT (Poin 17) Terbit Resmi
-        $isPoin17 = false;
-        if (!empty($item['kode_dokumen']) && strtoupper(trim($item['kode_dokumen'])) === 'POIN-17') {
-            $isPoin17 = true;
-        } elseif (!empty($item['master_id']) && $item['master_id'] == 11) {
-            $isPoin17 = true;
-        } else {
-            $namaLower = strtolower($namaTugas);
-            if (str_contains($namaLower, 'shgb induk') || str_contains($namaLower, 'hgb induk selesai') || (str_contains($namaLower, 'balik nama') && str_contains($namaLower, 'pt'))) {
-                $isPoin17 = true;
-            }
-        }
-
         $migratedToPasca = false;
         if ($isPoin17 && ($statusStr === 'Terbit' || $inputStatus === 'Terbit' || $progress >= 100)) {
+            $companyId = $request->company_profile_id ?: ($record->company_profile_id ?? null);
+            $companyName = $chosenCompany ? $chosenCompany->name : ($record->companyProfile->name ?? 'PT Graha Cipta Sejahtera');
+
             if ($record instanceof PraLandbank) {
-                $companyId = $record->company_profile_id ?? null;
                 $totalArea = $record->field_area ?: ($record->area ?: 0);
 
                 $landBank = null;
@@ -658,7 +696,7 @@ class PerizinanController extends Controller
                     'company_profile_id'        => $companyId,
                     'certificate_no'            => $request->no_izin ?: ($record->certificate_no ?: ($record->land_name . ' (SHGB Induk PT)')),
                     'ownership_status'          => 'SHGB',
-                    'certificate_owner'         => $record->companyProfile->name ?? ($record->owner_name ?: '-'),
+                    'certificate_owner'         => $companyName,
                     'custom_workflow_docs'      => $currentDocs,
                     'area'                      => $totalArea,
                     'remaining_area'            => $totalArea,
@@ -676,6 +714,10 @@ class PerizinanController extends Controller
                     'lng'                       => $record->lng,
                     'file_certificate'          => $mainFilePath ?: $record->file_certificate,
                     'file_pbb'                  => $record->pbb_mutasi_file,
+                    'shgb_induk_no'             => $request->no_izin ?: ($record->shgb_induk_no ?: $record->certificate_no),
+                    'shgb_induk_date'           => $tglTerbit ?: ($record->shgb_induk_date ?: now()->toDateString()),
+                    'shgb_induk_area'           => $totalArea,
+                    'shgb_induk_file'           => $mainFilePath ?: ($record->shgb_induk_file ?: $record->file_certificate),
                     'photo'                     => $record->photo,
                     'denah'                     => $record->peta_bidang_file,
                     'facility_school'           => $record->facility_school ?? false,
@@ -687,7 +729,7 @@ class PerizinanController extends Controller
                     'status'                    => 'aktif',
                     'legal_status'              => 'aman',
                     'development_status'        => 'Belum',
-                    'description'               => 'Tanah Induk resmi SHGB an. PT hasil perizinan balik nama proyek #' . $record->id . ' (' . $record->land_name . ')',
+                    'description'               => 'Tanah Induk resmi SHGB an. ' . $companyName . ' hasil perizinan balik nama proyek #' . $record->id . ' (' . $record->land_name . ')',
                 ];
 
                 if ($landBank) {
@@ -711,20 +753,124 @@ class PerizinanController extends Controller
                     );
                 }
 
+                // Sinkronisasi seluruh dokumen berkas perizinan yang telah terbit/ada berkasnya ke LandBankDocument
+                if (!empty($currentDocs) && is_array($currentDocs)) {
+                    foreach ($currentDocs as $cd) {
+                        if (!empty($cd['file_path'])) {
+                            $docName = $cd['doc_name'] ?? 'Dokumen Perizinan PT';
+                            $docType = \App\Models\DocumentTypes::firstOrCreate(
+                                ['name' => $docName],
+                                [
+                                    'code'                  => 'IZIN_' . strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', $docName), 0, 15)) . '_' . ($cd['master_id'] ?? rand(100, 999)),
+                                    'has_expiry'            => false,
+                                    'applicable_categories' => ['SHGB', 'SHM'],
+                                ]
+                            );
+
+                            \App\Models\LandBankDocument::updateOrCreate(
+                                [
+                                    'land_bank_id'     => $landBank->id,
+                                    'document_type_id' => $docType->id,
+                                ],
+                                [
+                                    'document_number'  => $cd['doc_number'] ?? null,
+                                    'file_path'        => $cd['file_path'],
+                                ]
+                            );
+                        }
+                    }
+                }
+
+                // Sinkronisasi dari PerizinanTask yang memiliki berkas dokumen
+                $tasksWithFiles = \App\Models\PerizinanTask::where('proyek_id', $project['id'])
+                    ->whereNotNull('file_dokumen')
+                    ->where('file_dokumen', '!=', '')
+                    ->get();
+                foreach ($tasksWithFiles as $pt) {
+                    $docName = $pt->nama_tugas ?? 'Dokumen Perizinan PT';
+                    $docType = \App\Models\DocumentTypes::firstOrCreate(
+                        ['name' => $docName],
+                        [
+                            'code'                  => 'IZIN_' . strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', $docName), 0, 15)) . '_' . ($pt->master_dokumen_id ?? rand(100, 999)),
+                            'has_expiry'            => false,
+                            'applicable_categories' => ['SHGB', 'SHM'],
+                        ]
+                    );
+
+                    \App\Models\LandBankDocument::updateOrCreate(
+                        [
+                            'land_bank_id'     => $landBank->id,
+                            'document_type_id' => $docType->id,
+                        ],
+                        [
+                            'document_number'  => $pt->nomor_dokumen ?? null,
+                            'file_path'        => $pt->file_dokumen,
+                        ]
+                    );
+                }
+
                 $record->update([
                     'land_bank_id'      => $landBank->id,
+                    'company_profile_id'=> $companyId,
                     'certificate_no'    => $landBankData['certificate_no'],
                     'ownership_status'  => 'SHGB',
-                    'certificate_owner' => 'PT Graha Cipta Sejahtera',
+                    'certificate_owner' => $companyName,
                     'file_certificate'  => $landBankData['file_certificate'],
+                    'shgb_induk_no'     => $landBankData['shgb_induk_no'],
+                    'shgb_induk_date'   => $landBankData['shgb_induk_date'],
+                    'shgb_induk_area'   => $landBankData['shgb_induk_area'],
+                    'shgb_induk_file'   => $landBankData['shgb_induk_file'],
                     'status'            => 'approved',
                 ]);
+
+                $migratedToPasca = true;
+            } elseif ($record instanceof LandBank) {
+                $record->update([
+                    'company_profile_id' => $companyId,
+                    'certificate_owner'  => $companyName,
+                    'ownership_status'   => 'SHGB',
+                    'file_certificate'   => $mainFilePath ?: $record->file_certificate,
+                    'shgb_induk_no'      => $request->no_izin ?: ($record->shgb_induk_no ?: $record->certificate_no),
+                    'shgb_induk_date'    => $tglTerbit ?: ($record->shgb_induk_date ?: now()->toDateString()),
+                    'shgb_induk_file'    => $mainFilePath ?: $record->shgb_induk_file,
+                ]);
+
+                // Sinkronisasi berkas dokumen perizinan ke LandBankDocument
+                if (!empty($currentDocs) && is_array($currentDocs)) {
+                    foreach ($currentDocs as $cd) {
+                        if (!empty($cd['file_path'])) {
+                            $docName = $cd['doc_name'] ?? 'Dokumen Perizinan PT';
+                            $docType = \App\Models\DocumentTypes::firstOrCreate(
+                                ['name' => $docName],
+                                [
+                                    'code'                  => 'IZIN_' . strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', $docName), 0, 15)) . '_' . ($cd['master_id'] ?? rand(100, 999)),
+                                    'has_expiry'            => false,
+                                    'applicable_categories' => ['SHGB', 'SHM'],
+                                ]
+                            );
+
+                            \App\Models\LandBankDocument::updateOrCreate(
+                                [
+                                    'land_bank_id'     => $record->id,
+                                    'document_type_id' => $docType->id,
+                                ],
+                                [
+                                    'document_number'  => $cd['doc_number'] ?? null,
+                                    'file_path'        => $cd['file_path'],
+                                ]
+                            );
+                        }
+                    }
+                }
 
                 $migratedToPasca = true;
             }
         }
 
         $successMsg = 'Dokumen perizinan "' . $task->nama_tugas . '" berhasil diperbarui!';
+        if ($chosenCompany) {
+            $successMsg .= ' Perusahaan PT kawasan diselaraskan ke ' . $chosenCompany->name . '.';
+        }
         if ($migratedToPasca) {
             $successMsg .= ' Dokumen SHGB Induk atas nama PT telah TERBIT resmi, kawasan ini OTOMATIS berhasil dimigrasikan ke Pasca Land Bank!';
         } else {
@@ -862,7 +1008,7 @@ class PerizinanController extends Controller
 
         // 1. Ambil data dari PraLandbank yang berstatus 'approved' / sudah deal sidang
         try {
-            $approvedPraLands = PraLandbank::with('landBank')
+            $approvedPraLands = PraLandbank::with(['landBank.companyProfile', 'companyProfile'])
                 ->where('status', 'approved')
                 ->orWhere('status', 'fase3')
                 ->orWhereNotNull('deal_price')
@@ -876,12 +1022,12 @@ class PerizinanController extends Controller
                 $landBankId = $pra->land_bank_id;
                 $foundLb = null;
                 if (!$landBankId) {
-                    $foundLb = LandBank::where('name', $pra->land_name)->first();
+                    $foundLb = LandBank::with('companyProfile')->where('name', $pra->land_name)->first();
                     if ($foundLb) {
                         $landBankId = $foundLb->id;
                     }
                 } else {
-                    $foundLb = LandBank::find($landBankId);
+                    $foundLb = $pra->landBank ?: LandBank::with('companyProfile')->find($landBankId);
                 }
 
                 // Cek apakah status tanah sudah beralih ke SHGB Induk (dari LandBank atau dari task SHGB Induk Selesai)
@@ -907,14 +1053,17 @@ class PerizinanController extends Controller
                 }
 
                 $ownershipStatus = $hasShgbInduk ? 'SHGB Induk' : ($pra->ownership_status ?: 'SHGB Induk');
+                $ptName = $pra->companyProfile->name ?? ($foundLb->companyProfile->name ?? 'PT Graha Cipta Sejahtera');
+                $companyId = $pra->company_profile_id ?? ($foundLb->company_profile_id ?? null);
 
                 $projects->push([
                     'id'                     => $pra->id,
                     'pra_id'                 => $pra->id,
                     'land_bank_id'           => $landBankId,
+                    'company_profile_id'     => $companyId,
                     'is_finalized_to_pasca'  => !empty($landBankId),
                     'nama'                   => $pra->land_name,
-                    'pt'                     => 'PT Graha Cipta Sejahtera',
+                    'pt'                     => $ptName,
                     'lokasi'                 => $lokasi,
                     'luas'                   => number_format($pra->area ?? 0, 0, ',', '.') . ' m²',
                     'ownership_status'       => $ownershipStatus,
@@ -931,16 +1080,17 @@ class PerizinanController extends Controller
 
         // 2. Ambil juga dari LandBank jika ada nama yang belum tercover
         try {
-            $dbLands = LandBank::all();
+            $dbLands = LandBank::with('companyProfile')->get();
             foreach ($dbLands as $dbl) {
                 if (!$projects->contains('nama', $dbl->name)) {
                     $projects->push([
                         'id'                     => $dbl->id + 100,
                         'pra_id'                 => null,
                         'land_bank_id'           => $dbl->id,
+                        'company_profile_id'     => $dbl->company_profile_id,
                         'is_finalized_to_pasca'  => true,
                         'nama'                   => $dbl->name,
-                        'pt'                     => 'PT Graha Cipta Sejahtera',
+                        'pt'                     => $dbl->companyProfile->name ?? 'PT Graha Cipta Sejahtera',
                         'lokasi'                 => $dbl->city ?? ($dbl->address ?: 'Kaliwates, Jember'),
                         'luas'                   => number_format($dbl->area ?? 0, 0, ',', '.') . ' m²',
                         'ownership_status'       => $dbl->ownership_status ?: 'SHGB Induk',
