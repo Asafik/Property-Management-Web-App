@@ -27,3 +27,12 @@ jobs:
             **/node_modules/**
             **/storage/*.key
             **/vendor/**
+            **/public/uploads/**
+            !**/public/uploads/**/.gitkeep
+            **/public/perizinan_dokumen/**
+            !**/public/perizinan_dokumen/.gitkeep
+            **/public/invoices/**
+            !**/public/invoices/.gitkeep
+            **/uploads/**
+            **/storage/app/**
+            **/storage/logs/**
