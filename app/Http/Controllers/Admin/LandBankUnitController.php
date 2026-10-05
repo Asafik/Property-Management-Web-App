@@ -23,7 +23,7 @@ class LandBankUnitController extends Controller
             $detail = $land->getPerizinanPemecahanKavlingDetail();
             return redirect()->route('kavling.index')->with(
                 'error',
-                "Dokumen perizinan 'Proses Pemecahan SHGB Induk Perkavling' untuk proyek '{$land->name}' belum diproses (Status: {$detail['label']}). Silakan proses perizinan terlebih dahulu untuk dapat membuat unit kavling."
+                "Dokumen perizinan POIN-17 'SHGB Induk Selesai atas nama PT' untuk proyek '{$land->name}' belum selesai (Status: {$detail['label']}). Silakan selesaikan perizinan POIN-17 terlebih dahulu untuk dapat membuat unit kavling."
             );
         }
 
@@ -81,7 +81,7 @@ class LandBankUnitController extends Controller
         if (!$land->canCreateKavling()) {
             return back()->with(
                 'error',
-                "Dokumen perizinan 'Proses Pemecahan SHGB Induk Perkavling' untuk proyek '{$land->name}' belum siap! Tidak dapat menambahkan unit kavling."
+                "Dokumen perizinan POIN-17 'SHGB Induk Selesai atas nama PT' untuk proyek '{$land->name}' belum selesai! Tidak dapat menambahkan unit kavling."
             );
         }
 
@@ -455,7 +455,7 @@ class LandBankUnitController extends Controller
         $land = LandBank::findOrFail($land_bank_id);
 
         if (!$land->canCreateKavling()) {
-            return redirect()->back()->with('error', "Dokumen perizinan 'Proses Pemecahan SHGB Induk Perkavling' untuk proyek '{$land->name}' belum siap! Tidak dapat mengimpor unit kavling.");
+            return redirect()->back()->with('error', "Dokumen perizinan POIN-17 'SHGB Induk Selesai atas nama PT' untuk proyek '{$land->name}' belum selesai! Tidak dapat mengimpor unit kavling.");
         }
 
         $request->validate([

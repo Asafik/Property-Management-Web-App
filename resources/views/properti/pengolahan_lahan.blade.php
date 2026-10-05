@@ -586,9 +586,9 @@
                             @endif
                         </div>
 
-                        <!-- Rule 2: Izin Pemecahan Kavling (POIN-18) -->
+                        <!-- Rule 2: Izin SHGB Induk / Pemecahan Kavling (POIN-17) -->
                         <div class="d-flex align-items-center justify-content-between py-1">
-                            <span class="text-muted">2. Izin Pemecahan:</span>
+                            <span class="text-muted">2. Izin SHGB / Kavling:</span>
                             @if($isIzinReady)
                                 <span class="badge bg-soft-success text-success fw-bold rounded-2">
                                     {{ $izinDetail['label'] }}

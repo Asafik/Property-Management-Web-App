@@ -154,6 +154,24 @@ class PerizinanController extends Controller
         $totalRevisi = $permits->where('status', 'Revisi')->count();
         $projectProgress = $totalIzin > 0 ? round($permits->avg('progress')) : 0;
 
+        // Cek model LandBank terkait untuk integrasi pembuatan kavling / unit
+        $landBank = null;
+        if (!empty($project['land_bank_id'])) {
+            $landBank = LandBank::find($project['land_bank_id']);
+        }
+        if (!$landBank && !empty($project['pra_id'])) {
+            $pra = PraLandbank::find($project['pra_id']);
+            if ($pra && !empty($pra->land_bank_id)) {
+                $landBank = LandBank::find($pra->land_bank_id);
+            }
+        }
+        if (!$landBank) {
+            $landBank = LandBank::where('name', $project['nama'])->first();
+        }
+
+        $canCreateKavling = $landBank ? $landBank->canCreateKavling() : false;
+        $landBankId = $landBank ? $landBank->id : null;
+
         return view('perizinan.show', compact(
             'project',
             'permits',
@@ -165,7 +183,9 @@ class PerizinanController extends Controller
             'totalRevisi',
             'projectProgress',
             'isStaffLegal',
-            'canManage'
+            'canManage',
+            'canCreateKavling',
+            'landBankId'
         ));
     }
 

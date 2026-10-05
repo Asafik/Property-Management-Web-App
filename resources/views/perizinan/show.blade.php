@@ -191,12 +191,38 @@
             </p>
         </div>
         <div class="d-flex align-items-center gap-2 header-actions">
+            @if(!empty($canCreateKavling) && !empty($landBankId))
+                <a href="{{ route('properti.buatKavling', $landBankId) }}" class="btn btn-sm d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm text-white fw-bold" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 8px; font-size: 0.85rem; border: none; text-decoration: none;">
+                    <i class="mdi mdi-home-plus-outline" style="font-size: 1.15rem; line-height: 1;"></i>
+                    <span>Buat Unit / Kavling</span>
+                </a>
+            @endif
             <a href="{{ route('perizinan.index') }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-bold" style="border: 1px solid #64748b; background-color: #64748b; border-radius: 8px; font-size: 0.85rem; transition: all 0.2s ease;">
                 <i class="mdi mdi-arrow-left text-white" style="font-size: 1.1rem; line-height: 1;"></i>
                 <span>Kembali</span>
             </a>
         </div>
     </div>
+
+    @if(!empty($canCreateKavling) && !empty($landBankId))
+        <div class="alert alert-success border-0 shadow-sm d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4 p-3" style="background: #ecfdf5; border-left: 4px solid #10b981 !important; border-radius: 8px;">
+            <div class="d-flex align-items-center gap-3">
+                <div style="width: 38px; height: 38px; border-radius: 8px; background: #d1fae5; color: #059669; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;">
+                    <i class="mdi mdi-shield-check"></i>
+                </div>
+                <div>
+                    <strong class="d-block text-dark" style="font-size: 0.92rem;">POIN-17 SHGB Induk Telah Selesai / Terbit (100%)</strong>
+                    <span style="font-size: 0.83rem; color: #065f46;">
+                        Sertipikat SHGB Induk atas nama PT telah terbit resmi. Kawasan ini sudah siap untuk dibuat unit kavling.
+                    </span>
+                </div>
+            </div>
+            <a href="{{ route('properti.buatKavling', $landBankId) }}" class="btn btn-sm text-white fw-bold px-3 py-2 d-inline-flex align-items-center gap-1.5 shadow-sm" style="background: #10b981; border-radius: 6px; font-size: 0.84rem; text-decoration: none;">
+                <i class="mdi mdi-home-plus-outline" style="font-size: 1rem;"></i>
+                <span>Mulai Buat Unit &rarr;</span>
+            </a>
+        </div>
+    @endif
 
     <!-- 4 KPI Metrics Card Proyek Ini (Sama Persis Halaman Index) -->
     <div class="dash-kpi-grid mb-4">
@@ -356,6 +382,14 @@
                                         } else {
                                             $pColor = '#e11d48'; // Rose
                                         }
+
+                                        $pCode = strtoupper($item['kode_dokumen'] ?? '');
+                                        $pName = strtolower($item['nama_izin'] ?? '');
+                                        $isPoin17Item = ($pCode === 'POIN-17' || str_contains($pCode, '17'))
+                                            || (!empty($item['master_id']) && (int)$item['master_id'] === 11)
+                                            || str_contains($pName, 'shgb induk selesai')
+                                            || str_contains($pName, 'hgb induk selesai');
+                                        $isPoin17Done = $isPoin17Item && (in_array(strtolower($item['status']), ['terbit', 'selesai']) || $pVal >= 100);
                                     @endphp
                                     <tr class="permit-table-row" id="row_permit_{{ $item['id'] }}" data-search="{{ strtolower(($item['kode_dokumen'] ?? '') . ' ' . $item['nama_izin'] . ' ' . $item['instansi'] . ' ' . $item['no_izin']) }}">
                                         <td class="col-no fw-bold text-center">{{ $loop->iteration }}</td>
@@ -410,9 +444,17 @@
                                             <a href="{{ route('perizinan.dokumen.kelola', ['id' => $project['id'], 'item_id' => $item['id']]) }}" 
                                                class="btn btn-sm d-inline-flex align-items-center py-1 px-2.5 fw-semibold shadow-sm text-white" 
                                                title="Kelola Dokumen & Persyaratan" style="font-size: 0.76rem; border-radius: 5px; background: #9a55ff; border: 1px solid #9a55ff;">
-                                                <i class="mdi mdi-file-document-edit-outline" style="margin-right: 6px !important; font-size: 0.85rem;"></i>
+                                                <i class="mdi mdi-file-document-edit-outline" style="margin-right: 4px !important; font-size: 0.85rem;"></i>
                                                 <span>Kelola</span>
                                             </a>
+                                            @if($isPoin17Done && !empty($landBankId))
+                                                <a href="{{ route('properti.buatKavling', $landBankId) }}" 
+                                                   class="btn btn-sm d-inline-flex align-items-center py-1 px-2.5 fw-bold shadow-sm text-white ms-1" 
+                                                   title="POIN-17 Selesai! Klik untuk Buat Unit Kavling" style="font-size: 0.76rem; border-radius: 5px; background: #10b981; border: 1px solid #10b981;">
+                                                    <i class="mdi mdi-home-plus-outline" style="margin-right: 4px !important; font-size: 0.85rem;"></i>
+                                                    <span>Buat Unit</span>
+                                                </a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty
