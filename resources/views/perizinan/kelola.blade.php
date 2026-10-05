@@ -453,12 +453,12 @@
 
                         <!-- Nomor Dokumen/SK & Tanggal -->
                         <div class="row g-2 mb-3">
-                            <div class="col-md-7">
+                            <div class="{{ $isTerbit ? 'col-md-7' : 'col-md-12' }}" id="colNomorDokumen" style="transition: all 0.2s ease;">
                                 <label class="form-label-custom">Nomor Dokumen / SK</label>
                                 <input type="text" name="no_izin" id="inpNoIzin" class="form-control form-control-custom font-monospace" 
                                        value="{{ old('no_izin', $item['no_izin']) }}" placeholder="Contoh: 503/124/DPMPTSP/2026">
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-5" id="colTanggalTerbit" style="{{ $isTerbit ? '' : 'display: none;' }}; transition: all 0.2s ease;">
                                 <label class="form-label-custom">Tanggal Terbit / SK</label>
                                 @php
                                     $tglVal = '';
@@ -1012,6 +1012,25 @@
             if (colInstansi) {
                 colInstansi.classList.remove('col-md-12');
                 colInstansi.classList.add('col-md-7');
+            }
+        }
+
+        // 4. KONTROL VISIBILITAS TANGGAL TERBIT / SK
+        // Jika masih Proses / belum Selesai, Tanggal Terbit / SK dihilangkan / disembunyikan
+        var colTglTerbit = document.getElementById('colTanggalTerbit');
+        var colNoDok = document.getElementById('colNomorDokumen');
+
+        if (isTerbit) {
+            if (colTglTerbit) colTglTerbit.style.display = 'block';
+            if (colNoDok) {
+                colNoDok.classList.remove('col-md-12');
+                colNoDok.classList.add('col-md-7');
+            }
+        } else {
+            if (colTglTerbit) colTglTerbit.style.display = 'none';
+            if (colNoDok) {
+                colNoDok.classList.remove('col-md-7');
+                colNoDok.classList.add('col-md-12');
             }
         }
     }
