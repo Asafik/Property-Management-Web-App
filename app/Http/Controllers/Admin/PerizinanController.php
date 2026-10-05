@@ -8,6 +8,7 @@ use App\Models\LandBank;
 use App\Models\PraLandbank;
 use App\Models\MasterDokumenPerizinan;
 use App\Models\PerizinanTask;
+use App\Models\PerizinanTaskLog;
 use Illuminate\Http\Request;
 
 class PerizinanController extends Controller
@@ -619,7 +620,7 @@ class PerizinanController extends Controller
         }
 
         $authUserId = auth()->id() ?? 2;
-        $employeeId = 2; // Default Kepala Legal
+        $employeeId = $authUserId;
         try {
             $emp = \App\Models\Employee::find($authUserId);
             if ($emp) {
@@ -631,6 +632,11 @@ class PerizinanController extends Controller
                 if ($firstLegal) $employeeId = $firstLegal->id;
             }
         } catch (\Throwable $e) {}
+
+        // Ambil status dan progres sebelum pembaruan untuk pencatatan Audit Trail
+        $isNewTask = !$task;
+        $oldStatus = $task ? ($task->status ?: 'Pending') : 'Pending';
+        $oldProgress = $task ? (int) $task->progress : 0;
 
         if (!$task) {
             $task = new PerizinanTask();
@@ -673,6 +679,66 @@ class PerizinanController extends Controller
         $task->updated_by       = $employeeId;
         $task->last_activity_at = now();
         $task->save();
+
+        // 7b. Catat Riwayat Aktivitas & Audit Trail ke PerizinanTaskLog
+        try {
+            $actor = \App\Models\Employee::find($employeeId) ?? auth()->user();
+            $actorName = $actor ? $actor->name : 'Staff Legal';
+            $actorPos = ($actor && $actor->position) ? $actor->position->name : 'Staff Legal';
+
+            $details = [];
+            if ($isNewTask) {
+                $actionLog = 'Penugasan Baru';
+                $keteranganLog = "Tugas baru dibuat oleh {$actorName} ({$actorPos})";
+            } else {
+                if ($oldStatus !== $dbStatus) {
+                    $details[] = "Status berubah dari '{$oldStatus}' ke '{$dbStatus}'";
+                }
+                if ($oldProgress !== $progress) {
+                    $details[] = "Progres: {$oldProgress}% menjadi {$progress}%";
+                }
+                if ($mainFilePath) {
+                    $details[] = "Mengunggah berkas SK: " . basename($mainFilePath);
+                }
+                if (!empty($uploadedFiles) || $uploadedCount > 0) {
+                    $details[] = "{$uploadedCount} dari {$totalSyarat} berkas prasyarat terunggah";
+                }
+                if ($request->filled('no_izin')) {
+                    $details[] = "No. Dokumen: {$request->no_izin}";
+                }
+                if ($request->filled('catatan')) {
+                    $details[] = "Catatan: " . \Illuminate\Support\Str::limit($request->catatan, 100);
+                }
+
+                if ($dbStatus === 'Selesai') {
+                    $actionLog = 'Izin Terbit & Selesai';
+                } elseif ($dbStatus === 'Terkendala') {
+                    $actionLog = 'Laporan Kendala Lapangan';
+                } elseif ($mainFilePath || $uploadedCount > 0) {
+                    $actionLog = 'Upload Berkas & Progres';
+                } else {
+                    $actionLog = 'Update Progres';
+                }
+
+                $keteranganLog = !empty($details)
+                    ? implode(" | ", $details)
+                    : "Pembaruan dokumen dan progres pekerjaan oleh {$actorName} ({$actorPos})";
+            }
+
+            PerizinanTaskLog::create([
+                'perizinan_task_id' => $task->id,
+                'user_id'           => $employeeId,
+                'action'            => $actionLog,
+                'old_status'        => $isNewTask ? null : $oldStatus,
+                'new_status'        => $dbStatus,
+                'old_progress'      => $isNewTask ? null : $oldProgress,
+                'new_progress'      => $progress,
+                'keterangan'        => $keteranganLog,
+                'file_dokumen'      => $mainFilePath ?: $task->file_dokumen,
+            ]);
+        } catch (\Throwable $e) {
+            \Log::error('Gagal mencatat PerizinanTaskLog di simpanKelolaDokumen: ' . $e->getMessage());
+        }
 
         // 8. OPSI 1: Otomatis Migrasi ke Pasca Land Bank saat SHGB Induk an. PT (Poin 17) Terbit Resmi
         $migratedToPasca = false;
