@@ -620,14 +620,13 @@
 
             @php
                 $defaultKategoriConfig = [
-                    'perizinan' => ['title' => 'I. PERIZINAN & LEGALITAS (PBG/IMB, SERTIFIKAT, DLL)', 'icon' => 'file-certificate-outline', 'prefix' => 'P'],
-                    'persiapan' => ['title' => 'II. PEKERJAAN PERSIAPAN', 'icon' => 'tools', 'prefix' => '1'],
-                    'pondasi'   => ['title' => 'III. PEKERJAAN PONDASI', 'icon' => 'foundation', 'prefix' => '2'],
-                    'struktur'  => ['title' => 'IV. PEKERJAAN STRUKTUR', 'icon' => 'bridge', 'prefix' => '3'],
-                    'dinding'   => ['title' => 'V. PEKERJAAN DINDING', 'icon' => 'wall', 'prefix' => '4'],
-                    'atap'      => ['title' => 'VI. PEKERJAAN ATAP', 'icon' => 'roofing', 'prefix' => '5'],
-                    'finishing' => ['title' => 'VII. PEKERJAAN FINISHING', 'icon' => 'brush', 'prefix' => '6'],
-                    'lainnya'   => ['title' => 'VIII. PEKERJAAN LAINNYA', 'icon' => 'dots-horizontal', 'prefix' => '7'],
+                    'persiapan' => ['title' => 'I. PEKERJAAN PERSIAPAN', 'icon' => 'tools', 'prefix' => '1'],
+                    'pondasi'   => ['title' => 'II. PEKERJAAN PONDASI', 'icon' => 'foundation', 'prefix' => '2'],
+                    'struktur'  => ['title' => 'III. PEKERJAAN STRUKTUR', 'icon' => 'bridge', 'prefix' => '3'],
+                    'dinding'   => ['title' => 'IV. PEKERJAAN DINDING', 'icon' => 'wall', 'prefix' => '4'],
+                    'atap'      => ['title' => 'V. PEKERJAAN ATAP', 'icon' => 'roofing', 'prefix' => '5'],
+                    'finishing' => ['title' => 'VI. PEKERJAAN FINISHING', 'icon' => 'brush', 'prefix' => '6'],
+                    'lainnya'   => ['title' => 'VII. PEKERJAAN LAINNYA', 'icon' => 'dots-horizontal', 'prefix' => '7'],
                 ];
 
                 $kategoriConfig = [];
@@ -1275,6 +1274,7 @@
                                 <i class="mdi mdi-chart-pie me-2" style="color: #9a55ff;"></i>Ringkasan RAP Terpadu
                             </h6>
 
+                            @if(!empty($subtotalPerizinan) && $subtotalPerizinan > 0)
                             <div class="ringkasan-row">
                                 <span class="ringkasan-label">Biaya Perizinan & Legalitas</span>
                                 <div class="ringkasan-input">
@@ -1282,6 +1282,7 @@
                                         value="Rp {{ number_format($subtotalPerizinan, 0, ',', '.') }}" readonly>
                                 </div>
                             </div>
+                            @endif
 
                             <div class="ringkasan-row">
                                 <span class="ringkasan-label">Biaya Konstruksi Fisik Rumah</span>
@@ -1792,7 +1793,7 @@
 
             Swal.fire({
                 title: 'Terapkan Template Standar RAP?',
-                text: 'Sistem akan otomatis memasukkan rincian pekerjaan standar (I. Perizinan & Legalitas s/d VIII. Pekerjaan Lainnya) pada unit ini.',
+                text: 'Sistem akan otomatis memasukkan rincian pekerjaan standar (I. Pekerjaan Persiapan s/d VII. Pekerjaan Lainnya) pada unit ini.',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#9a55ff',

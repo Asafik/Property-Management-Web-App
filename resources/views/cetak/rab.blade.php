@@ -455,14 +455,13 @@
 
             @php
                 $categoryTitles = [
-                    'perizinan' => 'I. PERIZINAN & LEGALITAS (PBG/IMB, SERTIFIKAT, DLL)',
-                    'persiapan' => 'II. PEKERJAAN PERSIAPAN',
-                    'pondasi'   => 'III. PEKERJAAN PONDASI',
-                    'struktur'  => 'IV. PEKERJAAN STRUKTUR',
-                    'dinding'   => 'V. PEKERJAAN DINDING',
-                    'atap'      => 'VI. PEKERJAAN ATAP',
-                    'finishing' => 'VII. PEKERJAAN FINISHING',
-                    'lainnya'   => 'VIII. PEKERJAAN LAINNYA',
+                    'persiapan' => 'I. PEKERJAAN PERSIAPAN',
+                    'pondasi'   => 'II. PEKERJAAN PONDASI',
+                    'struktur'  => 'III. PEKERJAAN STRUKTUR',
+                    'dinding'   => 'IV. PEKERJAAN DINDING',
+                    'atap'      => 'V. PEKERJAAN ATAP',
+                    'finishing' => 'VI. PEKERJAAN FINISHING',
+                    'lainnya'   => 'VII. PEKERJAAN LAINNYA',
                 ];
 
                 // Urutkan kategori sesuai urutan standar
@@ -533,10 +532,12 @@
 
             {{-- REKAPITULASI & GRAND TOTAL --}}
             <table class="rab-table" border="1" cellspacing="0" cellpadding="5" style="margin-top: 20px;">
+                @if($totalPerizinan > 0)
                 <tr style="background-color: #f8f9fc; font-weight: bold;">
                     <td colspan="5" class="text-end">Total Biaya Perizinan &amp; Legalitas</td>
                     <td colspan="2" class="text-end" style="width: 240px;">Rp {{ number_format($totalPerizinan, 0, ',', '.') }}</td>
                 </tr>
+                @endif
                 <tr style="background-color: #f8f9fc; font-weight: bold;">
                     <td colspan="5" class="text-end">Total Biaya Konstruksi Fisik Rumah</td>
                     <td colspan="2" class="text-end">Rp {{ number_format($totalRumah, 0, ',', '.') }}</td>

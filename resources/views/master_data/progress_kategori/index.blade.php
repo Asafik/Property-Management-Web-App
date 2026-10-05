@@ -316,12 +316,12 @@
                 <div class="modal-body p-4 bg-white">
                     <div class="mb-3">
                         <label class="form-label fw-bold" style="color: #2c2e3f;">Nama Kategori / Tahapan <span class="text-danger">*</span></label>
-                        <input type="text" name="nama_kategori" id="cat_nama" class="form-control" placeholder="Contoh: I. PERIZINAN & LEGALITAS" required>
+                        <input type="text" name="nama_kategori" id="cat_nama" class="form-control" placeholder="Contoh: I. PEKERJAAN PERSIAPAN" required>
                     </div>
                     <div class="row g-2 mb-3">
                         <div class="col-6">
                             <label class="form-label fw-bold" style="color: #2c2e3f;">Prefix Kode <span class="text-danger">*</span></label>
-                            <input type="text" name="prefix" id="cat_prefix" class="form-control font-monospace" placeholder="Contoh: P, 1, 2" required>
+                            <input type="text" name="prefix" id="cat_prefix" class="form-control font-monospace" placeholder="Contoh: 1, 2, 3" required>
                         </div>
                         <div class="col-6">
                             <label class="form-label fw-bold" style="color: #2c2e3f;">Urutan</label>
