@@ -3,6 +3,17 @@
 @section('title', 'RAP Pembangunan - Property Management App')
 
 @section('content')
+    @php
+        if (!isset($canEditDeadline)) {
+            $user = auth()->user();
+            $posName = strtolower($user->position->name ?? '');
+            $canEditDeadline = str_contains($posName, 'admin')
+                || str_contains($posName, 'owner')
+                || str_contains($posName, 'direktur')
+                || (str_contains($posName, 'kepala') && str_contains($posName, 'proyek'))
+                || in_array($user->position_id ?? 0, [5, 8]);
+        }
+    @endphp
 
     <style>
         .rab-info-card {
@@ -620,14 +631,13 @@
 
             @php
                 $defaultKategoriConfig = [
-                    'perizinan' => ['title' => 'I. PERIZINAN & LEGALITAS (PBG/IMB, SERTIFIKAT, DLL)', 'icon' => 'file-certificate-outline', 'prefix' => 'P'],
-                    'persiapan' => ['title' => 'II. PEKERJAAN PERSIAPAN', 'icon' => 'tools', 'prefix' => '1'],
-                    'pondasi'   => ['title' => 'III. PEKERJAAN PONDASI', 'icon' => 'foundation', 'prefix' => '2'],
-                    'struktur'  => ['title' => 'IV. PEKERJAAN STRUKTUR', 'icon' => 'bridge', 'prefix' => '3'],
-                    'dinding'   => ['title' => 'V. PEKERJAAN DINDING', 'icon' => 'wall', 'prefix' => '4'],
-                    'atap'      => ['title' => 'VI. PEKERJAAN ATAP', 'icon' => 'roofing', 'prefix' => '5'],
-                    'finishing' => ['title' => 'VII. PEKERJAAN FINISHING', 'icon' => 'brush', 'prefix' => '6'],
-                    'lainnya'   => ['title' => 'VIII. PEKERJAAN LAINNYA', 'icon' => 'dots-horizontal', 'prefix' => '7'],
+                    'persiapan' => ['title' => 'I. PEKERJAAN PERSIAPAN', 'icon' => 'tools', 'prefix' => '1'],
+                    'pondasi'   => ['title' => 'II. PEKERJAAN PONDASI', 'icon' => 'foundation', 'prefix' => '2'],
+                    'struktur'  => ['title' => 'III. PEKERJAAN STRUKTUR', 'icon' => 'bridge', 'prefix' => '3'],
+                    'dinding'   => ['title' => 'IV. PEKERJAAN DINDING', 'icon' => 'wall', 'prefix' => '4'],
+                    'atap'      => ['title' => 'V. PEKERJAAN ATAP', 'icon' => 'roofing', 'prefix' => '5'],
+                    'finishing' => ['title' => 'VI. PEKERJAAN FINISHING', 'icon' => 'brush', 'prefix' => '6'],
+                    'lainnya'   => ['title' => 'VII. PEKERJAAN LAINNYA', 'icon' => 'dots-horizontal', 'prefix' => '7'],
                 ];
 
                 $kategoriConfig = [];
@@ -829,9 +839,18 @@
                                                         </td>
 
                                                         <td>
-                                                            <input type="date" name="deadline[{{ $item->id }}]"
-                                                                class="form-control form-control-sm" style="border-radius: 6px;"
-                                                                value="{{ $item->deadline ? $item->deadline->format('Y-m-d') : '' }}">
+                                                            @if ($canEditDeadline)
+                                                                <input type="date" name="deadline[{{ $item->id }}]"
+                                                                    class="form-control form-control-sm" style="border-radius: 6px;"
+                                                                    value="{{ $item->deadline ? $item->deadline->format('Y-m-d') : '' }}">
+                                                            @else
+                                                                <input type="date" name="deadline[{{ $item->id }}]"
+                                                                    class="form-control form-control-sm bg-light text-muted"
+                                                                    style="border-radius: 6px; cursor: not-allowed; pointer-events: none; background-color: #f1f5f9 !important;"
+                                                                    value="{{ $item->deadline ? $item->deadline->format('Y-m-d') : '' }}"
+                                                                    readonly tabindex="-1"
+                                                                    title="Hanya Admin dan Kepala Proyek yang dapat menentukan deadline">
+                                                            @endif
                                                         </td>
 
                                                         <td>
@@ -1275,6 +1294,7 @@
                                 <i class="mdi mdi-chart-pie me-2" style="color: #9a55ff;"></i>Ringkasan RAP Terpadu
                             </h6>
 
+                            @if(!empty($subtotalPerizinan) && $subtotalPerizinan > 0)
                             <div class="ringkasan-row">
                                 <span class="ringkasan-label">Biaya Perizinan & Legalitas</span>
                                 <div class="ringkasan-input">
@@ -1282,6 +1302,7 @@
                                         value="Rp {{ number_format($subtotalPerizinan, 0, ',', '.') }}" readonly>
                                 </div>
                             </div>
+                            @endif
 
                             <div class="ringkasan-row">
                                 <span class="ringkasan-label">Biaya Konstruksi Fisik Rumah</span>
@@ -1782,6 +1803,7 @@
     <script>
         let indexItem = 0;
         let kategoriMap = @json($jsKategoriMap);
+        const canEditDeadline = {{ $canEditDeadline ? 'true' : 'false' }};
 
         function confirmApplyTemplate() {
             let form = document.getElementById('formApplyTemplate');
@@ -1792,7 +1814,7 @@
 
             Swal.fire({
                 title: 'Terapkan Template Standar RAP?',
-                text: 'Sistem akan otomatis memasukkan rincian pekerjaan standar (I. Perizinan & Legalitas s/d VIII. Pekerjaan Lainnya) pada unit ini.',
+                text: 'Sistem akan otomatis memasukkan rincian pekerjaan standar (I. Pekerjaan Persiapan s/d VII. Pekerjaan Lainnya) pada unit ini.',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#9a55ff',
@@ -2015,7 +2037,8 @@
                     <td>
                         <input type="date"
                                name="items[${indexItem}][deadline]"
-                               class="form-control form-control-sm">
+                               class="form-control form-control-sm ${!canEditDeadline ? 'bg-light text-muted' : ''}"
+                               ${!canEditDeadline ? 'readonly tabindex="-1" style="border-radius: 6px; cursor: not-allowed; pointer-events: none; background-color: #f1f5f9 !important;" title="Hanya Admin dan Kepala Proyek yang dapat menentukan deadline"' : 'style="border-radius: 6px;"'}>
                     </td>
                     <td>
                         <div class="file-upload-modern">

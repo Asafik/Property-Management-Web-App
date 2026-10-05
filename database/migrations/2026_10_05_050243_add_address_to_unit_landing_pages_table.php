@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('unit_landing_pages', function (Blueprint $table) {
-            $table->text('address')->nullable()->after('description');
-        });
+        if (Schema::hasTable('unit_landing_pages')) {
+            Schema::table('unit_landing_pages', function (Blueprint $table) {
+                if (!Schema::hasColumn('unit_landing_pages', 'address')) {
+                    $table->text('address')->nullable()->after('description');
+                }
+            });
+        }
     }
 
     /**
@@ -21,8 +25,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('unit_landing_pages', function (Blueprint $table) {
-            $table->dropColumn('address');
-        });
+        if (Schema::hasTable('unit_landing_pages')) {
+            Schema::table('unit_landing_pages', function (Blueprint $table) {
+                if (Schema::hasColumn('unit_landing_pages', 'address')) {
+                    $table->dropColumn('address');
+                }
+            });
+        }
     }
 };

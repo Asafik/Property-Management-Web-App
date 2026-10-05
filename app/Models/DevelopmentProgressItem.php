@@ -53,59 +53,7 @@ class DevelopmentProgressItem extends Model
     public static function getDefaultTemplateItems(): array
     {
         return [
-            // I. PERIZINAN & LEGALITAS
-            [
-                'kategori'     => 'perizinan',
-                'kode'         => 'P.1',
-                'uraian'       => 'Persetujuan Bangunan Gedung (PBG / IMB) Unit Kavling',
-                'volume'       => 1,
-                'satuan'       => 'unit',
-                'harga_satuan' => 4500000,
-                'total'        => 4500000,
-                'keterangan'   => 'Dinas PUPR & Perizinan Terpadu',
-            ],
-            [
-                'kategori'     => 'perizinan',
-                'kode'         => 'P.2',
-                'uraian'       => 'Pemecahan & Penerbitan Sertifikat (HGB / SHM) Kavling',
-                'volume'       => 1,
-                'satuan'       => 'berkas',
-                'harga_satuan' => 3500000,
-                'total'        => 3500000,
-                'keterangan'   => 'Kantor Pertanahan / BPN',
-            ],
-            [
-                'kategori'     => 'perizinan',
-                'kode'         => 'P.3',
-                'uraian'       => 'Jasa Notaris & Pejabat Pembuat Akta Tanah (PPAT)',
-                'volume'       => 1,
-                'satuan'       => 'paket',
-                'harga_satuan' => 3000000,
-                'total'        => 3000000,
-                'keterangan'   => 'Validasi Pajak & Akta Notaris',
-            ],
-            [
-                'kategori'     => 'perizinan',
-                'kode'         => 'P.4',
-                'uraian'       => 'Keterangan Rencana Kota (KRK) & Peil Bebas Banjir',
-                'volume'       => 1,
-                'satuan'       => 'paket',
-                'harga_satuan' => 1500000,
-                'total'        => 1500000,
-                'keterangan'   => 'Tata Ruang Wilayah',
-            ],
-            [
-                'kategori'     => 'perizinan',
-                'kode'         => 'P.5',
-                'uraian'       => 'Penyambungan Daya Listrik PLN 1300 VA & Air Bersih (PDAM / Sumur)',
-                'volume'       => 1,
-                'satuan'       => 'paket',
-                'harga_satuan' => 2500000,
-                'total'        => 2500000,
-                'keterangan'   => 'Instalasi Meteran PLN & Pipa Air',
-            ],
-
-            // II. PEKERJAAN PERSIAPAN
+            // I. PEKERJAAN PERSIAPAN
             [
                 'kategori'     => 'persiapan',
                 'kode'         => '1.1',
@@ -127,7 +75,7 @@ class DevelopmentProgressItem extends Model
                 'keterangan'   => 'Theodolite / Waterpass',
             ],
 
-            // III. PEKERJAAN PONDASI
+            // II. PEKERJAAN PONDASI
             [
                 'kategori'     => 'pondasi',
                 'kode'         => '2.1',
@@ -159,7 +107,7 @@ class DevelopmentProgressItem extends Model
                 'keterangan'   => 'Mutu Beton K-225',
             ],
 
-            // IV. PEKERJAAN STRUKTUR
+            // III. PEKERJAAN STRUKTUR
             [
                 'kategori'     => 'struktur',
                 'kode'         => '3.1',
@@ -191,7 +139,7 @@ class DevelopmentProgressItem extends Model
                 'keterangan'   => 'Waterproofing Sika',
             ],
 
-            // V. PEKERJAAN DINDING
+            // IV. PEKERJAAN DINDING
             [
                 'kategori'     => 'dinding',
                 'kode'         => '4.1',
@@ -213,7 +161,7 @@ class DevelopmentProgressItem extends Model
                 'keterangan'   => 'Mortar plester & acian halus',
             ],
 
-            // VI. PEKERJAAN ATAP
+            // V. PEKERJAAN ATAP
             [
                 'kategori'     => 'atap',
                 'kode'         => '5.1',
@@ -245,7 +193,7 @@ class DevelopmentProgressItem extends Model
                 'keterangan'   => 'List profil gypsum keliling',
             ],
 
-            // VII. PEKERJAAN FINISHING
+            // VI. PEKERJAAN FINISHING
             [
                 'kategori'     => 'finishing',
                 'kode'         => '6.1',
@@ -297,7 +245,7 @@ class DevelopmentProgressItem extends Model
                 'keterangan'   => 'Cat Jotun / Dulux 2 lapis',
             ],
 
-            // VIII. PEKERJAAN LAINNYA
+            // VII. PEKERJAAN LAINNYA
             [
                 'kategori'     => 'lainnya',
                 'kode'         => '7.1',

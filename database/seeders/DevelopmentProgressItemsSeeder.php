@@ -18,36 +18,22 @@ class DevelopmentProgressItemsSeeder extends Seeder
         // 1. Seed Master Categories & Master Items
         $categoriesData = [
             [
-                'nama_kategori' => 'I. PERIZINAN & LEGALITAS (PBG/IMB, SERTIFIKAT, DLL)',
-                'slug'          => 'perizinan',
-                'prefix'        => 'P',
-                'icon'          => 'file-certificate-outline',
-                'urutan'        => 1,
-                'items'         => [
-                    ['kode' => 'P.1', 'uraian' => 'Persetujuan Bangunan Gedung (PBG / IMB) Unit Kavling', 'default_volume' => 1, 'satuan' => 'unit', 'default_harga_satuan' => 4500000, 'keterangan' => 'Dinas PUPR & Perizinan Terpadu'],
-                    ['kode' => 'P.2', 'uraian' => 'Pemecahan & Penerbitan Sertifikat (HGB / SHM) Kavling', 'default_volume' => 1, 'satuan' => 'berkas', 'default_harga_satuan' => 3500000, 'keterangan' => 'Kantor Pertanahan / BPN'],
-                    ['kode' => 'P.3', 'uraian' => 'Jasa Notaris & Pejabat Pembuat Akta Tanah (PPAT)', 'default_volume' => 1, 'satuan' => 'paket', 'default_harga_satuan' => 3000000, 'keterangan' => 'Validasi Pajak & Akta Notaris'],
-                    ['kode' => 'P.4', 'uraian' => 'Keterangan Rencana Kota (KRK) & Peil Bebas Banjir', 'default_volume' => 1, 'satuan' => 'paket', 'default_harga_satuan' => 1500000, 'keterangan' => 'Tata Ruang Wilayah'],
-                    ['kode' => 'P.5', 'uraian' => 'Penyambungan Daya Listrik PLN 1300 VA & Air Bersih (PDAM / Sumur)', 'default_volume' => 1, 'satuan' => 'paket', 'default_harga_satuan' => 2500000, 'keterangan' => 'Instalasi Meteran PLN & Pipa Air'],
-                ]
-            ],
-            [
-                'nama_kategori' => 'II. PEKERJAAN PERSIAPAN',
+                'nama_kategori' => 'I. PEKERJAAN PERSIAPAN',
                 'slug'          => 'persiapan',
                 'prefix'        => '1',
                 'icon'          => 'tools',
-                'urutan'        => 2,
+                'urutan'        => 1,
                 'items'         => [
                     ['kode' => '1.1', 'uraian' => 'Pembersihan Lokasi, Urugan, & Bouwplank Pengukuran', 'default_volume' => 1, 'satuan' => 'ls', 'default_harga_satuan' => 2000000, 'keterangan' => 'Kayu 5/7 & Papan Kayu Meranti'],
                     ['kode' => '1.2', 'uraian' => 'Pengukuran Elevasi, Peil Lantai & Pasang Patok Kavling', 'default_volume' => 1, 'satuan' => 'paket', 'default_harga_satuan' => 1000000, 'keterangan' => 'Theodolite / Waterpass'],
                 ]
             ],
             [
-                'nama_kategori' => 'III. PEKERJAAN PONDASI',
+                'nama_kategori' => 'II. PEKERJAAN PONDASI',
                 'slug'          => 'pondasi',
                 'prefix'        => '2',
                 'icon'          => 'foundation',
-                'urutan'        => 3,
+                'urutan'        => 2,
                 'items'         => [
                     ['kode' => '2.1', 'uraian' => 'Galian Tanah Pondasi Batu Kali & Urugan Pasir Alas', 'default_volume' => 25, 'satuan' => 'm³', 'default_harga_satuan' => 75000, 'keterangan' => 'Kedalaman galian 80 cm'],
                     ['kode' => '2.2', 'uraian' => 'Pasangan Pondasi Batu Kali Campuran 1:4 (Aanstamping)', 'default_volume' => 18, 'satuan' => 'm³', 'default_harga_satuan' => 380000, 'keterangan' => 'Batu belah & pasir pasang'],
@@ -55,11 +41,11 @@ class DevelopmentProgressItemsSeeder extends Seeder
                 ]
             ],
             [
-                'nama_kategori' => 'IV. PEKERJAAN STRUKTUR',
+                'nama_kategori' => 'III. PEKERJAAN STRUKTUR',
                 'slug'          => 'struktur',
                 'prefix'        => '3',
                 'icon'          => 'bridge',
-                'urutan'        => 4,
+                'urutan'        => 3,
                 'items'         => [
                     ['kode' => '3.1', 'uraian' => 'Kolom Praktis Beton Bertulang 15/15', 'default_volume' => 36, 'satuan' => 'm\'', 'default_harga_satuan' => 95000, 'keterangan' => 'Besi 10mm ulir & begel 6mm'],
                     ['kode' => '3.2', 'uraian' => 'Ringbalk Beton Bertulang 15/20', 'default_volume' => 42, 'satuan' => 'm\'', 'default_harga_satuan' => 125000, 'keterangan' => 'Pengikat pasangan dinding atas'],
@@ -67,22 +53,22 @@ class DevelopmentProgressItemsSeeder extends Seeder
                 ]
             ],
             [
-                'nama_kategori' => 'V. PEKERJAAN DINDING',
+                'nama_kategori' => 'IV. PEKERJAAN DINDING',
                 'slug'          => 'dinding',
                 'prefix'        => '4',
                 'icon'          => 'wall',
-                'urutan'        => 5,
+                'urutan'        => 4,
                 'items'         => [
                     ['kode' => '4.1', 'uraian' => 'Pasangan Dinding Bata Ringan (Hebel) tebal 10 cm & Thinbed Mortar', 'default_volume' => 135, 'satuan' => 'm²', 'default_harga_satuan' => 85000, 'keterangan' => 'Perekat mortar instan'],
                     ['kode' => '4.2', 'uraian' => 'Plesteran & Acian Halus Dinding Interior & Eksterior', 'default_volume' => 260, 'satuan' => 'm²', 'default_harga_satuan' => 65000, 'keterangan' => 'Mortar plester & acian halus'],
                 ]
             ],
             [
-                'nama_kategori' => 'VI. PEKERJAAN ATAP',
+                'nama_kategori' => 'V. PEKERJAAN ATAP',
                 'slug'          => 'atap',
                 'prefix'        => '5',
                 'icon'          => 'roofing',
-                'urutan'        => 6,
+                'urutan'        => 5,
                 'items'         => [
                     ['kode' => '5.1', 'uraian' => 'Rangka Atap Kuda-Kuda Baja Ringan Truss C75.75 & Reng 0.45', 'default_volume' => 65, 'satuan' => 'm²', 'default_harga_satuan' => 165000, 'keterangan' => 'Garansi struktur baja ringan'],
                     ['kode' => '5.2', 'uraian' => 'Penutup Atap Genteng Beton Flat / Metal Pasir & Nok Bubungan', 'default_volume' => 65, 'satuan' => 'm²', 'default_harga_satuan' => 120000, 'keterangan' => 'Cat pelapis anti bocor'],
@@ -90,11 +76,11 @@ class DevelopmentProgressItemsSeeder extends Seeder
                 ]
             ],
             [
-                'nama_kategori' => 'VII. PEKERJAAN FINISHING',
+                'nama_kategori' => 'VI. PEKERJAAN FINISHING',
                 'slug'          => 'finishing',
                 'prefix'        => '6',
                 'icon'          => 'brush',
-                'urutan'        => 7,
+                'urutan'        => 6,
                 'items'         => [
                     ['kode' => '6.1', 'uraian' => 'Pasang Lantai Granit Tile 60x60 Polished & Plint Dinding', 'default_volume' => 45, 'satuan' => 'm²', 'default_harga_satuan' => 175000, 'keterangan' => 'Granit Homogenous Tile'],
                     ['kode' => '6.2', 'uraian' => 'Pasang Keramik Lantai & Dinding Kamar Mandi + Waterproofing', 'default_volume' => 15, 'satuan' => 'm²', 'default_harga_satuan' => 150000, 'keterangan' => 'Keramik anti selip 25x25 & 25x40'],
@@ -104,11 +90,11 @@ class DevelopmentProgressItemsSeeder extends Seeder
                 ]
             ],
             [
-                'nama_kategori' => 'VIII. PEKERJAAN LAINNYA',
+                'nama_kategori' => 'VII. PEKERJAAN LAINNYA',
                 'slug'          => 'lainnya',
                 'prefix'        => '7',
                 'icon'          => 'dots-horizontal',
-                'urutan'        => 8,
+                'urutan'        => 7,
                 'items'         => [
                     ['kode' => '7.1', 'uraian' => 'Pekerjaan Carport Cor Beton Rabat, Tali Air & Kanstein Pembatas', 'default_volume' => 15, 'satuan' => 'm²', 'default_harga_satuan' => 180000, 'keterangan' => 'Tekstur sikat anti slip'],
                     ['kode' => '7.2', 'uraian' => 'Pemasangan Bio Septic Tank 1000L & Sumur Resapan Air Kotor', 'default_volume' => 1, 'satuan' => 'unit', 'default_harga_satuan' => 3200000, 'keterangan' => 'Biofilter ramah lingkungan'],
