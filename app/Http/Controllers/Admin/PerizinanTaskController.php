@@ -570,6 +570,10 @@ class PerizinanTaskController extends Controller
         ])->findOrFail($id);
 
         $logData = $task->logs->map(function ($log) {
+            $timeWib = $log->created_at 
+                ? $log->created_at->copy()->timezone('Asia/Jakarta')->locale('id') 
+                : null;
+
             return [
                 'id'           => $log->id,
                 'action'       => $log->action,
@@ -581,8 +585,8 @@ class PerizinanTaskController extends Controller
                 'new_progress' => $log->new_progress,
                 'keterangan'   => $log->keterangan,
                 'file_url'     => $log->file_dokumen ? asset('storage/' . $log->file_dokumen) : null,
-                'created_at'   => $log->created_at->format('d M Y, H:i'),
-                'time_ago'     => $log->created_at->diffForHumans(),
+                'created_at'   => $timeWib ? ($timeWib->translatedFormat('l, d M Y, H:i') . ' WIB') : '-',
+                'time_ago'     => $timeWib ? $timeWib->diffForHumans() : '',
             ];
         });
 
