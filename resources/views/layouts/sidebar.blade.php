@@ -120,6 +120,7 @@
             'proyek.index' => ['proyek.index', 'properti.edit', 'properti.tambah', 'properti.store', 'properti.update'],
             'proyek.pengolahan-lahan.index' => ['proyek.pengolahan-lahan.*'],
             'proyek.unit.index' => ['proyek.unit.*'],
+            'spk.index' => ['spk.*', 'spk'],
             'master.biaya-legalitas.index' => ['master.biaya-legalitas.*'],
             'keuangan.arus-kas.index' => ['keuangan.arus-kas.*'],
             'keuangan.jurnal.index' => ['keuangan.jurnal.*'],
