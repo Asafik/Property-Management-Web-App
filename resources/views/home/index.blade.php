@@ -66,7 +66,7 @@
         gap: 0.5rem;
         background: rgba(201,151,58,0.15);
         border: 1px solid rgba(201,151,58,0.3);
-        border-radius: 100px;
+        border-radius: 4px;
         padding: 0.4rem 1rem;
         font-size: 0.8rem;
         font-weight: 600;
@@ -112,7 +112,7 @@
         display: inline-flex;
         align-items: center;
         gap: 0.45rem;
-        border-radius: 100px;
+        border-radius: 4px;
         padding: 0.4rem 1rem;
         font-size: 0.78rem;
         font-weight: 700;
@@ -153,7 +153,7 @@
         background: var(--gold);
         color: white;
         border: none;
-        border-radius: 12px;
+        border-radius: 6px;
         padding: 0.9rem 1.75rem;
         font-size: 0.95rem;
         font-weight: 600;
@@ -176,7 +176,7 @@
         background: transparent;
         color: white;
         border: 1.5px solid rgba(255,255,255,0.3);
-        border-radius: 12px;
+        border-radius: 6px;
         padding: 0.9rem 1.75rem;
         font-size: 0.95rem;
         font-weight: 600;
@@ -224,7 +224,7 @@
     ------------------------------------------------ */
     .search-card {
         background: white;
-        border-radius: 20px;
+        border-radius: 6px;
         padding: 1.75rem 2rem;
         box-shadow: 0 32px 80px rgba(0,0,0,0.28);
         animation: fadeUp 0.7s ease 0.35s both;
@@ -249,7 +249,7 @@
     .stab {
         flex: 1;
         padding: 0.55rem 0.4rem;
-        border-radius: 10px;
+        border-radius: 4px;
         border: 1.5px solid var(--border);
         background: white;
         font-size: 0.75rem;
@@ -307,7 +307,7 @@
         width: 100%;
         padding: 0.65rem 0.85rem;
         border: 1.5px solid var(--border);
-        border-radius: 10px;
+        border-radius: 4px;
         font-size: 0.875rem;
         color: var(--text-dark);
         background: var(--cream);
@@ -327,7 +327,7 @@
         background: var(--navy);
         color: white;
         border: none;
-        border-radius: 12px;
+        border-radius: 6px;
         font-size: 0.95rem;
         font-weight: 700;
         cursor: pointer;
@@ -427,7 +427,7 @@
     }
 
     .tipe-card {
-        border-radius: 20px;
+        border-radius: 6px;
         padding: 2rem 1.75rem;
         border: 2px solid;
         position: relative;
@@ -478,7 +478,7 @@
     .tipe-card-icon {
         width: 56px;
         height: 56px;
-        border-radius: 14px;
+        border-radius: 4px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -575,7 +575,7 @@
         gap: 0.5rem;
         width: 100%;
         padding: 0.75rem;
-        border-radius: 12px;
+        border-radius: 6px;
         font-size: 0.875rem;
         font-weight: 700;
         border: none;
@@ -589,16 +589,16 @@
     ------------------------------------------------ */
     .area-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 340px));
+        gap: 1.5rem;
         margin-top: 2.5rem;
     }
 
     .area-card {
         position: relative;
-        border-radius: 16px;
+        border-radius: 6px;
         overflow: hidden;
-        height: 210px;
+        height: 220px;
         cursor: pointer;
     }
 
@@ -642,7 +642,7 @@
         gap: 0.35rem;
         background: var(--gold);
         color: white;
-        border-radius: 8px;
+        border-radius: 4px;
         padding: 0.28rem 0.7rem;
         font-size: 0.68rem;
         font-weight: 700;
@@ -677,7 +677,7 @@
         font-weight: 600;
         color: var(--text-light);
         cursor: pointer;
-        border-radius: 8px 8px 0 0;
+        border-radius: 4px 4px 0 0;
         position: relative;
         transition: color 0.2s;
         margin-bottom: -2px;
@@ -709,7 +709,7 @@
 
     .prop-card {
         background: white;
-        border-radius: 18px;
+        border-radius: 6px;
         overflow: hidden;
         border: 1px solid var(--border);
         transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
@@ -751,7 +751,7 @@
 
     .pb {
         padding: 0.28rem 0.75rem;
-        border-radius: 100px;
+        border-radius: 4px;
         font-size: 0.67rem;
         font-weight: 700;
         display: flex;
@@ -879,7 +879,7 @@
         padding: 0.7rem 1rem;
         background: var(--cream);
         border: 1.5px solid var(--border);
-        border-radius: 10px;
+        border-radius: 6px;
         color: var(--navy);
         font-size: 0.85rem;
         font-weight: 700;
@@ -925,7 +925,7 @@
     .why-card {
         background: rgba(255,255,255,0.05);
         border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 18px;
+        border-radius: 6px;
         padding: 2rem 1.5rem;
         transition: all 0.3s;
     }
@@ -940,7 +940,7 @@
         width: 52px;
         height: 52px;
         background: rgba(201,151,58,0.15);
-        border-radius: 14px;
+        border-radius: 4px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -978,7 +978,7 @@
     .testi-card {
         background: white;
         border: 1px solid var(--border);
-        border-radius: 18px;
+        border-radius: 6px;
         padding: 1.75rem 1.5rem;
         transition: all 0.3s;
     }
@@ -1037,7 +1037,7 @@
         font-size: 0.65rem;
         font-weight: 700;
         padding: 0.15rem 0.6rem;
-        border-radius: 100px;
+        border-radius: 4px;
         margin-top: 0.2rem;
         display: inline-block;
     }
@@ -1048,7 +1048,7 @@
     .office-card {
         background: white;
         border: 1px solid var(--border);
-        border-radius: 18px;
+        border-radius: 6px;
         padding: 2rem;
         max-width: 580px;
         margin: 2.5rem auto 0;
@@ -1066,7 +1066,7 @@
         gap: 0.4rem;
         background: var(--navy);
         color: white;
-        border-radius: 8px;
+        border-radius: 4px;
         padding: 0.3rem 0.85rem;
         font-size: 0.72rem;
         font-weight: 700;
@@ -1112,7 +1112,7 @@
         background: #25D366;
         color: white;
         border: none;
-        border-radius: 10px;
+        border-radius: 6px;
         padding: 0.75rem 1.25rem;
         font-size: 0.875rem;
         font-weight: 700;
@@ -1180,7 +1180,7 @@
         background: #25D366;
         color: white;
         border: none;
-        border-radius: 12px;
+        border-radius: 6px;
         padding: 1rem 2rem;
         font-size: 1rem;
         font-weight: 700;
@@ -1202,7 +1202,7 @@
         background: transparent;
         color: var(--gold-light);
         border: 1.5px solid rgba(201,151,58,0.4);
-        border-radius: 12px;
+        border-radius: 6px;
         padding: 1rem 2rem;
         font-size: 1rem;
         font-weight: 600;
@@ -1373,14 +1373,16 @@
 
                 <div class="srow">
                     <div class="sfield">
-                        <label>Area / Kecamatan</label>
+                        <label>Kawasan / Lahan</label>
                         <select>
-                            <option>Semua Area</option>
-                            <option>Tegal Besar</option>
-                            <option>Sumbersari</option>
-                            <option>Kaliwates</option>
-                            <option>Patrang</option>
-                            <option>Ambulu</option>
+                            <option value="">Semua Kawasan</option>
+                            @if(isset($landBanks) && $landBanks->count() > 0)
+                                @foreach($landBanks as $lb)
+                                    <option value="{{ $lb->id }}">{{ $lb->name }}</option>
+                                @endforeach
+                            @else
+                                <option>Tanah Jember</option>
+                            @endif
                         </select>
                     </div>
                     <div class="sfield">
@@ -1487,46 +1489,56 @@
     </div>
 </div>
 
-{{-- ================ AREA ================ --}}
+{{-- ================ KAWASAN / LAHAN PENGEMBANGAN (PASCA LAND BANK) ================ --}}
 <div class="bg-cream">
     <div class="section">
-        <div class="slabel">Pilih Area</div>
-        <h2 class="stitle">Tersebar di seluruh wilayah</h2>
-        <p class="ssub">Temukan rumah di area yang paling strategis untuk kebutuhanmu</p>
+        <div class="slabel">Kawasan Perumahan</div>
+        <h2 class="stitle">Lahan & Kawasan Kami</h2>
+        <p class="ssub">Pilihan lokasi lahan pengembangan perumahan Graha Cipta Sejahtera</p>
 
         <div class="area-grid">
-            <div class="area-card">
-                <img src="https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Tegal Besar" loading="lazy">
-                <div class="area-overlay">
-                    <div class="area-name">Tegal Besar</div>
-                    <div class="area-count">12 unit tersedia</div>
-                    <a href="{{ route('home.detail') }}" class="area-cta">Lihat <i class="fa-solid fa-arrow-right fa-xs"></i></a>
+            @php
+                $dummyImgs = [
+                    'https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+                    'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+                    'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+                    'https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+                    'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop',
+                ];
+            @endphp
+            @if(isset($landBanks) && $landBanks->count() > 0)
+                @foreach($landBanks as $idx => $lb)
+                    @php
+                        $firstUnit = $lb->units->first();
+                        $targetUrl = $firstUnit ? route('home.detail', $firstUnit->id) : route('home.detail', ['project_id' => $lb->id]);
+                    @endphp
+                    <div class="area-card">
+                        <img src="{{ $dummyImgs[$idx % count($dummyImgs)] }}" alt="{{ $lb->name }}" loading="lazy">
+                        <div class="area-overlay">
+                            <div class="area-name">{{ $lb->name }}</div>
+                            <div class="area-count">
+                                @if($lb->units_count > 0)
+                                    {{ $lb->units_count }} unit siap huni (100%)
+                                @else
+                                    Dalam pengembangan
+                                @endif
+                            </div>
+                            <a href="{{ $targetUrl }}" class="area-cta">
+                                Lihat Unit <i class="fa-solid fa-arrow-right fa-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="area-card">
+                    <img src="https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Tanah Jember" loading="lazy">
+                    <div class="area-overlay">
+                        <div class="area-name">Tanah Jember</div>
+                        <div class="area-count">4 unit kavling tersedia</div>
+                        <a href="{{ route('home.detail') }}" class="area-cta">Lihat Unit <i class="fa-solid fa-arrow-right fa-xs"></i></a>
+                    </div>
                 </div>
-            </div>
-            <div class="area-card">
-                <img src="https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Sumbersari" loading="lazy">
-                <div class="area-overlay">
-                    <div class="area-name">Sumbersari</div>
-                    <div class="area-count">8 unit tersedia</div>
-                    <a href="{{ route('home.detail') }}" class="area-cta">Lihat <i class="fa-solid fa-arrow-right fa-xs"></i></a>
-                </div>
-            </div>
-            <div class="area-card">
-                <img src="https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Kaliwates" loading="lazy">
-                <div class="area-overlay">
-                    <div class="area-name">Kaliwates</div>
-                    <div class="area-count">6 unit tersedia</div>
-                    <a href="{{ route('home.detail') }}" class="area-cta">Lihat <i class="fa-solid fa-arrow-right fa-xs"></i></a>
-                </div>
-            </div>
-            <div class="area-card">
-                <img src="https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop" alt="Patrang" loading="lazy">
-                <div class="area-overlay">
-                    <div class="area-name">Patrang</div>
-                    <div class="area-count">5 unit tersedia</div>
-                    <a href="{{ route('home.detail') }}" class="area-cta">Lihat <i class="fa-solid fa-arrow-right fa-xs"></i></a>
-                </div>
-            </div>
+            @endif
         </div>
     </div>
 </div>
@@ -1558,6 +1570,71 @@
     </div>
 
     <div class="prop-grid">
+        @if(isset($publishedUnits) && $publishedUnits->count() > 0)
+            @foreach($publishedUnits as $pUnit)
+                @php
+                    $pLp = $pUnit->landingPage;
+                    $pPhoto = null;
+                    if (!empty($pUnit->photo)) {
+                        $pPhoto = (str_starts_with($pUnit->photo, 'http://') || str_starts_with($pUnit->photo, 'https://')) 
+                            ? $pUnit->photo 
+                            : (file_exists(public_path($pUnit->photo)) ? asset($pUnit->photo) : asset('storage/' . ltrim($pUnit->photo, '/')));
+                    }
+                    if (!$pPhoto && $pLp && !empty($pLp->banner_image)) {
+                        $pPhoto = (str_starts_with($pLp->banner_image, 'http://') || str_starts_with($pLp->banner_image, 'https://')) 
+                            ? $pLp->banner_image 
+                            : (file_exists(public_path($pLp->banner_image)) ? asset($pLp->banner_image) : asset('storage/' . ltrim($pLp->banner_image, '/')));
+                    }
+                    if (!$pPhoto && $pLp && is_array($pLp->gallery) && count($pLp->gallery) > 0) {
+                        $firstGal = $pLp->gallery[0];
+                        $pPhoto = (str_starts_with($firstGal, 'http://') || str_starts_with($firstGal, 'https://')) 
+                            ? $firstGal 
+                            : (file_exists(public_path($firstGal)) ? asset($firstGal) : asset('storage/' . ltrim($firstGal, '/')));
+                    }
+                    $pPhoto = $pPhoto ?: 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop';
+
+                    $pTitle = $pLp && !empty($pLp->headline) ? $pLp->headline : ($pUnit->nama_unit ?: 'Unit ' . $pUnit->block_number);
+                    $pLoc = $pUnit->landBank->name ?? 'Jawa Timur';
+                    $pType = strtolower($pUnit->unit_type ?? 'komersil');
+                    $isSubsidi = str_contains($pType, 'subsidi');
+                    $pBadgeClass = $isSubsidi ? 'pb-subsidi' : 'pb-komersil';
+                    $pBadgeText = $isSubsidi ? 'Subsidi' : 'Komersil';
+                    $pPrice = $pUnit->price ? 'Rp ' . number_format($pUnit->price / 1000000, 0, ',', '.') . ' Juta' : 'Hubungi Kami';
+                    $pCicilan = $pLp && !empty($pLp->subheadline) ? $pLp->subheadline : 'Cicilan mulai terjangkau · Siap Huni';
+                @endphp
+                <div class="prop-card" data-category="{{ $isSubsidi ? 'subsidi' : 'komersil' }}">
+                    <div class="prop-img">
+                        <a href="{{ route('home.detail', $pUnit->id) }}">
+                            <img src="{{ $pPhoto }}" alt="{{ $pTitle }}" loading="lazy" style="width: 100%; height: 220px; object-fit: cover;">
+                        </a>
+                        <div class="pbadges">
+                            <span class="pb {{ $pBadgeClass }}">
+                                <i class="fa-solid {{ $isSubsidi ? 'fa-hand-holding-heart' : 'fa-building' }} fa-xs"></i> {{ $pBadgeText }}
+                            </span>
+                            <span class="pb pb-new"><i class="fa-solid fa-bolt fa-xs"></i> Ditayangkan</span>
+                        </div>
+                        <button class="pfav" onclick="toggleFav(this)"><i class="fa-regular fa-heart"></i></button>
+                    </div>
+                    <div class="prop-body">
+                        <div class="ploc"><i class="fa-solid fa-location-dot"></i> {{ $pLoc }}</div>
+                        <h3 class="ptitle">
+                            <a href="{{ route('home.detail', $pUnit->id) }}" style="color: inherit; text-decoration: none;">{{ $pTitle }}</a>
+                        </h3>
+                        <div class="pspecs">
+                            <div class="pspec"><i class="fa-solid fa-door-open"></i> {{ $pLp->bedrooms ?? 2 }} KT</div>
+                            <span class="psep">·</span>
+                            <div class="pspec"><i class="fa-solid fa-shower"></i> {{ $pLp->bathrooms ?? 1 }} KM</div>
+                            <span class="psep">·</span>
+                            <div class="pspec"><i class="fa-solid fa-ruler-combined"></i> {{ $pUnit->area ? floatval($pUnit->area) : 60 }} m²</div>
+                        </div>
+                        <div class="pprice">{{ $pPrice }}</div>
+                        <div class="pcicilan">{{ $pCicilan }}</div>
+                        <a href="{{ route('home.detail', $pUnit->id) }}" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
+                    </div>
+                </div>
+            @endforeach
+        @endif
+
         {{-- Property Card 1: Subsidi Ambulu --}}
         <div class="prop-card">
             <div class="prop-img">
@@ -1881,6 +1958,26 @@
         const container = el.closest('.tabs-row');
         container.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
         el.classList.add('active');
+
+        const isSubsidi = el.classList.contains('t-subsidi');
+        const isKomersil = el.classList.contains('t-komersil');
+        const isCashKpr = el.classList.contains('t-cashkpr');
+
+        document.querySelectorAll('.prop-grid .prop-card').forEach(card => {
+            const hasSubsidiBadge = card.querySelector('.pb-subsidi') !== null;
+            const hasKomersilBadge = card.querySelector('.pb-komersil') !== null;
+            const hasCashKprBadge = card.querySelector('.pb-cashkpr') !== null || card.querySelector('.pb-kpr') !== null;
+
+            if (isSubsidi) {
+                card.style.display = hasSubsidiBadge ? '' : 'none';
+            } else if (isKomersil) {
+                card.style.display = hasKomersilBadge ? '' : 'none';
+            } else if (isCashKpr) {
+                card.style.display = hasCashKprBadge ? '' : 'none';
+            } else {
+                card.style.display = '';
+            }
+        });
     }
 
     function toggleFav(btn) {

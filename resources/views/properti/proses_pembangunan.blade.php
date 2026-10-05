@@ -7,9 +7,9 @@
     <style>
         .rab-info-card {
             background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
-            border: 1px solid #f0f2f5;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            border: 1px solid #e2e8f0;
             padding: 1.25rem;
         }
 
@@ -52,18 +52,18 @@
         }
 
         .rab-card {
-            border: none;
-            border-radius: 12px;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.04);
-            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+            margin-bottom: 1.25rem;
             background: #ffffff;
         }
 
         .rab-card-header {
             background: #ffffff !important;
-            padding: 1rem 1.25rem;
-            border-bottom: 1px solid #f0f2f5 !important;
+            padding: 0.85rem 1.25rem;
+            border-bottom: 1px solid #e2e8f0 !important;
         }
 
         .rab-card-header h5 {
@@ -74,7 +74,7 @@
         }
 
         .rab-btn-add {
-            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            background: #9a55ff;
             color: #ffffff !important;
             border: none;
             border-radius: 6px;
@@ -87,12 +87,12 @@
             cursor: pointer;
             transition: all 0.2s ease;
             text-decoration: none;
-            box-shadow: 0 2px 6px rgba(154, 85, 255, 0.25);
+            box-shadow: 0 1px 3px rgba(154, 85, 255, 0.2);
         }
 
         .rab-btn-add:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(154, 85, 255, 0.35);
+            background: #8739fa;
             color: #ffffff !important;
         }
 
@@ -233,15 +233,18 @@
         }
 
         .rab-btn-success {
-            background: linear-gradient(135deg, #11998e, #38ef7d);
+            background: #10b981;
+            color: #ffffff;
         }
 
         .rab-btn-primary {
-            background: linear-gradient(135deg, #36d1dc, #5b86e5);
+            background: #4f46e5;
+            color: #ffffff;
         }
 
         .rab-btn-warning {
-            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            background: #f59e0b;
+            color: #ffffff;
         }
 
         .btn-action {
@@ -266,7 +269,7 @@
         }
 
         .btn-action.delete {
-            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
+            background: #ef4444 !important;
             color: #ffffff !important;
         }
 
@@ -325,7 +328,7 @@
             padding: 0.95rem 1.15rem;
             background: #ffffff;
             border: 2px solid #ede4ff;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.25s ease;
             margin-bottom: 0;
@@ -369,27 +372,161 @@
             height: auto !important;
             overflow: visible !important;
         }
+
+        /* Card Spesifikasi Teknis & 4 Foto Unit (Integrasi Proyek & Marketing) */
+        .spek-form-label {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+        .spek-form-control {
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            padding: 0.45rem 0.65rem;
+            background: #ffffff;
+            color: #1e293b;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+        .spek-form-control:focus {
+            border-color: #9a55ff;
+            box-shadow: 0 0 0 2px rgba(154, 85, 255, 0.15);
+            outline: none;
+        }
+        .photo-slot-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: #ffffff;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .photo-slot-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+        }
+        .badge-slot-main {
+            background: #f3e8ff;
+            color: #7e22ce;
+            border: 1px solid #e9d5ff;
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .badge-slot-gallery {
+            background: #f8fafc;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .photo-img-wrapper {
+            width: 100%;
+            height: 112px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+        .photo-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-action-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width: 100%;
+        }
+        .btn-photo-action {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            font-weight: 600;
+            font-size: 0.76rem;
+            border-radius: 6px;
+            height: 32px;
+            padding: 0 0.65rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.15s ease;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            cursor: pointer;
+            flex-grow: 1;
+        }
+        .btn-photo-action:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
+        }
+        .btn-photo-action:active {
+            transform: translateY(1px);
+        }
+        .btn-photo-delete-slot {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            padding: 0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+        .btn-photo-delete-slot:hover {
+            background: #dc2626;
+            border-color: #dc2626;
+            color: #ffffff;
+            box-shadow: 0 2px 5px rgba(220, 38, 38, 0.25);
+        }
+        .btn-photo-delete-slot:active {
+            transform: translateY(1px);
+        }
+        @media (min-width: 1200px) {
+            .border-end-xl {
+                border-right: 1px solid #e2e8f0 !important;
+            }
+        }
     </style>
 
     <div class="container-fluid px-2 px-sm-3 px-md-4 py-3">
-        <!-- Header Card Banner -->
-        <div class="row mb-3 mb-md-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-0 header-card" style="border-radius: 12px;">
-                    <div class="card-body p-3 p-md-4 d-flex justify-content-between align-items-center" style="min-height: 90px;">
-                        <div>
-                            <h3 class="text-dark mb-1 fw-bold" style="font-size: clamp(1.1rem, 2.5vw, 1.35rem);">
-                                Rencana Anggaran Pekerjaan (RAP) Pembangunan
-                            </h3>
-                            <p class="text-muted mb-0" style="font-size: clamp(0.78rem, 1.8vw, 0.9rem);">
-                                Rincian anggaran pekerjaan pembangunan unit dari awal hingga selesai
-                            </p>
-                        </div>
-                        <div class="d-none d-sm-block pe-2">
-                            <i class="mdi mdi-calculator" style="font-size: 2.8rem; color: #9a55ff; opacity: 0.25;"></i>
-                        </div>
-                    </div>
-                </div>
+        <!-- Header Halaman (Tanpa Card Box, Sesuai Standar Dashboard Admin) -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3 mb-md-4">
+            <div>
+                <h3 class="text-dark mb-1 fw-bold" style="font-size: clamp(1.2rem, 2.5vw, 1.45rem); letter-spacing: -0.02em;">
+                    Rencana Anggaran Pekerjaan (RAP) Pembangunan
+                </h3>
+                <p class="text-muted mb-0" style="font-size: clamp(0.8rem, 1.8vw, 0.88rem);">
+                    Rincian anggaran pekerjaan pembangunan unit dari awal hingga selesai &bull; Proyek: <span class="fw-semibold text-dark">{{ $land->name ?? 'Proyek' }}</span>
+                </p>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                @if(isset($land->id))
+                    <a href="{{ route('properti.show', $land->id) }}" class="btn btn-sm d-inline-flex align-items-center gap-1.5 px-3 py-2 text-white fw-bold shadow-none" style="background-color: #64748b; border: 1px solid #64748b; border-radius: 8px; font-size: 0.82rem;">
+                        <i class="mdi mdi-arrow-left text-white"></i>
+                        <span>Kembali ke Proyek</span>
+                    </a>
+                @endif
             </div>
         </div>
 
@@ -407,7 +544,7 @@
             </div>
         @endif
 
-        @if ($errors->any())
+        @if (isset($errors) && $errors->any())
             <div class="alert alert-danger" style="border-radius: 10px;">
                 {{ $errors->first() }}
             </div>
@@ -416,7 +553,7 @@
         <!-- Info Unit -->
         <div class="row mb-3 mb-md-4">
             <div class="col-12">
-                <div class="card shadow-sm border-0 rab-info-card" style="border-radius: 12px;">
+                <div class="card rab-info-card">
                     <div class="row g-2 g-md-3 align-items-center">
                         {{-- UNIT --}}
                         <div class="col-12 col-sm-6 col-lg-2">
@@ -548,7 +685,7 @@
             @endif
 
             {{-- TOOLBAR DINAMIS: SEEDER TEMPLATE, TAMBAH KATEGORI & MENU MASTER --}}
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3 mb-md-4 p-3 bg-white rounded-3 border shadow-sm">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3 mb-md-4 p-3 bg-white" style="border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                     <h5 class="fw-bold text-dark mb-0" style="font-size: 1.05rem;">
                         Tahapan Pekerjaan Unit
@@ -558,21 +695,21 @@
                     </span>
                 </div>
                 <div class="d-flex flex-wrap gap-2 w-100 w-md-auto justify-content-start justify-content-md-end">
-                    <a href="{{ route('master.progress.index') }}" target="_blank" class="btn btn-sm btn-secondary text-white px-3 py-1.5 rounded-2 fw-semibold shadow-sm" style="font-size: 0.82rem;" title="Kelola Master Kategori & Item Template">
+                    <a href="{{ route('master.progress.index') }}" target="_blank" class="btn btn-sm btn-secondary text-white px-3 py-1.5 rounded-2 fw-semibold shadow-none" style="font-size: 0.82rem;" title="Kelola Master Kategori & Item Template">
                         <i class="mdi mdi-cog-outline me-1"></i>Master Template
                     </a>
                     @if($isUnitSoldOut)
-                        <button type="button" class="btn btn-sm btn-secondary shadow-sm px-3 py-1.5 rounded-2 fw-semibold opacity-75" disabled style="font-size: 0.82rem; cursor: not-allowed;" title="Unit Selesai / Sold Out">
+                        <button type="button" class="btn btn-sm btn-secondary shadow-none px-3 py-1.5 rounded-2 fw-semibold opacity-75" disabled style="font-size: 0.82rem; cursor: not-allowed;" title="Unit Selesai / Sold Out">
                             <i class="mdi mdi-lock-outline me-1"></i>Terapkan Template (Terkunci)
                         </button>
-                        <button type="button" class="btn btn-sm btn-secondary shadow-sm px-3 py-1.5 rounded-2 fw-semibold opacity-75" disabled style="font-size: 0.82rem; cursor: not-allowed;" title="Unit Selesai / Sold Out">
+                        <button type="button" class="btn btn-sm btn-secondary shadow-none px-3 py-1.5 rounded-2 fw-semibold opacity-75" disabled style="font-size: 0.82rem; cursor: not-allowed;" title="Unit Selesai / Sold Out">
                             <i class="mdi mdi-lock-outline me-1"></i>Tambah Kategori (Terkunci)
                         </button>
                     @else
-                        <button type="button" class="btn btn-sm btn-info text-white px-3 py-1.5 rounded-2 fw-semibold shadow-sm" style="font-size: 0.82rem;" onclick="confirmApplyTemplate()">
+                        <button type="button" class="btn btn-sm btn-info text-white px-3 py-1.5 rounded-2 fw-semibold shadow-none" style="font-size: 0.82rem;" onclick="confirmApplyTemplate()">
                             <i class="mdi mdi-flash me-1"></i>Terapkan Template
                         </button>
-                        <button type="button" class="btn btn-sm btn-gradient-primary px-3 py-1.5 rounded-2 fw-semibold text-white shadow-sm" style="font-size: 0.82rem;" onclick="modalTambahKategoriBaru()">
+                        <button type="button" class="btn btn-sm btn-primary px-3 py-1.5 rounded-2 fw-semibold text-white shadow-none" style="background-color: #9a55ff; border-color: #9a55ff; font-size: 0.82rem;" onclick="modalTambahKategoriBaru()">
                             <i class="mdi mdi-plus-circle-outline me-1"></i>Tambah Kategori
                         </button>
                     @endif
@@ -602,7 +739,7 @@
                 @endphp
                 <div class="row mb-3 mb-md-4 category-section" id="section-{{ $key }}">
                     <div class="col-12">
-                        <div class="card shadow-sm border-0 rab-card" style="border-radius: 12px; overflow: hidden;">
+                        <div class="card rab-card">
                             <div class="card-header bg-light bg-opacity-75 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 py-2.5 px-3 px-md-4 border-bottom">
                                 <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <span class="badge bg-primary bg-opacity-10 text-primary font-monospace px-2.5 py-1 rounded-2 fw-bold" style="font-size: 0.82rem;">
@@ -623,7 +760,7 @@
                                     <!-- Mini Progress Bar & Persentase -->
                                     <div class="d-flex align-items-center gap-1.5 px-2 py-1 bg-white border rounded-2" style="min-width: 120px;">
                                         <div class="progress flex-grow-1" style="height: 6px; border-radius: 4px; background: #e2e8f0; width: 60px;">
-                                            <div class="progress-bar bg-gradient-primary" id="progbar-{{ $key }}" style="width: {{ $catProgress }}%;"></div>
+                                            <div class="progress-bar bg-primary" id="progbar-{{ $key }}" style="width: {{ $catProgress }}%; background-color: #9a55ff !important;"></div>
                                         </div>
                                         <span class="fw-bold font-monospace text-primary" id="progpct-{{ $key }}" style="font-size: 0.8rem; width: 38px; text-align: right;">{{ $catProgress }}%</span>
                                     </div>
@@ -651,7 +788,7 @@
                                                 <th style="width: 100px;">PROGRESS</th>
                                                 <th style="width: 130px;">DEADLINE</th>
                                                 <th style="width: 140px;">DOKUMENTASI</th>
-                                                <th style="width: 175px; background: linear-gradient(135deg, #f0fdf4, #eff6ff); color: #374151;" title="Opname Mingguan & Pembayaran Termin per uraian">OPNAME &amp; TERMIN</th>
+                                                <th style="width: 175px; background: #f0fdf4; color: #374151;" title="Opname Mingguan & Pembayaran Termin per uraian">OPNAME &amp; TERMIN</th>
                                                 <th style="width: 60px;">AKSI</th>
                                             </tr>
                                         </thead>
@@ -883,7 +1020,7 @@
             <!-- Checklist Kondisi Unit -->
             <div class="row mb-4">
                 <div class="col-12">
-                    <div class="card shadow-sm border-0 rab-card" style="border-radius: 12px; overflow: hidden;">
+                    <div class="card rab-card">
                         <div class="card-header bg-light bg-opacity-75 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 py-3 px-3 px-md-4 border-bottom">
                             <div class="d-flex align-items-center gap-2">
                                 <span class="badge font-monospace px-2.5 py-1 rounded-2 fw-bold" style="background: rgba(154, 85, 255, 0.12); color: #9a55ff; font-size: 0.85rem;">
@@ -924,11 +1061,215 @@
                 </div>
             </div>
 
+            <!-- Card Spesifikasi Teknis & Dokumentasi 4 Foto Unit (Integrasi Proyek & Marketing) -->
+            <!-- Card Spesifikasi Teknis & Dokumentasi 4 Foto Unit (Integrasi Proyek & Marketing) -->
+            @php
+                $unitLp = $selectedUnit->landingPage ?? null;
+                $electricityVal = $unitLp?->electricity ?? '1.300 Watt';
+                $floorsVal = $unitLp?->floors ?? 1;
+                $carportVal = $unitLp?->carport ?? 1;
+                $bedroomsVal = $unitLp?->bedrooms ?? 2;
+                $bathroomsVal = $unitLp?->bathrooms ?? 1;
+
+                $resolveImgUrl = function($path) {
+                    if (empty($path)) return null;
+                    if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) return $path;
+                    if (file_exists(public_path($path))) return asset($path);
+                    return asset('storage/' . ltrim($path, '/'));
+                };
+
+                $imgSlot1 = $resolveImgUrl($selectedUnit->photo);
+                $imgSlot2 = $resolveImgUrl($unitLp?->gallery[0] ?? null);
+                $imgSlot3 = $resolveImgUrl($unitLp?->gallery[1] ?? null);
+                $imgSlot4 = $resolveImgUrl($unitLp?->gallery[2] ?? null);
+
+                $placeholderSvg = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22400%22%20height%3D%22300%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1%20text%20%7B%20fill%3A%2394a3b8%3Bfont-weight%3A600%3Bfont-family%3AInter%2C%20sans-serif%3Bfont-size%3A13pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23f8fafc%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22140%22%20y%3D%22155%22%3EBelum%20Ada%20Foto%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E';
+            @endphp
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card rab-card">
+                        <div class="card-header bg-light bg-opacity-75 d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 py-3 px-3 px-md-4 border-bottom">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge font-monospace px-2.5 py-1 rounded-2 fw-bold" style="background: rgba(154, 85, 255, 0.12); color: #9a55ff; font-size: 0.85rem;">
+                                    <i class="mdi mdi-home-analytics"></i>
+                                </span>
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.98rem;">
+                                        Spesifikasi Teknis & Dokumentasi 4 Foto Fisik Unit
+                                    </h6>
+                                    <small class="text-muted">Realisasi spesifikasi fisik dan dokumentasi foto unit lapangan</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-3 p-md-4">
+                            <div class="row g-4">
+                                <!-- Bagian Kiri: Spesifikasi Teknis Fisik (Listrik, Lantai, Carport, dll) -->
+                                <div class="col-12 col-xl-4 border-end-xl pe-xl-4">
+                                    <div class="mb-3">
+                                        <span class="fw-bold small text-dark">Spesifikasi Fisik Unit (Dari Lapangan / Gambar Kerja)</span>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-12 col-sm-6">
+                                            <label class="spek-form-label">Instalasi Listrik</label>
+                                            <select name="electricity" class="spek-form-control spek-auto-sync" data-field="electricity">
+                                                <option value="900 Watt" {{ $electricityVal === '900 Watt' ? 'selected' : '' }}>900 Watt</option>
+                                                <option value="1.300 Watt" {{ $electricityVal === '1.300 Watt' ? 'selected' : '' }}>1.300 Watt</option>
+                                                <option value="2.200 Watt" {{ $electricityVal === '2.200 Watt' ? 'selected' : '' }}>2.200 Watt</option>
+                                                <option value="3.500 Watt" {{ $electricityVal === '3.500 Watt' ? 'selected' : '' }}>3.500 Watt</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <label class="spek-form-label">Jumlah Lantai</label>
+                                            <select name="floors" class="spek-form-control spek-auto-sync" data-field="floors">
+                                                <option value="1" {{ $floorsVal == 1 ? 'selected' : '' }}>1 Lantai</option>
+                                                <option value="2" {{ $floorsVal == 2 ? 'selected' : '' }}>2 Lantai</option>
+                                                <option value="3" {{ $floorsVal == 3 ? 'selected' : '' }}>3 Lantai</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <label class="spek-form-label">Kapasitas Carport</label>
+                                            <select name="carport" class="spek-form-control spek-auto-sync" data-field="carport">
+                                                <option value="1" {{ $carportVal == 1 ? 'selected' : '' }}>1 Mobil</option>
+                                                <option value="2" {{ $carportVal == 2 ? 'selected' : '' }}>2 Mobil</option>
+                                                <option value="0" {{ $carportVal == 0 ? 'selected' : '' }}>Tanpa Carport</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6 col-sm-3">
+                                            <label class="spek-form-label">Kamar Tidur</label>
+                                            <input type="number" name="bedrooms" class="spek-form-control spek-auto-sync" data-field="bedrooms" value="{{ $bedroomsVal }}" min="1">
+                                        </div>
+                                        <div class="col-6 col-sm-3">
+                                            <label class="spek-form-label">Kamar Mandi</label>
+                                            <input type="number" name="bathrooms" class="spek-form-control spek-auto-sync" data-field="bathrooms" value="{{ $bathroomsVal }}" min="1">
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 text-muted" style="font-size: 0.72rem;">
+                                        Perubahan spesifikasi fisik tersimpan otomatis dan langsung tampil pada brosur web marketing unit.
+                                    </div>
+                                </div>
+
+                                <!-- Bagian Kanan: 4 Kotak Slot Foto Hasil Finishing -->
+                                <div class="col-12 col-xl-8 ps-xl-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div>
+                                            <span class="fw-bold small text-dark">Dokumentasi 4 Foto Fisik Unit (Finishing 100%)</span>
+                                        </div>
+                                        <span class="text-muted" style="font-size: 0.72rem;">Maksimal Tepat 4 Foto</span>
+                                    </div>
+
+                                    <div class="row g-2">
+                                        <!-- Slot 1: Foto Depan / Fasad -->
+                                        <div class="col-6 col-md-3">
+                                            <div class="photo-slot-card h-100 p-2 d-flex flex-column justify-content-between">
+                                                <div>
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <span class="badge-slot-main"><i class="mdi mdi-home-outline"></i> Fasad Depan</span>
+                                                    </div>
+                                                    <div class="photo-img-wrapper mb-2 text-center">
+                                                        <img id="slotImg1" src="{{ $imgSlot1 ?: $placeholderSvg }}" alt="Fasad Depan">
+                                                    </div>
+                                                </div>
+                                                 <div>
+                                                    <input type="file" id="spekPhotoInput1" name="photo_fasad" class="d-none spek-photo-input" data-slot="1" accept="image/*">
+                                                    <div class="photo-action-group">
+                                                        <button type="button" class="btn-photo-action" onclick="document.getElementById('spekPhotoInput1').click()">
+                                                            <i class="mdi mdi-camera"></i> <span id="btnTextSlot1">{{ $imgSlot1 ? 'Ganti Foto' : 'Upload Foto' }}</span>
+                                                        </button>
+                                                        <button type="button" class="btn-photo-delete-slot {{ $imgSlot1 ? '' : 'd-none' }}" id="btnDeleteSlot1" onclick="deleteSpekPhoto(1)" title="Hapus Foto">
+                                                            <i class="mdi mdi-trash-can-outline"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Slot 2: Ruang Tamu / Keluarga -->
+                                        <div class="col-6 col-md-3">
+                                            <div class="photo-slot-card h-100 p-2 d-flex flex-column justify-content-between">
+                                                <div>
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <span class="badge-slot-gallery"><i class="mdi mdi-sofa"></i> Ruang Tamu</span>
+                                                    </div>
+                                                    <div class="photo-img-wrapper mb-2 text-center">
+                                                        <img id="slotImg2" src="{{ $imgSlot2 ?: $placeholderSvg }}" alt="Ruang Tamu">
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <input type="file" id="spekPhotoInput2" name="photo_ruang_tamu" class="d-none spek-photo-input" data-slot="2" accept="image/*">
+                                                    <div class="photo-action-group">
+                                                        <button type="button" class="btn-photo-action" onclick="document.getElementById('spekPhotoInput2').click()">
+                                                            <i class="mdi mdi-camera"></i> <span id="btnTextSlot2">{{ $imgSlot2 ? 'Ganti Foto' : 'Upload Foto' }}</span>
+                                                        </button>
+                                                        <button type="button" class="btn-photo-delete-slot {{ $imgSlot2 ? '' : 'd-none' }}" id="btnDeleteSlot2" onclick="deleteSpekPhoto(2)" title="Hapus Foto">
+                                                            <i class="mdi mdi-trash-can-outline"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Slot 3: Kamar Tidur -->
+                                        <div class="col-6 col-md-3">
+                                            <div class="photo-slot-card h-100 p-2 d-flex flex-column justify-content-between">
+                                                <div>
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <span class="badge-slot-gallery"><i class="mdi mdi-bed"></i> Kamar Tidur</span>
+                                                    </div>
+                                                    <div class="photo-img-wrapper mb-2 text-center">
+                                                        <img id="slotImg3" src="{{ $imgSlot3 ?: $placeholderSvg }}" alt="Kamar Tidur">
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <input type="file" id="spekPhotoInput3" name="photo_kamar_tidur" class="d-none spek-photo-input" data-slot="3" accept="image/*">
+                                                    <div class="photo-action-group">
+                                                        <button type="button" class="btn-photo-action" onclick="document.getElementById('spekPhotoInput3').click()">
+                                                            <i class="mdi mdi-camera"></i> <span id="btnTextSlot3">{{ $imgSlot3 ? 'Ganti Foto' : 'Upload Foto' }}</span>
+                                                        </button>
+                                                        <button type="button" class="btn-photo-delete-slot {{ $imgSlot3 ? '' : 'd-none' }}" id="btnDeleteSlot3" onclick="deleteSpekPhoto(3)" title="Hapus Foto">
+                                                            <i class="mdi mdi-trash-can-outline"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Slot 4: Dapur / Sanitasi -->
+                                        <div class="col-6 col-md-3">
+                                            <div class="photo-slot-card h-100 p-2 d-flex flex-column justify-content-between">
+                                                <div>
+                                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                                        <span class="badge-slot-gallery"><i class="mdi mdi-silverware-fork-knife"></i> Dapur / Denah</span>
+                                                    </div>
+                                                    <div class="photo-img-wrapper mb-2 text-center">
+                                                        <img id="slotImg4" src="{{ $imgSlot4 ?: $placeholderSvg }}" alt="Dapur / Sanitasi">
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <input type="file" id="spekPhotoInput4" name="photo_dapur" class="d-none spek-photo-input" data-slot="4" accept="image/*">
+                                                    <div class="photo-action-group">
+                                                        <button type="button" class="btn-photo-action" onclick="document.getElementById('spekPhotoInput4').click()">
+                                                            <i class="mdi mdi-camera"></i> <span id="btnTextSlot4">{{ $imgSlot4 ? 'Ganti Foto' : 'Upload Foto' }}</span>
+                                                        </button>
+                                                        <button type="button" class="btn-photo-delete-slot {{ $imgSlot4 ? '' : 'd-none' }}" id="btnDeleteSlot4" onclick="deleteSpekPhoto(4)" title="Hapus Foto">
+                                                            <i class="mdi mdi-trash-can-outline"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Bagian Rincian RAP - Yang Diperbaiki -->
             <div class="row">
                 <!-- Ringkasan RAP -->
                 <div class="col-12 col-md-6">
-                    <div class="card shadow-sm border-0 mb-3" style="border-radius: 12px;">
+                    <div class="card rab-card mb-3">
                         <div class="card-body">
                             <h6 class="card-title fw-bold text-dark mb-3">
                                 <i class="mdi mdi-chart-pie me-2" style="color: #9a55ff;"></i>Ringkasan RAP Terpadu
@@ -981,7 +1322,7 @@
 
                 <!-- Harga Jual Final -->
                 <div class="col-12 col-md-6">
-                    <div class="card shadow-sm border-0 mb-3" style="border-radius: 12px;">
+                    <div class="card rab-card mb-3">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h6 class="card-title fw-bold text-dark mb-0">
@@ -1099,7 +1440,7 @@
         <div class="modal fade" id="modalTambahOpnameModal" tabindex="-1" aria-labelledby="modalTambahOpnameLabel" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
-                    <div class="modal-header py-3 px-4" style="background: linear-gradient(135deg, #059669, #10b981); color: #fff;">
+                    <div class="modal-header py-3 px-4" style="background: #059669; color: #fff;">
                         <div class="d-flex align-items-center gap-3">
                             <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
                                 <i class="mdi mdi-clipboard-text-play-outline"></i>
@@ -1114,7 +1455,7 @@
 
                     <div class="modal-body p-4 bg-light bg-opacity-50">
                         <!-- Info Periode & Pekerja -->
-                        <div class="card border-0 shadow-xs mb-3" style="border-radius: 12px;">
+                        <div class="card border-0 shadow-xs mb-3" style="border-radius: 10px;">
                             <div class="card-body p-3">
                                 <div class="row g-3">
                                     <div class="col-md-2 col-6">
@@ -1138,7 +1479,7 @@
                         </div>
 
                         <!-- Capaian Rincian Uraian Pekerjaan (RAP) -->
-                        <div class="card border-0 shadow-xs mb-3" style="border-radius: 12px; overflow: hidden;">
+                        <div class="card border-0 shadow-xs mb-3" style="border-radius: 10px; overflow: hidden;">
                             <div class="card-header bg-white py-2.5 px-3 border-bottom d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
                                 <div class="d-flex align-items-center gap-2">
                                     <i class="mdi mdi-format-list-checks text-success fs-5"></i>
@@ -1194,7 +1535,7 @@
 
                         <!-- Accordion Data Tambahan / Kendala & Material -->
                         <div class="accordion" id="accordionOpnameTambahan">
-                            <div class="accordion-item border-0 shadow-xs" style="border-radius: 12px; overflow: hidden;">
+                            <div class="accordion-item border-0 shadow-xs" style="border-radius: 10px; overflow: hidden;">
                                 <h2 class="accordion-header" id="headingOpnameTambahan">
                                     <button class="accordion-button collapsed py-2 px-3 bg-white text-muted fw-bold small" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOpnameTambahan" aria-expanded="false" aria-controls="collapseOpnameTambahan" style="font-size: 0.85rem;">
                                         <i class="mdi mdi-note-text-outline text-primary me-2"></i>Catatan Tambahan, Logistik & Kendala Lapangan (Opsional)
@@ -1521,7 +1862,7 @@
             let cardHtml = `
                 <div class="row mb-4 category-section animate__animated animate__fadeIn" id="section-${cleanKey}">
                     <div class="col-12">
-                        <div class="card shadow-sm border-0 rab-card" style="border-radius: 12px; overflow: hidden;">
+                        <div class="card rab-card">
                             <div class="card-header bg-light bg-opacity-75 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 py-2.5 px-3 px-md-4 border-bottom">
                                 <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <span class="badge bg-primary bg-opacity-10 text-primary font-monospace px-2.5 py-1 rounded-2 fw-bold" style="font-size: 0.82rem;">
@@ -1542,12 +1883,12 @@
                                     <!-- Mini Progress Bar & Persentase -->
                                     <div class="d-flex align-items-center gap-1.5 px-2 py-1 bg-white border rounded-2" style="min-width: 120px;">
                                         <div class="progress flex-grow-1" style="height: 6px; border-radius: 4px; background: #e2e8f0; width: 60px;">
-                                            <div class="progress-bar bg-gradient-primary" id="progbar-${cleanKey}" style="width: 0%;"></div>
+                                            <div class="progress-bar bg-primary" id="progbar-${cleanKey}" style="width: 0%; background-color: #9a55ff !important;"></div>
                                         </div>
                                         <span class="fw-bold font-monospace text-primary" id="progpct-${cleanKey}" style="font-size: 0.8rem; width: 38px; text-align: right;">0%</span>
                                     </div>
 
-                                    <button type="button" class="btn btn-sm btn-success text-white px-3 py-1 rounded-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-1" style="height: 30px; font-size: 0.8rem;" onclick="tambahItem('${cleanKey}')">
+                                    <button type="button" class="btn btn-sm btn-success text-white px-3 py-1 rounded-2 fw-semibold shadow-none d-inline-flex align-items-center gap-1" style="height: 30px; font-size: 0.8rem;" onclick="tambahItem('${cleanKey}')">
                                         + Tambah Item
                                     </button>
                                 </div>
@@ -2751,5 +3092,172 @@
                 });
             }
         });
+
+        /* ─── AUTO-SYNC SPESIFIKASI FISIK & 4 FOTO KE LANDING PAGE MARKETING ─── */
+        const SpekToast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2800,
+            timerProgressBar: true
+        });
+
+        const SPEK_PLACEHOLDER_SVG = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22400%22%20height%3D%22300%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1%20text%20%7B%20fill%3A%2394a3b8%3Bfont-weight%3A600%3Bfont-family%3AInter%2C%20sans-serif%3Bfont-size%3A13pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23f8fafc%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22140%22%20y%3D%22155%22%3EBelum%20Ada%20Foto%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fsvg%3E';
+
+        // 1. Auto-sync input spesifikasi fisik saat change
+        $(document).on('change', '.spek-auto-sync', function() {
+            const field = $(this).data('field');
+            const value = $(this).val();
+            const payload = {};
+            payload[field] = value;
+
+            fetch('{{ route("properti.progress.spesifikasiFoto", $selectedUnit->id) }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF_TOKEN,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    SpekToast.fire({
+                        icon: 'success',
+                        title: 'Tersinkron ke Landing Page Marketing!'
+                    });
+                } else {
+                    SpekToast.fire({
+                        icon: 'error',
+                        title: data.message || 'Gagal sinkron spesifikasi.'
+                    });
+                }
+            })
+            .catch(() => {
+                SpekToast.fire({
+                    icon: 'error',
+                    title: 'Koneksi gagal saat auto-sync.'
+                });
+            });
+        });
+
+        // 2. Upload / Preview 4 Foto Fisik per slot
+        $(document).on('change', '.spek-photo-input', function() {
+            const input = this;
+            const slot = $(input).data('slot');
+            if (!input.files || !input.files[0]) return;
+
+            const file = input.files[0];
+
+            // Validasi ukuran file (max 6MB)
+            if (file.size > 6 * 1024 * 1024) {
+                Swal.fire('File Terlalu Besar', 'Maksimal ukuran foto adalah 6MB.', 'warning');
+                input.value = '';
+                return;
+            }
+
+            // Preview instan di UI
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgEl = document.getElementById('slotImg' + slot);
+                if (imgEl) imgEl.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            // Indikator loading
+            const btnText = document.getElementById('btnTextSlot' + slot);
+            const originalText = btnText ? btnText.innerText : 'Upload Foto';
+            if (btnText) btnText.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Menyimpan...';
+
+            // Kirim FormData ke Backend
+            const formData = new FormData();
+            formData.append('photo', file);
+            formData.append('slot', slot);
+
+            fetch('{{ route("properti.progress.spesifikasiFoto", $selectedUnit->id) }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF_TOKEN,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.url) {
+                        const imgEl = document.getElementById('slotImg' + slot);
+                        if (imgEl) imgEl.src = data.url;
+                    }
+                    if (btnText) btnText.innerText = 'Ganti Foto';
+                    const delBtn = document.getElementById('btnDeleteSlot' + slot);
+                    if (delBtn) delBtn.classList.remove('d-none');
+
+                    SpekToast.fire({
+                        icon: 'success',
+                        title: 'Foto slot ' + slot + ' tersinkron ke Landing Page Marketing!'
+                    });
+                } else {
+                    if (btnText) btnText.innerText = originalText;
+                    Swal.fire('Gagal!', data.message || 'Gagal mengunggah foto.', 'error');
+                }
+            })
+            .catch(() => {
+                if (btnText) btnText.innerText = originalText;
+                Swal.fire('Error!', 'Terjadi kesalahan saat mengunggah foto.', 'error');
+            });
+        });
+
+        // 3. Hapus Foto per slot
+        window.deleteSpekPhoto = function(slot) {
+            Swal.fire({
+                title: 'Hapus Foto Slot ' + slot + '?',
+                text: 'Foto ini akan dihapus dari data fisik proyek dan katalog landing page marketing.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Hapus Foto!',
+                cancelButtonText: 'Batal'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    Swal.fire({ title: 'Menghapus foto...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                    fetch('{{ route("properti.progress.spesifikasiFoto", $selectedUnit->id) }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': CSRF_TOKEN,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ action: 'delete', slot: slot })
+                    })
+                    .then(r => r.json())
+                    .then(resp => {
+                        if (resp.success) {
+                            const imgEl = document.getElementById('slotImg' + slot);
+                            if (imgEl) imgEl.src = SPEK_PLACEHOLDER_SVG;
+                            const btnText = document.getElementById('btnTextSlot' + slot);
+                            if (btnText) btnText.innerText = 'Upload Foto';
+                            const delBtn = document.getElementById('btnDeleteSlot' + slot);
+                            if (delBtn) delBtn.classList.add('d-none');
+                            const fileInput = document.getElementById('spekPhotoInput' + slot);
+                            if (fileInput) fileInput.value = '';
+
+                            Swal.close();
+                            SpekToast.fire({
+                                icon: 'success',
+                                title: 'Foto slot ' + slot + ' berhasil dihapus.'
+                            });
+                        } else {
+                            Swal.fire('Gagal!', resp.message || 'Gagal menghapus foto.', 'error');
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire('Error!', 'Terjadi kesalahan server saat menghapus foto.', 'error');
+                    });
+                }
+            });
+        };
     </script>
 @endpush

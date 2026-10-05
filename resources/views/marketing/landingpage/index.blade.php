@@ -5,29 +5,33 @@
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
     <style>
-        /* Styling Persis Halaman Perizinan Proyek */
+        /* Styling Tabel Persis Katalog Unit (jual_unit) */
         .table-perizinan {
             width: 100% !important;
             margin-bottom: 0;
+            border-collapse: collapse;
         }
         .table-perizinan thead th {
-            background: #f8fafc !important;
-            color: #4b5563 !important;
-            font-weight: 700;
-            font-size: 0.78rem;
+            background: linear-gradient(135deg, #f8f9fa, #f1f3f5) !important;
+            color: #9a55ff !important;
+            font-weight: 600;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-bottom: 2px solid #e2e8f0 !important;
-            padding: 0.75rem 0.6rem !important;
+            border-bottom: 2px solid #e9ecef !important;
+            padding: 0.8rem 0.6rem !important;
             vertical-align: middle;
             white-space: nowrap;
         }
         .table-perizinan tbody td {
-            padding: 0.75rem 0.6rem !important;
+            padding: 0.85rem 0.65rem !important;
             vertical-align: middle;
-            font-size: 0.83rem;
+            font-size: 0.85rem;
             border-bottom: 1px solid #f1f5f9;
-            white-space: normal !important;
+            color: #2c2e3f;
+        }
+        .table-perizinan tbody tr:hover {
+            background-color: #f8f9fa;
         }
         .table-perizinan .col-no {
             width: 45px;
@@ -40,24 +44,93 @@
             white-space: nowrap !important;
         }
         .table-perizinan .col-aksi {
-            width: 110px;
+            width: 120px;
             text-align: center;
             white-space: nowrap !important;
         }
 
-        .status-badge.aktif {
-            background-color: #ecfdf5;
-            color: #059669;
-            border: 1px solid #a7f3d0;
-            font-weight: 600;
-            border-radius: 6px;
+        /* Solid Buttons - 1 Warna, Tanpa Gradient (Persis Katalog Unit) */
+        .btn-gradient-primary {
+            background: #9a55ff !important;
+            border-color: #9a55ff !important;
+            color: #ffffff !important;
+            box-shadow: none !important;
         }
-        .badge-development-progress {
-            background-color: #fffbeb;
-            color: #d97706;
-            border: 1px solid #fde68a;
+        .btn-gradient-primary:hover {
+            background: #8b3df5 !important;
+            border-color: #8b3df5 !important;
+            color: #ffffff !important;
+        }
+        .btn-gradient-secondary {
+            background: #64748b !important;
+            border-color: #64748b !important;
+            color: #ffffff !important;
+            box-shadow: none !important;
+        }
+        .btn-gradient-secondary:hover {
+            background: #475569 !important;
+            border-color: #475569 !important;
+            color: #ffffff !important;
+        }
+        .btn-icon-only {
+            width: 38px;
+            height: 38px;
+            padding: 0 !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        /* Badge Styling - Solid 1 Warna, Tanpa Gradient (Persis Katalog Unit) */
+        .badge {
+            padding: 0.35rem 0.65rem;
+            font-size: 0.75rem;
             font-weight: 600;
             border-radius: 6px;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .badge-gradient-success {
+            background: #10b981 !important;
+            color: #ffffff !important;
+            border-radius: 6px;
+            border: none !important;
+        }
+        .badge-gradient-primary {
+            background: #9a55ff !important;
+            color: #ffffff !important;
+            border-radius: 6px;
+            border: none !important;
+        }
+        .badge-gradient-warning {
+            background: #f59e0b !important;
+            color: #ffffff !important;
+            border-radius: 6px;
+            border: none !important;
+        }
+        .badge-gradient-secondary {
+            background: #64748b !important;
+            color: #ffffff !important;
+            border-radius: 6px;
+            border: none !important;
+        }
+
+        .price-text {
+            color: #28a745 !important;
+            font-weight: 700;
+        }
+        .icon-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+        .icon-text i {
+            font-size: 1rem;
+            color: #9a55ff;
+        }
+        .text-primary {
+            color: #9a55ff !important;
         }
 
         /* Styling Card Tabel Meniru Persis Card Total (.dash-kpi-card) */
@@ -115,31 +188,6 @@
             color: #94a3b8;
             font-size: 0.65rem;
             font-weight: 600;
-        }
-
-        .btn-gradient-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-            border: 0 !important;
-            color: #ffffff !important;
-            transition: opacity 0.3s ease;
-        }
-        .btn-gradient-primary:hover {
-            opacity: 0.9;
-            color: #ffffff !important;
-        }
-        .btn-gradient-secondary {
-            background: linear-gradient(to right, #e7ebf0, #868e96) !important;
-            border: 0 !important;
-            color: #ffffff !important;
-        }
-        .btn-icon-only {
-            width: 38px;
-            height: 38px;
-            padding: 0 !important;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 4px;
         }
     </style>
 @endpush
@@ -340,8 +388,20 @@
                                         
                                         <!-- Foto Thumbnail -->
                                         <td>
-                                            @if($u->photo)
-                                                <img src="{{ $u->photo }}" alt="{{ $u->unit_code }}" class="img-preview-thumb shadow-sm">
+                                            @php
+                                                $photoUrl = null;
+                                                if (!empty($u->photo)) {
+                                                    if (str_starts_with($u->photo, 'http://') || str_starts_with($u->photo, 'https://')) {
+                                                        $photoUrl = $u->photo;
+                                                    } elseif (file_exists(public_path($u->photo))) {
+                                                        $photoUrl = asset($u->photo);
+                                                    } else {
+                                                        $photoUrl = asset('storage/' . ltrim($u->photo, '/'));
+                                                    }
+                                                }
+                                            @endphp
+                                            @if($photoUrl)
+                                                <img src="{{ $photoUrl }}" alt="{{ $u->unit_code }}" class="img-preview-thumb shadow-sm" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'no-photo-box\'><i class=\'mdi mdi-camera-plus fs-5\'></i><span>No Photo</span></div>';">
                                             @else
                                                 <div class="no-photo-box">
                                                     <i class="mdi mdi-camera-plus fs-5"></i>
@@ -350,69 +410,75 @@
                                             @endif
                                         </td>
 
-                                        <!-- Kode & Nama Kavling -->
+                                        <!-- Kode & Nama Kavling (Persis Katalog Unit) -->
                                         <td>
-                                            <div class="fw-bold text-dark font-monospace" style="font-size: 0.86rem; line-height: 1.35;">
-                                                {{ $u->unit_code }}
-                                            </div>
-                                            <div class="text-secondary mt-0.5" style="font-size: 0.78rem; line-height: 1.3;">
-                                                {{ $u->unit_name }}
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-home-outline text-primary me-2" style="font-size: 1.15rem;"></i>
+                                                <div>
+                                                    <div class="fw-bold text-dark font-monospace" style="font-size: 0.86rem; line-height: 1.35;">
+                                                        {{ $u->unit_code }}
+                                                    </div>
+                                                    <div class="text-secondary mt-0.5" style="font-size: 0.78rem; line-height: 1.3;">
+                                                        {{ $u->unit_name }}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
 
-                                        <!-- Proyek (Tanpa Alamat Lokasi) -->
+                                        <!-- Proyek (Persis Katalog Unit) -->
                                         <td>
-                                            <span class="fw-semibold text-dark" style="font-size: 0.84rem;">
-                                                <i class="mdi mdi-map-marker text-primary me-0.5"></i>{{ $u->project_name }}
+                                            <span class="icon-text">
+                                                <i class="mdi mdi-office-building text-primary me-1"></i>
+                                                <span class="fw-bold text-dark" style="font-size: 0.84rem;">{{ $u->project_name }}</span>
                                             </span>
                                         </td>
 
                                         <!-- Tipe Unit Saja (tanpa LB, LT, KT, KM) -->
                                         <td>
-                                            <span class="badge bg-light text-dark border fw-bold" style="font-size: 0.8rem; padding: 4px 8px;">
+                                            <span class="badge bg-light text-dark border fw-bold" style="font-size: 0.78rem; padding: 4px 8px;">
                                                 Tipe {{ $u->type }}
                                             </span>
                                         </td>
 
-                                        <!-- Kategori Subsidi / Komersil (Kolom Tersendiri) -->
+                                        <!-- Kategori Subsidi / Komersil (Solid 1 Warna Persis Katalog Unit) -->
                                         <td class="text-center">
                                             @if(strtolower($u->jenis) == 'subsidi')
-                                                <span class="status-badge aktif" style="padding: 3px 8px; font-size: 0.75rem;">
-                                                    Subsidi
+                                                <span class="badge badge-gradient-success">
+                                                    <i class="mdi mdi-home-assistant me-1"></i>Subsidi
                                                 </span>
                                             @else
-                                                <span class="badge py-1 px-2.5 fw-semibold" style="background: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; border-radius: 6px; font-size: 0.75rem;">
-                                                    Komersil
+                                                <span class="badge badge-gradient-primary">
+                                                    <i class="mdi mdi-office-building me-1"></i>Komersil
                                                 </span>
                                             @endif
                                         </td>
 
-                                        <!-- Harga (Tanpa Estimasi Cicilan) -->
+                                        <!-- Harga (Persis Katalog Unit) -->
                                         <td>
-                                            <div class="fw-bold text-success font-monospace" style="font-size: 0.88rem;">
+                                            <span class="price-text" style="font-size: 0.88rem; font-family: monospace;">
                                                 Rp {{ number_format($u->price, 0, ',', '.') }}
-                                            </div>
+                                            </span>
                                         </td>
 
-                                        <!-- Status Web (Badge Persis Perizinan) -->
+                                        <!-- Status Web (Solid 1 Warna Persis Katalog Unit) -->
                                         <td class="col-status text-center">
                                             @if($u->photo)
-                                                <span class="status-badge aktif" style="padding: 3px 8px; font-size: 0.75rem;">
-                                                    <i class="mdi mdi-check-circle me-0.5"></i>Tayang
+                                                <span class="badge badge-gradient-success">
+                                                    <i class="mdi mdi-check-circle me-1"></i>Tayang
                                                 </span>
                                             @else
-                                                <span class="badge-development-progress" style="padding: 3px 8px; font-size: 0.75rem;">
-                                                    <i class="mdi mdi-alert me-0.5"></i>Foto Kosong
+                                                <span class="badge badge-gradient-warning">
+                                                    <i class="mdi mdi-alert me-1"></i>Foto Kosong
                                                 </span>
                                             @endif
                                         </td>
 
-                                        <!-- Aksi Edit Foto & Data Web (Tombol Persis Perizinan) -->
+                                        <!-- Aksi Edit Foto & Data Web (Solid 1 Warna Persis Katalog Unit) -->
                                         <td class="col-aksi text-center">
                                             <a href="{{ route('marketing.landingpage.edit', $u->id) }}" 
-                                               class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center py-1 px-2.5 fw-semibold shadow-sm text-decoration-none" 
-                                               style="font-size: 0.76rem; border-radius: 5px;">
-                                                <i class="mdi mdi-pencil-box-outline" style="margin-right: 4px !important; font-size: 0.85rem;"></i>
+                                               class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center py-1.5 px-3 fw-semibold shadow-sm text-decoration-none" 
+                                               style="font-size: 0.78rem; border-radius: 6px;">
+                                                <i class="mdi mdi-pencil-box-outline me-1"></i>
                                                 <span>Edit Web</span>
                                             </a>
                                         </td>

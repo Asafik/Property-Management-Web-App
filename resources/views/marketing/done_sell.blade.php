@@ -1566,14 +1566,7 @@
                                         <span class="info-label">Luas Bangunan</span>
                                         <span class="info-value">{{ $unit->building_area ?? ($kpr->luas_bangunan ?? '-') }} m²</span>
                                     </div>
-                                    <div class="info-row">
-                                        <span class="info-label">Hadap</span>
-                                        <span class="info-value">{{ $unit->facing ?? '-' }}</span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">Posisi</span>
-                                        <span class="info-value">{{ $unit->position ?? '-' }}</span>
-                                    </div>
+
                                 </div>
                             </div>
 
@@ -1597,13 +1590,23 @@
                                         <span class="info-value">{{ $unit->landBank->road_width ? $unit->landBank->road_width . 'm' : '-' }}
                                             ({{ $unit->landBank->road_type ?? '-' }})</span>
                                     </div>
+                                    @php
+                                        $sumberAir = $unit->water_source ?? ($unit->air ?? null);
+                                        if (!$sumberAir) {
+                                            $praWater = $unit->landBank?->praLandbank?->water_condition 
+                                                ?? \App\Models\PraLandbank::where('land_bank_id', $unit->land_bank_id)->orWhere('land_name', $unit->landBank?->name)->value('water_condition');
+                                            if ($praWater) {
+                                                $sumberAir = ($praWater === 'sumur_bor') ? 'Sumur Bor' : (($praWater === 'pdam') ? 'PDAM' : ucwords(str_replace('_', ' ', $praWater)));
+                                            }
+                                        }
+                                    @endphp
                                     <div class="info-row">
                                         <span class="info-label">Listrik</span>
-                                        <span class="info-value">{{ $unit->electricity ?? ($unit->listrik ?? '1300 VA') }}</span>
+                                        <span class="info-value">{{ $unit->electricity ?? ($unit->listrik ?? '-') }}</span>
                                     </div>
                                     <div class="info-row">
                                         <span class="info-label">Sumber Air</span>
-                                        <span class="info-value">{{ $unit->water_source ?? ($unit->air ?? 'PDAM / Sumur Bor') }}</span>
+                                        <span class="info-value">{{ $sumberAir ?: '-' }}</span>
                                     </div>
                                 </div>
                             </div>

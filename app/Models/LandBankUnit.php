@@ -45,6 +45,11 @@ class LandBankUnit extends Model
         'coordinates' => 'array',
         'polygon_points' => 'array',
     ];
+
+    public function landingPage()
+    {
+        return $this->hasOne(\App\Models\UnitLandingPage::class, 'land_bank_unit_id');
+    }
     public function getConstructionProgressPercentageAttribute()
     {
         $map = [

@@ -75,9 +75,7 @@ Route::get('/beranda', function () {
     return view('home.index');
 });
 
-Route::get('/detail', function () {
-    return view('home.detail');
-})->name('home.detail');
+Route::get('/detail/{id?}', [LandingpageController::class, 'detail'])->name('home.detail');
 
 Route::get('/buku-tamu', [LandingpageController::class, 'bukuTamu'])->name('home.buku-tamu');
 Route::post('/buku-tamu', [LandingpageController::class, 'storeBukuTamu'])->name('home.buku-tamu.store');
@@ -396,6 +394,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/properti/progress/apply-template/{unit}', [DevelopmentProgressController::class, 'applyTemplate'])->name('properti.progress.applyTemplate');
     Route::delete('/properti/progress/item/{itemId}', [DevelopmentProgressController::class, 'destroy'])->name('properti.progress.item.destroy');
     Route::post('/properti/progress/checklist-kondisi/{unit}', [DevelopmentProgressController::class, 'updateChecklistKondisi'])->name('properti.progress.checklist');
+    Route::post('/properti/progress/spesifikasi-foto/{unit}', [DevelopmentProgressController::class, 'updateSpesifikasiFoto'])->name('properti.progress.spesifikasiFoto');
 
     // === PEMBAYARAN TERMIN ===
     Route::post('/properti/progress/termin/store', [DevelopmentProgressController::class, 'storeTermin'])->name('properti.progress.termin.store');

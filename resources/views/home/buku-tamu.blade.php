@@ -11,13 +11,13 @@
     }
 
     .buku-tamu-container {
-        max-width: 680px;
+        max-width: 940px;
         margin: 0 auto;
     }
 
     .bt-card {
         background: #ffffff;
-        border-radius: 20px;
+        border-radius: 6px;
         border: 1px solid #e2e8f0;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
         overflow: hidden;
@@ -31,9 +31,9 @@
     }
 
     .bt-icon-badge {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
+        width: 54px;
+        height: 54px;
+        border-radius: 6px;
         background: rgba(201, 151, 58, 0.15);
         border: 2px solid var(--gold);
         display: flex;
@@ -41,7 +41,7 @@
         justify-content: center;
         margin: 0 auto 1rem;
         color: var(--gold);
-        font-size: 1.6rem;
+        font-size: 1.5rem;
     }
 
     .bt-title {
@@ -75,7 +75,7 @@
     .unit-highlight-box {
         background: #f8fafc;
         border: 1.5px solid #e2e8f0;
-        border-radius: 14px;
+        border-radius: 6px;
         padding: 1rem 1.25rem;
         margin-bottom: 1.75rem;
         display: flex;
@@ -86,7 +86,7 @@
     .unit-box-icon {
         width: 44px;
         height: 44px;
-        border-radius: 10px;
+        border-radius: 4px;
         background: #ede9fe;
         color: #7c3aed;
         display: flex;
@@ -94,6 +94,29 @@
         justify-content: center;
         font-size: 1.25rem;
         flex-shrink: 0;
+    }
+
+    .form-grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 1.5rem;
+        row-gap: 1.25rem;
+    }
+
+    .form-grid-full {
+        grid-column: 1 / -1;
+    }
+
+    .form-group-bt {
+        display: flex;
+        flex-direction: column;
+    }
+
+    @media (max-width: 768px) {
+        .form-grid-2 {
+            grid-template-columns: 1fr;
+            row-gap: 1.1rem;
+        }
     }
 
     .form-group-custom {
@@ -115,7 +138,7 @@
     .form-control-bt {
         width: 100%;
         border: 1.5px solid #cbd5e1;
-        border-radius: 12px;
+        border-radius: 6px;
         padding: 0.75rem 1rem;
         font-size: 0.92rem;
         color: #0f172a;
@@ -129,10 +152,53 @@
         box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15);
     }
 
+    .budget-input-group {
+        display: flex;
+        align-items: stretch;
+        width: 100%;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 6px;
+        overflow: hidden;
+        background: #ffffff;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    .budget-input-group:focus-within {
+        border-color: #9a55ff;
+        box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.15);
+    }
+
+    .budget-addon {
+        background: #f8fafc;
+        border-right: 1.5px solid #cbd5e1;
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #6366f1;
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        flex-shrink: 0;
+    }
+
+    .budget-control {
+        flex: 1;
+        border: none;
+        outline: none;
+        padding: 0.75rem 1rem;
+        font-size: 0.92rem;
+        color: #0f172a;
+        background: transparent;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
     .source-detail-box {
         background: #faf5ff;
         border: 1.5px solid #e9d5ff;
-        border-radius: 12px;
+        border-radius: 6px;
         padding: 1rem;
         margin-top: 0.75rem;
         display: none;
@@ -144,7 +210,7 @@
         background: linear-gradient(135deg, #1e293b, #0f172a);
         color: #ffffff;
         border: 1.5px solid var(--gold);
-        border-radius: 14px;
+        border-radius: 6px;
         padding: 0.95rem 1.5rem;
         font-size: 1rem;
         font-weight: 700;
@@ -165,11 +231,17 @@
 
     .perks-list {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.75rem;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.85rem;
         margin-top: 1.75rem;
         padding-top: 1.5rem;
         border-top: 1px solid #f1f5f9;
+    }
+
+    @media (max-width: 900px) {
+        .perks-list {
+            grid-template-columns: 1fr 1fr;
+        }
     }
 
     @media (max-width: 576px) {
@@ -192,6 +264,29 @@
         font-size: 0.85rem;
     }
 
+    .btn-back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #475569;
+        text-decoration: none;
+        font-size: 0.86rem;
+        font-weight: 600;
+        background: #ffffff;
+        padding: 0.55rem 1rem;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        transition: all 0.2s ease;
+    }
+
+    .btn-back-link:hover {
+        color: #0f172a;
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        transform: translateX(-3px);
+    }
+
     @keyframes fadeIn {
         from { opacity: 0; transform: translateY(-6px); }
         to { opacity: 1; transform: translateY(0); }
@@ -208,8 +303,8 @@
     <div class="buku-tamu-container">
 
         <!-- Tombol Kembali -->
-        <div class="mb-3">
-            <a href="{{ route('home.detail') }}" style="display: inline-flex; align-items: center; gap: 0.4rem; color: #64748b; text-decoration: none; font-size: 0.84rem; font-weight: 600;">
+        <div style="margin-bottom: 1.5rem;">
+            <a href="{{ route('home.detail') }}" class="btn-back-link">
                 <i class="fa-solid fa-arrow-left"></i> Kembali ke Detail Properti
             </a>
         </div>
@@ -233,8 +328,8 @@
 
                 {{-- Alert Notifikasi Sukses Tersimpan ke Database --}}
                 @if(session('success'))
-                <div style="background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 1.5px solid #10b981; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; display: flex; align-items: flex-start; gap: 1rem; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.12);">
-                    <div style="width: 42px; height: 42px; border-radius: 50%; background: #10b981; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;">
+                <div style="background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 1.5px solid #10b981; border-radius: 6px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; display: flex; align-items: flex-start; gap: 1rem; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.12);">
+                    <div style="width: 38px; height: 38px; border-radius: 4px; background: #10b981; color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
                         <i class="fa-solid fa-check"></i>
                     </div>
                     <div>
@@ -243,10 +338,10 @@
                             {{ session('success')['msg'] ?? 'Formulir Anda telah resmi tercatat di sistem Data Tamu / Prospek Graha Cipta Sejahtera.' }}
                         </p>
                         <div style="margin-top: 0.75rem; display: flex; gap: 0.6rem; flex-wrap: wrap;">
-                            <a href="{{ route('home.detail') }}" style="display: inline-flex; align-items: center; gap: 0.4rem; background: #065f46; color: #ffffff; font-size: 0.8rem; font-weight: 700; padding: 0.45rem 0.85rem; border-radius: 8px; text-decoration: none;">
+                            <a href="{{ route('home.detail') }}" style="display: inline-flex; align-items: center; gap: 0.4rem; background: #065f46; color: #ffffff; font-size: 0.8rem; font-weight: 700; padding: 0.45rem 0.85rem; border-radius: 6px; text-decoration: none;">
                                 <i class="fa-solid fa-arrow-left"></i> Kembali ke Halaman Detail
                             </a>
-                            <a href="https://wa.me/62811999988888?text=Halo%20Admin%20GCS,%20saya%20sudah%20mengisi%20buku%20tamu%20atas%20nama%20{{ urlencode(session('success')['name'] ?? 'Tamu') }}" target="_blank" style="display: inline-flex; align-items: center; gap: 0.4rem; background: #25D366; color: #ffffff; font-size: 0.8rem; font-weight: 700; padding: 0.45rem 0.85rem; border-radius: 8px; text-decoration: none;">
+                            <a href="https://wa.me/62811999988888?text=Halo%20Admin%20GCS,%20saya%20sudah%20mengisi%20buku%20tamu%20atas%20nama%20{{ urlencode(session('success')['name'] ?? 'Tamu') }}" target="_blank" style="display: inline-flex; align-items: center; gap: 0.4rem; background: #25D366; color: #ffffff; font-size: 0.8rem; font-weight: 700; padding: 0.45rem 0.85rem; border-radius: 6px; text-decoration: none;">
                                 <i class="fa-brands fa-whatsapp"></i> Konfirmasi via WhatsApp
                             </a>
                         </div>
@@ -275,9 +370,9 @@
                 <form id="formBukuTamuMandiri" action="{{ route('home.buku-tamu.store') }}" method="POST">
                     @csrf
 
-                    <div class="row">
+                    <div class="form-grid-2">
                         <!-- Nama Lengkap -->
-                        <div class="col-12 mb-3">
+                        <div class="form-group-bt">
                             <label class="form-label-custom">
                                 Nama Lengkap <span class="req">*</span>
                             </label>
@@ -289,7 +384,7 @@
                         </div>
 
                         <!-- No HP -->
-                        <div class="col-md-6 mb-3">
+                        <div class="form-group-bt">
                             <label class="form-label-custom">
                                 No HP <span class="req">*</span>
                             </label>
@@ -301,7 +396,7 @@
                         </div>
 
                         <!-- Email -->
-                        <div class="col-md-6 mb-3">
+                        <div class="form-group-bt">
                             <label class="form-label-custom">
                                 Email
                             </label>
@@ -313,7 +408,7 @@
                         </div>
 
                         <!-- Sumber Informasi -->
-                        <div class="col-md-6 mb-3">
+                        <div class="form-group-bt">
                             <label class="form-label-custom">
                                 Sumber Informasi <span class="req">*</span>
                             </label>
@@ -328,60 +423,54 @@
                             </select>
                         </div>
 
-                        <!-- Marketing Task -->
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label-custom">
-                                Marketing Task
-                            </label>
-                            <select class="form-control-bt" name="marketing_task_id">
-                                <option value="">Pilih Task</option>
-                                @foreach ($marketingTasks as $task)
-                                    <option value="{{ $task->id }}" {{ old('marketing_task_id') == $task->id ? 'selected' : '' }}>
-                                        {{ $task->nama_tugas }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                        <!-- Marketing Task (Otomatis Tercatat ke Tugas Cari Calon Pembeli) -->
+                        <input type="hidden" name="marketing_task_id" value="{{ old('marketing_task_id', $defaultMarketingTaskId) }}">
 
-                        <!-- Proyek Minat -->
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label-custom">
-                                Proyek Minat <span class="req">*</span>
-                            </label>
-                            <select class="form-control-bt" name="land_bank_id" id="projectSelect" required onchange="filterUnits(this.value)">
-                                <option value="">Pilih Proyek</option>
-                                @foreach ($projects as $project)
-                                    <option value="{{ $project->id }}" {{ old('land_bank_id', $selectedProjectId) == $project->id ? 'selected' : '' }}>
-                                        {{ $project->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                        @if(!empty($selectedUnitId))
+                            {{-- Unit & Proyek otomatis terpilih dari halaman detail properti / QR Code --}}
+                            <input type="hidden" name="land_bank_id" id="projectSelect" value="{{ $selectedProjectId }}">
+                            <input type="hidden" name="unit_id" id="unitSelect" value="{{ $selectedUnitId }}">
+                        @else
+                            <!-- Proyek Minat -->
+                            <div class="form-group-bt">
+                                <label class="form-label-custom">
+                                    Proyek Minat <span class="req">*</span>
+                                </label>
+                                <select class="form-control-bt" name="land_bank_id" id="projectSelect" required onchange="filterUnits(this.value)">
+                                    <option value="">Pilih Proyek</option>
+                                    @foreach ($projects as $project)
+                                        <option value="{{ $project->id }}" {{ old('land_bank_id', $selectedProjectId) == $project->id ? 'selected' : '' }}>
+                                            {{ $project->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                        <!-- Tipe Unit -->
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label-custom">
-                                Tipe Unit
-                            </label>
-                            <select class="form-control-bt" name="unit_id" id="unitSelect">
-                                <option value="">-- Pilih Proyek Terlebih Dahulu --</option>
-                                @foreach ($units as $u)
-                                    <option value="{{ $u->id }}" data-project="{{ $u->land_bank_id }}" {{ old('unit_id', $selectedUnitId) == $u->id ? 'selected' : '' }}>
-                                        {{ $u->unit_name }} ({{ $u->unit_code ?? 'Tersedia' }})
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                            <!-- Tipe Unit -->
+                            <div class="form-group-bt">
+                                <label class="form-label-custom">
+                                    Tipe Unit
+                                </label>
+                                <select class="form-control-bt" name="unit_id" id="unitSelect">
+                                    <option value="">-- Pilih Proyek Terlebih Dahulu --</option>
+                                    @foreach ($units as $u)
+                                        <option value="{{ $u->id }}" data-project="{{ $u->land_bank_id }}" {{ old('unit_id', $selectedUnitId) == $u->id ? 'selected' : '' }}>
+                                            {{ $u->unit_name }} ({{ $u->unit_code ?? 'Tersedia' }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
 
-                        <!-- Agent -->
-                        <div class="col-md-6 mb-3">
+                        <!-- Agent / Staff Pendamping -->
+                        <div class="form-group-bt">
                             <label class="form-label-custom">
-                                Agent <span class="req">*</span>
+                                Agent / Staff Pendamping <span class="req">*</span>
                             </label>
                             <select class="form-control-bt" name="assigned_to" required>
-                                <option value="">Pilih Agent</option>
+                                <option value="">Pilih Agent / Staff</option>
                                 @foreach ($agents as $agent)
-                                    <option value="{{ $agent->id }}" {{ old('assigned_to') == $agent->id ? 'selected' : '' }}>
+                                    <option value="{{ $agent->id }}" {{ old('assigned_to', $selectedAgentId ?? null) == $agent->id ? 'selected' : '' }}>
                                         {{ $agent->name }}
                                     </option>
                                 @endforeach
@@ -389,7 +478,7 @@
                         </div>
 
                         <!-- Status -->
-                        <div class="col-md-6 mb-3">
+                        <div class="form-group-bt">
                             <label class="form-label-custom">
                                 Status <span class="req">*</span>
                             </label>
@@ -404,24 +493,20 @@
                         </div>
 
                         <!-- Budget (Anggaran) -->
-                        <div class="col-md-6 mb-3">
+                        <div class="form-group-bt">
                             <label class="form-label-custom">
                                 Budget (Anggaran)
                             </label>
-                            <div style="display: flex; align-items: center;">
-                                <span style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-right: none; font-size: 0.88rem; font-weight: 700; color: #6366f1; padding: 0.65rem 0.85rem; border-top-left-radius: 10px; border-bottom-left-radius: 10px;">
-                                    Rp
-                                </span>
-                                <input type="text" class="form-control-bt" name="budget" id="budgetInput"
+                            <div class="budget-input-group">
+                                <span class="budget-addon">Rp</span>
+                                <input type="text" class="budget-control" name="budget" id="budgetInput"
                                     placeholder="Contoh: 350.000.000" value="{{ old('budget') }}"
-                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important;"
                                     oninput="this.value = formatBudgetCustom(this.value)">
                             </div>
-                            <small style="color: #94a3b8; font-size: 0.72rem; display: block; margin-top: 0.2rem;">Format angka otomatis ribuan</small>
                         </div>
 
                         <!-- Next Follow Up -->
-                        <div class="col-md-6 mb-3">
+                        <div class="form-group-bt">
                             <label class="form-label-custom">
                                 Next Follow Up <span class="req">*</span>
                             </label>
@@ -429,7 +514,7 @@
                         </div>
 
                         <!-- Catatan -->
-                        <div class="col-12 mb-3">
+                        <div class="form-group-bt form-grid-full">
                             <label class="form-label-custom">
                                 Catatan
                             </label>
@@ -516,7 +601,8 @@
     }
 
     function filterUnits(projectId) {
-        const unitSelect = document.getElementById('selectUnit');
+        const unitSelect = document.getElementById('unitSelect');
+        if (!unitSelect) return;
         const options = unitSelect.querySelectorAll('option');
 
         let hasVisible = false;
@@ -546,7 +632,7 @@
 
     // Inisialisasi filter unit saat halaman pertama dimuat
     document.addEventListener('DOMContentLoaded', function() {
-        const projSelect = document.getElementById('selectProject');
+        const projSelect = document.getElementById('projectSelect');
         if (projSelect && projSelect.value) {
             filterUnits(projSelect.value);
         }

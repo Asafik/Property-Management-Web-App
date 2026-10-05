@@ -484,11 +484,6 @@
                     <td class="td-value">{{ $unit->area ?? ($kpr->luas_tanah ?? '-') }} m² / {{ $unit->building_area ?? ($kpr->luas_bangunan ?? '-') }} m²</td>
                 </tr>
                 <tr>
-                    <td class="td-label">Arah Hadap / Posisi Unit</td>
-                    <td class="td-colon">:</td>
-                    <td class="td-value">{{ $unit->facing ?? '-' }} / {{ $unit->position ?? '-' }}</td>
-                </tr>
-                <tr>
                     <td class="td-label">Lokasi Proyek Perumahan</td>
                     <td class="td-colon">:</td>
                     <td class="td-value">{{ $unit->landBank->address ?? ($unit->landBank->project_name ?? '-') }}</td>
@@ -498,10 +493,22 @@
                     <td class="td-colon">:</td>
                     <td class="td-value">{{ $unit->landBank->zoning ?? ($unit->landBank->nama_cluster ?? '-') }} / {{ $unit->landBank->road_width ? $unit->landBank->road_width . ' Meter' : '-' }} ({{ $unit->landBank->road_type ?? '-' }})</td>
                 </tr>
+                @php
+                    $sumberAirCetak = $unit->water_source ?? ($unit->air ?? null);
+                    if (!$sumberAirCetak) {
+                        $praWaterCetak = $unit->landBank?->praLandbank?->water_condition 
+                            ?? \App\Models\PraLandbank::where('land_bank_id', $unit->land_bank_id)->orWhere('land_name', $unit->landBank?->name)->value('water_condition');
+                        if ($praWaterCetak) {
+                            $sumberAirCetak = ($praWaterCetak === 'sumur_bor') ? 'Sumur Bor' : (($praWaterCetak === 'pdam') ? 'PDAM' : ucwords(str_replace('_', ' ', $praWaterCetak)));
+                        }
+                    }
+                    $listrikCetak = $unit->electricity ?? ($unit->listrik ?? '-');
+                    $airCetak = $sumberAirCetak ?: '-';
+                @endphp
                 <tr>
                     <td class="td-label">Fasilitas Daya Listrik / Air</td>
                     <td class="td-colon">:</td>
-                    <td class="td-value">{{ $unit->electricity ?? ($unit->listrik ?? '1300 VA') }} / {{ $unit->water_source ?? ($unit->air ?? 'PDAM / Sumur Bor') }}</td>
+                    <td class="td-value">{{ $listrikCetak }} / {{ $airCetak }}</td>
                 </tr>
             </table>
 

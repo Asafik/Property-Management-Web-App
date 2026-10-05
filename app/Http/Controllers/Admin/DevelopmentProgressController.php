@@ -11,6 +11,7 @@ use App\Models\MasterProgressCategory;
 use App\Models\MasterProgressItem;
 use App\Models\PembayaranTermin;
 use App\Models\OpnameMingguan;
+use App\Models\UnitLandingPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -263,6 +264,62 @@ class DevelopmentProgressController extends Controller
                 $progress->checklist_kondisi = $request->input('checklist_kondisi', []);
                 $progress->save();
             }
+
+            // Sync Spesifikasi Fisik & 4 Foto Unit ke Landing Page Marketing (Tabel unit_landing_pages)
+            $unitLp = UnitLandingPage::firstOrCreate(
+                ['land_bank_unit_id' => $unit->id],
+                [
+                    'headline' => $unit->unit_name ? "Hunian Modern {$unit->unit_name} Siap Huni" : "Unit {$unit->unit_code} Siap Huni",
+                    'is_published' => true,
+                ]
+            );
+
+            if ($request->filled('bedrooms')) {
+                $unitLp->bedrooms = (int)$request->bedrooms;
+            }
+            if ($request->filled('bathrooms')) {
+                $unitLp->bathrooms = (int)$request->bathrooms;
+            }
+            if ($request->filled('carport')) {
+                $unitLp->carport = (int)$request->carport;
+            }
+            if ($request->filled('floors')) {
+                $unitLp->floors = (int)$request->floors;
+            }
+            if ($request->filled('electricity')) {
+                $unitLp->electricity = $request->electricity;
+            }
+
+            // Upload 4 Foto Fisik Unit:
+            // Slot 1: Foto Depan / Fasad (disimpan ke land_bank_units.photo)
+            if ($request->hasFile('photo_fasad')) {
+                $path = $request->file('photo_fasad')->store('units', 'public');
+                $unit->photo = $path;
+                $unit->save();
+            }
+
+            // Slot 2, 3, 4: Galeri Pendukung (Ruang Tamu, Kamar Tidur, Dapur/Denah)
+            $gallery = is_array($unitLp->gallery) ? $unitLp->gallery : [];
+            while (count($gallery) < 3) {
+                $gallery[] = null;
+            }
+
+            if ($request->hasFile('photo_ruang_tamu')) {
+                $gallery[0] = $request->file('photo_ruang_tamu')->store('units/gallery', 'public');
+            }
+            if ($request->hasFile('photo_kamar_tidur')) {
+                $gallery[1] = $request->file('photo_kamar_tidur')->store('units/gallery', 'public');
+            }
+            if ($request->hasFile('photo_dapur')) {
+                $gallery[2] = $request->file('photo_dapur')->store('units/gallery', 'public');
+            }
+
+            $cleanGallery = array_values(array_filter($gallery));
+            if (!empty($cleanGallery)) {
+                $unitLp->gallery = $cleanGallery;
+            }
+
+            $unitLp->save();
 
             LandBankUnit::where('id', $request->land_bank_unit_id)
                 ->update([
@@ -656,6 +713,90 @@ class DevelopmentProgressController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal memperbarui checklist: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * AJAX: Update Spesifikasi Teknis & Upload/Hapus 4 Foto Unit (Integrasi Proyek & Marketing)
+     */
+    public function updateSpesifikasiFoto(Request $request, LandBankUnit $unit)
+    {
+        try {
+            $unitLp = UnitLandingPage::firstOrCreate(
+                ['land_bank_unit_id' => $unit->id],
+                [
+                    'headline' => $unit->unit_name ? "Hunian Modern {$unit->unit_name} Siap Huni" : "Unit {$unit->unit_code} Siap Huni",
+                    'is_published' => true,
+                ]
+            );
+
+            // 1. Update spesifikasi jika dikirim
+            if ($request->has('electricity')) {
+                $unitLp->electricity = $request->electricity;
+            }
+            if ($request->has('floors')) {
+                $unitLp->floors = (int)$request->floors;
+            }
+            if ($request->has('carport')) {
+                $unitLp->carport = (int)$request->carport;
+            }
+            if ($request->has('bedrooms')) {
+                $unitLp->bedrooms = (int)$request->bedrooms;
+            }
+            if ($request->has('bathrooms')) {
+                $unitLp->bathrooms = (int)$request->bathrooms;
+            }
+
+            // 2. Upload / Hapus foto per slot
+            $slot = $request->input('slot'); // 1, 2, 3, 4
+            $uploadedUrl = null;
+
+            if ($request->hasFile('photo')) {
+                $file = $request->file('photo');
+                if ($slot == 1) {
+                    $path = $file->store('units', 'public');
+                    $unit->photo = $path;
+                    $unit->save();
+                    $uploadedUrl = asset('storage/' . $path);
+                } else {
+                    $gallery = is_array($unitLp->gallery) ? $unitLp->gallery : [];
+                    while (count($gallery) < 3) {
+                        $gallery[] = null;
+                    }
+                    $galleryIdx = ((int)$slot) - 2;
+                    $path = $file->store('units/gallery', 'public');
+                    $gallery[$galleryIdx] = $path;
+                    $unitLp->gallery = array_values(array_filter($gallery));
+                    $uploadedUrl = asset('storage/' . $path);
+                }
+            } elseif ($request->input('action') === 'delete' && $slot) {
+                if ($slot == 1) {
+                    $unit->photo = null;
+                    $unit->save();
+                } else {
+                    $gallery = is_array($unitLp->gallery) ? $unitLp->gallery : [];
+                    $galleryIdx = ((int)$slot) - 2;
+                    if (isset($gallery[$galleryIdx])) {
+                        unset($gallery[$galleryIdx]);
+                        $unitLp->gallery = array_values($gallery);
+                    }
+                }
+            }
+
+            $unitLp->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Spesifikasi & foto fisik unit berhasil disinkronkan ke Landing Page Marketing.',
+                'slot'    => $slot,
+                'url'     => $uploadedUrl,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error update spesifikasi & foto unit: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui data: ' . $e->getMessage(),
             ], 500);
         }
     }

@@ -92,14 +92,14 @@
         width: 100%;
         height: 420px;
         object-fit: cover;
-        border-radius: 20px;
+        border-radius: 6px;
         display: block;
     }
 
     @media (max-width: 768px) {
         .gallery-main {
             height: 260px;
-            border-radius: 14px;
+            border-radius: 6px;
         }
     }
 
@@ -114,7 +114,7 @@
         width: 100%;
         height: 90px;
         object-fit: cover;
-        border-radius: 12px;
+        border-radius: 4px;
         cursor: pointer;
         border: 2px solid transparent;
         transition: all 0.2s;
@@ -151,8 +151,8 @@
     }
 
     .pb {
-        padding: 0.3rem 0.85rem;
-        border-radius: 100px;
+        padding: 0.3rem 0.75rem;
+        border-radius: 4px;
         font-size: 0.72rem;
         font-weight: 700;
         display: inline-flex;
@@ -248,7 +248,7 @@
     .spec-item {
         background: white;
         border: 1px solid var(--border);
-        border-radius: 14px;
+        border-radius: 6px;
         padding: 1rem;
         display: flex;
         align-items: center;
@@ -265,7 +265,7 @@
         width: 38px;
         height: 38px;
         background: rgba(11,31,75,0.05);
-        border-radius: 10px;
+        border-radius: 4px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -298,7 +298,7 @@
     .desc-box {
         background: white;
         border: 1px solid var(--border);
-        border-radius: 18px;
+        border-radius: 6px;
         padding: 1.75rem;
     }
 
@@ -341,7 +341,7 @@
     .kpr-box {
         background: white;
         border: 1px solid var(--border);
-        border-radius: 18px;
+        border-radius: 6px;
         padding: 1.75rem;
     }
 
@@ -359,7 +359,7 @@
 
     .kpr-item {
         background: var(--cream);
-        border-radius: 12px;
+        border-radius: 4px;
         padding: 1rem;
     }
 
@@ -393,7 +393,7 @@
     .map-box {
         background: var(--cream);
         border: 1px solid var(--border);
-        border-radius: 18px;
+        border-radius: 6px;
         height: 240px;
         display: flex;
         align-items: center;
@@ -446,7 +446,7 @@
     .rec-card {
         background: white;
         border: 1px solid var(--border);
-        border-radius: 14px;
+        border-radius: 6px;
         overflow: hidden;
         text-decoration: none;
         transition: all 0.25s;
@@ -462,6 +462,7 @@
         width: 100%;
         height: 120px;
         object-fit: cover;
+        border-radius: 6px 6px 0 0;
         display: block;
     }
 
@@ -476,7 +477,7 @@
         font-size: 0.62rem;
         font-weight: 700;
         padding: 0.12rem 0.5rem;
-        border-radius: 100px;
+        border-radius: 4px;
         margin-bottom: 0.3rem;
     }
 
@@ -516,7 +517,7 @@
     ------------------------------------------------ */
     .price-summary {
         background: var(--navy);
-        border-radius: 18px;
+        border-radius: 6px;
         padding: 1.5rem;
         margin-bottom: 1rem;
     }
@@ -555,8 +556,8 @@
     }
 
     .ps-badge {
-        padding: 0.25rem 0.75rem;
-        border-radius: 100px;
+        padding: 0.25rem 0.65rem;
+        border-radius: 4px;
         font-size: 0.68rem;
         font-weight: 700;
         background: rgba(255,255,255,0.1);
@@ -576,7 +577,7 @@
     .contact-card {
         background: white;
         border: 1px solid var(--border);
-        border-radius: 20px;
+        border-radius: 6px;
         overflow: hidden;
         box-shadow: 0 10px 30px -15px rgba(0,0,0,0.2);
     }
@@ -590,9 +591,9 @@
     .agent-avatar {
         width: 80px;
         height: 80px;
-        border-radius: 50%;
+        border-radius: 6px;
         object-fit: cover;
-        border: 3px solid rgba(255,255,255,0.2);
+        border: 2px solid rgba(255,255,255,0.2);
         margin: 0 auto 1rem;
         display: block;
     }
@@ -617,8 +618,8 @@
         background: rgba(255,255,255,0.1);
         border: 1px solid rgba(255,255,255,0.15);
         color: white;
-        border-radius: 100px;
-        padding: 0.35rem 1rem;
+        border-radius: 4px;
+        padding: 0.35rem 0.85rem;
         font-size: 0.8rem;
         font-weight: 600;
         text-decoration: none;
@@ -647,7 +648,7 @@
         background: #25D366;
         color: white;
         border: none;
-        border-radius: 12px;
+        border-radius: 6px;
         padding: 0.9rem;
         font-size: 0.95rem;
         font-weight: 700;
@@ -760,13 +761,13 @@
 
     {{-- ================ BREADCRUMB ================ --}}
     <nav class="breadcrumb">
-        <a href="#">Beranda</a>
+        <a href="{{ route('landingpage') }}">Beranda</a>
         <i class="fa-solid fa-chevron-right"></i>
-        <a href="#">Rumah Komersil</a>
+        <a href="{{ route('landingpage') }}#properti">Rumah {{ ucfirst($unit->jenis ?? 'Komersil') }}</a>
         <i class="fa-solid fa-chevron-right"></i>
-        <a href="#">Tegal Besar</a>
+        <a href="{{ route('landingpage') }}#properti">{{ $unit->landBank->name ?? 'Kawasan' }}</a>
         <i class="fa-solid fa-chevron-right"></i>
-        <span class="current">Cluster Tegal Besar</span>
+        <span class="current">{{ $unit->unit_name ?? $unit->unit_code }}</span>
     </nav>
 
     {{-- ================ MAIN CONTENT GRID ================ --}}
@@ -775,166 +776,163 @@
         {{-- LEFT COLUMN - DETAILS --}}
         <div>
 
-            {{-- GALLERY SECTION --}}
+            {{-- GALLERY SECTION (DOKUMENTASI FOTO UTAMA & REALISASI PROYEK) --}}
             <div class="section-block">
                 <img id="mainImg"
-                     src="https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=1200&h=600&fit=crop"
-                     alt="Cluster Tegal Besar"
+                     src="{{ $mainPhoto }}"
+                     alt="{{ $lp->headline ?? $unit->unit_name ?? $unit->unit_code }}"
                      class="gallery-main">
 
                 <div class="gallery-thumbs">
-                    <img src="https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop"
-                         class="gallery-thumb active"
-                         onclick="switchImg(this)"
-                         alt="Foto 1">
-                    <img src="https://images.pexels.com/photos/280221/pexels-photo-280221.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop"
-                         class="gallery-thumb"
-                         onclick="switchImg(this)"
-                         alt="Foto 2">
-                    <img src="https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop"
-                         class="gallery-thumb"
-                         onclick="switchImg(this)"
-                         alt="Foto 3">
-                    <img src="https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&fit=crop"
-                         class="gallery-thumb"
-                         onclick="switchImg(this)"
-                         alt="Foto 4">
+                    @foreach($allPhotos as $idx => $photoUrl)
+                        <img src="{{ $photoUrl }}"
+                             class="gallery-thumb {{ $idx === 0 ? 'active' : '' }}"
+                             onclick="switchImg(this)"
+                             alt="Foto {{ $idx + 1 }}">
+                    @endforeach
                 </div>
             </div>
 
             {{-- PROPERTY HEADER SECTION --}}
             <div class="section-block prop-header">
                 <div class="prop-badges">
-                    <span class="pb pb-komersil">
-                        <i class="fa-solid fa-building fa-xs"></i> Komersil
+                    <span class="pb pb-{{ strtolower($unit->jenis ?? '') === 'subsidi' ? 'subsidi' : 'komersil' }}">
+                        <i class="fa-solid fa-building fa-xs"></i> {{ ucfirst($unit->jenis ?? 'Komersil') }}
                     </span>
                     <span class="pb pb-ready">
-                        <i class="fa-solid fa-circle-check fa-xs"></i> Ready Stock
+                        <i class="fa-solid fa-circle-check fa-xs"></i> {{ $lp->condition ?? 'Ready Stock' }}
                     </span>
                     <span class="pb pb-kpr">
                         <i class="fa-solid fa-university fa-xs"></i> Bisa KPR
                     </span>
                     <span class="pb pb-dp0">
-                        <i class="fa-solid fa-tag fa-xs"></i> DP Ringan
+                        <i class="fa-solid fa-tag fa-xs"></i> DP {{ $lp->dp_persen ?? 1 }}%
                     </span>
+                    @if(!empty($lp->promo_badge))
+                        <span class="pb pb-hot">
+                            <i class="fa-solid fa-fire fa-xs"></i> {{ $lp->promo_badge }}
+                        </span>
+                    @endif
                 </div>
 
-                <h1 class="prop-title-main">Cluster Tegal Besar</h1>
+                <h1 class="prop-title-main">{{ $lp->headline ?? $unit->unit_name ?? ('Unit ' . $unit->unit_code) }}</h1>
 
                 <div class="prop-location-main">
                     <i class="fa-solid fa-location-dot"></i>
-                    <span>Tegal Besar, Jember, Jawa Timur</span>
+                    <span>{{ !empty($lp->address) ? $lp->address : (($unit->landBank->name ?? 'Kawasan') . ' · ' . ($unit->landBank->address ?? 'Jember, Jawa Timur')) }}</span>
                 </div>
 
                 <div class="prop-price-row">
-                    <div class="prop-price-main">Rp 485 Juta</div>
+                    <div class="prop-price-main">Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</div>
                     <div class="prop-cicilan-main">
-                        Cicilan mulai <strong>Rp 2,1 juta</strong>/bulan
+                        Cicilan mulai <strong>Rp {{ number_format($lp->cicilan_estimasi ?? round(($unit->price ?: 200000000) * 0.007), 0, ',', '.') }}</strong>/bulan
                     </div>
                 </div>
             </div>
 
-            {{-- SPECIFICATIONS SECTION --}}
+            {{-- SPECIFICATIONS SECTION (DARI INPUT LAPANGAN / PROYEK) --}}
             <div class="section-block">
                 <h3 class="sec-head">
                     <i class="fa-solid fa-list-check"></i> Spesifikasi Rumah
                 </h3>
 
                 <div class="specs-grid">
-                    {{-- Spec Item --}}
+                    {{-- Luas Tanah / Lahan --}}
                     <div class="spec-item">
                         <div class="spec-icon"><i class="fa-solid fa-ruler-combined"></i></div>
                         <div>
-                            <div class="spec-label">Luas Tanah</div>
-                            <div class="spec-value">120 m²</div>
+                            <div class="spec-label">Luas Lahan / Tanah</div>
+                            <div class="spec-value">{{ $unit->area ? floatval($unit->area) : 60 }} m²</div>
                         </div>
                     </div>
 
-                    <div class="spec-item">
-                        <div class="spec-icon"><i class="fa-solid fa-house"></i></div>
-                        <div>
-                            <div class="spec-label">Luas Bangunan</div>
-                            <div class="spec-value">90 m²</div>
-                        </div>
-                    </div>
-
+                    {{-- Kamar Tidur --}}
                     <div class="spec-item">
                         <div class="spec-icon"><i class="fa-solid fa-door-open"></i></div>
                         <div>
                             <div class="spec-label">Kamar Tidur</div>
-                            <div class="spec-value">3 Kamar</div>
+                            <div class="spec-value">{{ $lp->bedrooms ?? 2 }} Kamar</div>
                         </div>
                     </div>
 
+                    {{-- Kamar Mandi --}}
                     <div class="spec-item">
                         <div class="spec-icon"><i class="fa-solid fa-shower"></i></div>
                         <div>
                             <div class="spec-label">Kamar Mandi</div>
-                            <div class="spec-value">2 Kamar</div>
+                            <div class="spec-value">{{ $lp->bathrooms ?? 1 }} Kamar</div>
                         </div>
                     </div>
 
+                    {{-- Daya Listrik --}}
                     <div class="spec-item">
                         <div class="spec-icon"><i class="fa-solid fa-bolt"></i></div>
                         <div>
                             <div class="spec-label">Listrik</div>
-                            <div class="spec-value">2.200 Watt</div>
+                            <div class="spec-value">{{ $lp->electricity ?? '1.300 Watt' }}</div>
                         </div>
                     </div>
 
+                    {{-- Sumber Air --}}
                     <div class="spec-item">
                         <div class="spec-icon"><i class="fa-solid fa-droplet"></i></div>
                         <div>
                             <div class="spec-label">Air</div>
-                            <div class="spec-value">PDAM</div>
+                            <div class="spec-value">{{ $lp->water ?? 'PDAM / Sumur Bor' }}</div>
                         </div>
                     </div>
 
+                    {{-- Sertifikat --}}
                     <div class="spec-item">
                         <div class="spec-icon"><i class="fa-solid fa-file-shield"></i></div>
                         <div>
                             <div class="spec-label">Sertifikat</div>
-                            <div class="spec-value">SHM</div>
+                            <div class="spec-value">{{ $lp->certificate ?? 'SHM / PBG' }}</div>
                         </div>
                     </div>
 
+                    {{-- Carport --}}
                     <div class="spec-item">
                         <div class="spec-icon"><i class="fa-solid fa-car"></i></div>
                         <div>
                             <div class="spec-label">Carport</div>
-                            <div class="spec-value">1 Mobil</div>
+                            <div class="spec-value">{{ $lp->carport ?? 1 }} Mobil</div>
                         </div>
                     </div>
 
+                    {{-- Jumlah Lantai --}}
                     <div class="spec-item">
                         <div class="spec-icon"><i class="fa-solid fa-layer-group"></i></div>
                         <div>
                             <div class="spec-label">Jumlah Lantai</div>
-                            <div class="spec-value">1 Lantai</div>
+                            <div class="spec-value">{{ $lp->floors ?? 1 }} Lantai</div>
                         </div>
                     </div>
 
+                    {{-- Tahun Bangun --}}
                     <div class="spec-item">
                         <div class="spec-icon"><i class="fa-solid fa-calendar-days"></i></div>
                         <div>
                             <div class="spec-label">Tahun Bangun</div>
-                            <div class="spec-value">2024</div>
+                            <div class="spec-value">{{ $lp->year_built ?? date('Y') }}</div>
                         </div>
                     </div>
 
+                    {{-- Tipe Unit --}}
                     <div class="spec-item">
                         <div class="spec-icon"><i class="fa-solid fa-compass"></i></div>
                         <div>
-                            <div class="spec-label">Hadap</div>
-                            <div class="spec-value">Timur</div>
+                            <div class="spec-label">Tipe Unit</div>
+                            <div class="spec-value">{{ $unit->type ?? '36/60' }}</div>
                         </div>
                     </div>
 
+                    {{-- Kondisi Fisik --}}
                     <div class="spec-item">
                         <div class="spec-icon"><i class="fa-solid fa-star"></i></div>
                         <div>
                             <div class="spec-label">Kondisi</div>
-                            <div class="spec-value">Baru</div>
+                            <div class="spec-value">{{ $lp->condition ?? 'Baru & Siap Huni' }}</div>
                         </div>
                     </div>
                 </div>
@@ -948,25 +946,21 @@
 
                 <div class="desc-box">
                     <p class="desc-text">
-                        Cluster Tegal Besar menghadirkan hunian modern bergaya minimalis di kawasan strategis Jember.
-                        Berlokasi di Kecamatan Tegal Besar yang berkembang pesat, properti ini menawarkan kenyamanan
-                        tinggal dengan akses mudah ke pusat kota, fasilitas umum, dan area komersial.
-                    </p>
-                    <p class="desc-text">
-                        Dibangun dengan material berkualitas dan finishing premium, setiap unit dirancang untuk memenuhi
-                        kebutuhan keluarga modern. Lingkungan cluster dengan sistem one-gate memberikan keamanan dan
-                        ketenangan bagi penghuninya.
+                        {{ $lp->description ?? ($unit->description ?: "Unit hunian modern berkualitas tinggi berlokasi strategis di " . ($unit->landBank->name ?? 'perumahan kami') . ". Pembangunan telah rampung 100% dan siap serah terima kunci untuk keluarga Anda.") }}
                     </p>
 
+                    @php
+                        $featuresList = is_array($lp->features ?? null) 
+                            ? $lp->features 
+                            : (is_string($lp->features ?? null) ? array_map('trim', explode(',', $lp->features)) : ['One Gate System', 'Keamanan 24 Jam', 'Jalan Paving', 'Bebas Banjir', 'Listrik & Air Siap Pakai']);
+                    @endphp
+
                     <div class="desc-features">
-                        <div class="desc-feat"><i class="fa-solid fa-circle-check"></i> Akses jalan 6 meter, 2 arah</div>
-                        <div class="desc-feat"><i class="fa-solid fa-circle-check"></i> 5 menit ke pusat kota Jember</div>
-                        <div class="desc-feat"><i class="fa-solid fa-circle-check"></i> Dekat RSUD Dr. Soebandi</div>
-                        <div class="desc-feat"><i class="fa-solid fa-circle-check"></i> 3 menit ke pasar & minimarket</div>
-                        <div class="desc-feat"><i class="fa-solid fa-circle-check"></i> One gate system, 24 jam keamanan</div>
-                        <div class="desc-feat"><i class="fa-solid fa-circle-check"></i> Taman bermain anak di cluster</div>
-                        <div class="desc-feat"><i class="fa-solid fa-circle-check"></i> Dekat sekolah & kampus</div>
-                        <div class="desc-feat"><i class="fa-solid fa-circle-check"></i> Jaringan internet fiber ready</div>
+                        @foreach($featuresList as $feat)
+                            @if(!empty(trim($feat)))
+                                <div class="desc-feat"><i class="fa-solid fa-circle-check"></i> {{ trim($feat) }}</div>
+                            @endif
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -977,28 +971,37 @@
                     <i class="fa-solid fa-calculator"></i> Simulasi KPR
                 </h3>
 
+                @php
+                    $uPrice = (float)($unit->price ?? 0);
+                    $uDpPercent = (float)($lp->dp_persen ?? 1);
+                    $uDpNominal = round($uPrice * ($uDpPercent / 100));
+                    $uPlafon = max(0, $uPrice - $uDpNominal);
+                    $uTenor = (int)($lp->tenor_estimasi ?? 20);
+                    $uCicilan = (int)($lp->cicilan_estimasi ?? round($uPrice * 0.007));
+                @endphp
+
                 <div class="kpr-box">
                     <div class="kpr-grid">
                         <div class="kpr-item">
                             <div class="kpr-label">Harga Rumah</div>
-                            <div class="kpr-value">Rp 485 Jt</div>
+                            <div class="kpr-value">Rp {{ number_format($uPrice, 0, ',', '.') }}</div>
                         </div>
                         <div class="kpr-item">
-                            <div class="kpr-label">DP 10%</div>
-                            <div class="kpr-value">Rp 48,5 Jt</div>
+                            <div class="kpr-label">Uang Muka ({{ $uDpPercent }}%)</div>
+                            <div class="kpr-value">Rp {{ number_format($uDpNominal, 0, ',', '.') }}</div>
                         </div>
                         <div class="kpr-item">
-                            <div class="kpr-label">Tenor 15 Thn</div>
-                            <div class="kpr-value">Rp 2,1 Jt/bln</div>
+                            <div class="kpr-label">Estimasi Tenor</div>
+                            <div class="kpr-value">{{ $uTenor }} Tahun</div>
                         </div>
                         <div class="kpr-item">
-                            <div class="kpr-label">Tenor 20 Thn</div>
-                            <div class="kpr-value">Rp 1,7 Jt/bln</div>
+                            <div class="kpr-label">Cicilan / Bulan</div>
+                            <div class="kpr-value">Rp {{ number_format($uCicilan, 0, ',', '.') }}</div>
                         </div>
                     </div>
                     <div class="kpr-note">
                         <i class="fa-solid fa-circle-info"></i>
-                        Simulasi asumsi bunga 6,5% fixed 3 tahun. Hubungi tim KPR kami untuk simulasi akurat.
+                        Bank Rekanan KPR: <strong>{{ $lp->bank_partners ?? 'Bank BTN, Bank Syariah Indonesia (BSI), Bank Mandiri' }}</strong>. Hubungi tim kami untuk pengajuan mudah.
                     </div>
                 </div>
             </div>
@@ -1011,105 +1014,96 @@
 
                 <div class="map-box">
                     <i class="fa-solid fa-map map-icon"></i>
-                    <p>Tegal Besar, Kecamatan Kaliwates, Jember</p>
-                    <a href="https://maps.google.com" target="_blank" class="map-link">
+                    <p>{{ !empty($lp->address) ? $lp->address : (($unit->landBank->name ?? 'Kawasan') . ', ' . ($unit->landBank->address ?? 'Jember, Jawa Timur')) }}</p>
+                    @php
+                        $activeMapLink = $lp->map_link ?: ($unit->lat && $unit->lng ? "https://www.google.com/maps?q={$unit->lat},{$unit->lng}" : "https://maps.google.com/?q=" . urlencode(($unit->landBank->name ?? 'Jember') . ' ' . ($unit->landBank->address ?? 'Jember')));
+                    @endphp
+                    <a href="{{ $activeMapLink }}" target="_blank" class="map-link">
                         <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka di Google Maps
                     </a>
                 </div>
             </div>
 
             {{-- RECOMMENDATIONS SECTION --}}
-            <div class="section-block">
-                <h3 class="sec-head">
-                    <i class="fa-solid fa-house-heart"></i> Rumah lain di Jember
-                </h3>
+            @if(isset($otherUnits) && $otherUnits->count() > 0)
+                <div class="section-block">
+                    <h3 class="sec-head">
+                        <i class="fa-solid fa-house-heart"></i> Pilihan Rumah Lainnya
+                    </h3>
 
-                <div class="rec-grid">
-                    {{-- Recommendation Card 1 --}}
-                    <a href="#" class="rec-card">
-                        <img src="https://images.pexels.com/photos/164522/pexels-photo-164522.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&fit=crop"
-                             alt="Subsidi Ambulu">
-                        <div class="rec-card-body">
-                            <div class="rec-tipe subsidi">
-                                <i class="fa-solid fa-hand-holding-heart fa-xs"></i> Subsidi
-                            </div>
-                            <div class="rec-card-loc">
-                                <i class="fa-solid fa-location-dot"></i> Ambulu
-                            </div>
-                            <div class="rec-card-title">Rumah Subsidi Ambulu</div>
-                            <div class="rec-card-price">Rp 168 Juta</div>
-                        </div>
-                    </a>
-
-                    {{-- Recommendation Card 2 --}}
-                    <a href="#" class="rec-card">
-                        <img src="https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&fit=crop"
-                             alt="Komersil Kaliwates">
-                        <div class="rec-card-body">
-                            <div class="rec-tipe komersil">
-                                <i class="fa-solid fa-building fa-xs"></i> Komersil
-                            </div>
-                            <div class="rec-card-loc">
-                                <i class="fa-solid fa-location-dot"></i> Kaliwates
-                            </div>
-                            <div class="rec-card-title">Cluster Kaliwates</div>
-                            <div class="rec-card-price">Rp 420 Juta</div>
-                        </div>
-                    </a>
-
-                    {{-- Recommendation Card 3 --}}
-                    <a href="#" class="rec-card">
-                        <img src="https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&fit=crop"
-                             alt="Cash KPR Sumbersari">
-                        <div class="rec-card-body">
-                            <div class="rec-tipe cashkpr">
-                                <i class="fa-solid fa-money-bill-wave fa-xs"></i> Cash/KPR
-                            </div>
-                            <div class="rec-card-loc">
-                                <i class="fa-solid fa-location-dot"></i> Sumbersari
-                            </div>
-                            <div class="rec-card-title">Rumah Sumbersari Indah</div>
-                            <div class="rec-card-price">Rp 350 Juta</div>
-                        </div>
-                    </a>
+                    <div class="rec-grid">
+                        @foreach($otherUnits as $rec)
+                            @php
+                                $recPhoto = $resolveImgUrl($rec->photo) ?: 'https://images.pexels.com/photos/164522/pexels-photo-164522.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&fit=crop';
+                            @endphp
+                            <a href="{{ route('home.detail', $rec->id) }}" class="rec-card">
+                                <img src="{{ $recPhoto }}" alt="{{ $rec->unit_name ?? $rec->unit_code }}">
+                                <div class="rec-card-body">
+                                    <div class="rec-tipe {{ strtolower($rec->jenis ?? '') === 'subsidi' ? 'subsidi' : 'komersil' }}">
+                                        <i class="fa-solid fa-building fa-xs"></i> {{ ucfirst($rec->jenis ?? 'Komersil') }}
+                                    </div>
+                                    <div class="rec-card-loc">
+                                        <i class="fa-solid fa-location-dot"></i> {{ $rec->landBank->name ?? 'Jember' }}
+                                    </div>
+                                    <div class="rec-card-title">{{ $rec->landingPage?->headline ?? $rec->unit_name ?? ('Unit ' . $rec->unit_code) }}</div>
+                                    <div class="rec-card-price">Rp {{ number_format($rec->price ?? 0, 0, ',', '.') }}</div>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
 
         {{-- RIGHT COLUMN - STICKY CONTACT CARD --}}
         <div class="sticky-col">
             {{-- Price Summary --}}
             <div class="price-summary">
-                <div class="ps-label">Harga</div>
-                <div class="ps-price">Rp 485 Juta</div>
-                <div class="ps-cicilan">Cicilan mulai Rp 2,1 juta/bulan</div>
+                <div class="ps-label">Harga Resmi</div>
+                <div class="ps-price">Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</div>
+                <div class="ps-cicilan">Cicilan mulai Rp {{ number_format($lp->cicilan_estimasi ?? round(($unit->price ?: 200000000) * 0.007), 0, ',', '.') }}/bulan</div>
                 <hr class="ps-divider">
                 <div class="ps-badges">
-                    <span class="ps-badge ps-badge-komersil">
-                        <i class="fa-solid fa-building fa-xs"></i> Komersil
+                    <span class="ps-badge ps-badge-{{ strtolower($unit->jenis ?? '') === 'subsidi' ? 'subsidi' : 'komersil' }}">
+                        <i class="fa-solid fa-building fa-xs"></i> {{ ucfirst($unit->jenis ?? 'Komersil') }}
                     </span>
                     <span class="ps-badge ps-badge-gold">
-                        <i class="fa-solid fa-circle-check fa-xs"></i> Ready Stock
+                        <i class="fa-solid fa-circle-check fa-xs"></i> {{ $lp->condition ?? 'Ready Stock' }}
                     </span>
                     <span class="ps-badge">
-                        <i class="fa-solid fa-file-shield fa-xs"></i> SHM
+                        <i class="fa-solid fa-file-shield fa-xs"></i> {{ $lp->certificate ?? 'SHM/PBG' }}
                     </span>
                 </div>
             </div>
 
             {{-- Card Buku Tamu & QR Code Barcode Digital --}}
+            @php
+                $bukuTamuQuery = [
+                    'project_id' => $unit->land_bank_id,
+                    'unit_id'    => $unit->id,
+                    'unit'       => ($unit->unit_name ?? ('Unit ' . $unit->unit_code)) . ' (' . ($lp->condition ?? 'Ready Stock') . ')'
+                ];
+                $bukuTamuUrl = route('home.buku-tamu', $bukuTamuQuery);
+                $csPhoneClean = preg_replace('/\D/', '', $lp->sales_phone ?? '62811999988888');
+                if (str_starts_with($csPhoneClean, '0')) {
+                    $csPhoneClean = '62' . substr($csPhoneClean, 1);
+                }
+                $waText = "Halo " . ($lp->sales_name ?: "CS Graha Cipta Sejahtera") . ", saya ingin konsultasi mengenai " . ($unit->unit_name ?? ('Unit ' . $unit->unit_code)) . " di " . ($unit->landBank->name ?? 'perumahan');
+                $waUrl = "https://wa.me/{$csPhoneClean}?text=" . urlencode($waText);
+            @endphp
+
             <div class="contact-card">
                 <div class="contact-card-header" style="background: linear-gradient(145deg, #1e293b, #0f172a); padding: 1.75rem 1.25rem 1.5rem; text-align: center;">
-                    <div style="width: 50px; height: 50px; border-radius: 50%; background: rgba(201,151,58,0.2); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; color: var(--gold); font-size: 1.4rem;">
+                    <div style="width: 48px; height: 48px; border-radius: 6px; background: rgba(201,151,58,0.2); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; color: var(--gold); font-size: 1.4rem;">
                         <i class="fa-solid fa-qrcode"></i>
                     </div>
                     <div class="agent-name" style="font-size: 1.2rem; color: #ffffff;">Buku Tamu & Survei</div>
-                    <div class="agent-title" style="margin-bottom: 1rem; color: rgba(255,255,255,0.7); font-size: 0.78rem;">Graha Cipta Sejahtera Official</div>
+                    <div class="agent-title" style="margin-bottom: 1rem; color: rgba(255,255,255,0.7); font-size: 0.78rem;">{{ $lp->sales_name ?: 'Graha Cipta Sejahtera Official' }}</div>
 
-                    <!-- Kotak Barcode / QR Code Interaktif Dinamis Sesuai Hosting -->
-                    <div style="background: #ffffff; border-radius: 12px; padding: 0.85rem; width: 170px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+                    <!-- Kotak Barcode / QR Code Interaktif Dinamis Sesuai Unit & Hosting -->
+                    <div style="background: #ffffff; border-radius: 6px; padding: 0.85rem; width: 170px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
                         <img id="barcodeQrImg"
-                             src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data={{ urlencode(url('/buku-tamu') . '?' . http_build_query(['project_id' => 1, 'unit_id' => 1, 'unit' => 'Cluster Tegal Besar (Ready Stock)'])) }}" 
+                             src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data={{ urlencode($bukuTamuUrl) }}" 
                              alt="Barcode Buku Tamu Digital" 
                              style="width: 100%; height: auto; display: block; border-radius: 4px;">
                         <span style="display: block; font-size: 0.65rem; font-weight: 700; color: #334155; margin-top: 0.35rem; text-transform: uppercase; letter-spacing: 0.5px;">
@@ -1123,18 +1117,18 @@
 
                 <div class="contact-card-body">
                     <!-- Tombol Langsung ke Halaman Buku Tamu Mandiri -->
-                    <a href="{{ route('home.buku-tamu', ['unit' => 'Cluster Tegal Besar (Ready Stock)']) }}" 
+                    <a href="{{ $bukuTamuUrl }}" 
                        class="btn-bukutamu-card" 
-                       style="display: flex; align-items: center; justify-content: center; gap: 0.6rem; width: 100%; background: var(--navy); color: #ffffff; border: 1.5px solid var(--gold); border-radius: 12px; padding: 0.85rem; font-size: 0.92rem; font-weight: 700; text-decoration: none; cursor: pointer; transition: all 0.25s; margin-bottom: 0.75rem; box-shadow: 0 4px 14px rgba(15,23,42,0.15);">
+                       style="display: flex; align-items: center; justify-content: center; gap: 0.6rem; width: 100%; background: var(--navy); color: #ffffff; border: 1.5px solid var(--gold); border-radius: 6px; padding: 0.85rem; font-size: 0.92rem; font-weight: 700; text-decoration: none; cursor: pointer; transition: all 0.25s; margin-bottom: 0.75rem; box-shadow: 0 4px 14px rgba(15,23,42,0.15);">
                         <i class="fa-solid fa-clipboard-check" style="color: var(--gold); font-size: 1.05rem;"></i>
                         <span>Isi Buku Tamu di Sini</span>
                     </a>
 
                     <!-- Tombol Chat WhatsApp CS Resmi Kantor -->
-                    <a href="https://wa.me/62811999988888?text=Halo%20Graha%20Cipta%20Sejahtera,%20saya%20ingin%20konsultasi%20mengenai%20Cluster%20Tegal%20Besar" 
+                    <a href="{{ $waUrl }}" 
                        target="_blank" 
-                       class="btn-wa-card" style="padding: 0.8rem; font-size: 0.88rem; margin-bottom: 1.25rem;">
-                        <i class="fa-brands fa-whatsapp"></i> Chat Hotline Kantor
+                       class="btn-wa-card" style="padding: 0.8rem; font-size: 0.88rem; margin-bottom: 1.25rem; border-radius: 6px;">
+                        <i class="fa-brands fa-whatsapp"></i> Chat {{ $lp->sales_name ?: 'Hotline Kantor' }}
                     </a>
 
                     <div class="contact-perks">
@@ -1162,12 +1156,13 @@
 
 {{-- Mobile Sticky CTA --}}
 <div class="mobile-cta">
-    <a href="{{ route('home.buku-tamu', ['unit' => 'Cluster Tegal Besar (Ready Stock)']) }}" class="btn-wa-card" style="background: var(--navy); border: 1.5px solid var(--gold); text-decoration: none;">
+    <a href="{{ $bukuTamuUrl }}" class="btn-wa-card" style="background: var(--navy); border: 1.5px solid var(--gold); text-decoration: none;">
         <i class="fa-solid fa-clipboard-check" style="color: var(--gold);"></i> Isi Buku Tamu
     </a>
-    <a href="https://wa.me/62811999988888?text=Halo%20Graha%20Cipta%20Sejahtera,%20saya%20tertarik%20dengan%20Cluster%20Tegal%20Besar"
+    <a href="{{ $waUrl }}"
+       target="_blank"
        class="btn-survey" style="background: #25D366; color: white; border: none; text-decoration: none;">
-        <i class="fa-brands fa-whatsapp"></i> Chat Hotline
+        <i class="fa-brands fa-whatsapp"></i> Chat WhatsApp
     </a>
 </div>
 
@@ -1211,7 +1206,7 @@
         const qrImg = document.getElementById('barcodeQrImg');
         if (qrImg) {
             const currentHost = window.location.origin;
-            const targetQuery = "{{ route('home.buku-tamu', ['project_id' => 1, 'unit_id' => 1, 'unit' => 'Cluster Tegal Besar (Ready Stock)'], false) }}";
+            const targetQuery = "{{ route('home.buku-tamu', ['project_id' => $unit->land_bank_id, 'unit_id' => $unit->id, 'unit' => ($unit->unit_name ?? $unit->unit_code)], false) }}";
             const fullTargetUrl = currentHost + targetQuery;
             qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(fullTargetUrl);
         }
