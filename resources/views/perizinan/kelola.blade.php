@@ -336,6 +336,29 @@
         $isProsesOrMore = in_array($rawStatus, ['Proses', 'Berjalan', 'Dalam Proses', 'Revisi', 'Tertunda', 'Terkendala', 'Terbit', 'Selesai']);
         $isTerbit = in_array($rawStatus, ['Terbit', 'Selesai']);
 
+        $currentUser = auth()->user();
+        $posName = strtolower($currentUser->position->name ?? '');
+        $uName = strtolower($currentUser->name ?? '');
+        $uPosId = $currentUser->position_id ?? null;
+
+        // Staff Legal tidak bisa edit deadline (target selesai di-hidden)
+        $isAdminOrKepala = str_contains($posName, 'kepala') 
+            || str_contains($posName, 'admin') 
+            || str_contains($posName, 'owner') 
+            || str_contains($posName, 'direktur') 
+            || str_contains($posName, 'manager')
+            || ($uPosId == 1);
+
+        $isStaffLegalUser = !$isAdminOrKepala && (
+            ($uPosId == 4) 
+            || (str_contains($posName, 'staff') && str_contains($posName, 'legal'))
+            || str_contains($posName, 'staff')
+            || ($posName === 'legal')
+            || ($uName === 'legal')
+        );
+
+        $canEditDeadline = $isAdminOrKepala && !$isStaffLegalUser;
+
         $docCode = strtoupper(trim($item['kode_dokumen'] ?? ''));
         $poinLbl = strtoupper(trim($item['poin_label'] ?? ''));
         $namaIzinLower = strtolower(trim($item['nama_izin'] ?? ''));
@@ -475,24 +498,29 @@
 
                         <!-- Instansi & Target Selesai -->
                         <div class="row g-2 mb-3">
-                            <div class="{{ $isTerbit ? 'col-md-12' : 'col-md-7' }}" id="colInstansi" style="transition: all 0.2s ease;">
+                            <div class="{{ ($isTerbit || !$canEditDeadline) ? 'col-md-12' : 'col-md-7' }}" id="colInstansi" style="transition: all 0.2s ease;">
                                 <label class="form-label-custom">Instansi Terkait / Penerbit</label>
                                 <input type="text" name="instansi" class="form-control form-control-custom" 
                                        value="{{ old('instansi', $item['instansi']) }}" placeholder="Contoh: Dinas PUPR / DPMPTSP / BPN">
                             </div>
-                            <div class="col-md-5" id="colTargetSelesai" style="{{ $isTerbit ? 'display: none;' : '' }}">
-                                <label class="form-label-custom">Target Selesai (Deadline)</label>
-                                @php
-                                    $dlVal = '';
-                                    if (!empty($item['target_selesai']) && $item['target_selesai'] !== '-') {
-                                        try {
-                                            $dlVal = date('Y-m-d', strtotime(str_replace('/', '-', $item['target_selesai'])));
-                                        } catch(\Throwable $e) {}
-                                    }
-                                @endphp
-                                <input type="date" name="target_selesai" id="inpTargetSelesai" class="form-control form-control-custom" 
-                                       value="{{ old('target_selesai', $dlVal) }}">
-                            </div>
+                            @php
+                                $dlVal = '';
+                                if (!empty($item['target_selesai']) && $item['target_selesai'] !== '-') {
+                                    try {
+                                        $dlVal = date('Y-m-d', strtotime(str_replace('/', '-', $item['target_selesai'])));
+                                    } catch(\Throwable $e) {}
+                                }
+                            @endphp
+                            @if($canEditDeadline)
+                                <div class="col-md-5" id="colTargetSelesai" style="{{ $isTerbit ? 'display: none;' : '' }}">
+                                    <label class="form-label-custom">Target Selesai (Deadline)</label>
+                                    <input type="date" name="target_selesai" id="inpTargetSelesai" class="form-control form-control-custom" 
+                                           value="{{ old('target_selesai', $dlVal) }}">
+                                </div>
+                            @else
+                                {{-- Staff Legal: Field Target Selesai di-hidden agar tidak bisa diedit --}}
+                                <input type="hidden" name="target_selesai" id="inpTargetSelesai" value="{{ old('target_selesai', $dlVal) }}">
+                            @endif
                         </div>
 
                         <hr class="my-3" style="border-color: #f1f5f9;">
@@ -997,21 +1025,30 @@
         }
 
         // 3. KONTROL VISIBILITAS TARGET SELESAI (DEADLINE)
-        // Jika status Selesai / Terbit, Target Selesai (Deadline) tidak ada / disembunyikan
+        // Jika status Selesai / Terbit ATAU user adalah Staff Legal, Target Selesai (Deadline) tidak ada / disembunyikan
+        var canEditDeadline = {{ $canEditDeadline ? 'true' : 'false' }};
         var colTarget = document.getElementById('colTargetSelesai');
         var colInstansi = document.getElementById('colInstansi');
 
-        if (isTerbit) {
+        if (canEditDeadline && colTarget) {
+            if (isTerbit) {
+                colTarget.style.display = 'none';
+                if (colInstansi) {
+                    colInstansi.classList.remove('col-md-7');
+                    colInstansi.classList.add('col-md-12');
+                }
+            } else {
+                colTarget.style.display = 'block';
+                if (colInstansi) {
+                    colInstansi.classList.remove('col-md-12');
+                    colInstansi.classList.add('col-md-7');
+                }
+            }
+        } else {
             if (colTarget) colTarget.style.display = 'none';
             if (colInstansi) {
                 colInstansi.classList.remove('col-md-7');
                 colInstansi.classList.add('col-md-12');
-            }
-        } else {
-            if (colTarget) colTarget.style.display = 'block';
-            if (colInstansi) {
-                colInstansi.classList.remove('col-md-12');
-                colInstansi.classList.add('col-md-7');
             }
         }
 
