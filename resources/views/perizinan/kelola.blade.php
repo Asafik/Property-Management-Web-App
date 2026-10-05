@@ -498,7 +498,7 @@
 
                         <!-- Instansi & Target Selesai -->
                         <div class="row g-2 mb-3">
-                            <div class="{{ ($isTerbit || !$canEditDeadline) ? 'col-md-12' : 'col-md-7' }}" id="colInstansi" style="transition: all 0.2s ease;">
+                            <div class="{{ $isTerbit ? 'col-md-12' : 'col-md-7' }}" id="colInstansi" style="transition: all 0.2s ease;">
                                 <label class="form-label-custom">Instansi Terkait / Penerbit</label>
                                 <input type="text" name="instansi" class="form-control form-control-custom" 
                                        value="{{ old('instansi', $item['instansi']) }}" placeholder="Contoh: Dinas PUPR / DPMPTSP / BPN">
@@ -511,16 +511,20 @@
                                     } catch(\Throwable $e) {}
                                 }
                             @endphp
-                            @if($canEditDeadline)
-                                <div class="col-md-5" id="colTargetSelesai" style="{{ $isTerbit ? 'display: none;' : '' }}">
-                                    <label class="form-label-custom">Target Selesai (Deadline)</label>
-                                    <input type="date" name="target_selesai" id="inpTargetSelesai" class="form-control form-control-custom" 
-                                           value="{{ old('target_selesai', $dlVal) }}">
-                                </div>
-                            @else
-                                {{-- Staff Legal: Field Target Selesai di-hidden agar tidak bisa diedit --}}
-                                <input type="hidden" name="target_selesai" id="inpTargetSelesai" value="{{ old('target_selesai', $dlVal) }}">
-                            @endif
+                            <div class="col-md-5" id="colTargetSelesai" style="{{ $isTerbit ? 'display: none;' : '' }}">
+                                <label class="form-label-custom d-flex align-items-center justify-content-between">
+                                    <span>Target Selesai (Deadline)</span>
+                                    @if(!$canEditDeadline)
+                                        <span class="badge bg-light text-muted fw-normal" style="font-size: 0.7rem; border: 1px solid #e2e8f0;">
+                                            <i class="mdi mdi-lock-outline me-0.5"></i>Readonly (Staff Legal)
+                                        </span>
+                                    @endif
+                                </label>
+                                <input type="date" name="target_selesai" id="inpTargetSelesai" 
+                                       class="form-control form-control-custom {{ !$canEditDeadline ? 'bg-light' : '' }}" 
+                                       value="{{ old('target_selesai', $dlVal) }}"
+                                       @if(!$canEditDeadline) readonly tabindex="-1" style="background-color: #f8fafc !important; cursor: not-allowed; pointer-events: none;" @endif>
+                            </div>
                         </div>
 
                         <hr class="my-3" style="border-color: #f1f5f9;">
@@ -1025,12 +1029,11 @@
         }
 
         // 3. KONTROL VISIBILITAS TARGET SELESAI (DEADLINE)
-        // Jika status Selesai / Terbit ATAU user adalah Staff Legal, Target Selesai (Deadline) tidak ada / disembunyikan
-        var canEditDeadline = {{ $canEditDeadline ? 'true' : 'false' }};
+        // Jika status Selesai / Terbit, Target Selesai (Deadline) tidak ada / disembunyikan
         var colTarget = document.getElementById('colTargetSelesai');
         var colInstansi = document.getElementById('colInstansi');
 
-        if (canEditDeadline && colTarget) {
+        if (colTarget) {
             if (isTerbit) {
                 colTarget.style.display = 'none';
                 if (colInstansi) {
@@ -1043,12 +1046,6 @@
                     colInstansi.classList.remove('col-md-12');
                     colInstansi.classList.add('col-md-7');
                 }
-            }
-        } else {
-            if (colTarget) colTarget.style.display = 'none';
-            if (colInstansi) {
-                colInstansi.classList.remove('col-md-7');
-                colInstansi.classList.add('col-md-12');
             }
         }
 
