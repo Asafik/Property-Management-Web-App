@@ -454,55 +454,6 @@
                                             $fase = 3;
                                         }
 
-                                        switch ($isTerminActive ? 'termin_active_bypass' : $land->status) {
-                                            case 'termin_active_bypass':
-                                                break;
-                                            case 'fase1':
-                                                $fase = 1;
-                                                $percent = 33;
-                                                break;
-                                            case 'fase2':
-                                                $fase = 2;
-                                                $percent = 67;
-                                                break;
-                                            case 'fase3':
-                                            case 'fase4':
-                                            case 'approved':
-                                                $fase = 3;
-                                                $percent = 100;
-                                                break;
-                                            case 'rejected':
-                                                $fase = 0;
-                                                $percent = 0;
-                                                break;
-                                            case 'pending':
-                                                if (!empty($land->notaris_id) || !empty($land->file_ijb) || $land->status === 'fase3') {
-                                                    $fase = 3;
-                                                    $percent = 100;
-                                                } elseif (!empty($land->survey_date) || !empty($land->survey_by) || $land->status === 'fase2') {
-                                                    $fase = 2;
-                                                    $percent = 67;
-                                                } else {
-                                                    $fase = 1;
-                                                    $percent = 33;
-                                                }
-                                                break;
-                                            default:
-                                                $fase = 1;
-                                                $percent = 33;
-                                        }
-
-                                        // Warna bar fase
-                                        if ($land->status == 'approved' || $percent == 100) {
-                                            $faseColor = '#10b981';
-                                        } elseif ($land->status == 'rejected') {
-                                            $faseColor = '#ef4444';
-                                        } elseif ($percent >= 60) {
-                                            $faseColor = '#0284c7';
-                                        } else {
-                                            $faseColor = '#7c3aed';
-                                        }
-
                                         // Legalitas Check
                                         $rawStatus = strtoupper($land->ownership_status ?? 'SHM');
                                         if (str_contains($rawStatus, 'APHB')) {
@@ -533,10 +484,59 @@
                                         $isFase2Done = (!empty($land->survey_date) || !empty($land->survey_by) || !empty($land->lat) || in_array($land->status, ['fase2', 'fase3', 'approved', 'rejected']));
                                         $canAccessFase2 = $isLandLegalSah || in_array($land->status, ['fase2', 'fase3', 'approved', 'rejected']);
                                         $canAccessFase3 = in_array($land->status, ['fase3', 'approved', 'rejected']) || ($isLandLegalSah && $isFase2Done) || $isTerminActive;
+
+                                        switch ($isTerminActive ? 'termin_active_bypass' : $land->status) {
+                                            case 'termin_active_bypass':
+                                                break;
+                                            case 'fase1':
+                                                $fase = $isLandLegalSah ? 2 : 1;
+                                                $percent = $isLandLegalSah ? 67 : 33;
+                                                break;
+                                            case 'fase2':
+                                                $fase = 2;
+                                                $percent = 67;
+                                                break;
+                                            case 'fase3':
+                                            case 'fase4':
+                                            case 'approved':
+                                                $fase = 3;
+                                                $percent = 100;
+                                                break;
+                                            case 'rejected':
+                                                $fase = 0;
+                                                $percent = 0;
+                                                break;
+                                            case 'pending':
+                                                if (!empty($land->notaris_id) || !empty($land->file_ijb) || $land->status === 'fase3') {
+                                                    $fase = 3;
+                                                    $percent = 100;
+                                                } elseif ($isLandLegalSah || !empty($land->survey_date) || !empty($land->survey_by) || $land->status === 'fase2') {
+                                                    $fase = 2;
+                                                    $percent = 67;
+                                                } else {
+                                                    $fase = 1;
+                                                    $percent = 33;
+                                                }
+                                                break;
+                                            default:
+                                                $fase = $isLandLegalSah ? 2 : 1;
+                                                $percent = $isLandLegalSah ? 67 : 33;
+                                        }
+
+                                        // Warna bar fase
+                                        if ($land->status == 'approved' || $percent == 100) {
+                                            $faseColor = '#10b981';
+                                        } elseif ($land->status == 'rejected') {
+                                            $faseColor = '#ef4444';
+                                        } elseif ($percent >= 60) {
+                                            $faseColor = '#0284c7';
+                                        } else {
+                                            $faseColor = '#7c3aed';
+                                        }
                                     @endphp
 
                                     <tr class="pra-table-row" id="row-{{ $land->id }}"
-                                        data-search="{{ strtolower($land->land_name . ' ' . ($land->land_owner ?? '') . ' ' . ($land->ownership_status ?? '') . ' ' . $land->status) }}">
+                                        data-search="{{ strtolower($land->land_name . ' ' . ($land->land_owner ?? '') . ' ' . ($land->ownership_status ?? '') . ' ' . $land->status . ' ' . ($land->status == 'fase1' && !$isLandLegalSah ? 'menunggu verifikasi dokumen' : 'fase 2')) }}">
                                         
                                         <td class="col-no fw-bold text-center">
                                             {{ $praLandBank->firstItem() + $index }}
@@ -664,6 +664,24 @@
                                             @elseif($land->status == 'rejected')
                                                 <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca;">
                                                     Rejected
+                                                </span>
+                                            @elseif($land->status == 'fase1' || ($land->status == 'pending' && !$isLandLegalSah))
+                                                @if($isLandLegalSah)
+                                                    <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
+                                                        Fase 2
+                                                    </span>
+                                                @else
+                                                    <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #fff7ed; color: #c2410c; border: 1px solid #fed7aa;" title="Dokumen legalitas masih menunggu verifikasi Admin">
+                                                        <i class="mdi mdi-clock-outline me-1"></i>Menunggu Verifikasi Dokumen
+                                                    </span>
+                                                @endif
+                                            @elseif($land->status == 'fase2')
+                                                <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
+                                                    Fase 2
+                                                </span>
+                                            @elseif($land->status == 'fase3')
+                                                <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #f5f3ff; color: #7e22ce; border: 1px solid #ddd6fe;">
+                                                    Fase 3
                                                 </span>
                                             @else
                                                 <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
