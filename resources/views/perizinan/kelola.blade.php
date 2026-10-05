@@ -475,12 +475,12 @@
 
                         <!-- Instansi & Target Selesai -->
                         <div class="row g-2 mb-3">
-                            <div class="col-md-7">
+                            <div class="{{ $isTerbit ? 'col-md-12' : 'col-md-7' }}" id="colInstansi" style="transition: all 0.2s ease;">
                                 <label class="form-label-custom">Instansi Terkait / Penerbit</label>
                                 <input type="text" name="instansi" class="form-control form-control-custom" 
                                        value="{{ old('instansi', $item['instansi']) }}" placeholder="Contoh: Dinas PUPR / DPMPTSP / BPN">
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-5" id="colTargetSelesai" style="{{ $isTerbit ? 'display: none;' : '' }}">
                                 <label class="form-label-custom">Target Selesai (Deadline)</label>
                                 @php
                                     $dlVal = '';
@@ -490,7 +490,7 @@
                                         } catch(\Throwable $e) {}
                                     }
                                 @endphp
-                                <input type="date" name="target_selesai" class="form-control form-control-custom" 
+                                <input type="date" name="target_selesai" id="inpTargetSelesai" class="form-control form-control-custom" 
                                        value="{{ old('target_selesai', $dlVal) }}">
                             </div>
                         </div>
@@ -994,6 +994,25 @@
         } else {
             if (sectionSkUtama) sectionSkUtama.style.display = 'none';
             if (sectionSkHint) sectionSkHint.style.display = 'block';
+        }
+
+        // 3. KONTROL VISIBILITAS TARGET SELESAI (DEADLINE)
+        // Jika status Selesai / Terbit, Target Selesai (Deadline) tidak ada / disembunyikan
+        var colTarget = document.getElementById('colTargetSelesai');
+        var colInstansi = document.getElementById('colInstansi');
+
+        if (isTerbit) {
+            if (colTarget) colTarget.style.display = 'none';
+            if (colInstansi) {
+                colInstansi.classList.remove('col-md-7');
+                colInstansi.classList.add('col-md-12');
+            }
+        } else {
+            if (colTarget) colTarget.style.display = 'block';
+            if (colInstansi) {
+                colInstansi.classList.remove('col-md-12');
+                colInstansi.classList.add('col-md-7');
+            }
         }
     }
 
