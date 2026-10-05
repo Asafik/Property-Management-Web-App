@@ -75,12 +75,28 @@ class DevelopmentProgressController extends Controller
                 ->get()
             : collect();
 
-        return view('properti.proses_pembangunan', compact('land', 'selectedUnit', 'items', 'masterCategories', 'opnameMingguan', 'pembayaranTermin'));
+        $user = auth()->user();
+        $posName = strtolower($user->position->name ?? '');
+        $canEditDeadline = str_contains($posName, 'admin')
+            || str_contains($posName, 'owner')
+            || str_contains($posName, 'direktur')
+            || (str_contains($posName, 'kepala') && str_contains($posName, 'proyek'))
+            || in_array($user->position_id ?? 0, [5, 8]);
+
+        return view('properti.proses_pembangunan', compact('land', 'selectedUnit', 'items', 'masterCategories', 'opnameMingguan', 'pembayaranTermin', 'canEditDeadline'));
     }
 
     public function store(Request $request)
     {
         Log::info($request->all());
+
+        $user = auth()->user();
+        $posName = strtolower($user->position->name ?? '');
+        $canEditDeadline = str_contains($posName, 'admin')
+            || str_contains($posName, 'owner')
+            || str_contains($posName, 'direktur')
+            || (str_contains($posName, 'kepala') && str_contains($posName, 'proyek'))
+            || in_array($user->position_id ?? 0, [5, 8]);
 
         // Sanitize items input for rupiah dots and decimal commas
         if ($request->has('items')) {
@@ -146,14 +162,17 @@ class DevelopmentProgressController extends Controller
                 // UPDATE deadline, progress_persen & dokumentasi item lama
                 if ($itemId && empty($item['kategori'])) {
 
-                    $updateFields = [
-                        'deadline' => $deadlineItem,
-                    ];
+                    $updateFields = [];
+                    if ($canEditDeadline) {
+                        $updateFields['deadline'] = $deadlineItem;
+                    }
                     if (isset($item['progress_persen'])) {
                         $updateFields['progress_persen'] = $progressPersen;
                     }
 
-                    DevelopmentProgressItem::where('id', $itemId)->update($updateFields);
+                    if (!empty($updateFields)) {
+                        DevelopmentProgressItem::where('id', $itemId)->update($updateFields);
+                    }
 
                     // Upload dokumentasi untuk item lama jika ada file yang diunggah
                     if ($request->hasFile("items.$index.dokumentasi") || $request->hasFile("items.$itemId.dokumentasi")) {
@@ -198,7 +217,7 @@ class DevelopmentProgressController extends Controller
                     'total'           => $item['volume'] * $item['harga_satuan'],
                     'keterangan'      => $item['keterangan'] ?? null,
                     'progress_persen' => $progressPersen,
-                    'deadline'        => $deadlineItem,
+                    'deadline'        => $canEditDeadline ? $deadlineItem : null,
                 ]);
 
                 // Upload dokumentasi (Direct Public Uploads Mirror)

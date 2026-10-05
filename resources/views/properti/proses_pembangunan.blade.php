@@ -3,6 +3,17 @@
 @section('title', 'RAP Pembangunan - Property Management App')
 
 @section('content')
+    @php
+        if (!isset($canEditDeadline)) {
+            $user = auth()->user();
+            $posName = strtolower($user->position->name ?? '');
+            $canEditDeadline = str_contains($posName, 'admin')
+                || str_contains($posName, 'owner')
+                || str_contains($posName, 'direktur')
+                || (str_contains($posName, 'kepala') && str_contains($posName, 'proyek'))
+                || in_array($user->position_id ?? 0, [5, 8]);
+        }
+    @endphp
 
     <style>
         .rab-info-card {
@@ -828,9 +839,18 @@
                                                         </td>
 
                                                         <td>
-                                                            <input type="date" name="deadline[{{ $item->id }}]"
-                                                                class="form-control form-control-sm" style="border-radius: 6px;"
-                                                                value="{{ $item->deadline ? $item->deadline->format('Y-m-d') : '' }}">
+                                                            @if ($canEditDeadline)
+                                                                <input type="date" name="deadline[{{ $item->id }}]"
+                                                                    class="form-control form-control-sm" style="border-radius: 6px;"
+                                                                    value="{{ $item->deadline ? $item->deadline->format('Y-m-d') : '' }}">
+                                                            @else
+                                                                <input type="date" name="deadline[{{ $item->id }}]"
+                                                                    class="form-control form-control-sm bg-light text-muted"
+                                                                    style="border-radius: 6px; cursor: not-allowed; pointer-events: none; background-color: #f1f5f9 !important;"
+                                                                    value="{{ $item->deadline ? $item->deadline->format('Y-m-d') : '' }}"
+                                                                    readonly tabindex="-1"
+                                                                    title="Hanya Admin dan Kepala Proyek yang dapat menentukan deadline">
+                                                            @endif
                                                         </td>
 
                                                         <td>
@@ -1783,6 +1803,7 @@
     <script>
         let indexItem = 0;
         let kategoriMap = @json($jsKategoriMap);
+        const canEditDeadline = {{ $canEditDeadline ? 'true' : 'false' }};
 
         function confirmApplyTemplate() {
             let form = document.getElementById('formApplyTemplate');
@@ -2016,7 +2037,8 @@
                     <td>
                         <input type="date"
                                name="items[${indexItem}][deadline]"
-                               class="form-control form-control-sm">
+                               class="form-control form-control-sm ${!canEditDeadline ? 'bg-light text-muted' : ''}"
+                               ${!canEditDeadline ? 'readonly tabindex="-1" style="border-radius: 6px; cursor: not-allowed; pointer-events: none; background-color: #f1f5f9 !important;" title="Hanya Admin dan Kepala Proyek yang dapat menentukan deadline"' : 'style="border-radius: 6px;"'}>
                     </td>
                     <td>
                         <div class="file-upload-modern">
