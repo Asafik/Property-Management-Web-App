@@ -335,11 +335,19 @@
         $rawStatus = old('status', $item['status'] ?? 'Belum');
         $isProsesOrMore = in_array($rawStatus, ['Proses', 'Berjalan', 'Dalam Proses', 'Revisi', 'Tertunda', 'Terkendala', 'Terbit', 'Selesai']);
         $isTerbit = in_array($rawStatus, ['Terbit', 'Selesai']);
-        $isPoin17Doc = (!empty($item['kode_dokumen']) && strtoupper(trim($item['kode_dokumen'])) === 'POIN-17') 
-            || (!empty($item['master_id']) && $item['master_id'] == 11) 
-            || ($item_id == 11 || $item_id == '11')
-            || str_contains(strtolower($item['nama_izin'] ?? ''), 'shgb induk') 
-            || str_contains(strtolower($item['nama_izin'] ?? ''), 'hgb induk selesai');
+
+        $docCode = strtoupper(trim($item['kode_dokumen'] ?? ''));
+        $poinLbl = strtoupper(trim($item['poin_label'] ?? ''));
+        $namaIzinLower = strtolower(trim($item['nama_izin'] ?? ''));
+
+        $isPoin17Doc = ($docCode === 'POIN-17' || str_contains($docCode, '17'))
+            || ($poinLbl === 'POIN-17' || $poinLbl === 'POIN 17' || str_contains($poinLbl, '17'))
+            || (!empty($item['master_id']) && in_array((int)$item['master_id'], [11, 17]))
+            || in_array((string)$item_id, ['11', '17'])
+            || str_contains($namaIzinLower, 'shgb induk') 
+            || str_contains($namaIzinLower, 'hgb induk selesai')
+            || (str_contains($namaIzinLower, 'balik nama') && str_contains($namaIzinLower, 'pt'))
+            || (str_contains($namaIzinLower, 'sertipikat') && str_contains($namaIzinLower, 'shgb'));
     @endphp
 
     @if($isPoin17Doc)
@@ -348,9 +356,9 @@
                 <i class="mdi mdi-shield-crown"></i>
             </div>
             <div>
-                <strong class="d-block text-dark" style="font-size: 0.92rem;">Tahap Final: Balik Nama / Pengindukan Sertifikat an. PT</strong>
+                <strong class="d-block text-dark" style="font-size: 0.92rem;">Tahap Final: Balik Nama / Pengindukan Sertifikat an. PT (ATR/BPN)</strong>
                 <span style="font-size: 0.83rem; color: #065f46;">
-                    Ketika dokumen <strong>SHGB Induk atas nama PT</strong> ini statusnya diubah ke <strong>Selesai / Terbit Resmi</strong>, kawasan <strong>{{ $project['nama'] }}</strong> akan <strong>otomatis dialihkan ke Pasca Land Bank</strong> sebagai aset sah developer yang siap dipecah kavling dan dipasarkan.
+                    Ketika dokumen <strong>SHGB Induk atas nama PT</strong> ini statusnya diubah ke <strong>Selesai / Terbit Resmi</strong> dengan mengupload berkas resmi dari Kantor Pertanahan (ATR/BPN), kawasan <strong>{{ $project['nama'] }}</strong> akan <strong>otomatis dialihkan ke Pasca Land Bank</strong> sebagai aset sah developer yang siap dipecah kavling dan dipasarkan.
                 </span>
             </div>
         </div>
@@ -384,39 +392,6 @@
                             <input type="text" name="nama_izin" class="form-control form-control-custom fw-semibold" 
                                    value="{{ old('nama_izin', $item['nama_izin']) }}" 
                                    placeholder="Contoh: Rekomendasi Peil Banjir, PKKPR, PBG..." required>
-                        </div>
-
-                        <!-- Perusahaan Developer / PT Pemegang Hak Dokumen & Legalitas -->
-                        <div class="mb-3">
-                            <label class="form-label-custom d-flex justify-content-between align-items-center">
-                                <span class="d-inline-flex align-items-center gap-1.5">
-                                    <i class="mdi mdi-office-building text-primary" style="font-size: 1.1rem;"></i>
-                                    <span>Perusahaan Developer / PT Pemegang Hak Dokumen</span>
-                                </span>
-                                <small class="text-muted" style="font-size: 0.72rem;">
-                                    PT untuk legalitas & balik nama sertifikat kawasan
-                                </small>
-                            </label>
-                            <select name="company_profile_id" id="inpCompanyProfileId" class="form-select form-select-custom fw-semibold" onchange="updatePtDisplay(this)">
-                                <option value="">-- Pilih Perusahaan / PT Developer --</option>
-                                @foreach($companies as $comp)
-                                    @php
-                                        $selectedCompanyId = old('company_profile_id', $record->company_profile_id ?? ($project['company_profile_id'] ?? null));
-                                    @endphp
-                                    <option value="{{ $comp->id }}" data-name="{{ $comp->name }}" {{ (string)$selectedCompanyId === (string)$comp->id ? 'selected' : '' }}>
-                                        {{ $comp->name }} {{ $comp->phone ? '• ' . $comp->phone : '' }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <div class="d-flex align-items-center justify-content-between mt-1 px-1">
-                                <small class="text-muted" style="font-size: 0.72rem;">
-                                    <i class="mdi mdi-information-outline me-0.5"></i>
-                                    PT saat ini: <strong class="text-dark" id="txtCurrentPtLabel">{{ $record->companyProfile->name ?? ($project['pt'] ?? 'Belum ditentukan') }}</strong>
-                                </small>
-                                <a href="{{ route('company-profile.index') }}" target="_blank" class="text-decoration-none small text-primary fw-semibold" style="font-size: 0.72rem;">
-                                    <i class="mdi mdi-plus-box-outline me-0.5"></i>Kelola Master PT
-                                </a>
-                            </div>
                         </div>
 
                         <!-- Status Dokumen & Progres Otomatis -->
@@ -527,11 +502,53 @@
                             <label class="form-label-custom d-flex justify-content-between align-items-center mb-2">
                                 <span class="d-inline-flex align-items-center gap-2">
                                     <i class="mdi mdi-certificate text-success" style="font-size: 1.2rem; line-height: 1; margin-right: 4px;"></i>
-                                    <span class="fw-bold">Berkas Dokumen Utama / SK Izin</span>
+                                    <span class="fw-bold">
+                                        @if($isPoin17Doc)
+                                            Berkas Resmi Buku Sertipikat SHGB Induk (Kantor Pertanahan ATR/BPN)
+                                        @else
+                                            Berkas Dokumen Utama / SK Izin
+                                        @endif
+                                    </span>
                                     <span class="badge bg-success-subtle text-success ms-1" style="font-size: 11px;">Resmi / Selesai</span>
                                 </span>
                                 <span class="badge" style="background-color: #fffbeb; border: 1px solid #fde68a; color: #d97706; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">PDF, JPG, PNG (Maks 20MB)</span>
                             </label>
+
+                            @if($isPoin17Doc)
+                                <!-- KHUSUS POIN-17: Pemilihan PT Developer Pemegang Hak SHGB Induk dari Kantor Pertanahan ATR/BPN -->
+                                <div class="p-3 mb-3 rounded-3" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                                    <label class="form-label-custom d-flex justify-content-between align-items-center mb-1">
+                                        <span class="d-inline-flex align-items-center gap-1.5 fw-bold text-success">
+                                            <i class="mdi mdi-office-building text-success" style="font-size: 1.15rem;"></i>
+                                            <span>Perusahaan Developer / PT Pemegang Hak SHGB Induk</span>
+                                        </span>
+                                        <span class="badge bg-success text-white" style="font-size: 10px;">Atas Nama di Buku Sertipikat ATR/BPN</span>
+                                    </label>
+                                    <p class="text-muted small mb-2" style="font-size: 0.77rem; line-height: 1.4;">
+                                        Pilih PT yang tercantum resmi pada Sertipikat SHGB Induk dari Kantor Pertanahan (ATR/BPN). Nama PT ini otomatis menjadi pemegang hak legalitas kawasan saat dialihkan ke <strong>Pasca Land Bank</strong>.
+                                    </p>
+                                    <select name="company_profile_id" id="inpCompanyProfileId" class="form-select form-select-custom fw-semibold bg-white" onchange="updatePtDisplay(this)">
+                                        <option value="">-- Pilih Perusahaan / PT Developer Pemegang Hak --</option>
+                                        @foreach($companies as $comp)
+                                            @php
+                                                $selectedCompanyId = old('company_profile_id', $record->company_profile_id ?? ($project['company_profile_id'] ?? null));
+                                            @endphp
+                                            <option value="{{ $comp->id }}" data-name="{{ $comp->name }}" {{ (string)$selectedCompanyId === (string)$comp->id ? 'selected' : '' }}>
+                                                {{ $comp->name }} {{ $comp->phone ? '• ' . $comp->phone : '' }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="d-flex align-items-center justify-content-between mt-2 px-1">
+                                        <small class="text-muted" style="font-size: 0.72rem;">
+                                            <i class="mdi mdi-information-outline me-0.5"></i>
+                                            PT saat ini: <strong class="text-dark" id="txtCurrentPtLabel">{{ $record->companyProfile->name ?? ($project['pt'] ?? 'Belum ditentukan') }}</strong>
+                                        </small>
+                                        <a href="{{ route('company-profile.index') }}" target="_blank" class="text-decoration-none small text-success fw-semibold" style="font-size: 0.72rem;">
+                                            <i class="mdi mdi-plus-box-outline me-0.5"></i>Kelola Master PT
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
 
                             <input type="file" name="file_dokumen" id="inpFileDokumen" class="d-none" accept=".pdf,.jpg,.jpeg,.png" onchange="previewSelectedDoc(this)">
 
@@ -552,7 +569,9 @@
                                             <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
                                         </div>
                                         <div class="overflow-hidden" style="min-width: 0;">
-                                            <span class="d-block fw-bold text-success text-truncate" id="mainDocStatusText" style="font-size: 0.85rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
+                                            <span class="d-block fw-bold text-success text-truncate" id="mainDocStatusText" style="font-size: 0.85rem; line-height: 1.2;">
+                                                {{ $isPoin17Doc ? 'Berkas Sertipikat SHGB Induk (ATR/BPN) Terunggah' : 'Berkas SK Resmi Terunggah' }}
+                                            </span>
                                             <small class="text-muted text-truncate d-block font-monospace" id="mainDocFileName" style="font-size: 0.74rem;">{{ basename($item['file_dokumen'] ?? '') }}</small>
                                         </div>
                                     </div>
@@ -578,9 +597,11 @@
                                     </div>
                                     <div class="overflow-hidden flex-grow-1" style="min-width: 0;">
                                         <span class="fw-bold d-block text-truncate" id="txtUploadMainLabel" style="font-size: 0.85rem; color: #059669;">
-                                            Pilih / Upload Berkas SK Resmi
+                                            {{ $isPoin17Doc ? 'Pilih / Upload Berkas Sertipikat SHGB Induk Asli (ATR/BPN)' : 'Pilih / Upload Berkas SK Resmi' }}
                                         </span>
-                                        <small class="text-muted d-block text-truncate" id="txtUploadMainSub" style="font-size: 0.74rem;">Klik di sini untuk mengunggah file SK izin yang telah terbit resmi (PDF, JPG, PNG)</small>
+                                        <small class="text-muted d-block text-truncate" id="txtUploadMainSub" style="font-size: 0.74rem;">
+                                            {{ $isPoin17Doc ? 'Klik di sini untuk mengunggah scan Buku Sertipikat SHGB Induk resmi dari Kantor Pertanahan (PDF, JPG, PNG)' : 'Klik di sini untuk mengunggah file SK izin yang telah terbit resmi (PDF, JPG, PNG)' }}
+                                        </small>
                                     </div>
                                     <span class="btn btn-sm text-white fw-bold px-3 py-1 shadow-sm d-inline-flex align-items-center justify-content-center" style="font-size: 0.78rem; border-radius: 6px; background: #10b981; border: 1px solid #10b981;">Browse</span>
                                 </div>
@@ -593,8 +614,18 @@
                                 <div class="d-flex align-items-center gap-2 text-muted" style="font-size: 0.82rem;">
                                     <i class="mdi mdi-information-outline text-primary fs-5 flex-shrink-0"></i>
                                     <div>
-                                        <strong class="text-dark d-block">Berkas Dokumen Utama / SK Izin</strong>
-                                        Upload Berkas SK Resmi akan muncul saat status dokumen diubah ke <span class="badge bg-success-subtle text-success fw-bold">Selesai / Terbit Resmi</span>.
+                                        <strong class="text-dark d-block">
+                                            @if($isPoin17Doc)
+                                                Berkas Resmi Buku Sertipikat SHGB Induk (ATR/BPN) & Pemilihan PT
+                                            @else
+                                                Berkas Dokumen Utama / SK Izin
+                                            @endif
+                                        </strong>
+                                        @if($isPoin17Doc)
+                                            Unggah berkas resmi Sertipikat dari Kantor Pertanahan (ATR/BPN) serta penetapan PT Pemegang Hak akan muncul saat status dokumen diubah ke <span class="badge bg-success-subtle text-success fw-bold">Selesai / Terbit Resmi</span>.
+                                        @else
+                                            Upload Berkas SK Resmi akan muncul saat status dokumen diubah ke <span class="badge bg-success-subtle text-success fw-bold">Selesai / Terbit Resmi</span>.
+                                        @endif
                                     </div>
                                 </div>
                                 <button type="button" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm" onclick="setDokumenStatus('Terbit')" style="background: #10b981; border: 1px solid #10b981; font-size: 0.8rem; border-radius: 6px;">
