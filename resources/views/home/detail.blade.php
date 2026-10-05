@@ -88,12 +88,30 @@
     /* ------------------------------------------------
         GALLERY
     ------------------------------------------------ */
+    @keyframes imgShimmer {
+        0% {
+            background-position: -200% 0;
+        }
+        100% {
+            background-position: 200% 0;
+        }
+    }
+
     .gallery-main {
         width: 100%;
         height: 420px;
         object-fit: cover;
         border-radius: 6px;
         display: block;
+        background: #e2e8f0 linear-gradient(90deg, #e2e8f0 0%, #f8fafc 50%, #e2e8f0 100%);
+        background-size: 200% 100%;
+        animation: imgShimmer 1.8s infinite ease-in-out;
+        transition: opacity 0.4s ease;
+    }
+
+    .gallery-main.shimmer-done {
+        animation: none;
+        background: #f1f5f9;
     }
 
     @media (max-width: 768px) {
@@ -458,12 +476,32 @@
         box-shadow: 0 10px 25px -12px rgba(0,0,0,0.25);
     }
 
+    .rec-card-img-wrap {
+        position: relative;
+        height: 120px;
+        overflow: hidden;
+        background: #e2e8f0 linear-gradient(90deg, #e2e8f0 0%, #f8fafc 50%, #e2e8f0 100%);
+        background-size: 200% 100%;
+        animation: imgShimmer 1.8s infinite ease-in-out;
+    }
+
+    .rec-card-img-wrap.shimmer-done {
+        animation: none;
+        background: #f1f5f9;
+    }
+
     .rec-card img {
         width: 100%;
         height: 120px;
         object-fit: cover;
         border-radius: 6px 6px 0 0;
         display: block;
+        transition: opacity 0.4s ease;
+        opacity: 0;
+    }
+
+    .rec-card img.loaded {
+        opacity: 1;
     }
 
     .rec-card-body {
@@ -781,7 +819,9 @@
                 <img id="mainImg"
                      src="{{ $mainPhoto }}"
                      alt="{{ $lp->headline ?? $unit->unit_name ?? $unit->unit_code }}"
-                     class="gallery-main">
+                     class="gallery-main"
+                     onload="this.classList.add('shimmer-done')"
+                     onerror="this.classList.add('shimmer-done')">
 
                 <div class="gallery-thumbs">
                     @foreach($allPhotos as $idx => $photoUrl)
@@ -819,7 +859,7 @@
 
                 <div class="prop-location-main">
                     <i class="fa-solid fa-location-dot"></i>
-                    <span>{{ !empty($lp->address) ? $lp->address : (($unit->landBank->name ?? 'Kawasan') . ' · ' . ($unit->landBank->address ?? 'Jember, Jawa Timur')) }}</span>
+                    <span>{{ !empty($lp->address) ? $lp->address : ($unit->landBank->address ?: ($unit->landBank->city ?: 'Jember, Jawa Timur')) }}</span>
                 </div>
 
                 <div class="prop-price-row">
@@ -1035,15 +1075,20 @@
                         @foreach($otherUnits as $rec)
                             @php
                                 $recPhoto = $resolveImgUrl($rec->photo) ?: 'https://images.pexels.com/photos/164522/pexels-photo-164522.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&fit=crop';
+                                $recLoc = ($rec->landingPage && !empty(trim($rec->landingPage->address))) 
+                                    ? trim($rec->landingPage->address) 
+                                    : ($rec->landBank && !empty($rec->landBank->address) ? $rec->landBank->address : ($rec->landBank->city ?? 'Jember, Jawa Timur'));
                             @endphp
                             <a href="{{ route('home.detail', $rec->id) }}" class="rec-card">
-                                <img src="{{ $recPhoto }}" alt="{{ $rec->unit_name ?? $rec->unit_code }}">
+                                <div class="rec-card-img-wrap">
+                                    <img src="{{ $recPhoto }}" alt="{{ $rec->unit_name ?? $rec->unit_code }}" loading="lazy" onload="this.classList.add('loaded'); this.closest('.rec-card-img-wrap')?.classList.add('shimmer-done');" onerror="this.classList.add('loaded'); this.closest('.rec-card-img-wrap')?.classList.add('shimmer-done');">
+                                </div>
                                 <div class="rec-card-body">
                                     <div class="rec-tipe {{ strtolower($rec->jenis ?? '') === 'subsidi' ? 'subsidi' : 'komersil' }}">
                                         <i class="fa-solid fa-building fa-xs"></i> {{ ucfirst($rec->jenis ?? 'Komersil') }}
                                     </div>
-                                    <div class="rec-card-loc">
-                                        <i class="fa-solid fa-location-dot"></i> {{ $rec->landBank->name ?? 'Jember' }}
+                                    <div class="rec-card-loc" title="{{ $recLoc }}">
+                                        <i class="fa-solid fa-location-dot"></i> {{ $recLoc }}
                                     </div>
                                     <div class="rec-card-title">{{ $rec->landingPage?->headline ?? $rec->unit_name ?? ('Unit ' . $rec->unit_code) }}</div>
                                     <div class="rec-card-price">Rp {{ number_format($rec->price ?? 0, 0, ',', '.') }}</div>
@@ -1211,5 +1256,42 @@
             qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(fullTargetUrl);
         }
     });
+
+    // Shimmer Skeleton Image Handler
+    function handleShimmerImages() {
+        const main = document.getElementById('mainImg');
+        if (main && main.complete && main.naturalWidth > 0) {
+            main.classList.add('shimmer-done');
+        }
+        document.querySelectorAll('.rec-card img').forEach(img => {
+            if (img.complete && img.naturalWidth > 0) {
+                img.classList.add('loaded');
+                img.closest('.rec-card-img-wrap')?.classList.add('shimmer-done');
+            } else {
+                img.addEventListener('load', () => {
+                    img.classList.add('loaded');
+                    img.closest('.rec-card-img-wrap')?.classList.add('shimmer-done');
+                }, { once: true });
+                img.addEventListener('error', () => {
+                    img.classList.add('loaded');
+                    img.closest('.rec-card-img-wrap')?.classList.add('shimmer-done');
+                }, { once: true });
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', handleShimmerImages);
+    } else {
+        handleShimmerImages();
+    }
+
+    // Safety timeout: ensure images reveal even on edge-case network stalls
+    setTimeout(() => {
+        document.querySelectorAll('.rec-card img').forEach(img => {
+            img.classList.add('loaded');
+            img.closest('.rec-card-img-wrap')?.classList.add('shimmer-done');
+        });
+    }, 3000);
 </script>
 @endpush

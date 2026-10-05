@@ -75,6 +75,9 @@ Route::get('/beranda', function () {
     return view('home.index');
 });
 
+Route::get('/semua-unit', [LandingpageController::class, 'allUnits'])->name('home.units');
+Route::get('/unit', [LandingpageController::class, 'allUnits']);
+
 Route::get('/detail/{id?}', [LandingpageController::class, 'detail'])->name('home.detail');
 
 Route::get('/buku-tamu', [LandingpageController::class, 'bukuTamu'])->name('home.buku-tamu');

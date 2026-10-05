@@ -304,7 +304,7 @@
 
         <!-- Tombol Kembali -->
         <div style="margin-bottom: 1.5rem;">
-            <a href="{{ route('home.detail') }}" class="btn-back-link">
+            <a href="{{ !empty($selectedUnitId) ? route('home.detail', $selectedUnitId) : route('home.units') }}" class="btn-back-link">
                 <i class="fa-solid fa-arrow-left"></i> Kembali ke Detail Properti
             </a>
         </div>
@@ -338,7 +338,7 @@
                             {{ session('success')['msg'] ?? 'Formulir Anda telah resmi tercatat di sistem Data Tamu / Prospek Graha Cipta Sejahtera.' }}
                         </p>
                         <div style="margin-top: 0.75rem; display: flex; gap: 0.6rem; flex-wrap: wrap;">
-                            <a href="{{ route('home.detail') }}" style="display: inline-flex; align-items: center; gap: 0.4rem; background: #065f46; color: #ffffff; font-size: 0.8rem; font-weight: 700; padding: 0.45rem 0.85rem; border-radius: 6px; text-decoration: none;">
+                            <a href="{{ !empty($selectedUnitId) ? route('home.detail', $selectedUnitId) : route('home.units') }}" style="display: inline-flex; align-items: center; gap: 0.4rem; background: #065f46; color: #ffffff; font-size: 0.8rem; font-weight: 700; padding: 0.45rem 0.85rem; border-radius: 6px; text-decoration: none;">
                                 <i class="fa-solid fa-arrow-left"></i> Kembali ke Halaman Detail
                             </a>
                             <a href="https://wa.me/62811999988888?text=Halo%20Admin%20GCS,%20saya%20sudah%20mengisi%20buku%20tamu%20atas%20nama%20{{ urlencode(session('success')['name'] ?? 'Tamu') }}" target="_blank" style="display: inline-flex; align-items: center; gap: 0.4rem; background: #25D366; color: #ffffff; font-size: 0.8rem; font-weight: 700; padding: 0.45rem 0.85rem; border-radius: 6px; text-decoration: none;">

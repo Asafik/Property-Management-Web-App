@@ -344,6 +344,75 @@
         box-shadow: 0 8px 24px rgba(11,31,75,0.25);
     }
 
+    /* Hero KPR Calculator Widget */
+    .calc-hero-res {
+        background: linear-gradient(145deg, #0B1F4B, #152d68);
+        border-radius: 6px;
+        padding: 0.95rem 1.15rem;
+        margin-bottom: 0.95rem;
+        border: 1px solid rgba(201,151,58,0.3);
+        box-shadow: 0 4px 15px rgba(11,31,75,0.15);
+    }
+
+    .calc-hero-res-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--gold-light);
+        margin-bottom: 0.2rem;
+    }
+
+    .calc-hero-res-val {
+        display: flex;
+        align-items: baseline;
+        gap: 0.4rem;
+        color: #ffffff;
+    }
+
+    .calc-hero-num {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.75rem;
+        color: #ffffff;
+        letter-spacing: 0.02em;
+    }
+
+    .calc-hero-period {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.7);
+    }
+
+    .calc-hero-note {
+        font-size: 0.72rem;
+        color: rgba(255,255,255,0.75);
+        margin-top: 0.3rem;
+        line-height: 1.4;
+    }
+
+    .btn-calc-wa {
+        width: 100%;
+        padding: 0.82rem;
+        background: #25D366;
+        color: white !important;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.92rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+
+    .btn-calc-wa:hover {
+        background: #1eb856;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 24px rgba(37,211,102,0.3);
+    }
+
     /* ------------------------------------------------
         SECTION UTILITIES
     ------------------------------------------------ */
@@ -594,20 +663,42 @@
         margin-top: 2.5rem;
     }
 
+    @keyframes imgShimmer {
+        0% {
+            background-position: -200% 0;
+        }
+        100% {
+            background-position: 200% 0;
+        }
+    }
+
     .area-card {
         position: relative;
         border-radius: 6px;
         overflow: hidden;
         height: 220px;
         cursor: pointer;
+        background: #e2e8f0 linear-gradient(90deg, #e2e8f0 0%, #f8fafc 50%, #e2e8f0 100%);
+        background-size: 200% 100%;
+        animation: imgShimmer 1.8s infinite ease-in-out;
+    }
+
+    .area-card.shimmer-done {
+        animation: none;
+        background: #f1f5f9;
     }
 
     .area-card img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.6s ease;
+        transition: opacity 0.4s ease, transform 0.6s ease;
         display: block;
+        opacity: 0;
+    }
+
+    .area-card img.loaded {
+        opacity: 1;
     }
 
     .area-card:hover img {
@@ -727,13 +818,27 @@
         position: relative;
         height: 210px;
         overflow: hidden;
+        background: #e2e8f0 linear-gradient(90deg, #e2e8f0 0%, #f8fafc 50%, #e2e8f0 100%);
+        background-size: 200% 100%;
+        animation: imgShimmer 1.8s infinite ease-in-out;
+    }
+
+    .prop-img.shimmer-done {
+        animation: none;
+        background: #f1f5f9;
     }
 
     .prop-img img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.6s ease;
+        transition: opacity 0.4s ease, transform 0.6s ease;
+        display: block;
+        opacity: 0;
+    }
+
+    .prop-img img.loaded {
+        opacity: 1;
     }
 
     .prop-card:hover .prop-img img {
@@ -771,6 +876,21 @@
 
     .pb-cashkpr {
         background: var(--cashkpr);
+        color: white;
+    }
+
+    .pb-kpr {
+        background: rgba(11,31,75,0.08);
+        color: var(--navy);
+    }
+
+    .pb-hot {
+        background: #DC2626;
+        color: white;
+    }
+
+    .pb-new {
+        background: var(--navy);
         color: white;
     }
 
@@ -812,16 +932,26 @@
     .ploc {
         display: flex;
         align-items: center;
-        gap: 0.3rem;
+        gap: 0.35rem;
         color: var(--text-light);
         font-size: 0.78rem;
         font-weight: 500;
         margin-bottom: 0.4rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .ploc span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .ploc i {
         color: var(--gold);
         font-size: 0.72rem;
+        flex-shrink: 0;
     }
 
     .ptitle {
@@ -1334,15 +1464,15 @@
 
                 <div class="hero-stats">
                     <div>
-                        <div class="hero-stat-num">250<span>+</span></div>
-                        <div class="hero-stat-label">Keluarga bahagia</div>
+                        <div class="hero-stat-num">{{ $totalUnits ?? 0 }}<span>+</span></div>
+                        <div class="hero-stat-label">Total unit keseluruhan</div>
                     </div>
                     <div>
                         <div class="hero-stat-num">3</div>
                         <div class="hero-stat-label">Tipe pilihan</div>
                     </div>
                     <div>
-                        <div class="hero-stat-num">15<span>+</span></div>
+                        <div class="hero-stat-num">10<span>+</span></div>
                         <div class="hero-stat-label">Bank partner KPR</div>
                     </div>
                     <div>
@@ -1352,78 +1482,75 @@
                 </div>
             </div>
 
-            {{-- Search Card --}}
+            {{-- Kalkulator Cepat Cicilan KPR (Hero Widget) --}}
             <div class="search-card">
-                <h5>
-                    <i class="fa-solid fa-magnifying-glass" style="color:var(--gold)"></i>
-                    Cari Rumah Impianmu
-                </h5>
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.85rem;">
+                    <div>
+                        <h5 style="margin:0 0 0.25rem 0; font-size:1.1rem; color:var(--navy);">
+                            <i class="fa-solid fa-calculator" style="color:var(--gold);"></i> Hitung Cepat Cicilan KPR
+                        </h5>
+                        <p style="margin:0; font-size:0.78rem; color:var(--text-light);">
+                            Simulasi instan angsuran bulanan rumah
+                        </p>
+                    </div>
+                    <span style="font-size:0.65rem; background:rgba(201,151,58,0.12); color:#92610a; font-weight:700; padding:0.25rem 0.5rem; border-radius:4px; border:1px solid rgba(201,151,58,0.25);">
+                        Bunga 5%
+                    </span>
+                </div>
 
-                <div class="stabs">
-                    <button class="stab active subsidi-tab" onclick="setTab(this)">
-                        <i class="fa-solid fa-hand-holding-heart fa-xs"></i> Subsidi
+                <div class="stabs" style="margin-bottom:0.85rem;">
+                    <button type="button" class="stab active subsidi-tab" id="calcTabSubsidi" onclick="setCalcType('subsidi', 166000000, 5, this)">
+                        <i class="fa-solid fa-hand-holding-heart fa-xs"></i> Subsidi (166 Jt)
                     </button>
-                    <button class="stab komersil-tab" onclick="setTab(this)">
-                        <i class="fa-solid fa-building fa-xs"></i> Komersil
-                    </button>
-                    <button class="stab cashkpr-tab" onclick="setTab(this)">
-                        <i class="fa-solid fa-money-bill-wave fa-xs"></i> Cash/KPR
+                    <button type="button" class="stab komersil-tab" id="calcTabKomersil" onclick="setCalcType('komersil', 350000000, 6.5, this)">
+                        <i class="fa-solid fa-building fa-xs"></i> Komersil (350 Jt)
                     </button>
                 </div>
 
-                <div class="srow">
+                <div class="srow" style="margin-bottom:0.85rem;">
                     <div class="sfield">
-                        <label>Kawasan / Lahan</label>
-                        <select>
-                            <option value="">Semua Kawasan</option>
-                            @if(isset($landBanks) && $landBanks->count() > 0)
-                                @foreach($landBanks as $lb)
-                                    <option value="{{ $lb->id }}">{{ $lb->name }}</option>
-                                @endforeach
-                            @else
-                                <option>Tanah Jember</option>
-                            @endif
+                        <label>Uang Muka (DP)</label>
+                        <select id="calcDpSelect" onchange="calcHeroKpr()">
+                            <option value="1">DP 1% (FLPP BTN)</option>
+                            <option value="5">DP 5%</option>
+                            <option value="10">DP 10%</option>
+                            <option value="20">DP 20%</option>
                         </select>
                     </div>
                     <div class="sfield">
-                        <label>Budget</label>
-                        <select>
-                            <option>Rp 150 – 250 Jt</option>
-                            <option>Rp 250 – 500 Jt</option>
-                            <option>Rp 500 – 800 Jt</option>
-                            <option>> Rp 800 Jt</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="srow" style="margin-bottom:1rem;">
-                    <div class="sfield">
-                        <label>Kamar Tidur</label>
-                        <select>
-                            <option>Semua</option>
-                            <option>2 KT</option>
-                            <option>3 KT</option>
-                            <option>4+ KT</option>
-                        </select>
-                    </div>
-                    <div class="sfield">
-                        <label>Kondisi</label>
-                        <select>
-                            <option>Ready Stock</option>
-                            <option>Indent</option>
-                            <option>Konstruksi</option>
+                        <label>Jangka Waktu</label>
+                        <select id="calcTenorSelect" onchange="calcHeroKpr()">
+                            <option value="20" selected>20 Tahun (240 bln)</option>
+                            <option value="15">15 Tahun (180 bln)</option>
+                            <option value="10">10 Tahun (120 bln)</option>
                         </select>
                     </div>
                 </div>
 
-                <a href="{{ route('home.detail') }}" class="btn-search" style="text-decoration: none;">
-                    <i class="fa-solid fa-magnifying-glass"></i> Cari Sekarang
+                {{-- Box Hasil Estimasi --}}
+                <div class="calc-hero-res">
+                    <div class="calc-hero-res-label">Estimasi Angsuran / Bulan</div>
+                    <div class="calc-hero-res-val">
+                        <span class="calc-hero-num" id="calcHeroAmount">Rp 1.084.000</span>
+                        <span class="calc-hero-period">/ bulan</span>
+                    </div>
+                    <div class="calc-hero-note" id="calcHeroNote">
+                        <i class="fa-solid fa-circle-check" style="color:var(--gold-light);"></i> DP Rp 1,66 Jt · Bunga FLPP tetap 5% flat hingga lunas
+                    </div>
+                </div>
+
+                <a id="calcHeroWaBtn" href="https://wa.me/62811999988888" target="_blank" class="btn-calc-wa">
+                    <i class="fa-brands fa-whatsapp"></i> Konsultasi KPR via WhatsApp
                 </a>
 
-                <p style="text-align:center; font-size:0.75rem; color:var(--text-light); margin-top:0.75rem;">
-                    <i class="fa-solid fa-circle-check" style="color:var(--gold)"></i>
-                    Survei lokasi & konsultasi gratis
-                </p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.85rem; font-size:0.78rem;">
+                    <span style="color:var(--text-light); display:inline-flex; align-items:center; gap:0.35rem;">
+                        <i class="fa-solid fa-shield-halved" style="color:var(--gold);"></i> KPR Dibantu Tuntas
+                    </span>
+                    <a href="#properti" style="color:var(--navy); font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:0.3rem;">
+                        Lihat Daftar Rumah <i class="fa-solid fa-arrow-right fa-xs"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -1441,7 +1568,7 @@
             <div class="tipe-card-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
             <h3>Rumah Subsidi</h3>
             <p>Rumah bersubsidi pemerintah (FLPP/BTN) untuk masyarakat berpenghasilan rendah. DP ringan, cicilan terjangkau.</p>
-            <div class="tipe-card-price">Mulai Rp 168 Juta</div>
+            <div class="tipe-card-price">Mulai Rp 166 Juta</div>
             <div class="tipe-card-note">Cicilan mulai Rp 1 juta/bulan</div>
             <div class="tipe-card-features">
                 <div class="tipe-feat"><i class="fa-solid fa-check-circle"></i> Program FLPP / BTN Subsidi</div>
@@ -1463,7 +1590,7 @@
             <div class="tipe-card-features">
                 <div class="tipe-feat"><i class="fa-solid fa-check-circle"></i> Desain modern minimalis</div>
                 <div class="tipe-feat"><i class="fa-solid fa-check-circle"></i> Cluster one-gate system</div>
-                <div class="tipe-feat"><i class="fa-solid fa-check-circle"></i> Bisa KPR 15+ bank</div>
+                <div class="tipe-feat"><i class="fa-solid fa-check-circle"></i> Bisa KPR 10+ bank</div>
                 <div class="tipe-feat"><i class="fa-solid fa-check-circle"></i> Fasilitas taman & CCTV</div>
                 <div class="tipe-feat"><i class="fa-solid fa-check-circle"></i> Sertifikat SHM</div>
             </div>
@@ -1490,7 +1617,7 @@
 </div>
 
 {{-- ================ KAWASAN / LAHAN PENGEMBANGAN (PASCA LAND BANK) ================ --}}
-<div class="bg-cream">
+<div class="bg-cream" id="kawasan">
     <div class="section">
         <div class="slabel">Kawasan Perumahan</div>
         <h2 class="stitle">Lahan & Kawasan Kami</h2>
@@ -1513,12 +1640,12 @@
                         $targetUrl = $firstUnit ? route('home.detail', $firstUnit->id) : route('home.detail', ['project_id' => $lb->id]);
                     @endphp
                     <div class="area-card">
-                        <img src="{{ $dummyImgs[$idx % count($dummyImgs)] }}" alt="{{ $lb->name }}" loading="lazy">
+                        <img src="{{ $dummyImgs[$idx % count($dummyImgs)] }}" alt="{{ $lb->name }}" loading="lazy" onload="this.classList.add('loaded'); this.closest('.area-card')?.classList.add('shimmer-done');" onerror="this.classList.add('loaded'); this.closest('.area-card')?.classList.add('shimmer-done');">
                         <div class="area-overlay">
                             <div class="area-name">{{ $lb->name }}</div>
                             <div class="area-count">
                                 @if($lb->units_count > 0)
-                                    {{ $lb->units_count }} unit siap huni (100%)
+                                    {{ $lb->units_count }} unit siap huni
                                 @else
                                     Dalam pengembangan
                                 @endif
@@ -1531,7 +1658,7 @@
                 @endforeach
             @else
                 <div class="area-card">
-                    <img src="https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Tanah Jember" loading="lazy">
+                    <img src="https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Tanah Jember" loading="lazy" onload="this.classList.add('loaded'); this.closest('.area-card')?.classList.add('shimmer-done');" onerror="this.classList.add('loaded'); this.closest('.area-card')?.classList.add('shimmer-done');">
                     <div class="area-overlay">
                         <div class="area-name">Tanah Jember</div>
                         <div class="area-count">4 unit kavling tersedia</div>
@@ -1551,7 +1678,7 @@
             <h2 class="stitle">Semua pilihan rumah kami</h2>
             <p class="ssub">Filter berdasarkan tipe untuk menemukan yang sesuai</p>
         </div>
-        <a href="{{ route('home.detail') }}" class="link-all">Lihat semua <i class="fa-solid fa-arrow-right fa-xs"></i></a>
+        <a href="{{ route('home.units') }}" class="link-all">Lihat semua <i class="fa-solid fa-arrow-right fa-xs"></i></a>
     </div>
 
     <div class="tabs-row">
@@ -1594,29 +1721,45 @@
                     $pPhoto = $pPhoto ?: 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop';
 
                     $pTitle = $pLp && !empty($pLp->headline) ? $pLp->headline : ($pUnit->nama_unit ?: 'Unit ' . $pUnit->block_number);
-                    $pLoc = $pUnit->landBank->name ?? 'Jawa Timur';
+                    $pLoc = ($pLp && !empty(trim($pLp->address))) 
+                        ? trim($pLp->address) 
+                        : ($pUnit->landBank && !empty($pUnit->landBank->address) ? $pUnit->landBank->address : ($pUnit->landBank->city ?? 'Jember, Jawa Timur'));
                     $pType = strtolower($pUnit->unit_type ?? 'komersil');
                     $isSubsidi = str_contains($pType, 'subsidi');
                     $pBadgeClass = $isSubsidi ? 'pb-subsidi' : 'pb-komersil';
                     $pBadgeText = $isSubsidi ? 'Subsidi' : 'Komersil';
                     $pPrice = $pUnit->price ? 'Rp ' . number_format($pUnit->price / 1000000, 0, ',', '.') . ' Juta' : 'Hubungi Kami';
-                    $pCicilan = $pLp && !empty($pLp->subheadline) ? $pLp->subheadline : 'Cicilan mulai terjangkau · Siap Huni';
+                    
+                    if ($pLp && !empty($pLp->subheadline)) {
+                        $pCicilan = $pLp->subheadline;
+                    } elseif ($pLp && !empty($pLp->cicilan_estimasi)) {
+                        $pCicilan = 'Cicilan mulai Rp ' . number_format($pLp->cicilan_estimasi / 1000000, 1, ',', '.') . ' jt/bln' . ($pLp->dp_persen ? ' · DP ' . $pLp->dp_persen . '%' : '');
+                    } else {
+                        $pCicilan = 'Cicilan mulai terjangkau · Siap Huni';
+                    }
+
+                    $categories = [$isSubsidi ? 'subsidi' : 'komersil', 'cashkpr'];
                 @endphp
-                <div class="prop-card" data-category="{{ $isSubsidi ? 'subsidi' : 'komersil' }}">
+                <div class="prop-card" data-category="{{ implode(' ', $categories) }}">
                     <div class="prop-img">
                         <a href="{{ route('home.detail', $pUnit->id) }}">
-                            <img src="{{ $pPhoto }}" alt="{{ $pTitle }}" loading="lazy" style="width: 100%; height: 220px; object-fit: cover;">
+                            <img src="{{ $pPhoto }}" alt="{{ $pTitle }}" loading="lazy" style="width: 100%; height: 220px; object-fit: cover;" onload="this.classList.add('loaded'); this.closest('.prop-img')?.classList.add('shimmer-done');" onerror="this.classList.add('loaded'); this.closest('.prop-img')?.classList.add('shimmer-done');">
                         </a>
                         <div class="pbadges">
                             <span class="pb {{ $pBadgeClass }}">
                                 <i class="fa-solid {{ $isSubsidi ? 'fa-hand-holding-heart' : 'fa-building' }} fa-xs"></i> {{ $pBadgeText }}
                             </span>
-                            <span class="pb pb-new"><i class="fa-solid fa-bolt fa-xs"></i> Ditayangkan</span>
+                            @if($pLp && !empty($pLp->promo_badge))
+                                <span class="pb pb-hot"><i class="fa-solid fa-fire fa-xs"></i> {{ $pLp->promo_badge }}</span>
+                            @elseif($pLp && (!empty($pLp->bank_partners) || !empty($pLp->cicilan_estimasi)))
+                                <span class="pb pb-kpr"><i class="fa-solid fa-university fa-xs"></i> KPR</span>
+                            @else
+                                <span class="pb pb-new"><i class="fa-solid fa-bolt fa-xs"></i> Ditayangkan</span>
+                            @endif
                         </div>
-                        <button class="pfav" onclick="toggleFav(this)"><i class="fa-regular fa-heart"></i></button>
                     </div>
                     <div class="prop-body">
-                        <div class="ploc"><i class="fa-solid fa-location-dot"></i> {{ $pLoc }}</div>
+                        <div class="ploc" title="{{ $pLoc }}"><i class="fa-solid fa-location-dot"></i> <span>{{ $pLoc }}</span></div>
                         <h3 class="ptitle">
                             <a href="{{ route('home.detail', $pUnit->id) }}" style="color: inherit; text-decoration: none;">{{ $pTitle }}</a>
                         </h3>
@@ -1633,180 +1776,26 @@
                     </div>
                 </div>
             @endforeach
+        @else
+            <div class="empty-state" style="grid-column: 1 / -1; text-align: center; padding: 3.5rem 1.5rem; background: #fff; border-radius: 6px; border: 1px dashed var(--border);">
+                <i class="fa-solid fa-house-chimney" style="font-size: 2.5rem; color: #94a3b8; margin-bottom: 1rem;"></i>
+                <h3 style="font-size: 1.15rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem;">Belum Ada Unit Siap Huni yang Dipublikasikan</h3>
+                <p style="color: #64748b; font-size: 0.9rem; max-width: 480px; margin: 0 auto 1.25rem;">Unit yang sudah 100% selesai dan siap huni akan otomatis tampil di sini setelah diposting.</p>
+                <a href="{{ route('home.buku-tamu') }}" class="btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.25rem; border-radius: 6px; text-decoration: none; font-size: 0.88rem;">
+                    <i class="fa-regular fa-clipboard"></i> Isi Buku Tamu & Konsultasi
+                </a>
+            </div>
         @endif
 
-        {{-- Property Card 1: Subsidi Ambulu --}}
-        <div class="prop-card">
-            <div class="prop-img">
-                <a href="{{ route('home.detail') }}">
-                    <img src="https://images.pexels.com/photos/164522/pexels-photo-164522.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Subsidi Ambulu" loading="lazy">
-                </a>
-                <div class="pbadges">
-                    <span class="pb pb-subsidi"><i class="fa-solid fa-hand-holding-heart fa-xs"></i> Subsidi</span>
-                    <span class="pb pb-kpr"><i class="fa-solid fa-university fa-xs"></i> BTN</span>
-                </div>
-                <button class="pfav" onclick="toggleFav(this)"><i class="fa-regular fa-heart"></i></button>
-            </div>
-            <div class="prop-body">
-                <div class="ploc"><i class="fa-solid fa-location-dot"></i> Ambulu</div>
-                <h3 class="ptitle"><a href="{{ route('home.detail') }}" style="color: inherit; text-decoration: none;">Rumah Subsidi Ambulu</a></h3>
-                <div class="pspecs">
-                    <div class="pspec"><i class="fa-solid fa-door-open"></i> 2 KT</div>
-                    <span class="psep">·</span>
-                    <div class="pspec"><i class="fa-solid fa-shower"></i> 1 KM</div>
-                    <span class="psep">·</span>
-                    <div class="pspec"><i class="fa-solid fa-ruler-combined"></i> 36 m²</div>
-                </div>
-                <div class="pprice">Rp 168 Juta</div>
-                <div class="pcicilan">Cicilan mulai Rp 1 juta/bulan · DP 1%</div>
-                <a href="{{ route('home.detail') }}" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
-            </div>
-        </div>
-
-        {{-- Property Card 2: Subsidi Patrang --}}
-        <div class="prop-card">
-            <div class="prop-img">
-                <a href="{{ route('home.detail') }}">
-                    <img src="https://images.pexels.com/photos/280221/pexels-photo-280221.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Subsidi Patrang" loading="lazy">
-                </a>
-                <div class="pbadges">
-                    <span class="pb pb-subsidi"><i class="fa-solid fa-hand-holding-heart fa-xs"></i> Subsidi</span>
-                    <span class="pb pb-hot"><i class="fa-solid fa-fire fa-xs"></i> Terlaris</span>
-                </div>
-                <button class="pfav" onclick="toggleFav(this)"><i class="fa-regular fa-heart"></i></button>
-            </div>
-            <div class="prop-body">
-                <div class="ploc"><i class="fa-solid fa-location-dot"></i> Patrang</div>
-                <h3 class="ptitle"><a href="{{ route('home.detail') }}" style="color: inherit; text-decoration: none;">Rumah Subsidi Patrang</a></h3>
-                <div class="pspecs">
-                    <div class="pspec"><i class="fa-solid fa-door-open"></i> 2 KT</div>
-                    <span class="psep">·</span>
-                    <div class="pspec"><i class="fa-solid fa-shower"></i> 1 KM</div>
-                    <span class="psep">·</span>
-                    <div class="pspec"><i class="fa-solid fa-ruler-combined"></i> 36 m²</div>
-                </div>
-                <div class="pprice">Rp 185 Juta</div>
-                <div class="pcicilan">Cicilan mulai Rp 1,1 juta/bulan · DP 1%</div>
-                <a href="{{ route('home.detail') }}" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
-            </div>
-        </div>
-
-        {{-- Property Card 3: Komersil Tegal Besar --}}
-        <div class="prop-card">
-            <div class="prop-img">
-                <a href="{{ route('home.detail') }}">
-                    <img src="https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Komersil Tegal Besar" loading="lazy">
-                </a>
-                <div class="pbadges">
-                    <span class="pb pb-komersil"><i class="fa-solid fa-building fa-xs"></i> Komersil</span>
-                    <span class="pb pb-kpr"><i class="fa-solid fa-check fa-xs"></i> KPR</span>
-                </div>
-                <button class="pfav" onclick="toggleFav(this)"><i class="fa-regular fa-heart"></i></button>
-            </div>
-            <div class="prop-body">
-                <div class="ploc"><i class="fa-solid fa-location-dot"></i> Tegal Besar</div>
-                <h3 class="ptitle"><a href="{{ route('home.detail') }}" style="color: inherit; text-decoration: none;">Cluster Tegal Besar</a></h3>
-                <div class="pspecs">
-                    <div class="pspec"><i class="fa-solid fa-door-open"></i> 3 KT</div>
-                    <span class="psep">·</span>
-                    <div class="pspec"><i class="fa-solid fa-shower"></i> 2 KM</div>
-                    <span class="psep">·</span>
-                    <div class="pspec"><i class="fa-solid fa-ruler-combined"></i> 90 m²</div>
-                </div>
-                <div class="pprice">Rp 485 Juta</div>
-                <div class="pcicilan">Cicilan mulai Rp 2,1 juta/bulan</div>
-                <a href="{{ route('home.detail') }}" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
-            </div>
-        </div>
-
-        {{-- Property Card 4: Komersil Kaliwates --}}
-        <div class="prop-card">
-            <div class="prop-img">
-                <a href="{{ route('home.detail') }}">
-                    <img src="https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Komersil Kaliwates" loading="lazy">
-                </a>
-                <div class="pbadges">
-                    <span class="pb pb-komersil"><i class="fa-solid fa-building fa-xs"></i> Komersil</span>
-                    <span class="pb pb-new"><i class="fa-solid fa-bolt fa-xs"></i> Baru</span>
-                </div>
-                <button class="pfav" onclick="toggleFav(this)"><i class="fa-regular fa-heart"></i></button>
-            </div>
-            <div class="prop-body">
-                <div class="ploc"><i class="fa-solid fa-location-dot"></i> Kaliwates</div>
-                <h3 class="ptitle"><a href="{{ route('home.detail') }}" style="color: inherit; text-decoration: none;">Cluster Kaliwates Residence</a></h3>
-                <div class="pspecs">
-                    <div class="pspec"><i class="fa-solid fa-door-open"></i> 3 KT</div>
-                    <span class="psep">·</span>
-                    <div class="pspec"><i class="fa-solid fa-shower"></i> 2 KM</div>
-                    <span class="psep">·</span>
-                    <div class="pspec"><i class="fa-solid fa-ruler-combined"></i> 84 m²</div>
-                </div>
-                <div class="pprice">Rp 420 Juta</div>
-                <div class="pcicilan">Cicilan mulai Rp 1,8 juta/bulan</div>
-                <a href="{{ route('home.detail') }}" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
-            </div>
-        </div>
-
-        {{-- Property Card 5: Cash KPR Sumbersari --}}
-        <div class="prop-card">
-            <div class="prop-img">
-                <a href="{{ route('home.detail') }}">
-                    <img src="https://images.pexels.com/photos/280229/pexels-photo-280229.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Cash KPR Sumbersari" loading="lazy">
-                </a>
-                <div class="pbadges">
-                    <span class="pb pb-cashkpr"><i class="fa-solid fa-money-bill-wave fa-xs"></i> Cash/KPR</span>
-                    <span class="pb pb-kpr"><i class="fa-solid fa-file-shield fa-xs"></i> SHM</span>
-                </div>
-                <button class="pfav" onclick="toggleFav(this)"><i class="fa-regular fa-heart"></i></button>
-            </div>
-            <div class="prop-body">
-                <div class="ploc"><i class="fa-solid fa-location-dot"></i> Sumbersari</div>
-                <h3 class="ptitle"><a href="{{ route('home.detail') }}" style="color: inherit; text-decoration: none;">Rumah Sumbersari Indah</a></h3>
-                <div class="pspecs">
-                    <div class="pspec"><i class="fa-solid fa-door-open"></i> 3 KT</div>
-                    <span class="psep">·</span>
-                    <div class="pspec"><i class="fa-solid fa-shower"></i> 2 KM</div>
-                    <span class="psep">·</span>
-                    <div class="pspec"><i class="fa-solid fa-ruler-combined"></i> 75 m²</div>
-                </div>
-                <div class="pprice">Rp 350 Juta</div>
-                <div class="pcicilan">Cash keras / bertahap / KPR tersedia</div>
-                <a href="{{ route('home.detail') }}" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
-            </div>
-        </div>
-
-        {{-- Property Card 6: Cash KPR Kalisat --}}
-        <div class="prop-card">
-            <div class="prop-img">
-                <a href="{{ route('home.detail') }}">
-                    <img src="https://images.pexels.com/photos/259588/pexels-photo-259588.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&fit=crop" alt="Cash KPR Kalisat" loading="lazy">
-                </a>
-                <div class="pbadges">
-                    <span class="pb pb-cashkpr"><i class="fa-solid fa-money-bill-wave fa-xs"></i> Cash/KPR</span>
-                    <span class="pb pb-hot"><i class="fa-solid fa-star fa-xs"></i> Diskon 10%</span>
-                </div>
-                <button class="pfav" onclick="toggleFav(this)"><i class="fa-regular fa-heart"></i></button>
-            </div>
-            <div class="prop-body">
-                <div class="ploc"><i class="fa-solid fa-location-dot"></i> Kalisat</div>
-                <h3 class="ptitle"><a href="{{ route('home.detail') }}" style="color: inherit; text-decoration: none;">Rumah Kalisat Asri</a></h3>
-                <div class="pspecs">
-                    <div class="pspec"><i class="fa-solid fa-door-open"></i> 3 KT</div>
-                    <span class="psep">·</span>
-                    <div class="pspec"><i class="fa-solid fa-shower"></i> 2 KM</div>
-                    <span class="psep">·</span>
-                    <div class="pspec"><i class="fa-solid fa-ruler-combined"></i> 80 m²</div>
-                </div>
-                <div class="pprice">Rp 395 Juta</div>
-                <div class="pcicilan">Cash keras diskon 10% — Rp 355 Jt</div>
-                <a href="{{ route('home.detail') }}" class="btn-detail">Lihat Detail <i class="fa-solid fa-arrow-right fa-xs"></i></a>
-            </div>
+        <div id="filter-empty-state" style="display: none; grid-column: 1 / -1; text-align: center; padding: 3rem 1.5rem; background: #fff; border-radius: 6px; border: 1px dashed var(--border);">
+            <i class="fa-solid fa-filter" style="font-size: 2rem; color: #94a3b8; margin-bottom: 0.75rem;"></i>
+            <p style="color: #64748b; font-size: 0.95rem; margin: 0;">Tidak ada unit yang sesuai dengan kategori ini saat ini.</p>
         </div>
     </div>
 </div>
 
 {{-- ================ WHY US ================ --}}
-<section class="why-section">
+<section class="why-section" id="tentang-kami">
     <div class="why-inner">
         <div class="slabel" style="color:var(--gold-light);">Keunggulan Kami</div>
         <h2 class="stitle" style="color:white;">Kenapa memilih Graha Cipta Sejahtera?</h2>
@@ -1818,7 +1807,7 @@
             <div class="why-card">
                 <div class="why-icon"><i class="fa-solid fa-tag"></i></div>
                 <h4>Harga Developer</h4>
-                <p>Langsung dari pengembang tanpa perantara. Subsidi mulai Rp 168 juta, komersil mulai Rp 350 juta.</p>
+                <p>Langsung dari pengembang tanpa perantara. Subsidi mulai Rp 166 juta, komersil mulai Rp 350 juta.</p>
             </div>
             <div class="why-card">
                 <div class="why-icon"><i class="fa-solid fa-shield-halved"></i></div>
@@ -1839,64 +1828,9 @@
     </div>
 </section>
 
-{{-- ================ TESTIMONI ================ --}}
-<div class="section">
-    <div class="slabel">Testimoni</div>
-    <h2 class="stitle">Kata mereka yang sudah membeli</h2>
-
-    <div class="testi-grid">
-        <div class="testi-card">
-            <span class="tq">"</span>
-            <div class="tstars">
-                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-            </div>
-            <p class="ttext">Dapat rumah subsidi di Ambulu, cicilan hanya Rp 1 juta per bulan! Proses KPR BTN dibantu sampai ACC. Alhamdulillah sekarang sudah punya rumah sendiri.</p>
-            <div class="tauthor">
-                <div class="tavatar sub">WS</div>
-                <div>
-                    <div class="tname">Wahyu Saputro</div>
-                    <div class="tcity">Pembeli Subsidi</div>
-                    <span class="ttipe sub">Rumah Subsidi</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="testi-card">
-            <span class="tq">"</span>
-            <div class="tstars">
-                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-            </div>
-            <p class="ttext">Beli cluster komersil Tegal Besar, lokasi strategis dan desain keren. KPR-nya dibantu dari awal sampai selesai. Sangat puas dengan pelayanannya!</p>
-            <div class="tauthor">
-                <div class="tavatar kom">BS</div>
-                <div>
-                    <div class="tname">Budi Santoso</div>
-                    <div class="tcity">Pembeli Komersil</div>
-                    <span class="ttipe kom">Rumah Komersil</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="testi-card">
-            <span class="tq">"</span>
-            <div class="tstars">
-                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-            </div>
-            <p class="ttext">Bayar cash keras dapat diskon 10%, langsung SHM. Prosesnya cepat banget, nggak ribet. Dalam 2 minggu sudah selesai semua dokumen dan serah terima!</p>
-            <div class="tauthor">
-                <div class="tavatar csh">DN</div>
-                <div>
-                    <div class="tname">Dewi Nurhayati</div>
-                    <div class="tcity">Pembeli Cash</div>
-                    <span class="ttipe csh">Cash / KPR</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 {{-- ================ KANTOR ================ --}}
-<div class="bg-cream">
+<div class="bg-cream" id="kantor">
     <div class="section" style="text-align:center;">
         <div class="slabel">Kantor Kami</div>
         <h2 class="stitle">Kunjungi kantor kami</h2>
@@ -1963,28 +1897,145 @@
         const isKomersil = el.classList.contains('t-komersil');
         const isCashKpr = el.classList.contains('t-cashkpr');
 
+        let visibleCount = 0;
         document.querySelectorAll('.prop-grid .prop-card').forEach(card => {
-            const hasSubsidiBadge = card.querySelector('.pb-subsidi') !== null;
-            const hasKomersilBadge = card.querySelector('.pb-komersil') !== null;
-            const hasCashKprBadge = card.querySelector('.pb-cashkpr') !== null || card.querySelector('.pb-kpr') !== null;
+            const cat = card.getAttribute('data-category') || '';
+            const hasSubsidi = card.querySelector('.pb-subsidi') !== null || cat.includes('subsidi');
+            const hasKomersil = card.querySelector('.pb-komersil') !== null || cat.includes('komersil');
+            const hasCashKpr = card.querySelector('.pb-cashkpr') !== null || card.querySelector('.pb-kpr') !== null || cat.includes('cashkpr');
 
+            let show = false;
             if (isSubsidi) {
-                card.style.display = hasSubsidiBadge ? '' : 'none';
+                show = hasSubsidi;
             } else if (isKomersil) {
-                card.style.display = hasKomersilBadge ? '' : 'none';
+                show = hasKomersil;
             } else if (isCashKpr) {
-                card.style.display = hasCashKprBadge ? '' : 'none';
+                show = hasCashKpr;
             } else {
-                card.style.display = '';
+                show = true;
+            }
+
+            card.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
+        });
+
+        const filterEmpty = document.getElementById('filter-empty-state');
+        if (filterEmpty) {
+            filterEmpty.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+    }
+
+    // Shimmer Skeleton Image Handler
+    function handleShimmerImages() {
+        document.querySelectorAll('.prop-img img, .area-card img').forEach(img => {
+            if (img.complete && img.naturalWidth > 0) {
+                img.classList.add('loaded');
+                img.closest('.prop-img, .area-card')?.classList.add('shimmer-done');
+            } else {
+                img.addEventListener('load', () => {
+                    img.classList.add('loaded');
+                    img.closest('.prop-img, .area-card')?.classList.add('shimmer-done');
+                }, { once: true });
+                img.addEventListener('error', () => {
+                    img.classList.add('loaded');
+                    img.closest('.prop-img, .area-card')?.classList.add('shimmer-done');
+                }, { once: true });
             }
         });
     }
 
-    function toggleFav(btn) {
-        btn.classList.toggle('active');
-        const icon = btn.querySelector('i');
-        icon.classList.toggle('fa-regular');
-        icon.classList.toggle('fa-solid');
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', handleShimmerImages);
+    } else {
+        handleShimmerImages();
+    }
+
+    // Safety timeout: ensure images reveal even on edge-case network stalls
+    setTimeout(() => {
+        document.querySelectorAll('.prop-img img, .area-card img').forEach(img => {
+            img.classList.add('loaded');
+            img.closest('.prop-img, .area-card')?.classList.add('shimmer-done');
+        });
+    }, 3000);
+
+    // Hero KPR Calculator Logic
+    let heroCalcState = {
+        type: 'subsidi',
+        price: 166000000,
+        rate: 5,
+        name: 'Rumah Subsidi'
+    };
+
+    function setCalcType(type, price, rate, btn) {
+        heroCalcState.type = type;
+        heroCalcState.price = price;
+        heroCalcState.rate = rate;
+        heroCalcState.name = type === 'subsidi' ? 'Rumah Subsidi' : 'Rumah Komersil';
+
+        const card = btn.closest('.search-card');
+        if (card) {
+            card.querySelectorAll('.stabs .stab').forEach(s => s.classList.remove('active'));
+        }
+        btn.classList.add('active');
+
+        const dpSelect = document.getElementById('calcDpSelect');
+        if (dpSelect) {
+            if (type === 'komersil' && dpSelect.value === '1') {
+                dpSelect.value = '5';
+            }
+        }
+        calcHeroKpr();
+    }
+
+    function calcHeroKpr() {
+        const dpSelect = document.getElementById('calcDpSelect');
+        const tenorSelect = document.getElementById('calcTenorSelect');
+        if (!dpSelect || !tenorSelect) return;
+
+        const dpPercent = parseFloat(dpSelect.value) || 1;
+        const years = parseInt(tenorSelect.value) || 20;
+        const price = heroCalcState.price;
+        const rate = heroCalcState.rate;
+
+        const dpAmount = price * (dpPercent / 100);
+        const loanAmount = price - dpAmount;
+        const totalMonths = years * 12;
+
+        let monthly = 0;
+        if (heroCalcState.type === 'subsidi') {
+            const monthlyRate = (rate / 100) / 12;
+            monthly = Math.round((loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonths)));
+        } else {
+            const monthlyRate = (rate / 100) / 12;
+            monthly = Math.round((loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -totalMonths)));
+        }
+
+        const formattedAmount = 'Rp ' + monthly.toLocaleString('id-ID');
+        const formattedDp = (dpAmount / 1000000).toLocaleString('id-ID', { maximumFractionDigits: 2 }) + ' Jt';
+
+        const amountEl = document.getElementById('calcHeroAmount');
+        if (amountEl) amountEl.innerText = formattedAmount;
+
+        const noteEl = document.getElementById('calcHeroNote');
+        if (noteEl) {
+            if (heroCalcState.type === 'subsidi') {
+                noteEl.innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--gold-light);"></i> DP Rp ${formattedDp} (${dpPercent}%) · Bunga FLPP tetap 5% flat hingga lunas`;
+            } else {
+                noteEl.innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--gold-light);"></i> DP Rp ${formattedDp} (${dpPercent}%) · Bunga promo fixed ${rate}% p.a (KPR 10+ Bank)`;
+            }
+        }
+
+        const waBtn = document.getElementById('calcHeroWaBtn');
+        if (waBtn) {
+            const text = `Halo Admin GCS, saya ingin konsultasi KPR untuk ${heroCalcState.name} (Harga Rp ${(price/1000000)} Juta). Simulasi saya: DP ${dpPercent}% (Rp ${formattedDp}), Tenor ${years} Tahun dengan estimasi cicilan ${formattedAmount}/bulan. Mohon info syarat dan ketersediaan unit.`;
+            waBtn.href = `https://wa.me/62811999988888?text=${encodeURIComponent(text)}`;
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', calcHeroKpr);
+    } else {
+        calcHeroKpr();
     }
 </script>
 @endpush

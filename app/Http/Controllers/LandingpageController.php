@@ -32,6 +32,7 @@ class LandingpageController extends Controller
             })
             ->where($unitFilterKondisi)
             ->orderBy('updated_at', 'desc')
+            ->take(6)
             ->get();
 
         $landBanks = LandBank::withCount([
@@ -53,7 +54,36 @@ class LandingpageController extends Controller
         ->orderBy('name', 'asc')
         ->get();
 
-        return view('home.index', compact('publishedUnits', 'landBanks'));
+        $totalUnits = LandBankUnit::count();
+
+        return view('home.index', compact('publishedUnits', 'landBanks', 'totalUnits'));
+    }
+
+    /**
+     * Halaman Publik Semua Unit Properti yang Siap Huni
+     */
+    public function allUnits()
+    {
+        $unitFilterKondisi = function ($q) {
+            $q->where(function ($sub) {
+                $sub->whereIn('status', ['ready', 'tersedia', 'available'])
+                    ->orWhereNull('status');
+            })
+            ->where(function ($sub) {
+                $sub->whereIn('construction_progress', ['selesai', '100', '100%'])
+                    ->orWhere('construction_progress', 'LIKE', '%100%');
+            });
+        };
+
+        $units = LandBankUnit::with(['landBank', 'landingPage'])
+            ->whereHas('landingPage', function ($q) {
+                $q->where('is_published', true);
+            })
+            ->where($unitFilterKondisi)
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        return view('home.units', compact('units'));
     }
 
     /**
@@ -126,6 +156,14 @@ class LandingpageController extends Controller
      */
     public function bukuTamu(Request $request)
     {
+        $selectedUnitId = $request->get('unit_id', null);
+        $selectedProjectId = $request->get('project_id', null);
+
+        // Halaman buku tamu hanya dapat diakses melalui halaman detail unit properti
+        if (!$selectedUnitId && !$selectedProjectId) {
+            return redirect()->route('home.units');
+        }
+
         $projects = LandBank::with('units')->get();
         $units = LandBankUnit::all();
         $agents = Employee::where('position_id', 2)->get();
@@ -137,8 +175,7 @@ class LandingpageController extends Controller
                             ->orderBy('nama_tugas')
                             ->get();
 
-        $selectedProjectId = $request->get('project_id', $projects->first()->id ?? null);
-        $selectedUnitId = $request->get('unit_id', null);
+        $selectedProjectId = $selectedProjectId ?: ($projects->first()->id ?? null);
         $currentUnit = null;
 
         if ($selectedUnitId) {

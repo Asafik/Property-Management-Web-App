@@ -1,25 +1,24 @@
 <nav class="navbar">
   <div class="nav-inner">
     <a href="{{ route('landingpage') }}" class="nav-logo">
-      <div class="nav-logo-icon">
-        <i class="fa-solid fa-house-chimney"></i>
-      </div>
+      <img src="{{ asset('images/logo1.png') }}" alt="Logo Graha Cipta Sejahtera" class="nav-logo-img" style="height: 40px; width: auto; object-fit: contain;">
       <span class="nav-logo-text">Graha <span>Cipta Sejahtera</span></span>
     </a>
 
     <ul class="nav-links">
       <li>
-        <a href="{{ route('landingpage') }}" class="active">
+        <a href="{{ route('landingpage') }}" class="{{ request()->routeIs('landingpage') ? 'active' : '' }}">
           <i class="fa-solid fa-house" style="font-size: 0.82rem;"></i> Beranda
         </a>
       </li>
+
       <li>
-        <a href="#simulasi-kpr">
+        <a href="{{ route('landingpage') }}#simulasi-kpr">
           <i class="fa-solid fa-calculator" style="font-size: 0.82rem;"></i> Simulasi KPR
         </a>
       </li>
       <li>
-        <a href="#tentang-kami">
+        <a href="{{ route('landingpage') }}#tentang-kami">
           <i class="fa-solid fa-circle-info" style="font-size: 0.82rem;"></i> Tentang Kami
         </a>
       </li>
@@ -42,9 +41,7 @@
 <div class="mobile-menu" id="mobileMenu">
   <div class="mobile-menu-header">
     <div class="mobile-menu-brand">
-      <div class="nav-logo-icon" style="width: 30px; height: 30px; font-size: 0.9rem;">
-        <i class="fa-solid fa-house-chimney"></i>
-      </div>
+      <img src="{{ asset('images/logo1.png') }}" alt="Logo Graha Cipta Sejahtera" class="nav-logo-img" style="height: 32px; width: auto; object-fit: contain;">
       <div class="mobile-menu-title">Graha <span>Cipta Sejahtera</span></div>
     </div>
     <button class="mobile-menu-close" onclick="closeMenu()" aria-label="Tutup Menu">
@@ -57,11 +54,12 @@
     <i class="fa-solid fa-house"></i> Beranda
   </a>
 
+
   <div class="mlabel">Info & Fitur</div>
-  <a href="#simulasi-kpr" onclick="closeMenu()">
+  <a href="{{ route('landingpage') }}#simulasi-kpr" onclick="closeMenu()">
     <i class="fa-solid fa-calculator"></i> Simulasi KPR
   </a>
-  <a href="#tentang-kami" onclick="closeMenu()">
+  <a href="{{ route('landingpage') }}#tentang-kami" onclick="closeMenu()">
     <i class="fa-solid fa-circle-info"></i> Tentang Kami
   </a>
 
