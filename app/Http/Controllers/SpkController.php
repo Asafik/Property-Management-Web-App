@@ -15,16 +15,51 @@ use Illuminate\Support\Facades\Log;
 class SpkController extends Controller
 {
     /**
+     * Cek otorisasi akses modul SPK Kontraktor.
+     * Dapat diakses oleh: Admin, Owner, Direktur, Legal (Kepala Legal & Staff Legal),
+     * Tim Proyek, atau posisi yang memiliki izin menu SPK di database.
+     */
+    private function canAccessSpk()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return false;
+        }
+
+        $pos = strtolower($user->position->name ?? '');
+        $isAdmin  = str_contains($pos, 'admin') || str_contains($pos, 'owner') || str_contains($pos, 'direktur') || ($user->division_id == 4);
+        $isLegal  = str_contains($pos, 'legal') || ($user->division_id == 2);
+        $isProyek = str_contains($pos, 'proyek') || ($user->division_id == 3);
+
+        if ($isAdmin || $isLegal || $isProyek) {
+            return true;
+        }
+
+        // Cek izin menu via database (menu_position)
+        if ($user->position_id) {
+            $hasMenuAccess = DB::table('menu_position')
+                ->join('menus', 'menus.id', '=', 'menu_position.menu_id')
+                ->where('menu_position.position_id', $user->position_id)
+                ->where(function ($q) {
+                    $q->where('menus.route', 'spk.index')
+                      ->orWhere('menus.name', 'like', '%spk%');
+                })->exists();
+
+            if ($hasMenuAccess) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Tampilkan daftar SPK Kontraktor dengan filter dan statistik.
      */
     public function index(Request $request)
     {
-        $user = auth()->user();
-        $pos = strtolower($user->position->name ?? '');
-        $isAdmin = str_contains($pos, 'admin') || str_contains($pos, 'owner') || str_contains($pos, 'direktur') || ($user && $user->division_id == 4);
-
-        if (!$isAdmin) {
-            return redirect()->route('dashboard')->with('error', 'Menu SPK Kontraktor saat ini hanya dapat diakses oleh Admin.');
+        if (!$this->canAccessSpk()) {
+            return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki hak akses ke menu SPK Kontraktor.');
         }
 
         $query = Spk::with(['landBank', 'unit', 'termins'])->latest();
@@ -77,6 +112,10 @@ class SpkController extends Controller
      */
     public function create()
     {
+        if (!$this->canAccessSpk()) {
+            return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki hak akses ke menu SPK Kontraktor.');
+        }
+
         $landBanks = LandBank::with('units')->orderBy('name', 'asc')->get();
         $companySetting = CompanySetting::first();
         $companyProfile = CompanyProfile::first();
@@ -99,6 +138,10 @@ class SpkController extends Controller
      */
     public function store(Request $request)
     {
+        if (!$this->canAccessSpk()) {
+            return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki hak akses ke menu SPK Kontraktor.');
+        }
+
         // Bersihkan format rupiah pada nilai kontrak
         $nilaiKontrakClean = $request->nilai_kontrak ? str_replace(['.', ',', 'Rp', ' '], '', $request->nilai_kontrak) : 0;
         $request->merge(['nilai_kontrak' => $nilaiKontrakClean]);
@@ -218,6 +261,10 @@ class SpkController extends Controller
      */
     public function show($id)
     {
+        if (!$this->canAccessSpk()) {
+            return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki hak akses ke menu SPK Kontraktor.');
+        }
+
         $spk = Spk::with(['landBank', 'unit', 'termins'])->findOrFail($id);
         $companySetting = CompanySetting::first();
         return view('spk.show', compact('spk', 'companySetting'));
@@ -228,6 +275,10 @@ class SpkController extends Controller
      */
     public function edit($id)
     {
+        if (!$this->canAccessSpk()) {
+            return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki hak akses ke menu SPK Kontraktor.');
+        }
+
         $spk = Spk::with(['landBank', 'unit', 'termins'])->findOrFail($id);
         $landBanks = LandBank::with('units')->orderBy('name', 'asc')->get();
         $companySetting = CompanySetting::first();
@@ -241,6 +292,10 @@ class SpkController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (!$this->canAccessSpk()) {
+            return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki hak akses ke menu SPK Kontraktor.');
+        }
+
         $spk = Spk::findOrFail($id);
 
         $nilaiKontrakClean = $request->nilai_kontrak ? str_replace(['.', ',', 'Rp', ' '], '', $request->nilai_kontrak) : 0;
@@ -360,6 +415,13 @@ class SpkController extends Controller
      */
     public function destroy($id)
     {
+        if (!$this->canAccessSpk()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki hak akses untuk menghapus SPK.'
+            ], 403);
+        }
+
         try {
             $spk = Spk::findOrFail($id);
             $noSpk = $spk->no_spk;
@@ -382,6 +444,10 @@ class SpkController extends Controller
      */
     public function cetak($id)
     {
+        if (!$this->canAccessSpk()) {
+            return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki hak akses untuk mencetak SPK Kontraktor.');
+        }
+
         $spk = Spk::with(['landBank', 'unit', 'termins'])->findOrFail($id);
         $companySetting = CompanySetting::first();
         $companyProfile = CompanyProfile::first();

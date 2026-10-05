@@ -303,7 +303,7 @@
                 {{ $item['nama_izin'] ?: 'Dokumen Perizinan Baru' }}
             </h2>
             <p class="text-muted mb-0" style="font-size: 0.85rem;">
-                {{ $project['pt'] }} &bull; {{ $project['lokasi'] }} &bull; Luas: {{ $project['luas'] }}
+                <span id="headerPtDisplay" class="fw-bold text-dark">{{ $record->companyProfile->name ?? $project['pt'] }}</span> &bull; {{ $project['lokasi'] }} &bull; Luas: {{ $project['luas'] }}
             </p>
         </div>
 
@@ -335,10 +335,42 @@
         $rawStatus = old('status', $item['status'] ?? 'Belum');
         $isProsesOrMore = in_array($rawStatus, ['Proses', 'Berjalan', 'Dalam Proses', 'Revisi', 'Tertunda', 'Terkendala', 'Terbit', 'Selesai']);
         $isTerbit = in_array($rawStatus, ['Terbit', 'Selesai']);
-        $isPoin17Doc = (!empty($item['kode_dokumen']) && strtoupper(trim($item['kode_dokumen'])) === 'POIN-17') 
-            || (!empty($item['master_id']) && $item['master_id'] == 11) 
-            || str_contains(strtolower($item['nama_izin'] ?? ''), 'shgb induk') 
-            || str_contains(strtolower($item['nama_izin'] ?? ''), 'hgb induk selesai');
+
+        $currentUser = auth()->user();
+        $posName = strtolower($currentUser->position->name ?? '');
+        $uName = strtolower($currentUser->name ?? '');
+        $uPosId = $currentUser->position_id ?? null;
+
+        // Staff Legal tidak bisa edit deadline (target selesai di-hidden)
+        $isAdminOrKepala = str_contains($posName, 'kepala') 
+            || str_contains($posName, 'admin') 
+            || str_contains($posName, 'owner') 
+            || str_contains($posName, 'direktur') 
+            || str_contains($posName, 'manager')
+            || ($uPosId == 1);
+
+        $isStaffLegalUser = !$isAdminOrKepala && (
+            ($uPosId == 4) 
+            || (str_contains($posName, 'staff') && str_contains($posName, 'legal'))
+            || str_contains($posName, 'staff')
+            || ($posName === 'legal')
+            || ($uName === 'legal')
+        );
+
+        $canEditDeadline = $isAdminOrKepala && !$isStaffLegalUser;
+
+        $docCode = strtoupper(trim($item['kode_dokumen'] ?? ''));
+        $poinLbl = strtoupper(trim($item['poin_label'] ?? ''));
+        $namaIzinLower = strtolower(trim($item['nama_izin'] ?? ''));
+
+        $isPoin17Doc = ($docCode === 'POIN-17' || str_contains($docCode, '17'))
+            || ($poinLbl === 'POIN-17' || $poinLbl === 'POIN 17' || str_contains($poinLbl, '17'))
+            || (!empty($item['master_id']) && in_array((int)$item['master_id'], [11, 17]))
+            || in_array((string)$item_id, ['11', '17'])
+            || str_contains($namaIzinLower, 'shgb induk') 
+            || str_contains($namaIzinLower, 'hgb induk selesai')
+            || (str_contains($namaIzinLower, 'balik nama') && str_contains($namaIzinLower, 'pt'))
+            || (str_contains($namaIzinLower, 'sertipikat') && str_contains($namaIzinLower, 'shgb'));
     @endphp
 
     @if($isPoin17Doc)
@@ -347,9 +379,9 @@
                 <i class="mdi mdi-shield-crown"></i>
             </div>
             <div>
-                <strong class="d-block text-dark" style="font-size: 0.92rem;">Tahap Final: Balik Nama / Pengindukan Sertifikat an. PT</strong>
+                <strong class="d-block text-dark" style="font-size: 0.92rem;">Tahap Final: Balik Nama / Pengindukan Sertifikat an. PT (ATR/BPN)</strong>
                 <span style="font-size: 0.83rem; color: #065f46;">
-                    Ketika dokumen <strong>SHGB Induk atas nama PT</strong> ini statusnya diubah ke <strong>Selesai / Terbit Resmi</strong>, kawasan <strong>{{ $project['nama'] }}</strong> akan <strong>otomatis dialihkan ke Pasca Land Bank</strong> sebagai aset sah developer yang siap dipecah kavling dan dipasarkan.
+                    Ketika dokumen <strong>SHGB Induk atas nama PT</strong> ini statusnya diubah ke <strong>Selesai / Terbit Resmi</strong> dengan mengupload berkas resmi dari Kantor Pertanahan (ATR/BPN), kawasan <strong>{{ $project['nama'] }}</strong> akan <strong>otomatis dialihkan ke Pasca Land Bank</strong> sebagai aset sah developer yang siap dipecah kavling dan dipasarkan.
                 </span>
             </div>
         </div>
@@ -444,12 +476,12 @@
 
                         <!-- Nomor Dokumen/SK & Tanggal -->
                         <div class="row g-2 mb-3">
-                            <div class="col-md-7">
+                            <div class="{{ $isTerbit ? 'col-md-7' : 'col-md-12' }}" id="colNomorDokumen" style="transition: all 0.2s ease;">
                                 <label class="form-label-custom">Nomor Dokumen / SK</label>
                                 <input type="text" name="no_izin" id="inpNoIzin" class="form-control form-control-custom font-monospace" 
                                        value="{{ old('no_izin', $item['no_izin']) }}" placeholder="Contoh: 503/124/DPMPTSP/2026">
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-5" id="colTanggalTerbit" style="{{ $isTerbit ? '' : 'display: none;' }}; transition: all 0.2s ease;">
                                 <label class="form-label-custom">Tanggal Terbit / SK</label>
                                 @php
                                     $tglVal = '';
@@ -466,23 +498,32 @@
 
                         <!-- Instansi & Target Selesai -->
                         <div class="row g-2 mb-3">
-                            <div class="col-md-7">
+                            <div class="{{ $isTerbit ? 'col-md-12' : 'col-md-7' }}" id="colInstansi" style="transition: all 0.2s ease;">
                                 <label class="form-label-custom">Instansi Terkait / Penerbit</label>
                                 <input type="text" name="instansi" class="form-control form-control-custom" 
                                        value="{{ old('instansi', $item['instansi']) }}" placeholder="Contoh: Dinas PUPR / DPMPTSP / BPN">
                             </div>
-                            <div class="col-md-5">
-                                <label class="form-label-custom">Target Selesai (Deadline)</label>
-                                @php
-                                    $dlVal = '';
-                                    if (!empty($item['target_selesai']) && $item['target_selesai'] !== '-') {
-                                        try {
-                                            $dlVal = date('Y-m-d', strtotime(str_replace('/', '-', $item['target_selesai'])));
-                                        } catch(\Throwable $e) {}
-                                    }
-                                @endphp
-                                <input type="date" name="target_selesai" class="form-control form-control-custom" 
-                                       value="{{ old('target_selesai', $dlVal) }}">
+                            @php
+                                $dlVal = '';
+                                if (!empty($item['target_selesai']) && $item['target_selesai'] !== '-') {
+                                    try {
+                                        $dlVal = date('Y-m-d', strtotime(str_replace('/', '-', $item['target_selesai'])));
+                                    } catch(\Throwable $e) {}
+                                }
+                            @endphp
+                            <div class="col-md-5" id="colTargetSelesai" style="{{ $isTerbit ? 'display: none;' : '' }}">
+                                <label class="form-label-custom d-flex align-items-center justify-content-between">
+                                    <span>Target Selesai (Deadline)</span>
+                                    @if(!$canEditDeadline)
+                                        <span class="badge bg-light text-muted fw-normal" style="font-size: 0.7rem; border: 1px solid #e2e8f0;">
+                                            <i class="mdi mdi-lock-outline me-0.5"></i>Readonly (Staff Legal)
+                                        </span>
+                                    @endif
+                                </label>
+                                <input type="date" name="target_selesai" id="inpTargetSelesai" 
+                                       class="form-control form-control-custom {{ !$canEditDeadline ? 'bg-light' : '' }}" 
+                                       value="{{ old('target_selesai', $dlVal) }}"
+                                       @if(!$canEditDeadline) readonly tabindex="-1" style="background-color: #f8fafc !important; cursor: not-allowed; pointer-events: none;" @endif>
                             </div>
                         </div>
 
@@ -493,11 +534,53 @@
                             <label class="form-label-custom d-flex justify-content-between align-items-center mb-2">
                                 <span class="d-inline-flex align-items-center gap-2">
                                     <i class="mdi mdi-certificate text-success" style="font-size: 1.2rem; line-height: 1; margin-right: 4px;"></i>
-                                    <span class="fw-bold">Berkas Dokumen Utama / SK Izin</span>
+                                    <span class="fw-bold">
+                                        @if($isPoin17Doc)
+                                            Berkas Resmi Buku Sertipikat SHGB Induk (Kantor Pertanahan ATR/BPN)
+                                        @else
+                                            Berkas Dokumen Utama / SK Izin
+                                        @endif
+                                    </span>
                                     <span class="badge bg-success-subtle text-success ms-1" style="font-size: 11px;">Resmi / Selesai</span>
                                 </span>
                                 <span class="badge" style="background-color: #fffbeb; border: 1px solid #fde68a; color: #d97706; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">PDF, JPG, PNG (Maks 20MB)</span>
                             </label>
+
+                            @if($isPoin17Doc)
+                                <!-- KHUSUS POIN-17: Pemilihan PT Developer Pemegang Hak SHGB Induk dari Kantor Pertanahan ATR/BPN -->
+                                <div class="p-3 mb-3 rounded-3" style="background: #f0fdf4; border: 1.5px solid #86efac;">
+                                    <label class="form-label-custom d-flex justify-content-between align-items-center mb-1">
+                                        <span class="d-inline-flex align-items-center gap-1.5 fw-bold text-success">
+                                            <i class="mdi mdi-office-building text-success" style="font-size: 1.15rem;"></i>
+                                            <span>Perusahaan Developer / PT Pemegang Hak SHGB Induk</span>
+                                        </span>
+                                        <span class="badge bg-success text-white" style="font-size: 10px;">Atas Nama di Buku Sertipikat ATR/BPN</span>
+                                    </label>
+                                    <p class="text-muted small mb-2" style="font-size: 0.77rem; line-height: 1.4;">
+                                        Pilih PT yang tercantum resmi pada Sertipikat SHGB Induk dari Kantor Pertanahan (ATR/BPN). Nama PT ini otomatis menjadi pemegang hak legalitas kawasan saat dialihkan ke <strong>Pasca Land Bank</strong>.
+                                    </p>
+                                    <select name="company_profile_id" id="inpCompanyProfileId" class="form-select form-select-custom fw-semibold bg-white" onchange="updatePtDisplay(this)">
+                                        <option value="">-- Pilih Perusahaan / PT Developer Pemegang Hak --</option>
+                                        @foreach($companies as $comp)
+                                            @php
+                                                $selectedCompanyId = old('company_profile_id', $record->company_profile_id ?? ($project['company_profile_id'] ?? null));
+                                            @endphp
+                                            <option value="{{ $comp->id }}" data-name="{{ $comp->name }}" {{ (string)$selectedCompanyId === (string)$comp->id ? 'selected' : '' }}>
+                                                {{ $comp->name }} {{ $comp->phone ? '• ' . $comp->phone : '' }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="d-flex align-items-center justify-content-between mt-2 px-1">
+                                        <small class="text-muted" style="font-size: 0.72rem;">
+                                            <i class="mdi mdi-information-outline me-0.5"></i>
+                                            PT saat ini: <strong class="text-dark" id="txtCurrentPtLabel">{{ $record->companyProfile->name ?? ($project['pt'] ?? 'Belum ditentukan') }}</strong>
+                                        </small>
+                                        <a href="{{ route('company-profile.index') }}" target="_blank" class="text-decoration-none small text-success fw-semibold" style="font-size: 0.72rem;">
+                                            <i class="mdi mdi-plus-box-outline me-0.5"></i>Kelola Master PT
+                                        </a>
+                                    </div>
+                                </div>
+                            @endif
 
                             <input type="file" name="file_dokumen" id="inpFileDokumen" class="d-none" accept=".pdf,.jpg,.jpeg,.png" onchange="previewSelectedDoc(this)">
 
@@ -518,7 +601,9 @@
                                             <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
                                         </div>
                                         <div class="overflow-hidden" style="min-width: 0;">
-                                            <span class="d-block fw-bold text-success text-truncate" id="mainDocStatusText" style="font-size: 0.85rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
+                                            <span class="d-block fw-bold text-success text-truncate" id="mainDocStatusText" style="font-size: 0.85rem; line-height: 1.2;">
+                                                {{ $isPoin17Doc ? 'Berkas Sertipikat SHGB Induk (ATR/BPN) Terunggah' : 'Berkas SK Resmi Terunggah' }}
+                                            </span>
                                             <small class="text-muted text-truncate d-block font-monospace" id="mainDocFileName" style="font-size: 0.74rem;">{{ basename($item['file_dokumen'] ?? '') }}</small>
                                         </div>
                                     </div>
@@ -544,9 +629,11 @@
                                     </div>
                                     <div class="overflow-hidden flex-grow-1" style="min-width: 0;">
                                         <span class="fw-bold d-block text-truncate" id="txtUploadMainLabel" style="font-size: 0.85rem; color: #059669;">
-                                            Pilih / Upload Berkas SK Resmi
+                                            {{ $isPoin17Doc ? 'Pilih / Upload Berkas Sertipikat SHGB Induk Asli (ATR/BPN)' : 'Pilih / Upload Berkas SK Resmi' }}
                                         </span>
-                                        <small class="text-muted d-block text-truncate" id="txtUploadMainSub" style="font-size: 0.74rem;">Klik di sini untuk mengunggah file SK izin yang telah terbit resmi (PDF, JPG, PNG)</small>
+                                        <small class="text-muted d-block text-truncate" id="txtUploadMainSub" style="font-size: 0.74rem;">
+                                            {{ $isPoin17Doc ? 'Klik di sini untuk mengunggah scan Buku Sertipikat SHGB Induk resmi dari Kantor Pertanahan (PDF, JPG, PNG)' : 'Klik di sini untuk mengunggah file SK izin yang telah terbit resmi (PDF, JPG, PNG)' }}
+                                        </small>
                                     </div>
                                     <span class="btn btn-sm text-white fw-bold px-3 py-1 shadow-sm d-inline-flex align-items-center justify-content-center" style="font-size: 0.78rem; border-radius: 6px; background: #10b981; border: 1px solid #10b981;">Browse</span>
                                 </div>
@@ -559,8 +646,18 @@
                                 <div class="d-flex align-items-center gap-2 text-muted" style="font-size: 0.82rem;">
                                     <i class="mdi mdi-information-outline text-primary fs-5 flex-shrink-0"></i>
                                     <div>
-                                        <strong class="text-dark d-block">Berkas Dokumen Utama / SK Izin</strong>
-                                        Upload Berkas SK Resmi akan muncul saat status dokumen diubah ke <span class="badge bg-success-subtle text-success fw-bold">Selesai / Terbit Resmi</span>.
+                                        <strong class="text-dark d-block">
+                                            @if($isPoin17Doc)
+                                                Berkas Resmi Buku Sertipikat SHGB Induk (ATR/BPN) & Pemilihan PT
+                                            @else
+                                                Berkas Dokumen Utama / SK Izin
+                                            @endif
+                                        </strong>
+                                        @if($isPoin17Doc)
+                                            Unggah berkas resmi Sertipikat dari Kantor Pertanahan (ATR/BPN) serta penetapan PT Pemegang Hak akan muncul saat status dokumen diubah ke <span class="badge bg-success-subtle text-success fw-bold">Selesai / Terbit Resmi</span>.
+                                        @else
+                                            Upload Berkas SK Resmi akan muncul saat status dokumen diubah ke <span class="badge bg-success-subtle text-success fw-bold">Selesai / Terbit Resmi</span>.
+                                        @endif
                                     </div>
                                 </div>
                                 <button type="button" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm" onclick="setDokumenStatus('Terbit')" style="background: #10b981; border: 1px solid #10b981; font-size: 0.8rem; border-radius: 6px;">
@@ -930,6 +1027,46 @@
             if (sectionSkUtama) sectionSkUtama.style.display = 'none';
             if (sectionSkHint) sectionSkHint.style.display = 'block';
         }
+
+        // 3. KONTROL VISIBILITAS TARGET SELESAI (DEADLINE)
+        // Jika status Selesai / Terbit, Target Selesai (Deadline) tidak ada / disembunyikan
+        var colTarget = document.getElementById('colTargetSelesai');
+        var colInstansi = document.getElementById('colInstansi');
+
+        if (colTarget) {
+            if (isTerbit) {
+                colTarget.style.display = 'none';
+                if (colInstansi) {
+                    colInstansi.classList.remove('col-md-7');
+                    colInstansi.classList.add('col-md-12');
+                }
+            } else {
+                colTarget.style.display = 'block';
+                if (colInstansi) {
+                    colInstansi.classList.remove('col-md-12');
+                    colInstansi.classList.add('col-md-7');
+                }
+            }
+        }
+
+        // 4. KONTROL VISIBILITAS TANGGAL TERBIT / SK
+        // Jika masih Proses / belum Selesai, Tanggal Terbit / SK dihilangkan / disembunyikan
+        var colTglTerbit = document.getElementById('colTanggalTerbit');
+        var colNoDok = document.getElementById('colNomorDokumen');
+
+        if (isTerbit) {
+            if (colTglTerbit) colTglTerbit.style.display = 'block';
+            if (colNoDok) {
+                colNoDok.classList.remove('col-md-12');
+                colNoDok.classList.add('col-md-7');
+            }
+        } else {
+            if (colTglTerbit) colTglTerbit.style.display = 'none';
+            if (colNoDok) {
+                colNoDok.classList.remove('col-md-7');
+                colNoDok.classList.add('col-md-12');
+            }
+        }
     }
 
     // PREVIEW FILE UTAMA YANG DIPILIH
@@ -1174,6 +1311,18 @@
         inp.value = '';
         uploadedSyaratMap[newIdx] = false;
         recalcProgressAuto(true);
+    }
+
+    function updatePtDisplay(selectElem) {
+        if (!selectElem) return;
+        var selectedOption = selectElem.options[selectElem.selectedIndex];
+        if (selectedOption && selectedOption.dataset.name) {
+            var ptName = selectedOption.dataset.name;
+            var currentPtLabel = document.getElementById('txtCurrentPtLabel');
+            if (currentPtLabel) currentPtLabel.textContent = ptName;
+            var headerPt = document.getElementById('headerPtDisplay');
+            if (headerPt) headerPt.textContent = ptName;
+        }
     }
 </script>
 @endpush

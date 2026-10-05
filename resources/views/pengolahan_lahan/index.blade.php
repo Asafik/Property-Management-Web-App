@@ -296,6 +296,21 @@
                                         } else {
                                             $pColor = '#f59e0b';
                                         }
+
+                                        // Badge Tahapan Aktif: jika Selesai / 100% gunakan success hijau
+                                        $faseText = $proj['fase_aktif'] ?? 'Fase 1';
+                                        $isFaseSelesai = str_contains(strtolower($faseText), 'selesai') || $pVal >= 100 || $st === 'Selesai';
+                                        if ($isFaseSelesai) {
+                                            $faseBg = '#ecfdf5';
+                                            $faseColor = '#059669';
+                                            $faseBorder = '#a7f3d0';
+                                            $faseIcon = 'mdi-check-decagram';
+                                        } else {
+                                            $faseBg = '#fef3c7';
+                                            $faseColor = '#92400e';
+                                            $faseBorder = '#fde68a';
+                                            $faseIcon = 'mdi-hammer-wrench';
+                                        }
                                     @endphp
                                     <tr class="lahan-table-row" id="row_lahan_{{ $proj['id'] }}" data-search="{{ strtolower($proj['nama'] . ' ' . ($proj['pt'] ?? '') . ' ' . ($proj['lokasi'] ?? '') . ' ' . ($proj['ownership_status'] ?? '') . ' ' . ($proj['fase_aktif'] ?? '')) }}">
                                         <td class="col-no fw-bold text-center">{{ $loop->iteration }}</td>
@@ -315,8 +330,8 @@
                                         </td>
                                         <td>
                                             <span class="badge py-1 px-2.5"
-                                                style="background-color: #fef3c7; color: #92400e; font-size: 0.75rem; font-weight: 600; border-radius: 6px; border: 1px solid #fde68a;">
-                                                <i class="mdi mdi-hammer-wrench me-1"></i>{{ $proj['fase_aktif'] ?? 'Fase 1' }}
+                                                style="background-color: {{ $faseBg }}; color: {{ $faseColor }}; font-size: 0.75rem; font-weight: 600; border-radius: 6px; border: 1px solid {{ $faseBorder }};">
+                                                <i class="mdi {{ $faseIcon }} me-1"></i>{{ $faseText }}
                                             </span>
                                         </td>
                                         <td>

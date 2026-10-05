@@ -874,10 +874,18 @@ public function store(Request $request)
                 return empty($cats) || in_array($category, $cats);
             });
 
+            $requiredDocTypes = DocumentTypes::all()->filter(function($dt) use ($category) {
+                $cats = $dt->applicable_categories ?? [];
+                return empty($cats) || in_array($category, $cats);
+            });
+            $totalRequired = $requiredDocTypes->count();
+
             $totalUploaded = $applicableDocs->whereNotNull('file_path')->count();
             $totalVerified = $applicableDocs->where('status', 'verified')->whereNotNull('file_path')->count();
 
-            if ($totalUploaded > 0 && $totalUploaded === $totalVerified) {
+            $isAllDocsVerified = ($totalRequired > 0) && ($totalVerified >= $totalRequired);
+
+            if ($isAllDocsVerified) {
                 if ($praLandbank->status === 'fase1' || $praLandbank->status === 'pending') {
                     $praLandbank->update([
                         'status'       => 'fase2',

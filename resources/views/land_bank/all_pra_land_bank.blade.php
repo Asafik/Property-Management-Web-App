@@ -454,55 +454,6 @@
                                             $fase = 3;
                                         }
 
-                                        switch ($isTerminActive ? 'termin_active_bypass' : $land->status) {
-                                            case 'termin_active_bypass':
-                                                break;
-                                            case 'fase1':
-                                                $fase = 1;
-                                                $percent = 33;
-                                                break;
-                                            case 'fase2':
-                                                $fase = 2;
-                                                $percent = 67;
-                                                break;
-                                            case 'fase3':
-                                            case 'fase4':
-                                            case 'approved':
-                                                $fase = 3;
-                                                $percent = 100;
-                                                break;
-                                            case 'rejected':
-                                                $fase = 0;
-                                                $percent = 0;
-                                                break;
-                                            case 'pending':
-                                                if (!empty($land->notaris_id) || !empty($land->file_ijb) || $land->status === 'fase3') {
-                                                    $fase = 3;
-                                                    $percent = 100;
-                                                } elseif (!empty($land->survey_date) || !empty($land->survey_by) || $land->status === 'fase2') {
-                                                    $fase = 2;
-                                                    $percent = 67;
-                                                } else {
-                                                    $fase = 1;
-                                                    $percent = 33;
-                                                }
-                                                break;
-                                            default:
-                                                $fase = 1;
-                                                $percent = 33;
-                                        }
-
-                                        // Warna bar fase
-                                        if ($land->status == 'approved' || $percent == 100) {
-                                            $faseColor = '#10b981';
-                                        } elseif ($land->status == 'rejected') {
-                                            $faseColor = '#ef4444';
-                                        } elseif ($percent >= 60) {
-                                            $faseColor = '#0284c7';
-                                        } else {
-                                            $faseColor = '#7c3aed';
-                                        }
-
                                         // Legalitas Check
                                         $rawStatus = strtoupper($land->ownership_status ?? 'SHM');
                                         if (str_contains($rawStatus, 'APHB')) {
@@ -533,10 +484,59 @@
                                         $isFase2Done = (!empty($land->survey_date) || !empty($land->survey_by) || !empty($land->lat) || in_array($land->status, ['fase2', 'fase3', 'approved', 'rejected']));
                                         $canAccessFase2 = $isLandLegalSah || in_array($land->status, ['fase2', 'fase3', 'approved', 'rejected']);
                                         $canAccessFase3 = in_array($land->status, ['fase3', 'approved', 'rejected']) || ($isLandLegalSah && $isFase2Done) || $isTerminActive;
+
+                                        switch ($isTerminActive ? 'termin_active_bypass' : $land->status) {
+                                            case 'termin_active_bypass':
+                                                break;
+                                            case 'fase1':
+                                                $fase = $isLandLegalSah ? 2 : 1;
+                                                $percent = $isLandLegalSah ? 67 : 33;
+                                                break;
+                                            case 'fase2':
+                                                $fase = 2;
+                                                $percent = 67;
+                                                break;
+                                            case 'fase3':
+                                            case 'fase4':
+                                            case 'approved':
+                                                $fase = 3;
+                                                $percent = 100;
+                                                break;
+                                            case 'rejected':
+                                                $fase = 0;
+                                                $percent = 0;
+                                                break;
+                                            case 'pending':
+                                                if (!empty($land->notaris_id) || !empty($land->file_ijb) || $land->status === 'fase3') {
+                                                    $fase = 3;
+                                                    $percent = 100;
+                                                } elseif ($isLandLegalSah || !empty($land->survey_date) || !empty($land->survey_by) || $land->status === 'fase2') {
+                                                    $fase = 2;
+                                                    $percent = 67;
+                                                } else {
+                                                    $fase = 1;
+                                                    $percent = 33;
+                                                }
+                                                break;
+                                            default:
+                                                $fase = $isLandLegalSah ? 2 : 1;
+                                                $percent = $isLandLegalSah ? 67 : 33;
+                                        }
+
+                                        // Warna bar fase
+                                        if ($land->status == 'approved' || $percent == 100) {
+                                            $faseColor = '#10b981';
+                                        } elseif ($land->status == 'rejected') {
+                                            $faseColor = '#ef4444';
+                                        } elseif ($percent >= 60) {
+                                            $faseColor = '#0284c7';
+                                        } else {
+                                            $faseColor = '#7c3aed';
+                                        }
                                     @endphp
 
                                     <tr class="pra-table-row" id="row-{{ $land->id }}"
-                                        data-search="{{ strtolower($land->land_name . ' ' . ($land->land_owner ?? '') . ' ' . ($land->ownership_status ?? '') . ' ' . $land->status) }}">
+                                        data-search="{{ strtolower($land->land_name . ' ' . ($land->land_owner ?? '') . ' ' . ($land->ownership_status ?? '') . ' ' . $land->status . ' ' . ($land->status == 'fase1' && !$isLandLegalSah ? 'menunggu verifikasi dokumen' : 'fase 2')) }}">
                                         
                                         <td class="col-no fw-bold text-center">
                                             {{ $praLandBank->firstItem() + $index }}
@@ -553,25 +553,6 @@
                                                         {{ $land->ownership_status }}
                                                     </span>
                                                 @endif
-                                                
-                                                {{-- BADGE PT ATAU TOMBOL PILIH PT --}}
-                                                @if($land->companyProfile)
-                                                    <span class="badge py-0.5 px-2 text-truncate cursor-pointer" 
-                                                        style="background-color: #e0f2fe; color: #0284c7; font-size: 0.73rem; font-weight: 600; border-radius: 4px; border: 1px solid #bae6fd; max-width: 175px; cursor: pointer;" 
-                                                        onclick="openQuickUpdateCompanyModal({{ $land->id }}, '{{ addslashes($land->land_name) }}', {{ $land->company_profile_id }})" 
-                                                        title="PT Mitra Pengembang. Klik untuk mengubah">
-                                                        <i class="mdi mdi-city me-0.5"></i>{{ $land->companyProfile->name }}
-                                                    </span>
-                                                @else
-                                                    <button type="button" class="btn btn-xs py-0.5 px-1.5 border border-dashed rounded text-primary bg-light" 
-                                                        style="font-size: 10px; font-weight: 600;" 
-                                                        onclick="openQuickUpdateCompanyModal({{ $land->id }}, '{{ addslashes($land->land_name) }}', null)" 
-                                                        title="Klik untuk memilih PT Mitra Pengembang">
-                                                        <i class="mdi mdi-plus-circle me-0.5"></i>Pilih PT
-                                                    </button>
-                                                @endif
-
-
                                             </div>
                                         </td>
 
@@ -664,6 +645,24 @@
                                             @elseif($land->status == 'rejected')
                                                 <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca;">
                                                     Rejected
+                                                </span>
+                                            @elseif($land->status == 'fase1' || ($land->status == 'pending' && !$isLandLegalSah))
+                                                @if($isLandLegalSah)
+                                                    <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
+                                                        Fase 2
+                                                    </span>
+                                                @else
+                                                    <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #fff7ed; color: #c2410c; border: 1px solid #fed7aa;" title="Dokumen legalitas masih menunggu verifikasi Admin">
+                                                        <i class="mdi mdi-clock-outline me-1"></i>Menunggu Verifikasi Dokumen
+                                                    </span>
+                                                @endif
+                                            @elseif($land->status == 'fase2')
+                                                <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
+                                                    Fase 2
+                                                </span>
+                                            @elseif($land->status == 'fase3')
+                                                <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #f5f3ff; color: #7e22ce; border: 1px solid #ddd6fe;">
+                                                    Fase 3
                                                 </span>
                                             @else
                                                 <span class="badge py-1 px-2.5 fw-semibold" style="font-size: 0.74rem; border-radius: 6px; background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
@@ -850,53 +849,7 @@
     </div>
 </div>
 
-<!-- Modal Quick Update PT Mitra Pengembang -->
-<div class="modal fade" id="modalQuickUpdateCompany" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
-    <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
-        <div class="modal-content shadow-lg border-0 rounded-4 overflow-hidden">
-            <div class="modal-header border-0 pb-0 pt-4 px-4 bg-white">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background: #e0f2fe; color: #0284c7; width: 42px; height: 42px;">
-                        <i class="mdi mdi-city fs-4"></i>
-                    </div>
-                    <div>
-                        <h5 class="modal-title fw-bold text-dark mb-0" style="font-size: 1.05rem;">Profil PT Pengembang</h5>
-                        <small class="text-muted d-block text-truncate" style="max-width: 250px;" id="quickCompLandName">-</small>
-                    </div>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form id="formQuickUpdateCompany" onsubmit="submitQuickCompany(event)">
-                @csrf
-                <input type="hidden" id="quickCompLandId" name="land_id">
-                <div class="modal-body p-4 pt-3">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold text-dark mb-1" style="font-size: 0.84rem;">
-                            Pilih PT Mitra Pengembang <span class="text-danger">*</span>
-                        </label>
-                        <select class="form-select" id="quickCompanySelect" name="company_profile_id" required style="border-radius: 8px; font-size: 0.88rem; border-color: #cbd5e1;">
-                            <option value="">-- Pilih PT Mitra Pengembang --</option>
-                            @if(isset($companies))
-                                @foreach($companies as $c)
-                                    <option value="{{ $c->id }}">{{ $c->name }}</option>
-                                @endforeach
-                            @endif
-                        </select>
-                        <div class="alert alert-info py-2 px-3 mt-3 mb-0 rounded-3" style="font-size: 0.77rem; line-height: 1.45; background-color: #f0fdf4; border-color: #86efac; color: #166534;">
-                            <i class="mdi mdi-information-outline me-1"></i><strong>Otomatisasi Sistem:</strong> Ketika dokumen fisik lahan ini telah lengkap dan nama PT diupdate, sistem akan otomatis mengaktifkan & memasukkan lahan ini ke <strong>Pasca Land Bank</strong>.
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer border-0 p-4 pt-0 d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-light px-3 py-1.5 rounded-pill text-muted" data-bs-dismiss="modal" style="font-size: 0.84rem;">Batal</button>
-                    <button type="submit" class="btn btn-gradient-primary px-4 py-2 rounded-pill shadow-sm fw-bold" style="font-size: 0.84rem;">
-                        <i class="mdi mdi-check-circle me-1"></i>Simpan Profil PT
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -1185,83 +1138,7 @@
             });
         });
 
-        // ==========================================
-        // QUICK UPDATE PT MITRA PENGEMBANG
-        // ==========================================
-        function openQuickUpdateCompanyModal(landId, landName, currentCompId) {
-            document.getElementById('quickCompLandId').value = landId;
-            document.getElementById('quickCompLandName').textContent = landName;
-            document.getElementById('quickCompanySelect').value = currentCompId || '';
-            const modal = new bootstrap.Modal(document.getElementById('modalQuickUpdateCompany'));
-            modal.show();
-        }
 
-        function submitQuickCompany(e) {
-            e.preventDefault();
-            const landId = document.getElementById('quickCompLandId').value;
-            const compId = document.getElementById('quickCompanySelect').value;
-            if (!compId) return;
-
-            Swal.fire({
-                title: 'Menyimpan Profil PT...',
-                text: 'Memeriksa kelengkapan berkas fisik & alur Pasca...',
-                allowOutsideClick: false,
-                didOpen: () => Swal.showLoading()
-            });
-
-            fetch(`/properti/pra-landbank/${landId}/update-company`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ company_profile_id: compId })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    bootstrap.Modal.getInstance(document.getElementById('modalQuickUpdateCompany'))?.hide();
-
-                    if (data.auto_migrated_to_pasca) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '<span style="color:#059669; font-weight:700;"><i class="mdi mdi-check-decagram me-1"></i> Masuk ke Pasca Land Bank!</span>',
-                            html: `
-                                <p class="text-muted small mb-2" style="font-size:0.92rem;">${data.message}</p>
-                                <div class="alert alert-success py-2 px-3 mb-0 text-start" style="font-size:0.83rem;">
-                                    <i class="mdi mdi-shield-check me-1"></i> Lahan telah aktif di Pasca Land Bank dan siap untuk alur pengurusan <strong>Dokumen Pengindukan & Perizinan</strong>.
-                                </div>
-                            `,
-                            showCancelButton: true,
-                            confirmButtonColor: '#10b981',
-                            cancelButtonColor: '#6366f1',
-                            confirmButtonText: '<i class="mdi mdi-arrow-right-circle me-1"></i> Buka di Pasca Land Bank',
-                            cancelButtonText: 'Tetap di Sini'
-                        }).then((choice) => {
-                            if (choice.isConfirmed && data.redirect_url) {
-                                window.location.href = data.redirect_url;
-                            } else {
-                                location.reload();
-                            }
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: data.message,
-                            timer: 1500,
-                            showConfirmButton: false
-                        }).then(() => location.reload());
-                    }
-                } else {
-                    Swal.fire('Gagal', data.message || 'Gagal menyimpan profil PT', 'error');
-                }
-            })
-            .catch(err => {
-                Swal.fire('Error', 'Terjadi kesalahan sistem saat memperbarui PT', 'error');
-            });
-        }
     </script>
 @endpush
 

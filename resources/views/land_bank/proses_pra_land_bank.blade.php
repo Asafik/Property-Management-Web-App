@@ -1687,7 +1687,7 @@
                                 $canEditNominal = $isAdmin || $isKepalaLegal || $isStaffLegal || $isKepalaMarketing;
 
                                 // Hak Akses Role
-                                $canEditGeneralInfo = ($isAdmin || !$isStaffLegal) && !$isKeuangan && !$land;
+                                $canEditGeneralInfo = ($isAdmin || $isKepalaLegal || $isStaffLegal || $isKepalaMarketing) && !$isKeuangan && (!$land || !in_array($land->status, ['approved', 'rejected']));
                                 $canEditFinancial   = $isAdmin || $isKeuangan;
                                 $canValidateDoc     = $isAdmin;
                                 $canEditDecisions   = $isAdmin;
@@ -1815,7 +1815,7 @@
                                 @elseif($isStaffLegal && $land)
                                     <div class="alert alert-soft-primary border border-primary-subtle py-2.5 px-3 mb-3 d-flex align-items-center gap-2 rounded-3 text-primary" style="background: #eff6ff; font-size: 0.83rem;">
                                         <i class="mdi mdi-information-outline fs-5 text-primary"></i>
-                                        <span><strong>Peran Staff Legal:</strong> Anda berwenang melengkapi nomor dokumen, masa berlaku, status fisik keberadaan, dan mengunggah berkas pada bagian <strong>Dokumen Legalitas & Verifikasi Berkas (Fase 1)</strong> di bawah.</span>
+                                        <span><strong>Peran Staff Legal:</strong> Anda berwenang mengelola data tanah, kontak makelar, negosiasi harga, serta melengkapi nomor dokumen dan mengunggah berkas pada bagian <strong>Dokumen Legalitas & Verifikasi Berkas (Fase 1)</strong> di bawah.</span>
                                     </div>
                                 @endif
 
@@ -1824,7 +1824,7 @@
                                     <div class="form-section-title">
                                         Data Kontak Makelar
                                         @if(!$canEditGeneralInfo)
-                                            <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Kepala Marketing / Admin)</small>
+                                            <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Tim Legal / Marketing / Admin)</small>
                                         @endif
                                     </div>
                                     <div class="row">
@@ -1852,7 +1852,7 @@
                                     <div class="form-section-title">
                                         Data Tanah
                                         @if(!$canEditGeneralInfo)
-                                            <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Kepala Marketing / Admin)</small>
+                                            <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Tim Legal / Marketing / Admin)</small>
                                         @endif
                                     </div>
                                     <div class="row">
@@ -1946,7 +1946,7 @@
                                     <div class="form-section-title">
                                         Negosiasi Harga Awal
                                         @if(!$canEditGeneralInfo)
-                                            <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Kepala Marketing / Admin)</small>
+                                            <small class="text-muted d-block fw-normal" style="font-size: 0.75rem;">(Diinput oleh Tim Legal / Marketing / Admin)</small>
                                         @endif
                                     </div>
                                     <div class="row">

@@ -167,7 +167,10 @@ class PerizinanTaskController extends Controller
     /**
      * Halaman Khusus: Form Tugaskan Staf Legal Baru
      */
-    public function create()
+    /**
+     * Halaman Khusus: Form Tugaskan Staf Legal Baru
+     */
+    public function create(Request $request)
     {
         $ctx = $this->getUserRoleContext();
         if (!$ctx['canManage']) {
@@ -220,7 +223,13 @@ class PerizinanTaskController extends Controller
             $masterDocs = MasterDokumenPerizinan::orderBy('urutan', 'asc')->get();
         } catch (\Throwable $e) {}
 
-        return view('perizinan.tugas.create', compact('legalStaffs', 'projects', 'masterDocs', 'canManage', 'ctx'));
+        // Ambil penugasan yang sudah ada untuk aturan: 1 Poin = 1 Staf untuk 1 Proyek
+        $existingTasks = PerizinanTask::with('employee:id,name')
+            ->get(['id', 'proyek_id', 'proyek_nama', 'master_dokumen_id', 'nama_tugas', 'employee_id']);
+
+        $selectedProyekId = $request->query('proyek_id');
+
+        return view('perizinan.tugas.create', compact('legalStaffs', 'projects', 'masterDocs', 'existingTasks', 'selectedProyekId', 'canManage', 'ctx'));
     }
 
     /**
@@ -246,17 +255,74 @@ class PerizinanTaskController extends Controller
         $proyekNama = null;
         if ($request->filled('proyek_id')) {
             $pra = PraLandbank::find($request->proyek_id);
-            $proyekNama = $pra ? $pra->land_name : $request->input('proyek_nama');
+            if ($pra) {
+                $proyekNama = $pra->land_name;
+            } else {
+                $lb = LandBank::find($request->proyek_id);
+                $proyekNama = $lb ? $lb->name : $request->input('proyek_nama');
+            }
         } elseif ($request->filled('proyek_nama')) {
             $proyekNama = $request->input('proyek_nama');
+        }
+
+        // Resolusi Master Dokumen
+        $masterDoc = null;
+        if ($request->filled('master_dokumen_id')) {
+            $masterDoc = MasterDokumenPerizinan::find($request->master_dokumen_id);
+        }
+        if (!$masterDoc && $request->filled('nama_tugas')) {
+            $cleanInputName = trim($request->nama_tugas);
+            $masterDoc = MasterDokumenPerizinan::all()->first(function ($md) use ($cleanInputName) {
+                $mName = strtolower(trim($md->nama_dokumen));
+                $cName = strtolower($cleanInputName);
+                $codeFull = strtolower(trim(($md->kode_dokumen ? '[' . $md->kode_dokumen . '] ' : '') . $md->nama_dokumen));
+                return $cName === $mName || $cName === $codeFull || str_contains($cName, $mName) || str_contains($mName, $cName);
+            });
+        }
+
+        // Validasi Aturan: 1 Poin Perizinan = 1 Staf untuk 1 Proyek Kawasan
+        $existingTaskQuery = PerizinanTask::query();
+
+        if ($request->filled('proyek_id')) {
+            $existingTaskQuery->where('proyek_id', $request->proyek_id);
+        } elseif ($proyekNama) {
+            $existingTaskQuery->where(function ($q) use ($proyekNama) {
+                $q->where('proyek_nama', $proyekNama)
+                  ->orWhereNull('proyek_id');
+            });
+        } else {
+            $existingTaskQuery->whereNull('proyek_id');
+        }
+
+        $existingTaskQuery->where(function ($q) use ($request, $masterDoc) {
+            if ($masterDoc) {
+                $q->where('master_dokumen_id', $masterDoc->id)
+                  ->orWhere('nama_tugas', $masterDoc->nama_dokumen)
+                  ->orWhere('nama_tugas', 'like', '%' . $masterDoc->nama_dokumen . '%');
+            } else {
+                $inputName = trim($request->nama_tugas);
+                $q->where('nama_tugas', $inputName)
+                  ->orWhere('nama_tugas', 'like', '%' . $inputName . '%');
+            }
+        });
+
+        $duplicateTask = $existingTaskQuery->with('employee')->first();
+        if ($duplicateTask) {
+            $assignedStaffName = $duplicateTask->employee ? $duplicateTask->employee->name : 'staf lain';
+            $displayDoc = $masterDoc ? (($masterDoc->kode_dokumen ? '[' . $masterDoc->kode_dokumen . '] ' : '') . $masterDoc->nama_dokumen) : $request->nama_tugas;
+            $displayProj = $proyekNama ? "proyek '{$proyekNama}'" : "kawasan ini";
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', "Poin perizinan '{$displayDoc}' sudah ditugaskan kepada staf {$assignedStaffName} untuk {$displayProj}. 1 Poin perizinan hanya dapat ditugaskan ke 1 staf.");
         }
 
         $task = PerizinanTask::create([
             'proyek_id'          => $request->proyek_id ?: null,
             'proyek_nama'        => $proyekNama,
-            'master_dokumen_id'  => $request->master_dokumen_id ?: null,
-            'nama_tugas'         => $request->nama_tugas,
-            'instansi'           => $request->instansi ?: 'Instansi Terkait',
+            'master_dokumen_id'  => $masterDoc ? $masterDoc->id : ($request->master_dokumen_id ?: null),
+            'nama_tugas'         => $masterDoc ? $masterDoc->nama_dokumen : $request->nama_tugas,
+            'instansi'           => $request->instansi ?: ($masterDoc ? $masterDoc->instansi_terkait : 'Instansi Terkait'),
             'employee_id'        => $request->employee_id,
             'assigned_by'        => $ctx['user']->id,
             'updated_by'         => $ctx['user']->id,
@@ -340,7 +406,12 @@ class PerizinanTaskController extends Controller
             $masterDocs = MasterDokumenPerizinan::orderBy('urutan', 'asc')->get();
         } catch (\Throwable $e) {}
 
-        return view('perizinan.tugas.create', compact('task', 'legalStaffs', 'projects', 'masterDocs', 'canManage', 'ctx'));
+        // Ambil penugasan lain (kecuali task ini sendiri) untuk cek duplikasi
+        $existingTasks = PerizinanTask::where('id', '!=', $id)
+            ->with('employee:id,name')
+            ->get(['id', 'proyek_id', 'proyek_nama', 'master_dokumen_id', 'nama_tugas', 'employee_id']);
+
+        return view('perizinan.tugas.create', compact('task', 'legalStaffs', 'projects', 'masterDocs', 'existingTasks', 'canManage', 'ctx'));
     }
 
     /**
@@ -356,39 +427,98 @@ class PerizinanTaskController extends Controller
         $task = PerizinanTask::findOrFail($id);
 
         $request->validate([
-            'nama_tugas'   => 'required|string|max:255',
-            'employee_id'  => 'required|exists:employees,id',
-            'proyek_id'    => 'nullable',
-            'instansi'     => 'nullable|string|max:255',
-            'deadline'     => 'nullable|date',
-            'catatan'      => 'nullable|string',
-            'status'       => 'nullable|in:Pending,Dalam Proses,Selesai,Terkendala',
+            'nama_tugas'         => 'required|string|max:255',
+            'employee_id'        => 'required|exists:employees,id',
+            'proyek_id'          => 'nullable',
+            'instansi'           => 'nullable|string|max:255',
+            'deadline'           => 'nullable|date',
+            'catatan'            => 'nullable|string',
+            'status'             => 'nullable|in:Pending,Dalam Proses,Selesai,Terkendala',
+            'master_dokumen_id'  => 'nullable|integer',
         ]);
+
+        $proyekNama = $task->proyek_nama;
+        if ($request->filled('proyek_id') && $request->proyek_id != $task->proyek_id) {
+            $pra = PraLandbank::find($request->proyek_id);
+            if ($pra) {
+                $proyekNama = $pra->land_name;
+            } else {
+                $lb = LandBank::find($request->proyek_id);
+                $proyekNama = $lb ? $lb->name : $task->proyek_nama;
+            }
+        }
+
+        // Resolusi Master Dokumen
+        $masterDoc = null;
+        if ($request->filled('master_dokumen_id')) {
+            $masterDoc = MasterDokumenPerizinan::find($request->master_dokumen_id);
+        }
+        if (!$masterDoc && $request->filled('nama_tugas')) {
+            $cleanInputName = trim($request->nama_tugas);
+            $masterDoc = MasterDokumenPerizinan::all()->first(function ($md) use ($cleanInputName) {
+                $mName = strtolower(trim($md->nama_dokumen));
+                $cName = strtolower($cleanInputName);
+                $codeFull = strtolower(trim(($md->kode_dokumen ? '[' . $md->kode_dokumen . '] ' : '') . $md->nama_dokumen));
+                return $cName === $mName || $cName === $codeFull || str_contains($cName, $mName) || str_contains($mName, $cName);
+            });
+        }
+
+        $targetProyekId = $request->proyek_id ?: $task->proyek_id;
+        $existingTaskQuery = PerizinanTask::where('id', '!=', $id);
+
+        if ($targetProyekId) {
+            $existingTaskQuery->where('proyek_id', $targetProyekId);
+        } elseif ($proyekNama) {
+            $existingTaskQuery->where(function ($q) use ($proyekNama) {
+                $q->where('proyek_nama', $proyekNama)
+                  ->orWhereNull('proyek_id');
+            });
+        } else {
+            $existingTaskQuery->whereNull('proyek_id');
+        }
+
+        $existingTaskQuery->where(function ($q) use ($request, $masterDoc) {
+            if ($masterDoc) {
+                $q->where('master_dokumen_id', $masterDoc->id)
+                  ->orWhere('nama_tugas', $masterDoc->nama_dokumen)
+                  ->orWhere('nama_tugas', 'like', '%' . $masterDoc->nama_dokumen . '%');
+            } else {
+                $inputName = trim($request->nama_tugas);
+                $q->where('nama_tugas', $inputName)
+                  ->orWhere('nama_tugas', 'like', '%' . $inputName . '%');
+            }
+        });
+
+        $duplicateTask = $existingTaskQuery->with('employee')->first();
+        if ($duplicateTask) {
+            $assignedStaffName = $duplicateTask->employee ? $duplicateTask->employee->name : 'staf lain';
+            $displayDoc = $masterDoc ? (($masterDoc->kode_dokumen ? '[' . $masterDoc->kode_dokumen . '] ' : '') . $masterDoc->nama_dokumen) : $request->nama_tugas;
+            $displayProj = $proyekNama ? "proyek '{$proyekNama}'" : "kawasan ini";
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', "Poin perizinan '{$displayDoc}' sudah ditugaskan kepada staf {$assignedStaffName} untuk {$displayProj}. 1 Poin perizinan hanya dapat ditugaskan ke 1 staf.");
+        }
 
         $oldEmployeeId = $task->employee_id;
         $oldStaff = $task->employee;
         $newStaff = Employee::find($request->employee_id);
 
-        $proyekNama = $task->proyek_nama;
-        if ($request->filled('proyek_id') && $request->proyek_id != $task->proyek_id) {
-            $pra = PraLandbank::find($request->proyek_id);
-            $proyekNama = $pra ? $pra->land_name : $task->proyek_nama;
-        }
-
         $oldStatus = $task->status;
         $newStatus = $request->input('status', $oldStatus);
 
         $task->update([
-            'nama_tugas'       => $request->nama_tugas,
-            'employee_id'      => $request->employee_id,
-            'proyek_id'        => $request->proyek_id ?: $task->proyek_id,
-            'proyek_nama'      => $proyekNama,
-            'instansi'         => $request->instansi ?: $task->instansi,
-            'deadline'         => $request->deadline,
-            'catatan'          => $request->catatan,
-            'status'           => $newStatus,
-            'updated_by'       => $ctx['user']->id,
-            'last_activity_at' => now(),
+            'nama_tugas'         => $masterDoc ? $masterDoc->nama_dokumen : $request->nama_tugas,
+            'master_dokumen_id'  => $masterDoc ? $masterDoc->id : ($request->master_dokumen_id ?: $task->master_dokumen_id),
+            'employee_id'        => $request->employee_id,
+            'proyek_id'          => $targetProyekId,
+            'proyek_nama'        => $proyekNama,
+            'instansi'           => $request->instansi ?: ($masterDoc ? $masterDoc->instansi_terkait : $task->instansi),
+            'deadline'           => $request->deadline,
+            'catatan'            => $request->catatan,
+            'status'             => $newStatus,
+            'updated_by'         => $ctx['user']->id,
+            'last_activity_at'   => now(),
         ]);
 
         // Catat Log Perubahan
@@ -570,6 +700,10 @@ class PerizinanTaskController extends Controller
         ])->findOrFail($id);
 
         $logData = $task->logs->map(function ($log) {
+            $timeWib = $log->created_at 
+                ? $log->created_at->copy()->timezone('Asia/Jakarta')->locale('id') 
+                : null;
+
             return [
                 'id'           => $log->id,
                 'action'       => $log->action,
@@ -581,8 +715,8 @@ class PerizinanTaskController extends Controller
                 'new_progress' => $log->new_progress,
                 'keterangan'   => $log->keterangan,
                 'file_url'     => $log->file_dokumen ? asset('storage/' . $log->file_dokumen) : null,
-                'created_at'   => $log->created_at->format('d M Y, H:i'),
-                'time_ago'     => $log->created_at->diffForHumans(),
+                'created_at'   => $timeWib ? ($timeWib->translatedFormat('l, d M Y, H:i') . ' WIB') : '-',
+                'time_ago'     => $timeWib ? $timeWib->diffForHumans() : '',
             ];
         });
 

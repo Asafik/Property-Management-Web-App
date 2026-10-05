@@ -266,6 +266,8 @@
                                         <option value="">-- Cari atau Pilih Dokumen Perizinan --</option>
                                         @foreach($masterDocs as $md)
                                             <option value="{{ $md->nama_dokumen }}" 
+                                                data-id="{{ $md->id }}"
+                                                data-kode="{{ $md->kode_dokumen }}"
                                                 data-instansi="{{ $md->instansi_terkait }}"
                                                 data-catatan="{{ $md->deskripsi }}">
                                                 {{ $md->kode_dokumen ? '[' . $md->kode_dokumen . '] ' : '' }}{{ $md->nama_dokumen }}
@@ -280,9 +282,10 @@
                                 </div>
 
                                 <!-- Hidden field yang dikirim ke controller -->
+                                <input type="hidden" name="master_dokumen_id" id="tambahMasterDokumenId" value="{{ old('master_dokumen_id', $isEdit ? $task->master_dokumen_id : '') }}">
                                 <input type="hidden" name="nama_tugas" id="tambahNamaTugas" value="{{ old('nama_tugas', $isEdit ? $task->nama_tugas : '') }}" required>
                                 <small class="text-muted d-block mt-1" id="keteranganMode" style="font-size: 0.74rem;">
-                                    Ketik kata kunci untuk mencari dokumen izin dari master secara live.
+                                    Ketik kata kunci untuk mencari dokumen izin dari master secara live. Poin yang sudah ditugaskan ke staf lain otomatis dinonaktifkan.
                                 </small>
                             </div>
 
@@ -305,7 +308,7 @@
                                 <select name="proyek_id" id="selectProyekId" class="form-select form-select-custom">
                                     <option value="">-- Bebas / Kawasan Umum --</option>
                                     @foreach($projects as $proj)
-                                        <option value="{{ $proj['id'] }}" {{ (old('proyek_id', $isEdit ? $task->proyek_id : '') == $proj['id']) ? 'selected' : '' }}>
+                                        <option value="{{ $proj['id'] }}" {{ (old('proyek_id', $selectedProyekId ?? ($isEdit ? $task->proyek_id : '')) == $proj['id']) ? 'selected' : '' }}>
                                             {{ $proj['nama'] }}
                                         </option>
                                     @endforeach
@@ -406,8 +409,139 @@
 <script>
     var currentMode = 'master';
 
+    @php
+        $assignedTasksJson = ($existingTasks ?? collect())->map(function($t) {
+            return [
+                'id'                => $t->id,
+                'proyek_id'         => $t->proyek_id ? (string) $t->proyek_id : '',
+                'proyek_nama'       => strtolower(trim($t->proyek_nama ?? '')),
+                'master_dokumen_id' => $t->master_dokumen_id ? (int) $t->master_dokumen_id : null,
+                'nama_tugas'        => trim($t->nama_tugas ?? ''),
+                'nama_tugas_lower'  => strtolower(trim($t->nama_tugas ?? '')),
+                'employee_id'       => $t->employee_id,
+                'employee_name'     => $t->employee ? $t->employee->name : 'Staf Lain',
+            ];
+        })->values();
+    @endphp
+
+    var assignedTasks = @json($assignedTasksJson);
+
+    // Fungsi cek apakah dokumen/poin sudah ditugaskan pada proyek terpilih
+    function getAssignedTaskForDoc(docId, docName, selectedProyekId, selectedProyekText) {
+        if (!selectedProyekId && !selectedProyekText) {
+            return null;
+        }
+
+        var valClean = (docName || '').toLowerCase().replace(/\[poin-\d+\]\s*/i, '').trim();
+
+        for (var i = 0; i < assignedTasks.length; i++) {
+            var t = assignedTasks[i];
+
+            // 1. Cek kecocokan Proyek
+            var matchProj = false;
+            if (selectedProyekId && t.proyek_id) {
+                matchProj = (String(t.proyek_id) === String(selectedProyekId));
+            } else if (selectedProyekText && t.proyek_nama) {
+                matchProj = (t.proyek_nama === selectedProyekText);
+            }
+
+            if (!matchProj) continue;
+
+            // 2. Cek kecocokan Poin Dokumen
+            if (docId && t.master_dokumen_id && Number(docId) === Number(t.master_dokumen_id)) {
+                return t;
+            }
+
+            var tClean = (t.nama_tugas_lower || '').replace(/\[poin-\d+\]\s*/i, '').trim();
+            if (valClean && tClean) {
+                if (valClean === tClean || valClean.indexOf(tClean) !== -1 || tClean.indexOf(valClean) !== -1) {
+                    return t;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    // Refresh ketersediaan pilihan master dokumen berdasarkan proyek yang dipilih
+    function refreshMasterDocAvailability(showWarningIfReset) {
+        var selectedProyekId = $('#selectProyekId').val();
+        var selectedProyekText = ($('#selectProyekId option:selected').text() || '').trim().toLowerCase();
+        if (selectedProyekId === '') {
+            selectedProyekText = '';
+        }
+
+        var currentSelectedDoc = $('#selectNamaTugas').val();
+        var currentSelectedId  = $('#tambahMasterDokumenId').val();
+        var hasConflict = false;
+        var conflictStaff = '';
+        var conflictDocName = '';
+
+        $('#selectNamaTugas option').each(function() {
+            var opt = $(this);
+            var val = opt.val();
+            if (!val) return;
+
+            var baseText = opt.attr('data-base-text');
+            if (!baseText) {
+                baseText = opt.text().trim();
+                opt.attr('data-base-text', baseText);
+            }
+
+            var docId = opt.attr('data-id');
+            var assigned = getAssignedTaskForDoc(docId, val, selectedProyekId, selectedProyekText);
+
+            if (assigned) {
+                opt.prop('disabled', true);
+                opt.text(baseText + ' ⛔ (Sudah ditugaskan ke: ' + assigned.employee_name + ')');
+                if (currentSelectedDoc === val || (docId && currentSelectedId && Number(docId) === Number(currentSelectedId))) {
+                    hasConflict = true;
+                    conflictStaff = assigned.employee_name;
+                    conflictDocName = baseText;
+                }
+            } else {
+                opt.prop('disabled', false);
+                opt.text(baseText);
+            }
+        });
+
+        // Re-inisialisasi Select2 agar perubahan disabled & teks dirender
+        $('#selectNamaTugas').select2({
+            placeholder: '-- Cari atau Pilih Dokumen Perizinan --',
+            allowClear: true,
+            width: '100%',
+            templateResult: function(data) {
+                if (!data.id) return data.text;
+                var $element = $(data.element);
+                if ($element.prop('disabled')) {
+                    return $('<span style="color: #94a3b8; font-style: italic; cursor: not-allowed;">' + data.text + '</span>');
+                }
+                return data.text;
+            }
+        });
+
+        if (hasConflict) {
+            $('#selectNamaTugas').val('').trigger('change');
+            document.getElementById('tambahNamaTugas').value = '';
+            document.getElementById('tambahMasterDokumenId').value = '';
+
+            if (showWarningIfReset) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Poin Sudah Ditugaskan',
+                        html: 'Dokumen <b>' + conflictDocName + '</b> sudah ditugaskan kepada staf <b>' + conflictStaff + '</b> untuk proyek ini.<br><small class="text-muted">1 Poin perizinan hanya dapat ditugaskan ke 1 staf. Silakan pilih poin izin lainnya.</small>',
+                        confirmButtonColor: '#4f46e5'
+                    });
+                } else {
+                    alert('Dokumen ' + conflictDocName + ' sudah ditugaskan kepada staf ' + conflictStaff + ' untuk proyek ini. 1 Poin perizinan hanya dapat ditugaskan ke 1 staf.');
+                }
+            }
+        }
+    }
+
     $(document).ready(function() {
-        // Inisialisasi Select2 Live Search untuk Dokumen Perizinan
+        // Inisialisasi Select2 Dokumen Perizinan
         $('#selectNamaTugas').select2({
             placeholder: '-- Cari atau Pilih Dokumen Perizinan --',
             allowClear: true,
@@ -415,11 +549,38 @@
         }).on('change', function() {
             var val = $(this).val();
             var hiddenInput = document.getElementById('tambahNamaTugas');
+            var hiddenId    = document.getElementById('tambahMasterDokumenId');
             hiddenInput.value = val || '';
 
             if (val) {
                 var selectedOpt = this.options[this.selectedIndex];
                 if (selectedOpt && selectedOpt.dataset) {
+                    var docId    = selectedOpt.dataset.id || '';
+                    hiddenId.value = docId;
+
+                    // Double-check apakah poin ini sudah ditugaskan pada proyek terpilih
+                    var selectedProyekId = $('#selectProyekId').val();
+                    var selectedProyekText = ($('#selectProyekId option:selected').text() || '').trim().toLowerCase();
+                    if (selectedProyekId === '') selectedProyekText = '';
+
+                    var assigned = getAssignedTaskForDoc(docId, val, selectedProyekId, selectedProyekText);
+                    if (assigned) {
+                        $('#selectNamaTugas').val('').trigger('change');
+                        hiddenInput.value = '';
+                        hiddenId.value = '';
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Poin Sudah Ditugaskan',
+                                html: 'Poin perizinan tersebut sudah ditugaskan kepada <b>' + assigned.employee_name + '</b> untuk proyek ini.<br><small class="text-muted">1 Poin perizinan hanya dapat ditugaskan ke 1 staf.</small>',
+                                confirmButtonColor: '#4f46e5'
+                            });
+                        } else {
+                            alert('Poin perizinan tersebut sudah ditugaskan kepada ' + assigned.employee_name + ' untuk proyek ini.');
+                        }
+                        return;
+                    }
+
                     var instansi = selectedOpt.dataset.instansi || '';
                     var catatan  = selectedOpt.dataset.catatan || '';
                     var inpInstansi = document.getElementById('tambahInstansi');
@@ -432,6 +593,8 @@
                         inpCatatan.value = catatan;
                     }
                 }
+            } else {
+                hiddenId.value = '';
             }
         });
 
@@ -440,6 +603,8 @@
             placeholder: '-- Bebas / Kawasan Umum --',
             allowClear: true,
             width: '100%'
+        }).on('change', function() {
+            refreshMasterDocAvailability(true);
         });
 
         // Inisialisasi Select2 untuk Staf Legal
@@ -448,6 +613,9 @@
             allowClear: true,
             width: '100%'
         });
+
+        // Refresh ketersediaan dokumen saat halaman pertama kali dibuka
+        refreshMasterDocAvailability(false);
 
         @if($isEdit)
             // Deteksi apakah nama tugas di mode edit ada di master atau merupakan teks manual
@@ -481,6 +649,7 @@
         var wrapMaster    = document.getElementById('wrapperSelectNamaTugas');
         var wrapManual    = document.getElementById('wrapperInputNamaTugas');
         var hiddenInput   = document.getElementById('tambahNamaTugas');
+        var hiddenId      = document.getElementById('tambahMasterDokumenId');
         var ketMode       = document.getElementById('keteranganMode');
 
         if (mode === 'manual') {
@@ -492,6 +661,7 @@
 
             var manualVal = document.getElementById('inputManualNamaTugas').value.trim();
             hiddenInput.value = manualVal;
+            hiddenId.value = '';
             ketMode.textContent = 'Ketik bebas nama dokumen atau tugas perizinan yang ingin didelegasikan.';
             document.getElementById('inputManualNamaTugas').focus();
         } else {
@@ -503,7 +673,9 @@
 
             var masterVal = $('#selectNamaTugas').val();
             hiddenInput.value = masterVal || '';
-            ketMode.textContent = 'Ketik kata kunci untuk mencari dokumen izin dari master secara live.';
+            var selectedOpt = document.getElementById('selectNamaTugas').selectedOptions[0];
+            hiddenId.value = (selectedOpt && selectedOpt.dataset) ? (selectedOpt.dataset.id || '') : '';
+            ketMode.textContent = 'Ketik kata kunci untuk mencari dokumen izin dari master secara live. Poin yang sudah ditugaskan otomatis dinonaktifkan.';
         }
     }
 
@@ -519,6 +691,28 @@
                 document.getElementById('inputManualNamaTugas').focus();
             } else {
                 $('#selectNamaTugas').select2('open');
+            }
+            return false;
+        }
+
+        var docId = document.getElementById('tambahMasterDokumenId').value;
+        var selectedProyekId = $('#selectProyekId').val();
+        var selectedProyekText = ($('#selectProyekId option:selected').text() || '').trim().toLowerCase();
+        if (selectedProyekId === '') selectedProyekText = '';
+
+        // Validasi Duplikasi Poin Perizinan
+        var assigned = getAssignedTaskForDoc(docId, namaTugas, selectedProyekId, selectedProyekText);
+        if (assigned) {
+            var staff = assigned.employee_name || 'staf lain';
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Poin Sudah Ditugaskan',
+                    html: 'Poin perizinan <b>' + namaTugas + '</b> sudah ditugaskan kepada staf <b>' + staff + '</b> untuk proyek ini.<br><small class="text-muted">1 Poin perizinan hanya dapat ditugaskan ke 1 staf. Poin ini tidak bisa diinputkan lagi.</small>',
+                    confirmButtonColor: '#4f46e5'
+                });
+            } else {
+                alert('Poin perizinan ' + namaTugas + ' sudah ditugaskan kepada staf ' + staff + ' untuk proyek ini. 1 Poin hanya dapat ditugaskan ke 1 staf.');
             }
             return false;
         }

@@ -161,19 +161,23 @@
                             @endphp
                             <tr>
                                 <td style="font-weight: 700; text-align: center;">{{ $index + 1 }}</td>
-                                <td style="font-weight: 700; color: #0f172a;">{{ $proj->name }}</td>
-                                <td style="color: #64748b;">{{ $proj->city ?? ($proj->district ?? 'Jember') }}</td>
-                                <td style="color: #475569; font-weight: 500;">
+                                <td style="font-weight: 700; color: #0f172a; max-width: 130px;">
+                                    <span class="text-truncate d-block" title="{{ $proj->name }}">{{ $proj->name }}</span>
+                                </td>
+                                <td style="color: #64748b; white-space: nowrap;">
+                                    {{ trim(str_ireplace(['kabupaten', 'kab.', 'kota'], '', $proj->city ?? ($proj->district ?? 'Jember'))) ?: 'Jember' }}
+                                </td>
+                                <td style="color: #475569; font-weight: 500; white-space: nowrap;">
                                     @if($proj->area >= 10000)
                                         {{ number_format($proj->area / 10000, 1, ',', '.') }} Ha
                                     @else
                                         {{ number_format($proj->area, 0, ',', '.') }} m²
                                     @endif
                                 </td>
-                                <td style="text-align: center;">
+                                <td style="text-align: center; white-space: nowrap;">
                                     <span class="dash-badge gray" style="font-weight: 700;">{{ $proj->units_count ?? $proj->units->count() }}</span>
                                 </td>
-                                <td>
+                                <td style="white-space: nowrap;">
                                     <span class="dash-badge {{ $badgeClass }}">{{ $tahap }}</span>
                                 </td>
                                 <td>
@@ -249,37 +253,37 @@
                             @endphp
                             <tr>
                                 <td style="font-weight: 700; text-align: center;">{{ $pIndex + 1 }}</td>
-                                <td>
-                                    <a href="{{ route('properti.show', $pasca->id) }}" style="font-weight: 700; color: #0f172a; text-decoration: none;" class="hover-primary" title="Lihat detail properti">
+                                <td style="max-width: 135px;">
+                                    <a href="{{ route('properti.show', $pasca->id) }}" style="font-weight: 700; color: #0f172a; text-decoration: none; display: block;" class="hover-primary text-truncate" title="{{ $pasca->name }}">
                                         {{ $pasca->name }}
                                     </a>
-                                    <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 1px;">
+                                    <div class="text-truncate" style="font-size: 0.68rem; color: #94a3b8; margin-top: 1px;" title="{{ $pasca->companyProfile?->name ?? ($pasca->zoning ?? 'Kawasan Perumahan') }}">
                                         {{ $pasca->companyProfile?->name ?? ($pasca->zoning ?? 'Kawasan Perumahan') }}
                                     </div>
                                 </td>
-                                <td style="color: #64748b;">
-                                    {{ $pasca->city ?? ($pasca->district ?? 'Jember') }}
+                                <td style="color: #64748b; white-space: nowrap;">
+                                    {{ trim(str_ireplace(['kabupaten', 'kab.', 'kota'], '', $pasca->city ?? ($pasca->district ?? 'Jember'))) ?: 'Jember' }}
                                 </td>
-                                <td style="color: #475569; font-weight: 500;">
+                                <td style="color: #475569; font-weight: 500; white-space: nowrap;">
                                     @if($pasca->area >= 10000)
                                         {{ number_format($pasca->area / 10000, 1, ',', '.') }} Ha
                                     @else
                                         {{ number_format($pasca->area, 0, ',', '.') }} m²
                                     @endif
                                 </td>
-                                <td style="text-align: center;">
+                                <td style="text-align: center; white-space: nowrap;">
                                     @if($isVerified)
-                                        <span class="dash-badge green">Terverifikasi</span>
+                                        <span class="dash-badge green" title="Terverifikasi">Legal</span>
                                     @else
                                         <span class="dash-badge sky">Proses</span>
                                     @endif
                                 </td>
-                                <td>
+                                <td style="white-space: nowrap;">
                                     <span class="dash-badge {{ $badgePasca }}">{{ $tahapPasca }}</span>
                                 </td>
                                 <td>
                                     <div class="dash-progress-wrap">
-                                        <div class="dash-progress-bar-bg" style="width: 70px;">
+                                        <div class="dash-progress-bar-bg">
                                             <div class="dash-progress-bar-fill" style="width: {{ $progPasca }}%; background-color: {{ $progPasca >= 70 ? '#7c3aed' : ($progPasca >= 40 ? '#0284c7' : '#ea580c') }};"></div>
                                         </div>
                                         <span style="font-size: 0.68rem; font-weight: 700; color: #334155;">{{ $progPasca }}%</span>

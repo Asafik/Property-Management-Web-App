@@ -230,9 +230,77 @@ public function getPerizinanPemecahanKavlingDetail(): array
     $projectIds = array_values(array_filter([$this->id, $pra?->id, $this->id + 100]));
     $projectNames = array_values(array_filter([$this->name, $pra?->land_name]));
 
-    // 1. Cek dari PerizinanTask
+    // 1. ATURAN UTAMA: Cek Dokumen Perizinan POIN-17 "SHGB Induk Selesai atas nama PT"
+    // Ketika POIN-17 ini selesai / terbit (atau progres 100%), unit kavling sudah dapat dibuat!
+    
+    // A. Cek POIN-17 dari PerizinanTask
     try {
-        $task = \App\Models\PerizinanTask::where(function($q) use ($projectIds, $projectNames) {
+        $task17 = \App\Models\PerizinanTask::where(function($q) use ($projectIds, $projectNames) {
+                $q->whereIn('proyek_id', $projectIds)
+                  ->orWhereIn('proyek_nama', $projectNames);
+            })
+            ->where(function($q) {
+                $q->where('master_dokumen_id', 11)
+                  ->orWhere('nama_tugas', 'like', '%SHGB Induk Selesai%')
+                  ->orWhere('nama_tugas', 'like', '%POIN-17%');
+            })
+            ->first();
+
+        if ($task17) {
+            $taskStatus = strtolower(trim($task17->status ?? ''));
+            $progress = (int) ($task17->progress ?? 0);
+            if (in_array($taskStatus, ['selesai', 'terbit']) || $progress >= 100) {
+                return [
+                    'status'   => 'terbit',
+                    'label'    => 'POIN-17 Selesai (Siap Buat Unit)',
+                    'progress' => max(100, $progress),
+                    'source'   => 'task_poin17',
+                    'task'     => $task17,
+                    'proyek_id'=> $pra?->id ?? $this->id,
+                ];
+            }
+        }
+    } catch (\Throwable $e) {}
+
+    // B. Cek POIN-17 dari custom_workflow_docs (pada LandBank atau PraLandbank)
+    $docs = $this->custom_workflow_docs ?? $pra?->custom_workflow_docs ?? [];
+    if (is_array($docs)) {
+        foreach ($docs as $doc) {
+            $isPoin17 = (!empty($doc['master_id']) && (int)$doc['master_id'] === 11)
+                || (!empty($doc['kode_dokumen']) && (str_contains(strtoupper($doc['kode_dokumen']), 'POIN-17') || str_contains(strtoupper($doc['kode_dokumen']), '17')))
+                || (!empty($doc['doc_name']) && (str_contains(strtolower($doc['doc_name']), 'shgb induk selesai') || str_contains(strtolower($doc['doc_name']), 'hgb induk selesai')));
+
+            if ($isPoin17) {
+                $stLower = strtolower(trim($doc['status'] ?? ''));
+                $prg = (int) ($doc['progress'] ?? 0);
+                if (in_array($stLower, ['terbit', 'selesai']) || $prg >= 100) {
+                    return [
+                        'status'   => 'terbit',
+                        'label'    => 'POIN-17 Selesai (Siap Buat Unit)',
+                        'progress' => max(100, $prg),
+                        'source'   => 'workflow_poin17',
+                        'doc'      => $doc,
+                        'proyek_id'=> $pra?->id ?? $this->id,
+                    ];
+                }
+            }
+        }
+    }
+
+    // C. Cek apakah ada nomor SHGB Induk resmi tercatat
+    if (!empty($pra?->shgb_induk_no) || !empty($this->shgb_induk_no)) {
+        return [
+            'status'   => 'terbit',
+            'label'    => 'SHGB Induk Terbit (Siap Buat Unit)',
+            'progress' => 100,
+            'source'   => 'shgb_induk_no',
+            'proyek_id'=> $pra?->id ?? $this->id,
+        ];
+    }
+
+    // 2. Cek apakah POIN-18 (Proses Pemecahan SHGB Induk Perkavling) sudah berjalan / terbit
+    try {
+        $task18 = \App\Models\PerizinanTask::where(function($q) use ($projectIds, $projectNames) {
                 $q->whereIn('proyek_id', $projectIds)
                   ->orWhereIn('proyek_nama', $projectNames);
             })
@@ -243,64 +311,52 @@ public function getPerizinanPemecahanKavlingDetail(): array
             })
             ->first();
 
-        if ($task) {
-            $taskStatus = strtolower(trim($task->status ?? ''));
-            $progress = (int) ($task->progress ?? 0);
+        if ($task18) {
+            $taskStatus = strtolower(trim($task18->status ?? ''));
+            $progress = (int) ($task18->progress ?? 0);
 
             if ($taskStatus === 'selesai' || $progress >= 100) {
                 return [
                     'status'   => 'terbit',
-                    'label'    => 'Terbit / Selesai',
+                    'label'    => 'POIN-18 Selesai',
                     'progress' => max(100, $progress),
-                    'source'   => 'task',
-                    'task'     => $task,
+                    'source'   => 'task_poin18',
+                    'task'     => $task18,
                     'proyek_id'=> $pra?->id ?? $this->id,
                 ];
             }
 
-            if (in_array($taskStatus, ['dalam proses', 'proses', 'berjalan']) || $progress > 0 || !empty($task->nomor_dokumen) || !empty($task->file_dokumen)) {
+            if (in_array($taskStatus, ['dalam proses', 'proses', 'berjalan']) || $progress > 0 || !empty($task18->nomor_dokumen) || !empty($task18->file_dokumen)) {
                 return [
                     'status'   => 'proses',
-                    'label'    => 'Dalam Proses',
+                    'label'    => 'POIN-18 Dalam Proses',
                     'progress' => $progress > 0 ? $progress : 50,
-                    'source'   => 'task',
-                    'task'     => $task,
+                    'source'   => 'task_poin18',
+                    'task'     => $task18,
                     'proyek_id'=> $pra?->id ?? $this->id,
                 ];
             }
-
-            return [
-                'status'   => 'belum',
-                'label'    => 'Belum Diproses',
-                'progress' => 0,
-                'source'   => 'task',
-                'task'     => $task,
-                'proyek_id'=> $pra?->id ?? $this->id,
-            ];
         }
-    } catch (\Throwable $e) {
-        // Fallback jika ada isu query
-    }
+    } catch (\Throwable $e) {}
 
-    // 2. Cek dari custom_workflow_docs (pada LandBank atau PraLandbank)
-    $docs = $this->custom_workflow_docs ?? $pra?->custom_workflow_docs ?? [];
+    // Cek POIN-18 dari custom_workflow_docs
     if (is_array($docs)) {
         foreach ($docs as $doc) {
-            $isMatch = (!empty($doc['master_id']) && $doc['master_id'] == 12)
+            $isPoin18 = (!empty($doc['master_id']) && $doc['master_id'] == 12)
                 || (!empty($doc['kode_dokumen']) && $doc['kode_dokumen'] === 'POIN-18')
                 || (!empty($doc['id']) && $doc['id'] === 'template_pecah_kavling')
                 || (!empty($doc['doc_name']) && str_contains(strtolower($doc['doc_name']), 'pemecahan shgb'));
 
-            if ($isMatch) {
+            if ($isPoin18) {
                 $stLower = strtolower(trim($doc['status'] ?? ''));
                 $prg = (int) ($doc['progress'] ?? 0);
 
                 if (in_array($stLower, ['terbit', 'selesai']) || $prg >= 100) {
                     return [
                         'status'   => 'terbit',
-                        'label'    => 'Terbit / Selesai',
+                        'label'    => 'POIN-18 Selesai',
                         'progress' => max(100, $prg),
-                        'source'   => 'workflow',
+                        'source'   => 'workflow_poin18',
                         'doc'      => $doc,
                         'proyek_id'=> $pra?->id ?? $this->id,
                     ];
@@ -309,29 +365,20 @@ public function getPerizinanPemecahanKavlingDetail(): array
                 if (in_array($stLower, ['proses', 'berjalan']) || $prg > 0 || !empty($doc['doc_number']) || !empty($doc['file_path'])) {
                     return [
                         'status'   => 'proses',
-                        'label'    => 'Dalam Proses',
+                        'label'    => 'POIN-18 Dalam Proses',
                         'progress' => $prg > 0 ? $prg : 50,
-                        'source'   => 'workflow',
+                        'source'   => 'workflow_poin18',
                         'doc'      => $doc,
                         'proyek_id'=> $pra?->id ?? $this->id,
                     ];
                 }
-
-                return [
-                    'status'   => 'belum',
-                    'label'    => 'Belum Diproses',
-                    'progress' => 0,
-                    'source'   => 'workflow',
-                    'doc'      => $doc,
-                    'proyek_id'=> $pra?->id ?? $this->id,
-                ];
             }
         }
     }
 
     return [
         'status'   => 'belum',
-        'label'    => 'Belum Diproses',
+        'label'    => 'Menunggu POIN-17 Selesai',
         'progress' => 0,
         'source'   => 'default',
         'proyek_id'=> $pra?->id ?? $this->id,
@@ -350,8 +397,8 @@ public function canCreateKavling(): bool
     // 1. Status Legalitas Wajib Terverifikasi (verified) atau berasal dari PraLandbank
     $isLegalVerified = ($this->legal_status === 'verified') || $this->isFromPraLandbank();
 
-    // 2. Syarat Baru (Opsi A): Dokumen Perizinan POIN-18 "Proses Pemecahan SHGB Induk Perkavling"
-    // minimal sudah berstatus 'proses' atau 'terbit' (tidak menunggu fisik pengolahan lahan 100% selesai)
+    // 2. Syarat Dokumen: Dokumen Perizinan POIN-17 "SHGB Induk Selesai atas nama PT" sudah selesai/terbit (100%),
+    // atau POIN-18 "Proses Pemecahan SHGB Induk Perkavling" minimal sudah berstatus proses/terbit.
     $isIzinReady = $this->isIzinPecahKavlingReady();
 
     return $isLegalVerified && $isIzinReady;
@@ -359,7 +406,9 @@ public function canCreateKavling(): bool
 
 public function isFromPraLandbank()
 {
-    return \App\Models\PraLandbank::where('land_name', $this->name)->exists();
+    return \App\Models\PraLandbank::where('land_name', $this->name)
+        ->orWhere('land_bank_id', $this->id)
+        ->exists();
 }
 
 public function getProfileScoreAttribute(): int
