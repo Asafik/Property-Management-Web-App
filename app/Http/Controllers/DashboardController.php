@@ -621,12 +621,35 @@ class DashboardController extends Controller
         });
 
         // 3. RECENT TRANSACTIONS / BOOKINGS
-        $recentBookings = Booking::with(['customer', 'unit.landBank', 'sales'])
+        $recentBookings = Booking::with(['customer', 'unit.landBank', 'sales.position'])
             ->when(!$isKepalaMarketing && $user, function($q) use ($user) {
                 $q->where('sales_id', $user->id);
             })
             ->latest()
             ->take(10)
+            ->get();
+
+        // 3a. Calon Pembeli Baru Masuk (Staf/Agen baru saja dapat calon)
+        $pendingBookings = Booking::with(['customer', 'unit.landBank', 'sales.position'])
+            ->whereIn('status', ['pending', 'draft', 'diajukan'])
+            ->when(!$isKepalaMarketing && $user, function($q) use ($user) {
+                $q->where('sales_id', $user->id);
+            })
+            ->latest()
+            ->take(6)
+            ->get();
+
+        // 3b. Calon Pembeli Jadi Beli (Closing / Deal)
+        $closingBookings = Booking::with(['customer', 'unit.landBank', 'sales.position'])
+            ->where(function($q) {
+                $q->whereIn('status', ['approved', 'aktif', 'acc', 'selesai', 'completed', 'lunas', 'sold'])
+                  ->orWhereHas('unit', fn($uq) => $uq->whereIn('status', ['sold', 'soldout']));
+            })
+            ->when(!$isKepalaMarketing && $user, function($q) use ($user) {
+                $q->where('sales_id', $user->id);
+            })
+            ->latest()
+            ->take(6)
             ->get();
 
         // 4. PROJECT / LAND BANK BREAKDOWN DENGAN PAGINASI
@@ -814,7 +837,9 @@ class DashboardController extends Controller
             'myTotalLikes',
             'myTasks',
             'myCompletedTasks',
-            'readyCatalogUnits'
+            'readyCatalogUnits',
+            'pendingBookings',
+            'closingBookings'
         ));
     }
 

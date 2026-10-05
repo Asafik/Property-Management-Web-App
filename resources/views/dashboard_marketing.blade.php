@@ -507,98 +507,352 @@
     <!-- ========================================================================= -->
     <!-- SECTION 3: PENGAJUAN BOOKING CATALOG UNIT & LEADERBOARD/PROYEK -->
     <!-- ========================================================================= -->
-    <div class="row g-3">
-        <!-- TABEL KONTEN UTAMA: PENGAJUAN BOOKING CATALOG UNIT (KEPALA) / RIWAYAT VIDEO (STAFF) -->
-        <div class="col-12 col-xl-8">
-            <div class="dash-panel h-100 d-flex flex-column">
-                @if($isKepalaMarketing)
+    @if($isKepalaMarketing)
+        <!-- ========================================================================= -->
+        <!-- SECTION 3: 2 CARD BERDAMPINGAN: CALON BARU MASUK VS CALON JADI BELI -->
+        <!-- ========================================================================= -->
+        <div class="row g-3 mb-4">
+            
+            <!-- CARD KIRI: STAF / AGEN BARU AJA DAPAT CALON PEMBELI (PENDING PROSPEK) -->
+            <div class="col-12 col-lg-6">
+                <div class="dash-panel h-100 d-flex flex-column">
                     <div class="dash-panel-header">
                         <div class="dash-panel-title-wrap">
-                            <div class="dash-panel-icon" style="background-color: #e0f2fe; color: #0284c7;">
-                                <i class="mdi mdi-home-export-outline"></i>
+                            <div class="dash-panel-icon" style="background-color: #fef3c7; color: #d97706;">
+                                <i class="mdi mdi-account-plus-outline"></i>
                             </div>
                             <div>
                                 <div class="d-flex align-items-center gap-2">
-                                    <h2 class="dash-panel-title">Pengajuan Booking Unit (Catalog Unit)</h2>
-                                    <span class="badge" style="background: #e0f2fe; color: #0284c7; font-size: 0.72rem; font-weight: 700;">{{ $recentBookings->count() }} Pengajuan Terkini</span>
+                                    <h2 class="dash-panel-title">Calon Pembeli Baru Masuk</h2>
+                                    <span class="badge" style="background: #fef3c7; color: #b45309; font-size: 0.72rem; font-weight: 700; border: 1px solid #fde68a;">
+                                        {{ $pendingBookings->count() }} Menunggu
+                                    </span>
                                 </div>
-                                <p class="dash-panel-subtitle">Monitoring unit yang diajukan ke booking dari katalog, atas nama calon pembeli, dan staf marketing yang mengajukan</p>
+                                <p class="dash-panel-subtitle">Staf / agen yang baru saja membawa calon pembeli (prospek baru)</p>
                             </div>
                         </div>
                         <a href="{{ route('marketing.list_pengajuan') }}" class="dash-link-all">
-                            Lihat Semua <i class="mdi mdi-arrow-right"></i>
+                            Kelola Semua <i class="mdi mdi-arrow-right"></i>
                         </a>
                     </div>
-                    <div class="dash-table-wrap">
-                        <table class="dash-table">
+
+                    <!-- TABEL CALON PEMBELI BARU MASUK -->
+                    <div class="dash-table-wrap flex-grow-1">
+                        <table class="dash-table" style="min-width: 500px;">
                             <thead>
                                 <tr>
-                                    <th>Unit Diajukan</th>
-                                    <th>Atas Nama Calon Pembeli</th>
-                                    <th>Diajukan oleh Staf</th>
-                                    <th>Skema Bayar</th>
-                                    <th>Booking Fee</th>
+                                    <th>Calon Pembeli</th>
+                                    <th>Unit & Proyek</th>
+                                    <th>Diajukan oleh</th>
+                                    <th>Waktu Masuk</th>
                                     <th style="text-align: center;">Status</th>
-                                    <th style="width: 32px; text-align: center;">Aksi</th>
+                                    <th style="width: 28px; text-align: center;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($recentBookings as $b)
-                                    <tr>
+                                @forelse($pendingBookings as $pb)
+                                    @php
+                                        $sPos = strtolower($pb->sales?->position?->name ?? '');
+                                        $isAgen = str_contains($sPos, 'agen') || str_contains($sPos, 'agency') || str_contains($sPos, 'freelance');
+                                        $isKepala = str_contains($sPos, 'kepala');
+                                    @endphp
+                                    <tr style="background-color: #fffdf5;">
                                         <td>
-                                            <span class="dash-badge sky" style="font-weight: 700;">
-                                                Unit {{ $b->unit->unit_code ?? ($b->unit ? $b->unit->block . '.' . $b->unit->unit_number : '-') }}
-                                            </span>
-                                        </td>
-                                        <td style="font-weight: 700; color: #0f172a;">
-                                            {{ $b->customer->full_name ?? ($b->customer->name ?? '-') }}
-                                        </td>
-                                        <td>
-                                            <span style="font-weight: 600; color: #334155;">
-                                                {{ $b->sales->name ?? '-' }}
-                                            </span>
-                                            @if($b->agent_fee > 0)
-                                                <div style="color: #9333ea; font-weight: 700; font-size: 0.72rem; margin-top: 1px;">
-                                                    Fee: Rp {{ number_format($b->agent_fee, 0, ',', '.') }}
+                                            <div style="font-weight: 700; color: #0f172a;">
+                                                {{ $pb->customer->full_name ?? ($pb->customer->name ?? '-') }}
+                                            </div>
+                                            @if(!empty($pb->customer->phone))
+                                                <div style="font-size: 0.68rem; color: #64748b; margin-top: 1px;">
+                                                    <i class="mdi mdi-whatsapp text-success me-0.5"></i>{{ $pb->customer->phone }}
                                                 </div>
                                             @endif
                                         </td>
                                         <td>
-                                            <span class="dash-badge gray">
-                                                {{ strtoupper(str_replace('_', ' ', $b->purchase_type ?? 'KPR')) }}
+                                            <span class="dash-badge sky" style="font-weight: 700;">
+                                                Unit {{ $pb->unit->unit_code ?? ($pb->unit ? $pb->unit->block . '.' . $pb->unit->unit_number : '-') }}
                                             </span>
+                                            <div style="font-size: 0.68rem; color: #64748b; margin-top: 1px;">
+                                                {{ $pb->unit?->landBank?->name ?? 'Proyek' }} ({{ strtoupper($pb->purchase_type ?? 'KPR') }})
+                                            </div>
                                         </td>
                                         <td>
-                                            <span style="font-weight: 700; color: #16a34a;">
-                                                Rp {{ number_format($b->booking_fee ?? 0, 0, ',', '.') }}
+                                            <div style="font-weight: 700; color: #1e293b; font-size: 0.78rem;">
+                                                {{ $pb->sales->name ?? 'Sales' }}
+                                            </div>
+                                            @if($isAgen)
+                                                <span class="badge" style="background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; font-size: 0.6rem; padding: 1px 5px;">Agen Partner</span>
+                                            @elseif($isKepala)
+                                                <span class="badge" style="background: #faf5ff; color: #7e22ce; border: 1px solid #e9d5ff; font-size: 0.6rem; padding: 1px 5px;">Kepala</span>
+                                            @else
+                                                <span class="badge" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; font-size: 0.6rem; padding: 1px 5px;">Staf Sales</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div style="font-size: 0.74rem; font-weight: 600; color: #0f172a;">
+                                                {{ $pb->created_at ? $pb->created_at->diffForHumans() : '-' }}
+                                            </div>
+                                            <small class="text-muted" style="font-size: 0.65rem;">
+                                                {{ $pb->created_at ? $pb->created_at->format('d/m/Y H:i') : '' }}
+                                            </small>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <span class="dash-badge amber" style="font-weight: 700; padding: 3px 6px; font-size: 0.68rem;">
+                                                <i class="mdi mdi-clock-outline me-0.5"></i>Calon Baru
                                             </span>
                                         </td>
                                         <td style="text-align: center;">
-                                            @php
-                                                $st = strtolower($b->status ?? 'pending');
-                                                $badgeClass = 'amber';
-                                                if(in_array($st, ['approved', 'aktif', 'acc', 'selesai', 'completed', 'lunas'])) $badgeClass = 'green';
-                                                elseif(in_array($st, ['rejected', 'batal', 'rijected'])) $badgeClass = 'red';
-                                            @endphp
-                                            <span class="dash-badge {{ $badgeClass }}">
-                                                {{ ucfirst($b->status ?? 'Pending') }}
-                                            </span>
-                                        </td>
-                                        <td style="text-align: center;">
-                                            <a href="{{ route('marketing.list_pengajuan') }}" class="dash-action-btn" title="Detail Pengajuan">
+                                            <a href="{{ route('marketing.list_pengajuan') }}" class="dash-action-btn" title="Proses Pengajuan">
                                                 <i class="mdi mdi-dots-horizontal"></i>
                                             </a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" style="text-align: center; color: #94a3b8; padding: 24px;">Belum ada data unit yang diajukan ke booking.</td>
+                                        <td colspan="6" style="text-align: center; color: #94a3b8; padding: 36px 16px;">
+                                            <i class="mdi mdi-account-search-outline fs-2 d-block mb-1 opacity-50"></i>
+                                            Belum ada calon pembeli baru yang menunggu proses.
+                                        </td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
-                @else
+                </div>
+            </div>
+
+            <!-- CARD KANAN: CALON DARI STAF / AGEN JADI BELI (RESMI CLOSING) -->
+            <div class="col-12 col-lg-6">
+                <div class="dash-panel h-100 d-flex flex-column">
+                    <div class="dash-panel-header">
+                        <div class="dash-panel-title-wrap">
+                            <div class="dash-panel-icon" style="background-color: #dcfce7; color: #16a34a;">
+                                <i class="mdi mdi-check-decagram-outline"></i>
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <h2 class="dash-panel-title">Calon Pembeli Jadi Beli (Closing)</h2>
+                                    <span class="badge" style="background: #dcfce7; color: #15803d; font-size: 0.72rem; font-weight: 700; border: 1px solid #bbf7d0;">
+                                        {{ $closingBookings->count() }} Resmi Closing
+                                    </span>
+                                </div>
+                                <p class="dash-panel-subtitle">Calon pembeli dari staf / agen yang resmi closing dan terkonfirmasi jadi beli</p>
+                            </div>
+                        </div>
+                        <a href="{{ route('marketing.list_pengajuan') }}" class="dash-link-all">
+                            Lihat Semua <i class="mdi mdi-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <!-- TABEL CALON JADI BELI -->
+                    <div class="dash-table-wrap flex-grow-1">
+                        <table class="dash-table" style="min-width: 500px;">
+                            <thead>
+                                <tr>
+                                    <th>Pembeli Resmi</th>
+                                    <th>Unit Dibeli</th>
+                                    <th>Closing oleh</th>
+                                    <th>UTJ / Fee Sales</th>
+                                    <th style="text-align: center;">Keputusan</th>
+                                    <th style="width: 28px; text-align: center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($closingBookings as $cb)
+                                    @php
+                                        $sPos = strtolower($cb->sales?->position?->name ?? '');
+                                        $isAgen = str_contains($sPos, 'agen') || str_contains($sPos, 'agency') || str_contains($sPos, 'freelance');
+                                        $isKepala = str_contains($sPos, 'kepala');
+                                    @endphp
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight: 700; color: #0f172a;">
+                                                {{ $cb->customer->full_name ?? ($cb->customer->name ?? '-') }}
+                                            </div>
+                                            @if(!empty($cb->customer->phone))
+                                                <div style="font-size: 0.68rem; color: #64748b; margin-top: 1px;">
+                                                    <i class="mdi mdi-whatsapp text-success me-0.5"></i>{{ $cb->customer->phone }}
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <span class="dash-badge green" style="font-weight: 700;">
+                                                Unit {{ $cb->unit->unit_code ?? ($cb->unit ? $cb->unit->block . '.' . $cb->unit->unit_number : '-') }}
+                                            </span>
+                                            <div style="font-size: 0.68rem; color: #64748b; margin-top: 1px;">
+                                                {{ $cb->unit?->landBank?->name ?? 'Proyek' }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="font-weight: 700; color: #1e293b; font-size: 0.78rem;">
+                                                {{ $cb->sales->name ?? 'Sales' }}
+                                            </div>
+                                            @if($isAgen)
+                                                <span class="badge" style="background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; font-size: 0.6rem; padding: 1px 5px;">Agen Partner</span>
+                                            @elseif($isKepala)
+                                                <span class="badge" style="background: #faf5ff; color: #7e22ce; border: 1px solid #e9d5ff; font-size: 0.6rem; padding: 1px 5px;">Kepala</span>
+                                            @else
+                                                <span class="badge" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; font-size: 0.6rem; padding: 1px 5px;">Staf Sales</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div style="font-weight: 800; color: #16a34a; font-size: 0.78rem;">
+                                                UTJ: Rp {{ number_format($cb->booking_fee ?? 0, 0, ',', '.') }}
+                                            </div>
+                                            @if($cb->agent_fee > 0)
+                                                <div style="color: #9333ea; font-weight: 700; font-size: 0.7rem; margin-top: 1px;">
+                                                    Komisi: Rp {{ number_format($cb->agent_fee, 0, ',', '.') }}
+                                                </div>
+                                            @endif
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <span class="dash-badge green" style="font-weight: 800; padding: 3px 6px; font-size: 0.68rem;">
+                                                <i class="mdi mdi-check-circle me-0.5"></i>Jadi Beli
+                                            </span>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a href="{{ route('marketing.list_pengajuan') }}" class="dash-action-btn" title="Detail Closing">
+                                                <i class="mdi mdi-dots-horizontal"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; color: #94a3b8; padding: 36px 16px;">
+                                            <i class="mdi mdi-cart-off fs-2 d-block mb-1 opacity-50"></i>
+                                            Belum ada calon pembeli yang closing hari ini.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- SECTION 4: LEADERBOARD TIM SALES & PROGRES PENJUALAN PER PROYEK -->
+        <!-- ========================================================================= -->
+        <div class="row g-3">
+            <!-- LEADERBOARD TIM SALES & AGENCY -->
+            <div class="col-12 col-lg-6">
+                <div class="dash-panel h-100 d-flex flex-column">
+                    <div class="dash-panel-header">
+                        <div class="dash-panel-title-wrap">
+                            <div class="dash-panel-icon" style="background-color: #fef3c7; color: #d97706;">
+                                <i class="mdi mdi-trophy-outline"></i>
+                            </div>
+                            <div>
+                                <h2 class="dash-panel-title">Leaderboard Tim Sales & Agency</h2>
+                                <p class="dash-panel-subtitle">Peringkat transaksi closing unit tim penjualan dan agen partner</p>
+                            </div>
+                        </div>
+                        <a href="{{ route('agency.index') }}" class="dash-link-all">
+                            Kelola Sales/Agen <i class="mdi mdi-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div>
+                            @forelse($salesLeaderboard as $idx => $sales)
+                                @php
+                                    $sPos = strtolower($sales->position?->name ?? '');
+                                    $sIsAgen = str_contains($sPos, 'agen') || str_contains($sPos, 'agency') || str_contains($sPos, 'freelance');
+                                    $sIsKepala = str_contains($sPos, 'kepala');
+                                @endphp
+                                <div class="px-3 py-2.5 d-flex align-items-center justify-content-between border rounded-3 mb-2" style="background: #f8fafc; margin-bottom: 0.75rem;">
+                                    <div class="d-flex align-items-center gap-2.5">
+                                        <span class="fw-bold text-muted" style="font-size: 0.85rem; width: 24px; text-align: center;">#{{ $idx + 1 }}</span>
+                                        <div>
+                                            <div class="d-flex align-items-center gap-1.5">
+                                                <span class="fw-bold text-dark d-block" style="font-size: 0.84rem;">{{ $sales->name }}</span>
+                                                @if($sIsAgen)
+                                                    <span class="badge" style="background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; font-size: 0.6rem; padding: 1px 5px;">Agen</span>
+                                                @elseif($sIsKepala)
+                                                    <span class="badge" style="background: #faf5ff; color: #7e22ce; border: 1px solid #e9d5ff; font-size: 0.6rem; padding: 1px 5px;">Kepala</span>
+                                                @else
+                                                    <span class="badge" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; font-size: 0.6rem; padding: 1px 5px;">Staf</span>
+                                                @endif
+                                            </div>
+                                            <small class="text-muted" style="font-size: 0.72rem;"><i class="mdi mdi-phone me-0.5"></i>{{ $sales->phone ?? '-' }}</small>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="dash-badge green" style="font-weight: 800; font-size: 0.7rem;">
+                                            <i class="mdi mdi-check-circle me-0.5"></i>{{ $sales->total_bookings }} Jadi Beli
+                                        </span>
+                                        <small class="text-success d-block fw-bold mt-1" style="font-size: 0.72rem;">Fee: Rp {{ number_format($sales->total_fee ?? 0, 0, ',', '.') }}</small>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="text-center py-3 text-muted" style="font-size: 0.82rem;">
+                                    Belum ada data perolehan sales
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROGRES PENJUALAN PER PROYEK -->
+            <div class="col-12 col-lg-6">
+                <div class="dash-panel h-100 d-flex flex-column">
+                    <div class="dash-panel-header">
+                        <div class="dash-panel-title-wrap">
+                            <div class="dash-panel-icon" style="background-color: #ede9fe; color: #7c3aed;">
+                                <i class="mdi mdi-domain"></i>
+                            </div>
+                            <div>
+                                <h2 class="dash-panel-title">Progres Penjualan per Proyek</h2>
+                                <p class="dash-panel-subtitle">Persentase unit terjual pada masing-masing proyek</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex flex-column gap-2.5">
+                            @forelse($projects as $p)
+                                @php
+                                    $percentSold = $p->total_units > 0 ? round(($p->sold_units / $p->total_units) * 100) : 0;
+                                @endphp
+                                <div class="p-3 rounded-3 border" style="background: #f8fafc;">
+                                    <div class="d-flex justify-content-between align-items-center mb-1.5">
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem;">{{ $p->name }}</span>
+                                        <span class="badge" style="background: #f3e8ff; color: #7c3aed; font-weight: 700; font-size: 0.74rem;">{{ $percentSold }}% Terjual</span>
+                                    </div>
+                                    <div class="progress mb-2" style="height: 6px; border-radius: 10px; background-color: #e2e8f0;">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ $percentSold }}%; background: #9a55ff;" aria-valuenow="{{ $percentSold }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <div class="d-flex justify-content-between small text-muted pt-1" style="font-size: 0.76rem;">
+                                        <span>Tersedia: <strong class="text-success">{{ $p->ready_units }}</strong></span>
+                                        <span>Booking: <strong class="text-warning">{{ $p->booked_units }}</strong></span>
+                                        <span>Sold: <strong class="text-primary">{{ $p->sold_units }}</strong></span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="text-center py-4 text-muted">Belum ada proyek terdaftar.</div>
+                            @endforelse
+                        </div>
+                    </div>
+                    @if($projects->hasPages())
+                        <div class="pt-2.5 mt-auto border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <small class="text-muted" style="font-size: 0.75rem;">
+                                Menampilkan {{ $projects->firstItem() }}-{{ $projects->lastItem() }} dari {{ $projects->total() }} Proyek
+                            </small>
+                            <div class="pagination-wrapper">
+                                {{ $projects->appends(request()->except('project_page'))->links('pagination::bootstrap-5') }}
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    @else
+        <!-- ========================================================================= -->
+        <!-- SECTION KHUSUS STAFF MARKETING: RIWAYAT VIDEO PROMOSI & PROGRES PROYEK -->
+        <!-- ========================================================================= -->
+        <div class="row g-3">
+            <div class="col-12 col-xl-8">
+                <div class="dash-panel h-100 d-flex flex-column">
                     <div class="dash-panel-header">
                         <div class="dash-panel-title-wrap">
                             <div class="dash-panel-icon" style="background-color: #e0f2fe; color: #0284c7;">
@@ -676,106 +930,62 @@
                             </table>
                         </div>
                     </div>
-                @endif
+                </div>
             </div>
-        </div>
 
-        <!-- KOLOM KANAN: LEADERBOARD SALES (KEPALA) & PROGRES PENJUALAN PER PROYEK -->
-        <div class="col-12 col-xl-4 d-flex flex-column gap-3">
-            @if($isKepalaMarketing)
-                <!-- LEADERBOARD TIM SALES & AGENCY -->
-                <div class="dash-panel">
+            <!-- PROGRES PENJUALAN PER PROYEK (FOR STAFF) -->
+            <div class="col-12 col-xl-4">
+                <div class="dash-panel h-100 d-flex flex-column">
                     <div class="dash-panel-header">
                         <div class="dash-panel-title-wrap">
-                            <div class="dash-panel-icon" style="background-color: #fef3c7; color: #d97706;">
-                                <i class="mdi mdi-trophy-outline"></i>
+                            <div class="dash-panel-icon" style="background-color: #ede9fe; color: #7c3aed;">
+                                <i class="mdi mdi-domain"></i>
                             </div>
                             <div>
-                                <h2 class="dash-panel-title">Leaderboard Tim Sales</h2>
-                                <p class="dash-panel-subtitle">Peringkat transaksi closing unit tim penjualan</p>
+                                <h2 class="dash-panel-title">Progres Penjualan per Proyek</h2>
+                                <p class="dash-panel-subtitle">Persentase unit terjual pada masing-masing proyek</p>
                             </div>
                         </div>
-                        <a href="{{ route('agency.index') }}" class="dash-link-all">
-                            Lihat Semua <i class="mdi mdi-arrow-right"></i>
-                        </a>
                     </div>
-                    <div>
+                    <div class="flex-grow-1">
                         <div class="d-flex flex-column gap-2.5">
-                            @forelse($salesLeaderboard as $idx => $sales)
-                                <div class="px-3 py-2.5 d-flex align-items-center justify-content-between border rounded-3" style="background: #f8fafc;">
-                                    <div class="d-flex align-items-center gap-2.5">
-                                        <span class="fw-bold text-muted" style="font-size: 0.85rem; width: 24px; text-align: center;">#{{ $idx + 1 }}</span>
-                                        <div>
-                                            <span class="fw-bold text-dark d-block" style="font-size: 0.84rem;">{{ $sales->name }}</span>
-                                            <small class="text-muted" style="font-size: 0.72rem;">{{ $sales->phone ?? '-' }}</small>
-                                        </div>
+                            @forelse($projects as $p)
+                                @php
+                                    $percentSold = $p->total_units > 0 ? round(($p->sold_units / $p->total_units) * 100) : 0;
+                                @endphp
+                                <div class="p-3 rounded-3 border" style="background: #f8fafc;">
+                                    <div class="d-flex justify-content-between align-items-center mb-1.5">
+                                        <span class="fw-bold text-dark" style="font-size: 0.9rem;">{{ $p->name }}</span>
+                                        <span class="badge" style="background: #f3e8ff; color: #7c3aed; font-weight: 700; font-size: 0.74rem;">{{ $percentSold }}% Terjual</span>
                                     </div>
-                                    <div class="text-end">
-                                        <span class="dash-badge purple">{{ $sales->total_bookings }} Closing</span>
-                                        <small class="text-success d-block fw-bold mt-1" style="font-size: 0.72rem;">Rp {{ number_format($sales->total_fee ?? 0, 0, ',', '.') }}</small>
+                                    <div class="progress mb-2" style="height: 6px; border-radius: 10px; background-color: #e2e8f0;">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ $percentSold }}%; background: #9a55ff;" aria-valuenow="{{ $percentSold }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <div class="d-flex justify-content-between small text-muted pt-1" style="font-size: 0.76rem;">
+                                        <span>Tersedia: <strong class="text-success">{{ $p->ready_units }}</strong></span>
+                                        <span>Booking: <strong class="text-warning">{{ $p->booked_units }}</strong></span>
+                                        <span>Sold: <strong class="text-primary">{{ $p->sold_units }}</strong></span>
                                     </div>
                                 </div>
                             @empty
-                                <div class="text-center py-3 text-muted" style="font-size: 0.82rem;">
-                                    Belum ada data perolehan sales
-                                </div>
+                                <div class="text-center py-4 text-muted">Belum ada proyek terdaftar.</div>
                             @endforelse
                         </div>
                     </div>
-                </div>
-            @endif
-
-            <!-- PROGRES PENJUALAN PER PROYEK -->
-            <div class="dash-panel">
-                <div class="dash-panel-header">
-                    <div class="dash-panel-title-wrap">
-                        <div class="dash-panel-icon" style="background-color: #ede9fe; color: #7c3aed;">
-                            <i class="mdi mdi-domain"></i>
-                        </div>
-                        <div>
-                            <h2 class="dash-panel-title">Progres Penjualan per Proyek</h2>
-                            <p class="dash-panel-subtitle">Persentase unit terjual pada masing-masing proyek</p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="d-flex flex-column gap-2.5">
-                        @forelse($projects as $p)
-                            @php
-                                $percentSold = $p->total_units > 0 ? round(($p->sold_units / $p->total_units) * 100) : 0;
-                            @endphp
-                            <div class="p-3 rounded-3 border" style="background: #f8fafc;">
-                                <div class="d-flex justify-content-between align-items-center mb-1.5">
-                                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">{{ $p->name }}</span>
-                                    <span class="badge" style="background: #f3e8ff; color: #7c3aed; font-weight: 700; font-size: 0.74rem;">{{ $percentSold }}% Terjual</span>
-                                </div>
-                                <div class="progress mb-2" style="height: 6px; border-radius: 10px; background-color: #e2e8f0;">
-                                    <div class="progress-bar" role="progressbar" style="width: {{ $percentSold }}%; background: #9a55ff;" aria-valuenow="{{ $percentSold }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <div class="d-flex justify-content-between small text-muted pt-1" style="font-size: 0.76rem;">
-                                    <span>Tersedia: <strong class="text-success">{{ $p->ready_units }}</strong></span>
-                                    <span>Booking: <strong class="text-warning">{{ $p->booked_units }}</strong></span>
-                                    <span>Sold: <strong class="text-primary">{{ $p->sold_units }}</strong></span>
-                                </div>
+                    @if($projects->hasPages())
+                        <div class="pt-2.5 mt-auto border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
+                            <small class="text-muted" style="font-size: 0.75rem;">
+                                Menampilkan {{ $projects->firstItem() }}-{{ $projects->lastItem() }} dari {{ $projects->total() }} Proyek
+                            </small>
+                            <div class="pagination-wrapper">
+                                {{ $projects->appends(request()->except('project_page'))->links('pagination::bootstrap-5') }}
                             </div>
-                        @empty
-                            <div class="text-center py-4 text-muted">Belum ada proyek terdaftar.</div>
-                        @endforelse
-                    </div>
-                </div>
-                @if($projects->hasPages())
-                    <div class="pt-2.5 mt-auto border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
-                        <small class="text-muted" style="font-size: 0.75rem;">
-                            Menampilkan {{ $projects->firstItem() }}-{{ $projects->lastItem() }} dari {{ $projects->total() }} Proyek
-                        </small>
-                        <div class="pagination-wrapper">
-                            {{ $projects->appends(request()->except('project_page'))->links('pagination::bootstrap-5') }}
                         </div>
-                    </div>
-                @endif
+                    @endif
+                </div>
             </div>
         </div>
-    </div>
+    @endif
 
 </div>
 
