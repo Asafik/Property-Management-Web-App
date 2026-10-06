@@ -17,6 +17,10 @@ use App\Models\Spk;
 use App\Models\DevelopmentProgress;
 use App\Models\PembayaranTermin;
 use App\Models\OpnameMingguan;
+use App\Models\KprApplication;
+use App\Models\KprDisbursement;
+use App\Models\Banks;
+use App\Models\CashTempo;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -57,6 +61,19 @@ class DashboardController extends Controller
         if ($isProyek) {
             $isKepalaProyek = str_contains($posName, 'kepala') || $user->position_id == 8;
             return $this->proyekDashboard($request, $isKepalaProyek);
+        }
+
+        $isKpr = $user && (
+            $user->division_id == 3 ||
+            $user->division_id == 9 ||
+            str_contains($posName, 'kpr') ||
+            str_contains($posName, 'bank') ||
+            str_contains($divName, 'kpr') ||
+            str_contains($divName, 'bank')
+        );
+
+        if ($isKpr || $request->get('view') === 'kpr') {
+            return $this->kprDashboard($request);
         }
 
         $perPage = $request->get('perPage', 10);
@@ -896,6 +913,7 @@ class DashboardController extends Controller
         $progressUnits = LandBankUnit::whereIn('status', ['pembangunan', 'proses'])->count();
         $bookedUnits = LandBankUnit::where('status', 'booked')->count();
         $soldUnits = LandBankUnit::whereIn('status', ['sold', 'terjual'])->count();
+        $recentUnits = LandBankUnit::with(['landBank'])->latest()->take(6)->get();
 
         // 4. SPK KONTRAKTOR
         $allSpks = Spk::with(['landBank', 'unit'])->latest()->get();
@@ -940,6 +958,7 @@ class DashboardController extends Controller
             'progressUnits',
             'bookedUnits',
             'soldUnits',
+            'recentUnits',
             'totalSpk',
             'spkBerjalan',
             'spkSelesai',
@@ -973,5 +992,117 @@ class DashboardController extends Controller
         ])->findOrFail($id);
 
         return response()->json($item);
+    }
+
+    public function kprDashboardRoute(Request $request)
+    {
+        return $this->kprDashboard($request);
+    }
+
+    public function kprDashboard(Request $request)
+    {
+        $user = auth()->user();
+
+        // 1. 5 TERBARU YANG MASUK DI USER BOOKING
+        $recentBookings = Booking::with(['customer', 'unit.landBank', 'sales'])
+            ->latest()
+            ->take(5)
+            ->get();
+        $countBooking = Booking::count();
+
+        // 2. 5 YANG MASUK KE MENU KPR (TRANSAKSI KPR)
+        $recentKprMenu = Booking::with(['customer', 'unit.landBank', 'sales', 'kprApplication.bank'])
+            ->where(function($q) {
+                $q->where('purchase_type', 'kpr')->orWhere('purchase_type', 'KPR');
+            })
+            ->latest()
+            ->take(5)
+            ->get();
+        $countKpr = Booking::where(function($q) {
+            $q->where('purchase_type', 'kpr')->orWhere('purchase_type', 'KPR');
+        })->count();
+
+        // 3. 5 YANG MASUK KE USER VERIFIKASI (KPR TERVERIFIKASI)
+        $recentVerified = KprApplication::with(['customer', 'unit.landBank', 'bank', 'booking'])
+            ->whereIn('status', ['approved', 'survey', 'verifikasi', 'analisa'])
+            ->latest()
+            ->take(5)
+            ->get();
+        $countVerified = KprApplication::whereIn('status', ['approved', 'survey', 'verifikasi', 'analisa'])->count();
+
+        // 4. 5 YANG REJECT (KPR DITOLAK)
+        $recentRejected = KprApplication::with(['customer', 'unit.landBank', 'bank', 'booking'])
+            ->where('status', 'rejected')
+            ->latest()
+            ->take(5)
+            ->get();
+        $countRejected = KprApplication::where('status', 'rejected')->count();
+
+        // 5. 5 YANG ACC (KPR DISETUJUI / ACC / SP3K / AKAD)
+        $recentAcc = KprApplication::with(['customer', 'unit.landBank', 'bank', 'booking'])
+            ->whereIn('status', ['approved', 'disetujui', 'sp3k', 'akad'])
+            ->latest()
+            ->take(5)
+            ->get();
+        $countAcc = KprApplication::whereIn('status', ['approved', 'disetujui', 'sp3k', 'akad'])->count();
+
+        // 6. 5 USER TEMPO (CASH TEMPO)
+        $recentTempo = CashTempo::with(['booking.customer', 'booking.unit.landBank', 'installments'])
+            ->latest()
+            ->take(5)
+            ->get();
+        if ($recentTempo->isEmpty()) {
+            $recentTempo = Booking::with(['customer', 'unit.landBank'])
+                ->where(function($q) {
+                    $q->where('purchase_type', 'tempo')
+                      ->orWhere('purchase_type', 'cash_tempo');
+                })
+                ->latest()
+                ->take(5)
+                ->get();
+        }
+        $countTempo = CashTempo::count() ?: Booking::where(function($q) {
+            $q->where('purchase_type', 'tempo')->orWhere('purchase_type', 'cash_tempo');
+        })->count();
+
+        // 7. 5 USER KOMERSIL (KPR KOMERSIL / NON-SUBSIDI)
+        $recentKomersil = KprApplication::with(['customer', 'unit.landBank', 'bank', 'booking'])
+            ->whereHas('unit', function($q) {
+                $q->where('jenis', 'komersil');
+            })
+            ->latest()
+            ->take(5)
+            ->get();
+        if ($recentKomersil->isEmpty()) {
+            $recentKomersil = Booking::with(['customer', 'unit.landBank', 'sales', 'kprApplication'])
+                ->whereHas('unit', function($q) {
+                    $q->where('jenis', 'komersil');
+                })
+                ->latest()
+                ->take(5)
+                ->get();
+        }
+        $countKomersil = KprApplication::whereHas('unit', function($q) {
+            $q->where('jenis', 'komersil');
+        })->count() ?: Booking::whereHas('unit', function($q) {
+            $q->where('jenis', 'komersil');
+        })->count();
+
+        return view('dashboard_kpr', compact(
+            'recentBookings',
+            'countBooking',
+            'recentKprMenu',
+            'countKpr',
+            'recentVerified',
+            'countVerified',
+            'recentRejected',
+            'countRejected',
+            'recentAcc',
+            'countAcc',
+            'recentTempo',
+            'countTempo',
+            'recentKomersil',
+            'countKomersil'
+        ));
     }
 }
