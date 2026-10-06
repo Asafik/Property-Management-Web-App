@@ -14,6 +14,7 @@ class LandBank extends Model
         'certificate_no',
         'ownership_status',
         'certificate_owner',
+        'owner_status',
         'area',
         'remaining_area',
         'acquisition_price',

@@ -110,8 +110,10 @@ class PropertyController extends Controller
 
     $companies = CompanyProfile::orderBy('name')->get();
     $categories = \App\Models\LandBank::whereIn('status', ['aktif', 'active', 'draft'])
-        ->select('zoning')
         ->whereNotNull('zoning')
+        ->where('zoning', '!=', '')
+        ->where('zoning', '!=', '-')
+        ->select('zoning')
         ->distinct()
         ->orderBy('zoning')
         ->pluck('zoning');

@@ -16,6 +16,7 @@ class PraLandbank extends Model
         'land_owner',
         'ownership_status',
         'owner_name',
+        'owner_status',
         'certificate_owner',
         'owner_contact',
         'land_source',
@@ -161,9 +162,13 @@ class PraLandbank extends Model
     public function getApplicableDocumentTypes()
     {
         $category = $this->ownership_category;
-        return DocumentTypes::all()->filter(function ($dt) use ($category) {
+        $isMeninggal = ($this->owner_status ?? 'hidup') === 'meninggal';
+
+        return DocumentTypes::all()->filter(function ($dt) use ($category, $isMeninggal) {
             $cats = $dt->applicable_categories ?? [];
-            return !empty($cats) && in_array($category, $cats);
+            $isCategoryMatch = !empty($cats) && in_array($category, $cats);
+            $isWarisDoc = $isMeninggal && in_array($dt->code ?? '', ['KETERANGAN_WARIS', 'AKTA_KEMATIAN']);
+            return $isCategoryMatch || $isWarisDoc;
         });
     }
 

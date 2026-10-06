@@ -353,6 +353,20 @@
                                                 </select>
                                             </div>
 
+                                            <!-- Kategori -->
+                                            <div style="min-width: 165px;">
+                                                <select name="kategori" id="filterKategori" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px; font-size: 0.84rem;">
+                                                    <option value="">Semua Kategori</option>
+                                                    @foreach ($categories as $cat)
+                                                        @if(!empty(trim($cat)))
+                                                            <option value="{{ $cat }}" {{ request('kategori') == $cat ? 'selected' : '' }}>
+                                                                {{ $cat }}
+                                                            </option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
                                             <!-- Legalitas -->
                                             <div style="min-width: 165px;">
                                                 <select name="legalitas" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px; font-size: 0.84rem;">
@@ -418,6 +432,18 @@
                                                         {{ request('company_profile_id') == $company->id ? 'selected' : '' }}>
                                                         {{ $company->name }}
                                                     </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <select name="kategori" id="filterKategoriMobile" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px; font-size: 0.84rem;">
+                                                <option value="">Semua Kategori</option>
+                                                @foreach ($categories as $cat)
+                                                    @if(!empty(trim($cat)))
+                                                        <option value="{{ $cat }}" {{ request('kategori') == $cat ? 'selected' : '' }}>
+                                                            {{ $cat }}
+                                                        </option>
+                                                    @endif
                                                 @endforeach
                                             </select>
                                         </div>
@@ -563,6 +589,7 @@
                                                     </small>
                                                 </div>
                                             </td>
+                                            <td>
                                                 @php
                                                     $devPercent = (float) $item->overall_infrastructure_progress;
                                                     if (in_array(strtolower($item->development_status), ['selesai', 'done'])) {

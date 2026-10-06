@@ -90,7 +90,7 @@ class DocumentTypeSeeder extends Seeder
                 'applicable_categories' => ['AJB', 'APHB', 'WARISAN', 'PETOK_C'],
             ],
             [
-                'name' => 'Surat Keterangan Ahli Waris',
+                'name' => 'Surat Keterangan Hak Waris dari Kelurahan',
                 'code' => 'KETERANGAN_WARIS',
                 'has_expiry' => false,
                 'applicable_categories' => ['APHB', 'WARISAN'],

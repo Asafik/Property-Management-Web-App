@@ -715,6 +715,22 @@
                                                 </td>
                                             </tr>
                                             <tr>
+                                                <td class="col-lbl">Status Kondisi Pemilik</td>
+                                                <td class="col-sep">:</td>
+                                                <td class="col-val">
+                                                    @php $ownerSt = $pra->owner_status ?? ($item->owner_status ?? 'hidup'); @endphp
+                                                    @if($ownerSt === 'meninggal')
+                                                        <span style="display:inline-flex; align-items:center; gap:4px; padding: 3px 8px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;">
+                                                            <i class="mdi mdi-alert-circle"></i> Meninggal Dunia (Pewaris)
+                                                        </span>
+                                                    @else
+                                                        <span style="display:inline-flex; align-items:center; gap:4px; padding: 3px 8px; border-radius: 6px; font-size: 0.76rem; font-weight: 600; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
+                                                            <i class="mdi mdi-account-check"></i> Masih Hidup
+                                                        </span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            <tr>
                                                 <td class="col-lbl">Nomor SPPT PBB Awal</td>
                                                 <td class="col-sep">:</td>
                                                 <td class="col-val fw-semibold font-monospace">

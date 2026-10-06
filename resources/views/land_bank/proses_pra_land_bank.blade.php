@@ -1031,6 +1031,31 @@
             font-weight: 600 !important;
         }
 
+        /* ===== RESPONSIVE FASE 1 DOCUMENT CARDS ===== */
+        .doc-fase1-col {
+            display: flex;
+        }
+        .doc-fase1-col.d-none {
+            display: none !important;
+        }
+        .doc-fase1-col .card {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            border-radius: 10px !important;
+            transition: box-shadow 0.2s ease;
+        }
+        .doc-fase1-col .card:hover {
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07) !important;
+        }
+        @media (max-width: 767.98px) {
+            .doc-fase1-col {
+                width: 100% !important;
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+            }
+        }
+
         @media (max-width: 991.98px) {
             .calc-summary-table {
                 font-size: 0.85rem !important;
@@ -1707,9 +1732,13 @@
                                     $selectedCat = '';
                                 }
 
-                                $catDocTypeIds = !empty($selectedCat) ? $documentTypes->filter(function($dt) use ($selectedCat) {
+                                $isOwnerMeninggal = ($land && ($land->owner_status ?? 'hidup') === 'meninggal');
+
+                                $catDocTypeIds = !empty($selectedCat) ? $documentTypes->filter(function($dt) use ($selectedCat, $isOwnerMeninggal) {
                                     $c = $dt->applicable_categories ?? [];
-                                    return !empty($c) && in_array($selectedCat, $c);
+                                    $isCategoryMatch = !empty($c) && in_array($selectedCat, $c);
+                                    $isWarisDoc = $isOwnerMeninggal && in_array($dt->code ?? '', ['KETERANGAN_WARIS', 'AKTA_KEMATIAN']);
+                                    return $isCategoryMatch || $isWarisDoc;
                                 })->pluck('id')->toArray() : [];
 
                                 $praDocs = $land ? $land->documents : collect();
@@ -1887,6 +1916,30 @@
                                             </div>
                                             <input type="text" class="form-control" id="owner_name" name="owner_name" value="{{ $land->owner_name ?? '' }}" placeholder="Nama pemilik tanah saat ini" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
                                         </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-semibold">
+                                                Status Kepemilikan / Pemilik Tanah <span class="text-danger">*</span>
+                                                <i class="mdi mdi-information-outline text-primary" title="Status kondisi pemilik sah tanah saat ini (Masih Hidup atau Meninggal Dunia)"></i>
+                                            </label>
+                                            <select class="form-select select2-search" id="select_owner_status" name="owner_status" data-placeholder="Pilih Status Pemilik" style="width: 100%;" {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
+                                                <option value="hidup" {{ ($land && ($land->owner_status ?? 'hidup') == 'hidup') ? 'selected' : '' }}>Masih Hidup</option>
+                                                <option value="meninggal" {{ ($land && ($land->owner_status ?? '') == 'meninggal') ? 'selected' : '' }}>Meninggal Dunia (Pewaris)</option>
+                                            </select>
+                                            <small class="text-muted d-block mt-1" style="font-size: 0.74rem;">
+                                                Jika pemilik telah meninggal dunia, wajib melampirkan Surat Hak Waris dari Kelurahan & Akta Kematian.
+                                            </small>
+                                        </div>
+                                        <div class="col-md-6 mb-3 d-flex align-items-center {{ ($land && ($land->owner_status ?? '') == 'meninggal') ? '' : 'd-none' }}" id="waris_notice_col">
+                                            <div class="alert alert-warning py-2.5 px-3 mb-0 w-100 rounded-3 border border-warning-subtle shadow-none" id="waris_notice_box" style="background: #fffbeb; font-size: 0.82rem; color: #92400e;">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="mdi mdi-alert-circle text-warning fs-5 flex-shrink-0"></i>
+                                                    <div>
+                                                        <strong>Pemilik Meninggal Dunia:</strong>
+                                                        <span class="d-block" style="font-size: 0.78rem;">Dokumen <strong>Surat Keterangan Hak Waris dari Kelurahan</strong> dan <strong>Akta Kematian Pewaris</strong> otomatis diwajibkan di Fase 1 di bawah.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="col-12 mb-3">
                                             <label class="form-label">Alamat Lengkap *</label>
                                             <input type="text" class="form-control" name="address" value="{{ $land->address ?? '' }}" placeholder="Alamat lengkap lokasi tanah" required {{ (!$canEditGeneralInfo || ($land && ($land->status == 'approved' || $land->status == 'rejected'))) ? 'disabled' : '' }}>
@@ -2038,14 +2091,22 @@
                                                  $currentDocStatus = $existingDoc->status ?? ($hasFile ? 'pending' : 'belum_upload');
                                                  $docPhysStatus = $existingDoc->document_status ?? 'ada';
                                                  $docCategories = $doc->applicable_categories ?? [];
-                                                 $isApplicable = !empty($selectedCat) && (!empty($docCategories) && in_array($selectedCat, $docCategories));
+                                                 $isWarisDoc = $isOwnerMeninggal && in_array($doc->code ?? '', ['KETERANGAN_WARIS', 'AKTA_KEMATIAN']);
+                                                 $isApplicable = !empty($selectedCat) && ((!empty($docCategories) && in_array($selectedCat, $docCategories)) || $isWarisDoc);
                                              @endphp
-                                             <div class="col-12 col-md-6 col-xl-4 doc-fase1-col {{ !$isApplicable ? 'd-none' : '' }}" id="doc-box-fase1-{{ $doc->id }}" data-categories='@json($docCategories)' data-doc-id="{{ $doc->id }}">
+                                             <div class="col-12 col-md-6 col-xl-4 doc-fase1-col {{ !$isApplicable ? 'd-none' : '' }}" id="doc-box-fase1-{{ $doc->id }}" data-categories='@json($docCategories)' data-doc-code="{{ $doc->code }}" data-doc-id="{{ $doc->id }}">
                                                  <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative" style="background: #ffffff; border-color: #eaedf2 !important;">
                                                     <!-- Header Card Box -->
                                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
                                                         <div>
                                                             <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">{{ $doc->name }}</h6>
+                                                            @if(in_array($doc->code ?? '', ['KETERANGAN_WARIS', 'AKTA_KEMATIAN']))
+                                                                <div class="mt-1 waris-doc-badge-tag {{ $isOwnerMeninggal ? '' : 'd-none' }}">
+                                                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle py-0.5 px-2" style="font-size: 10px;">
+                                                                        <i class="mdi mdi-alert-circle me-1"></i>Wajib (Pemilik Meninggal)
+                                                                    </span>
+                                                                </div>
+                                                            @endif
                                                             @if($doc->code === 'SPPT_PBB' && $land)
                                                                 <div class="mt-1">
                                                                     @if(($land->pbb_status ?? 'lunas') === 'nunggak')
@@ -4410,6 +4471,26 @@
             return '';
         }
 
+        function toggleWarisNotificationBox(val) {
+            const box = document.getElementById('waris_notice_box');
+            const col = document.getElementById('waris_notice_col');
+            const isMeninggal = (String(val || '').toLowerCase() === 'meninggal');
+            if (box) {
+                if (isMeninggal) {
+                    box.classList.remove('d-none');
+                } else {
+                    box.classList.add('d-none');
+                }
+            }
+            if (col) {
+                if (isMeninggal) {
+                    col.classList.remove('d-none');
+                } else {
+                    col.classList.add('d-none');
+                }
+            }
+        }
+
         function filterFase1DocumentsByCategory(selectedVal) {
             const cat = getNormalizedCategory(selectedVal);
             const alertEl = document.getElementById('fase1CategoryAlert');
@@ -4436,9 +4517,15 @@
             if (emptyEl) emptyEl.classList.add('d-none');
             if (alertEl) alertEl.classList.remove('d-none');
 
+            // Cek status pemilik (hidup atau meninggal)
+            const selOwnerStatus = document.getElementById('select_owner_status');
+            const ownerStatusVal = ($('#select_owner_status').val() || (selOwnerStatus ? selOwnerStatus.value : 'hidup') || 'hidup').toLowerCase();
+            const isMeninggal = (ownerStatusVal === 'meninggal');
+
             let visibleCount = 0;
             document.querySelectorAll('.doc-fase1-col').forEach(card => {
                 let rawCats = card.getAttribute('data-categories');
+                let docCode = card.getAttribute('data-doc-code') || '';
                 let cats = [];
                 try {
                     cats = typeof rawCats === 'string' ? JSON.parse(rawCats) : (rawCats || []);
@@ -4446,17 +4533,30 @@
                     cats = [];
                 }
 
-                if (cats && cats.length > 0 && cats.includes(cat)) {
+                const isCatMatch = cats && cats.length > 0 && cats.includes(cat);
+                const isWarisDoc = isMeninggal && (docCode === 'KETERANGAN_WARIS' || docCode === 'AKTA_KEMATIAN');
+
+                if (isCatMatch || isWarisDoc) {
                     card.classList.remove('d-none');
                     visibleCount++;
                 } else {
                     card.classList.add('d-none');
                 }
+
+                const warisTag = card.querySelector('.waris-doc-badge-tag');
+                if (warisTag) {
+                    if (isMeninggal) {
+                        warisTag.classList.remove('d-none');
+                    } else {
+                        warisTag.classList.add('d-none');
+                    }
+                }
             });
 
-            // Update Fase 3 document grid cards to match the category
+            // Update Fase 3 document grid cards to match the category & waris status
             document.querySelectorAll('.doc-fase3-col').forEach(card => {
                 let rawCats = card.getAttribute('data-categories');
+                let docCode = card.getAttribute('data-doc-code') || '';
                 let cats = [];
                 try {
                     cats = typeof rawCats === 'string' ? JSON.parse(rawCats) : (rawCats || []);
@@ -4464,7 +4564,10 @@
                     cats = [];
                 }
 
-                if (cats && cats.length > 0 && cats.includes(cat)) {
+                const isCatMatch = cats && cats.length > 0 && cats.includes(cat);
+                const isWarisDoc = isMeninggal && (docCode === 'KETERANGAN_WARIS' || docCode === 'AKTA_KEMATIAN');
+
+                if (isCatMatch || isWarisDoc) {
                     card.classList.remove('d-none');
                 } else {
                     card.classList.add('d-none');
@@ -4473,8 +4576,16 @@
 
             // Update info banner
             const info = CATEGORY_META[cat] || { name: cat };
-            if (nameEl) nameEl.textContent = info.name;
-            if (descEl) descEl.textContent = info.desc || `Menampilkan ${visibleCount} berkas wajib legalitas sesuai konfigurasi Master Dokumen Tanah Induk.`;
+            let catNameHtml = info.name;
+            let catDescHtml = info.desc || `Menampilkan ${visibleCount} berkas wajib legalitas sesuai konfigurasi Master Dokumen Tanah Induk.`;
+
+            if (isMeninggal) {
+                catNameHtml += ' + Hak Waris';
+                catDescHtml += ' <span class="badge bg-warning text-dark ms-1"><i class="mdi mdi-alert-circle-outline me-1"></i>Pemilik Meninggal: Wajib Surat Hak Waris Kelurahan & Akta Kematian</span>';
+            }
+
+            if (nameEl) nameEl.innerHTML = catNameHtml;
+            if (descEl) descEl.innerHTML = catDescHtml;
             if (countEl) countEl.textContent = visibleCount + ' Dokumen Wajib';
             if (fase3CatLabel) fase3CatLabel.textContent = info.name || cat;
         }
@@ -6159,10 +6270,25 @@
                 filterFase1DocumentsByCategory($(this).val());
             });
 
+            $('#select_owner_status').on('change select2:select', function() {
+                const curOwnership = $('#select_ownership_status').val() || (document.getElementById('select_ownership_status')?.value ?? '');
+                filterFase1DocumentsByCategory(curOwnership);
+                toggleWarisNotificationBox($(this).val());
+            });
+
             const selOwner = document.getElementById('select_ownership_status');
             if (selOwner) {
                 selOwner.addEventListener('change', function() {
                     filterFase1DocumentsByCategory(this.value);
+                });
+            }
+
+            const selOwnerStatusEl = document.getElementById('select_owner_status');
+            if (selOwnerStatusEl) {
+                selOwnerStatusEl.addEventListener('change', function() {
+                    const curOwnership = $('#select_ownership_status').val() || (document.getElementById('select_ownership_status')?.value ?? '');
+                    filterFase1DocumentsByCategory(curOwnership);
+                    toggleWarisNotificationBox(this.value);
                 });
             }
 
