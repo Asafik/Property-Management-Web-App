@@ -150,19 +150,19 @@
 
         /* Progress Bar Khusus Halaman Akad */
         .akad-progress {
-            height: 8px;
+            height: 10px;
             background: #eef1f6;
             border-radius: 20px;
             overflow: hidden;
             margin-bottom: 2rem;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
         }
 
         .akad-progress-bar {
             height: 100%;
             border-radius: 20px;
-            background: #9a55ff;
-            transition: width 0.3s ease;
-            max-width: 50%;
+            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            transition: width 0.4s ease;
         }
 
         .transaksi-steps {
@@ -181,21 +181,28 @@
             z-index: 1;
         }
 
-        /* Override jumlah step menjadi 5 kolom (Global default 4) */
-        .transaksi-steps.steps-5 {
-            grid-template-columns: repeat(5, 1fr);
-        }
-        /* Override jumlah step menjadi 6 kolom untuk unit komersil */
+        /* 6 kolom untuk flow tahapan KPR */
         .transaksi-steps.steps-6 {
             grid-template-columns: repeat(6, 1fr);
         }
-        @media (max-width: 767.98px) {
+        .transaksi-steps.steps-5 {
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        @media (max-width: 991.98px) {
             .transaksi-steps.steps-5,
             .transaksi-steps.steps-6 {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.25rem 0.75rem;
             }
             .transaksi-steps::before {
                 display: none !important;
+            }
+        }
+        @media (max-width: 575.98px) {
+            .transaksi-steps.steps-5,
+            .transaksi-steps.steps-6 {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
@@ -382,39 +389,51 @@
         .transaksi-input-group {
             display: flex;
             align-items: stretch;
+            width: 100%;
+            position: relative;
         }
+
         .transaksi-input-group-prepend,
         .transaksi-input-group-append {
             display: flex;
+            align-items: stretch;
         }
+
         .transaksi-input-group-text {
             display: flex;
             align-items: center;
-            padding: 0.65rem 0.85rem;
+            justify-content: center;
+            padding: 0.65rem 0.95rem;
             background: #f8fafc;
             border: 1.5px solid #e2e8f0;
             color: #64748b;
             font-weight: 700;
             font-size: 0.88rem;
+            user-select: none;
         }
 
         /* Prepend (Rp) */
         .transaksi-input-group-prepend .transaksi-input-group-text {
             border-radius: 8px 0 0 8px;
+            border-right: none;
         }
         .transaksi-input-group:not(.append) .transaksi-form-control {
             border-radius: 0 8px 8px 0;
-            border-left: none;
+            border-left: 1.5px solid #e2e8f0;
+            flex: 1;
+            min-width: 0;
         }
 
         /* Append (%) */
         .transaksi-input-group.append .transaksi-form-control {
             border-radius: 8px 0 0 8px;
             border-right: none;
+            flex: 1;
+            min-width: 0;
         }
         .transaksi-input-group.append .transaksi-input-group-text {
             border-radius: 0 8px 8px 0;
-            border-left: none;
+            border-left: 1.5px solid #e2e8f0;
         }
 
         /* Custom Icon Arrow pada Select */
@@ -424,6 +443,263 @@
             background-repeat: no-repeat;
             background-position: right 1rem center;
             background-size: 1em;
+        }
+
+        /* DECISION RADIO CARDS */
+        .transaksi-decision-card {
+            position: relative;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .transaksi-decision-card input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+
+        .transaksi-decision-label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.15rem 1.25rem;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            margin-bottom: 0;
+            user-select: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .transaksi-decision-label:hover {
+            border-color: #9a55ff;
+            background: #faf8ff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(154, 85, 255, 0.12);
+        }
+
+        .transaksi-decision-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.45rem;
+            flex-shrink: 0;
+            transition: all 0.25s ease;
+        }
+
+        .transaksi-decision-card.approve .transaksi-decision-icon {
+            background: #ecfdf5;
+            color: #10b981;
+        }
+
+        .transaksi-decision-card.reject .transaksi-decision-icon {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .transaksi-decision-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .transaksi-decision-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 2px;
+        }
+
+        .transaksi-decision-desc {
+            font-size: 0.82rem;
+            color: #64748b;
+            margin-bottom: 0;
+            line-height: 1.35;
+        }
+
+        .transaksi-decision-check {
+            font-size: 1.4rem;
+            color: #cbd5e1;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        /* State: Approved Checked */
+        .transaksi-decision-card.approve input[type="radio"]:checked + .transaksi-decision-label,
+        .transaksi-decision-card.approve.is-selected .transaksi-decision-label {
+            border-color: #10b981;
+            background: #f0fdf4;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .transaksi-decision-card.approve input[type="radio"]:checked + .transaksi-decision-label .transaksi-decision-check,
+        .transaksi-decision-card.approve.is-selected .transaksi-decision-check {
+            color: #10b981;
+        }
+
+        .transaksi-decision-card.approve input[type="radio"]:checked + .transaksi-decision-label .transaksi-decision-icon,
+        .transaksi-decision-card.approve.is-selected .transaksi-decision-icon {
+            background: #10b981;
+            color: #ffffff;
+        }
+
+        /* State: Reject Checked */
+        .transaksi-decision-card.reject input[type="radio"]:checked + .transaksi-decision-label,
+        .transaksi-decision-card.reject.is-selected .transaksi-decision-label {
+            border-color: #ef4444;
+            background: #fef2f2;
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .transaksi-decision-card.reject input[type="radio"]:checked + .transaksi-decision-label .transaksi-decision-check,
+        .transaksi-decision-card.reject.is-selected .transaksi-decision-check {
+            color: #ef4444;
+        }
+
+        .transaksi-decision-card.reject input[type="radio"]:checked + .transaksi-decision-label .transaksi-decision-icon,
+        .transaksi-decision-card.reject.is-selected .transaksi-decision-icon {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        /* ERROR BOX */
+        .transaksi-error-box {
+            display: none;
+        }
+
+        /* FORM SHELL */
+        .transaksi-form-shell {
+            display: none;
+            padding: 1.5rem;
+            border-radius: 14px;
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            margin-top: 1.25rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+        }
+
+        .transaksi-form-shell.approve {
+            border-color: #a7f3d0;
+            background: #fafdfb;
+        }
+
+        .transaksi-form-shell.reject {
+            border-color: #fecaca;
+            background: #fffcfc;
+        }
+
+        .transaksi-form-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .transaksi-form-title.approve {
+            color: #047857;
+        }
+
+        .transaksi-form-title.reject {
+            color: #b91c1c;
+        }
+
+        /* FILE UPLOAD */
+        .transaksi-file-upload {
+            position: relative;
+            width: 100%;
+        }
+
+        .transaksi-file-upload input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .transaksi-file-label {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: #ffffff;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .transaksi-file-upload:hover .transaksi-file-label {
+            border-color: #9a55ff;
+            background: #faf8ff;
+            box-shadow: 0 4px 14px rgba(154, 85, 255, 0.08);
+        }
+
+        .transaksi-file-label i {
+            font-size: 1.8rem;
+            color: #9a55ff;
+            background: #f3e8ff;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.25s ease;
+        }
+
+        .transaksi-file-upload:hover .transaksi-file-label i {
+            transform: scale(1.05);
+        }
+
+        .transaksi-file-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .transaksi-file-info span {
+            display: block;
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+            word-break: break-all;
+        }
+
+        .transaksi-file-info small {
+            display: block;
+            color: #8b8fa3;
+            font-size: 0.78rem;
+        }
+
+        /* ACTION BAR */
+        .transaksi-action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid #f1f5f9;
         }
 
         /* BUTTONS */
@@ -598,14 +874,20 @@
                                         @endphp
                                         <span class="badge {{ $badgeClass }}">
                                             <i class="mdi {{ $icon }} me-1"></i>
-                                            {{ strtoupper($application->unit->jenis ?? '-') }}
+                                            {{ strtoupper($application->unit->jenis ?? 'Komersil') }}
                                         </span>
                                     </h4>
-                                    <p class="customer-booking mb-0">Booking ID: {{ optional($application->unit->activeBooking)->booking_code ?? '-' }}</p>
+                                    <p class="customer-booking mb-0">Booking ID: {{ $application->booking->booking_code ?? optional(optional($application->unit)->activeBooking)->booking_code ?? '-' }}</p>
                                 </div>
                             </div>
 
                             <div class="customer-unit-info">
+                                @if(optional(optional($application->unit)->landBank)->nama_landbank)
+                                    <div class="info-item">
+                                        <small>Perumahan</small>
+                                        <span class="text-truncate" style="max-width: 180px;">{{ optional($application->unit->landBank)->nama_landbank }}</span>
+                                    </div>
+                                @endif
                                 <div class="info-item">
                                     <small>Unit - Type</small>
                                     <span>{{ $application->unit->unit_name ?? '-' }} - {{ $application->unit->type ?? '-' }}</span>
@@ -631,11 +913,10 @@
                     <div class="card-body">
                         <div class="transaksi-section-title">
                             <i class="mdi mdi-timeline-text"></i>
-                            <span>Tahapan Verifikasi KPR</span>
+                            <span>Tahapan Verifikasi KPR {{ $jenis == 'komersil' ? 'Komersil' : '' }}</span>
                         </div>
 
                         @php
-                            $jenis = strtolower($application->unit->jenis ?? '');
                             $surveyDone = !empty($application->rekomendasi) ||
                                        strtolower($application->status_survey ?? '') == 'done' ||
                                        ($application->booking->status_survey ?? 0) == 1;
@@ -643,32 +924,20 @@
 
                         <div class="transaksi-progress-top">
                             <span class="transaksi-muted">Progress Proses</span>
-                            @if($jenis == 'komersil')
-                                @if($surveyDone)
-                                    <span>Tahap 5 dari 6 (Proses Akad)</span>
-                                @else
-                                    <span>Menunggu</span>
-                                @endif
-                            @else
-                                @if($surveyDone)
-                                    <span>Tahap 4 dari 5 (Proses Akad)</span>
-                                @else
-                                    <span>Menunggu</span>
-                                @endif
-                            @endif
+                            <span class="fw-bold" style="color: #9a55ff;">Tahap 5 dari 6 (Proses Akad)</span>
                         </div>
 
                         <div class="akad-progress">
-                            <div class="akad-progress-bar"></div>
+                            <div class="akad-progress-bar" style="width: 83.3%;"></div>
                         </div>
 
-                        <div class="transaksi-steps {{ $jenis == 'komersil' ? 'steps-6' : 'steps-5' }}" {!! $jenis == 'subsidi' ? 'style="grid-template-columns: repeat(5, 1fr);"' : ($jenis != 'komersil' && $jenis != 'subsidi' ? 'style="grid-template-columns: repeat(4, 1fr);"' : '') !!}>
+                        <div class="transaksi-steps steps-6">
                             <div class="transaksi-step completed">
                                 <div class="transaksi-step-icon">
                                     <i class="mdi mdi-check"></i>
                                 </div>
                                 <span class="transaksi-step-title">Pengajuan</span>
-                                <small>{{ \Carbon\Carbon::parse($application->submitted_at ?? now())->translatedFormat('j F Y') }}</small>
+                                <small>{{ \Carbon\Carbon::parse($application->submitted_at ?? $application->created_at ?? now())->translatedFormat('j F Y') }}</small>
                             </div>
 
                             <div class="transaksi-step completed">
@@ -714,7 +983,6 @@
                                 <small>{{ $statusText[$status] ?? 'Pembangunan selesai' }}</small>
                             </div>
 
-                            @if($jenis == 'komersil')
                             <div class="transaksi-step {{ $surveyDone ? 'completed' : '' }}">
                                 @if($surveyDone)
                                     <div class="transaksi-step-icon">
@@ -730,30 +998,13 @@
                                     <small>Menunggu</small>
                                 @endif
                             </div>
-                            @else
-                            <div class="transaksi-step {{ $surveyDone ? 'completed' : '' }}">
-                                @if($surveyDone)
-                                    <div class="transaksi-step-icon">
-                                        <i class="mdi mdi-check"></i>
-                                    </div>
-                                    <span class="transaksi-step-title">Survey</span>
-                                    <small>{{ $application->survey_date ? \Carbon\Carbon::parse($application->survey_date)->translatedFormat('j F Y') : 'Selesai' }}</small>
-                                @else
-                                    <div class="transaksi-step-icon">
-                                        <i class="mdi mdi-home-search-outline"></i>
-                                    </div>
-                                    <span class="transaksi-step-title">Survey</span>
-                                    <small>Menunggu</small>
-                                @endif
-                            </div>
-                            @endif
 
                             <div class="transaksi-step active">
                                 <div class="transaksi-step-icon">
                                     <i class="mdi mdi-handshake-outline"></i>
                                 </div>
                                 <span class="transaksi-step-title">Akad</span>
-                                <small>Progress</small>
+                                <small>Dalam Proses</small>
                             </div>
 
                             <div class="transaksi-step">
@@ -847,7 +1098,7 @@
                             <div>Pilih status persetujuan dari bank. Keputusan ini akan menentukan langkah selanjutnya.</div>
                         </div>
 
-                        <div class="transaksi-inline-alert danger transaksi-error-box" id="decisionErrorBox">
+                        <div class="transaksi-inline-alert danger transaksi-error-box" id="decisionErrorBox" style="display: none;">
                             <i class="mdi mdi-alert-circle-outline"></i>
                             <div>Silakan pilih keputusan persetujuan terlebih dahulu sebelum submit.</div>
                         </div>
@@ -895,54 +1146,57 @@
                             </div>
 
                             <div id="formSetuju" class="transaksi-form-shell approve">
-                                <div class="transaksi-form-title approve">Form Persetujuan KPR</div>
+                                <div class="transaksi-form-title approve">
+                                    <i class="mdi mdi-check-decagram-outline"></i> Form Persetujuan KPR
+                                </div>
 
                                 <div class="transaksi-inline-alert success">
                                     <i class="mdi mdi-check-circle-outline"></i>
                                     <div><strong>KPR disetujui.</strong> Silakan isi detail persetujuan dari bank.</div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-4">
+                                <div class="row g-3">
+                                    <div class="col-12 col-md-6 col-lg-3">
                                         <div class="transaksi-form-group">
                                             <label class="transaksi-form-label">Nilai Disetujui</label>
                                             <div class="transaksi-input-group">
                                                 <div class="transaksi-input-group-prepend">
                                                     <span class="transaksi-input-group-text">Rp</span>
                                                 </div>
-                                                <input type="text" class="transaksi-form-control" name="jumlah_pinjaman" value="{{ $application->jumlah_pinjaman ?? '' }}">
+                                                <input type="text" class="transaksi-form-control" name="jumlah_pinjaman" value="{{ $application->jumlah_pinjaman ?? '' }}" placeholder="0">
                                             </div>
                                             <small class="transaksi-muted">Bisa berbeda dari pengajuan</small>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-12 col-md-6 col-lg-3">
                                         <div class="transaksi-form-group">
                                             <label class="transaksi-form-label">Angsuran Disetujui</label>
                                             <div class="transaksi-input-group">
                                                 <div class="transaksi-input-group-prepend">
                                                     <span class="transaksi-input-group-text">Rp</span>
                                                 </div>
-                                                <input type="text" class="transaksi-form-control" name="estimasi_angsuran" value="{{ $application->estimasi_angsuran ?? '' }}">
+                                                <input type="text" class="transaksi-form-control" name="estimasi_angsuran" value="{{ $application->estimasi_angsuran ?? '' }}" placeholder="0">
                                             </div>
                                             <small class="transaksi-muted">Bisa berbeda dari pengajuan</small>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-12 col-md-6 col-lg-3">
                                         <div class="transaksi-form-group">
                                             <label class="transaksi-form-label">Tenor Disetujui</label>
                                             <select class="transaksi-form-control" name="tenor">
-                                                <option value="5" {{ ($application->tenor ?? '') == 5 ? 'selected' : '' }}>5 Tahun</option>
-                                                <option value="10" {{ ($application->tenor ?? '') == 10 ? 'selected' : '' }}>10 Tahun</option>
-                                                <option value="15" {{ ($application->tenor ?? '') == 15 ? 'selected' : '' }}>15 Tahun</option>
-                                                <option value="20" {{ ($application->tenor ?? '') == 20 ? 'selected' : '' }}>20 Tahun</option>
+                                                @foreach([1, 2, 3, 5, 10, 15, 20, 25, 30] as $tenorOption)
+                                                    <option value="{{ $tenorOption }}" {{ ($application->tenor ?? '') == $tenorOption ? 'selected' : '' }}>
+                                                        {{ $tenorOption }} Tahun
+                                                    </option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-12 col-md-6 col-lg-3">
                                         <div class="transaksi-form-group">
                                             <label class="transaksi-form-label">Bunga Final</label>
                                             <div class="transaksi-input-group append">
-                                                <input type="text" class="transaksi-form-control" name="bunga" value="{{ $application->bunga ?? '' }}">
+                                                <input type="text" class="transaksi-form-control" name="bunga" value="{{ $application->bunga ?? '' }}" placeholder="0.00">
                                                 <div class="transaksi-input-group-append">
                                                     <span class="transaksi-input-group-text">%</span>
                                                 </div>
@@ -951,30 +1205,30 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-6">
+                                <div class="row g-3">
+                                    <div class="col-12 col-md-6">
                                         <div class="transaksi-form-group">
                                             <label class="transaksi-form-label">No. Surat Persetujuan (SP3K)</label>
-                                            <input type="text" class="transaksi-form-control" name="no_sp3k" value="SP3K/2025/021/ABC">
+                                            <input type="text" class="transaksi-form-control" name="no_sp3k" value="{{ $application->no_sp3k ?? ('SP3K/' . date('Y') . '/' . str_pad($application->id, 3, '0', STR_PAD_LEFT) . '/ABC') }}">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-12 col-md-6">
                                         <div class="transaksi-form-group">
                                             <label class="transaksi-form-label">Tanggal Persetujuan</label>
-                                            <input type="date" class="transaksi-form-control" name="approved_at" value="{{ date('Y-m-d') }}">
+                                            <input type="date" class="transaksi-form-control" name="approved_at" value="{{ $application->approved_at ? \Carbon\Carbon::parse($application->approved_at)->format('Y-m-d') : date('Y-m-d') }}">
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="transaksi-form-group">
-                                    <label class="transaksi-form-label">Upload Surat Persetujuan Prinsip</label>
+                                    <label class="transaksi-form-label">Upload Surat Persetujuan Prinsip (SP3K)</label>
                                     <div class="transaksi-file-upload">
                                         <input type="file" name="berita_acara" accept=".jpg,.jpeg,.png,.pdf">
                                         <div class="transaksi-file-label">
-                                            <i class="mdi mdi-cloud-upload"></i>
+                                            <i class="mdi mdi-cloud-upload-outline"></i>
                                             <div class="transaksi-file-info">
-                                                <span>Upload Surat Persetujuan</span>
-                                                <small>Format: JPG, PNG, PDF (Max 5MB)</small>
+                                                <span>{{ $application->berita_acara ? basename($application->berita_acara) : 'Upload Surat Persetujuan' }}</span>
+                                                <small>{{ $application->berita_acara ? 'Klik untuk mengganti berkas yang sudah ada' : 'Format: JPG, PNG, PDF (Maks. 5MB)' }}</small>
                                             </div>
                                         </div>
                                     </div>
@@ -982,16 +1236,18 @@
 
                                 <div class="transaksi-form-group mb-0">
                                     <label class="transaksi-form-label">Catatan Persetujuan</label>
-                                    <textarea class="transaksi-form-control" name="catatan" rows="2">Disetujui dengan nilai Rp {{ number_format($application->jumlah_pinjaman ?? 0, 0, ',', '.') }}, bunga {{ $application->bunga ?? '' }}%</textarea>
+                                    <textarea class="transaksi-form-control" name="catatan" rows="2" placeholder="Catatan persetujuan dari bank...">{{ $application->catatan ?? ('Disetujui dengan nilai Rp ' . number_format($application->jumlah_pinjaman ?? 0, 0, ',', '.') . ', bunga ' . ($application->bunga ?? '') . '%') }}</textarea>
                                 </div>
                             </div>
 
                             <div id="formTolak" class="transaksi-form-shell reject">
-                                <div class="transaksi-form-title reject">Form Penolakan KPR</div>
+                                <div class="transaksi-form-title reject">
+                                    <i class="mdi mdi-close-circle-outline"></i> Form Penolakan KPR
+                                </div>
 
                                 <div class="transaksi-inline-alert danger">
                                     <i class="mdi mdi-close-circle-outline"></i>
-                                    <div><strong>KPR DITOLAK</strong> - Pilih alasan penolakan dari bank.</div>
+                                    <div><strong>KPR Ditolak.</strong> Silakan pilih alasan penolakan dari bank.</div>
                                 </div>
 
                                 <div class="transaksi-form-group">
@@ -1014,7 +1270,7 @@
 
                                 <div class="transaksi-form-group mb-0">
                                     <label class="transaksi-form-label">Catatan Penolakan</label>
-                                    <textarea class="transaksi-form-control" name="catatan" rows="2" placeholder="Detail penolakan dari bank..."></textarea>
+                                    <textarea class="transaksi-form-control" name="catatan_tolak" rows="2" placeholder="Detail penolakan dari bank..."></textarea>
                                 </div>
                             </div>
 
@@ -1043,19 +1299,24 @@
                                 <span>Serah Terima Unit</span>
                             </div>
 
-                            @if (($application->status ?? '') === 'approved')
+                            @if (($application->status ?? '') === 'approved' || ($application->status ?? '') === 'akad' || ($application->status ?? '') === 'selesai')
                                 <div class="text-center py-3">
-                                    <i class="mdi mdi-check-circle text-success" style="font-size: 48px;"></i>
-                                    <p class="mt-3 mb-2 fw-medium">Akad telah disetujui</p>
-                                    <p class="text-muted small">Unit siap untuk proses serah terima</p>
+                                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 58px; height: 58px; background: #ecfdf5;">
+                                        <i class="mdi mdi-check-circle text-success" style="font-size: 32px;"></i>
+                                    </div>
+                                    <h6 class="mb-1 fw-bold text-dark">Akad Telah Disetujui</h6>
+                                    <p class="text-muted small mb-3">Unit siap untuk proses serah terima</p>
+                                    <a href="{{ route('booking.serah-terima', $application->booking->id ?? $application->booking_id ?? 0) }}" class="transaksi-btn transaksi-btn-primary w-100 justify-content-center">
+                                        <i class="mdi mdi-key me-1"></i> Proses Serah Terima
+                                    </a>
                                 </div>
-                                <a href="{{ route('booking.serah-terima', $application->booking->id ?? 0) }}" class="transaksi-btn transaksi-btn-primary w-100 justify-content-center">
-                                    <i class="mdi mdi-key me-1"></i> Proses Serah Terima
-                                </a>
                             @else
                                 <div class="text-center py-4">
-                                    <i class="mdi mdi-clock-outline text-warning" style="font-size: 48px;"></i>
-                                    <p class="mt-3 mb-0 text-muted">Menunggu persetujuan akad</p>
+                                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 58px; height: 58px; background: #fffbeb;">
+                                        <i class="mdi mdi-clock-outline text-warning" style="font-size: 32px;"></i>
+                                    </div>
+                                    <h6 class="mb-1 fw-bold text-dark">Menunggu Persetujuan Akad</h6>
+                                    <p class="text-muted small mb-0">Tahap serah terima dapat diproses setelah persetujuan akad selesai.</p>
                                 </div>
                             @endif
                         </div>
@@ -1077,11 +1338,11 @@
                                     </li>
                                     <li>
                                         <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                        <span>Upload surat persetujuan prinsip sebagai bukti.</span>
+                                        <span>Upload surat persetujuan prinsip (SP3K) sebagai bukti.</span>
                                     </li>
                                     <li>
                                         <i class="mdi mdi-arrow-right-circle-outline"></i>
-                                        <span>Setelah disimpan, proses akan lanjut ke tahap Survey.</span>
+                                        <span>Setelah disimpan, proses akan lanjut ke tahap Survey / Akad Closing.</span>
                                     </li>
                                 </ul>
                             </div>
@@ -1122,16 +1383,22 @@
             const $decisionErrorBox = $('#decisionErrorBox');
 
             function switchDecision(type) {
-                $decisionErrorBox.hide();
+                $decisionErrorBox.stop(true, true).slideUp(150);
 
                 if (type === 'survey') {
                     $statusInput.val('survey');
-                    $formSetuju.slideDown(180);
-                    $formTolak.slideUp(180);
+                    $decisionApprove.prop('checked', true);
+                    $('#cardSetuju').addClass('is-selected');
+                    $('#cardTolak').removeClass('is-selected');
+                    $formSetuju.stop(true, true).slideDown(220);
+                    $formTolak.stop(true, true).slideUp(220);
                 } else if (type === 'rejected') {
                     $statusInput.val('rejected');
-                    $formTolak.slideDown(180);
-                    $formSetuju.slideUp(180);
+                    $decisionReject.prop('checked', true);
+                    $('#cardTolak').addClass('is-selected');
+                    $('#cardSetuju').removeClass('is-selected');
+                    $formTolak.stop(true, true).slideDown(220);
+                    $formSetuju.stop(true, true).slideUp(220);
                 }
             }
 
@@ -1147,12 +1414,24 @@
                 }
             });
 
+            $('#cardSetuju').on('click', function(e) {
+                if (!$(e.target).is('input[type="radio"]')) {
+                    switchDecision('survey');
+                }
+            });
+
+            $('#cardTolak').on('click', function(e) {
+                if (!$(e.target).is('input[type="radio"]')) {
+                    switchDecision('rejected');
+                }
+            });
+
             // Tampilkan input alasan lainnya
-            $('#alasanTolak').change(function() {
+            $('#alasanTolak').on('change', function() {
                 if ($(this).val() === 'Lainnya') {
-                    $('#alasanLainnya').slideDown();
+                    $('#alasanLainnya').stop(true, true).slideDown(180);
                 } else {
-                    $('#alasanLainnya').slideUp();
+                    $('#alasanLainnya').stop(true, true).slideUp(180);
                 }
             });
 
@@ -1164,30 +1443,22 @@
                 if (file) {
                     const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
                     $container.find('.transaksi-file-info span').text(file.name);
-                    $container.find('.transaksi-file-info small').text(sizeInMB + ' MB');
+                    $container.find('.transaksi-file-info small').text(sizeInMB + ' MB • Berkas siap diupload');
                 }
             });
 
-            // Set progress bar width dynamically
-            const jenis = '{{ $jenis ?? '' }}';
-            const surveyDone = {{ $surveyDone ? 'true' : 'false' }};
-
-            if (surveyDone) {
-                // Survey sudah selesai, progress sampai Akad
-                const progressWidth = jenis === 'komersil' ? '50%' : '40%';
-                $('.akad-progress-bar').css('width', progressWidth);
-            } else {
-                // Survey belum selesai, progress berhenti di Survey
-                const progressWidth = jenis === 'komersil' ? '33%' : '25%';
-                $('.akad-progress-bar').css('width', progressWidth);
+            // Inisialisasi jika ada nilai tersimpan
+            if ($decisionApprove.is(':checked')) {
+                switchDecision('survey');
+            } else if ($decisionReject.is(':checked')) {
+                switchDecision('rejected');
             }
-        });
 
             // Form validation
             $('#formKonfirmasiKpr').on('submit', function(e) {
                 if (!$statusInput.val()) {
                     e.preventDefault();
-                    $decisionErrorBox.slideDown(160);
+                    $decisionErrorBox.stop(true, true).slideDown(180);
 
                     $('html, body').animate({
                         scrollTop: $decisionErrorBox.offset().top - 120
