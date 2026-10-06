@@ -52,6 +52,15 @@ class LandBankUnit extends Model
             $cleanStatus = strtolower((string)$unit->status);
             $hasPrice = !empty($unit->price) && (float)$unit->price > 0;
 
+            if ($unit->relationLoaded('activeBooking') && $unit->activeBooking && !in_array($unit->activeBooking->status, ['cancelled'])) {
+                if (in_array(strtolower($unit->activeBooking->status), ['completed', 'done', 'sold'])) {
+                    $unit->status = 'sold';
+                } else {
+                    $unit->status = 'booked';
+                }
+                return;
+            }
+
             if (!$hasPrice && !in_array($cleanStatus, ['booked', 'booking', 'sold', 'terjual'])) {
                 $unit->status = 'draft';
             } elseif ($hasPrice && (empty($cleanStatus) || $cleanStatus === 'draft')) {
@@ -64,6 +73,11 @@ class LandBankUnit extends Model
     public function getStatusAttribute($value)
     {
         $cleanVal = strtolower((string)$value);
+
+        if ($this->relationLoaded('activeBooking') && $this->activeBooking && !in_array($this->activeBooking->status, ['cancelled'])) {
+            return in_array(strtolower($this->activeBooking->status), ['completed', 'done', 'sold']) ? 'sold' : 'booked';
+        }
+
         $hasPrice = !empty($this->attributes['price']) && (float)$this->attributes['price'] > 0;
 
         if (!$hasPrice && !in_array($cleanVal, ['booked', 'booking', 'sold', 'terjual'])) {

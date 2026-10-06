@@ -238,19 +238,30 @@
 
         @php
             // Logic Status & Progres
-            $statusRaw = strtolower($unit->status ?? 'ready');
+            $hasActiveBooking = $unit->activeBooking && !in_array($unit->activeBooking->status, ['cancelled']);
+            $bookingStatus = $hasActiveBooking ? strtolower($unit->activeBooking->status) : null;
+
+            if ($hasActiveBooking && in_array($bookingStatus, ['done', 'sold', 'completed'])) {
+                $statusRaw = 'sold';
+                $statusText = 'Terjual';
+            } elseif ($hasActiveBooking) {
+                $statusRaw = 'booked';
+                $statusText = 'Booking';
+            } else {
+                $statusRaw = strtolower($unit->status ?? 'ready');
+                if ($statusRaw === 'ready' || $statusRaw === 'tersedia') {
+                    $statusText = 'Tersedia';
+                } elseif ($statusRaw === 'booked' || $statusRaw === 'booking') {
+                    $statusText = 'Booking';
+                } elseif ($statusRaw === 'sold' || $statusRaw === 'terjual') {
+                    $statusText = 'Terjual';
+                } else {
+                    $statusText = ucfirst($statusRaw ?: 'Draft');
+                }
+            }
+
             $jenisRaw = strtolower($unit->jenis ?? '');
             $typeRaw = strtolower($unit->type ?? '');
-
-            if ($statusRaw === 'ready' || $statusRaw === 'tersedia') {
-                $statusText = 'Tersedia';
-            } elseif ($statusRaw === 'booked' || $statusRaw === 'booking') {
-                $statusText = 'Booking';
-            } elseif ($statusRaw === 'sold' || $statusRaw === 'terjual') {
-                $statusText = 'Terjual';
-            } else {
-                $statusText = ucfirst($statusRaw ?: 'Draft');
-            }
 
             $progPct = (int) ($unit->construction_progress_percentage ?? 0);
             $progColor = $progPct >= 100 ? '#10b981' : ($progPct >= 40 ? '#0284c7' : '#f59e0b');

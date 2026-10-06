@@ -395,7 +395,10 @@ class DevelopmentProgressController extends Controller
 
             // Update progress unit
             $unit->construction_progress = 'selesai';
-            $unit->status = 'ready';
+            // Hanya ubah status ke 'ready' jika unit belum dibooking atau terjual
+            if (!in_array(strtolower((string)$unit->status), ['booked', 'booking', 'sold', 'terjual']) && !$unit->activeBooking) {
+                $unit->status = 'ready';
+            }
             $unit->save();
 
             return response()->json([
