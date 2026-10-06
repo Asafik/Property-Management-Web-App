@@ -803,3 +803,135 @@
     background-color: #f1f5f9;
     color: #0f172a;
 }
+
+/* ==========================================================================
+   GLOBAL RESPONSIVE OPTIMIZATIONS (ALL DASHBOARDS: PROYEK, LEGAL, KPR, MARKETING)
+   ========================================================================== */
+
+/* Pastikan wrapper tidak overflow di perangkat mobile */
+.content-wrapper {
+    overflow-x: hidden !important;
+    padding: 0.75rem !important;
+}
+@media (min-width: 768px) {
+    .content-wrapper {
+        padding: 1.5rem !important;
+    }
+}
+
+.dash-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+}
+
+/* Responsivitas Header Dashboard & Button Group */
+@media (max-width: 767.98px) {
+    .dash-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.85rem !important;
+    }
+    .dash-header > div:last-child {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+        width: 100% !important;
+    }
+    .dash-header > div:last-child .btn {
+        flex: 1 1 auto !important;
+        justify-content: center !important;
+        text-align: center !important;
+        font-size: 0.78rem !important;
+    }
+    .dash-panel-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.65rem !important;
+    }
+    .dash-panel-header > div:last-child,
+    .dash-panel-header > a:last-child {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: flex-start !important;
+        flex-wrap: wrap !important;
+    }
+}
+
+/* Responsivitas 5-Kolom KPI Grid */
+.dash-kpi-grid-5 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    width: 100%;
+}
+@media (min-width: 576px) {
+    .dash-kpi-grid-5 {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.85rem;
+    }
+}
+@media (min-width: 992px) {
+    .dash-kpi-grid-5 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media (min-width: 1200px) {
+    .dash-kpi-grid-5 {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.85rem;
+    }
+}
+
+/* Responsivitas KPI Cards di Mobile */
+@media (max-width: 575.98px) {
+    .dash-kpi-card {
+        padding: 0.75rem 0.85rem !important;
+    }
+    .dash-kpi-val {
+        font-size: 1.15rem !important;
+    }
+    .dash-kpi-label {
+        font-size: 0.75rem !important;
+    }
+    .dash-kpi-sub {
+        font-size: 0.68rem !important;
+    }
+    .dash-panel {
+        padding: 0.75rem !important;
+        border-radius: 6px !important;
+    }
+}
+
+/* Responsivitas Tabel di Semua Dashboard */
+.table-responsive {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: thin !important;
+}
+.table-responsive::-webkit-scrollbar {
+    height: 6px !important;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #cbd5e1 !important;
+    border-radius: 3px !important;
+}
+
+@media (max-width: 767.98px) {
+    .table thead th {
+        padding-top: 0.6rem !important;
+        padding-bottom: 0.6rem !important;
+        font-size: 0.74rem !important;
+        white-space: nowrap !important;
+    }
+    .table tbody td {
+        padding-top: 0.65rem !important;
+        padding-bottom: 0.65rem !important;
+        font-size: 0.8rem !important;
+        white-space: nowrap !important;
+    }
+}

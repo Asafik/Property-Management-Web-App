@@ -35,6 +35,11 @@ class AgencyPropertyController extends Controller
             });
         }
 
+        // Filter divisi jika dipilih
+        if ($request->filled('division_id') && $request->division_id !== 'all') {
+            $query->where('division_id', $request->division_id);
+        }
+
         // Sorting
         $sortField = $request->input('sortField', 'created_at');
         $sortDirection = $request->input('sortDirection', 'desc');
@@ -50,7 +55,30 @@ class AgencyPropertyController extends Controller
         // Ambil data dengan pagination
         $employees = $query->paginate($perPage)->withQueryString();
 
-        return view('sales.data_sales_agent', compact('employees', 'sortField', 'sortDirection'));
+        // KPI Metrik Pengguna (Sama persis dengan KPI di Catalog Unit)
+        $totalEmployees = Employee::count();
+        $totalMarketing = Employee::where('division_id', 1)
+            ->orWhereHas('division', fn($q) => $q->where('name', 'like', '%marketing%'))
+            ->count();
+        $totalProyek = Employee::where('division_id', 2)
+            ->orWhereHas('division', fn($q) => $q->where('name', 'like', '%proyek%')->orWhere('name', 'like', '%operasional%'))
+            ->count();
+        $totalLegalAdmin = Employee::whereIn('division_id', [3, 4, 5])
+            ->orWhereHas('division', fn($q) => $q->where('name', 'like', '%legal%')->orWhere('name', 'like', '%keuangan%')->orWhere('name', 'like', '%admin%'))
+            ->count();
+
+        $divisions = Division::orderBy('name')->get();
+
+        return view('sales.data_sales_agent', compact(
+            'employees',
+            'sortField',
+            'sortDirection',
+            'totalEmployees',
+            'totalMarketing',
+            'totalProyek',
+            'totalLegalAdmin',
+            'divisions'
+        ));
     }
 
     // Menampilkan form tambah sales/agent

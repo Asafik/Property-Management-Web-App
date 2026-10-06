@@ -111,6 +111,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/kpr', [DashboardController::class, 'kprDashboardRoute'])->name('dashboard.kpr');
     Route::get('/dashboard/detail/{id}', [DashboardController::class, 'show'])->name('dashboard.detail');
     Route::get('/proyek/refresh', [DashboardController::class, 'refresh']);
     Route::get('/notifications/read/{id}', function ($id) {
