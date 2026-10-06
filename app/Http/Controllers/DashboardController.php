@@ -190,7 +190,7 @@ class DashboardController extends Controller
         $pascaProjects = LandBank::with(['companyProfile', 'units', 'documents.documentType'])->latest()->take(5)->get();
 
         // 2. Status Unit (Real Metrik Kavling & Unit)
-        $unitReady   = LandBankUnit::whereIn('status', ['ready', 'tersedia', 'available'])->count();
+        $unitReady   = LandBankUnit::whereIn('status', ['ready', 'tersedia', 'available'])->whereNotNull('price')->where('price', '>', 0)->count();
         $unitBooking = LandBankUnit::whereIn('status', ['booked', 'booking'])->count();
         $unitSold    = LandBankUnit::whereIn('status', ['sold', 'terjual'])->count();
         $unitKpr     = Booking::where('purchase_type', 'kpr')->count();
@@ -590,12 +590,14 @@ class DashboardController extends Controller
 
         // 1. UNIT METRICS
         $totalUnits = LandBankUnit::count();
-        $readyUnits = LandBankUnit::whereIn('status', ['ready', 'tersedia'])->count();
+        $readyUnits = LandBankUnit::whereIn('status', ['ready', 'tersedia'])->whereNotNull('price')->where('price', '>', 0)->count();
         $readySubsidi = LandBankUnit::whereIn('status', ['ready', 'tersedia'])
+            ->whereNotNull('price')->where('price', '>', 0)
             ->where(function($q) {
                 $q->where('jenis', 'subsidi')->orWhere('type', 'subsidi');
             })->count();
         $readyKomersil = LandBankUnit::whereIn('status', ['ready', 'tersedia'])
+            ->whereNotNull('price')->where('price', '>', 0)
             ->where(function($q) {
                 $q->where('jenis', 'komersil')->orWhere('type', 'komersil');
             })->count();
@@ -890,7 +892,7 @@ class DashboardController extends Controller
 
         // 3. UNIT & PEMBANGUNAN FISIK
         $totalUnits = LandBankUnit::count();
-        $readyUnits = LandBankUnit::whereIn('status', ['ready', 'tersedia'])->count();
+        $readyUnits = LandBankUnit::whereIn('status', ['ready', 'tersedia'])->whereNotNull('price')->where('price', '>', 0)->count();
         $progressUnits = LandBankUnit::whereIn('status', ['pembangunan', 'proses'])->count();
         $bookedUnits = LandBankUnit::where('status', 'booked')->count();
         $soldUnits = LandBankUnit::whereIn('status', ['sold', 'terjual'])->count();

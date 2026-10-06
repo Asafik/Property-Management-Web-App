@@ -106,7 +106,15 @@ class SellUnitController extends Controller
         if ($request->filled('status')) {
             $status = strtolower($request->status);
             if ($status === 'ready' || $status === 'tersedia') {
-                $query->whereIn('status', ['ready', 'draft', 'tersedia']);
+                $query->whereIn('status', ['ready', 'tersedia'])
+                      ->whereNotNull('price')
+                      ->where('price', '>', 0);
+            } elseif ($status === 'draft') {
+                $query->where(function ($q) {
+                    $q->where('status', 'draft')
+                      ->orWhereNull('price')
+                      ->orWhere('price', '<=', 0);
+                })->whereNotIn('status', ['booked', 'booking', 'sold', 'terjual']);
             } else {
                 $query->where('status', $status);
             }
@@ -224,9 +232,14 @@ class SellUnitController extends Controller
         // STATISTIK (AKURAT SESUAI FILTER)
         // =========================
         $totalUnits     = $statsQuery->count();
-        $totalTersedia  = (clone $statsQuery)->whereIn('status', ['ready', 'draft', 'tersedia'])->count();
-        $totalBooking   = (clone $statsQuery)->where('status', 'booked')->count();
-        $totalSold      = (clone $statsQuery)->where('status', 'sold')->count();
+        $totalTersedia  = (clone $statsQuery)->whereIn('status', ['ready', 'tersedia'])->whereNotNull('price')->where('price', '>', 0)->count();
+        $totalBooking   = (clone $statsQuery)->whereIn('status', ['booked', 'booking'])->count();
+        $totalSold      = (clone $statsQuery)->whereIn('status', ['sold', 'terjual'])->count();
+        $totalDraft     = (clone $statsQuery)->where(function ($q) {
+            $q->where('status', 'draft')
+              ->orWhereNull('price')
+              ->orWhere('price', '<=', 0);
+        })->whereNotIn('status', ['booked', 'booking', 'sold', 'terjual'])->count();
         $totalArea      = $statsQuery->sum('area');
         $totalNilai     = $statsQuery->sum('price');
 
@@ -284,12 +297,18 @@ class SellUnitController extends Controller
         // set warna sesuai tipe
         // Tentukan warna berdasarkan status & type
         foreach ($unitsForSvg as $unit) {
-            if ($unit->type === 'komersil' && $unit->status === 'ready') {
+            if ($unit->status === 'draft' || empty($unit->price) || (float)$unit->price <= 0) {
+                $unit->fillColor = '#64748b'; // abu-abu / slate untuk draft
+            } elseif ($unit->type === 'komersil' && in_array($unit->status, ['ready', 'tersedia'])) {
                 $unit->fillColor = '#2675BB'; // biru
-            } elseif ($unit->status === 'ready') {
+            } elseif (in_array($unit->status, ['ready', 'tersedia'])) {
+                $unit->fillColor = '#28a745'; // hijau
+            } elseif (in_array($unit->status, ['booked', 'booking'])) {
+                $unit->fillColor = '#f59e0b'; // amber
+            } elseif (in_array($unit->status, ['sold', 'terjual'])) {
                 $unit->fillColor = '#CE2A2E'; // merah
             } else {
-                $unit->fillColor = '#0DA351'; // hijau default
+                $unit->fillColor = '#64748b'; // default draft
             }
         }
         // =========================
@@ -305,6 +324,7 @@ class SellUnitController extends Controller
             'totalTersedia',
             'totalBooking',
             'totalSold',
+            'totalDraft',
             'customers',
             'agencies',
             'projects',
@@ -343,10 +363,15 @@ class SellUnitController extends Controller
             ], 422);
         }
 
-        // CEK STATUS UNIT (hanya tolak jika sudah sold)
-        if ($unit->status === 'sold') {
+        // CEK STATUS UNIT
+        if ($unit->status === 'sold' || $unit->status === 'terjual') {
             return response()->json([
                 'message' => 'Unit ini sudah terjual (Sold).'
+            ], 422);
+        }
+        if ($unit->status === 'draft' || empty($unit->price) || (float)$unit->price <= 0) {
+            return response()->json([
+                'message' => 'Unit ini masih berstatus Draft karena belum ditentukan harga jualnya. Silakan tetapkan harga terlebih dahulu sebelum melakukan transaksi booking.'
             ], 422);
         }
 

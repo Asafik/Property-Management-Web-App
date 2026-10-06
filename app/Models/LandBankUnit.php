@@ -46,6 +46,26 @@ class LandBankUnit extends Model
         'polygon_points' => 'array',
     ];
 
+    protected static function booted()
+    {
+        static::saving(function ($unit) {
+            // Jika harga belum diset atau <= 0, dan unit belum dibooking/terjual, status otomatis draft
+            $cleanStatus = strtolower((string)$unit->status);
+            if ((empty($unit->price) || (float)$unit->price <= 0) && !in_array($cleanStatus, ['booked', 'booking', 'sold', 'terjual'])) {
+                $unit->status = 'draft';
+            }
+        });
+    }
+
+    public function getStatusAttribute($value)
+    {
+        $cleanVal = strtolower((string)$value);
+        if ((empty($this->attributes['price']) || (float)$this->attributes['price'] <= 0) && !in_array($cleanVal, ['booked', 'booking', 'sold', 'terjual'])) {
+            return 'draft';
+        }
+        return $value ?: 'draft';
+    }
+
     public function landingPage()
     {
         return $this->hasOne(\App\Models\UnitLandingPage::class, 'land_bank_unit_id');

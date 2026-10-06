@@ -719,7 +719,7 @@ public function store(Request $request)
 
             $catDocTypeIds = $documentTypes->filter(function($dt) use ($cat) {
                 $c = $dt->applicable_categories ?? [];
-                return empty($c) || in_array($cat, $c);
+                return !empty($c) && in_array($cat, $c);
             })->pluck('id')->toArray();
 
             $totalRequired = count($catDocTypeIds);
@@ -771,7 +771,7 @@ public function store(Request $request)
 
                 $applicableDocs = $land->documents->filter(function($d) use ($category) {
                     $cats = $d->documentType->applicable_categories ?? [];
-                    return empty($cats) || in_array($category, $cats);
+                    return !empty($cats) && in_array($category, $cats);
                 });
 
                 $totalUploaded = $applicableDocs->whereNotNull('file_path')->count();
@@ -871,12 +871,12 @@ public function store(Request $request)
             // Filter hanya dokumen yang berlaku untuk kategori alas hak tanah ini
             $applicableDocs = $allDocs->filter(function($d) use ($category) {
                 $cats = $d->documentType->applicable_categories ?? [];
-                return empty($cats) || in_array($category, $cats);
+                return !empty($cats) && in_array($category, $cats);
             });
 
             $requiredDocTypes = DocumentTypes::all()->filter(function($dt) use ($category) {
                 $cats = $dt->applicable_categories ?? [];
-                return empty($cats) || in_array($category, $cats);
+                return !empty($cats) && in_array($category, $cats);
             });
             $totalRequired = $requiredDocTypes->count();
 
@@ -1899,6 +1899,14 @@ public function store(Request $request)
     {
         $record = PraLandbank::findOrFail($id);
 
+        // VALIDASI SOP: Lahan belum boleh dialihkan ke Pasca jika belum ada dokumen perizinan yang diselesaikan (minimal 1 izin terbit/selesai)
+        if ($record->completedPerizinanCount() <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lahan "' . $record->land_name . '" belum dapat dialihkan ke Pasca Land Bank karena perizinan belum diselesaikan (minimal 1 dokumen perizinan harus diselesaikan/terbit terlebih dahulu di modul Perizinan).'
+            ], 422);
+        }
+
         // Ambil ID profil perusahaan dari record (null jika belum dipilih)
         $companyId = $record->company_profile_id ?? null;
         $totalArea = $record->field_area ?: ($record->area ?: 0);
@@ -1960,26 +1968,14 @@ public function store(Request $request)
             $landBank = \App\Models\LandBank::create($landBankData);
         }
 
-        // Sinkronisasi dokumen dari Pra ke Pasca
-        $praDocs = \App\Models\pra_landbank_documents::where('pra_landbank_id', $record->id)->get();
-        foreach ($praDocs as $pd) {
-            \App\Models\LandBankDocument::firstOrCreate(
-                [
-                    'land_bank_id'     => $landBank->id,
-                    'document_type_id' => $pd->document_type_id,
-                ],
-                [
-                    'document_number'  => $pd->document_number,
-                    'file_path'        => $pd->file_path,
-                ]
-            );
-        }
-
         // Hubungkan pra_landbank ke land_bank
         $record->update([
             'land_bank_id' => $landBank->id,
             'status'       => 'approved',
         ]);
+
+        // Sinkronisasi dokumen lengkap dari Pra dan Perizinan ke Pasca
+        $landBank->syncDocumentsFromPerizinanAndPra();
 
         return response()->json([
             'success'      => true,

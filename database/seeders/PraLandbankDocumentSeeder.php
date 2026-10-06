@@ -20,12 +20,17 @@ class PraLandbankDocumentSeeder extends Seeder
         }
 
         foreach ($praLandbanks as $land) {
+            $applicableDocTypes = $land->getApplicableDocumentTypes();
 
-            foreach ($documentTypes as $docType) {
+            if ($applicableDocTypes->isEmpty()) {
+                continue;
+            }
 
-                pra_landbank_documents::create([
+            foreach ($applicableDocTypes as $docType) {
+                pra_landbank_documents::firstOrCreate([
                     'pra_landbank_id' => $land->id,
                     'document_type_id' => $docType->id,
+                ], [
                     'document_number' => 'DOC-' . strtoupper(uniqid()),
                     'file_path' => 'uploads/pra_landbank/sample/' . $docType->id . '.pdf',
                     'status' => 'pending',

@@ -470,7 +470,7 @@
 
                                         $catDocTypeIds = $documentTypes->filter(function($dt) use ($cat) {
                                             $c = $dt->applicable_categories ?? [];
-                                            return empty($c) || in_array($cat, $c);
+                                            return !empty($c) && in_array($cat, $c);
                                         })->pluck('id')->toArray();
 
                                         $totalRequired = count($catDocTypeIds);

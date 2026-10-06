@@ -484,6 +484,25 @@
 <script>
     // FINALISASI KE PASCA LAND BANK
     function confirmFinalizeToPasca(id, nama, progress, terbit, total) {
+        if (terbit <= 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: '<span style="font-size: 1.15rem; font-weight: 700; color: #1e293b;">Perizinan Belum Selesai</span>',
+                html: `
+                    <div style="font-size: 0.9rem; color: #475569; line-height: 1.5; text-align: center;">
+                        Lahan <strong>"${nama}"</strong> belum dapat dialihkan ke <strong>Pasca Land Bank</strong> karena belum ada dokumen perizinan yang diselesaikan (minimal 1 dokumen perizinan harus berstatus <strong>Selesai</strong> atau <strong>Terbit</strong>).
+                    </div>
+                `,
+                confirmButtonColor: '#e11d48',
+                confirmButtonText: 'Mengerti',
+                customClass: {
+                    popup: 'rounded-4 shadow-lg border-0',
+                    confirmButton: 'px-4 py-2 rounded-3 fw-semibold'
+                }
+            });
+            return;
+        }
+
         let noteText = '';
         if (progress < 100) {
             noteText = `<div class="p-2 mb-3 rounded" style="background:#fffbeb; border:1px solid #fde68a; font-size:0.83rem; text-align:left; color:#92400e;">

@@ -105,13 +105,6 @@ class MenuSeeder extends Seeder
             ])->positions()->attach($legalRoles);
         }
 
-        $dokumenPerizinanMenu = Menu::create([
-            'name'  => 'Dokumen Perizinan',
-            'route' => 'master.dokumen-perizinan.index',
-            'icon'  => 'mdi-file-certificate-outline',
-            'order' => 3.5
-        ]);
-        $dokumenPerizinanMenu->positions()->attach($legalRoles);
 
         // ================= 4. LEGAL UNIT =================
         $legalUnitMenu = Menu::create([

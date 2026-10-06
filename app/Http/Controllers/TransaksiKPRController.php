@@ -63,7 +63,7 @@ class TransaksiKPRController extends Controller
                 $query->where(function ($q) {
                     $q->whereDoesntHave('kprApplication')
                       ->orWhereHas('kprApplication', function ($sub) {
-                          $sub->whereNotIn('status', ['approved', 'rejected', 'survey', 'akad', 'completed']);
+                          $sub->whereNotIn('status', ['approved', 'analisa', 'rejected', 'survey', 'akad', 'completed']);
                       });
                 });
             } elseif ($status === 'booking') {
@@ -204,11 +204,12 @@ class TransaksiKPRController extends Controller
                 'status'            => $kprStatus, // 🔥 LOGIC UTAMA
                 'harga_unit'        => $booking->unit->price ?? $kpr->harga_unit,
                 'submitted_at'      => $kpr->submitted_at ?? now(),
+                'approved_at'       => $kpr->approved_at ?? now(),
             ]);
 
             // update booking
             $booking->status_cash = 'done';
-            $booking->status = 'cash_process';
+            $booking->status = 'lanjut_kpr';
         }
 
         // =========================
@@ -294,41 +295,65 @@ class TransaksiKPRController extends Controller
 }
     public function verified(Request $request)
     {
-        $query = KprApplication::with(['customer', 'unit', 'bank'])
-            ->where('status', 'approved');
+        $query = KprApplication::with(['customer', 'unit', 'bank']);
 
-        // Filter search
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->whereHas('customer', function ($q) use ($search) {
-                $q->where('full_name', 'like', "%$search%");
+        // Filter status verifikasi
+        if ($request->filled('status')) {
+            $st = strtolower($request->status);
+            if ($st === 'approved') {
+                $query->whereIn('status', ['approved', 'analisa']);
+            } else {
+                $query->where('status', $st);
+            }
+        } else {
+            // Default: tampilkan seluruh customer yang sudah berhasil diverifikasi (approved, analisa, survey, akad, completed)
+            $query->whereIn('status', ['approved', 'analisa', 'survey', 'akad', 'completed']);
+        }
+
+        // Filter search (nama customer / unit)
+        $search = $request->input('search', $request->input('search_mobile'));
+        if (!empty($search)) {
+            $search = trim($search);
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('customer', function ($cq) use ($search) {
+                    $cq->where('full_name', 'like', "%{$search}%");
+                })->orWhereHas('unit', function ($uq) use ($search) {
+                    $uq->where('unit_code', 'like', "%{$search}%")
+                       ->orWhere('unit_name', 'like', "%{$search}%");
+                });
             });
         }
 
         // Filter bank
-        if ($request->filled('bank_name')) {
-            $query->where('bank_name', $request->bank_name);
+        $bankName = $request->input('bank_name', $request->input('bank_name_mobile'));
+        if (!empty($bankName)) {
+            $query->whereHas('bank', function ($q) use ($bankName) {
+                $q->where('bank_name', $bankName);
+            });
         }
 
         // Filter unit
-        if ($request->filled('unit_code')) {
-            $query->where('unit_code', $request->unit_code);
+        $unitCode = $request->input('unit_code');
+        if (!empty($unitCode)) {
+            $query->whereHas('unit', function ($q) use ($unitCode) {
+                $q->where('unit_code', $unitCode);
+            });
         }
 
         // Pagination
-        $perPage = $request->input('per_page', 10);
+        $perPage = (int) $request->input('per_page', $request->input('per_page_mobile', 10));
         $allowedPerPage = [10, 25, 50];
         if (!in_array($perPage, $allowedPerPage)) {
             $perPage = 10;
         }
 
-        $kprApplications = $query->latest()->paginate($perPage);
+        $kprApplications = $query->latest('updated_at')->paginate($perPage);
         $kprApplications->appends($request->query());
 
         // Data untuk dropdown filter
         $banks = Banks::all();
 
-        return view('transaksi.kpr-verified', compact('kprApplications', 'banks',));
+        return view('transaksi.kpr-verified', compact('kprApplications', 'banks'));
     }
 
 

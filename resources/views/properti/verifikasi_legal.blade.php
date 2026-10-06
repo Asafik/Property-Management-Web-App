@@ -665,24 +665,31 @@
                 </div>
             </div>
         </div>
-
         {{-- ================= PROGRESS ================= --}}
         @php
-            $total = $land->merged_documents->count();
-            $verified = $land->merged_documents->where('status', 'verified')->count();
-            $percent = $total > 0 ? ($verified / $total) * 100 : 0;
+            $reqTotal = $land->required_document_count;
+            $verified = $land->verified_document_count;
+            $uploaded = $land->uploaded_document_count;
+            $percent = $land->legal_verification_percent;
+            $applicableTypes = $land->getApplicableDocumentTypes();
         @endphp
 
         <div class="card bg-light mb-4">
             <div class="card-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-between flex-wrap gap-2">
                     <strong>
-                        <i class="mdi mdi-progress-check me-1"></i> Progress Verifikasi
+                        <i class="mdi mdi-progress-check me-1"></i> Progress Verifikasi Berkas ({{ $land->ownership_category }})
                     </strong>
-                    <span class="badge bg-primary">
-                        <i class="mdi mdi-file-document me-1"></i>
-                        {{ $verified }} dari {{ $total }} terverifikasi
-                    </span>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-info-subtle text-primary border border-primary-subtle">
+                            <i class="mdi mdi-upload me-1"></i>
+                            {{ $uploaded }} dari {{ $reqTotal }} Diunggah
+                        </span>
+                        <span class="badge bg-success">
+                            <i class="mdi mdi-file-check me-1"></i>
+                            {{ $verified }} dari {{ $reqTotal }} Sah
+                        </span>
+                    </div>
                 </div>
 
                 <div class="progress mt-2" style="height:8px;">
@@ -690,10 +697,15 @@
                     </div>
                 </div>
 
-                <small class="text-muted">
-                    <i class="mdi mdi-chart-line me-1"></i>
-                    {{ round($percent) }}% selesai
-                </small>
+                <div class="d-flex justify-content-between align-items-center mt-1">
+                    <small class="text-muted">
+                        <i class="mdi mdi-chart-line me-1"></i>
+                        {{ round($percent) }}% legalitas terverifikasi
+                    </small>
+                    <small class="text-muted">
+                        Status: <strong>{{ $land->ownership_status }}</strong> (Wajib {{ $reqTotal }} Berkas)
+                    </small>
+                </div>
             </div>
         </div>
 
@@ -701,10 +713,10 @@
         <div class="card">
             <div class="card-header bg-white d-flex justify-content-between align-items-center" style="border-bottom:1px solid #e9ecef; padding:0.9rem 1.2rem;">
                 <h5 class="card-title mb-0">
-                    <i class="mdi mdi-file-document-multiple me-2"></i>Daftar Dokumen
+                    <i class="mdi mdi-file-document-multiple me-2"></i>Daftar Dokumen Wajib Legalitas ({{ $land->ownership_category }})
                 </h5>
                 <span class="badge" style="background:linear-gradient(135deg,#da8cff,#9a55ff);color:#fff;padding:0.4rem 0.9rem;border-radius:20px;font-size:0.82rem;">
-                    {{ $land->merged_documents->count() }} Dokumen
+                    {{ $reqTotal }} Dokumen Wajib
                 </span>
             </div>
             <div class="card-body p-0">
@@ -721,63 +733,90 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($land->merged_documents as $doc)
+                            @forelse($applicableTypes as $type)
+                                @php
+                                    $doc = $land->merged_documents->firstWhere('document_type_id', $type->id);
+                                    $hasFile = $doc && !empty($doc->file_path);
+                                    $isVerified = ($doc && $doc->status === 'verified') || $land->isFromPraLandbank() || $land->legal_status === 'verified';
+                                @endphp
                                 <tr>
                                     <td class="text-center fw-bold">{{ $loop->iteration }}</td>
                                     <td>
-                                        @php $docName = strtolower($doc->documentType->name ?? ''); @endphp
                                         <div class="d-flex align-items-center gap-2">
-                                            @if($docName == 'sertifikat')
+                                            @if($type->code == 'SERTIFIKAT')
                                                 <i class="mdi mdi-certificate text-primary" style="font-size:1.2rem;"></i>
-                                            @elseif($docName == 'imb')
-                                                <i class="mdi mdi-domain" style="font-size:1.2rem;color:#17a2b8;"></i>
+                                            @elseif(in_array($type->code, ['KTP_PENJUAL', 'KARTU_KELUARGA', 'SURAT_NIKAH', 'NPWP']))
+                                                <i class="mdi mdi-account-card-details-outline" style="font-size:1.2rem;color:#059669;"></i>
                                             @else
                                                 <i class="mdi mdi-file-document-outline text-primary" style="font-size:1.2rem;"></i>
                                             @endif
-                                            <span class="fw-bold">{{ ucfirst($doc->documentType->name ?? '-') }}</span>
+                                            <div>
+                                                <span class="fw-bold">{{ $type->name }}</span>
+                                                @if($type->code === 'SPPT_PBB')
+                                                    <span class="badge bg-info-subtle text-primary border border-primary-subtle ms-1" style="font-size: 10px;">Lunas/Nunggak</span>
+                                                @endif
+                                            </div>
                                         </div>
                                     </td>
                                     <td>{{ $doc->document_number ?? '-' }}</td>
                                     <td>
-                                        <div class="d-flex align-items-center gap-1">
-                                            <i class="mdi mdi-calendar-outline" style="color:#9a55ff;"></i>
-                                            {{ $doc->created_at->format('d M Y') }}
-                                        </div>
+                                        @if($doc && $doc->created_at)
+                                            <div class="d-flex align-items-center gap-1">
+                                                <i class="mdi mdi-calendar-outline" style="color:#9a55ff;"></i>
+                                                {{ $doc->created_at->format('d M Y') }}
+                                            </div>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
                                     </td>
                                     <td>
-                                        @if ($doc->status == 'pending')
-                                            <span class="badge-status badge-pending">
-                                                <i class="mdi mdi-clock-outline"></i> Pending
+                                        @if(!$hasFile)
+                                            <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 py-1 px-2" style="font-size: 11px;">
+                                                <i class="mdi mdi-alert-circle-outline me-1"></i> Belum Diunggah
                                             </span>
-                                        @elseif($doc->status == 'verified')
+                                        @elseif($isVerified)
                                             <span class="badge-status badge-verified">
                                                 <i class="mdi mdi-check-circle"></i> Terverifikasi
                                             </span>
-                                        @else
+                                        @elseif($doc && $doc->status == 'pending')
+                                            <span class="badge-status badge-pending">
+                                                <i class="mdi mdi-clock-outline"></i> Menunggu Verifikasi
+                                            </span>
+                                        @elseif($doc && $doc->status == 'rejected')
                                             <span class="badge-status badge-rejected">
-                                                <i class="mdi mdi-close-circle"></i> Ditolak
+                                                <i class="mdi mdi-close-circle"></i> Ditolak (Revisi)
+                                            </span>
+                                        @else
+                                            <span class="badge-status badge-verified">
+                                                <i class="mdi mdi-check-circle"></i> Sah
                                             </span>
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ asset(str_starts_with($doc->file_path, 'uploads/') ? $doc->file_path : 'uploads/' . $doc->file_path) }}" target="_blank"
-                                           class="btn-action view" title="Lihat Dokumen">
-                                            <i class="mdi mdi-eye"></i>
-                                        </a>
+                                        @if($hasFile)
+                                            <a href="{{ asset(str_starts_with($doc->file_path, 'uploads/') ? $doc->file_path : 'uploads/' . $doc->file_path) }}" target="_blank"
+                                               class="btn-action view" title="Lihat Dokumen">
+                                                <i class="mdi mdi-eye"></i>
+                                            </a>
 
-                                        @if ($doc->status == 'pending')
-                                            <form action="{{ route('dokumen.approve', $doc->id) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                <button type="submit" class="btn-action approve" title="Setujui">
-                                                    <i class="mdi mdi-check"></i>
+                                            @if($doc && $doc->status == 'pending' && !$land->isFromPraLandbank())
+                                                <form action="{{ route('dokumen.approve', $doc->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn-action approve" title="Setujui">
+                                                        <i class="mdi mdi-check"></i>
+                                                    </button>
+                                                </form>
+
+                                                <button type="button" class="btn-action reject"
+                                                    data-bs-toggle="modal" data-bs-target="#rejectModal{{ $doc->id }}"
+                                                    title="Tolak">
+                                                    <i class="mdi mdi-close"></i>
                                                 </button>
-                                            </form>
-
-                                            <button type="button" class="btn-action reject"
-                                                data-bs-toggle="modal" data-bs-target="#rejectModal{{ $doc->id }}"
-                                                title="Tolak">
-                                                <i class="mdi mdi-close"></i>
-                                            </button>
+                                            @endif
+                                        @else
+                                            <span class="badge bg-light text-muted border py-1 px-2" style="font-size: 10px;">
+                                                Wajib Dipenuhi
+                                            </span>
                                         @endif
                                     </td>
                                 </tr>

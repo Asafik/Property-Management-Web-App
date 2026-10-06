@@ -14,41 +14,41 @@ class DocumentTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        $allCategories = ['SHM', 'AJB', 'APHB', 'WARISAN', 'PETOK_C'];
+        $allCategories = ['SHM', 'HGB', 'SHGB', 'HGU', 'HP', 'AJB', 'APHB', 'WARISAN', 'PETOK_C'];
 
         $documentTypes = [
             [
-                'name' => 'Sertifikat SHM Asli',
+                'name' => 'SHM Asli',
                 'code' => 'SERTIFIKAT',
                 'has_expiry' => false,
-                'applicable_categories' => ['SHM'],
+                'applicable_categories' => ['SHM', 'HGB', 'SHGB', 'HGU', 'HP'],
             ],
             [
-                'name' => 'KTP Penjual / Ahli Waris (Suami - Istri)',
+                'name' => 'KTP Penjual (Suami – Istri)',
                 'code' => 'KTP_PENJUAL',
                 'has_expiry' => false,
                 'applicable_categories' => $allCategories,
             ],
             [
-                'name' => 'Kartu Keluarga (KK)',
+                'name' => 'Kartu Keluarga',
                 'code' => 'KARTU_KELUARGA',
                 'has_expiry' => false,
                 'applicable_categories' => $allCategories,
             ],
             [
-                'name' => 'Buku / Surat Nikah',
+                'name' => 'Surat Nikah',
                 'code' => 'SURAT_NIKAH',
                 'has_expiry' => false,
                 'applicable_categories' => $allCategories,
             ],
             [
-                'name' => 'NPWP Penjual / Ahli Waris',
+                'name' => 'NPWP',
                 'code' => 'NPWP',
                 'has_expiry' => false,
                 'applicable_categories' => $allCategories,
             ],
             [
-                'name' => 'SPPT PBB Terakhir',
+                'name' => 'SPPT PBB atas obyek tanah: Lunas atau Nunggak',
                 'code' => 'SPPT_PBB',
                 'has_expiry' => false,
                 'applicable_categories' => $allCategories,

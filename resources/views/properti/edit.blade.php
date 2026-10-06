@@ -2072,9 +2072,9 @@
                                     <div class="properti-form-group">
                                         <label class="properti-form-label">Status Kepemilikan <span
                                                 class="properti-text-danger">*</span></label>
-                                        <select name="statusKepemilikan"
+                                        <select name="statusKepemilikan" id="statusKepemilikan"
                                             class="properti-form-control @error('statusKepemilikan') is-invalid @enderror"
-                                            required>
+                                            required onchange="filterPascaDocumentsByCategory(this.value)">
                                             <option value="">-- Pilih Status --</option>
                                             <option value="SHM"
                                                 {{ old('statusKepemilikan', $land->ownership_status ?? 'SHM') == 'SHM' ? 'selected' : '' }}>SHM (Sertifikat
@@ -2082,6 +2082,14 @@
                                             <option value="HGB"
                                                 {{ old('statusKepemilikan', $land->ownership_status ?? 'SHM') == 'HGB' ? 'selected' : '' }}>HGB (Hak Guna
                                                 Bangunan)</option>
+                                            <option value="AJB"
+                                                {{ old('statusKepemilikan', $land->ownership_status ?? 'SHM') == 'AJB' ? 'selected' : '' }}>AJB / Akta Hibah</option>
+                                            <option value="APHB"
+                                                {{ old('statusKepemilikan', $land->ownership_status ?? 'SHM') == 'APHB' ? 'selected' : '' }}>APHB (Akta Pembagian Hak Bersama)</option>
+                                            <option value="WARISAN"
+                                                {{ old('statusKepemilikan', $land->ownership_status ?? 'SHM') == 'WARISAN' ? 'selected' : '' }}>AJB / Hibah (Harta Warisan)</option>
+                                            <option value="PETOK_C"
+                                                {{ old('statusKepemilikan', $land->ownership_status ?? 'SHM') == 'PETOK_C' ? 'selected' : '' }}>Petok C / Girik</option>
                                             <option value="HGU"
                                                 {{ old('statusKepemilikan', $land->ownership_status ?? 'SHM') == 'HGU' ? 'selected' : '' }}>HGU (Hak Guna
                                                 Usaha)</option>
@@ -2417,39 +2425,101 @@
                                     </div>
                                 </div>
 
+                                <!-- Dynamic Category Alert Banner (Filtered by Status Kepemilikan) -->
+                                <div class="col-12 mb-2">
+                                    <div class="alert alert-info py-2.5 px-3 mb-2 d-flex align-items-center justify-content-between rounded-3 border shadow-none" id="pascaCategoryAlert" style="background: #f0fdf4; border-color: #bbf7d0 !important; color: #166534;">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="fas fa-check-circle text-success" style="font-size: 1.25rem;"></i>
+                                            <div>
+                                                <span class="fw-bold d-block" style="font-size: 0.88rem;">
+                                                    Berkas Wajib Dasar Perolehan: <span id="pascaCategoryName" class="badge bg-success ms-1">SHM (Sertifikat Hak Milik)</span>
+                                                </span>
+                                                <small class="text-muted d-block" id="pascaCategoryDesc" style="font-size: 0.76rem;">
+                                                    6 Dokumen Wajib: SHM Asli, KTP Penjual (Suami – Istri), Kartu Keluarga, Surat Nikah, NPWP, SPPT PBB atas obyek tanah: Lunas atau Nunggak.
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <span class="badge bg-success px-3 py-1.5 shadow-sm" id="pascaDocCountBadge" style="font-size: 0.82rem; font-weight: 700;">
+                                            6 Dokumen Wajib
+                                        </span>
+                                    </div>
+                                </div>
+
+                                @php
+                                    $currentOwnerStatus = strtoupper(old('statusKepemilikan', $land->ownership_status ?? 'SHM'));
+                                    if (str_contains($currentOwnerStatus, 'APHB')) $initialPascaCat = 'APHB';
+                                    elseif (str_contains($currentOwnerStatus, 'WARIS')) $initialPascaCat = 'WARISAN';
+                                    elseif (str_contains($currentOwnerStatus, 'PETOK') || str_contains($currentOwnerStatus, 'GIRIK')) $initialPascaCat = 'PETOK_C';
+                                    elseif (str_contains($currentOwnerStatus, 'AJB') || str_contains($currentOwnerStatus, 'HIBAH')) $initialPascaCat = 'AJB';
+                                    elseif (str_contains($currentOwnerStatus, 'SHGB') || str_contains($currentOwnerStatus, 'HGB')) $initialPascaCat = 'SHGB';
+                                    else $initialPascaCat = 'SHM';
+                                @endphp
+
                                 @foreach ($documentTypes as $type)
                                     @php
+                                        $typeCats = $type->applicable_categories ?? [];
+                                        $isApplicable = !empty($typeCats) && in_array($initialPascaCat, $typeCats);
                                         $existingDoc = $land->documents->where('document_type_id', $type->id)->first();
                                         $hasDoc = $existingDoc && !empty($existingDoc->file_path);
-                                        $isDocLocked = $hasDoc && (($existingDoc->status === 'verified') || $land->isFromPraLandbank() || $land->legal_status === 'verified' || str_contains($existingDoc->file_path, 'pra_landbank'));
+
+                                        $docNumber = $existingDoc ? $existingDoc->document_number : '';
+                                        $docFilePath = $existingDoc ? $existingDoc->file_path : null;
+
+                                        // Fallback langsung jika belum tersinkron
+                                        if (!$hasDoc && $type->code === 'SERTIFIKAT' && !empty($land->file_certificate)) {
+                                            $docFilePath = $land->file_certificate;
+                                            $docNumber = $docNumber ?: $land->certificate_no;
+                                            $hasDoc = true;
+                                        } elseif (!$hasDoc && $type->code === 'SPPT_PBB' && !empty($land->file_pbb)) {
+                                            $docFilePath = $land->file_pbb;
+                                            $docNumber = $docNumber ?: $land->pbb_no;
+                                            $hasDoc = true;
+                                        }
+
+                                        $isDocFromIzin = $hasDoc && (str_contains((string)$docFilePath, 'perizinan_dokumen') || str_starts_with($type->code, 'IZIN_'));
+                                        $isDocFromPra = $hasDoc && str_contains((string)$docFilePath, 'pra_landbank');
                                         
                                         $docUrl = '#';
-                                        if ($hasDoc) {
-                                            $fPath = $existingDoc->file_path;
-                                            if (str_starts_with($fPath, 'http')) {
-                                                $docUrl = $fPath;
-                                            } elseif (str_starts_with($fPath, 'uploads/')) {
-                                                $docUrl = asset($fPath);
-                                            } elseif (str_starts_with($fPath, 'storage/')) {
-                                                $docUrl = asset($fPath);
-                                            } elseif (file_exists(public_path('uploads/' . $fPath))) {
-                                                $docUrl = asset('uploads/' . $fPath);
+                                        if ($hasDoc && !empty($docFilePath)) {
+                                            if (str_starts_with($docFilePath, 'http')) {
+                                                $docUrl = $docFilePath;
+                                            } elseif (str_starts_with($docFilePath, 'uploads/')) {
+                                                $docUrl = asset($docFilePath);
+                                            } elseif (str_starts_with($docFilePath, 'storage/')) {
+                                                $docUrl = asset($docFilePath);
+                                            } elseif (file_exists(public_path('uploads/' . $docFilePath))) {
+                                                $docUrl = asset('uploads/' . $docFilePath);
                                             } else {
-                                                $docUrl = asset('storage/' . $fPath);
+                                                $docUrl = asset('storage/' . $docFilePath);
                                             }
                                         }
                                     @endphp
-                                    <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="col-12 col-md-6 col-xl-4 doc-pasca-col {{ !$isApplicable ? 'd-none' : '' }}" id="doc-box-pasca-{{ $type->id }}" data-categories='@json($typeCats)' data-type-id="{{ $type->id }}">
                                         <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative fase4-doc-card-inner" style="background: #ffffff;">
                                             <!-- Header Card Box -->
                                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
                                                 <div>
                                                     <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">{{ $type->name }}</h6>
+                                                    @if($type->code === 'SPPT_PBB')
+                                                        <div class="mt-1">
+                                                            <span class="badge bg-info-subtle text-primary border border-primary-subtle py-0.5 px-2" style="font-size: 10px;">
+                                                                <i class="fas fa-info-circle me-1"></i>SPPT PBB: Lunas / Nunggak
+                                                            </span>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                                 <div class="d-flex align-items-center gap-1 flex-wrap justify-content-end">
-                                                    @if($hasDoc && $isDocLocked)
+                                                    @if($hasDoc && $isDocFromIzin)
+                                                        <span class="badge bg-info-subtle text-info border border-info-subtle py-1 px-2 text-wrap" style="font-size: 10px;">
+                                                            <i class="fas fa-check-circle me-1"></i>Dari Perizinan
+                                                        </span>
+                                                    @elseif($hasDoc && $isDocFromPra)
+                                                        <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-2 text-wrap" style="font-size: 10px;">
+                                                            <i class="fas fa-shield-alt me-1"></i>Pra Land Bank
+                                                        </span>
+                                                    @elseif($hasDoc && (($existingDoc->status ?? '') === 'verified' || $land->legal_status === 'verified'))
                                                         <span class="badge bg-success py-1 px-2 text-wrap" style="font-size: 10px;">
-                                                            <i class="mdi mdi-shield-check me-1"></i>Sah (ACC)
+                                                            <i class="mdi mdi-shield-check me-1"></i>Sah (Terverifikasi)
                                                         </span>
                                                     @elseif($hasDoc)
                                                         <span class="badge bg-warning text-dark py-1 px-2 text-wrap" style="font-size: 10px;">
@@ -2467,19 +2537,18 @@
                                             <div class="mb-2">
                                                 <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.78rem; font-weight: 600;">
                                                     <span>Nomor Dokumen {{ $type->name }}</span>
-                                                    @if($isDocLocked && $existingDoc && $existingDoc->document_number)
+                                                    @if($hasDoc && $docNumber)
                                                         <span class="badge bg-success-subtle text-success border border-success px-1.5 py-0.2" style="font-size: 0.65rem;">
-                                                            <i class="fas fa-lock me-1"></i>Terkunci
+                                                            <i class="fas fa-check-circle me-1"></i>Terisi Otomatis
                                                         </span>
                                                     @endif
                                                 </label>
                                                 <input type="text" 
                                                     name="documents[{{ $type->id }}][number]"
-                                                    class="form-control form-control-sm {{ $isDocLocked ? 'bg-light text-muted' : '' }}" 
+                                                    class="form-control form-control-sm" 
                                                     placeholder="Nomor {{ $type->name }}"
-                                                    value="{{ old('documents.'.$type->id.'.number', $existingDoc ? $existingDoc->document_number : '') }}"
-                                                    style="font-size: 0.84rem;"
-                                                    {{ $isDocLocked ? 'readonly' : '' }}>
+                                                    value="{{ old('documents.'.$type->id.'.number', $docNumber) }}"
+                                                    style="font-size: 0.84rem;">
                                             </div>
 
                                             <!-- Upload / Display Berkas File (Persis Format Perizinan Kelola) -->
@@ -2494,27 +2563,23 @@
                                                                 </div>
                                                                 <div class="overflow-hidden" style="min-width: 0;">
                                                                     <span class="d-block fw-bold text-success text-truncate" id="docStatusText_{{ $type->id }}" style="font-size: 0.85rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
-                                                                    <small class="text-muted text-truncate d-block font-monospace" id="docFileName_{{ $type->id }}" style="font-size: 0.74rem;">{{ basename($existingDoc->file_path) }}</small>
+                                                                    <small class="text-muted text-truncate d-block font-monospace" id="docFileName_{{ $type->id }}" style="font-size: 0.74rem;">{{ basename($docFilePath) }}</small>
                                                                 </div>
                                                             </div>
-                                                            <!-- BUTTONS: JIKA FILE BAWAAN HANYA LIHAT, JIKA UPLOAD BARU ADA LIHAT & GANTI -->
+                                                            <!-- BUTTONS: LIHAT & GANTI UNTUK KEMUDAHAN OPERASIONAL -->
                                                             <div class="d-flex align-items-center flex-shrink-0 doc-action-btns" style="gap: 8px;">
                                                                 <a href="{{ $docUrl }}" target="_blank" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 6px;">
                                                                     <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1; margin-right: 2px;"></i>
                                                                     <span>Lihat</span>
                                                                 </a>
-                                                                @if(!$isDocLocked)
-                                                                    <button type="button" onclick="document.getElementById('upload_{{ $type->id }}').click()" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 6px;">
-                                                                        <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1; margin-right: 2px;"></i>
-                                                                        <span>Ganti</span>
-                                                                    </button>
-                                                                @endif
+                                                                <button type="button" onclick="document.getElementById('upload_{{ $type->id }}').click()" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 6px;">
+                                                                    <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1; margin-right: 2px;"></i>
+                                                                    <span>Ganti</span>
+                                                                </button>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    @if(!$isDocLocked)
-                                                        <input type="file" name="documents[{{ $type->id }}][file]" id="upload_{{ $type->id }}" class="d-none" accept=".pdf,.jpg,.jpeg,.png" onchange="previewDocFileChange(this, {{ $type->id }})">
-                                                    @endif
+                                                    <input type="file" name="documents[{{ $type->id }}][file]" id="upload_{{ $type->id }}" class="d-none" accept=".pdf,.jpg,.jpeg,.png" onchange="previewDocFileChange(this, {{ $type->id }})">
                                                 @else
                                                     <!-- State: Belum Upload (Gaya Asal Modern Pra/Tambah Properti) -->
                                                     <div id="docEmptyBox_{{ $type->id }}">
@@ -3462,5 +3527,92 @@
                 if (uploadedBox) uploadedBox.style.display = 'block';
             }
         }
+
+        // ===============================
+        // FILTER DOKUMEN SESUAI STATUS KEPEMILIKAN PASCA
+        // ===============================
+        const PASCA_CATEGORY_META = {
+            'SHM': {
+                name: 'SHM (Sertifikat Hak Milik)',
+                desc: '6 Dokumen Wajib: SHM Asli, KTP Penjual (Suami – Istri), Kartu Keluarga, Surat Nikah, NPWP, SPPT PBB atas obyek tanah: Lunas atau Nunggak.'
+            },
+            'HGB': {
+                name: 'HGB (Hak Guna Bangunan)',
+                desc: '6 Dokumen Wajib: Sertifikat HGB Asli, KTP Penjual (Suami – Istri), Kartu Keluarga, Surat Nikah, NPWP, SPPT PBB atas obyek tanah.'
+            },
+            'SHGB': {
+                name: 'SHGB Induk Kawasan',
+                desc: '6 Dokumen Wajib: Sertifikat SHGB Asli, KTP Penjual (Suami – Istri), Kartu Keluarga, Surat Nikah, NPWP, SPPT PBB atas obyek tanah.'
+            },
+            'AJB': {
+                name: 'AJB / Akta Hibah',
+                desc: '10 Dokumen Wajib: AJB/Hibah Asli, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.'
+            },
+            'APHB': {
+                name: 'APHB (Akta Pembagian Hak Bersama)',
+                desc: '11 Dokumen Wajib: APHB, Ket. Ahli Waris, Akta Kematian, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak Ahli Waris.'
+            },
+            'WARISAN': {
+                name: 'AJB & Akta Hibah (Harta Warisan)',
+                desc: '11 Dokumen Wajib: AJB/Hibah Asli, Ket. Waris, Akta Kematian, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.'
+            },
+            'PETOK_C': {
+                name: 'Petok C / Girik Asli',
+                desc: '10 Dokumen Wajib: Petok C Asli, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.'
+            }
+        };
+
+        function getNormalizedPascaCategory(raw) {
+            const val = (raw || '').toString().toUpperCase().trim();
+            if (!val) return 'SHM';
+            if (val.includes('APHB')) return 'APHB';
+            if (val.includes('WARIS')) return 'WARISAN';
+            if (val.includes('PETOK') || val.includes('GIRIK') || val.includes('LETTER')) return 'PETOK_C';
+            if (val.includes('AJB') || val.includes('HIBAH')) return 'AJB';
+            if (val.includes('SHGB') || val.includes('HGB')) return 'SHGB';
+            if (val.includes('SHM') || val.includes('HGU') || val.includes('HP')) return 'SHM';
+            return 'SHM';
+        }
+
+        window.filterPascaDocumentsByCategory = function(selectedVal) {
+            const cat = getNormalizedPascaCategory(selectedVal);
+            const nameEl = document.getElementById('pascaCategoryName');
+            const descEl = document.getElementById('pascaCategoryDesc');
+            const countEl = document.getElementById('pascaDocCountBadge');
+
+            let visibleCount = 0;
+            document.querySelectorAll('.doc-pasca-col').forEach(card => {
+                let rawCats = card.getAttribute('data-categories');
+                let cats = [];
+                try {
+                    cats = typeof rawCats === 'string' ? JSON.parse(rawCats) : (rawCats || []);
+                } catch (e) {
+                    cats = [];
+                }
+
+                if (cats && cats.length > 0 && cats.includes(cat)) {
+                    card.classList.remove('d-none');
+                    visibleCount++;
+                } else {
+                    card.classList.add('d-none');
+                }
+            });
+
+            const info = PASCA_CATEGORY_META[cat] || { name: (selectedVal || 'SHM'), desc: `Menampilkan ${visibleCount} dokumen wajib legalitas.` };
+            if (nameEl) nameEl.textContent = info.name;
+            if (descEl) descEl.textContent = info.desc;
+            if (countEl) countEl.textContent = visibleCount + ' Dokumen Wajib';
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const initialOwner = document.getElementById('statusKepemilikan')?.value || 'SHM';
+            filterPascaDocumentsByCategory(initialOwner);
+
+            if (window.jQuery) {
+                jQuery('#statusKepemilikan').on('change select2:select', function() {
+                    window.filterPascaDocumentsByCategory(this.value);
+                });
+            }
+        });
     </script>
 @endpush

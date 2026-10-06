@@ -1709,7 +1709,7 @@
 
                                 $catDocTypeIds = !empty($selectedCat) ? $documentTypes->filter(function($dt) use ($selectedCat) {
                                     $c = $dt->applicable_categories ?? [];
-                                    return empty($c) || in_array($selectedCat, $c);
+                                    return !empty($c) && in_array($selectedCat, $c);
                                 })->pluck('id')->toArray() : [];
 
                                 $praDocs = $land ? $land->documents : collect();
@@ -1997,7 +1997,7 @@
                                                 </span>
                                                 <small class="text-muted d-block" id="fase1CategoryDesc" style="font-size: 0.76rem;">
                                                     @if($selectedCat === 'SHM')
-                                                        6 Dokumen Wajib: Sertifikat SHM Asli + 5 Dokumen Identitas & Pajak (KTP, KK, Nikah, NPWP, PBB).
+                                                        6 Dokumen Wajib: SHM Asli, KTP Penjual (Suami – Istri), Kartu Keluarga, Surat Nikah, NPWP, SPPT PBB atas obyek tanah: Lunas atau Nunggak.
                                                     @elseif($selectedCat === 'AJB')
                                                         10 Dokumen Wajib: AJB/Hibah Asli, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak (KTP, KK, Nikah, NPWP, PBB).
                                                     @elseif($selectedCat === 'APHB')
@@ -2038,7 +2038,7 @@
                                                  $currentDocStatus = $existingDoc->status ?? ($hasFile ? 'pending' : 'belum_upload');
                                                  $docPhysStatus = $existingDoc->document_status ?? 'ada';
                                                  $docCategories = $doc->applicable_categories ?? [];
-                                                 $isApplicable = !empty($selectedCat) && (empty($docCategories) || in_array($selectedCat, $docCategories));
+                                                 $isApplicable = !empty($selectedCat) && (!empty($docCategories) && in_array($selectedCat, $docCategories));
                                              @endphp
                                              <div class="col-12 col-md-6 col-xl-4 doc-fase1-col {{ !$isApplicable ? 'd-none' : '' }}" id="doc-box-fase1-{{ $doc->id }}" data-categories='@json($docCategories)' data-doc-id="{{ $doc->id }}">
                                                  <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative" style="background: #ffffff; border-color: #eaedf2 !important;">
@@ -2046,6 +2046,19 @@
                                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
                                                         <div>
                                                             <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">{{ $doc->name }}</h6>
+                                                            @if($doc->code === 'SPPT_PBB' && $land)
+                                                                <div class="mt-1">
+                                                                    @if(($land->pbb_status ?? 'lunas') === 'nunggak')
+                                                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle py-0.5 px-2" style="font-size: 10px;">
+                                                                            <i class="mdi mdi-alert-circle me-1"></i>PBB Nunggak {{ !empty($land->pbb_note) ? '('.$land->pbb_note.')' : '' }} @if(!empty($land->pbb_nominal)) - Rp {{ number_format($land->pbb_nominal, 0, ',', '.') }} @endif
+                                                                        </span>
+                                                                    @else
+                                                                        <span class="badge bg-success-subtle text-success border border-success-subtle py-0.5 px-2" style="font-size: 10px;">
+                                                                            <i class="mdi mdi-check-circle me-1"></i>PBB Lunas
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+                                                            @endif
                                                         </div>
                                                         <div class="d-flex align-items-center gap-1 flex-wrap justify-content-end">
                                                             <!-- Status Fisik Dokumen Badge -->
@@ -3230,7 +3243,7 @@
                                         @foreach($documentTypes as $doc)
                                             @php
                                                 $docCategories = $doc->applicable_categories ?? [];
-                                                $isApplicable = empty($docCategories) || in_array($selectedCat, $docCategories);
+                                                $isApplicable = !empty($selectedCat) && (!empty($docCategories) && in_array($selectedCat, $docCategories));
                                                 $existingDoc = $uploadedDocs[$doc->id] ?? null;
                                                 $hasExistingFile = ($existingDoc && !empty($existingDoc->file_path));
                                                 $cleanPath = $hasExistingFile ? str_replace('uploads/', '', $existingDoc->file_path) : null;
@@ -4366,7 +4379,7 @@
         const CATEGORY_META = {
             'SHM': {
                 name: 'SHM (Sertifikat Hak Milik)',
-                desc: '6 Dokumen Wajib: Sertifikat SHM Asli + 5 Dokumen Identitas & Pajak (KTP, KK, Nikah, NPWP, PBB).'
+                desc: '6 Dokumen Wajib: SHM Asli, KTP Penjual (Suami – Istri), Kartu Keluarga, Surat Nikah, NPWP, SPPT PBB atas obyek tanah: Lunas atau Nunggak.'
             },
             'AJB': {
                 name: 'AJB / Akta Hibah',
@@ -4433,7 +4446,7 @@
                     cats = [];
                 }
 
-                if (!cats || cats.length === 0 || cats.includes(cat)) {
+                if (cats && cats.length > 0 && cats.includes(cat)) {
                     card.classList.remove('d-none');
                     visibleCount++;
                 } else {
@@ -4451,7 +4464,7 @@
                     cats = [];
                 }
 
-                if (!cats || cats.length === 0 || cats.includes(cat)) {
+                if (cats && cats.length > 0 && cats.includes(cat)) {
                     card.classList.remove('d-none');
                 } else {
                     card.classList.add('d-none');
@@ -4461,7 +4474,7 @@
             // Update info banner
             const info = CATEGORY_META[cat] || { name: cat };
             if (nameEl) nameEl.textContent = info.name;
-            if (descEl) descEl.textContent = `Menampilkan ${visibleCount} berkas wajib legalitas sesuai konfigurasi Master Dokumen Tanah Induk.`;
+            if (descEl) descEl.textContent = info.desc || `Menampilkan ${visibleCount} berkas wajib legalitas sesuai konfigurasi Master Dokumen Tanah Induk.`;
             if (countEl) countEl.textContent = visibleCount + ' Dokumen Wajib';
             if (fase3CatLabel) fase3CatLabel.textContent = info.name || cat;
         }
@@ -6067,9 +6080,11 @@
                         },
                         body: JSON.stringify({})
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
+                    .then(response => {
+                        return response.json().then(data => ({ ok: response.ok, data }));
+                    })
+                    .then(({ ok, data }) => {
+                        if (ok && data.success) {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil Masuk Pasca Land Bank!',
@@ -6086,9 +6101,10 @@
                             });
                         } else {
                             Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal',
-                                text: data.message || 'Terjadi kesalahan saat memproses finalisasi.'
+                                icon: 'warning',
+                                title: 'Perizinan Belum Selesai',
+                                text: data.message || 'Lahan belum dapat dialihkan ke Pasca Land Bank.',
+                                confirmButtonColor: '#e11d48'
                             });
                         }
                     })

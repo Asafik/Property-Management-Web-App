@@ -279,11 +279,12 @@
                 </div>
             </div>
 
-            <!-- Card 2: Status Pemasaran (Hijau/Biru) -->
+            <!-- Card 2: Status Pemasaran -->
             <div class="dash-kpi-card">
                 <div class="dash-kpi-left">
-                    <div class="dash-kpi-icon green">
-                        <i class="mdi mdi-tag-outline"></i>
+                    <div class="dash-kpi-icon {{ $statusRaw === 'draft' ? '' : ($statusRaw === 'booked' || $statusRaw === 'booking' ? 'amber' : ($statusRaw === 'sold' || $statusRaw === 'terjual' ? 'rose' : 'green')) }}"
+                        style="{{ $statusRaw === 'draft' ? 'background-color: #f1f5f9; color: #475569;' : '' }}">
+                        <i class="mdi {{ $statusRaw === 'draft' ? 'mdi-file-document-edit-outline' : ($statusRaw === 'booked' || $statusRaw === 'booking' ? 'mdi-bookmark-check-outline' : ($statusRaw === 'sold' || $statusRaw === 'terjual' ? 'mdi-cash-check' : 'mdi-tag-outline')) }}"></i>
                     </div>
                     <div class="dash-kpi-info">
                         <div class="dash-kpi-label">Status Pemasaran</div>
@@ -441,6 +442,10 @@
                                             @elseif ($statusRaw === 'sold' || $statusRaw === 'terjual')
                                                 <span class="badge-soft badge-sold">
                                                     <i class="mdi mdi-cash-check"></i>Terjual
+                                                </span>
+                                            @elseif ($statusRaw === 'draft')
+                                                <span class="badge-soft badge-draft">
+                                                    <i class="mdi mdi-file-document-edit-outline"></i>Draft (Belum Diberi Harga)
                                                 </span>
                                             @else
                                                 <span class="badge-soft badge-draft">
