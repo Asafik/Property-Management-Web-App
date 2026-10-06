@@ -106,13 +106,17 @@ class SellUnitController extends Controller
         if ($request->filled('status')) {
             $status = strtolower($request->status);
             if ($status === 'ready' || $status === 'tersedia') {
-                $query->whereIn('status', ['ready', 'tersedia'])
-                      ->whereNotNull('price')
-                      ->where('price', '>', 0);
+                $query->where(function ($q) {
+                    $q->whereIn('status', ['ready', 'tersedia'])
+                      ->orWhere(function ($sub) {
+                          $sub->whereNotNull('price')
+                              ->where('price', '>', 0)
+                              ->whereNotIn('status', ['booked', 'booking', 'sold', 'terjual']);
+                      });
+                })->whereNotNull('price')->where('price', '>', 0);
             } elseif ($status === 'draft') {
                 $query->where(function ($q) {
-                    $q->where('status', 'draft')
-                      ->orWhereNull('price')
+                    $q->whereNull('price')
                       ->orWhere('price', '<=', 0);
                 })->whereNotIn('status', ['booked', 'booking', 'sold', 'terjual']);
             } else {
@@ -232,12 +236,18 @@ class SellUnitController extends Controller
         // STATISTIK (AKURAT SESUAI FILTER)
         // =========================
         $totalUnits     = $statsQuery->count();
-        $totalTersedia  = (clone $statsQuery)->whereIn('status', ['ready', 'tersedia'])->whereNotNull('price')->where('price', '>', 0)->count();
+        $totalTersedia  = (clone $statsQuery)->where(function ($q) {
+            $q->whereIn('status', ['ready', 'tersedia'])
+              ->orWhere(function ($sub) {
+                  $sub->whereNotNull('price')
+                      ->where('price', '>', 0)
+                      ->whereNotIn('status', ['booked', 'booking', 'sold', 'terjual']);
+              });
+        })->whereNotNull('price')->where('price', '>', 0)->count();
         $totalBooking   = (clone $statsQuery)->whereIn('status', ['booked', 'booking'])->count();
         $totalSold      = (clone $statsQuery)->whereIn('status', ['sold', 'terjual'])->count();
         $totalDraft     = (clone $statsQuery)->where(function ($q) {
-            $q->where('status', 'draft')
-              ->orWhereNull('price')
+            $q->whereNull('price')
               ->orWhere('price', '<=', 0);
         })->whereNotIn('status', ['booked', 'booking', 'sold', 'terjual'])->count();
         $totalArea      = $statsQuery->sum('area');
@@ -369,7 +379,7 @@ class SellUnitController extends Controller
                 'message' => 'Unit ini sudah terjual (Sold).'
             ], 422);
         }
-        if ($unit->status === 'draft' || empty($unit->price) || (float)$unit->price <= 0) {
+        if (empty($unit->price) || (float)$unit->price <= 0) {
             return response()->json([
                 'message' => 'Unit ini masih berstatus Draft karena belum ditentukan harga jualnya. Silakan tetapkan harga terlebih dahulu sebelum melakukan transaksi booking.'
             ], 422);

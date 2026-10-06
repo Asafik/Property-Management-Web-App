@@ -1747,30 +1747,27 @@
                                                 $statusIcon = '';
                                                 $statusText = ucfirst($unit->status);
 
-                                                if ($unit->status == 'ready' || $unit->status == 'tersedia') {
-                                                    // Tersedia = biru
-                                                    $statusBadge = 'badge-available-komersil';
-                                                    $statusIcon = 'mdi-check-circle-outline';
-                                                    $statusText = 'Tersedia';
-                                                } elseif ($unit->status == 'sold') {
+                                                $isHasPrice = !empty($unit->price) && (float)$unit->price > 0;
+                                                $cleanSt = strtolower($unit->status ?? '');
+
+                                                if ($cleanSt == 'sold' || $cleanSt == 'terjual') {
                                                     $statusBadge = 'badge-sold';
                                                     $statusIcon = 'mdi-cash-check';
                                                     $statusText = 'Terjual';
-                                                } elseif ($unit->status == 'booked') {
+                                                } elseif ($cleanSt == 'booked' || $cleanSt == 'booking') {
                                                     $statusBadge = 'badge-booking';
                                                     $statusIcon = 'mdi-bookmark-check-outline';
                                                     $statusText = 'Booking';
-                                                } elseif (
-                                                    strtolower($unit->status) == 'draft' ||
-                                                    strtolower($unit->status) == 'draff'
-                                                ) {
+                                                } elseif ($isHasPrice || $cleanSt == 'ready' || $cleanSt == 'tersedia') {
+                                                    // Tersedia jika sudah ada harga (> 0)
+                                                    $statusBadge = 'badge-available-komersil';
+                                                    $statusIcon = 'mdi-check-circle-outline';
+                                                    $statusText = 'Tersedia';
+                                                } else {
                                                     // Draft: belum diberi harga / belum dirilis
                                                     $statusBadge = 'badge-draft';
                                                     $statusIcon = 'mdi-file-document-edit-outline';
                                                     $statusText = 'Draft';
-                                                } else {
-                                                    $statusBadge = 'badge-soft';
-                                                    $statusIcon = 'mdi-information-outline';
                                                 }
 
                                                 // Progress mapping
@@ -1889,12 +1886,12 @@
                                                             <i class="mdi mdi-eye"></i>
                                                         </a>
                                                         @if (auth()->user()->position_id != 4)
-                                                            @if ($unit->status !== 'draft' && !empty($unit->price) && (float)$unit->price > 0 && $unit->status !== 'sold')
+                                                            @if ($isHasPrice && !in_array($cleanSt, ['sold', 'terjual']))
                                                                 <button class="btn-action customer" title="Booking Unit / Pilih Customer"
                                                                     onclick="openCustomerModal({{ $unit->id }})">
                                                                     <i class="mdi mdi-account-plus"></i>
                                                                 </button>
-                                                            @elseif ($unit->status === 'draft' || empty($unit->price) || (float)$unit->price <= 0)
+                                                            @elseif (!$isHasPrice)
                                                                 <button class="btn-action" title="Unit Draft (Belum Diberi Harga) - Tetapkan harga terlebih dahulu"
                                                                     style="opacity: 0.45; cursor: not-allowed; background: #e2e8f0; color: #64748b;"
                                                                     onclick="alert('Unit ini masih berstatus Draft karena belum ditentukan harga jualnya. Silakan tetapkan harga terlebih dahulu di menu Penetapan Harga Jual.')">
@@ -1993,26 +1990,26 @@
                                         <div class="card grid-card h-100">
                                             <div class="card-body p-3">
                                                 <div class="position-relative">
-                                                    @if ($unit->status == 'ready' || $unit->status == 'tersedia')
-                                                        <span
-                                                            class="badge badge-gradient-success position-absolute top-0 end-0 m-2"><i
-                                                                class="mdi mdi-check-circle me-1"></i>Tersedia</span>
-                                                    @elseif($unit->status == 'sold')
+                                                    @php
+                                                        $gHasPrice = !empty($unit->price) && (float)$unit->price > 0;
+                                                        $gCleanSt = strtolower($unit->status ?? '');
+                                                    @endphp
+                                                    @if ($gCleanSt == 'sold' || $gCleanSt == 'terjual')
                                                         <span
                                                             class="badge badge-gradient-danger position-absolute top-0 end-0 m-2"><i
                                                                 class="mdi mdi-cash-check me-1"></i>Terjual</span>
-                                                    @elseif($unit->status == 'booked')
+                                                    @elseif($gCleanSt == 'booked' || $gCleanSt == 'booking')
                                                         <span
                                                             class="badge badge-gradient-warning position-absolute top-0 end-0 m-2"><i
                                                                 class="mdi mdi-clock-outline me-1"></i>Booking</span>
-                                                    @elseif($unit->status == 'draft')
+                                                    @elseif ($gHasPrice || $gCleanSt == 'ready' || $gCleanSt == 'tersedia')
+                                                        <span
+                                                            class="badge badge-gradient-success position-absolute top-0 end-0 m-2"><i
+                                                                class="mdi mdi-check-circle me-1"></i>Tersedia</span>
+                                                    @else
                                                         <span
                                                             class="badge position-absolute top-0 end-0 m-2" style="background: #64748b; color: #ffffff;"><i
                                                                 class="mdi mdi-file-document-edit-outline me-1"></i>Draft</span>
-                                                    @else
-                                                        <span
-                                                            class="badge badge-gradient-secondary position-absolute top-0 end-0 m-2"><i
-                                                                class="mdi mdi-information-outline me-1"></i>{{ ucfirst($unit->status) }}</span>
                                                     @endif
                                                     <div class="text-center bg-light py-3 py-md-4 rounded">
                                                         <i class="mdi mdi-home-outline"
@@ -2087,9 +2084,18 @@
                                                         <small class="text-muted"><i
                                                                 class="mdi mdi-account-tie me-1"></i>-</small>
                                                     @endif
-                                                    <button class="btn btn-outline-danger btn-sm"
-                                                        onclick="openCustomerModal({{ $unit->id }})"><i
-                                                            class="mdi mdi-account-plus"></i></button>
+                                                    @if ($gHasPrice && !in_array($gCleanSt, ['sold', 'terjual']))
+                                                        <button class="btn btn-outline-danger btn-sm"
+                                                            title="Booking Unit / Pilih Customer"
+                                                            onclick="openCustomerModal({{ $unit->id }})"><i
+                                                                class="mdi mdi-account-plus"></i></button>
+                                                    @else
+                                                        <button class="btn btn-outline-secondary btn-sm"
+                                                            style="opacity: 0.45; cursor: not-allowed;"
+                                                            title="Unit Draft (Belum Diberi Harga)"
+                                                            onclick="alert('Unit ini masih berstatus Draft karena belum ditentukan harga jualnya. Silakan tetapkan harga terlebih dahulu di menu Penetapan Harga Jual.')"><i
+                                                                class="mdi mdi-account-off-outline"></i></button>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>

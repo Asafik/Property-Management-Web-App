@@ -49,10 +49,14 @@ class LandBankUnit extends Model
     protected static function booted()
     {
         static::saving(function ($unit) {
-            // Jika harga belum diset atau <= 0, dan unit belum dibooking/terjual, status otomatis draft
             $cleanStatus = strtolower((string)$unit->status);
-            if ((empty($unit->price) || (float)$unit->price <= 0) && !in_array($cleanStatus, ['booked', 'booking', 'sold', 'terjual'])) {
+            $hasPrice = !empty($unit->price) && (float)$unit->price > 0;
+
+            if (!$hasPrice && !in_array($cleanStatus, ['booked', 'booking', 'sold', 'terjual'])) {
                 $unit->status = 'draft';
+            } elseif ($hasPrice && (empty($cleanStatus) || $cleanStatus === 'draft')) {
+                // Ketika harga sudah ditentukan (> 0), status otomatis menjadi ready / tersedia
+                $unit->status = 'ready';
             }
         });
     }
@@ -60,8 +64,13 @@ class LandBankUnit extends Model
     public function getStatusAttribute($value)
     {
         $cleanVal = strtolower((string)$value);
-        if ((empty($this->attributes['price']) || (float)$this->attributes['price'] <= 0) && !in_array($cleanVal, ['booked', 'booking', 'sold', 'terjual'])) {
+        $hasPrice = !empty($this->attributes['price']) && (float)$this->attributes['price'] > 0;
+
+        if (!$hasPrice && !in_array($cleanVal, ['booked', 'booking', 'sold', 'terjual'])) {
             return 'draft';
+        }
+        if ($hasPrice && (empty($cleanVal) || $cleanVal === 'draft')) {
+            return 'ready';
         }
         return $value ?: 'draft';
     }

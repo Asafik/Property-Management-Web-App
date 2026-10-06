@@ -211,9 +211,9 @@
                     <i class="mdi mdi-shield-check"></i>
                 </div>
                 <div>
-                    <strong class="d-block text-dark" style="font-size: 0.92rem;">POIN-17 SHGB Induk Telah Selesai / Terbit (100%)</strong>
+                    <strong class="d-block text-dark" style="font-size: 0.92rem;">POIN-18 Pemecahan SHGB Induk Telah Selesai / Terbit (100%)</strong>
                     <span style="font-size: 0.83rem; color: #065f46;">
-                        Sertipikat SHGB Induk atas nama PT telah terbit resmi. Kawasan ini sudah siap untuk dibuat unit kavling.
+                        Proses Pemecahan SHGB Induk Perkavling telah selesai/terbit resmi. Kawasan ini sudah siap untuk dibuat unit kavling.
                     </span>
                 </div>
             </div>
@@ -385,11 +385,11 @@
 
                                         $pCode = strtoupper($item['kode_dokumen'] ?? '');
                                         $pName = strtolower($item['nama_izin'] ?? '');
-                                        $isPoin17Item = ($pCode === 'POIN-17' || str_contains($pCode, '17'))
-                                            || (!empty($item['master_id']) && (int)$item['master_id'] === 11)
-                                            || str_contains($pName, 'shgb induk selesai')
-                                            || str_contains($pName, 'hgb induk selesai');
-                                        $isPoin17Done = $isPoin17Item && (in_array(strtolower($item['status']), ['terbit', 'selesai']) || $pVal >= 100);
+                                        $isPoin18Item = ($pCode === 'POIN-18' || (str_contains($pCode, '18') && !str_contains($pCode, '17')))
+                                            || (!empty($item['master_id']) && (int)$item['master_id'] === 12)
+                                            || str_contains($pName, 'pemecahan shgb')
+                                            || str_contains($pName, 'pemecahan hgb');
+                                        $isPoin18Done = $isPoin18Item && (in_array(strtolower($item['status']), ['terbit', 'selesai']) || $pVal >= 100);
                                     @endphp
                                     <tr class="permit-table-row" id="row_permit_{{ $item['id'] }}" data-search="{{ strtolower(($item['kode_dokumen'] ?? '') . ' ' . $item['nama_izin'] . ' ' . $item['instansi'] . ' ' . $item['no_izin']) }}">
                                         <td class="col-no fw-bold text-center">{{ $loop->iteration }}</td>
@@ -447,10 +447,10 @@
                                                 <i class="mdi mdi-file-document-edit-outline" style="margin-right: 4px !important; font-size: 0.85rem;"></i>
                                                 <span>Kelola</span>
                                             </a>
-                                            @if($isPoin17Done && !empty($landBankId))
+                                            @if($isPoin18Done && !empty($landBankId))
                                                 <a href="{{ route('properti.buatKavling', $landBankId) }}" 
                                                    class="btn btn-sm d-inline-flex align-items-center py-1 px-2.5 fw-bold shadow-sm text-white ms-1" 
-                                                   title="POIN-17 Selesai! Klik untuk Buat Unit Kavling" style="font-size: 0.76rem; border-radius: 5px; background: #10b981; border: 1px solid #10b981;">
+                                                   title="POIN-18 Selesai! Klik untuk Buat Unit Kavling" style="font-size: 0.76rem; border-radius: 5px; background: #10b981; border: 1px solid #10b981;">
                                                     <i class="mdi mdi-home-plus-outline" style="margin-right: 4px !important; font-size: 0.85rem;"></i>
                                                     <span>Buat Unit</span>
                                                 </a>
