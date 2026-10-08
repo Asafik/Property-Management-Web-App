@@ -279,6 +279,10 @@ class TransaksiKPRController extends Controller
         ]);
 
         if ($request->status === 'survey') {
+            $unitType = strtolower(optional($kpr->unit)->jenis ?? '');
+            if ($unitType === 'komersil') {
+                return redirect()->route('customer.kpr.survey')->with('success', 'Verifikasi KPR Komersil berhasil disetujui! Silakan lanjutkan proses akad atau survey pada menu User Acc KPR.');
+            }
             return redirect()->route('kpr.customer-verified')->with('success', 'Verifikasi KPR berhasil disetujui! Data telah diteruskan ke daftar KPR Terverifikasi.');
         } else {
             return redirect()->route('customer.kpr.rijected')->with('success', 'Verifikasi KPR berhasil ditolak.');

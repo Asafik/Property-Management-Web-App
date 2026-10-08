@@ -640,19 +640,19 @@
                                                     <i class="mdi mdi-home-lock me-1"></i>Sold Out
                                                 </button>
                                             @elseif($isKomersil)
-                                                {{-- Khusus Komersil --}}
-                                                @if($status === 'akad')
-                                                    <a href="{{ route('kpr.akad', $application->id) }}" class="btn-action-clean btn-action-akad" onclick="showProcessLoading(event)" title="Buka Detail Akad">
-                                                        <i class="mdi mdi-handshake-outline"></i> Detail Akad
-                                                    </a>
-                                                @elseif(!$surveyDone)
+                                                {{-- Khusus Komersil: Jika belum survey lapangan, tampilkan tombol Lanjut Survey! --}}
+                                                @if(!$surveyDone)
                                                     <a href="{{ route('kpr.survey', $application->id) }}" class="btn-action-clean btn-action-survey" onclick="showProcessLoading(event)" title="Lanjut Survey Lapangan">
                                                         <i class="mdi mdi-home-search-outline"></i> Lanjut Survey
                                                     </a>
+                                                @elseif($status === 'akad')
+                                                    <span class="badge-clean status-akad">
+                                                        <i class="mdi mdi-handshake-outline"></i> Akad Selesai
+                                                    </span>
                                                 @else
-                                                    <a href="{{ route('kpr.akad', $application->id) }}" class="btn-action-clean btn-action-akad" onclick="showProcessLoading(event)" title="Lanjut ke Proses Akad">
-                                                        <i class="mdi mdi-handshake-outline"></i> Lanjut ke Akad
-                                                    </a>
+                                                    <span class="badge-clean status-survey">
+                                                        <i class="mdi mdi-checkbox-marked-circle-outline"></i> Survey Selesai
+                                                    </span>
                                                 @endif
                                             @else
                                                 {{-- Asli Unit Subsidi --}}

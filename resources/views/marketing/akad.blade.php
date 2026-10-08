@@ -1498,19 +1498,34 @@ a.badge-doc-status.status-disetujui:hover {
                                 <small>{{ $akadSelesai ? 'Selesai' : 'Dalam Proses' }}</small>
                             </div>
 
+                            @php
+                                $isKomersil = strtolower($unit->jenis ?? 'komersil') === 'komersil';
+                                $isBangunanSelesai = $devDone || (strtolower($unit->construction_progress ?? '') === 'selesai') || (($unit->construction_progress_percentage ?? 0) >= 100);
+                                $canClickSerahTerima = !$isKomersil || $isBangunanSelesai;
+                            @endphp
+
                             {{-- Tahap 7: Serah Terima --}}
                             <div class="transaksi-step {{ $serahTerimaDone ? 'completed' : '' }}">
-                                <a href="{{ $urlSerahTerima }}" class="transaksi-step-icon" title="Buka Halaman Serah Terima Unit">
-                                    @if ($serahTerimaDone)
-                                        <i class="mdi mdi-check"></i>
-                                    @else
-                                        <i class="mdi mdi-home-outline"></i>
-                                    @endif
-                                </a>
-                                <a href="{{ $urlSerahTerima }}" class="transaksi-step-title-link" title="Buka Halaman Serah Terima Unit">
-                                    <span class="transaksi-step-title">Serah Terima</span>
-                                </a>
-                                <small>{{ $serahTerimaDone ? 'Selesai' : 'Menunggu' }}</small>
+                                @if($canClickSerahTerima)
+                                    <a href="{{ $urlSerahTerima }}" class="transaksi-step-icon" title="Buka Halaman Serah Terima Unit">
+                                        @if ($serahTerimaDone)
+                                            <i class="mdi mdi-check"></i>
+                                        @else
+                                            <i class="mdi mdi-home-outline"></i>
+                                        @endif
+                                    </a>
+                                    <a href="{{ $urlSerahTerima }}" class="transaksi-step-title-link" title="Buka Halaman Serah Terima Unit">
+                                        <span class="transaksi-step-title">Serah Terima</span>
+                                    </a>
+                                @else
+                                    <span class="transaksi-step-icon" title="Unit Komersil: Serah Terima baru dapat dilakukan setelah pembangunan fisik unit selesai 100%" style="opacity: 0.6; cursor: not-allowed; background: #f1f5f9; color: #94a3b8;">
+                                        <i class="mdi mdi-lock-outline"></i>
+                                    </span>
+                                    <span class="transaksi-step-title-link" style="opacity: 0.6; cursor: not-allowed;" title="Unit Komersil: Serah Terima baru dapat dilakukan setelah pembangunan fisik unit selesai 100%">
+                                        <span class="transaksi-step-title">Serah Terima</span>
+                                    </span>
+                                @endif
+                                <small>{{ $serahTerimaDone ? 'Selesai' : ($isKomersil && !$isBangunanSelesai ? 'Fisik Belum 100%' : 'Menunggu') }}</small>
                             </div>
                         </div>
                     </div>
@@ -1643,10 +1658,11 @@ a.badge-doc-status.status-disetujui:hover {
                                                     <i class="mdi mdi-printer"></i>
                                                 </a>
                                             @else
-                                                <button type="button" class="transaksi-doc-action disabled"
-                                                    title="Hasil survey belum tersedia" disabled>
-                                                    <i class="mdi mdi-eye-off-outline"></i>
-                                                </button>
+                                                <a href="{{ route('kpr.survey', $kpr->id) }}"
+                                                    class="transaksi-doc-action" style="background: #0284c7; color: #ffffff; border: 1px solid #0284c7;"
+                                                    title="Mulai / Lakukan Survey Lapangan KPR">
+                                                    <i class="mdi mdi-clipboard-edit-outline"></i>
+                                                </a>
                                             @endif
                                         </td>
                                     </tr>
@@ -2220,7 +2236,13 @@ a.badge-doc-status.status-disetujui:hover {
                             </ul>
                         </div>
 
-                        @if ($akadSelesai)
+                        @php
+                            $isKomersil = strtolower($unit->jenis ?? 'komersil') === 'komersil';
+                            $isBangunanSelesai = $devDone || (strtolower($unit->construction_progress ?? '') === 'selesai') || (($unit->construction_progress_percentage ?? 0) >= 100);
+                            $canSerahTerima = $akadSelesai && (!$isKomersil || $isBangunanSelesai);
+                        @endphp
+
+                        @if ($canSerahTerima)
                             <div class="transaksi-sidebar-section">
                                 <div class="transaksi-sidebar-title">Langkah Berikutnya</div>
                                 <a href="{{ route('kpr.serahterima', $kpr->id) }}"
@@ -2228,6 +2250,14 @@ a.badge-doc-status.status-disetujui:hover {
                                     <i class="mdi mdi-home-check-outline"></i>
                                     Proses Serah Terima
                                 </a>
+                            </div>
+                        @elseif ($isKomersil && $akadSelesai && !$isBangunanSelesai)
+                            <div class="transaksi-sidebar-section">
+                                <div class="transaksi-sidebar-title">Langkah Berikutnya</div>
+                                <div class="p-2.5 rounded text-center" style="background: #fffbeb; border: 1px solid #fde68a; color: #b45309; font-size: 0.8rem; font-weight: 600; line-height: 1.4; border-radius: 6px;">
+                                    <i class="mdi mdi-lock-outline me-1"></i>
+                                    Serah Terima belum dapat dilakukan. Pembangunan fisik unit komersil harus selesai 100% terlebih dahulu.
+                                </div>
                             </div>
                         @endif
                     </div>

@@ -493,7 +493,16 @@
                                             default => 'background:#f1f5f9; color:#64748b; border:1px solid #e2e8f0;',
                                         };
 
-                                        $isUnitSoldOut = in_array(strtolower($application->unit->status ?? ''), ['sold', 'soldout']) || in_array(strtolower($application->status ?? ''), ['akad', 'completed', 'sold', 'done']);
+                                        $isKomersil = strtolower($application->unit->jenis ?? '') === 'komersil';
+                                        $serahTerimaDone = !empty(optional(optional($application->booking)->serahTerima)->id);
+
+                                        if ($isKomersil) {
+                                            $isUnitSoldOut = in_array(strtolower($application->unit->status ?? ''), ['sold', 'soldout'])
+                                                || (in_array(strtolower($application->status ?? ''), ['completed', 'sold', 'done']) && $serahTerimaDone);
+                                        } else {
+                                            $isUnitSoldOut = in_array(strtolower($application->unit->status ?? ''), ['sold', 'soldout'])
+                                                || in_array(strtolower($application->status ?? ''), ['akad', 'completed', 'sold', 'done']);
+                                        }
                                     @endphp
                                     <tr>
                                         <td class="text-center fw-bold text-muted" style="font-size: 0.82rem;">
@@ -539,18 +548,22 @@
                                                 <div class="progress-row">
                                                     <div class="progress">
                                                         <div class="progress-bar-custom {{ $progPercent >= 100 ? 'progress-dark-green' : 'progress-green' }}"
-                                                            style="width: {{ $progPercent }}%;"></div>
+                                                             style="width: {{ $progPercent }}%;"></div>
                                                     </div>
                                                     <div class="progress-percent">{{ $progPercent }}%</div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            @if ($isUnitSoldOut)
+                                            @if ($isUnitSoldOut && (!$isKomersil || $serahTerimaDone))
                                                 <span class="badge-clean status-akad">
                                                     <i class="mdi mdi-home-lock"></i>Sold Out
                                                 </span>
-                                            @elseif ($application->status === 'approved' || $application->status === 'dokumen')
+                                            @elseif ($isKomersil && $application->status === 'akad')
+                                                <span class="badge-clean status-akad">
+                                                    <i class="mdi mdi-handshake-outline"></i>Akad Selesai
+                                                </span>
+                                            @elseif ($application->status === 'approved' || $application->status === 'dokumen' || $application->status === 'analisa')
                                                 <span class="badge-clean status-approved">
                                                     <i class="mdi mdi-check-circle-outline"></i>Terverifikasi
                                                 </span>
@@ -572,15 +585,31 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center">
-                                                @if ($isUnitSoldOut)
-                                                    <button type="button" class="btn btn-sm d-inline-flex align-items-center justify-content-center px-2.5 py-1.5" disabled style="background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; font-weight: 600; border-radius: 6px; font-size: 0.78rem; gap: 4px; cursor: not-allowed;">
-                                                        <i class="mdi mdi-home-lock"></i>Sold Out
-                                                    </button>
+                                                @if ($isKomersil)
+                                                    {{-- Unit Komersil: Mengarah ke formulir Akad Komersil --}}
+                                                    @if ($application->status === 'akad')
+                                                        <a href="{{ route('kpr.akad', $application->id) }}" class="btn-proses-akad" style="background-color: #0284c7 !important; border-color: #0369a1 !important;" title="Detail Akad Komersil" onclick="showProcessLoading(event)">
+                                                            <i class="mdi mdi-handshake-outline"></i>
+                                                            <span>Detail Akad</span>
+                                                        </a>
+                                                    @else
+                                                        <a href="{{ route('kpr.akad', $application->id) }}" class="btn-proses-akad" title="Proses Akad KPR Komersil" onclick="showProcessLoading(event)">
+                                                            <i class="mdi mdi-file-document-edit-outline"></i>
+                                                            <span>Proses Akad</span>
+                                                        </a>
+                                                    @endif
                                                 @else
-                                                    <a href="{{ route('kpr.approve', $application->booking_id ?? $application->id) }}" class="btn-proses-akad" title="Proses Akad KPR" onclick="showProcessLoading(event)">
-                                                        <i class="mdi mdi-handshake-outline"></i>
-                                                        <span>Proses Akad</span>
-                                                    </a>
+                                                    {{-- Unit Subsidi: Mengarah ke Formulir Akad Subsidi --}}
+                                                    @if ($isUnitSoldOut)
+                                                        <button type="button" class="btn btn-sm d-inline-flex align-items-center justify-content-center px-2.5 py-1.5" disabled style="background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; font-weight: 600; border-radius: 6px; font-size: 0.78rem; gap: 4px; cursor: not-allowed;">
+                                                            <i class="mdi mdi-home-lock"></i>Sold Out
+                                                        </button>
+                                                    @else
+                                                        <a href="{{ route('kpr.approve', $application->booking_id ?? $application->id) }}" class="btn-proses-akad" title="Proses Akad KPR" onclick="showProcessLoading(event)">
+                                                            <i class="mdi mdi-file-document-edit-outline"></i>
+                                                            <span>Proses Akad</span>
+                                                        </a>
+                                                    @endif
                                                 @endif
                                             </div>
                                         </td>
