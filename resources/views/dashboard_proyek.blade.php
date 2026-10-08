@@ -130,7 +130,7 @@
     <!-- 2. 5 EXECUTIVE METRIC CARDS (PERSIS DASHBOARD CLEAN STANDARD) -->
     <!-- ========================================================================= -->
     <div class="dash-kpi-grid-5 mb-4">
-        
+
         <!-- Card 1: Total Proyek Kawasan (Ungu) -->
         <div class="dash-kpi-card">
             <div class="dash-kpi-left">
@@ -278,11 +278,11 @@
                                         </span>
                                     </div>
                                     <div class="progress progress-subtle">
-                                        <div class="progress-bar {{ $proj->progress_infra >= 100 ? 'bg-success' : 'bg-primary' }}" 
-                                            role="progressbar" 
-                                            style="width: {{ $proj->progress_infra }}%;" 
-                                            aria-valuenow="{{ $proj->progress_infra }}" 
-                                            aria-valuemin="0" 
+                                        <div class="progress-bar {{ $proj->progress_infra >= 100 ? 'bg-success' : 'bg-primary' }}"
+                                            role="progressbar"
+                                            style="width: {{ $proj->progress_infra }}%;"
+                                            aria-valuenow="{{ $proj->progress_infra }}"
+                                            aria-valuemin="0"
                                             aria-valuemax="100"></div>
                                     </div>
                                 </td>
@@ -383,11 +383,11 @@
                                         <span class="fw-bold text-dark" style="font-size: 0.76rem;">{{ $uProg }}%</span>
                                     </div>
                                     <div class="progress progress-subtle mx-2">
-                                        <div class="progress-bar {{ $uProg >= 100 ? 'bg-success' : ($uProg > 0 ? 'bg-primary' : 'bg-secondary') }}" 
-                                            role="progressbar" 
-                                            style="width: {{ $uProg }}%;" 
-                                            aria-valuenow="{{ $uProg }}" 
-                                            aria-valuemin="0" 
+                                        <div class="progress-bar {{ $uProg >= 100 ? 'bg-success' : ($uProg > 0 ? 'bg-primary' : 'bg-secondary') }}"
+                                            role="progressbar"
+                                            style="width: {{ $uProg }}%;"
+                                            aria-valuenow="{{ $uProg }}"
+                                            aria-valuemin="0"
                                             aria-valuemax="100"></div>
                                     </div>
                                 </td>
@@ -420,7 +420,7 @@
     <!-- 4. SECTION: DUA KOLOM (SPK KONTRAKTOR & OPNAME MINGGUAN) -->
     <!-- ========================================================================= -->
     <div class="dash-row-grid mb-4">
-        
+
         <!-- Kolom Kiri: SPK Kontraktor Berjalan -->
         <div class="dash-panel">
             <div class="dash-panel-header">
@@ -453,7 +453,7 @@
                         <tbody>
                             @forelse($recentSpks as $spk)
                                 <tr>
-                                    <td class="px-3">
+                                    <td class="px-3">   
                                         <div class="fw-bold text-dark" style="font-size: 0.85rem;">
                                             {{ $spk->kontraktor_nama ?? 'Kontraktor' }}
                                         </div>
