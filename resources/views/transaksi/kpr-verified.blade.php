@@ -587,19 +587,34 @@
                                         </td>
                                         <td class="text-center">
                                             @php
-                                                $isUnitSoldOut = in_array(strtolower($application->unit->status ?? ''), ['sold', 'soldout']) || in_array(strtolower($status ?? ''), ['akad', 'completed', 'sold', 'done']);
+                                                $isKomersil = strtolower($application->unit->jenis ?? '') === 'komersil';
+                                                $serahTerimaDone = !empty(optional(optional($application->booking)->serahTerima)->id);
+
+                                                if ($isKomersil) {
+                                                    // Khusus Komersil: hanya Sold Out jika unit memang sold atau serah terima telah selesai
+                                                    $isUnitSoldOut = in_array(strtolower($application->unit->status ?? ''), ['sold', 'soldout'])
+                                                        || (in_array(strtolower($status ?? ''), ['completed', 'sold', 'done']) && $serahTerimaDone);
+                                                } else {
+                                                    // Khusus Subsidi: tetap seperti logika aslinya
+                                                    $isUnitSoldOut = in_array(strtolower($application->unit->status ?? ''), ['sold', 'soldout'])
+                                                        || in_array(strtolower($status ?? ''), ['akad', 'completed', 'sold', 'done']);
+                                                }
                                             @endphp
                                             @if ($isUnitSoldOut)
                                                 <span class="badge-clean status-akad">
                                                     <i class="mdi mdi-home-lock"></i> Sold Out
                                                 </span>
-                                            @elseif ($status === 'approved' || $status === 'dokumen' || $status === 'analisa')
-                                                <span class="badge-clean status-approved">
-                                                    <i class="mdi mdi-check-circle-outline"></i> Terverifikasi
+                                            @elseif ($isKomersil && $status === 'akad')
+                                                <span class="badge-clean status-akad">
+                                                    <i class="mdi mdi-handshake-outline"></i> Akad Selesai
                                                 </span>
                                             @elseif ($status === 'survey')
                                                 <span class="badge-clean status-survey">
                                                     <i class="mdi mdi-map-marker-check-outline"></i> Survey
+                                                </span>
+                                            @elseif ($status === 'approved' || $status === 'dokumen' || $status === 'analisa')
+                                                <span class="badge-clean status-approved">
+                                                    <i class="mdi mdi-check-circle-outline"></i> Terverifikasi
                                                 </span>
                                             @else
                                                 <span class="badge-clean status-default">
@@ -617,23 +632,30 @@
                                                 $isSubsidi = strtolower($application->unit->jenis ?? '') === 'subsidi';
                                                 $isDevDone = $progStatus === 'selesai' || $progPercent === 100;
                                                 $canSurveySubsidi = !$isSubsidi || $isDevDone;
+                                                $surveyDone = !empty($application->rekomendasi) || !empty($application->survey_date) || strtolower($application->status_survey ?? '') == 'done' || (optional($application->booking)->status_survey ?? 0) == 1;
                                             @endphp
 
                                             @if($isUnitSoldOut)
                                                 <button type="button" class="btn btn-sm d-inline-flex align-items-center justify-content-center px-2.5 py-1" disabled title="Unit telah Akad / Sold Out" style="background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; font-weight: 600; border-radius: 6px; font-size: 0.78rem; cursor: not-allowed;">
                                                     <i class="mdi mdi-home-lock me-1"></i>Sold Out
                                                 </button>
-                                            @elseif(strtolower($application->unit->jenis ?? '') === 'komersil')
-                                                @if($status === 'survey')
-                                                    <a href="{{ route('kpr.survey', $application->id) }}" class="btn-action-clean btn-action-survey" onclick="showProcessLoading(event)">
+                                            @elseif($isKomersil)
+                                                {{-- Khusus Komersil --}}
+                                                @if($status === 'akad')
+                                                    <a href="{{ route('kpr.akad', $application->id) }}" class="btn-action-clean btn-action-akad" onclick="showProcessLoading(event)" title="Buka Detail Akad">
+                                                        <i class="mdi mdi-handshake-outline"></i> Detail Akad
+                                                    </a>
+                                                @elseif(!$surveyDone)
+                                                    <a href="{{ route('kpr.survey', $application->id) }}" class="btn-action-clean btn-action-survey" onclick="showProcessLoading(event)" title="Lanjut Survey Lapangan">
                                                         <i class="mdi mdi-home-search-outline"></i> Lanjut Survey
                                                     </a>
                                                 @else
-                                                    <a href="{{ route('kpr.akad', $application->id) }}" class="btn-action-clean btn-action-akad" onclick="showProcessLoading(event)">
+                                                    <a href="{{ route('kpr.akad', $application->id) }}" class="btn-action-clean btn-action-akad" onclick="showProcessLoading(event)" title="Lanjut ke Proses Akad">
                                                         <i class="mdi mdi-handshake-outline"></i> Lanjut ke Akad
                                                     </a>
                                                 @endif
                                             @else
+                                                {{-- Asli Unit Subsidi --}}
                                                 @if($status === 'akad')
                                                     <a href="{{ route('kpr.akad', $application->id) }}" class="btn-action-clean btn-action-akad" onclick="showProcessLoading(event)">
                                                         <i class="mdi mdi-handshake-outline"></i> Lanjut ke Akad

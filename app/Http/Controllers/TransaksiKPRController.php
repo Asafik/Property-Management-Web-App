@@ -153,6 +153,7 @@ class TransaksiKPRController extends Controller
 
         // VALIDASI
         $isSurvey = $request->status === 'survey';
+        $hasSp3k = !empty($kpr->berita_acara);
 
         $request->validate([
             'catatan'           => 'nullable|string',
@@ -163,7 +164,7 @@ class TransaksiKPRController extends Controller
             'bunga'             => 'nullable|numeric',
             'no_sp3k'           => 'nullable|string',
             'akad_at'           => 'nullable|date',
-            'berita_acara'      => ($isSurvey ? 'required' : 'nullable') . '|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'berita_acara'      => (($isSurvey && !$hasSp3k) ? 'required' : 'nullable') . '|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ], [
             'berita_acara.required' => 'Dokumen SP3K dari Bank wajib diunggah saat menyetujui verifikasi KPR.',
             'berita_acara.mimes'    => 'Format file SP3K harus berupa JPG, JPEG, PNG, atau PDF.',
@@ -374,9 +375,37 @@ class TransaksiKPRController extends Controller
     }
     public function akad($id)
     {
-        $application = KprApplication::with(['customer', 'unit.agency', 'bank'])->findOrFail($id);
+        $application = KprApplication::with([
+            'customer',
+            'unit.agency',
+            'unit.landBank',
+            'unit.activeBooking.sales',
+            'bank',
+            'booking.sales',
+            'booking.akad'
+        ])->findOrFail($id);
 
-        return view('marketing.akad', compact('application'));
+        $bookingId = $application->booking_id ?? optional($application->booking)->id;
+        $existingAkad = \App\Models\Akad::where('booking_id', $bookingId)->first();
+
+        $month = date('m');
+        $year = date('Y');
+        $prefix = "AKAD/$month/$year/";
+        $lastNumber = \App\Models\Akad::whereYear('created_at', $year)->count() + 1;
+        do {
+            $noAkad = $prefix . str_pad($lastNumber, 3, '0', STR_PAD_LEFT);
+            $query = \App\Models\Akad::where('no_akad', $noAkad);
+            if ($bookingId) {
+                $query->where('booking_id', '!=', $bookingId);
+            }
+            $exists = $query->exists();
+            $lastNumber++;
+        } while ($exists);
+        $noAkadDraf = $existingAkad && !empty($existingAkad->no_akad) ? $existingAkad->no_akad : $noAkad;
+
+        $notarisList = \App\Models\Notaris::where('is_active', true)->orderBy('nama_notaris', 'asc')->get();
+
+        return view('marketing.akad', compact('application', 'noAkadDraf', 'existingAkad', 'notarisList'));
     }
 
 
