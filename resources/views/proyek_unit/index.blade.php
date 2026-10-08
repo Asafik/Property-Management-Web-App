@@ -491,10 +491,12 @@
                                                     </span>
                                                 @endif
                                             @else
-                                                <button type="button" class="btn btn-outline-secondary btn-sm py-0.5 px-2 text-nowrap d-inline-flex align-items-center gap-1" style="font-size: 0.72rem; border-radius: 6px;" onclick="openAssignSpkForSingleUnit({{ $u->id }}, '{{ $u->unit_code ?: ($u->block . '-' . $u->unit_number) }}', {{ $u->land_bank_id }})" title="Atur SPK untuk unit ini">
-                                                    <i class="mdi mdi-plus-circle-outline me-1"></i>
-                                                    <span>Beri SPK</span>
-                                                </button>
+                                                <span class="badge py-1 px-2.5 fw-medium d-inline-flex align-items-center gap-1" 
+                                                      style="background-color: #f8fafc; color: #94a3b8; font-size: 0.74rem; border-radius: 6px; border: 1px dashed #cbd5e1;" 
+                                                      title="Belum ada SPK untuk unit ini">
+                                                    <i class="mdi mdi-minus text-muted" style="font-size: 0.75rem;"></i>
+                                                    <span>Belum Ada SPK</span>
+                                                </span>
                                             @endif
                                         </td>
 

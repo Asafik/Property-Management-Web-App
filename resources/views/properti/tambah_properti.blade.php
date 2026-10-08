@@ -755,11 +755,15 @@
                                 <div class="properti-col-md-6">
                                     <div class="properti-form-group">
                                         <label class="properti-form-label">Status Kepemilikan <span class="properti-text-danger">*</span></label>
-                                        <select name="statusKepemilikan"
-                                            class="properti-form-control @error('statusKepemilikan') is-invalid @enderror" required>
+                                        <select name="statusKepemilikan" id="statusKepemilikan"
+                                            class="properti-form-control @error('statusKepemilikan') is-invalid @enderror" required onchange="filterPascaDocumentsByCategory(this.value)">
                                             <option value="">-- Pilih Status --</option>
-                                            <option value="SHM" {{ old('statusKepemilikan') == 'SHM' ? 'selected' : '' }}>SHM (Sertifikat Hak Milik)</option>
+                                            <option value="SHM" {{ old('statusKepemilikan', 'SHM') == 'SHM' ? 'selected' : '' }}>SHM (Sertifikat Hak Milik)</option>
                                             <option value="HGB" {{ old('statusKepemilikan') == 'HGB' ? 'selected' : '' }}>HGB (Hak Guna Bangunan)</option>
+                                            <option value="AJB" {{ old('statusKepemilikan') == 'AJB' ? 'selected' : '' }}>AJB / Akta Hibah</option>
+                                            <option value="APHB" {{ old('statusKepemilikan') == 'APHB' ? 'selected' : '' }}>APHB (Akta Pembagian Hak Bersama)</option>
+                                            <option value="WARISAN" {{ old('statusKepemilikan') == 'WARISAN' ? 'selected' : '' }}>AJB / Hibah (Harta Warisan)</option>
+                                            <option value="PETOK_C" {{ old('statusKepemilikan') == 'PETOK_C' ? 'selected' : '' }}>Petok C / Girik</option>
                                             <option value="HGU" {{ old('statusKepemilikan') == 'HGU' ? 'selected' : '' }}>HGU (Hak Guna Usaha)</option>
                                             <option value="HP" {{ old('statusKepemilikan') == 'HP' ? 'selected' : '' }}>HP (Hak Pakai)</option>
                                         </select>
@@ -975,19 +979,53 @@
                             <hr class="properti-hr">
 
                             {{-- ================= DOKUMEN LEGAL & BERKAS (CARD GRID AESTHETIC) ================= --}}
-                            <h5 class="properti-section-title">
-                                <i class="fas fa-file-contract me-2"></i>
-                                Dokumen Legal & Berkas
-                            </h5>
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                                <h5 class="properti-section-title mb-0">
+                                    <i class="fas fa-file-contract me-2"></i>
+                                    Dokumen Legal & Berkas
+                                </h5>
+                                <span class="badge bg-success px-3 py-1.5 shadow-sm" id="pascaDocCountBadge" style="font-size: 0.82rem; font-weight: 700;">
+                                    6 Dokumen Wajib
+                                </span>
+                            </div>
 
-                            <div class="row g-3 mb-4">
+                            <!-- Dynamic Category Alert Banner (Filtered by Status Kepemilikan) -->
+                            <div class="alert alert-info py-2.5 px-3 mb-3 d-flex align-items-center justify-content-between rounded-3 border shadow-none" id="pascaCategoryAlert" style="background: #f0fdf4; border-color: #bbf7d0 !important; color: #166534;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fas fa-check-circle text-success" style="font-size: 1.25rem;"></i>
+                                    <div>
+                                        <span class="fw-bold d-block" style="font-size: 0.88rem;">
+                                            Berkas Wajib Dasar Perolehan: <span id="pascaCategoryName" class="badge bg-success ms-1">SHM (Sertifikat Hak Milik)</span>
+                                        </span>
+                                        <small class="text-muted d-block" id="pascaCategoryDesc" style="font-size: 0.76rem;">
+                                            6 Dokumen Wajib: SHM Asli, KTP Penjual (Suami – Istri), Kartu Keluarga, Surat Nikah, NPWP, SPPT PBB atas obyek tanah: Lunas atau Nunggak.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-4" id="pascaDocumentGrid">
+                                @php
+                                    $initialCategory = old('statusKepemilikan', 'SHM');
+                                @endphp
                                 @foreach ($documentTypes as $type)
-                                    <div class="col-12 col-md-6 col-xl-4">
+                                    @php
+                                        $typeCats = $type->applicable_categories ?? [];
+                                        $isApplicable = !empty($typeCats) && in_array($initialCategory, $typeCats);
+                                    @endphp
+                                    <div class="col-12 col-md-6 col-xl-4 doc-pasca-col {{ !$isApplicable ? 'd-none' : '' }}" id="doc-box-pasca-{{ $type->id }}" data-categories='@json($typeCats)' data-type-id="{{ $type->id }}">
                                         <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative properti-doc-card-inner" style="background: #ffffff;">
                                             <!-- Header Card Box -->
                                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
                                                 <div>
                                                     <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">{{ $type->name }}</h6>
+                                                    @if($type->code === 'SPPT_PBB')
+                                                        <div class="mt-1">
+                                                            <span class="badge bg-info-subtle text-primary border border-primary-subtle py-0.5 px-2" style="font-size: 10px;">
+                                                                <i class="fas fa-info-circle me-1"></i>SPPT PBB: Lunas / Nunggak
+                                                            </span>
+                                                        </div>
+                                                    @endif
                                                 </div>
                                                 <div class="d-flex align-items-center gap-1 flex-wrap justify-content-end">
                                                     <span class="badge bg-light text-muted border py-1 px-2" id="doc_badge_{{ $type->id }}" style="font-size: 10px;">
@@ -1565,6 +1603,92 @@
                             btnLokasi.disabled = false;
                         }
                     );
+                });
+            }
+
+            // ===============================
+            // FILTER DOKUMEN SESUAI STATUS KEPEMILIKAN
+            // ===============================
+            const PASCA_CATEGORY_META = {
+                'SHM': {
+                    name: 'SHM (Sertifikat Hak Milik)',
+                    desc: '6 Dokumen Wajib: SHM Asli, KTP Penjual (Suami – Istri), Kartu Keluarga, Surat Nikah, NPWP, SPPT PBB atas obyek tanah: Lunas atau Nunggak.'
+                },
+                'HGB': {
+                    name: 'HGB (Hak Guna Bangunan)',
+                    desc: '6 Dokumen Wajib: Sertifikat HGB Asli, KTP Penjual (Suami – Istri), Kartu Keluarga, Surat Nikah, NPWP, SPPT PBB atas obyek tanah.'
+                },
+                'SHGB': {
+                    name: 'SHGB Induk Kawasan',
+                    desc: '6 Dokumen Wajib: Sertifikat SHGB Asli, KTP Penjual (Suami – Istri), Kartu Keluarga, Surat Nikah, NPWP, SPPT PBB atas obyek tanah.'
+                },
+                'AJB': {
+                    name: 'AJB / Akta Hibah',
+                    desc: '10 Dokumen Wajib: AJB/Hibah Asli, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.'
+                },
+                'APHB': {
+                    name: 'APHB (Akta Pembagian Hak Bersama)',
+                    desc: '11 Dokumen Wajib: APHB, Ket. Ahli Waris, Akta Kematian, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak Ahli Waris.'
+                },
+                'WARISAN': {
+                    name: 'AJB & Akta Hibah (Harta Warisan)',
+                    desc: '11 Dokumen Wajib: AJB/Hibah Asli, Ket. Waris, Akta Kematian, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.'
+                },
+                'PETOK_C': {
+                    name: 'Petok C / Girik Asli',
+                    desc: '10 Dokumen Wajib: Petok C Asli, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.'
+                }
+            };
+
+            function getNormalizedPascaCategory(raw) {
+                const val = (raw || '').toString().toUpperCase().trim();
+                if (!val) return 'SHM';
+                if (val.includes('APHB')) return 'APHB';
+                if (val.includes('WARIS')) return 'WARISAN';
+                if (val.includes('PETOK') || val.includes('GIRIK') || val.includes('LETTER')) return 'PETOK_C';
+                if (val.includes('AJB') || val.includes('HIBAH')) return 'AJB';
+                if (val.includes('SHGB') || val.includes('HGB')) return 'SHGB';
+                if (val.includes('SHM') || val.includes('HGU') || val.includes('HP')) return 'SHM';
+                return 'SHM';
+            }
+
+            window.filterPascaDocumentsByCategory = function(selectedVal) {
+                const cat = getNormalizedPascaCategory(selectedVal);
+                const nameEl = document.getElementById('pascaCategoryName');
+                const descEl = document.getElementById('pascaCategoryDesc');
+                const countEl = document.getElementById('pascaDocCountBadge');
+
+                let visibleCount = 0;
+                document.querySelectorAll('.doc-pasca-col').forEach(card => {
+                    let rawCats = card.getAttribute('data-categories');
+                    let cats = [];
+                    try {
+                        cats = typeof rawCats === 'string' ? JSON.parse(rawCats) : (rawCats || []);
+                    } catch (e) {
+                        cats = [];
+                    }
+
+                    if (cats && cats.length > 0 && cats.includes(cat)) {
+                        card.classList.remove('d-none');
+                        visibleCount++;
+                    } else {
+                        card.classList.add('d-none');
+                    }
+                });
+
+                const info = PASCA_CATEGORY_META[cat] || { name: (selectedVal || 'SHM'), desc: `Menampilkan ${visibleCount} dokumen wajib legalitas.` };
+                if (nameEl) nameEl.textContent = info.name;
+                if (descEl) descEl.textContent = info.desc;
+                if (countEl) countEl.textContent = visibleCount + ' Dokumen Wajib';
+            };
+
+            // Jalankan filter awal saat halaman dimuat
+            const initialOwner = document.getElementById('statusKepemilikan')?.value || 'SHM';
+            filterPascaDocumentsByCategory(initialOwner);
+
+            if (window.jQuery) {
+                jQuery('#statusKepemilikan').on('change select2:select', function() {
+                    window.filterPascaDocumentsByCategory(this.value);
                 });
             }
         });

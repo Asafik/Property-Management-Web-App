@@ -78,6 +78,9 @@ public function store(Request $request)
                 $data['pbb_note'] = null;
                 $data['pbb_nominal'] = null;
             }
+            if ($request->filled('owner_status')) {
+                $data['owner_status'] = $request->owner_status;
+            }
 
             $data['status'] = 'fase1';
 
@@ -158,6 +161,10 @@ public function store(Request $request)
         if ($request->has('pbb_status') && $request->pbb_status === 'lunas') {
             $data['pbb_note'] = null;
             $data['pbb_nominal'] = null;
+        }
+
+        if ($request->has('owner_status')) {
+            $data['owner_status'] = $request->owner_status;
         }
 
         // Proses penyimpanan dokumen legalitas (Fase 1 / Fase 2)
@@ -717,9 +724,13 @@ public function store(Request $request)
                 $cat = 'SHM';
             }
 
-            $catDocTypeIds = $documentTypes->filter(function($dt) use ($cat) {
+            $isMeninggal = ($item->owner_status ?? 'hidup') === 'meninggal';
+
+            $catDocTypeIds = $documentTypes->filter(function($dt) use ($cat, $isMeninggal) {
                 $c = $dt->applicable_categories ?? [];
-                return empty($c) || in_array($cat, $c);
+                $isCategoryMatch = !empty($c) && in_array($cat, $c);
+                $isWarisDoc = $isMeninggal && in_array($dt->code ?? '', ['KETERANGAN_WARIS', 'AKTA_KEMATIAN']);
+                return $isCategoryMatch || $isWarisDoc;
             })->pluck('id')->toArray();
 
             $totalRequired = count($catDocTypeIds);
@@ -769,9 +780,13 @@ public function store(Request $request)
                     $category = '';
                 }
 
-                $applicableDocs = $land->documents->filter(function($d) use ($category) {
+                $isMeninggal = ($land->owner_status ?? 'hidup') === 'meninggal';
+
+                $applicableDocs = $land->documents->filter(function($d) use ($category, $isMeninggal) {
                     $cats = $d->documentType->applicable_categories ?? [];
-                    return empty($cats) || in_array($category, $cats);
+                    $isCategoryMatch = !empty($cats) && in_array($category, $cats);
+                    $isWarisDoc = $isMeninggal && in_array($d->documentType->code ?? '', ['KETERANGAN_WARIS', 'AKTA_KEMATIAN']);
+                    return $isCategoryMatch || $isWarisDoc;
                 });
 
                 $totalUploaded = $applicableDocs->whereNotNull('file_path')->count();
@@ -867,16 +882,22 @@ public function store(Request $request)
                 $category = 'SHM';
             }
 
+            $isMeninggal = ($praLandbank->owner_status ?? 'hidup') === 'meninggal';
+
             $allDocs = $praLandbank->documents;
             // Filter hanya dokumen yang berlaku untuk kategori alas hak tanah ini
-            $applicableDocs = $allDocs->filter(function($d) use ($category) {
+            $applicableDocs = $allDocs->filter(function($d) use ($category, $isMeninggal) {
                 $cats = $d->documentType->applicable_categories ?? [];
-                return empty($cats) || in_array($category, $cats);
+                $isCategoryMatch = !empty($cats) && in_array($category, $cats);
+                $isWarisDoc = $isMeninggal && in_array($d->documentType->code ?? '', ['KETERANGAN_WARIS', 'AKTA_KEMATIAN']);
+                return $isCategoryMatch || $isWarisDoc;
             });
 
-            $requiredDocTypes = DocumentTypes::all()->filter(function($dt) use ($category) {
+            $requiredDocTypes = DocumentTypes::all()->filter(function($dt) use ($category, $isMeninggal) {
                 $cats = $dt->applicable_categories ?? [];
-                return empty($cats) || in_array($category, $cats);
+                $isCategoryMatch = !empty($cats) && in_array($category, $cats);
+                $isWarisDoc = $isMeninggal && in_array($dt->code ?? '', ['KETERANGAN_WARIS', 'AKTA_KEMATIAN']);
+                return $isCategoryMatch || $isWarisDoc;
             });
             $totalRequired = $requiredDocTypes->count();
 
@@ -1899,6 +1920,14 @@ public function store(Request $request)
     {
         $record = PraLandbank::findOrFail($id);
 
+        // VALIDASI SOP: Lahan belum boleh dialihkan ke Pasca jika belum ada dokumen perizinan yang diselesaikan (minimal 1 izin terbit/selesai)
+        if ($record->completedPerizinanCount() <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lahan "' . $record->land_name . '" belum dapat dialihkan ke Pasca Land Bank karena perizinan belum diselesaikan (minimal 1 dokumen perizinan harus diselesaikan/terbit terlebih dahulu di modul Perizinan).'
+            ], 422);
+        }
+
         // Ambil ID profil perusahaan dari record (null jika belum dipilih)
         $companyId = $record->company_profile_id ?? null;
         $totalArea = $record->field_area ?: ($record->area ?: 0);
@@ -1924,6 +1953,7 @@ public function store(Request $request)
             'certificate_no'            => $record->certificate_no ?: ($record->land_name . ' (' . ($record->ownership_status ?? 'SHM') . ')'),
             'ownership_status'          => $record->ownership_status ?: 'SHM',
             'certificate_owner'         => $record->certificate_owner ?: ($record->owner_name ?: '-'),
+            'owner_status'              => $record->owner_status ?? 'hidup',
             'custom_workflow_docs'      => $workflowDocs,
             'area'                      => $totalArea,
             'remaining_area'            => $totalArea,
@@ -1960,26 +1990,14 @@ public function store(Request $request)
             $landBank = \App\Models\LandBank::create($landBankData);
         }
 
-        // Sinkronisasi dokumen dari Pra ke Pasca
-        $praDocs = \App\Models\pra_landbank_documents::where('pra_landbank_id', $record->id)->get();
-        foreach ($praDocs as $pd) {
-            \App\Models\LandBankDocument::firstOrCreate(
-                [
-                    'land_bank_id'     => $landBank->id,
-                    'document_type_id' => $pd->document_type_id,
-                ],
-                [
-                    'document_number'  => $pd->document_number,
-                    'file_path'        => $pd->file_path,
-                ]
-            );
-        }
-
         // Hubungkan pra_landbank ke land_bank
         $record->update([
             'land_bank_id' => $landBank->id,
             'status'       => 'approved',
         ]);
+
+        // Sinkronisasi dokumen lengkap dari Pra dan Perizinan ke Pasca
+        $landBank->syncDocumentsFromPerizinanAndPra();
 
         return response()->json([
             'success'      => true,

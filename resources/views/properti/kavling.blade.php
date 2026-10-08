@@ -495,8 +495,8 @@
                                                     <i class="mdi mdi-calendar-clock me-1"></i>Booking
                                                 </span>
                                             @elseif(!$canCreateKavling)
-                                                <span class="badge-status processing" title="Menunggu Dokumen POIN-17 SHGB Induk Selesai">
-                                                    <i class="mdi mdi-file-clock-outline me-1"></i>Izin POIN-17
+                                                <span class="badge-status processing" title="Menunggu Dokumen POIN-18 Pemecahan SHGB Induk Selesai">
+                                                    <i class="mdi mdi-file-clock-outline me-1"></i>Izin POIN-18
                                                 </span>
                                             @else
                                                 <span class="badge-status available">
@@ -523,7 +523,7 @@
                                                 </div>
                                                 <div class="fw-bold text-dark mt-1" style="font-size: 0.96rem;">Belum Ada Tanah yang Siap untuk Tambah Kavling</div>
                                                 <div class="small text-muted mt-1 text-center" style="max-width: 520px; line-height: 1.5;">
-                                                    Tanah akan otomatis muncul di halaman ini ketika dokumen perizinan <strong>POIN-17: SHGB Induk Selesai atas nama PT</strong> sudah berstatus <strong>Terbit / Selesai (100%)</strong> atau perizinan pemecahan telah diproses.
+                                                    Tanah akan otomatis muncul di halaman ini ketika dokumen perizinan <strong>POIN-18: Proses Pemecahan SHGB Induk Perkavling (Pasca Land Bank)</strong> sudah berstatus <strong>Terbit / Selesai (100%)</strong> atau perizinan pemecahan telah diproses.
                                                 </div>
                                                 <div class="mt-3">
                                                     <a href="{{ route('perizinan.index') }}" class="btn btn-sm btn-gradient-primary px-3 text-white shadow-sm" style="border-radius: 6px;">

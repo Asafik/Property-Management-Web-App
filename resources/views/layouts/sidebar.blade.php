@@ -186,8 +186,6 @@
             // Kelompok Dokumen Legal (Label Sendiri)
             'Document'                => 3,
             'Dokumen'                 => 3,
-            'Dokumen Perizinan'       => 3.5,
-            'Master Dokumen Perizinan' => 3.5,
 
             // Kelompok Perizinan (Di Bawah Dokumen Legal)
             'Tugas Perizinan'          => 5,
@@ -230,8 +228,6 @@
             // Dokumen Legal (Label Sendiri)
             'Document'                => 'Dokumen Legal',
             'Dokumen'                 => 'Dokumen Legal',
-            'Dokumen Perizinan'       => 'Dokumen Legal',
-            'Master Dokumen Perizinan' => 'Dokumen Legal',
 
             // Perizinan (Label Sendiri di Bawah Dokumen Legal)
             'Tugas Perizinan'          => 'Perizinan',
@@ -270,9 +266,6 @@
             }
             if ($m->name === 'Document' || $m->name === 'Dokumen') {
                 return 3;
-            }
-            if ($m->route === 'master.dokumen-perizinan.index' || $m->name === 'Dokumen Perizinan' || $m->name === 'Master Dokumen Perizinan') {
-                return 3.5;
             }
             if ($m->route === 'perizinan.tugas.index') {
                 return 5;
@@ -347,16 +340,13 @@
                 if ($mainDisplayName === 'Tanah Induk (Land Bank)') {
                     $mainDisplayName = 'Tanah Induk';
                 }
-                if ($mainDisplayName === 'Master Dokumen Perizinan') {
-                    $mainDisplayName = 'Dokumen Perizinan';
-                }
                 $mainIcon = $iconMap[$main->route] ?? $main->icon;
                 if ($mainIcon === 'mdi-file-document-box-multiple-outline' || empty($mainIcon)) {
                     $mainIcon = ($mainDisplayName === 'Dokumen') ? 'mdi-file-document-multiple-outline' : ($main->icon ?: 'mdi-folder-outline');
                 }
 
                 // Label Kategori / Section Header
-                if ($main->name === 'Document' || $main->name === 'Dokumen' || $mainDisplayName === 'Dokumen' || $mainDisplayName === 'Dokumen Legal' || $main->route === 'master.dokumen-perizinan.index' || $mainDisplayName === 'Dokumen Perizinan' || $main->name === 'Dokumen Perizinan' || $main->name === 'Master Dokumen Perizinan') {
+                if ($main->name === 'Document' || $main->name === 'Dokumen' || $mainDisplayName === 'Dokumen' || $mainDisplayName === 'Dokumen Legal') {
                     $sectionName = 'Dokumen Legal';
                 } elseif ($main->route === 'perizinan.tugas.index' || $main->route === 'perizinan.index') {
                     $sectionName = 'Perizinan';

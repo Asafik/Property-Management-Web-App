@@ -16,6 +16,7 @@ class PraLandbank extends Model
         'land_owner',
         'ownership_status',
         'owner_name',
+        'owner_status',
         'certificate_owner',
         'owner_contact',
         'land_source',
@@ -161,9 +162,13 @@ class PraLandbank extends Model
     public function getApplicableDocumentTypes()
     {
         $category = $this->ownership_category;
-        return DocumentTypes::all()->filter(function ($dt) use ($category) {
+        $isMeninggal = ($this->owner_status ?? 'hidup') === 'meninggal';
+
+        return DocumentTypes::all()->filter(function ($dt) use ($category, $isMeninggal) {
             $cats = $dt->applicable_categories ?? [];
-            return empty($cats) || in_array($category, $cats);
+            $isCategoryMatch = !empty($cats) && in_array($category, $cats);
+            $isWarisDoc = $isMeninggal && in_array($dt->code ?? '', ['KETERANGAN_WARIS', 'AKTA_KEMATIAN']);
+            return $isCategoryMatch || $isWarisDoc;
         });
     }
 
@@ -199,6 +204,60 @@ class PraLandbank extends Model
     }
 
     /**
+     * Scope untuk tanah yang sudah DI-ACC oleh Admin atau Marketing di Fase 3,
+     * dengan status deal harga dan bukti pembayaran (cash / termin) telah dipenuhi.
+     */
+    public function scopeDealAndPaidApproved($query)
+    {
+        return $query->where('status', 'approved')
+            ->whereNotNull('deal_price')
+            ->where('deal_price', '>', 0)
+            ->whereIn('payment_method', ['cash', 'termin'])
+            ->where(function ($q) {
+                $q->whereNotNull('receipt_file')
+                  ->orWhereNotNull('tax_pph_file')
+                  ->orWhereHas('payments', function ($pq) {
+                      $pq->whereNotNull('file_path')
+                        ->orWhere('status', 'lunas');
+                  });
+            });
+    }
+
+    /**
+     * Cek apakah tanah ini sudah sah di-ACC dan sudah deal serta dibayar (cash / termin).
+     */
+    public function isDealAndPaidApproved(): bool
+    {
+        if ($this->status !== 'approved') {
+            return false;
+        }
+
+        if (empty($this->deal_price) || (float)$this->deal_price <= 0) {
+            return false;
+        }
+
+        if (!in_array($this->payment_method, ['cash', 'termin'])) {
+            return false;
+        }
+
+        // Cek bukti pembayaran/transfer
+        $hasProof = !empty($this->receipt_file)
+            || !empty($this->tax_pph_file)
+            || ($this->payments && $this->payments->whereNotNull('file_path')->count() > 0)
+            || ($this->payments && $this->payments->where('status', 'lunas')->count() > 0);
+
+        if (!$hasProof && $this->relationLoaded('payments')) {
+            $hasProof = $this->payments->whereNotNull('file_path')->count() > 0
+                || $this->payments->where('status', 'lunas')->count() > 0;
+        } elseif (!$hasProof) {
+            $hasProof = $this->payments()->whereNotNull('file_path')->exists()
+                || $this->payments()->where('status', 'lunas')->exists();
+        }
+
+        return $hasProof;
+    }
+
+    /**
      * Memindahkan data tanah Pra Land Bank ke Pasca Land Bank (LandBank) secara otomatis
      * ketika dokumen fisik lengkap dan profil PT telah diisi.
      */
@@ -206,5 +265,49 @@ class PraLandbank extends Model
     {
         // Dinonaktifkan sesuai SOP bisnis: Tanah Pra Land Bank tidak boleh otomatis masuk ke Pasca Land Bank.
         return null;
+    }
+
+    /**
+     * Menghitung berapa banyak dokumen perizinan yang telah terselesaikan / terbit (minimal 1 izin).
+     */
+    public function completedPerizinanCount(): int
+    {
+        // 1. Cek dari tabel perizinan_tasks
+        $taskCount = \App\Models\PerizinanTask::where(function ($q) {
+                $q->where('proyek_id', $this->id)
+                  ->orWhere('proyek_nama', $this->land_name);
+            })
+            ->where(function ($q) {
+                $q->whereIn('status', ['Selesai', 'Terbit'])
+                  ->orWhere('progress', '>=', 100)
+                  ->orWhereNotNull('file_dokumen');
+            })
+            ->count();
+
+        if ($taskCount > 0) {
+            return $taskCount;
+        }
+
+        // 2. Cek dari custom_workflow_docs (alur pengindukan & perizinan di PraLandbank)
+        $docs = is_array($this->custom_workflow_docs) ? $this->custom_workflow_docs : [];
+        $docCount = 0;
+        foreach ($docs as $doc) {
+            $st = strtolower($doc['status'] ?? '');
+            $prog = (int)($doc['progress'] ?? 0);
+            $file = $doc['file_path'] ?? ($doc['file'] ?? null);
+            if (in_array($st, ['selesai', 'terbit']) || $prog >= 100 || !empty($file)) {
+                $docCount++;
+            }
+        }
+
+        return $docCount;
+    }
+
+    /**
+     * Memeriksa apakah minimal 1 dokumen perizinan telah selesai/terbit.
+     */
+    public function hasCompletedPerizinan(): bool
+    {
+        return $this->completedPerizinanCount() > 0;
     }
 }

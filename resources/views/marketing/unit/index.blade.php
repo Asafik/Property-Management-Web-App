@@ -588,7 +588,7 @@
                     if (status) {
                         statusSelect.value = status;
                     } else {
-                        statusSelect.value = 'ready';
+                        statusSelect.value = (price && parseInt(price) > 0) ? 'ready' : 'draft';
                     }
                 }
             });

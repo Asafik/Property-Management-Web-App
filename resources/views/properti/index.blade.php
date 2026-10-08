@@ -353,6 +353,20 @@
                                                 </select>
                                             </div>
 
+                                            <!-- Kategori -->
+                                            <div style="min-width: 165px;">
+                                                <select name="kategori" id="filterKategori" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px; font-size: 0.84rem;">
+                                                    <option value="">Semua Kategori</option>
+                                                    @foreach ($categories as $cat)
+                                                        @if(!empty(trim($cat)))
+                                                            <option value="{{ $cat }}" {{ request('kategori') == $cat ? 'selected' : '' }}>
+                                                                {{ $cat }}
+                                                            </option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
                                             <!-- Legalitas -->
                                             <div style="min-width: 165px;">
                                                 <select name="legalitas" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px; font-size: 0.84rem;">
@@ -418,6 +432,18 @@
                                                         {{ request('company_profile_id') == $company->id ? 'selected' : '' }}>
                                                         {{ $company->name }}
                                                     </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-12 mb-2">
+                                            <select name="kategori" id="filterKategoriMobile" class="form-select" onchange="document.getElementById('filterForm').submit()" style="height: 38px; font-size: 0.84rem;">
+                                                <option value="">Semua Kategori</option>
+                                                @foreach ($categories as $cat)
+                                                    @if(!empty(trim($cat)))
+                                                        <option value="{{ $cat }}" {{ request('kategori') == $cat ? 'selected' : '' }}>
+                                                            {{ $cat }}
+                                                        </option>
+                                                    @endif
                                                 @endforeach
                                             </select>
                                         </div>
@@ -512,54 +538,57 @@
                                             </td>
                                             <td>
                                                 @php
+                                                    $reqCount = $item->required_document_count;
+                                                    $upCount = $item->uploaded_document_count;
+                                                    $verCount = $item->verified_document_count;
+                                                    $docPercent = $item->document_completeness_percent;
+                                                    $legalPercent = $item->legal_verification_percent;
+
                                                     $docs = $item->merged_documents;
-                                                    $totalDocs = $docs->count();
-                                                    $verifiedDocs = $docs->where('status', 'verified')->count();
                                                     $rejectedDocs = $docs->where('status', 'rejected')->count();
 
                                                     if ($item->isFromPraLandbank() || $item->legal_status === 'verified') {
-                                                        $legalPercent = 100;
                                                         $legalBarColor = 'background: linear-gradient(90deg, #10b981, #059669);';
                                                         $legalTextClass = 'text-success';
                                                         $legalIcon = 'mdi-check-circle';
-                                                        $legalLabel = 'Terverifikasi';
-                                                    } elseif ($totalDocs > 0) {
-                                                        $legalPercent = round(($verifiedDocs / $totalDocs) * 100);
-                                                        if ($legalPercent == 100) {
-                                                            $legalBarColor = 'background: linear-gradient(90deg, #10b981, #059669);';
-                                                            $legalTextClass = 'text-success';
-                                                            $legalIcon = 'mdi-check-circle';
-                                                            $legalLabel = 'Terverifikasi';
-                                                        } elseif ($rejectedDocs > 0) {
-                                                            $legalBarColor = 'background: linear-gradient(90deg, #ef4444, #dc2626);';
-                                                            $legalTextClass = 'text-danger';
-                                                            $legalIcon = 'mdi-alert-circle';
-                                                            $legalLabel = 'Revisi';
-                                                        } else {
-                                                            $legalBarColor = 'background: linear-gradient(90deg, #f59e0b, #d97706);';
-                                                            $legalTextClass = 'text-warning';
-                                                            $legalIcon = 'mdi-clock-outline';
-                                                            $legalLabel = 'Proses';
-                                                        }
+                                                        $legalLabel = 'Sah (' . $reqCount . '/' . $reqCount . ')';
+                                                    } elseif ($legalPercent >= 100) {
+                                                        $legalBarColor = 'background: linear-gradient(90deg, #10b981, #059669);';
+                                                        $legalTextClass = 'text-success';
+                                                        $legalIcon = 'mdi-check-circle';
+                                                        $legalLabel = 'Lengkap (' . $reqCount . '/' . $reqCount . ')';
+                                                    } elseif ($rejectedDocs > 0) {
+                                                        $legalBarColor = 'background: linear-gradient(90deg, #ef4444, #dc2626);';
+                                                        $legalTextClass = 'text-danger';
+                                                        $legalIcon = 'mdi-alert-circle';
+                                                        $legalLabel = 'Revisi (' . $verCount . '/' . $reqCount . ')';
+                                                    } elseif ($upCount > 0) {
+                                                        $legalBarColor = 'background: linear-gradient(90deg, #f59e0b, #d97706);';
+                                                        $legalTextClass = 'text-warning';
+                                                        $legalIcon = 'mdi-clock-outline';
+                                                        $legalLabel = $upCount . '/' . $reqCount . ' Berkas';
                                                     } else {
-                                                        $legalPercent = 0;
                                                         $legalBarColor = 'background: #cbd5e1;';
                                                         $legalTextClass = 'text-muted';
                                                         $legalIcon = 'mdi-close-circle';
-                                                        $legalLabel = 'Belum';
+                                                        $legalLabel = '0/' . $reqCount . ' Berkas';
                                                     }
                                                 @endphp
-                                                <div style="min-width: 110px;">
+                                                <div style="min-width: 120px;">
                                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                                        <small class="fw-bold {{ $legalTextClass }}" style="font-size: 0.75rem;">
+                                                        <small class="fw-bold {{ $legalTextClass }}" style="font-size: 0.74rem;">
                                                             <i class="mdi {{ $legalIcon }} me-0.5"></i> {{ $legalLabel }}
                                                         </small>
-                                                        <span class="fw-bold" style="font-size: 0.75rem; color: #374151;">{{ $legalPercent }}%</span>
+                                                        <span class="fw-bold" style="font-size: 0.74rem; color: #374151;">{{ $legalPercent }}%</span>
                                                     </div>
-                                                    <div class="progress" style="height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden;">
+                                                    <div class="progress" style="height: 6px; background-color: #e5e7eb; border-radius: 4px; overflow: hidden;" title="{{ $item->ownership_status }}: {{ $upCount }} dari {{ $reqCount }} dokumen wajib terpenuhi">
                                                         <div class="progress-bar" role="progressbar" style="width: {{ $legalPercent }}%; {{ $legalBarColor }} border-radius: 4px;" aria-valuenow="{{ $legalPercent }}" aria-valuemin="0" aria-valuemax="100"></div>
                                                     </div>
+                                                    <small class="text-muted d-block mt-0.5" style="font-size: 0.68rem;">
+                                                        {{ $item->ownership_category }} ({{ $reqCount }} Dok Wajib)
+                                                    </small>
                                                 </div>
+                                            </td>
                                             <td>
                                                 @php
                                                     $devPercent = (float) $item->overall_infrastructure_progress;

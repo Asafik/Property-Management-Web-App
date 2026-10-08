@@ -13,15 +13,64 @@ use Illuminate\Support\Facades\DB;
 class PropertyController extends Controller
 {
     //
-   public function index(Request $request)
-{
-    $query = LandBank::with(['companyProfile', 'documents.documentType'])
-        ->whereIn('status', ['aktif', 'active', 'draft']);
+    public function index(Request $request)
+    {
+        $query = LandBank::with(['companyProfile', 'documents.documentType'])
+            ->whereIn('status', ['aktif', 'active', 'draft']);
 
-    // Filter Search Nama
-    if ($request->search) {
-        $query->where('name', 'like', '%' . $request->search . '%');
-    }
+        // SOP Bisnis: Tanah yang berasal dari Pra Land Bank HANYA boleh tampil di Pasca Land Bank
+        // jika telah menyelesaikan minimal 1 dokumen perizinan (terbit/selesai).
+        $query->where(function ($q) {
+            // 1. Properti murni Pasca (tidak berasal dari Pra Land Bank)
+            $q->whereDoesntHave('praLandbank')
+              ->whereNotIn('name', function ($sub) {
+                  $sub->select('land_name')->from('pra_landbanks');
+              });
+
+            // 2. Berasal dari Pra Land Bank TAPI sudah menyelesaikan minimal 1 perizinan
+            $q->orWhere(function ($praQ) {
+                $praQ->whereHas('praLandbank', function ($pq) {
+                    $pq->whereExists(function ($tq) {
+                        $tq->select(DB::raw(1))
+                            ->from('perizinan_tasks')
+                            ->whereColumn('perizinan_tasks.proyek_id', 'pra_landbanks.id')
+                            ->where(function ($st) {
+                                $st->whereIn('perizinan_tasks.status', ['Selesai', 'Terbit'])
+                                   ->orWhere('perizinan_tasks.progress', '>=', 100)
+                                   ->orWhereNotNull('perizinan_tasks.file_dokumen');
+                            });
+                    })
+                    ->orWhereExists(function ($tq) {
+                        $tq->select(DB::raw(1))
+                            ->from('perizinan_tasks')
+                            ->whereColumn('perizinan_tasks.proyek_nama', 'pra_landbanks.land_name')
+                            ->where(function ($st) {
+                                $st->whereIn('perizinan_tasks.status', ['Selesai', 'Terbit'])
+                                   ->orWhere('perizinan_tasks.progress', '>=', 100)
+                                   ->orWhereNotNull('perizinan_tasks.file_dokumen');
+                            });
+                    });
+                })
+                ->orWhereExists(function ($tq) {
+                    $tq->select(DB::raw(1))
+                        ->from('perizinan_tasks')
+                        ->where(function ($matchQ) {
+                            $matchQ->whereColumn('perizinan_tasks.proyek_id', 'land_banks.id')
+                                   ->orWhereColumn('perizinan_tasks.proyek_nama', 'land_banks.name');
+                        })
+                        ->where(function ($st) {
+                            $st->whereIn('perizinan_tasks.status', ['Selesai', 'Terbit'])
+                               ->orWhere('perizinan_tasks.progress', '>=', 100)
+                               ->orWhereNotNull('perizinan_tasks.file_dokumen');
+                        });
+                });
+            });
+        });
+
+        // Filter Search Nama
+        if ($request->search) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
 
     // Filter Company
     if ($request->company_profile_id) {
@@ -61,8 +110,10 @@ class PropertyController extends Controller
 
     $companies = CompanyProfile::orderBy('name')->get();
     $categories = \App\Models\LandBank::whereIn('status', ['aktif', 'active', 'draft'])
-        ->select('zoning')
         ->whereNotNull('zoning')
+        ->where('zoning', '!=', '')
+        ->where('zoning', '!=', '-')
+        ->select('zoning')
         ->distinct()
         ->orderBy('zoning')
         ->pluck('zoning');
@@ -295,7 +346,7 @@ public function kavlingindex(Request $request)
     // Hanya tanah yang izin pemecahannya (POIN-18) sudah minimal Proses / Terbit yang muncul di halaman Tambah Kavling
     $allCandidateLands = LandBank::where(function($q) {
         $q->where('legal_status', 'verified')
-          ->orWhereIn('name', \App\Models\PraLandbank::pluck('land_name'));
+          ->orWhereIn('name', \App\Models\PraLandbank::dealAndPaidApproved()->pluck('land_name'));
     })->with(['units', 'infrastructures'])->get();
 
     $readyLandIds = $allCandidateLands->filter(fn($l) => $l->canCreateKavling())->pluck('id')->toArray();
@@ -397,6 +448,15 @@ public function updateCompanyAjax(Request $request, $id)
 public function edit($id)
 {
     $land = LandBank::with('documents')->findOrFail($id);
+
+    // Auto-sinkronisasi seluruh berkas & nomor dokumen dari Perizinan dan Pra Landbank agar auto keisi dan tidak perlu isi ulang 2x
+    try {
+        $land->syncDocumentsFromPerizinanAndPra();
+        $land->load('documents');
+    } catch (\Throwable $e) {
+        \Log::warning('Gagal sinkronisasi dokumen perizinan/pra pada edit properti: ' . $e->getMessage());
+    }
+
     $companies = CompanyProfile::withCount('landBanks')->get();
     $documentTypes = DocumentTypes::orderBy('name')->get();
 
@@ -533,8 +593,6 @@ public function update(Request $request, $id)
 
         // HANDLE DOCUMENTS
         if ($request->has('documents')) {
-            $isLandVerified = $land->isFromPraLandbank() || $land->legal_status === 'verified';
-
             foreach ($request->documents as $typeId => $doc) {
                 if (empty($doc['number']) && empty($doc['file'])) {
                     continue;
@@ -543,13 +601,6 @@ public function update(Request $request, $id)
                 $existingDoc = \App\Models\LandBankDocument::where('land_bank_id', $land->id)
                     ->where('document_type_id', $typeId)
                     ->first();
-
-                $isDocVerified = $existingDoc && !empty($existingDoc->file_path) && (($existingDoc->status === 'verified') || $isLandVerified);
-
-                // Jika dokumen terkunci dan tidak ada berkas baru diunggah, lewati
-                if ($isDocVerified && empty($doc['file'])) {
-                    continue;
-                }
 
                 $filePath = $existingDoc ? $existingDoc->file_path : null;
 
@@ -567,19 +618,22 @@ public function update(Request $request, $id)
                 }
 
                 if ($existingDoc) {
-                    $updateData = [
-                        'file_path' => $filePath,
-                    ];
-                    if (isset($doc['number'])) {
+                    $updateData = [];
+                    if (!empty($doc['file']) && $filePath) {
+                        $updateData['file_path'] = $filePath;
+                    }
+                    if (isset($doc['number']) && $doc['number'] !== null && $doc['number'] !== '') {
                         $updateData['document_number'] = $doc['number'];
                     }
-                    $existingDoc->update($updateData);
+                    if (!empty($updateData)) {
+                        $existingDoc->update($updateData);
+                    }
                 } else {
                     \App\Models\LandBankDocument::create([
                         'land_bank_id'     => $land->id,
                         'document_type_id' => $typeId,
                         'document_number'  => $doc['number'] ?? null,
-                        'file_path'        => $filePath,
+                        'file_path'        => $filePath ?: '',
                         'status'           => 'pending',
                     ]);
                 }

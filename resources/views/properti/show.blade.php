@@ -681,11 +681,11 @@
                                             </div>
                                             <div>
                                                 <h6 class="fw-bold text-dark mb-0" style="font-size: 0.95rem;">Legalitas Asal & Alas Hak Tanah</h6>
-                                                <small class="text-muted" style="font-size: 0.75rem;">Dokumen kepemilikan awal lahan sebelum dialihkan ke PT</small>
+                                                <small class="text-muted" style="font-size: 0.75rem;">Status: <strong>{{ $item->ownership_status }}</strong> (Wajib {{ $item->required_document_count }} Berkas)</small>
                                             </div>
                                         </div>
                                         <span style="display:inline-flex; align-items:center; gap:4px; padding: 4px 12px; border-radius: 20px; font-size: 0.76rem; font-weight: 700; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;">
-                                            <i class="mdi mdi-history"></i>Alas Hak Asal
+                                            <i class="mdi mdi-file-check"></i>{{ $item->uploaded_document_count }}/{{ $item->required_document_count }} Berkas
                                         </span>
                                     </div>
 
@@ -696,7 +696,7 @@
                                                 <td class="col-sep">:</td>
                                                 <td class="col-val">
                                                     <span style="display:inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;">
-                                                        {{ ($pra && $pra->ownership_status) ? $pra->ownership_status : 'SHM' }}
+                                                        {{ ($pra && $pra->ownership_status) ? $pra->ownership_status : $item->ownership_status }} ({{ $item->required_document_count }} Dokumen Wajib)
                                                     </span>
                                                 </td>
                                             </tr>
@@ -712,6 +712,22 @@
                                                 <td class="col-sep">:</td>
                                                 <td class="col-val fw-semibold">
                                                     {{ $pra->owner_name ?? ($pra->land_owner ?? ($item->certificate_owner ?: '-')) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="col-lbl">Status Kondisi Pemilik</td>
+                                                <td class="col-sep">:</td>
+                                                <td class="col-val">
+                                                    @php $ownerSt = $pra->owner_status ?? ($item->owner_status ?? 'hidup'); @endphp
+                                                    @if($ownerSt === 'meninggal')
+                                                        <span style="display:inline-flex; align-items:center; gap:4px; padding: 3px 8px; border-radius: 6px; font-size: 0.76rem; font-weight: 700; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;">
+                                                            <i class="mdi mdi-alert-circle"></i> Meninggal Dunia (Pewaris)
+                                                        </span>
+                                                    @else
+                                                        <span style="display:inline-flex; align-items:center; gap:4px; padding: 3px 8px; border-radius: 6px; font-size: 0.76rem; font-weight: 600; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">
+                                                            <i class="mdi mdi-account-check"></i> Masih Hidup
+                                                        </span>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             <tr>

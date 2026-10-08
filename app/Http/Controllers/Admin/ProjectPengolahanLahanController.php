@@ -70,16 +70,19 @@ class ProjectPengolahanLahanController extends Controller
     {
         $projects = collect();
 
-        // 1. Ambil data dari PraLandbank yang berstatus 'approved', 'fase3',
-        // atau sudah deal harga/pembayaran (cash maupun termin)
+        // 1. Ambil data dari PraLandbank yang SUDAH DI-ACC (approved) serta deal & dibayar (cash maupun termin)
         try {
-            $approvedPraLands = PraLandbank::where('status', 'approved')
-                ->orWhere('status', 'fase3')
-                ->orWhereNotNull('deal_price')
-                ->orWhereIn('payment_method', ['cash', 'termin'])
+            $approvedPraLands = PraLandbank::with('payments')
+                ->dealAndPaidApproved()
                 ->get();
 
             foreach ($approvedPraLands as $pra) {
+                // SOP BISNIS: Tanah Pra Land Bank TIDAK BOLEH masuk ke Pengolahan Lahan maupun Pasca Land Bank
+                // jika belum menyelesaikan perizinan minimal 1 dokumen perizinan (terbit/selesai).
+                if (!$pra->hasCompletedPerizinan()) {
+                    continue;
+                }
+
                 // Pastikan terhubung dengan LandBank agar modul Pengolahan Lahan bisa mengelola infrastruktur
                 $landBank = null;
                 if ($pra->land_bank_id) {
@@ -173,9 +176,18 @@ class ProjectPengolahanLahanController extends Controller
 
         // 2. Ambil juga dari LandBank jika ada data yang belum ter-cover
         try {
-            $dbLands = LandBank::with(['companyProfile', 'infrastructures'])->get();
+            $dbLands = LandBank::with(['companyProfile', 'infrastructures', 'praLandbank'])->get();
             foreach ($dbLands as $dbl) {
                 if (!$projects->contains('id', $dbl->id) && !$projects->contains('nama', $dbl->name)) {
+                    // Jika tanah ini terkait PraLandbank, pastikan PraLandbank-nya sudah deal, dibayar, disetujui,
+                    // dan telah menyelesaikan perizinan minimal 1 dokumen
+                    $relatedPra = $dbl->praLandbank ?: PraLandbank::where('land_name', $dbl->name)->first();
+                    if ($relatedPra) {
+                        if (!$relatedPra->isDealAndPaidApproved() || !$relatedPra->hasCompletedPerizinan()) {
+                            continue;
+                        }
+                    }
+
                     if ($dbl->infrastructures->isEmpty()) {
                         $dbl->initializeDefaultInfrastructures();
                         $dbl->load('infrastructures');

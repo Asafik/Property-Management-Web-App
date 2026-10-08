@@ -849,7 +849,7 @@ class PerizinanController extends Controller
                                 [
                                     'code'                  => 'IZIN_' . strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', $docName), 0, 15)) . '_' . ($cd['master_id'] ?? rand(100, 999)),
                                     'has_expiry'            => false,
-                                    'applicable_categories' => ['SHGB', 'SHM'],
+                                    'applicable_categories' => ['SHGB'],
                                 ]
                             );
 
@@ -879,7 +879,7 @@ class PerizinanController extends Controller
                         [
                             'code'                  => 'IZIN_' . strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', $docName), 0, 15)) . '_' . ($pt->master_dokumen_id ?? rand(100, 999)),
                             'has_expiry'            => false,
-                            'applicable_categories' => ['SHGB', 'SHM'],
+                            'applicable_categories' => ['SHGB'],
                         ]
                     );
 
@@ -931,7 +931,7 @@ class PerizinanController extends Controller
                                 [
                                     'code'                  => 'IZIN_' . strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '', $docName), 0, 15)) . '_' . ($cd['master_id'] ?? rand(100, 999)),
                                     'has_expiry'            => false,
-                                    'applicable_categories' => ['SHGB', 'SHM'],
+                                    'applicable_categories' => ['SHGB'],
                                 ]
                             );
 
@@ -990,6 +990,14 @@ class PerizinanController extends Controller
                 'success' => false,
                 'message' => 'Data proyek kawasan tidak ditemukan.'
             ], 404);
+        }
+
+        // VALIDASI SOP: Lahan belum boleh dialihkan ke Pasca jika belum ada dokumen perizinan yang diselesaikan (minimal 1 izin terbit/selesai)
+        if ($record->completedPerizinanCount() <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lahan "' . $record->land_name . '" belum dapat dialihkan ke Pasca Land Bank karena belum ada perizinan yang diselesaikan (minimal 1 dokumen perizinan harus berstatus Selesai atau Terbit).'
+            ], 422);
         }
 
         // Ambil ID profil perusahaan dari record (null jika belum dipilih)
@@ -1054,26 +1062,14 @@ class PerizinanController extends Controller
             $landBank = LandBank::create($landBankData);
         }
 
-        // Sinkronisasi dokumen dari Pra ke Pasca
-        $praDocs = \App\Models\pra_landbank_documents::where('pra_landbank_id', $record->id)->get();
-        foreach ($praDocs as $pd) {
-            \App\Models\LandBankDocument::firstOrCreate(
-                [
-                    'land_bank_id'     => $landBank->id,
-                    'document_type_id' => $pd->document_type_id,
-                ],
-                [
-                    'document_number'  => $pd->document_number,
-                    'file_path'        => $pd->file_path,
-                ]
-            );
-        }
-
         // Hubungkan pra_landbank ke land_bank
         $record->update([
             'land_bank_id' => $landBank->id,
             'status'       => 'approved',
         ]);
+
+        // Sinkronisasi dokumen lengkap dari Pra dan Perizinan ke Pasca
+        $landBank->syncDocumentsFromPerizinanAndPra();
 
         return response()->json([
             'success'      => true,
@@ -1092,13 +1088,10 @@ class PerizinanController extends Controller
     {
         $projects = collect();
 
-        // 1. Ambil data dari PraLandbank yang berstatus 'approved' / sudah deal sidang
+        // 1. Ambil data dari PraLandbank yang berstatus 'approved' / sudah deal sidang dan pembayaran (Cash / Termin)
         try {
-            $approvedPraLands = PraLandbank::with(['landBank.companyProfile', 'companyProfile'])
-                ->where('status', 'approved')
-                ->orWhere('status', 'fase3')
-                ->orWhereNotNull('deal_price')
-                ->orWhereIn('payment_method', ['cash', 'termin'])
+            $approvedPraLands = PraLandbank::with(['landBank.companyProfile', 'companyProfile', 'payments'])
+                ->dealAndPaidApproved()
                 ->get();
 
             foreach ($approvedPraLands as $pra) {
@@ -1166,9 +1159,15 @@ class PerizinanController extends Controller
 
         // 2. Ambil juga dari LandBank jika ada nama yang belum tercover
         try {
-            $dbLands = LandBank::with('companyProfile')->get();
+            $dbLands = LandBank::with(['companyProfile', 'praLandbank'])->get();
             foreach ($dbLands as $dbl) {
                 if (!$projects->contains('nama', $dbl->name)) {
+                    // Jika tanah ini terkait PraLandbank, pastikan PraLandbank-nya sudah deal, dibayar & disetujui
+                    $relatedPra = $dbl->praLandbank ?: PraLandbank::where('land_name', $dbl->name)->first();
+                    if ($relatedPra && !$relatedPra->isDealAndPaidApproved()) {
+                        continue;
+                    }
+
                     $projects->push([
                         'id'                     => $dbl->id + 100,
                         'pra_id'                 => null,

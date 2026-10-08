@@ -115,11 +115,10 @@ class PerizinanTaskController extends Controller
             $legalStaffs = Employee::orderBy('name', 'asc')->get();
         }
 
-        // Ambil daftar Proyek Kawasan
+        // Ambil daftar Proyek Kawasan (Wajib sudah di-ACC & deal dibayar)
         $projects = collect();
         try {
-            $praList = PraLandbank::where('status', 'approved')
-                ->orWhereNotNull('deal_price')
+            $praList = PraLandbank::with('payments')->dealAndPaidApproved()
                 ->orderBy('land_name', 'asc')
                 ->get();
             foreach ($praList as $p) {
@@ -132,8 +131,12 @@ class PerizinanTaskController extends Controller
 
         if ($projects->isEmpty()) {
             try {
-                $dbLands = LandBank::orderBy('name', 'asc')->get();
+                $dbLands = LandBank::with('praLandbank')->orderBy('name', 'asc')->get();
                 foreach ($dbLands as $dbl) {
+                    $relatedPra = $dbl->praLandbank ?: PraLandbank::where('land_name', $dbl->name)->first();
+                    if ($relatedPra && !$relatedPra->isDealAndPaidApproved()) {
+                        continue;
+                    }
                     $projects->push([
                         'id'   => $dbl->id,
                         'nama' => $dbl->name,
@@ -190,11 +193,10 @@ class PerizinanTaskController extends Controller
             $legalStaffs = Employee::orderBy('name', 'asc')->get();
         }
 
-        // Ambil daftar Proyek Kawasan
+        // Ambil daftar Proyek Kawasan (Wajib sudah di-ACC & deal dibayar)
         $projects = collect();
         try {
-            $praList = PraLandbank::where('status', 'approved')
-                ->orWhereNotNull('deal_price')
+            $praList = PraLandbank::with('payments')->dealAndPaidApproved()
                 ->orderBy('land_name', 'asc')
                 ->get();
             foreach ($praList as $p) {
@@ -207,8 +209,12 @@ class PerizinanTaskController extends Controller
 
         if ($projects->isEmpty()) {
             try {
-                $dbLands = LandBank::orderBy('name', 'asc')->get();
+                $dbLands = LandBank::with('praLandbank')->orderBy('name', 'asc')->get();
                 foreach ($dbLands as $dbl) {
+                    $relatedPra = $dbl->praLandbank ?: PraLandbank::where('land_name', $dbl->name)->first();
+                    if ($relatedPra && !$relatedPra->isDealAndPaidApproved()) {
+                        continue;
+                    }
                     $projects->push([
                         'id'   => $dbl->id,
                         'nama' => $dbl->name,
@@ -373,11 +379,10 @@ class PerizinanTaskController extends Controller
             $legalStaffs = Employee::orderBy('name', 'asc')->get();
         }
 
-        // Ambil daftar Proyek Kawasan
+        // Ambil daftar Proyek Kawasan (Wajib sudah di-ACC & deal dibayar)
         $projects = collect();
         try {
-            $praList = PraLandbank::where('status', 'approved')
-                ->orWhereNotNull('deal_price')
+            $praList = PraLandbank::with('payments')->dealAndPaidApproved()
                 ->orderBy('land_name', 'asc')
                 ->get();
             foreach ($praList as $p) {
@@ -390,8 +395,12 @@ class PerizinanTaskController extends Controller
 
         if ($projects->isEmpty()) {
             try {
-                $dbLands = LandBank::orderBy('name', 'asc')->get();
+                $dbLands = LandBank::with('praLandbank')->orderBy('name', 'asc')->get();
                 foreach ($dbLands as $dbl) {
+                    $relatedPra = $dbl->praLandbank ?: PraLandbank::where('land_name', $dbl->name)->first();
+                    if ($relatedPra && !$relatedPra->isDealAndPaidApproved()) {
+                        continue;
+                    }
                     $projects->push([
                         'id'   => $dbl->id,
                         'nama' => $dbl->name,

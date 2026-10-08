@@ -593,7 +593,7 @@
                                                 <span class="badge-clean status-akad">
                                                     <i class="mdi mdi-home-lock"></i> Sold Out
                                                 </span>
-                                            @elseif ($status === 'approved' || $status === 'dokumen')
+                                            @elseif ($status === 'approved' || $status === 'dokumen' || $status === 'analisa')
                                                 <span class="badge-clean status-approved">
                                                     <i class="mdi mdi-check-circle-outline"></i> Terverifikasi
                                                 </span>

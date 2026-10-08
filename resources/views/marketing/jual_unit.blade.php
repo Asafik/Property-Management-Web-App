@@ -1378,8 +1378,8 @@
             </div>
         </div>
 
-        <!-- 4 KPI Metrics Card Grid (UI Card Kita - 1 Warna Solid, Tanpa Gradient) -->
-        <div class="dash-kpi-grid mb-4">
+        <!-- 5 KPI Metrics Card Grid (UI Card Kita - 1 Warna Solid, Tanpa Gradient) -->
+        <div class="dash-kpi-grid mb-4" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
             <!-- Card 1: Total Unit (Ungu Solid) -->
             <div class="dash-kpi-card">
                 <div class="dash-kpi-left">
@@ -1432,6 +1432,20 @@
                         <div class="dash-kpi-label">Unit Terjual</div>
                         <div class="dash-kpi-val">{{ $totalSold }}</div>
                         <div class="dash-kpi-sub">Transaksi Selesai</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5: Draft (Slate / Abu-abu Solid) -->
+            <div class="dash-kpi-card">
+                <div class="dash-kpi-left">
+                    <div class="dash-kpi-icon" style="background-color: #f1f5f9; color: #475569;">
+                        <i class="mdi mdi-file-document-edit-outline"></i>
+                    </div>
+                    <div class="dash-kpi-info">
+                        <div class="dash-kpi-label">Unit Draft</div>
+                        <div class="dash-kpi-val">{{ $totalDraft ?? 0 }}</div>
+                        <div class="dash-kpi-sub">Belum Diberi Harga</div>
                     </div>
                 </div>
             </div>
@@ -1540,6 +1554,9 @@
                                                 <option value="ready"
                                                     {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
                                                 </option>
+                                                <option value="draft"
+                                                    {{ request('status') == 'draft' ? 'selected' : '' }}>Draft
+                                                </option>
                                                 <option value="booked"
                                                     {{ request('status') == 'booked' ? 'selected' : '' }}>Booking
                                                 </option>
@@ -1629,6 +1646,9 @@
                                                 <option value="">Semua Status</option>
                                                 <option value="ready"
                                                     {{ request('status') == 'ready' ? 'selected' : '' }}>Tersedia
+                                                </option>
+                                                <option value="draft"
+                                                    {{ request('status') == 'draft' ? 'selected' : '' }}>Draft
                                                 </option>
                                                 <option value="booked"
                                                     {{ request('status') == 'booked' ? 'selected' : '' }}>Booking
@@ -1727,30 +1747,27 @@
                                                 $statusIcon = '';
                                                 $statusText = ucfirst($unit->status);
 
-                                                if ($unit->status == 'ready' || $unit->status == 'tersedia') {
-                                                    // Tersedia = biru
-                                                    $statusBadge = 'badge-available-komersil';
-                                                    $statusIcon = 'mdi-check-circle-outline';
-                                                    $statusText = 'Tersedia';
-                                                } elseif ($unit->status == 'sold') {
+                                                $isHasPrice = !empty($unit->price) && (float)$unit->price > 0;
+                                                $cleanSt = strtolower($unit->status ?? '');
+
+                                                if ($cleanSt == 'sold' || $cleanSt == 'terjual') {
                                                     $statusBadge = 'badge-sold';
                                                     $statusIcon = 'mdi-cash-check';
                                                     $statusText = 'Terjual';
-                                                } elseif ($unit->status == 'booked') {
+                                                } elseif ($cleanSt == 'booked' || $cleanSt == 'booking') {
                                                     $statusBadge = 'badge-booking';
                                                     $statusIcon = 'mdi-bookmark-check-outline';
                                                     $statusText = 'Booking';
-                                                } elseif (
-                                                    strtolower($unit->status) == 'draft' ||
-                                                    strtolower($unit->status) == 'draff'
-                                                ) {
-                                                    // Draft dianggap Tersedia dan warna biru
+                                                } elseif ($isHasPrice || $cleanSt == 'ready' || $cleanSt == 'tersedia') {
+                                                    // Tersedia jika sudah ada harga (> 0)
                                                     $statusBadge = 'badge-available-komersil';
                                                     $statusIcon = 'mdi-check-circle-outline';
                                                     $statusText = 'Tersedia';
                                                 } else {
-                                                    $statusBadge = 'badge-soft';
-                                                    $statusIcon = 'mdi-information-outline';
+                                                    // Draft: belum diberi harga / belum dirilis
+                                                    $statusBadge = 'badge-draft';
+                                                    $statusIcon = 'mdi-file-document-edit-outline';
+                                                    $statusText = 'Draft';
                                                 }
 
                                                 // Progress mapping
@@ -1812,8 +1829,12 @@
                                                         <i class="mdi mdi-arrow-expand-all"></i>{{ $unit->area ?? '-' }}
                                                     </span>
                                                 </td>
-                                                <td class="price-text">Rp
-                                                    {{ number_format($unit->price ?? 0, 0, ',', '.') }}
+                                                <td class="price-text">
+                                                    @if(empty($unit->price) || (float)$unit->price <= 0)
+                                                        <span class="text-muted fst-italic" style="font-size: 0.8rem; font-weight: normal;">Belum diset</span>
+                                                    @else
+                                                        Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}
+                                                    @endif
                                                 </td>
                                                 <td>
                                                     <span class="badge-soft {{ $statusBadge }}">
@@ -1865,10 +1886,18 @@
                                                             <i class="mdi mdi-eye"></i>
                                                         </a>
                                                         @if (auth()->user()->position_id != 4)
-                                                            <button class="btn-action customer" title="Booking Unit / Pilih Customer"
-                                                                onclick="openCustomerModal({{ $unit->id }})">
-                                                                <i class="mdi mdi-account-plus"></i>
-                                                            </button>
+                                                            @if ($isHasPrice && !in_array($cleanSt, ['sold', 'terjual']))
+                                                                <button class="btn-action customer" title="Booking Unit / Pilih Customer"
+                                                                    onclick="openCustomerModal({{ $unit->id }})">
+                                                                    <i class="mdi mdi-account-plus"></i>
+                                                                </button>
+                                                            @elseif (!$isHasPrice)
+                                                                <button class="btn-action" title="Unit Draft (Belum Diberi Harga) - Tetapkan harga terlebih dahulu"
+                                                                    style="opacity: 0.45; cursor: not-allowed; background: #e2e8f0; color: #64748b;"
+                                                                    onclick="alert('Unit ini masih berstatus Draft karena belum ditentukan harga jualnya. Silakan tetapkan harga terlebih dahulu di menu Penetapan Harga Jual.')">
+                                                                    <i class="mdi mdi-account-off-outline"></i>
+                                                                </button>
+                                                            @endif
                                                             @if (empty($isStaffMarketing))
                                                                 <button class="btn-action agent" title="Pasang Agency & Komisi"
                                                                     onclick="openAgentModal({{ $unit->id }})">
@@ -1961,18 +1990,26 @@
                                         <div class="card grid-card h-100">
                                             <div class="card-body p-3">
                                                 <div class="position-relative">
-                                                    @if ($unit->status == 'ready' || $unit->status == 'tersedia')
-                                                        <span
-                                                            class="badge badge-gradient-success position-absolute top-0 end-0 m-2"><i
-                                                                class="mdi mdi-check-circle me-1"></i>Tersedia</span>
-                                                    @elseif($unit->status == 'sold')
+                                                    @php
+                                                        $gHasPrice = !empty($unit->price) && (float)$unit->price > 0;
+                                                        $gCleanSt = strtolower($unit->status ?? '');
+                                                    @endphp
+                                                    @if ($gCleanSt == 'sold' || $gCleanSt == 'terjual')
                                                         <span
                                                             class="badge badge-gradient-danger position-absolute top-0 end-0 m-2"><i
                                                                 class="mdi mdi-cash-check me-1"></i>Terjual</span>
-                                                    @else
+                                                    @elseif($gCleanSt == 'booked' || $gCleanSt == 'booking')
                                                         <span
                                                             class="badge badge-gradient-warning position-absolute top-0 end-0 m-2"><i
-                                                                class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($unit->status) }}</span>
+                                                                class="mdi mdi-clock-outline me-1"></i>Booking</span>
+                                                    @elseif ($gHasPrice || $gCleanSt == 'ready' || $gCleanSt == 'tersedia')
+                                                        <span
+                                                            class="badge badge-gradient-success position-absolute top-0 end-0 m-2"><i
+                                                                class="mdi mdi-check-circle me-1"></i>Tersedia</span>
+                                                    @else
+                                                        <span
+                                                            class="badge position-absolute top-0 end-0 m-2" style="background: #64748b; color: #ffffff;"><i
+                                                                class="mdi mdi-file-document-edit-outline me-1"></i>Draft</span>
                                                     @endif
                                                     <div class="text-center bg-light py-3 py-md-4 rounded">
                                                         <i class="mdi mdi-home-outline"
@@ -1989,8 +2026,13 @@
                                                 </p>
                                                 <p class="small mb-1"><i
                                                         class="mdi mdi-ruler-square me-1"></i>{{ $unit->area ?? '-' }}
-                                                    m² | <i class="mdi mdi-currency-usd me-1"></i>Rp
-                                                    {{ number_format($unit->price ?? 0, 0, ',', '.') }}</p>
+                                                    m² | <i class="mdi mdi-currency-usd me-1"></i>
+                                                    @if(empty($unit->price) || (float)$unit->price <= 0)
+                                                        <span class="text-muted fst-italic">Belum diset</span>
+                                                    @else
+                                                        Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}
+                                                    @endif
+                                                </p>
 
                                                 <div class="mt-2 border-top pt-2">
                                                     @if ($unit->activeBooking && $unit->activeBooking->customer)
@@ -2042,9 +2084,18 @@
                                                         <small class="text-muted"><i
                                                                 class="mdi mdi-account-tie me-1"></i>-</small>
                                                     @endif
-                                                    <button class="btn btn-outline-danger btn-sm"
-                                                        onclick="openCustomerModal({{ $unit->id }})"><i
-                                                            class="mdi mdi-account-plus"></i></button>
+                                                    @if ($gHasPrice && !in_array($gCleanSt, ['sold', 'terjual']))
+                                                        <button class="btn btn-outline-danger btn-sm"
+                                                            title="Booking Unit / Pilih Customer"
+                                                            onclick="openCustomerModal({{ $unit->id }})"><i
+                                                                class="mdi mdi-account-plus"></i></button>
+                                                    @else
+                                                        <button class="btn btn-outline-secondary btn-sm"
+                                                            style="opacity: 0.45; cursor: not-allowed;"
+                                                            title="Unit Draft (Belum Diberi Harga)"
+                                                            onclick="alert('Unit ini masih berstatus Draft karena belum ditentukan harga jualnya. Silakan tetapkan harga terlebih dahulu di menu Penetapan Harga Jual.')"><i
+                                                                class="mdi mdi-account-off-outline"></i></button>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -3204,7 +3255,7 @@
                 certificateNo: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->certificate_no ?? '')) }}",
                 fileCertificate: "{{ $unit->file_certificate ? asset($unit->file_certificate) : '' }}",
                 statusRaw: "{{ $unit->status }}",
-                statusText: "{{ $unit->status == 'ready' || $unit->status == 'tersedia' ? 'Tersedia' : ($unit->status == 'sold' ? 'Terjual' : 'Booking') }}",
+                statusText: "{{ ($unit->status == 'ready' || $unit->status == 'tersedia') ? 'Tersedia' : ($unit->status == 'sold' ? 'Terjual' : ($unit->status == 'booked' ? 'Booking' : 'Draft')) }}",
                 construction: "{{ $unit->construction_progress ?? 'belum_mulai' }}",
                 hasBooking: {{ $unit->activeBooking ? 1 : 0 }},
                 bookingId: "{{ $unit->activeBooking->id ?? '' }}",
@@ -3783,6 +3834,8 @@
                 sHtml = `<span class="badge shadow-sm" style="background: #ffc107; color: #212529 !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-bookmark-check me-1"></i>Booked (Terbooking)</span>`;
             } else if (sRaw === 'sold' || sRaw === 'terjual') {
                 sHtml = `<span class="badge shadow-sm" style="background: #dc3545; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-close-circle me-1"></i>Terjual (Sold)</span>`;
+            } else if (sRaw === 'draft') {
+                sHtml = `<span class="badge shadow-sm" style="background: #64748b; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-file-document-edit-outline me-1"></i>Draft (Belum Diberi Harga)</span>`;
             } else {
                 sHtml = `<span class="badge bg-secondary shadow-sm" style="color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;">${data.statusText || sRaw}</span>`;
             }

@@ -656,7 +656,7 @@
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            @if ($kprStatus === 'approved')
+                                            @if ($kprStatus === 'approved' || $kprStatus === 'analisa')
                                                 <span class="badge-clean status-approved">
                                                     <i class="mdi mdi-check-decagram"></i> Approved
                                                 </span>

@@ -25,7 +25,17 @@ class UnitMarketingController extends Controller
 
         // Filter Berdasarkan Status
         if ($request->filled('status') && $request->status !== 'all') {
-            $query->where('status', $request->status);
+            if ($request->status === 'ready') {
+                $query->whereIn('status', ['ready', 'tersedia'])->whereNotNull('price')->where('price', '>', 0);
+            } elseif ($request->status === 'draft') {
+                $query->where(function($q) {
+                    $q->where('status', 'draft')
+                      ->orWhereNull('price')
+                      ->orWhere('price', '<=', 0);
+                })->whereNotIn('status', ['booked', 'booking', 'sold', 'terjual']);
+            } else {
+                $query->where('status', $request->status);
+            }
         }
 
         // Filter Berdasarkan Status Harga (Sudah Diset / Belum Diset)
@@ -67,7 +77,9 @@ class UnitMarketingController extends Controller
         $totalHargaSudahSet = $allUnits->filter(function($u) {
             return !empty($u->price) && $u->price > 0;
         })->count();
-        $totalAvailable = $allUnits->where('status', 'ready')->count();
+        $totalAvailable = $allUnits->filter(function($u) {
+            return in_array($u->status, ['ready', 'tersedia']) && !empty($u->price) && $u->price > 0;
+        })->count();
         $totalBooking = $allUnits->where('status', 'booked')->count();
         $totalSold = $allUnits->whereIn('status', ['sold', 'terjual'])->count();
 
@@ -117,11 +129,15 @@ class UnitMarketingController extends Controller
         $unit = LandBankUnit::findOrFail($id);
         $unit->price = $request->price;
         
-        // Jika status pemasaran dipilih (misal dari draft dijadikan ready)
-        if ($request->filled('status')) {
+        // Jika harga belum diset atau 0, status harus draft
+        if (empty($unit->price) || (float)$unit->price <= 0) {
+            if (!in_array($unit->status, ['booked', 'booking', 'sold', 'terjual'])) {
+                $unit->status = 'draft';
+            }
+        } elseif ($request->filled('status')) {
             $unit->status = $request->status;
         } elseif (empty($unit->status) || $unit->status === 'draft') {
-            $unit->status = 'ready'; // Otomatis siap pasarkan saat harga sudah ditentukan
+            $unit->status = 'ready'; // Otomatis siap pasarkan saat harga sudah ditentukan > 0
         }
 
         $unit->save();

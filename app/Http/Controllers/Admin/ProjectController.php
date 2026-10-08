@@ -42,8 +42,30 @@ class ProjectController extends Controller
             $query->where('legal_status', $request->legal_status);
         }
 
-        // Ambil semua data untuk KPI sebelum paginasi
-        $allProjects = LandBank::with(['companyProfile', 'documents'])->get();
+        // Filter: Tanah dari PraLandbank hanya boleh masuk Proyek jika sudah di-ACC & deal dibayar
+        $unapprovedPraLandNames = \App\Models\PraLandbank::where(function($q) {
+            $q->where('status', '!=', 'approved')
+              ->orWhereNull('deal_price')
+              ->orWhere('deal_price', '<=', 0)
+              ->orWhereNotIn('payment_method', ['cash', 'termin']);
+        })->pluck('land_name')->filter()->toArray();
+
+        $unapprovedPraLandBankIds = \App\Models\PraLandbank::where(function($q) {
+            $q->where('status', '!=', 'approved')
+              ->orWhereNull('deal_price')
+              ->orWhere('deal_price', '<=', 0)
+              ->orWhereNotIn('payment_method', ['cash', 'termin']);
+        })->whereNotNull('land_bank_id')->pluck('land_bank_id')->toArray();
+
+        if (!empty($unapprovedPraLandBankIds)) {
+            $query->whereNotIn('id', $unapprovedPraLandBankIds);
+        }
+        if (!empty($unapprovedPraLandNames)) {
+            $query->whereNotIn('name', $unapprovedPraLandNames);
+        }
+
+        // Ambil semua data untuk KPI sebelum paginasi (sesuai filter aktif)
+        $allProjects = (clone $query)->get();
 
         // Hitung KPI
         $totalProjects = $allProjects->count();
