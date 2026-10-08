@@ -10,7 +10,8 @@ class MenuController extends Controller
 {
     public function index(Request $request)
     {
-        $positions = Position::all();
+        $positions = Position::orderBy('name')->get();
+        $parentMenus = Menu::whereNull('parent_id')->orderBy('name')->get();
         $query = Menu::with(['positions', 'parent']);
 
         if ($request->filled('search')) {
@@ -21,10 +22,38 @@ class MenuController extends Controller
             });
         }
 
+        if ($request->filled('parent_id')) {
+            if ($request->parent_id === 'main') {
+                $query->whereNull('parent_id');
+            } else {
+                $query->where('parent_id', $request->parent_id);
+            }
+        }
+
+        if ($request->filled('position_id')) {
+            $query->whereHas('positions', function ($q) use ($request) {
+                $q->where('positions.id', $request->position_id);
+            });
+        }
+
+        // Metrics KPI untuk Card Dashboard persis Catalog Unit
+        $totalMenus = Menu::count();
+        $totalParentMenus = Menu::whereNull('parent_id')->count();
+        $totalSubMenus = Menu::whereNotNull('parent_id')->count();
+        $totalPositions = Position::count();
+
         $perPage = $request->input('per_page', 10);
         $menus = $query->paginate($perPage)->withQueryString();
 
-        return view('menu.index', compact('menus', 'positions'));
+        return view('menu.index', compact(
+            'menus', 
+            'positions', 
+            'parentMenus',
+            'totalMenus', 
+            'totalParentMenus', 
+            'totalSubMenus', 
+            'totalPositions'
+        ));
     }
 
     // Fungsi untuk memproses data dari form hak akses
@@ -46,20 +75,21 @@ class MenuController extends Controller
         // 4. Kembalikan ke halaman sebelumnya dengan pesan sukses
         return redirect()->back()->with('success', 'Hak akses untuk posisi ' . $position->name . ' berhasil diperbarui!');
     }
+
     public function storePositions(Request $request)
     {
-        // 1. Validasi input
+        // 1. Validasi input (nullable agar jika semua posisi dicabut tidak error)
         $request->validate([
             'menu_id' => 'required|exists:menus,id',
-            'position_ids' => 'required|array', // Harus berupa array karena select multiple
+            'position_ids' => 'nullable|array',
             'position_ids.*' => 'exists:positions,id'
         ]);
 
         // 2. Cari Menu yang sedang diedit
         $menu = Menu::findOrFail($request->menu_id);
 
-        // 3. Simpan hak akses (otomatis insert ke tabel menu_position)
-        $menu->positions()->sync($request->position_ids);
+        // 3. Simpan hak akses (otomatis insert/delete ke tabel menu_position)
+        $menu->positions()->sync($request->position_ids ?? []);
 
         // 4. Jika menu ini adalah sub-menu (memiliki parent), pastikan parent_id juga diberikan akses ke posisi-posisi ini
         if ($menu->parent_id) {

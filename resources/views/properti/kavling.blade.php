@@ -100,45 +100,75 @@
             border: 1px solid rgba(239, 68, 68, 0.25);
         }
 
-        /* Action Buttons */
+        /* Action Buttons - Solid 1 Warna, Tanpa Gradient & Border-Radius 4px */
         .btn-action {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 34px;
-            height: 34px;
-            border-radius: 8px;
+            width: 32px;
+            height: 32px;
+            border-radius: 4px !important;
             border: none;
             transition: all 0.2s ease;
             text-decoration: none;
             cursor: pointer;
         }
         .btn-action.create {
-            background: linear-gradient(135deg, #da8cff, #9a55ff);
+            background: #9a55ff !important;
             color: #ffffff !important;
-            box-shadow: 0 2px 5px rgba(154, 85, 255, 0.25);
+            border-radius: 4px !important;
+            box-shadow: none !important;
         }
         .btn-action.create i {
             color: #ffffff !important;
-            font-size: 1.05rem;
+            font-size: 1rem;
         }
         .btn-action.create:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(154, 85, 255, 0.4);
+            background: #8b3df5 !important;
             color: #ffffff !important;
+            box-shadow: none !important;
+            transform: none !important;
         }
         .btn-action.locked {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
+            background: #f59e0b !important;
             color: #ffffff !important;
-            box-shadow: 0 2px 5px rgba(245, 158, 11, 0.25);
+            border-radius: 4px !important;
+            box-shadow: none !important;
         }
         .btn-action.locked i {
             color: #ffffff !important;
-            font-size: 1.05rem;
+            font-size: 1rem;
         }
         .btn-action.locked:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
+            background: #d97706 !important;
+            color: #ffffff !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+
+        /* Solid Buttons - 1 Warna, Tanpa Gradient */
+        .btn-gradient-primary {
+            background: #9a55ff !important;
+            border-color: #9a55ff !important;
+            color: #ffffff !important;
+            border-radius: 4px !important;
+            box-shadow: none !important;
+        }
+        .btn-gradient-primary:hover {
+            background: #8b3df5 !important;
+            border-color: #8b3df5 !important;
+            color: #ffffff !important;
+        }
+        .btn-gradient-secondary {
+            background: #64748b !important;
+            border-color: #64748b !important;
+            color: #ffffff !important;
+            border-radius: 4px !important;
+            box-shadow: none !important;
+        }
+        .btn-gradient-secondary:hover {
+            background: #475569 !important;
+            border-color: #475569 !important;
             color: #ffffff !important;
         }
 
