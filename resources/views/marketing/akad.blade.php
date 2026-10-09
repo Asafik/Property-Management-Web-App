@@ -1084,7 +1084,7 @@ a.badge-doc-status.status-disetujui:hover {
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
     }
-    
+
     .transaksi-steps::-webkit-scrollbar {
         height: 5px;
     }
@@ -1181,7 +1181,7 @@ a.badge-doc-status.status-disetujui:hover {
     .transaksi-summary-box .value {
         font-size: 0.95rem;
     }
-    
+
     .transaksi-summary-box .label {
         font-size: 0.7rem;
     }
@@ -1355,7 +1355,7 @@ a.badge-doc-status.status-disetujui:hover {
         <div class="row mt-4 g-4">
             <!-- LEFT COLUMN: FLOW & ACTIONS -->
             <div class="col-12 col-lg-8 d-flex flex-column gap-4">
-                
+
                 <!-- CARD 1: TAHAPAN KPR -->
                 <div class="card">
                     <div class="card-body">
@@ -1772,7 +1772,7 @@ a.badge-doc-status.status-disetujui:hover {
                                                 <option value="">-- Cari & Pilih Notaris Rekanan --</option>
                                                 @foreach ($notarisList as $item)
                                                     @php
-                                                        $isSelected = ($savedNotaris && ($savedNotaris === $item->nama_notaris || str_contains($savedNotaris, $item->nama_notaris))) 
+                                                        $isSelected = ($savedNotaris && ($savedNotaris === $item->nama_notaris || str_contains($savedNotaris, $item->nama_notaris)))
                                                             || (!$savedNotaris && $loop->first);
                                                     @endphp
                                                     <option value="{{ $item->nama_notaris }}" {{ $isSelected ? 'selected' : '' }}>
@@ -2053,7 +2053,7 @@ a.badge-doc-status.status-disetujui:hover {
 
             <!-- RIGHT COLUMN: SIDEBAR DETAILS & SUMMARY -->
             <div class="col-12 col-lg-4 d-flex flex-column gap-4">
-                
+
                 <!-- SIDEBAR CARD 1: DETAIL KPR -->
                 <div class="card">
                     <div class="card-body">
@@ -2359,8 +2359,8 @@ a.badge-doc-status.status-disetujui:hover {
 
                 if (notarisName) {
                     let nama = notarisName.trim();
-                    let kantorText = nama.toLowerCase().startsWith('notaris') 
-                        ? 'Kantor ' + nama 
+                    let kantorText = nama.toLowerCase().startsWith('notaris')
+                        ? 'Kantor ' + nama
                         : 'Kantor Notaris ' + nama;
                     $('#lokasi_akad').val(kantorText);
                     $('#sidebarLokasiAkad').text(kantorText);
@@ -2388,8 +2388,8 @@ a.badge-doc-status.status-disetujui:hover {
                 const notarisName = $selectNotaris.val().trim();
                 $('#sidebarNotarisName').text(notarisName);
                 if (!$('#lokasi_akad').val()) {
-                    let kantorText = notarisName.toLowerCase().startsWith('notaris') 
-                        ? 'Kantor ' + notarisName 
+                    let kantorText = notarisName.toLowerCase().startsWith('notaris')
+                        ? 'Kantor ' + notarisName
                         : 'Kantor Notaris ' + notarisName;
                     $('#lokasi_akad').val(kantorText);
                     $('#sidebarLokasiAkad').text(kantorText);

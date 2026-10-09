@@ -842,22 +842,23 @@ public function store(Request $request)
     }
 
     /**
-     * Validasi Dokumen Legalitas (Hanya Admin)
+     * Validasi Dokumen Legalitas (Admin & Kepala Legal)
      */
     public function approveDocument($id)
     {
         $currentUser = auth()->user();
         $userPositionName = strtolower($currentUser->position->name ?? '');
         $isAdmin = ($currentUser->position_id == 5) || str_contains($userPositionName, 'admin');
+        $isKepalaLegal = ($currentUser->position_id == 3) || str_contains($userPositionName, 'kepala legal') || (str_contains($userPositionName, 'legal') && !str_contains($userPositionName, 'staff'));
 
-        if (!$isAdmin) {
+        if (!$isAdmin && !$isKepalaLegal) {
             if (request()->ajax() || request()->wantsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Hanya Admin yang berwenang memvalidasi dan menyetujui dokumen legalitas.',
+                    'message' => 'Hanya Admin dan Kepala Legal yang berwenang memvalidasi dan menyetujui dokumen legalitas.',
                 ], 403);
             }
-            return back()->with('error', 'Hanya Admin yang berwenang memvalidasi dan menyetujui dokumen legalitas.');
+            return back()->with('error', 'Hanya Admin dan Kepala Legal yang berwenang memvalidasi dan menyetujui dokumen legalitas.');
         }
 
         $doc = pra_landbank_documents::findOrFail($id);
@@ -940,22 +941,23 @@ public function store(Request $request)
     }
 
     /**
-     * Penolakan / Revisi Dokumen (Hanya Admin)
+     * Penolakan / Revisi Dokumen (Admin & Kepala Legal)
      */
     public function rejectDocument(Request $request, $id)
     {
         $currentUser = auth()->user();
         $userPositionName = strtolower($currentUser->position->name ?? '');
         $isAdmin = ($currentUser->position_id == 5) || str_contains($userPositionName, 'admin');
+        $isKepalaLegal = ($currentUser->position_id == 3) || str_contains($userPositionName, 'kepala legal') || (str_contains($userPositionName, 'legal') && !str_contains($userPositionName, 'staff'));
 
-        if (!$isAdmin) {
+        if (!$isAdmin && !$isKepalaLegal) {
             if (request()->ajax() || request()->wantsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Hanya Admin yang berwenang menolak atau meminta revisi dokumen legalitas.',
+                    'message' => 'Hanya Admin dan Kepala Legal yang berwenang menolak atau meminta revisi dokumen legalitas.',
                 ], 403);
             }
-            return back()->with('error', 'Hanya Admin yang berwenang menolak atau meminta revisi dokumen legalitas.');
+            return back()->with('error', 'Hanya Admin dan Kepala Legal yang berwenang menolak atau meminta revisi dokumen legalitas.');
         }
 
         $request->validate([
