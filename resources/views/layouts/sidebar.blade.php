@@ -319,6 +319,9 @@
                             break;
                         }
                     }
+                    if (!$isMainActive && (request()->routeIs($main->route . '*') || (Route::has($main->route) && request()->url() === route($main->route)))) {
+                        $isMainActive = true;
+                    }
                 }
 
                 // Cek apakah ada Sub-Menu yang sedang aktif (untuk auto-expand accordion & highlight parent)
@@ -331,6 +334,10 @@
                                 $isAnyChildActive = true;
                                 break 2;
                             }
+                        }
+                        if (request()->routeIs($sub->route . '*') || (Route::has($sub->route) && request()->url() === route($sub->route))) {
+                            $isAnyChildActive = true;
+                            break;
                         }
                     }
                 }
@@ -410,6 +417,9 @@
                                                 $isSubActive = true;
                                                 break;
                                             }
+                                        }
+                                        if (!$isSubActive && (request()->routeIs($sub->route . '*') || (Route::has($sub->route) && request()->url() === route($sub->route)))) {
+                                            $isSubActive = true;
                                         }
                                     }
                                 @endphp
