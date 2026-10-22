@@ -349,6 +349,22 @@ class CustomerController extends Controller
                 }
             }
 
+            // Hapus dokumen yang ditandai untuk dihapus oleh user
+            if ($request->has('deleted_documents') && is_array($request->deleted_documents)) {
+                foreach ($request->deleted_documents as $delDocName) {
+                    $delDoc = CustomerDocument::where('customer_id', $customer->id)
+                        ->where('document_name', $delDocName)
+                        ->first();
+                    if ($delDoc) {
+                        $oldFile = public_path('uploads/' . $delDoc->file);
+                        if (file_exists($oldFile)) {
+                            @unlink($oldFile);
+                        }
+                        $delDoc->delete();
+                    }
+                }
+            }
+
             DB::commit();
 
             return redirect()->route('customer.data')->with('success', 'Customer berhasil diperbarui');

@@ -286,17 +286,58 @@
         padding: 0.75rem 0.65rem;
         border-bottom: 1px solid #f1f5f9;
     }
-    .btn-action-icon {
+    /* Action Buttons (Persis Master Invoice) */
+    .btn-action {
         width: 32px;
         height: 32px;
-        border-radius: 6px;
+        padding: 0;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.9rem;
+        border-radius: 6px;
         border: none;
-        transition: all 0.2s;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
         text-decoration: none;
+        cursor: pointer;
+    }
+
+    .btn-action.view {
+        background: #ede9fe;
+        color: #7c3aed;
+    }
+    .btn-action.view:hover {
+        background: #7c3aed;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    .btn-action.bukti {
+        background: #e0f2fe;
+        color: #0284c7;
+    }
+    .btn-action.bukti:hover {
+        background: #0284c7;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    .btn-action.bukti-empty {
+        background: #f8fafc;
+        color: #94a3b8;
+        border: 1px solid #e2e8f0;
+        cursor: default;
+        opacity: 0.75;
+    }
+
+    .btn-action.delete {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+    .btn-action.delete:hover {
+        background: #dc2626;
+        color: #ffffff;
+        transform: translateY(-2px);
     }
     .account-line-debit {
         font-weight: 600;
@@ -612,17 +653,19 @@
                             </td>
                             <td class="text-center">
                                 @if($entry->proof_url)
-                                    <a href="{{ $entry->proof_url }}" target="_blank" class="btn btn-sm btn-outline-info p-1 px-2" title="Lihat Lampiran Bukti">
+                                    <a href="{{ $entry->proof_url }}" target="_blank" class="btn-action bukti" title="Lihat Lampiran Bukti">
                                         <i class="mdi mdi-paperclip"></i>
                                     </a>
                                 @else
-                                    <span class="text-muted small">-</span>
+                                    <span class="btn-action bukti-empty" title="Tidak ada lampiran bukti">
+                                        <i class="mdi mdi-paperclip"></i>
+                                    </span>
                                 @endif
                             </td>
                             <td class="text-center">
                                 <div class="d-inline-flex gap-1">
-                                    {{-- Modal View Detail Voucher --}}
-                                    <button type="button" class="btn btn-sm btn-light border text-primary btn-action-icon btn-detail-voucher" data-id="{{ $entry->id }}" title="Lihat Slip Voucher">
+                                    {{-- Modal View Detail Voucher (Eye) --}}
+                                    <button type="button" class="btn-action view btn-detail-voucher" data-id="{{ $entry->id }}" title="Lihat Detail / Slip Voucher">
                                         <i class="mdi mdi-eye"></i>
                                     </button>
 
@@ -631,7 +674,7 @@
                                         <form action="{{ route('keuangan.jurnal.destroy', $entry->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus voucher manual ini?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-light border text-danger btn-action-icon" title="Hapus Voucher">
+                                            <button type="submit" class="btn-action delete" title="Hapus Voucher">
                                                 <i class="mdi mdi-trash-can-outline"></i>
                                             </button>
                                         </form>

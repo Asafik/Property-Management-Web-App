@@ -85,15 +85,29 @@
     }
 
     .btn-gradient-primary {
-        background: linear-gradient(to right, #da8cff, #9a55ff) !important;
+        background: #7c3aed !important;
+        border-color: #7c3aed !important;
         color: #ffffff !important;
-        border: none;
+        border-radius: 6px;
+        box-shadow: none !important;
+    }
+    .btn-gradient-primary:hover {
+        background: #6d28d9 !important;
+        border-color: #6d28d9 !important;
+        color: #ffffff !important;
     }
 
     .btn-gradient-secondary {
-        background: #6c757d !important;
+        background: #64748b !important;
+        border-color: #64748b !important;
         color: #ffffff !important;
-        border: none;
+        border-radius: 6px;
+        box-shadow: none !important;
+    }
+    .btn-gradient-secondary:hover {
+        background: #475569 !important;
+        border-color: #475569 !important;
+        color: #ffffff !important;
     }
 
     .btn-nav-action {
@@ -176,10 +190,10 @@
     }
 
     .custom-tab-link.active {
-        background: linear-gradient(135deg, #da8cff 0%, #9a55ff 100%) !important;
+        background: #7c3aed !important;
         color: #ffffff !important;
-        border: 1px solid transparent !important;
-        box-shadow: 0 2px 6px rgba(154, 85, 255, 0.25) !important;
+        border: 1px solid #7c3aed !important;
+        box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25) !important;
     }
 
     .custom-tab-link.active i {
@@ -256,8 +270,8 @@
     }
 
     .custom-checkbox-input:checked {
-        background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-        border-color: #9a55ff !important;
+        background: #7c3aed !important;
+        border-color: #7c3aed !important;
     }
 
     .custom-checkbox-input:checked:after {
@@ -278,63 +292,116 @@
         margin-bottom: 0;
     }
 
-    /* File Upload Box */
-    .file-upload-box {
-        position: relative;
-        border: 2px dashed #d1d5db;
-        border-radius: 12px;
-        padding: 1.25rem 1rem;
-        text-align: center;
-        background: #fafbff;
+    /* Dokumen Syarat & Lampiran Upload Cards (Sama seperti Halaman Perizinan Kelola) */
+    .syarat-item-block {
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 10px !important;
+        background: #ffffff !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+        transition: all 0.2s ease;
+    }
+    .syarat-item-block.is-ready {
+        border-color: #86efac !important;
+    }
+    .syarat-upload-card {
+        border: 1.5px dashed #c084fc;
+        background: #faf5ff;
+        border-radius: 8px;
         cursor: pointer;
-        transition: all 0.25s ease;
-        overflow: hidden;
+        padding: 0.75rem 0.9rem !important;
+        transition: all 0.2s ease;
     }
-
-    .file-upload-box:hover {
-        border-color: #9a55ff;
-        background: #f9f6ff;
-        box-shadow: 0 4px 12px rgba(154, 85, 255, 0.08);
+    .syarat-upload-card:hover {
+        border-color: #9333ea;
+        background: #f5f3ff;
     }
-
-    .file-upload-box.has-file {
-        border-color: #10b981 !important;
+    .syarat-upload-card.uploaded {
+        border-color: #86efac !important;
         background: #f0fdf4 !important;
         border-style: solid !important;
     }
-
-    .file-upload-box input[type="file"] {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        cursor: pointer;
-        z-index: 10;
+    .btn-syarat-lihat {
+        background-color: #10b981 !important;
+        color: #ffffff !important;
+        border: none !important;
+        font-size: 0.76rem !important;
+        font-weight: 700 !important;
+        padding: 5px 10px !important;
+        border-radius: 6px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 6px !important;
+        text-decoration: none !important;
+        box-shadow: 0 1px 3px rgba(16, 185, 129, 0.3) !important;
+        cursor: pointer !important;
+        white-space: nowrap !important;
+        line-height: 1.2 !important;
+        transition: all 0.15s ease;
     }
-
-    .file-upload-icon {
-        font-size: 2.2rem;
-        color: #9a55ff;
-        margin-bottom: 0.35rem;
-        transition: all 0.2s ease;
+    .btn-syarat-lihat i {
+        font-size: 0.88rem !important;
+        line-height: 1 !important;
+        margin-right: 2px !important;
     }
-
-    .file-upload-box.has-file .file-upload-icon {
-        color: #10b981 !important;
+    .btn-syarat-lihat:hover {
+        background-color: #059669 !important;
+        color: #ffffff !important;
     }
-
-    .file-upload-text {
-        font-size: 0.88rem;
-        font-weight: 700;
-        color: #3b3f5c;
+    .btn-syarat-hapus {
+        background-color: #ef4444 !important;
+        color: #ffffff !important;
+        border: 1px solid #ef4444 !important;
+        font-size: 0.76rem !important;
+        font-weight: 700 !important;
+        padding: 5px 10px !important;
+        border-radius: 6px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 6px !important;
+        cursor: pointer !important;
+        white-space: nowrap !important;
+        line-height: 1.2 !important;
+        transition: all 0.15s ease;
     }
-
-    .file-upload-hint {
-        font-size: 0.75rem;
-        color: #888ea8;
-        margin-top: 0.2rem;
+    .btn-syarat-hapus i {
+        font-size: 0.88rem !important;
+        line-height: 1 !important;
+        margin-right: 2px !important;
+    }
+    .btn-syarat-hapus:hover {
+        background-color: #dc2626 !important;
+        color: #ffffff !important;
+        border-color: #dc2626 !important;
+    }
+    .btn-syarat-unduh {
+        background-color: #0284c7 !important;
+        color: #ffffff !important;
+        border: none !important;
+        font-size: 0.76rem !important;
+        font-weight: 700 !important;
+        padding: 5px 10px !important;
+        border-radius: 6px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 6px !important;
+        text-decoration: none !important;
+        box-shadow: 0 1px 3px rgba(2, 132, 199, 0.25) !important;
+        cursor: pointer !important;
+        white-space: nowrap !important;
+        line-height: 1.2 !important;
+        transition: all 0.15s ease;
+    }
+    .btn-syarat-unduh i {
+        font-size: 0.88rem !important;
+        line-height: 1 !important;
+        margin-right: 2px !important;
+    }
+    .btn-syarat-unduh:hover {
+        background-color: #0369a1 !important;
+        color: #ffffff !important;
     }
 
     /* KTP Scanner & OCR Styles */
@@ -425,48 +492,39 @@
 
 <div class="container-fluid p-2 p-sm-3 p-md-4">
 
-    <!-- Header Card Banner -->
-    <div class="row mb-3 mb-sm-3 mb-md-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0 header-card">
-                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex flex-wrap justify-content-between align-items-center gap-3" style="min-height: 105px;">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
-                            {{ $isEdit ? 'Edit Customer' : 'Tambah Customer Baru' }}
-                        </h3>
-                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                            Input data lengkap customer untuk booking unit, pengajuan KPR, dan transaksi
-                        </p>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <a href="{{ route('customer.data') }}" class="btn btn-gradient-secondary d-inline-flex align-items-center gap-1" style="height: 38px; padding: 0.5rem 1rem;">
-                            <i class="mdi mdi-arrow-left"></i> Kembali ke Data User
-                        </a>
-                        <div class="d-none d-md-block pe-2">
-                            <i class="mdi {{ $isEdit ? 'mdi-account-edit' : 'mdi-account-plus' }}" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Header Title (Standar Halaman Aplikasi) -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <div>
+            <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                {{ $isEdit ? 'Edit Customer' : 'Tambah Customer Baru' }}
+            </h2>
+            <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                Input data lengkap customer untuk booking unit, pengajuan KPR, dan transaksi
+            </p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ route('customer.data') }}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-1" style="height: 38px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; padding: 0.5rem 1rem;">
+                <i class="mdi mdi-arrow-left"></i> Kembali ke Data User
+            </a>
         </div>
     </div>
 
     <!-- Info ID & Status Bar -->
     <div class="row mb-3">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
+            <div class="card shadow-sm border-0" style="border-radius: 8px !important;">
                 <div class="card-body p-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
                     <div class="d-flex align-items-center gap-3">
-                        <span class="badge px-3 py-2" style="background: linear-gradient(135deg, #da8cff, #9a55ff); color: #fff; font-size: 0.9rem; font-weight: 700; border-radius: 8px;">
+                        <span class="badge px-3 py-2" style="background: #7c3aed; color: #fff; font-size: 0.88rem; font-weight: 700; border-radius: 6px;">
                             <i class="mdi mdi-card-account-details-outline me-1"></i>{{ $displayId }}
                         </span>
                         <div class="text-muted small d-flex align-items-center">
-                            <i class="mdi mdi-calendar me-1" style="color: #9a55ff;"></i>
+                            <i class="mdi mdi-calendar me-1" style="color: #7c3aed;"></i>
                             <span>Tanggal: <strong>{{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</strong></span>
                         </div>
                     </div>
                     <div>
-                        <span class="badge px-3 py-2" style="background: {{ $isEdit ? '#e0f2fe' : '#dcfce7' }}; color: {{ $isEdit ? '#0284c7' : '#15803d' }}; border-radius: 8px; font-weight: 700;">
+                        <span class="badge px-3 py-2" style="background: {{ $isEdit ? '#e0f2fe' : '#dcfce7' }}; color: {{ $isEdit ? '#0284c7' : '#15803d' }}; border-radius: 6px; font-weight: 700;">
                             <i class="mdi {{ $isEdit ? 'mdi-pencil' : 'mdi-plus' }} me-1"></i>{{ $isEdit ? 'Mode Update' : 'Customer Baru' }}
                         </span>
                     </div>
@@ -889,41 +947,169 @@
 
                             <!-- TAB 6: DOKUMEN -->
                             <div class="custom-tab-pane" id="dokumen">
-                                <div class="form-section-title"><i class="mdi mdi-file-upload"></i> Upload Dokumen Lampiran</div>
-                                <div class="row g-3">
-                                    @foreach(['uploadKtp' => 'KTP Customer', 'uploadKk' => 'Kartu Keluarga (KK)', 'uploadNpwp' => 'NPWP', 'uploadPasangan' => 'KTP Pasangan'] as $f => $l)
-                                        <div class="col-12 col-md-6">
-                                            <label class="form-label fw-bold">{{ $l }}</label>
-                                            <div class="file-upload-box" id="box_{{ $f }}">
-                                                <input type="file" id="{{ $f }}" name="{{ $f }}" data-label="{{ $l }}" accept=".jpg,.jpeg,.png,.pdf">
-                                                <i class="mdi mdi-cloud-upload file-upload-icon"></i>
-                                                <div class="file-upload-text file-name-text">Klik untuk upload {{ $l }}</div>
-                                                <div class="file-upload-hint">Format: JPG, PNG, PDF (Maks. 10MB)</div>
+                                <!-- Card Ringkasan & Progress Kelengkapan Dokumen (Persis Perizinan Kelola) -->
+                                <div class="card border mb-3" style="border-radius: 10px; background: #ffffff; border-color: #e2e8f0 !important; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                                    <div class="card-body p-3">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div style="width: 34px; height: 34px; border-radius: 8px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+                                                    <i class="mdi mdi-folder-multiple-outline"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">Kelengkapan Dokumen Lampiran Customer</h6>
+                                                    <small class="text-muted" style="font-size: 0.75rem;">Unggah berkas identitas dan persyaratan customer dalam format JPG, PNG, atau PDF (Maks. 10MB)</small>
+                                                </div>
                                             </div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span id="txtDocProgressVal" class="badge px-2.5 py-1.5 fw-bold" style="font-size: 0.8rem; background: #f3e8ff; color: #9333ea; border-radius: 6px;">
+                                                    0% Selesai
+                                                </span>
+                                                <span class="badge font-monospace fw-semibold px-2.5 py-1.5" id="badgeDocCount" style="background-color: #94a3b8; color: #ffffff; font-size: 0.75rem; border-radius: 6px;">
+                                                    0/4 Siap
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!-- Real-time Progress Bar -->
+                                        <div class="progress rounded-pill my-1" style="height: 8px; background-color: #f1f5f9; overflow: hidden; border: 1px solid #e2e8f0;">
+                                            <div id="barDocProgress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" 
+                                                 style="width: 0%; background-color: #9a55ff; transition: width 0.4s ease;" 
+                                                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                                            @if($isEdit && isset($customer->documents))
-                                                @php
-                                                    $docType = str_replace('upload', '', $f) == 'Ktp' ? 'KTP' : (str_replace('upload', '', $f) == 'Kk' ? 'Kartu Keluarga' : (str_replace('upload', '', $f) == 'Npwp' ? 'NPWP' : 'KTP Pasangan'));
-                                                    $doc = $customer->documents->where('document_name', $docType)->first();
-                                                @endphp
-                                                @if($doc) 
-                                                    @php
-                                                        $fileUrl = file_exists(public_path('uploads/' . $doc->file)) ? asset('uploads/' . $doc->file) : asset('storage/' . $doc->file);
-                                                        $ext = pathinfo($doc->file, PATHINFO_EXTENSION);
-                                                        $downloadName = str_replace(' ', '_', $l) . '_' . str_replace(' ', '_', $customer->full_name) . '.' . $ext;
-                                                    @endphp
-                                                    <div class="mt-2 d-flex justify-content-end gap-2">
-                                                        <a href="{{ $fileUrl }}" target="_blank" class="btn btn-sm btn-outline-info"> 
-                                                            <i class="mdi mdi-eye me-1"></i> Lihat Dokumen
-                                                        </a>
-                                                        <a href="{{ $fileUrl }}" download="{{ $downloadName }}" class="btn btn-sm btn-outline-success"> 
-                                                            <i class="mdi mdi-download me-1"></i> Unduh
-                                                        </a>
-                                                    </div> 
+                                @php
+                                    $docConfigs = [
+                                        'uploadKtp' => [
+                                            'label' => 'KTP Customer',
+                                            'type' => 'KTP',
+                                            'required' => true,
+                                            'desc' => 'Foto / scan e-KTP asli customer (Jelas & Terbaca)'
+                                        ],
+                                        'uploadKk' => [
+                                            'label' => 'Kartu Keluarga (KK)',
+                                            'type' => 'Kartu Keluarga',
+                                            'required' => false,
+                                            'desc' => 'Foto / scan Kartu Keluarga terbaru'
+                                        ],
+                                        'uploadNpwp' => [
+                                            'label' => 'NPWP Customer',
+                                            'type' => 'NPWP',
+                                            'required' => false,
+                                            'desc' => 'Foto / scan kartu NPWP atau bukti pendaftaran'
+                                        ],
+                                        'uploadPasangan' => [
+                                            'label' => 'KTP Pasangan (Opsional)',
+                                            'type' => 'KTP Pasangan',
+                                            'required' => false,
+                                            'desc' => 'Foto / scan e-KTP suami / istri (jika berstatus kawin)'
+                                        ],
+                                    ];
+                                @endphp
+
+                                <div class="row g-3">
+                                    @foreach($docConfigs as $f => $cfg)
+                                        @php
+                                            $existingDoc = null;
+                                            if ($isEdit && isset($customer->documents)) {
+                                                $existingDoc = $customer->documents->where('document_name', $cfg['type'])->first();
+                                            }
+                                            $hasFile = !empty($existingDoc);
+                                            $fileUrl = '#';
+                                            $fileName = '';
+                                            $downloadName = '';
+                                            if ($hasFile) {
+                                                $fileUrl = file_exists(public_path('uploads/' . $existingDoc->file)) ? asset('uploads/' . $existingDoc->file) : asset('storage/' . $existingDoc->file);
+                                                $fileName = basename($existingDoc->file);
+                                                $ext = pathinfo($existingDoc->file, PATHINFO_EXTENSION);
+                                                $downloadName = str_replace(' ', '_', $cfg['label']) . '_' . str_replace(' ', '_', $customer->full_name ?? 'customer') . '.' . $ext;
+                                            }
+                                        @endphp
+                                        <div class="col-12 col-lg-6">
+                                            <div class="border bg-white p-3 syarat-item-block {{ $hasFile ? 'is-ready' : '' }}" style="border-radius: 10px; border-color: {{ $hasFile ? '#86efac' : '#e2e8f0' }} !important;" id="syarat_card_{{ $f }}">
+                                                @if($hasFile)
+                                                    <input type="hidden" name="existing_customer_files[{{ $f }}]" value="{{ $existingDoc->file }}" id="existing_file_{{ $f }}">
                                                 @endif
-                                            @endif
+
+                                                <!-- Header Judul Dokumen & Badge Status -->
+                                                <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+                                                    <div class="fw-bold {{ $hasFile ? 'text-success' : 'text-dark' }} text-truncate" style="font-size: 0.88rem; line-height: 1.35;" id="syarat_header_text_{{ $f }}">
+                                                        <i class="mdi {{ $hasFile ? 'mdi-check-circle text-success' : 'mdi-checkbox-blank-circle-outline text-primary' }} me-1" id="syarat_status_icon_{{ $f }}"></i>
+                                                        <span>{{ $cfg['label'] }}</span>
+                                                        @if($cfg['required'])
+                                                            <span class="text-danger">*</span>
+                                                        @endif
+                                                    </div>
+                                                    <span class="badge {{ $hasFile ? 'bg-success-subtle text-success' : 'bg-light text-muted border' }}" id="syarat_badge_{{ $f }}" style="font-size: 0.72rem; font-weight: 600; border-radius: 6px; padding: 4px 8px;">
+                                                        <i class="mdi {{ $hasFile ? 'mdi-check me-0.5' : 'mdi-clock-outline me-0.5' }}"></i><span id="syarat_badge_txt_{{ $f }}">{{ $hasFile ? 'Terunggah' : 'Belum Diunggah' }}</span>
+                                                    </span>
+                                                </div>
+
+                                                <!-- Upload Box Interaktif Persis Kelola Perizinan -->
+                                                <div id="syarat_box_upload_{{ $f }}" 
+                                                     class="p-2.5 px-3 d-flex align-items-center justify-content-between syarat-upload-card {{ $hasFile ? 'uploaded' : '' }}" 
+                                                     onclick="document.getElementById('{{ $f }}').click()"
+                                                     style="{{ $hasFile ? 'border-color: #86efac; background: #f0fdf4;' : '' }}">
+                                                    <div class="d-flex align-items-center gap-2.5 overflow-hidden me-2" style="min-width: 0;">
+                                                        <div id="syarat_circle_{{ $f }}" class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                                             style="width: 38px; height: 38px; background-color: {{ $hasFile ? '#dcfce7' : '#f3e8ff' }}; color: {{ $hasFile ? '#16a34a' : '#9333ea' }};">
+                                                            <i id="syarat_icon_{{ $f }}" class="mdi {{ $hasFile ? 'mdi-file-check' : 'mdi-cloud-upload' }}" style="font-size: 1.25rem;"></i>
+                                                        </div>
+                                                        <div class="overflow-hidden" style="min-width: 0;">
+                                                            <div id="syarat_title_{{ $f }}" class="fw-bold mb-0 text-truncate" style="color: {{ $hasFile ? '#16a34a' : '#9333ea' }}; font-size: 0.83rem; line-height: 1.2;">
+                                                                {{ $hasFile ? $fileName : 'Pilih / Upload Berkas ' . $cfg['label'] }}
+                                                            </div>
+                                                            <small id="syarat_sub_{{ $f }}" class="text-muted d-block text-truncate" style="font-size: 0.72rem;">
+                                                                {{ $hasFile ? 'Berkas tersimpan • Klik untuk ganti' : ($cfg['desc'] ?: 'Format: PDF, JPG, PNG (Maks 10MB)') }}
+                                                            </small>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Action Buttons (Persis Halaman Perizinan Kelola) -->
+                                                    <div id="syarat_actions_{{ $f }}" class="{{ $hasFile ? 'd-flex' : 'd-none' }} align-items-center flex-shrink-0" style="gap: 6px;" onclick="event.stopPropagation()">
+                                                        <!-- Tombol Lihat -->
+                                                        <a href="{{ $fileUrl }}" id="syarat_btn_view_{{ $f }}" target="_blank" class="btn-syarat-lihat">
+                                                            <i class="mdi mdi-eye"></i>
+                                                            <span>Lihat</span>
+                                                        </a>
+                                                        <!-- Tombol Unduh (jika ada file di server) -->
+                                                        @if($hasFile)
+                                                        <a href="{{ $fileUrl }}" download="{{ $downloadName }}" id="syarat_btn_download_{{ $f }}" class="btn-syarat-unduh">
+                                                            <i class="mdi mdi-download"></i>
+                                                            <span>Unduh</span>
+                                                        </a>
+                                                        @endif
+                                                        <!-- Tombol Hapus -->
+                                                        <button type="button" class="btn-syarat-hapus" title="Hapus Berkas" onclick="removeCustomerDocFile('{{ $f }}', '{{ $cfg['type'] }}', '{{ $cfg['label'] }}', '{{ addslashes($cfg['desc']) }}')">
+                                                            <i class="mdi mdi-trash-can-outline"></i>
+                                                            <span>Hapus</span>
+                                                        </button>
+                                                    </div>
+
+                                                    <!-- Tombol Browse jika belum ada file -->
+                                                    <div id="syarat_browse_{{ $f }}" class="{{ $hasFile ? 'd-none' : 'd-flex' }} align-items-center flex-shrink-0">
+                                                        <span class="btn btn-sm text-white fw-bold px-3 py-1 shadow-sm d-inline-flex align-items-center justify-content-center" style="font-size: 0.76rem; border-radius: 6px; background: #9a55ff; border: 1px solid #9a55ff;">
+                                                            Browse
+                                                        </span>
+                                                    </div>
+
+                                                    <!-- Hidden File Input -->
+                                                    <input type="file" name="{{ $f }}" id="{{ $f }}" data-label="{{ $cfg['label'] }}" data-key="{{ $f }}" data-type="{{ $cfg['type'] }}" class="doc-file-input" style="display: none;" accept=".pdf,.jpg,.jpeg,.png" onchange="handleCustomerDocFileChosen(this, '{{ $f }}')">
+                                                </div>
+                                            </div>
                                         </div>
                                     @endforeach
+                                </div>
+
+                                <!-- Container Penampung Dokumen Terhapus -->
+                                <div id="deletedCustomerDocsContainer"></div>
+
+                                <!-- Info Petunjuk Keamanan Dokumen -->
+                                <div class="d-flex align-items-start gap-2.5 p-3 rounded-3 mt-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                                    <i class="mdi mdi-information-outline text-primary fs-6 mt-0.5 flex-shrink-0"></i>
+                                    <div class="text-muted" style="font-size: 0.78rem; line-height: 1.5;">
+                                        Semua berkas lampiran customer tersimpan aman di server dan dapat dipratinjau secara langsung. Pastikan dokumen yang diunggah tampak jelas, tidak terpotong, dan dapat dibaca dengan baik.
+                                    </div>
                                 </div>
                             </div>
 
@@ -1006,7 +1192,7 @@
                                 <h5 class="fw-bold text-dark mb-1">Tarik & Lepas Foto e-KTP di Sini</h5>
                                 <p class="text-muted small mb-3">atau klik tombol di bawah untuk memilih file gambar dari komputer Anda</p>
 
-                                <button type="button" class="btn btn-primary text-white fw-bold px-4 py-2 mb-3 shadow-sm d-inline-flex align-items-center" onclick="$('#ktpFileInput').trigger('click')" style="background: linear-gradient(135deg, #7c3aed, #9a55ff); border: none; border-radius: 6px; font-size: 0.88rem;">
+                                <button type="button" class="btn btn-primary text-white fw-bold px-4 py-2 mb-3 shadow-sm d-inline-flex align-items-center" onclick="$('#ktpFileInput').trigger('click')" style="background: #7c3aed; border: none; border-radius: 6px; font-size: 0.88rem;">
                                     <i class="mdi mdi-folder-open-outline" style="margin-right: 8px; font-size: 1.1rem;"></i>
                                     <span>Pilih Foto KTP</span>
                                 </button>
@@ -1040,7 +1226,7 @@
                                     <i class="mdi mdi-camera-switch" style="margin-right: 8px; font-size: 1.05rem;"></i>
                                     <span>Buka Kamera</span>
                                 </button>
-                                <button type="button" class="btn btn-sm text-white fw-bold d-inline-flex align-items-center shadow-sm" id="btnCaptureCamera" style="display: none; background: linear-gradient(135deg, #7c3aed, #9a55ff); border: none; border-radius: 6px; padding: 0.5rem 1.25rem; font-size: 0.85rem;">
+                                <button type="button" class="btn btn-sm text-white fw-bold d-inline-flex align-items-center shadow-sm" id="btnCaptureCamera" style="display: none; background: #7c3aed; border: none; border-radius: 6px; padding: 0.5rem 1.25rem; font-size: 0.85rem;">
                                     <i class="mdi mdi-camera" style="margin-right: 8px; font-size: 1.05rem;"></i>
                                     <span>Ambil Foto</span>
                                 </button>
@@ -1223,7 +1409,7 @@
                 </div>
                 <div class="d-flex align-items-center gap-2 ms-auto">
                     <button type="button" class="btn btn-sm btn-light border px-3" data-bs-dismiss="modal" style="border-radius: 6px;">Batal</button>
-                    <button type="button" class="btn btn-sm text-white px-4 fw-bold shadow-sm" id="btnApplyKtpToForm" disabled style="background: linear-gradient(135deg, #7c3aed, #9a55ff); border: none; border-radius: 6px;">
+                    <button type="button" class="btn btn-sm text-white px-4 fw-bold shadow-sm" id="btnApplyKtpToForm" disabled style="background: #7c3aed; border: none; border-radius: 6px;">
                         <i class="mdi mdi-check-all me-1"></i>Terapkan ke Formulir Customer
                     </button>
                 </div>
@@ -1484,20 +1670,141 @@ $(document).ready(function() {
         $("#jobStatusLainnyaWrapper").toggle(this.value === "Lainnya");
     });
 
-    // 5. Nama File Upload Preview & Visual Feedback
-    $('input[type="file"]').on('change', function() {
-        const box = $(this).closest('.file-upload-box');
-        const labelText = $(this).data('label') || 'Dokumen';
-        if (this.files && this.files[0]) {
-            const file = this.files[0];
-            const sizeInMb = (file.size / (1024 * 1024)).toFixed(2);
-            box.addClass('has-file');
-            box.find('.file-upload-icon').removeClass('mdi-cloud-upload').addClass('mdi-file-check');
-            box.find('.file-name-text').html('<span class="text-success fw-bold"><i class="mdi mdi-check-circle me-1"></i>' + file.name + '</span>');
-            box.find('.file-upload-hint').html('<span class="text-muted">Ukuran: ' + sizeInMb + ' MB • <i>Klik jika ingin mengganti</i></span>');
+    // 5. Kelola Upload Dokumen Customer (Sama Persis seperti Halaman Perizinan Kelola)
+    window.uploadedCustomerDocsMap = {
+        'uploadKtp': {{ ($isEdit && isset($customer->documents) && $customer->documents->where('document_name', 'KTP')->isNotEmpty()) ? 'true' : 'false' }},
+        'uploadKk': {{ ($isEdit && isset($customer->documents) && $customer->documents->where('document_name', 'Kartu Keluarga')->isNotEmpty()) ? 'true' : 'false' }},
+        'uploadNpwp': {{ ($isEdit && isset($customer->documents) && $customer->documents->where('document_name', 'NPWP')->isNotEmpty()) ? 'true' : 'false' }},
+        'uploadPasangan': {{ ($isEdit && isset($customer->documents) && $customer->documents->where('document_name', 'KTP Pasangan')->isNotEmpty()) ? 'true' : 'false' }}
+    };
 
-            // Deteksi KTP Customer untuk Auto-Fill jika upload langsung dari tab dokumen
-            if ($(this).attr('id') === 'uploadKtp' && !window.isApplyingKtpFile && file.type.startsWith('image/')) {
+    window.recalcCustomerDocProgress = function() {
+        const keys = ['uploadKtp', 'uploadKk', 'uploadNpwp', 'uploadPasangan'];
+        const total = keys.length;
+        let count = 0;
+
+        keys.forEach(function(k) {
+            if (window.uploadedCustomerDocsMap[k] === true) {
+                count++;
+            }
+        });
+
+        const percent = Math.round((count / total) * 100);
+
+        const bar = document.getElementById('barDocProgress');
+        const txtVal = document.getElementById('txtDocProgressVal');
+        const badgeCount = document.getElementById('badgeDocCount');
+
+        if (bar) {
+            bar.style.width = percent + '%';
+            bar.setAttribute('aria-valuenow', percent);
+            if (percent === 100) {
+                bar.style.backgroundColor = '#10b981';
+            } else {
+                bar.style.backgroundColor = '#9a55ff';
+            }
+        }
+
+        if (txtVal) {
+            txtVal.textContent = percent + '% Selesai';
+            if (percent === 100) {
+                txtVal.style.background = '#dcfce7';
+                txtVal.style.color = '#16a34a';
+            } else if (percent > 0) {
+                txtVal.style.background = '#f3e8ff';
+                txtVal.style.color = '#9333ea';
+            } else {
+                txtVal.style.background = '#f1f5f9';
+                txtVal.style.color = '#64748b';
+            }
+        }
+
+        if (badgeCount) {
+            badgeCount.textContent = count + '/' + total + ' Siap';
+            if (count === total) {
+                badgeCount.style.backgroundColor = '#10b981';
+            } else {
+                badgeCount.style.backgroundColor = '#94a3b8';
+            }
+        }
+    };
+
+    window.handleCustomerDocFileChosen = function(input, key) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            window.uploadedCustomerDocsMap[key] = true;
+
+            const box = document.getElementById('syarat_box_upload_' + key);
+            if (box) {
+                box.classList.add('uploaded');
+                box.style.borderColor = '#86efac';
+                box.style.background = '#f0fdf4';
+            }
+
+            const card = document.getElementById('syarat_card_' + key);
+            if (card) {
+                card.classList.add('is-ready');
+                card.style.borderColor = '#86efac';
+            }
+
+            const headerText = document.getElementById('syarat_header_text_' + key);
+            if (headerText) {
+                headerText.classList.remove('text-dark');
+                headerText.classList.add('text-success');
+            }
+
+            const statusIcon = document.getElementById('syarat_status_icon_' + key);
+            if (statusIcon) {
+                statusIcon.className = 'mdi mdi-check-circle text-success me-1';
+            }
+
+            const badge = document.getElementById('syarat_badge_' + key);
+            const badgeTxt = document.getElementById('syarat_badge_txt_' + key);
+            if (badge) {
+                badge.className = 'badge bg-success-subtle text-success';
+            }
+            if (badgeTxt) {
+                badgeTxt.textContent = 'Terunggah';
+            }
+
+            const circle = document.getElementById('syarat_circle_' + key);
+            if (circle) {
+                circle.style.backgroundColor = '#dcfce7';
+                circle.style.color = '#16a34a';
+            }
+
+            const icon = document.getElementById('syarat_icon_' + key);
+            if (icon) icon.className = 'mdi mdi-file-check';
+
+            const title = document.getElementById('syarat_title_' + key);
+            if (title) {
+                title.textContent = file.name;
+                title.style.color = '#16a34a';
+            }
+
+            const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+            const sub = document.getElementById('syarat_sub_' + key);
+            if (sub) sub.textContent = 'Berkas siap (' + sizeMb + ' MB) • Klik untuk ganti';
+
+            const actions = document.getElementById('syarat_actions_' + key);
+            if (actions) {
+                actions.classList.remove('d-none');
+                actions.classList.add('d-flex');
+            }
+
+            const browse = document.getElementById('syarat_browse_' + key);
+            if (browse) {
+                browse.classList.remove('d-flex');
+                browse.classList.add('d-none');
+            }
+
+            const btnView = document.getElementById('syarat_btn_view_' + key);
+            if (btnView) btnView.href = URL.createObjectURL(file);
+
+            window.recalcCustomerDocProgress();
+
+            // Pemicu Scan OCR KTP Otomatis jika file KTP diunggah dan berupa gambar
+            if (key === 'uploadKtp' && !window.isApplyingKtpFile && file.type.startsWith('image/')) {
                 Swal.fire({
                     title: 'Pindai KTP Otomatis?',
                     text: 'Foto KTP terdeteksi! Mau mengekstrak NIK, Nama, dan Alamat secara otomatis untuk mengisi formulir customer?',
@@ -1513,12 +1820,106 @@ $(document).ready(function() {
                     }
                 });
             }
-        } else {
-            box.removeClass('has-file');
-            box.find('.file-upload-icon').removeClass('mdi-file-check').addClass('mdi-cloud-upload');
-            box.find('.file-name-text').text('Klik untuk upload ' + labelText);
-            box.find('.file-upload-hint').text('Format: JPG, PNG, PDF (Maks. 10MB)');
         }
+    };
+
+    window.removeCustomerDocFile = function(key, docType, label, defaultDesc) {
+        window.uploadedCustomerDocsMap[key] = false;
+
+        // Jika mode edit dan ada dokumen di database, catat untuk dihapus di backend
+        const existingInp = document.getElementById('existing_file_' + key);
+        if (existingInp && existingInp.value) {
+            const delContainer = document.getElementById('deletedCustomerDocsContainer');
+            if (delContainer) {
+                const delInp = document.createElement('input');
+                delInp.type = 'hidden';
+                delInp.name = 'deleted_documents[]';
+                delInp.value = docType;
+                delContainer.appendChild(delInp);
+            }
+            existingInp.remove();
+        }
+
+        const box = document.getElementById('syarat_box_upload_' + key);
+        if (box) {
+            box.classList.remove('uploaded');
+            box.style.borderColor = '#c084fc';
+            box.style.background = '#faf5ff';
+        }
+
+        const card = document.getElementById('syarat_card_' + key);
+        if (card) {
+            card.classList.remove('is-ready');
+            card.style.borderColor = '#e2e8f0';
+        }
+
+        const headerText = document.getElementById('syarat_header_text_' + key);
+        if (headerText) {
+            headerText.classList.remove('text-success');
+            headerText.classList.add('text-dark');
+        }
+
+        const statusIcon = document.getElementById('syarat_status_icon_' + key);
+        if (statusIcon) {
+            statusIcon.className = 'mdi mdi-checkbox-blank-circle-outline text-primary me-1';
+        }
+
+        const badge = document.getElementById('syarat_badge_' + key);
+        const badgeTxt = document.getElementById('syarat_badge_txt_' + key);
+        if (badge) {
+            badge.className = 'badge bg-light text-muted border';
+        }
+        if (badgeTxt) {
+            badgeTxt.textContent = 'Belum Diunggah';
+        }
+
+        const circle = document.getElementById('syarat_circle_' + key);
+        if (circle) {
+            circle.style.backgroundColor = '#f3e8ff';
+            circle.style.color = '#9333ea';
+        }
+
+        const icon = document.getElementById('syarat_icon_' + key);
+        if (icon) icon.className = 'mdi mdi-cloud-upload';
+
+        const title = document.getElementById('syarat_title_' + key);
+        if (title) {
+            title.textContent = 'Pilih / Upload Berkas ' + label;
+            title.style.color = '#9333ea';
+        }
+
+        const sub = document.getElementById('syarat_sub_' + key);
+        if (sub) sub.textContent = defaultDesc || 'Format: PDF, JPG, PNG (Maks 10MB)';
+
+        const actions = document.getElementById('syarat_actions_' + key);
+        if (actions) {
+            actions.classList.remove('d-flex');
+            actions.classList.add('d-none');
+        }
+
+        const downloadBtn = document.getElementById('syarat_btn_download_' + key);
+        if (downloadBtn) {
+            downloadBtn.remove();
+        }
+
+        const browse = document.getElementById('syarat_browse_' + key);
+        if (browse) {
+            browse.classList.remove('d-none');
+            browse.classList.add('d-flex');
+        }
+
+        const input = document.getElementById(key);
+        if (input) input.value = '';
+
+        window.recalcCustomerDocProgress();
+    };
+
+    // Jalankan kalkulasi progres berkas dokumen customer saat halaman pertama kali dibuka
+    window.recalcCustomerDocProgress();
+
+    // Event listener tambahan untuk memicu update jika file input di-trigger via jQuery / DataTransfer
+    $('.doc-file-input').on('change', function() {
+        window.handleCustomerDocFileChosen(this, $(this).data('key'));
     });
 
     // 6. Format Ribuan Rupiah untuk Input Finansial

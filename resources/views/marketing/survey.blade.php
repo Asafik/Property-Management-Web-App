@@ -1018,8 +1018,10 @@ a.transaksi-step-icon:hover {
                             $status = strtolower($application->unit->construction_progress ?? '');
                             $devDone = $status == 'selesai';
 
+                            $akadSelesai = optional(optional($application->booking)->akad)->status === 'selesai' || in_array(strtolower($application->status ?? ''), ['akad', 'selesai', 'lunas', 'completed']);
+
                             $totalSteps = 7;
-                            $currentStep = $surveyDone ? 6 : 5;
+                            $currentStep = ($akadSelesai && $surveyDone) ? 6 : 5;
                             $progressWidth = intval(($currentStep / $totalSteps) * 100);
                         @endphp
 
@@ -1059,7 +1061,7 @@ a.transaksi-step-icon:hover {
                             ]);
 
                             $urlSurvey = route('kpr.survey', $application->id);
-                            $urlAkad = $bookingId ? url('/transaksi/kpr/akad-kpr/' . $bookingId) : '#';
+                            $urlAkad = ($jenis === 'komersil') ? route('kpr.akad', $application->id) : ($bookingId ? url('/transaksi/kpr/akad-kpr/' . $bookingId) : '#');
                             $urlSerahTerima = route('kpr.serahterima', $application->id);
                         @endphp
 
@@ -1138,26 +1140,38 @@ a.transaksi-step-icon:hover {
                                 <small>{{ $surveyDone ? 'Selesai' : 'Dalam Proses' }}</small>
                             </div>
 
+                            @php
+                                $serahTerimaDone = !empty(optional(optional($application->booking)->serahTerima)->id);
+                            @endphp
+
                             {{-- Tahap 6: Akad --}}
-                            <div class="transaksi-step">
+                            <div class="transaksi-step {{ $akadSelesai ? 'completed' : '' }}">
                                 <a href="{{ $urlAkad }}" class="transaksi-step-icon" title="Buka Halaman Akad KPR">
-                                    <i class="mdi mdi-handshake-outline"></i>
+                                    @if ($akadSelesai)
+                                        <i class="mdi mdi-check"></i>
+                                    @else
+                                        <i class="mdi mdi-handshake-outline"></i>
+                                    @endif
                                 </a>
                                 <a href="{{ $urlAkad }}" class="transaksi-step-title-link" title="Buka Halaman Akad KPR">
                                     <span class="transaksi-step-title">Akad</span>
                                 </a>
-                                <small>Menunggu</small>
+                                <small>{{ $akadSelesai ? 'Selesai' : 'Menunggu' }}</small>
                             </div>
 
                             {{-- Tahap 7: Serah Terima --}}
-                            <div class="transaksi-step">
+                            <div class="transaksi-step {{ $serahTerimaDone ? 'completed' : '' }}">
                                 <a href="{{ $urlSerahTerima }}" class="transaksi-step-icon" title="Buka Halaman Serah Terima Unit">
-                                    <i class="mdi mdi-cash-fast"></i>
+                                    @if ($serahTerimaDone)
+                                        <i class="mdi mdi-check"></i>
+                                    @else
+                                        <i class="mdi mdi-cash-fast"></i>
+                                    @endif
                                 </a>
                                 <a href="{{ $urlSerahTerima }}" class="transaksi-step-title-link" title="Buka Halaman Serah Terima Unit">
                                     <span class="transaksi-step-title">Serah Terima</span>
                                 </a>
-                                <small>Menunggu</small>
+                                <small>{{ $serahTerimaDone ? 'Selesai' : 'Menunggu' }}</small>
                             </div>
                         </div>
                     </div>

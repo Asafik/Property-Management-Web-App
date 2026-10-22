@@ -285,6 +285,9 @@
                         </p>
                     </div>
                     <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <a href="{{ route('keuangan.jurnal.index') }}" class="btn btn-sm btn-gradient-primary shadow-sm" style="border-radius: 8px; font-weight: 700; padding: 0.5rem 1rem;">
+                            <i class="mdi mdi-book-open-page-variant-outline me-1"></i><span>Buku Jurnal Umum</span>
+                        </a>
                         <a href="{{ route('finance.kpr-disbursement.index') }}" class="btn btn-sm btn-gradient-primary shadow-sm" style="border-radius: 8px; font-weight: 700; padding: 0.5rem 1rem;">
                             <i class="mdi mdi-bank-transfer me-1"></i><span>Pencairan Dana KPR</span>
                         </a>
@@ -550,11 +553,6 @@
                                 2. SPK vs RAB Variance Analysis
                             </button>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link erp-tab-btn" id="journal-tab" data-toggle="pill" data-bs-toggle="pill" data-target="#journalTabPane" data-bs-target="#journalTabPane" type="button" role="tab">
-                                3. Jurnal Transaksi
-                            </button>
-                        </li>
                     </ul>
                 </div>
 
@@ -770,74 +768,6 @@
                             </table>
                         </div>
                     </div>
-
-                    <!-- TAB 3: JURNAL TRANSAKSI (AUDIT TRAIL & MUTASI KAS) -->
-                    <div class="tab-pane fade p-0" id="journalTabPane" role="tabpanel">
-                        <div class="d-flex justify-content-between align-items-center p-3 bg-light border-bottom">
-                            <h6 class="fw-bold text-dark mb-0" style="font-size: 0.92rem;">
-                                Kronologi Arus Kas & Jurnal Transaksi Proyek (Urutan Entri Terbaru)
-                            </h6>
-                            <span class="badge bg-white text-dark border">{{ $journalEntries->count() }} Entri Transaksi Terdaftar</span>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-hover table-erp align-middle mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>TANGGAL TRANSAKSI</th>
-                                        <th>NO. REFERENSI / REF ID</th>
-                                        <th>KATEGORI & KETERANGAN</th>
-                                        <th>PROJECT / UNIT</th>
-                                        <th>TIPE MUTASI</th>
-                                        <th class="text-end">DEBIT (KAS MASUK)</th>
-                                        <th class="text-end">KREDIT (KAS KELUAR)</th>
-                                        <th class="text-center">STATUS</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($journalEntries as $je)
-                                        <tr>
-                                            <td>
-                                                <small class="fw-bold text-dark">{{ $je->date ? $je->date->format('d/m/Y') : '-' }}</small>
-                                                <small class="text-muted d-block" style="font-size: 0.72rem;">{{ $je->date ? $je->date->format('H:i') : '' }} WIB</small>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-light text-dark border font-monospace">{{ $je->ref_no }}</span>
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-pill-soft badge-soft-primary mb-1 text-uppercase" style="font-size: 0.68rem;">{{ $je->category }}</span>
-                                                <div class="text-dark small text-wrap" style="max-width: 320px;">{{ $je->description }}</div>
-                                            </td>
-                                            <td>
-                                                <div class="fw-semibold text-dark">{{ $je->project }}</div>
-                                                <small class="text-muted font-monospace">{{ $je->unit }}</small>
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-pill-soft {{ $je->type === 'KAS MASUK' ? 'badge-soft-success' : 'badge-soft-danger' }}">
-                                                    {{ $je->type }}
-                                                </span>
-                                            </td>
-                                            <td class="text-end font-monospace fw-bold text-success">
-                                                {{ $je->debit > 0 ? 'Rp ' . number_format($je->debit, 0, ',', '.') : '-' }}
-                                            </td>
-                                            <td class="text-end font-monospace fw-bold text-danger">
-                                                {{ $je->kredit > 0 ? 'Rp ' . number_format($je->kredit, 0, ',', '.') : '-' }}
-                                            </td>
-                                            <td class="text-center">
-                                                <span class="badge badge-pill-soft badge-soft-info">{{ $je->status }}</span>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="8" class="text-center py-4 text-muted">
-                                                Tidak ada riwayat jurnal transaksi ERP yang tercatat.
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>

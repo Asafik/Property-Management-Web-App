@@ -341,6 +341,11 @@ class AkadController extends Controller
                     ]);
                 }
 
+                $isKomersil = strtolower(optional($booking->unit)->jenis ?? '') === 'komersil';
+                if ($isKomersil) {
+                    return redirect()->route('kpr.customer-verified')->with('success', 'Akad selesai berhasil diproses! Data telah diteruskan ke daftar KPR Terverifikasi.');
+                }
+
                 return redirect()->back()->with('success', 'Akad selesai berhasil diproses!');
             }
 
@@ -364,6 +369,11 @@ class AkadController extends Controller
                 $booking->update([
                     'status_akad' => 'cancelled'
                 ]);
+
+                $isKomersil = strtolower(optional($booking->unit)->jenis ?? '') === 'komersil';
+                if ($isKomersil) {
+                    return redirect()->route('kpr.customer-verified')->with('success', 'Akad ditunda / dibatalkan.');
+                }
 
                 return redirect()->back()->with('success', 'Akad ditunda / dibatalkan.');
             }

@@ -24,15 +24,24 @@ class SurveyController extends Controller
         ->select('kpr_applications.*')
 
        
-        ->whereHas('unit', function ($q) {
-            $q->where('jenis', 'subsidi');
-        })
-        // HANYA tampilkan customer KPR yang SUDAH melalui tahap Survey Lapangan
+        // Tampilkan customer KPR:
+        // 1. Unit Subsidi: yang SUDAH melalui tahap Survey Lapangan
+        // 2. Unit Komersil: yang SUDAH lolos verifikasi berkas KPR (approved, analisa, survey, akad)
         ->where(function ($q) {
-            $q->where('kpr_applications.status', 'survey')
-              ->orWhereNotNull('kpr_applications.survey_date')
-              ->orWhereNotNull('kpr_applications.appraisal_value')
-              ->orWhereNotNull('kpr_applications.rekomendasi');
+            $q->where(function ($qs) {
+                $qs->whereHas('unit', function ($qu) {
+                    $qu->where('jenis', 'subsidi');
+                })->where(function ($sub) {
+                    $sub->where('kpr_applications.status', 'survey')
+                        ->orWhereNotNull('kpr_applications.survey_date')
+                        ->orWhereNotNull('kpr_applications.appraisal_value')
+                        ->orWhereNotNull('kpr_applications.rekomendasi');
+                });
+            })->orWhere(function ($qk) {
+                $qk->whereHas('unit', function ($qu) {
+                    $qu->where('jenis', 'komersil');
+                })->whereIn('kpr_applications.status', ['approved', 'analisa', 'survey', 'akad']);
+            });
         })
 
         ->when($request->filled('search'), function ($q) use ($request) {
@@ -175,7 +184,15 @@ class SurveyController extends Controller
             if ($request->filled('surveyor_id')) {
                 $kpr->surveyor_id = $request->surveyor_id;
             }
-            $kpr->status = 'survey';
+
+            $isAlreadyAkad = ($kpr->status === 'akad') || optional(optional($kpr->booking)->akad)->status === 'selesai';
+            if (!$isAlreadyAkad) {
+                $kpr->status = 'survey';
+            }
+
+            if ($kpr->booking) {
+                $kpr->booking->update(['status_survey' => 1]);
+            }
 
             // Upload foto jika ada
             $destination = public_path('uploads/kpr/survey');
@@ -196,7 +213,12 @@ class SurveyController extends Controller
 
             DB::commit();
 
-            return redirect()->back()->with('success', 'Hasil survey dan nilai appraisal berhasil disimpan!');
+            $isKomersil = strtolower(optional($kpr->unit)->jenis ?? '') === 'komersil';
+            if ($isKomersil) {
+                return redirect()->route('kpr.akad', $kpr->id)->with('success', 'Hasil survey dan nilai appraisal berhasil disimpan!');
+            }
+
+            return redirect()->route('customer.kpr.survey')->with('success', 'Hasil survey dan nilai appraisal berhasil disimpan! Silakan lanjutkan proses akad.');
         } catch (\Throwable $e) {
             DB::rollBack();
 

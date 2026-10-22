@@ -2,66 +2,293 @@
 
 @section('title', 'Role & Permission - Property Management App')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
+    <style>
+        /* ===== ROLE & PERMISSION STYLES (PERSIS KATALOG UNIT) ===== */
+        .btn-outline-primary {
+            background: transparent;
+            border: 1px solid #9a55ff;
+            color: #9a55ff;
+            padding: 0.35rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn-outline-primary:hover {
+            background: #9a55ff;
+            color: #ffffff;
+            border-color: #9a55ff;
+        }
+
+        .btn-outline-secondary {
+            background: transparent;
+            border: 1px solid #94a3b8;
+            color: #64748b;
+            padding: 0.35rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn-outline-secondary:hover {
+            background: #64748b;
+            color: #ffffff;
+            border-color: #64748b;
+        }
+
+        /* Solid Buttons - 1 Warna, Tanpa Gradient */
+        .btn-gradient-primary {
+            background: #9a55ff !important;
+            border-color: #9a55ff !important;
+            color: #ffffff !important;
+        }
+        .btn-gradient-primary:hover {
+            background: #8b3df5 !important;
+            border-color: #8b3df5 !important;
+            color: #ffffff !important;
+        }
+        .btn-gradient-secondary {
+            background: #64748b !important;
+            border-color: #64748b !important;
+            color: #ffffff !important;
+        }
+        .btn-gradient-secondary:hover {
+            background: #475569 !important;
+            border-color: #475569 !important;
+            color: #ffffff !important;
+        }
+
+        .btn-icon-only {
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+        }
+        .btn-icon-only i {
+            font-size: 1.15rem;
+            margin: 0;
+        }
+
+        /* Card Compact Persis Catalog Unit */
+        .compact-table-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+            transition: border-color 0.2s ease;
+            overflow: hidden;
+        }
+        .compact-table-card:hover {
+            border-color: #cbd5e1 !important;
+            box-shadow: none !important;
+        }
+
+        /* Table Styling Persis Catalog Unit */
+        .table-permission {
+            width: 100% !important;
+            margin-bottom: 0;
+            border-collapse: collapse;
+        }
+        .table-permission thead th {
+            background: #f8fafc !important;
+            color: #4b5563 !important;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0 !important;
+            padding: 0.8rem 0.65rem !important;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .table-permission tbody td {
+            padding: 0.8rem 0.65rem !important;
+            vertical-align: middle;
+            font-size: 0.83rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #1e293b;
+        }
+        .table-permission tbody tr:hover {
+            background-color: #faf8ff !important;
+        }
+
+        /* Action Button Persis Catalog Unit */
+        .btn-action {
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            margin: 0 2px;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-action.edit {
+            background: #f59e0b;
+            color: #ffffff;
+        }
+        .btn-action.edit:hover {
+            background: #d97706;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        /* Position Checkbox Card in Modal */
+        .position-check-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 0.6rem 0.75rem;
+            background: #ffffff;
+            transition: all 0.15s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+        .position-check-card:hover {
+            border-color: #9a55ff;
+            background: #faf8ff;
+        }
+        .position-check-card.checked {
+            border-color: #9a55ff;
+            background: #f5f0ff;
+        }
+
+        /* Badge Custom */
+        .badge-pos {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+            font-weight: 600;
+            font-size: 0.75rem;
+            padding: 0.28rem 0.55rem;
+            border-radius: 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .badge-parent {
+            background: #e0f2fe;
+            color: #0284c7;
+            border: 1px solid #bae6fd;
+            font-weight: 600;
+            font-size: 0.75rem;
+            padding: 0.28rem 0.55rem;
+            border-radius: 5px;
+            display: inline-flex;
+            align-items: center;
+        }
+        .badge-main {
+            background: #f3e8ff;
+            color: #9333ea;
+            border: 1px solid #e9d5ff;
+            font-weight: 600;
+            font-size: 0.75rem;
+            padding: 0.28rem 0.55rem;
+            border-radius: 5px;
+            display: inline-flex;
+            align-items: center;
+        }
+    </style>
+@endpush
+
 @section('content')
 
-<div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
+<div class="container-fluid px-2 px-md-4 py-3">
 
-    <!-- Header Card Banner -->
-    <div class="row mb-3 mb-md-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0 header-card">
-                <div class="card-body p-4 p-md-4 py-4 py-md-4 d-flex justify-content-between align-items-center" style="min-height: 105px;">
-                    <div>
-                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
-                            Role & Permission
-                        </h3>
-                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
-                            Kelola pemetaan hak akses dan perizinan menu sistem per posisi jabatan
-                        </p>
-                    </div>
-                    <div class="d-none d-sm-block pe-2">
-                        <i class="mdi mdi-shield-account" style="font-size: 3rem; color: #9a55ff; opacity: 0.25;"></i>
-                    </div>
-                </div>
-            </div>
+    <!-- Alert Notifikasi Flash -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 mb-3" role="alert" style="border-radius: 8px;">
+            <i class="mdi mdi-check-circle fs-5"></i>
+            <div>{{ session('success') }}</div>
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <!-- Page Title & Subtitle (Persis Catalog Unit - Tanpa Card Banner) -->
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <div>
+            <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                Role & Permission
+            </h2>
+            <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                Kelola pemetaan hak akses dan perizinan menu sistem per posisi jabatan
+            </p>
         </div>
     </div>
 
+
+    <!-- Tabel Data Hak Akses Menu (Compact Table Card Persis Catalog Unit) -->
     <div class="row mt-2 mt-sm-2 mt-md-3">
         <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2">
-                    <h5 class="card-title mb-0">
-                        <i class="mdi mdi-format-list-bulleted me-2"></i>Daftar Hak Akses Menu
-                    </h5>
+            <div class="card compact-table-card">
+                <!-- Header Card Persis Catalog Unit -->
+                <div class="card-header bg-white d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center py-2.5 px-3 px-md-4 gap-2" style="border-bottom: 1px solid #e2e8f0 !important;">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 32px; height: 32px; border-radius: 6px; background-color: #f3e8ff; color: #9333ea; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
+                            <i class="mdi mdi-shield-key-outline"></i>
+                        </div>
+                        <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Daftar Hak Akses Menu</span>
+                    </div>
                 </div>
 
-                <div class="card-body">
-                    <!-- Filter Section -->
+                <div class="card-body p-3 p-md-4">
+                    <!-- Filter Section Persis Catalog Unit -->
                     <div class="filter-card mb-3">
                         <!-- Desktop Version -->
-                        <div class="filter-row-desktop d-none d-md-block">
+                        <div class="filter-row-desktop d-none d-lg-block">
                             <form id="filterForm" method="GET" action="{{ route('master.data.menu') }}" onsubmit="return showFilterLoading()">
-                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
-                                    <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
-                                        <div style="min-width: 260px; max-width: 380px; flex: 1;">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" name="search" id="searchInput"
-                                                    placeholder="Cari nama menu atau route..."
-                                                    value="{{ request('search') }}"
-                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
-                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
-                                                    type="submit" title="Cari"
-                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
-                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
-                                                </button>
-                                            </div>
+                                <div class="row g-2 align-items-center w-100 m-0">
+                                    <!-- Search Input -->
+                                    <div class="col-lg-4 p-0 pe-2">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="search" id="searchInput"
+                                                placeholder="Cari nama menu atau route..."
+                                                value="{{ request('search') }}"
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
+                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                type="submit" title="Cari"
+                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 6px !important; border-bottom-right-radius: 6px !important; height: 38px; box-shadow: none;">
+                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                            </button>
                                         </div>
                                     </div>
 
-                                    <div class="d-flex align-items-center gap-2 ms-auto">
-                                        <div style="width: 115px;">
-                                            <select class="form-control" name="per_page" id="perPageSelect">
+                                    <!-- Filter Menu Induk (Parent) -->
+                                    <div class="col-lg-3 p-0 pe-2">
+                                        <select class="form-control" name="parent_id" style="height: 38px; border-radius: 6px;">
+                                            <option value="">Semua Kategori (Induk)</option>
+                                            <option value="main" {{ request('parent_id') == 'main' ? 'selected' : '' }}>Menu Utama (Tanpa Induk)</option>
+                                            @foreach ($parentMenus as $parent)
+                                                <option value="{{ $parent->id }}" {{ request('parent_id') == $parent->id ? 'selected' : '' }}>
+                                                    {{ $parent->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <!-- Filter Posisi / Jabatan -->
+                                    <div class="col-lg-3 p-0 pe-2">
+                                        <select class="form-control" name="position_id" style="height: 38px; border-radius: 6px;">
+                                            <option value="">Semua Posisi / Jabatan</option>
+                                            @foreach ($positions as $pos)
+                                                <option value="{{ $pos->id }}" {{ request('position_id') == $pos->id ? 'selected' : '' }}>
+                                                    {{ $pos->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <!-- Per Page & Action Buttons -->
+                                    <div class="col-lg-2 p-0 d-flex align-items-center justify-content-end gap-2 ms-auto">
+                                        <div style="width: 95px;">
+                                            <select class="form-control" name="per_page" id="perPageSelect" style="height: 38px; border-radius: 6px;">
                                                 <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 data</option>
                                                 <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15 data</option>
                                                 <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 data</option>
@@ -81,7 +308,7 @@
                         </div>
 
                         <!-- Mobile Version -->
-                        <div class="filter-row-mobile d-block d-md-none">
+                        <div class="filter-row-mobile d-block d-lg-none">
                             <form method="GET" action="{{ route('master.data.menu') }}" onsubmit="return showFilterLoading()">
                                 <div class="row g-2">
                                     <div class="col-12 mb-2">
@@ -89,17 +316,40 @@
                                             <input type="text" class="form-control" name="search" id="searchInputMobile"
                                                 placeholder="Cari nama menu atau route..."
                                                 value="{{ request('search') }}"
-                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
                                             <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
                                                 type="submit" title="Cari"
-                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 6px !important; border-bottom-right-radius: 6px !important; height: 38px; box-shadow: none;">
                                                 <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
                                             </button>
                                         </div>
                                     </div>
 
                                     <div class="col-12 mb-2">
-                                        <select class="form-control" name="per_page">
+                                        <select class="form-control" name="parent_id" style="height: 38px; border-radius: 6px;">
+                                            <option value="">Semua Kategori (Induk)</option>
+                                            <option value="main" {{ request('parent_id') == 'main' ? 'selected' : '' }}>Menu Utama (Tanpa Induk)</option>
+                                            @foreach ($parentMenus as $parent)
+                                                <option value="{{ $parent->id }}" {{ request('parent_id') == $parent->id ? 'selected' : '' }}>
+                                                    {{ $parent->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12 mb-2">
+                                        <select class="form-control" name="position_id" style="height: 38px; border-radius: 6px;">
+                                            <option value="">Semua Posisi / Jabatan</option>
+                                            @foreach ($positions as $pos)
+                                                <option value="{{ $pos->id }}" {{ request('position_id') == $pos->id ? 'selected' : '' }}>
+                                                    {{ $pos->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12 mb-2">
+                                        <select class="form-control" name="per_page" style="height: 38px; border-radius: 6px;">
                                             <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10 data</option>
                                             <option value="15" {{ request('per_page') == 15 ? 'selected' : '' }}>15 data</option>
                                             <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25 data</option>
@@ -108,12 +358,12 @@
                                     </div>
 
                                     <div class="col-6">
-                                        <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center gap-1">
+                                        <button type="submit" class="btn btn-gradient-primary w-100 d-flex align-items-center justify-content-center gap-1" style="height: 38px; border-radius: 6px;">
                                             <i class="mdi mdi-filter"></i> Filter
                                         </button>
                                     </div>
                                     <div class="col-6">
-                                        <a href="{{ route('master.data.menu') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center gap-1" onclick="showResetLoading(event)">
+                                        <a href="{{ route('master.data.menu') }}" class="btn btn-gradient-secondary w-100 d-flex align-items-center justify-content-center gap-1" onclick="showResetLoading(event)" style="height: 38px; border-radius: 6px;">
                                             <i class="mdi mdi-refresh"></i> Reset
                                         </a>
                                     </div>
@@ -123,46 +373,48 @@
                     </div>
 
                     <!-- Tabel Data Menu & Permission -->
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
+                    <div class="table-responsive" style="border-radius: 8px;">
+                        <table class="table table-permission align-middle">
                             <thead>
                                 <tr>
-                                    <th class="text-center">No</th>
-                                    <th>Nama Menu</th>
-                                    <th>Route / URL</th>
-                                    <th>Menu Induk (Parent)</th>
-                                    <th>Posisi / Hak Akses</th>
-                                    <th class="text-center">Aksi</th>
+                                    <th class="text-center" style="width: 50px;">NO</th>
+                                    <th>NAMA MENU</th>
+                                    <th>ROUTE / URL</th>
+                                    <th>MENU INDUK (PARENT)</th>
+                                    <th>POSISI / HAK AKSES</th>
+                                    <th class="text-center" style="width: 75px;">AKSI</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($menus as $index => $item)
                                     <tr>
-                                        <td class="text-center fw-bold">
+                                        <td class="text-center fw-bold" style="color: #64748b;">
                                             {{ method_exists($menus, 'firstItem') ? $menus->firstItem() + $index : $index + 1 }}
                                         </td>
                                         <td>
-                                            <div class="d-flex align-items-center">
-                                                <i class="mdi {{ $item->icon ?: 'mdi-menu' }} text-primary me-2" style="font-size: 1.2rem;"></i>
-                                                <span class="fw-bold">{{ $item->name }}</span>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div style="width: 30px; height: 30px; border-radius: 6px; background-color: #f3e8ff; color: #9a55ff; display: inline-flex; align-items: center; justify-content: center; font-size: 1.05rem; flex-shrink: 0;">
+                                                    <i class="mdi {{ $item->icon ?: 'mdi-menu' }}"></i>
+                                                </div>
+                                                <span class="fw-bold text-dark" style="font-size: 0.88rem;">{{ $item->name }}</span>
                                             </div>
                                         </td>
                                         <td>
                                             @if ($item->route)
-                                                <code class="px-2 py-1 bg-light text-primary rounded border" style="font-size: 0.78rem;">
+                                                <code style="padding: 3px 8px; border-radius: 5px; background: #f1f5f9; color: #6366f1; border: 1px solid #e2e8f0; font-size: 0.78rem; font-weight: 600;">
                                                     {{ $item->route }}
                                                 </code>
                                             @else
-                                                <span class="text-muted" style="font-size: 0.8rem;">(Header / Dropdown)</span>
+                                                <span class="text-muted" style="font-size: 0.8rem; font-style: italic;">(Header / Dropdown)</span>
                                             @endif
                                         </td>
                                         <td>
                                             @if ($item->parent)
-                                                <span class="badge-category" style="background: rgba(23, 162, 184, 0.1); color: #17a2b8; border-color: rgba(23, 162, 184, 0.2);">
+                                                <span class="badge-parent">
                                                     <i class="mdi mdi-file-tree me-1"></i>{{ $item->parent->name }}
                                                 </span>
                                             @else
-                                                <span class="badge bg-light text-dark fw-semibold px-2 py-1 border" style="font-size: 0.78rem;">
+                                                <span class="badge-main">
                                                     <i class="mdi mdi-home-outline me-1"></i>Menu Utama
                                                 </span>
                                             @endif
@@ -170,7 +422,7 @@
                                         <td>
                                             <div class="d-flex flex-wrap gap-1">
                                                 @forelse($item->positions as $pos)
-                                                    <span class="badge bg-success bg-opacity-10 text-success fw-semibold px-2 py-1 border border-success border-opacity-25" style="font-size: 0.75rem; border-radius: 4px;">
+                                                    <span class="badge-pos">
                                                         {{ $pos->name }}
                                                     </span>
                                                 @empty
@@ -192,8 +444,8 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="text-center text-muted py-4">
-                                            <i class="mdi mdi-information-outline me-2"></i>Tidak ada data menu ditemukan.
+                                        <td colspan="6" class="text-center text-muted py-5">
+                                            <i class="mdi mdi-information-outline me-2 fs-5"></i>Tidak ada data menu ditemukan.
                                         </td>
                                     </tr>
                                 @endforelse
@@ -201,7 +453,7 @@
                         </table>
                     </div>
 
-                    <!-- Pagination -->
+                    <!-- Pagination Persis Catalog Unit -->
                     @if ($menus instanceof \Illuminate\Pagination\LengthAwarePaginator && $menus->total() > 0)
                         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
                             <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.82rem;">
@@ -219,7 +471,7 @@
                                     @for($page = 1; $page <= $menus->lastPage(); $page++)
                                         <li class="page-item {{ $page == $menus->currentPage() ? 'active' : '' }}">
                                             @if($page == $menus->currentPage())
-                                                <span class="page-link">{{ $page }}</span>
+                                                <span class="page-link" style="background-color: #9a55ff; border-color: #9a55ff; color: #fff;">{{ $page }}</span>
                                             @else
                                                 <a class="page-link" href="{{ $menus->appends(request()->query())->url($page) }}" onclick="showPaginationLoading(event)">{{ $page }}</a>
                                             @endif
@@ -243,14 +495,19 @@
 
 </div>
 
-<!-- Modal Hak Akses Menu -->
+<!-- Modal Hak Akses Menu Modern Persis Catalog Unit (Lebar Pas & Rapi) -->
 <div class="modal fade" id="accessMenuModal" tabindex="-1" aria-labelledby="accessMenuModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-white border-bottom">
-                <h5 class="modal-title fw-bold" id="accessMenuModalLabel" style="color: #2c2e3f;">
-                    <i class="mdi mdi-shield-key-outline me-2" style="color: #9a55ff;"></i>Pengaturan Hak Akses Menu
-                </h5>
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
+        <div class="modal-content border-0 shadow" style="border-radius: 12px; overflow: hidden;">
+            <div class="modal-header py-3 px-4 bg-white" style="border-bottom: 1px solid #e2e8f0;">
+                <div class="d-flex align-items-center gap-2">
+                    <div style="width: 32px; height: 32px; border-radius: 6px; background-color: #f3e8ff; color: #9a55ff; display: inline-flex; align-items: center; justify-content: center; font-size: 1.15rem;">
+                        <i class="mdi mdi-shield-key-outline"></i>
+                    </div>
+                    <h5 class="modal-title fw-bold mb-0" id="accessMenuModalLabel" style="color: #0f172a; font-size: 1.05rem;">
+                        Pengaturan Hak Akses Menu
+                    </h5>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -259,30 +516,53 @@
                 <div class="modal-body p-4">
                     <input type="hidden" name="menu_id" id="access_menu_id">
 
+                    <!-- Nama Menu Field -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: #2c2e3f;">Nama Menu</label>
-                        <input type="text" class="form-control bg-light" id="access_menu_name" readonly>
+                        <label class="form-label fw-bold" style="color: #0f172a; font-size: 0.88rem;">Nama Menu</label>
+                        <input type="text" class="form-control bg-light" id="access_menu_name" readonly style="border-radius: 6px; font-weight: 600; color: #334155; height: 38px;">
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold" style="color: #2c2e3f;">Posisi / Jabatan yang Diberi Izin</label>
-                        <select class="form-control modal-select-multiple shadow-sm" style="height: 220px !important; min-height: 220px !important;" name="position_ids[]" id="access_position" multiple required>
-                            @foreach ($positions as $pos)
-                                <option value="{{ $pos->id }}">{{ $pos->name }}</option>
-                            @endforeach
-                        </select>
+                    <!-- Checklist Posisi Jabatan Grid -->
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="form-label fw-bold mb-0" style="color: #0f172a; font-size: 0.85rem;">
+                                Posisi / Jabatan yang Diberikan Izin:
+                            </label>
+                            <div class="d-flex gap-1">
+                                <button type="button" class="btn btn-outline-primary" style="padding: 2px 8px; font-size: 0.74rem;" onclick="selectAllPositions()">
+                                    <i class="mdi mdi-checkbox-multiple-marked-outline me-1"></i>Pilih Semua
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" style="padding: 2px 8px; font-size: 0.74rem;" onclick="deselectAllPositions()">
+                                    <i class="mdi mdi-checkbox-multiple-blank-outline me-1"></i>Hapus Semua
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Checkbox Container Grid (2 Kolom Rapi) -->
+                        <div style="max-height: 270px; overflow-y: auto; padding: 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+                            <div class="row g-2" id="positionChecklistContainer">
+                                @foreach ($positions as $pos)
+                                    <div class="col-12 col-sm-6">
+                                        <label class="position-check-card d-flex align-items-center gap-2 mb-0" for="pos_chk_{{ $pos->id }}">
+                                            <input type="checkbox" name="position_ids[]" value="{{ $pos->id }}" id="pos_chk_{{ $pos->id }}" class="pos-checkbox form-check-input mt-0" style="width: 17px; height: 17px; accent-color: #9a55ff; cursor: pointer;" onchange="updateCardCheckState(this)">
+                                            <span class="fw-semibold text-dark" style="font-size: 0.82rem;">{{ $pos->name }}</span>
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
                         <small class="text-muted mt-2 d-block" style="font-size: 0.75rem;">
-                            <i class="mdi mdi-information-outline me-1 text-primary"></i>Tahan tombol <strong>Ctrl</strong> (Windows) atau <strong>Cmd</strong> (Mac) saat klik untuk memilih lebih dari 1 posisi.
+                            <i class="mdi mdi-information-outline me-1 text-primary"></i>Centang jabatan yang diperbolehkan mengakses menu ini.
                         </small>
                     </div>
                 </div>
 
-                <div class="modal-footer bg-light border-top">
-                    <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">
+                <div class="modal-footer bg-light border-top py-3 px-4">
+                    <button type="button" class="btn btn-outline-secondary px-3" data-bs-dismiss="modal">
                         Batal
                     </button>
-                    <button type="submit" class="btn btn-gradient-primary btn-sm px-4">
-                        <i class="mdi mdi-content-save me-1"></i>Simpan Hak Akses
+                    <button type="submit" class="btn btn-gradient-primary px-4" style="height: 38px; border-radius: 6px; font-weight: 600;">
+                        <i class="mdi mdi-content-save me-1"></i>Simpan Perubahan
                     </button>
                 </div>
             </form>
@@ -310,7 +590,7 @@
 function showFilterLoading() {
     Swal.fire({
         title: 'Memuat...',
-        html: 'Sedang memfilter data',
+        html: 'Sedang memfilter data menu',
         allowOutsideClick: false,
         didOpen: () => {
             Swal.showLoading();
@@ -346,23 +626,45 @@ function showPaginationLoading(event) {
     window.location.href = event.currentTarget.href;
 }
 
+function updateCardCheckState(checkbox) {
+    const card = checkbox.closest('.position-check-card');
+    if (card) {
+        if (checkbox.checked) {
+            card.classList.add('checked');
+        } else {
+            card.classList.remove('checked');
+        }
+    }
+}
+
+function selectAllPositions() {
+    document.querySelectorAll('.pos-checkbox').forEach(chk => {
+        chk.checked = true;
+        updateCardCheckState(chk);
+    });
+}
+
+function deselectAllPositions() {
+    document.querySelectorAll('.pos-checkbox').forEach(chk => {
+        chk.checked = false;
+        updateCardCheckState(chk);
+    });
+}
+
 function editAksesMenu(id, name, positionIds) {
     document.getElementById('access_menu_id').value = id;
     document.getElementById('access_menu_name').value = name;
 
-    let select = document.getElementById('access_position');
-
-    for (let i = 0; i < select.options.length; i++) {
-        select.options[i].selected = false;
-    }
-
-    if (positionIds && positionIds.length > 0) {
-        for (let i = 0; i < select.options.length; i++) {
-            if (positionIds.includes(parseInt(select.options[i].value))) {
-                select.options[i].selected = true;
-            }
+    const checkboxes = document.querySelectorAll('.pos-checkbox');
+    checkboxes.forEach(chk => {
+        const val = parseInt(chk.value);
+        if (positionIds && positionIds.includes(val)) {
+            chk.checked = true;
+        } else {
+            chk.checked = false;
         }
-    }
+        updateCardCheckState(chk);
+    });
 }
 </script>
 @endpush

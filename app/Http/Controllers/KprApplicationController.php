@@ -341,6 +341,14 @@ public function store(Request $request)
             'booking.sales'
         ])->findOrFail($id);
 
+        $unit = $application->unit;
+        $isKomersil = strtolower($unit->jenis ?? '') === 'komersil';
+        $isBuildingFinished = strtolower($unit->construction_progress ?? '') === 'selesai' || ($unit->construction_progress_percentage ?? 0) >= 100;
+
+        if ($isKomersil && !$isBuildingFinished) {
+            return redirect()->back()->with('error', 'Unit Komersil belum dapat diserahterimakan. Pembangunan fisik unit harus telah selesai 100% terlebih dahulu.');
+        }
+
         $noBast = 'BAST/' . date('m/Y') . '/' . str_pad(
             \App\Models\SerahTerima::count() + 1,
             3,

@@ -1714,7 +1714,7 @@
                                 // Hak Akses Role
                                 $canEditGeneralInfo = ($isAdmin || $isKepalaLegal || $isStaffLegal || $isKepalaMarketing) && !$isKeuangan && (!$land || !in_array($land->status, ['approved', 'rejected']));
                                 $canEditFinancial   = $isAdmin || $isKeuangan;
-                                $canValidateDoc     = $isAdmin;
+                                $canValidateDoc     = $isAdmin || $isKepalaLegal;
                                 $canEditDecisions   = $isAdmin;
 
                                 $rawStatus = strtoupper((string)($land->ownership_status ?? ''));
@@ -5813,7 +5813,7 @@
         function approvePraDoc(docId, typeId) {
             Swal.fire({
                 title: 'Validasi Dokumen?',
-                text: 'Apakah Anda sebagai Admin menyetujui dan memverifikasi keabsahan dokumen ini?',
+                text: 'Apakah Anda sebagai Admin / Kepala Legal menyetujui dan memverifikasi keabsahan dokumen ini?',
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#22c55e',

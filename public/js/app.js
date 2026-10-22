@@ -38,6 +38,11 @@ document.addEventListener('DOMContentLoaded', function () {
     if (backdrop) {
       backdrop.classList.toggle('show', body.classList.contains('sidebar-open'));
     }
+    if (body.classList.contains('sidebar-open')) {
+      setTimeout(function () {
+        scrollSidebarToActiveItem(true);
+      }, 100);
+    }
   }
 
   function closeMobileSidebar() {
@@ -104,6 +109,67 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   }
+
+  // =========================================================================
+  // 2.1 AUTO-EXPAND & AUTO-SCROLL SIDEBAR TO ACTIVE MENU ITEM
+  // =========================================================================
+  function scrollSidebarToActiveItem(smooth) {
+    var sidebarEl = document.getElementById('customSidebar');
+    if (!sidebarEl) return;
+
+    // Cari item menu yang sedang aktif (prioritaskan sub-menu, baru parent/menu utama)
+    var activeEl = sidebarEl.querySelector('.sidebar-submenu-link.active') ||
+                   sidebarEl.querySelector('.sidebar-menu-link.active') ||
+                   sidebarEl.querySelector('.sidebar-dropdown-toggle.parent-active') ||
+                   sidebarEl.querySelector('.has-submenu.open');
+
+    if (!activeEl) return;
+
+    // Pastikan accordion parent terbuka secara otomatis
+    var parentDropdown = activeEl.closest('.has-submenu');
+    if (parentDropdown) {
+      parentDropdown.classList.add('open');
+      var toggleBtn = parentDropdown.querySelector('.sidebar-dropdown-toggle');
+      if (toggleBtn) {
+        toggleBtn.setAttribute('aria-expanded', 'true');
+      }
+      var submenu = parentDropdown.querySelector('.sidebar-submenu');
+      if (submenu) {
+        submenu.classList.add('show');
+        submenu.style.display = 'block';
+      }
+    }
+
+    // Hitung posisi scroll agar item aktif berada di posisi yang nyaman (terlihat jelas di layar)
+    var sidebarRect = sidebarEl.getBoundingClientRect();
+    var activeRect = activeEl.getBoundingClientRect();
+    var brandHeader = sidebarEl.querySelector('.sidebar-brand-header');
+    var headerHeight = brandHeader ? brandHeader.offsetHeight : 64;
+
+    // Jarak item aktif dari bagian atas sidebar
+    var relativeTop = activeRect.top - sidebarRect.top;
+
+    // Beri offset agar judul kategori dan menu induk tetap terlihat di atasnya (~90px)
+    var desiredOffsetFromHeader = 90;
+    var scrollDelta = relativeTop - headerHeight - desiredOffsetFromHeader;
+    var targetScrollTop = Math.max(0, sidebarEl.scrollTop + scrollDelta);
+
+    sidebarEl.scrollTo({
+      top: Math.round(targetScrollTop),
+      behavior: smooth ? 'smooth' : 'auto'
+    });
+  }
+
+  // Jalankan segera saat DOM siap dan ulangi setelah layout selesai dirender
+  scrollSidebarToActiveItem(false);
+  setTimeout(function () {
+    scrollSidebarToActiveItem(true);
+  }, 150);
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      scrollSidebarToActiveItem(true);
+    }, 100);
+  });
 
   // =========================================================================
   // 3. NAVBAR DROPDOWNS (NOTIFICATION & USER PROFILE)
