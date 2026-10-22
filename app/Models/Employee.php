@@ -46,4 +46,18 @@ class Employee extends Authenticatable
     {
         return $this->hasMany(LandBankUnit::class);
     }
+    public function marketingTasks()
+    {
+        return $this->hasMany(MarketingTask::class, 'employee_id');
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'sales_id');
+    }
+
+    public function perizinanTasks()
+    {
+        return $this->hasMany(PerizinanTask::class, 'employee_id');
+    }
 }

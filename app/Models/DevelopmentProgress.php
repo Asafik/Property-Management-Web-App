@@ -13,6 +13,12 @@ class DevelopmentProgress extends Model
         'title',
         'status',
         'total_anggaran',
+        'deadline',
+        'checklist_kondisi',
+    ];
+
+    protected $casts = [
+        'checklist_kondisi' => 'array',
     ];
 
     public function unit()
@@ -23,6 +29,16 @@ class DevelopmentProgress extends Model
     public function items()
     {
         return $this->hasMany(DevelopmentProgressItem::class, 'development_progress_id');
+    }
+
+    public function pembayaranTermin()
+    {
+        return $this->hasMany(\App\Models\PembayaranTermin::class, 'development_progress_id')->orderBy('termin_ke');
+    }
+
+    public function opnameMingguan()
+    {
+        return $this->hasMany(\App\Models\OpnameMingguan::class, 'development_progress_id')->orderBy('minggu_ke');
     }
     public function deadlines()
     {

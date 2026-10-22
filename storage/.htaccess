@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Rewrite all requests within storage/ directly to Laravel's index.php
+    RewriteRule ^(.*)$ ../index.php [L]
+</IfModule>

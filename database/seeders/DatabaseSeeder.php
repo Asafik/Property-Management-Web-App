@@ -26,11 +26,27 @@ class DatabaseSeeder extends Seeder
     // }
 
     public function run(): void
-{
-    $this->call([
-        DivisionSeeder::class,
-        PositionSeeder::class,
-        EmployeeSeeder::class,
-    ]);
-}
+    {
+        $this->call([
+            DivisionSeeder::class,
+            PositionSeeder::class,
+            EmployeeSeeder::class,
+            MenuSeeder::class,
+            CompanyProfileSeeder::class,
+            CompanySettingSeeder::class,
+            BankSeeder::class,
+            MasterSkemaKprSeeder::class,
+            NotarisSeeder::class,
+            DocumentTypeSeeder::class,
+            MasterDokumenPerizinanSeeder::class,
+            MasterBiayaLegalitasSeeder::class,
+            DevelopmentProgressItemsSeeder::class,
+            PromoSeeder::class,
+            CustomerSeeder::class,
+            ChartOfAccountSeeder::class,
+            // PraLandbankDocumentSeeder::class,
+            // LandBankUnitSeeder::class,     // Dikeluarkan: seeder dummy tanah pasca
+            // PerizinanTaskSeeder::class,    // Dikeluarkan: seeder dummy tugas tanah perizinan
+        ]);
+    }
 }

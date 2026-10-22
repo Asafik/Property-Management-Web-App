@@ -46,7 +46,7 @@ return new class extends Migration
             |--------------------------------------------------------------------------
             */
 
-            $table->enum('purchase_type', ['cash', 'kpr']);
+            $table->enum('purchase_type', ['cash', 'kpr', 'cash_tempo']);
 
             /*
             |--------------------------------------------------------------------------

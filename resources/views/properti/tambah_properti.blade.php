@@ -1,6 +1,6 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Tambah Properti - Properti Management')
+@section('title', 'Tambah Pasca Land Bank - Property Management App')
 
 @section('content')
     <style>
@@ -28,7 +28,6 @@
         }
 
         @media (min-width: 768px) {
-
             .properti-form-group label,
             .properti-form-label {
                 font-size: 0.85rem;
@@ -54,7 +53,6 @@
         }
 
         @media (min-width: 768px) {
-
             .properti-form-control,
             input[type="text"].properti-form-control,
             input[type="number"].properti-form-control,
@@ -94,8 +92,9 @@
         .select2-container--bootstrap-5 .select2-selection {
             border: 1px solid #e9ecef !important;
             border-radius: 10px !important;
-            padding: 0.5rem 0.8rem !important;
+            padding: 0.45rem 0.8rem !important;
             min-height: 42px !important;
+            height: 42px !important;
             font-family: 'Nunito', sans-serif !important;
             background-color: #ffffff !important;
         }
@@ -103,7 +102,7 @@
         .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
             color: #2c2e3f !important;
             font-size: 0.9rem !important;
-            line-height: 1.5 !important;
+            line-height: 26px !important;
             padding-left: 0 !important;
         }
 
@@ -114,6 +113,23 @@
 
         .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow b {
             border-color: #9a55ff transparent transparent transparent !important;
+        }
+
+        @media (min-width: 768px) {
+            .select2-container--bootstrap-5 .select2-selection {
+                min-height: 38px !important;
+                height: 38px !important;
+                padding: 0.35rem 0.75rem !important;
+                border-radius: 8px !important;
+            }
+
+            .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+                line-height: 24px !important;
+            }
+
+            .select2-container--bootstrap-5 .select2-selection--single .select2-selection__arrow {
+                height: 36px !important;
+            }
         }
 
         .select2-container--bootstrap-5 .select2-selection:hover {
@@ -141,13 +157,14 @@
         }
 
         .select2-container--bootstrap-5 .select2-results__option--selected {
-            background-color: #9a55ff !important;
-            color: white !important;
+            background-color: #ede9fe !important;
+            color: #6d28d9 !important;
+            font-weight: 700 !important;
         }
 
         .select2-container--bootstrap-5 .select2-results__option--highlighted {
-            background: linear-gradient(135deg, #da8cff, #9a55ff) !important;
-            color: white !important;
+            background: #f5f3ff !important;
+            color: #7c3aed !important;
         }
 
         .select2-container--bootstrap-5 .select2-search--dropdown .select2-search__field {
@@ -169,14 +186,11 @@
             color: #a5b3cb !important;
         }
 
-        /* Paksa hanya 5 item yang tampil di Select2 */
         .select2-limited-items .select2-results__options {
             max-height: 200px !important;
-            /* Kurang lebih 5 item */
             overflow-y: auto !important;
         }
 
-        /* Styling scrollbar */
         .select2-limited-items .select2-results__options::-webkit-scrollbar {
             width: 6px;
         }
@@ -187,12 +201,53 @@
         }
 
         .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb {
-            background: #9a55ff;
+            background: #c7a4ff;
             border-radius: 10px;
         }
 
         .select2-limited-items .select2-results__options::-webkit-scrollbar-thumb:hover {
-            background: #7a3fcc;
+            background: #9a55ff;
+        }
+
+        /* Layout Grid */
+        .properti-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-right: -0.4rem;
+            margin-left: -0.4rem;
+        }
+
+        @media (min-width: 768px) {
+            .properti-row {
+                margin-right: -0.5rem;
+                margin-left: -0.5rem;
+            }
+        }
+
+        .properti-row>[class*="properti-col-"] {
+            padding-right: 0.4rem;
+            padding-left: 0.4rem;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .properti-row>[class*="properti-col-"] {
+                padding-right: 0.5rem;
+                padding-left: 0.5rem;
+            }
+        }
+
+        .properti-col-12 { flex: 0 0 100%; max-width: 100%; }
+
+        @media (min-width: 576px) {
+            .properti-col-sm-6 { flex: 0 0 50%; max-width: 50%; }
+        }
+
+        @media (min-width: 768px) {
+            .properti-col-md-3 { flex: 0 0 25%; max-width: 25%; }
+            .properti-col-md-4 { flex: 0 0 33.333333%; max-width: 33.333333%; }
+            .properti-col-md-6 { flex: 0 0 50%; max-width: 50%; }
+            .properti-col-md-12 { flex: 0 0 100%; max-width: 100%; }
         }
 
         /* Input Group */
@@ -207,41 +262,61 @@
         }
 
         .properti-input-group-text {
-            display: flex;
-            align-items: center;
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            color: #9a55ff;
+            font-weight: 600;
             padding: 0.7rem 0.8rem;
             font-size: 0.85rem;
-            font-weight: 400;
-            line-height: 1;
-            color: #6c7383;
-            text-align: center;
-            white-space: nowrap;
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 1px solid #e9ecef;
-            border-radius: 10px 0 0 10px;
-            border-right: none;
+            display: flex;
+            align-items: center;
+            border-right: none !important;
+            border-top-left-radius: 8px !important;
+            border-bottom-left-radius: 8px !important;
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            height: 100% !important;
         }
 
         @media (min-width: 768px) {
             .properti-input-group-text {
-                padding: 0.6rem 0.8rem;
-                font-size: 0.9rem;
+                padding: 0.6rem 0.85rem !important;
+                font-size: 0.9rem !important;
             }
         }
 
-        .properti-input-group .properti-form-control {
-            border-radius: 0 10px 10px 0;
+        .properti-input-group .properti-form-control,
+        .properti-input-group input[type="text"].properti-form-control,
+        .properti-input-group input[type="number"].properti-form-control {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-top-right-radius: 8px !important;
+            border-bottom-right-radius: 8px !important;
+            position: relative;
+            z-index: 1;
+            flex: 1 1 auto;
+            width: 1%;
+        }
+
+        .properti-input-group .properti-form-control:focus,
+        .properti-input-group input[type="text"].properti-form-control:focus {
+            z-index: 3;
+            border-color: #9a55ff !important;
+            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1) !important;
         }
 
         /* Button Styling */
         .properti-btn {
-            font-size: 0.8rem;
-            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            padding: 0.55rem 1.25rem;
             border-radius: 8px;
             font-weight: 600;
             transition: all 0.3s ease;
             font-family: 'Nunito', sans-serif;
-            display: inline-block;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
             text-decoration: none;
             cursor: pointer;
             border: none;
@@ -249,10 +324,14 @@
             text-align: center;
         }
 
+        .properti-btn i {
+            margin-right: 6px;
+        }
+
         @media (min-width: 576px) {
             .properti-btn {
                 width: auto;
-                padding: 0.5rem 1.2rem;
+                padding: 0.55rem 1.35rem;
             }
         }
 
@@ -266,6 +345,7 @@
             background: linear-gradient(to right, #c77cff, #8a45e6);
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4);
+            color: #ffffff;
         }
 
         .properti-btn-secondary {
@@ -402,137 +482,66 @@
             }
         }
 
-        /* Map Container */
-        .properti-map-container {
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #e9ecef;
-        }
-
-        /* Grid System */
-        .properti-row {
-            display: flex;
-            flex-wrap: wrap;
-            margin-right: -0.3rem;
-            margin-left: -0.3rem;
-        }
-
-        .properti-col-6,
-        .properti-col-12,
-        .properti-col-sm-6,
-        .properti-col-md-3,
-        .properti-col-md-4,
-        .properti-col-md-6 {
-            position: relative;
-            width: 100%;
-            padding-right: 0.3rem;
-            padding-left: 0.3rem;
-            margin-bottom: 0.5rem;
-        }
-
-        @media (min-width: 576px) {
-            .properti-col-sm-6 {
-                flex: 0 0 50%;
-                max-width: 50%;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .properti-col-md-3 {
-                flex: 0 0 25%;
-                max-width: 25%;
-            }
-
-            .properti-col-md-4 {
-                flex: 0 0 33.333333%;
-                max-width: 33.333333%;
-            }
-
-            .properti-col-md-6 {
-                flex: 0 0 50%;
-                max-width: 50%;
-            }
-        }
-
-        /* ===== MODERN CHECKBOX STYLING ===== */
+        /* Checkbox Modern Styling */
         .properti-checkbox-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 0.5rem;
+            gap: 0.75rem;
         }
 
         .properti-checkbox-wrapper {
             position: relative;
-            min-width: 140px;
-            flex: 1 1 auto;
         }
 
         .properti-checkbox-input {
             position: absolute;
             opacity: 0;
-            width: 0;
+            cursor: pointer;
             height: 0;
+            width: 0;
         }
 
         .properti-checkbox-label {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 0.75rem 1.2rem;
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
+            gap: 8px;
+            padding: 0.5rem 1rem;
+            background: #ffffff;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            user-select: none;
+            font-family: 'Nunito', sans-serif;
+            margin-bottom: 0 !important;
         }
 
-        .properti-checkbox-label::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(154, 85, 255, 0.1), rgba(218, 140, 255, 0.1));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .properti-checkbox-wrapper:hover .properti-checkbox-label {
+        .properti-checkbox-label:hover {
             border-color: #9a55ff;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(154, 85, 255, 0.15);
-        }
-
-        .properti-checkbox-wrapper:hover .properti-checkbox-label::before {
-            opacity: 1;
-        }
-
-        .properti-check-icon {
-            font-size: 1.4rem;
-            color: #d0d4db;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: white;
-            border-radius: 50%;
-            padding: 2px;
+            background: rgba(154, 85, 255, 0.02);
         }
 
         .properti-checkbox-input:checked+.properti-checkbox-label {
             border-color: #9a55ff;
-            background: linear-gradient(135deg, #f1f0ff, #e8e0ff);
-            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.2);
+            background: rgba(154, 85, 255, 0.08);
+            box-shadow: 0 2px 8px rgba(154, 85, 255, 0.15);
+        }
+
+        .properti-check-icon {
+            color: #d0d4db;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
         .properti-checkbox-input:checked+.properti-checkbox-label .properti-check-icon {
             color: #9a55ff;
-            transform: scale(1.1);
-            filter: drop-shadow(0 4px 8px rgba(154, 85, 255, 0.4));
-            animation: propertiCheckPulse 0.3s ease;
+        }
+
+        .properti-check-text {
+            font-size: 0.85rem;
+            color: #2c2e3f;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
         .properti-checkbox-input:checked+.properti-checkbox-label .properti-check-text {
@@ -540,133 +549,83 @@
             font-weight: 600;
         }
 
-        .properti-check-text {
-            transition: all 0.3s ease;
-            position: relative;
-            font-size: 0.9rem;
-            color: #2c2e3f;
-        }
-
-        .properti-check-text::before {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            transition: width 0.3s ease;
-        }
-
-        .properti-checkbox-input:checked+.properti-checkbox-label .properti-check-text::before {
-            width: 100%;
-        }
-
-        @keyframes propertiCheckPulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.2);
-            }
-
-            100% {
-                transform: scale(1.1);
-            }
-        }
-
-        /* ===== MODERN FILE UPLOAD STYLING ===== */
-        .properti-file-upload-modern {
+        /* ===== MODERN FILE UPLOAD & CARD STYLING (PARITY WITH EDIT PAGE) ===== */
+        .pratanah-file-upload-modern {
             position: relative;
             width: 100%;
         }
 
-        .properti-file-upload-modern input[type="file"] {
+        .pratanah-file-upload-modern input[type="file"] {
             position: absolute;
             opacity: 0;
             width: 100%;
             height: 100%;
             cursor: pointer;
             z-index: 2;
+            top: 0;
+            left: 0;
         }
 
-        .properti-file-upload-modern .properti-file-label-modern {
+        .pratanah-file-label-modern {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            text-align: center;
-            gap: 6px;
-            padding: 1rem 0.6rem;
+            gap: 10px;
+            padding: 0.65rem 1rem;
             background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 2px dashed #d0d4db;
-            border-radius: 12px;
+            border: 1.5px dashed #c4b5fd;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
-            min-height: 100px;
         }
 
-        @media (min-width: 576px) {
-            .properti-file-upload-modern .properti-file-label-modern {
-                flex-direction: row;
-                text-align: left;
-                gap: 8px;
-                padding: 0.75rem 1rem;
-                min-height: auto;
-            }
-        }
-
-        .properti-file-upload-modern:hover .properti-file-label-modern {
+        .pratanah-file-upload-modern:hover .pratanah-file-label-modern {
             border-color: #9a55ff;
             background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
         }
 
-        .properti-file-upload-modern .properti-file-label-modern i {
-            font-size: 1.6rem;
+        .pratanah-file-label-modern i {
+            font-size: 1.2rem;
             color: #9a55ff;
             background: rgba(154, 85, 255, 0.1);
             padding: 8px;
             border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
         }
 
-        .properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern {
+        .pratanah-file-info-modern {
             flex: 1;
-            width: 100%;
+            overflow: hidden;
         }
 
-        .properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern span {
+        .pratanah-file-info-modern span {
             display: block;
             font-weight: 600;
             color: #2c2e3f;
             font-size: 0.8rem;
-            word-break: break-word;
-        }
-
-        .properti-file-upload-modern .properti-file-label-modern .properti-file-info-modern small {
-            color: #6c7383;
-            font-size: 0.65rem;
-            display: block;
-            margin-top: 2px;
-        }
-
-        .properti-file-upload-modern .properti-file-label-modern .properti-file-size {
-            font-size: 0.7rem;
-            color: #9a55ff;
-            font-weight: 600;
-            background: rgba(154, 85, 255, 0.1);
-            padding: 4px 10px;
-            border-radius: 20px;
+            text-overflow: ellipsis;
+            overflow: hidden;
             white-space: nowrap;
-            margin-top: 5px;
         }
 
-        @media (min-width: 576px) {
-            .properti-file-upload-modern .properti-file-label-modern .properti-file-size {
-                margin-top: 0;
-            }
+        .pratanah-file-info-modern small {
+            color: #6c7383;
+            font-size: 0.68rem;
+            display: block;
+        }
+
+        .properti-doc-card-inner {
+            border: 1.5px solid #cbd5e1 !important;
+            border-radius: 10px !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .properti-doc-card-inner:hover {
+            border-color: #9a55ff !important;
+            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.08) !important;
         }
 
         /* Button Group */
@@ -700,73 +659,14 @@
             }
         }
 
-        /* Custom responsive adjustments */
-        @media (max-width: 576px) {
-            .properti-card .properti-card-body {
-                padding: 1rem !important;
-            }
-
-            .properti-btn {
-                width: 100%;
-                margin-bottom: 0.5rem;
-            }
-
-            .properti-row {
-                flex-direction: column;
-            }
-
-            .properti-row>[class*="properti-col-"] {
-                width: 100%;
-                max-width: 100%;
-            }
-
-            .properti-checkbox-group {
-                gap: 0.5rem;
-            }
-
-            .properti-checkbox-wrapper {
-                min-width: calc(50% - 0.5rem);
-                flex: 0 0 calc(50% - 0.5rem);
-            }
-
-            .properti-checkbox-label {
-                padding: 0.6rem 0.8rem;
-            }
-
-            .properti-check-text {
-                font-size: 0.85rem;
-            }
-
-            .properti-check-icon {
-                font-size: 1.2rem;
-            }
-        }
-
-        @media (min-width: 577px) and (max-width: 768px) {
-            .properti-btn {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.9rem;
-            }
-
-            .properti-checkbox-wrapper {
-                min-width: 120px;
-            }
-        }
-
-        /* Better touch targets for mobile */
-        input,
-        select,
-        textarea,
-        button {
-            font-size: 16px !important;
-        }
-
-        /* Alert transition */
-        .properti-alert-transition {
-            transition: opacity 0.5s ease;
+        /* Custom Map Container */
+        .properti-map-container {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
     </style>
-
 
     <div class="container-fluid px-2 px-md-3 px-lg-4">
         <div class="row">
@@ -803,9 +703,8 @@
                         <form action="{{ route('properti.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
-                            {{-- ALERT --}}
-                            <div class="properti-alert properti-alert-info d-flex align-items-center flex-wrap"
-                                role="alert">
+                            {{-- ALERT INFO --}}
+                            <div class="properti-alert properti-alert-info d-flex align-items-center flex-wrap" role="alert">
                                 <i class="fas fa-info-circle me-2"></i>
                                 <span>Setelah simpan data tanah, Anda bisa lanjut verifikasi legal & kavling</span>
                             </div>
@@ -819,11 +718,10 @@
                             <div class="properti-row">
                                 <div class="properti-col-md-6">
                                     <div class="properti-form-group">
-                                        <label class="properti-form-label">Nama Tanah/Proyek <span
-                                                class="properti-text-danger">*</span></label>
+                                        <label class="properti-form-label">Nama Tanah/Proyek <span class="properti-text-danger">*</span></label>
                                         <input type="text" name="namaTanah"
                                             class="properti-form-control @error('namaTanah') is-invalid @enderror"
-                                            value="{{ old('namaTanah') }}" required>
+                                            value="{{ old('namaTanah') }}" placeholder="Contoh: Green Harmony Residence Tahap 2" required>
                                         @error('namaTanah')
                                             <div class="properti-text-danger">{{ $message }}</div>
                                         @enderror
@@ -835,14 +733,12 @@
                                             Nama Perusahaan <span class="properti-text-danger">*</span>
                                         </label>
 
-                                        {{-- SELECT DENGAN SEARCH (SELECT2) - PAKSA 5 ITEM --}}
+                                        {{-- SELECT DENGAN SEARCH (SELECT2) --}}
                                         <select name="company_profile_id" id="companySelect"
-                                            class="properti-form-control @error('company_profile_id') is-invalid @enderror"
-                                            required>
+                                            class="properti-form-control @error('company_profile_id') is-invalid @enderror" required>
                                             <option value="">-- Pilih Perusahaan --</option>
                                             @foreach ($companies as $company)
-                                                <option value="{{ $company->id }}"
-                                                    {{ old('company_profile_id') == $company->id ? 'selected' : '' }}>
+                                                <option value="{{ $company->id }}" {{ old('company_profile_id') == $company->id ? 'selected' : '' }}>
                                                     {{ $company->name }}
                                                 </option>
                                             @endforeach
@@ -858,24 +754,18 @@
 
                                 <div class="properti-col-md-6">
                                     <div class="properti-form-group">
-                                        <label class="properti-form-label">Status Kepemilikan <span
-                                                class="properti-text-danger">*</span></label>
-                                        <select name="statusKepemilikan"
-                                            class="properti-form-control @error('statusKepemilikan') is-invalid @enderror"
-                                            required>
+                                        <label class="properti-form-label">Status Kepemilikan <span class="properti-text-danger">*</span></label>
+                                        <select name="statusKepemilikan" id="statusKepemilikan"
+                                            class="properti-form-control @error('statusKepemilikan') is-invalid @enderror" required onchange="filterPascaDocumentsByCategory(this.value)">
                                             <option value="">-- Pilih Status --</option>
-                                            <option value="SHM"
-                                                {{ old('statusKepemilikan') == 'SHM' ? 'selected' : '' }}>SHM (Sertifikat
-                                                Hak Milik)</option>
-                                            <option value="HGB"
-                                                {{ old('statusKepemilikan') == 'HGB' ? 'selected' : '' }}>HGB (Hak Guna
-                                                Bangunan)</option>
-                                            <option value="HGU"
-                                                {{ old('statusKepemilikan') == 'HGU' ? 'selected' : '' }}>HGU (Hak Guna
-                                                Usaha)</option>
-                                            <option value="HP"
-                                                {{ old('statusKepemilikan') == 'HP' ? 'selected' : '' }}>
-                                                HP (Hak Pakai)</option>
+                                            <option value="SHM" {{ old('statusKepemilikan', 'SHM') == 'SHM' ? 'selected' : '' }}>SHM (Sertifikat Hak Milik)</option>
+                                            <option value="HGB" {{ old('statusKepemilikan') == 'HGB' ? 'selected' : '' }}>HGB (Hak Guna Bangunan)</option>
+                                            <option value="AJB" {{ old('statusKepemilikan') == 'AJB' ? 'selected' : '' }}>AJB / Akta Hibah</option>
+                                            <option value="APHB" {{ old('statusKepemilikan') == 'APHB' ? 'selected' : '' }}>APHB (Akta Pembagian Hak Bersama)</option>
+                                            <option value="WARISAN" {{ old('statusKepemilikan') == 'WARISAN' ? 'selected' : '' }}>AJB / Hibah (Harta Warisan)</option>
+                                            <option value="PETOK_C" {{ old('statusKepemilikan') == 'PETOK_C' ? 'selected' : '' }}>Petok C / Girik</option>
+                                            <option value="HGU" {{ old('statusKepemilikan') == 'HGU' ? 'selected' : '' }}>HGU (Hak Guna Usaha)</option>
+                                            <option value="HP" {{ old('statusKepemilikan') == 'HP' ? 'selected' : '' }}>HP (Hak Pakai)</option>
                                         </select>
                                         @error('statusKepemilikan')
                                             <div class="properti-text-danger">{{ $message }}</div>
@@ -885,11 +775,10 @@
                             </div>
 
                             <div class="properti-form-group">
-                                <label class="properti-form-label">Alamat Lengkap <span
-                                        class="properti-text-danger">*</span></label>
+                                <label class="properti-form-label">Alamat Lengkap <span class="properti-text-danger">*</span></label>
                                 <input type="text" name="lokasi"
                                     class="properti-form-control @error('lokasi') is-invalid @enderror"
-                                    value="{{ old('lokasi') }}" placeholder="Jl. Contoh No. 123" required>
+                                    value="{{ old('lokasi') }}" placeholder="Contoh: Jl. Raya Kaliurang Km 9.5" required>
                                 @error('lokasi')
                                     <div class="properti-text-danger">{{ $message }}</div>
                                 @enderror
@@ -898,30 +787,34 @@
                             <div class="properti-row">
                                 <div class="properti-col-sm-6 properti-col-md-3">
                                     <div class="properti-form-group">
-                                        <label class="properti-form-label">Kelurahan/Desa</label>
-                                        <input type="text" name="kelurahan" class="properti-form-control"
-                                            value="{{ old('kelurahan') }}" placeholder="Kelurahan">
-                                    </div>
-                                </div>
-                                <div class="properti-col-sm-6 properti-col-md-3">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Kecamatan</label>
-                                        <input type="text" name="kecamatan" class="properti-form-control"
-                                            value="{{ old('kecamatan') }}" placeholder="Kecamatan">
+                                        <label class="properti-form-label">Provinsi</label>
+                                        <select name="provinsi" id="provinsiProperti" class="form-control select2 properti-form-control">
+                                            <option value="">-- Pilih Provinsi --</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="properti-col-sm-6 properti-col-md-3">
                                     <div class="properti-form-group">
                                         <label class="properti-form-label">Kota/Kabupaten</label>
-                                        <input type="text" name="kota" class="properti-form-control"
-                                            value="{{ old('kota') }}" placeholder="Kota">
+                                        <select name="kota" id="kotaProperti" class="form-control select2 properti-form-control">
+                                            <option value="">-- Pilih Kota/Kabupaten --</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="properti-col-sm-6 properti-col-md-3">
                                     <div class="properti-form-group">
-                                        <label class="properti-form-label">Provinsi</label>
-                                        <input type="text" name="provinsi" class="properti-form-control"
-                                            value="{{ old('provinsi') }}" placeholder="Provinsi">
+                                        <label class="properti-form-label">Kecamatan</label>
+                                        <select name="kecamatan" id="kecamatanProperti" class="form-control select2 properti-form-control">
+                                            <option value="">-- Pilih Kecamatan --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="properti-col-sm-6 properti-col-md-3">
+                                    <div class="properti-form-group">
+                                        <label class="properti-form-label">Kelurahan/Desa</label>
+                                        <select name="kelurahan" id="kelurahanProperti" class="form-control select2 properti-form-control">
+                                            <option value="">-- Pilih Kelurahan/Desa --</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -929,11 +822,10 @@
                             <div class="properti-row">
                                 <div class="properti-col-sm-6 properti-col-md-3">
                                     <div class="properti-form-group">
-                                        <label class="properti-form-label">Luas Tanah (m²) <span
-                                                class="properti-text-danger">*</span></label>
+                                        <label class="properti-form-label">Luas Tanah (m²) <span class="properti-text-danger">*</span></label>
                                         <input type="number" name="luasTanah"
                                             class="properti-form-control @error('luasTanah') is-invalid @enderror"
-                                            value="{{ old('luasTanah') }}" min="0" step="0.01" required>
+                                            value="{{ old('luasTanah') }}" min="0" step="0.01" placeholder="Contoh: 15000" required>
                                         @error('luasTanah')
                                             <div class="properti-text-danger">{{ $message }}</div>
                                         @enderror
@@ -941,15 +833,14 @@
                                 </div>
                                 <div class="properti-col-sm-6 properti-col-md-3">
                                     <div class="properti-form-group">
-                                        <label class="properti-form-label">Harga Perolehan <span
-                                                class="properti-text-danger">*</span></label>
+                                        <label class="properti-form-label">Harga Perolehan <span class="properti-text-danger">*</span></label>
                                         <div class="properti-input-group">
                                             <div class="properti-input-group-prepend">
                                                 <span class="properti-input-group-text">Rp</span>
                                             </div>
                                             <input type="text" name="hargaPerolehan"
                                                 class="properti-form-control @error('hargaPerolehan') is-invalid @enderror"
-                                                value="{{ old('hargaPerolehan') }}" placeholder="1.000.000" required>
+                                                value="{{ old('hargaPerolehan') }}" placeholder="1.500.000.000" required>
                                         </div>
                                         @error('hargaPerolehan')
                                             <div class="properti-text-danger">{{ $message }}</div>
@@ -958,11 +849,10 @@
                                 </div>
                                 <div class="properti-col-sm-6 properti-col-md-3">
                                     <div class="properti-form-group">
-                                        <label class="properti-form-label">Tanggal Perolehan <span
-                                                class="properti-text-danger">*</span></label>
+                                        <label class="properti-form-label">Tanggal Perolehan <span class="properti-text-danger">*</span></label>
                                         <input type="date" name="tanggalPerolehan"
                                             class="properti-form-control @error('tanggalPerolehan') is-invalid @enderror"
-                                            value="{{ old('tanggalPerolehan') }}" required>
+                                            value="{{ old('tanggalPerolehan', date('Y-m-d')) }}" required>
                                         @error('tanggalPerolehan')
                                             <div class="properti-text-danger">{{ $message }}</div>
                                         @enderror
@@ -972,7 +862,7 @@
                                     <div class="properti-form-group">
                                         <label class="properti-form-label">Kode Pos</label>
                                         <input type="text" name="kodePos" class="properti-form-control"
-                                            value="{{ old('kodePos') }}" placeholder="12345">
+                                            value="{{ old('kodePos') }}" placeholder="55581">
                                     </div>
                                 </div>
                             </div>
@@ -983,7 +873,7 @@
                                         <label class="properti-form-label">Zonasi</label>
                                         <input type="text" name="zonasi"
                                             class="properti-form-control @error('zonasi') is-invalid @enderror"
-                                            value="{{ old('zonasi') }}" placeholder="Contoh: Perumahan">
+                                            value="{{ old('zonasi') }}" placeholder="Contoh: Perumahan / Komersial">
                                         @error('zonasi')
                                             <div class="properti-text-danger">{{ $message }}</div>
                                         @enderror
@@ -995,7 +885,7 @@
                                         <label class="properti-form-label">Lebar Jalan (m)</label>
                                         <input type="number" name="lebarJalan"
                                             class="properti-form-control @error('lebarJalan') is-invalid @enderror"
-                                            value="{{ old('lebarJalan') }}" step="0.1" min="0">
+                                            value="{{ old('lebarJalan') }}" step="0.1" min="0" placeholder="Contoh: 8.5">
                                         @error('lebarJalan')
                                             <div class="properti-text-danger">{{ $message }}</div>
                                         @enderror
@@ -1008,13 +898,10 @@
                                         <select name="jenisJalan"
                                             class="properti-form-control @error('jenisJalan') is-invalid @enderror">
                                             <option value="">-- Pilih Jenis Jalan --</option>
-                                            <option value="Aspal" {{ old('jenisJalan') == 'Aspal' ? 'selected' : '' }}>
-                                                Aspal</option>
-                                            <option value="Paving Blok"
-                                                {{ old('jenisJalan') == 'Paving Blok' ? 'selected' : '' }}>Paving Blok
-                                            </option>
-                                            <option value="Tanah" {{ old('jenisJalan') == 'Tanah' ? 'selected' : '' }}>
-                                                Tanah</option>
+                                            <option value="Aspal" {{ old('jenisJalan') == 'Aspal' ? 'selected' : '' }}>Aspal</option>
+                                            <option value="Cor Beton" {{ old('jenisJalan') == 'Cor Beton' ? 'selected' : '' }}>Cor Beton</option>
+                                            <option value="Paving Blok" {{ old('jenisJalan') == 'Paving Blok' ? 'selected' : '' }}>Paving Blok</option>
+                                            <option value="Tanah" {{ old('jenisJalan') == 'Tanah' ? 'selected' : '' }}>Tanah</option>
                                         </select>
                                         @error('jenisJalan')
                                             <div class="properti-text-danger">{{ $message }}</div>
@@ -1033,17 +920,34 @@
                                             id="fasSekolah" value="1" {{ old('fasSekolah') ? 'checked' : '' }}>
                                         <label class="properti-checkbox-label" for="fasSekolah">
                                             <i class="fas fa-check-circle properti-check-icon"></i>
-                                            <span class="properti-check-text">Sekolah</span>
+                                            <span class="properti-check-text">Dekat Sekolah</span>
                                         </label>
                                     </div>
 
                                     <div class="properti-checkbox-wrapper">
                                         <input type="checkbox" class="properti-checkbox-input" name="fasRumahSakit"
-                                            id="fasRumahSakit" value="1"
-                                            {{ old('fasRumahSakit') ? 'checked' : '' }}>
+                                            id="fasRumahSakit" value="1" {{ old('fasRumahSakit') ? 'checked' : '' }}>
                                         <label class="properti-checkbox-label" for="fasRumahSakit">
                                             <i class="fas fa-check-circle properti-check-icon"></i>
                                             <span class="properti-check-text">Rumah Sakit</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="properti-checkbox-wrapper">
+                                        <input type="checkbox" class="properti-checkbox-input" name="fasPasar"
+                                            id="fasPasar" value="1" {{ old('fasPasar') ? 'checked' : '' }}>
+                                        <label class="properti-checkbox-label" for="fasPasar">
+                                            <i class="fas fa-check-circle properti-check-icon"></i>
+                                            <span class="properti-check-text">Pasar</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="properti-checkbox-wrapper">
+                                        <input type="checkbox" class="properti-checkbox-input" name="fasTransportasi"
+                                            id="fasTransportasi" value="1" {{ old('fasTransportasi') ? 'checked' : '' }}>
+                                        <label class="properti-checkbox-label" for="fasTransportasi">
+                                            <i class="fas fa-check-circle properti-check-icon"></i>
+                                            <span class="properti-check-text">Transportasi Umum</span>
                                         </label>
                                     </div>
 
@@ -1052,17 +956,16 @@
                                             id="fasMall" value="1" {{ old('fasMall') ? 'checked' : '' }}>
                                         <label class="properti-checkbox-label" for="fasMall">
                                             <i class="fas fa-check-circle properti-check-icon"></i>
-                                            <span class="properti-check-text">Mall</span>
+                                            <span class="properti-check-text">Mall / Swalayan</span>
                                         </label>
                                     </div>
 
                                     <div class="properti-checkbox-wrapper">
-                                        <input type="checkbox" class="properti-checkbox-input" name="fasTransportasi"
-                                            id="fasTransportasi" value="1"
-                                            {{ old('fasTransportasi') ? 'checked' : '' }}>
-                                        <label class="properti-checkbox-label" for="fasTransportasi">
+                                        <input type="checkbox" class="properti-checkbox-input" name="fasBank"
+                                            id="fasBank" value="1" {{ old('fasBank') ? 'checked' : '' }}>
+                                        <label class="properti-checkbox-label" for="fasBank">
                                             <i class="fas fa-check-circle properti-check-icon"></i>
-                                            <span class="properti-check-text">Transportasi Umum</span>
+                                            <span class="properti-check-text">Bank / ATM</span>
                                         </label>
                                     </div>
                                 </div>
@@ -1070,65 +973,146 @@
 
                             <div class="properti-form-group mt-3">
                                 <label class="properti-form-label">Deskripsi</label>
-                                <textarea name="deskripsi" class="properti-form-control" rows="3" placeholder="Deskripsi properti...">{{ old('deskripsi') }}</textarea>
+                                <textarea name="deskripsi" class="properti-form-control" rows="3" placeholder="Deskripsi ringkas properti...">{{ old('deskripsi') }}</textarea>
                             </div>
 
                             <hr class="properti-hr">
 
-                            {{-- ================= LEGAL ================= --}}
-                            <h5 class="properti-section-title">
-                                <i class="fas fa-file-contract me-2"></i>
-                                Dokumen Legal
-                            </h5>
+                            {{-- ================= DOKUMEN LEGAL & BERKAS (CARD GRID AESTHETIC) ================= --}}
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                                <h5 class="properti-section-title mb-0">
+                                    <i class="fas fa-file-contract me-2"></i>
+                                    Dokumen Legal & Berkas
+                                </h5>
+                                <span class="badge bg-success px-3 py-1.5 shadow-sm" id="pascaDocCountBadge" style="font-size: 0.82rem; font-weight: 700;">
+                                    6 Dokumen Wajib
+                                </span>
+                            </div>
 
-                            <div class="properti-row">
-                                @foreach ($documentTypes as $type)
-                                    <div class="properti-col-md-4">
-                                        <div class="properti-form-group">
-                                            <label class="properti-form-label">
-                                                No {{ $type->name }}
-                                            </label>
-
-                                            <input type="text" name="documents[{{ $type->id }}][number]"
-                                                class="properti-form-control" placeholder="Nomor {{ $type->name }}">
-                                        </div>
+                            <!-- Dynamic Category Alert Banner (Filtered by Status Kepemilikan) -->
+                            <div class="alert alert-info py-2.5 px-3 mb-3 d-flex align-items-center justify-content-between rounded-3 border shadow-none" id="pascaCategoryAlert" style="background: #f0fdf4; border-color: #bbf7d0 !important; color: #166534;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="fas fa-check-circle text-success" style="font-size: 1.25rem;"></i>
+                                    <div>
+                                        <span class="fw-bold d-block" style="font-size: 0.88rem;">
+                                            Berkas Wajib Dasar Perolehan: <span id="pascaCategoryName" class="badge bg-success ms-1">SHM (Sertifikat Hak Milik)</span>
+                                        </span>
+                                        <small class="text-muted d-block" id="pascaCategoryDesc" style="font-size: 0.76rem;">
+                                            6 Dokumen Wajib: SHM Asli, KTP Penjual (Suami – Istri), Kartu Keluarga, Surat Nikah, NPWP, SPPT PBB atas obyek tanah: Lunas atau Nunggak.
+                                        </small>
                                     </div>
-                                @endforeach
+                                </div>
                             </div>
 
-                            <hr class="properti-hr">
-
-                            <hr class="properti-hr">
-
-                            <h5 class="properti-section-title">
-                                <i class="fas fa-upload me-2"></i>
-                                Upload Dokumen
-                            </h5>
-
-                            <div class="properti-row">
+                            <div class="row g-3 mb-4" id="pascaDocumentGrid">
+                                @php
+                                    $initialCategory = old('statusKepemilikan', 'SHM');
+                                @endphp
                                 @foreach ($documentTypes as $type)
-                                    <div class="properti-col-md-4">
-                                        <div class="properti-form-group">
-                                            <label class="properti-form-label">
-                                                Upload {{ $type->name }}
-                                            </label>
+                                    @php
+                                        $typeCats = $type->applicable_categories ?? [];
+                                        $isApplicable = !empty($typeCats) && in_array($initialCategory, $typeCats);
+                                    @endphp
+                                    <div class="col-12 col-md-6 col-xl-4 doc-pasca-col {{ !$isApplicable ? 'd-none' : '' }}" id="doc-box-pasca-{{ $type->id }}" data-categories='@json($typeCats)' data-type-id="{{ $type->id }}">
+                                        <div class="card h-100 border shadow-sm rounded-3 p-3 position-relative properti-doc-card-inner" style="background: #ffffff;">
+                                            <!-- Header Card Box -->
+                                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
+                                                <div>
+                                                    <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">{{ $type->name }}</h6>
+                                                    @if($type->code === 'SPPT_PBB')
+                                                        <div class="mt-1">
+                                                            <span class="badge bg-info-subtle text-primary border border-primary-subtle py-0.5 px-2" style="font-size: 10px;">
+                                                                <i class="fas fa-info-circle me-1"></i>SPPT PBB: Lunas / Nunggak
+                                                            </span>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="d-flex align-items-center gap-1 flex-wrap justify-content-end">
+                                                    <span class="badge bg-light text-muted border py-1 px-2" id="doc_badge_{{ $type->id }}" style="font-size: 10px;">
+                                                        Belum Upload
+                                                    </span>
+                                                </div>
+                                            </div>
 
-                                            <div class="properti-file-upload-modern">
-                                                <input type="file" name="documents[{{ $type->id }}][file]"
-                                                    id="upload_{{ $type->id }}" accept=".pdf,.jpg,.jpeg,.png">
+                                            <!-- Input Nomor Dokumen -->
+                                            <div class="mb-2">
+                                                <label class="form-label mb-1 text-muted" style="font-size: 0.78rem; font-weight: 600;">
+                                                    Nomor Dokumen {{ $type->name }}
+                                                </label>
+                                                <input type="text" 
+                                                    name="documents[{{ $type->id }}][number]"
+                                                    class="form-control form-control-sm" 
+                                                    placeholder="Nomor {{ $type->name }}"
+                                                    value="{{ old('documents.'.$type->id.'.number') }}"
+                                                    style="font-size: 0.84rem; border-radius: 6px; border: 1.5px solid #cbd5e1;">
+                                            </div>
 
-                                                <div class="properti-file-label-modern">
-                                                    <i class="fas fa-cloud-upload-alt"></i>
-                                                    <div class="properti-file-info-modern">
-                                                        <span>Upload {{ $type->name }}</span>
-                                                        <small>Format: PDF, JPG, PNG (Max: 2MB)</small>
+                                            <!-- Upload Berkas File (Fase 1 Modern Style) -->
+                                            <div class="mb-1 flex-grow-1 d-flex flex-column justify-content-end">
+                                                <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.78rem; font-weight: 600;">
+                                                    <span>Upload Berkas {{ $type->name }}</span>
+                                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">Format PDF/JPG/PNG</span>
+                                                </label>
+                                                <div class="pratanah-file-upload-modern">
+                                                    <input type="file" name="documents[{{ $type->id }}][file]" id="upload_{{ $type->id }}" accept=".pdf,.jpg,.jpeg,.png" data-badge-id="doc_badge_{{ $type->id }}" data-type-name="{{ $type->name }}">
+                                                    <div class="pratanah-file-label-modern py-2 px-2.5 rounded-3 d-flex align-items-center gap-2.5" style="border: 1.5px dashed #c4b5fd; background: #fdfcff; transition: all 0.2s ease;">
+                                                        <div class="p-1.5 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="background: rgba(154, 85, 255, 0.12); width: 34px; height: 34px;">
+                                                            <i class="fas fa-cloud-upload-alt text-primary" style="font-size: 1.1rem; color: #9a55ff;"></i>
+                                                        </div>
+                                                        <div class="pratanah-file-info-modern overflow-hidden">
+                                                            <span class="file-label-text fw-bold text-primary text-truncate d-block" style="font-size: 0.80rem;">Pilih Berkas {{ $type->name }}</span>
+                                                            <small class="text-muted d-block" style="font-size: 0.68rem;">PDF, JPG, PNG (Maks 2MB)</small>
+                                                        </div>
                                                     </div>
-                                                    <span class="properti-file-size"></span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 @endforeach
+                            </div>
+
+                            <hr class="properti-hr">
+
+                            {{-- ================= DENAH / SITEPLAN (CARD AESTHETIC) ================= --}}
+                            <h5 class="properti-section-title">
+                                <i class="fas fa-layer-group me-2"></i>
+                                Upload Denah / Siteplan Properti
+                            </h5>
+
+                            <div class="row g-3 mb-4">
+                                <div class="col-12">
+                                    <div class="card border shadow-sm rounded-3 p-3 position-relative properti-doc-card-inner" style="background: #ffffff;">
+                                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 pb-2 border-bottom">
+                                            <div>
+                                                <h6 class="mb-0 fw-bold text-dark" style="font-size: 0.92rem;">Berkas Denah / Siteplan</h6>
+                                            </div>
+                                            <div>
+                                                <span class="badge bg-light text-muted border py-1 px-2" id="denah_badge" style="font-size: 10px;">
+                                                    Belum Upload
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-1">
+                                            <label class="form-label mb-1 text-muted d-flex align-items-center justify-content-between" style="font-size: 0.78rem; font-weight: 600;">
+                                                <span>Upload Berkas Denah / Siteplan</span>
+                                                <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25" style="font-size: 9px;">Format PDF/JPG/PNG/WEBP/SVG</span>
+                                            </label>
+                                            <div class="pratanah-file-upload-modern">
+                                                <input type="file" name="denah" id="upload_denah" accept=".pdf,.jpg,.jpeg,.png,.webp,.svg" data-badge-id="denah_badge" data-type-name="Denah / Siteplan">
+                                                <div class="pratanah-file-label-modern py-2 px-2.5 rounded-3 d-flex align-items-center gap-2.5" style="border: 1.5px dashed #c4b5fd; background: #fdfcff; transition: all 0.2s ease;">
+                                                    <div class="p-1.5 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="background: rgba(154, 85, 255, 0.12); width: 34px; height: 34px;">
+                                                        <i class="fas fa-map text-primary" style="font-size: 1.1rem; color: #9a55ff;"></i>
+                                                    </div>
+                                                    <div class="pratanah-file-info-modern overflow-hidden">
+                                                        <span class="file-label-text fw-bold text-primary text-truncate d-block" style="font-size: 0.80rem;">Pilih Berkas Denah / Siteplan</span>
+                                                        <small class="text-muted d-block" style="font-size: 0.68rem;">Format JPG, PNG, WEBP, SVG, PDF (Maks 5MB)</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <hr class="properti-hr">
@@ -1142,15 +1126,11 @@
                             <div class="properti-row">
                                 <div class="properti-col-md-4">
                                     <div class="properti-form-group">
-                                        <label class="properti-form-label">Status Legal <span
-                                                class="properti-text-danger">*</span></label>
+                                        <label class="properti-form-label">Status Legal <span class="properti-text-danger">*</span></label>
                                         <select name="statusLegal"
-                                            class="properti-form-control @error('statusLegal') is-invalid @enderror"
-                                            required>
-                                            <option value="Pending"
-                                                {{ old('statusLegal') == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                            <option value="Lengkap"
-                                                {{ old('statusLegal') == 'Lengkap' ? 'selected' : '' }}>Lengkap</option>
+                                            class="properti-form-control @error('statusLegal') is-invalid @enderror" required>
+                                            <option value="pending" {{ old('statusLegal') == 'pending' ? 'selected' : '' }}>Pending</option>
+                                            <option value="verified" {{ old('statusLegal') == 'verified' ? 'selected' : '' }}>Lengkap</option>
                                         </select>
                                         @error('statusLegal')
                                             <div class="properti-text-danger">{{ $message }}</div>
@@ -1160,17 +1140,12 @@
 
                                 <div class="properti-col-md-4">
                                     <div class="properti-form-group">
-                                        <label class="properti-form-label">Status Kavling <span
-                                                class="properti-text-danger">*</span></label>
+                                        <label class="properti-form-label">Status Kavling <span class="properti-text-danger">*</span></label>
                                         <select name="statusKavling"
-                                            class="properti-form-control @error('statusKavling') is-invalid @enderror"
-                                            required>
-                                            <option value="Belum"
-                                                {{ old('statusKavling') == 'Belum' ? 'selected' : '' }}>Belum</option>
-                                            <option value="Proses"
-                                                {{ old('statusKavling') == 'Proses' ? 'selected' : '' }}>Proses</option>
-                                            <option value="Selesai"
-                                                {{ old('statusKavling') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                                            class="properti-form-control @error('statusKavling') is-invalid @enderror" required>
+                                            <option value="Belum" {{ old('statusKavling', 'Belum') == 'Belum' ? 'selected' : '' }}>Belum</option>
+                                            <option value="progress" {{ old('statusKavling') == 'progress' ? 'selected' : '' }}>Proses</option>
+                                            <option value="Selesai" {{ old('statusKavling') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
                                         </select>
                                         @error('statusKavling')
                                             <div class="properti-text-danger">{{ $message }}</div>
@@ -1182,102 +1157,37 @@
                                     <div class="properti-form-group">
                                         <label class="properti-form-label">Prioritas</label>
                                         <select name="prioritas" class="properti-form-control">
-                                            <option value="Normal" {{ old('prioritas') == 'Normal' ? 'selected' : '' }}>
-                                                Normal</option>
-                                            <option value="Tinggi" {{ old('prioritas') == 'Tinggi' ? 'selected' : '' }}>
-                                                Tinggi</option>
-                                            <option value="Urgent" {{ old('prioritas') == 'Urgent' ? 'selected' : '' }}>
-                                                Urgent</option>
+                                            <option value="Normal" {{ old('prioritas', 'Normal') == 'Normal' ? 'selected' : '' }}>Normal</option>
+                                            <option value="Tinggi" {{ old('prioritas') == 'Tinggi' ? 'selected' : '' }}>Tinggi</option>
+                                            <option value="Urgent" {{ old('prioritas') == 'Urgent' ? 'selected' : '' }}>Urgent</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
 
-                            <hr class="properti-hr">
-                            {{-- ================= STATUS ================= --}}
-                            <h5 class="properti-section-title">
-                                <i class="fas fa-truck-monster me-2"></i>
-                                Data Cut and Fill
-                            </h5>
-                            <div class="properti-row">
-
-                                <div class="properti-col-md-3">
+                            <div class="properti-row mt-3">
+                                <div class="properti-col-md-4">
                                     <div class="properti-form-group">
-                                        <label class="properti-form-label">Elevasi Awal (m)</label>
-                                        <input type="number" step="0.01" name="elevasi_awal"
-                                            value="{{ old('elevasi_awal') }}"
-                                            class="properti-form-control @error('elevasi_awal') is-invalid @enderror">
-
-                                        @error('elevasi_awal')
+                                        <label class="properti-form-label">Fee Dokumen Verifikasi Pasca</label>
+                                        <div class="properti-input-group">
+                                            <div class="properti-input-group-prepend">
+                                                <span class="properti-input-group-text">Rp</span>
+                                            </div>
+                                            <input type="text" name="fee_document_verification"
+                                                class="properti-form-control @error('fee_document_verification') is-invalid @enderror"
+                                                value="{{ old('fee_document_verification') }}"
+                                                placeholder="Contoh: 5.000.000">
+                                        </div>
+                                        @error('fee_document_verification')
                                             <div class="properti-text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
-
-                                <div class="properti-col-md-3">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Elevasi Rencana (m)</label>
-                                        <input type="number" step="0.01" name="elevasi_rencana"
-                                            value="{{ old('elevasi_rencana') }}"
-                                            class="properti-form-control @error('elevasi_rencana') is-invalid @enderror">
-
-                                        @error('elevasi_rencana')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-2">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Volume Cut (m³)</label>
-                                        <input type="number" step="0.01" name="volume_cut"
-                                            value="{{ old('volume_cut') }}"
-                                            class="properti-form-control @error('volume_cut') is-invalid @enderror">
-
-                                        @error('volume_cut')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-2">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Volume Fill (m³)</label>
-                                        <input type="number" step="0.01" name="volume_fill"
-                                            value="{{ old('volume_fill') }}"
-                                            class="properti-form-control @error('volume_fill') is-invalid @enderror">
-
-                                        @error('volume_fill')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="properti-col-md-2">
-                                    <div class="properti-form-group">
-                                        <label class="properti-form-label">Status Cut & Fill</label>
-                                        <select name="status_cut_fill"
-                                            class="properti-form-control @error('status_cut_fill') is-invalid @enderror">
-                                            <option value="planned"
-                                                {{ old('status_cut_fill') == 'planned' ? 'selected' : '' }}>Planned
-                                            </option>
-                                            <option value="proses"
-                                                {{ old('status_cut_fill') == 'proses' ? 'selected' : '' }}>Proses</option>
-                                            <option value="selesai"
-                                                {{ old('status_cut_fill') == 'selesai' ? 'selected' : '' }}>Selesai
-                                            </option>
-                                        </select>
-
-                                        @error('status_cut_fill')
-                                            <div class="properti-text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
                             </div>
 
                             <hr class="properti-hr">
-                            {{-- ================= MAP ================= --}}
+
+                            {{-- ================= MAP KOORDINAT ================= --}}
                             <h5 class="properti-section-title">
                                 <i class="fas fa-map-marker-alt me-2"></i>
                                 Koordinat
@@ -1288,14 +1198,14 @@
                                     <div class="properti-form-group">
                                         <label class="properti-form-label">Latitude</label>
                                         <input type="text" name="latitude" class="properti-form-control"
-                                            value="{{ old('latitude') }}" placeholder="Contoh: -6.2088">
+                                            value="{{ old('latitude', '-8.1727') }}" placeholder="Contoh: -8.1727">
                                     </div>
                                 </div>
                                 <div class="properti-col-md-6">
                                     <div class="properti-form-group">
                                         <label class="properti-form-label">Longitude</label>
                                         <input type="text" name="longitude" class="properti-form-control"
-                                            value="{{ old('longitude') }}" placeholder="Contoh: 106.8456">
+                                            value="{{ old('longitude', '113.7000') }}" placeholder="Contoh: 113.7000">
                                     </div>
                                 </div>
                             </div>
@@ -1317,13 +1227,13 @@
 
                             {{-- ================= BUTTON ================= --}}
                             <div class="properti-btn-group mt-4">
-                                <a href="" class="properti-btn properti-btn-secondary">
-                                    <i class="fas fa-arrow-left me-2"></i>Kembali
+                                <a href="{{ route('properti-all') }}" class="properti-btn properti-btn-secondary">
+                                    <i class="fas fa-arrow-left mr-2"></i>Kembali
                                 </a>
 
                                 <div class="btn-right">
                                     <button type="submit" class="properti-btn properti-btn-primary">
-                                        <i class="fas fa-save me-2"></i>Simpan Properti
+                                        <i class="fas fa-save mr-2"></i>Simpan Data Tanah
                                     </button>
                                 </div>
                             </div>
@@ -1339,18 +1249,18 @@
 
 @push('scripts')
     <script>
-        // Format rupiah untuk harga perolehan
+        // Format rupiah untuk harga perolehan & fee verifikasi
         document.addEventListener('DOMContentLoaded', function() {
-            const hargaInput = document.querySelector('input[name="hargaPerolehan"]');
-            if (hargaInput) {
-                hargaInput.addEventListener('input', function(e) {
+            const rupiahInputs = document.querySelectorAll('input[name="hargaPerolehan"], input[name="fee_document_verification"]');
+            rupiahInputs.forEach(input => {
+                input.addEventListener('input', function(e) {
                     let value = this.value.replace(/\D/g, '');
                     if (value) {
                         value = parseInt(value).toLocaleString('id-ID');
                         this.value = value;
                     }
                 });
-            }
+            });
         });
 
         // Auto hide alert
@@ -1365,51 +1275,54 @@
             }
         });
 
-        // File upload modern preview
+        // File upload modern preview (paritas dengan halaman edit)
         document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.properti-file-upload-modern input[type="file"]').forEach(input => {
+            document.querySelectorAll('.pratanah-file-upload-modern input[type="file"], .properti-file-upload-modern input[type="file"]').forEach(input => {
                 input.addEventListener('change', function(e) {
-                    const fileName = e.target.files[0]?.name;
-                    const fileSize = e.target.files[0]?.size;
-                    const label = this.closest('.properti-file-upload-modern').querySelector(
-                        '.properti-file-info-modern span');
-                    const sizeSpan = this.closest('.properti-file-upload-modern').querySelector(
-                        '.properti-file-size');
+                    const file = e.target.files[0];
+                    const container = this.closest('.pratanah-file-upload-modern, .properti-file-upload-modern');
+                    const label = container ? container.querySelector('.file-label-text, .file-title-text') : null;
+                    const badgeId = this.getAttribute('data-badge-id');
+                    const typeName = this.getAttribute('data-type-name') || 'Dokumen';
 
-                    if (fileName) {
-                        label.textContent = fileName.length > 30 ? fileName.substring(0, 30) +
-                            '...' : fileName;
-                        if (fileSize) {
-                            const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                            sizeSpan.textContent = sizeInMB + ' MB';
+                    if (file) {
+                        const fileName = file.name;
+                        if (label) {
+                            label.textContent = fileName.length > 28 ? fileName.substring(0, 28) + '...' : fileName;
+                            label.className = 'file-label-text text-success fw-bold text-truncate d-block';
+                        }
+                        if (badgeId) {
+                            const badge = document.getElementById(badgeId);
+                            if (badge) {
+                                badge.className = 'badge bg-success text-white py-1 px-2';
+                                badge.innerHTML = '<i class="fas fa-check-circle me-1"></i>Siap Diupload';
+                            }
                         }
                     } else {
-                        // Reset ke teks awal berdasarkan input name
-                        const inputName = this.name;
-                        if (inputName === 'uploadSertifikat') {
-                            label.textContent = 'Upload Sertifikat';
-                        } else if (inputName === 'uploadIMB') {
-                            label.textContent = 'Upload IMB';
-                        } else if (inputName === 'uploadPBB') {
-                            label.textContent = 'Upload PBB';
-                        } else if (inputName === 'uploadAKTATanah') {
-                            label.textContent = 'Upload AKTA Tanah';
+                        if (label) {
+                            label.textContent = 'Pilih Berkas ' + typeName;
+                            label.className = 'file-label-text fw-bold text-primary text-truncate d-block';
                         }
-                        sizeSpan.textContent = '';
+                        if (badgeId) {
+                            const badge = document.getElementById(badgeId);
+                            if (badge) {
+                                badge.className = 'badge bg-light text-muted border py-1 px-2';
+                                badge.textContent = 'Belum Upload';
+                            }
+                        }
                     }
                 });
             });
         });
 
-        // SELECT2 INITIALIZATION - HANYA UNTUK SELECT PERUSAHAAN
-        // PAKSA HANYA 5 ITEM YANG TAMPIL
+        // SELECT2 & API WILAYAH INDONESIA INITIALIZATION
         $(document).ready(function() {
             $('#companySelect').select2({
                 theme: 'bootstrap-5',
-                placeholder: '-- Pilih Perusahaan --',
                 allowClear: true,
                 width: '100%',
-                dropdownCssClass: 'select2-limited-items', // Custom class untuk CSS
+                placeholder: '-- Pilih Perusahaan --',
+                dropdownCssClass: 'select2-limited-items',
                 language: {
                     noResults: function() {
                         return "Perusahaan tidak ditemukan";
@@ -1419,9 +1332,137 @@
                     }
                 }
             });
+
+            // --- API WILAYAH INDONESIA ---
+            const API_BASE_WILAYAH = 'https://www.emsifa.com/api-wilayah-indonesia/api';
+
+            const wilayahSelectIds = [
+                '#provinsiProperti', '#kotaProperti', '#kecamatanProperti', '#kelurahanProperti'
+            ];
+
+            wilayahSelectIds.forEach(id => {
+                $(id).select2({
+                    theme: 'bootstrap-5',
+                    width: '100%',
+                    dropdownParent: $(id).parent()
+                });
+            });
+
+            async function loadWilayahProperti(type, targetSelect, parentId = null, selectedValue = '') {
+                let url = '';
+                if (type === 'provinces') {
+                    url = `${API_BASE_WILAYAH}/provinces.json`;
+                } else if (type === 'regencies' && parentId) {
+                    url = `${API_BASE_WILAYAH}/regencies/${parentId}.json`;
+                } else if (type === 'districts' && parentId) {
+                    url = `${API_BASE_WILAYAH}/districts/${parentId}.json`;
+                } else if (type === 'villages' && parentId) {
+                    url = `${API_BASE_WILAYAH}/villages/${parentId}.json`;
+                }
+
+                if (!url || !targetSelect) return null;
+
+                try {
+                    const res = await fetch(url);
+                    const data = await res.json();
+
+                    let placeholder = '-- Pilih --';
+                    if (type === 'provinces') placeholder = '-- Pilih Provinsi --';
+                    else if (type === 'regencies') placeholder = '-- Pilih Kota/Kabupaten --';
+                    else if (type === 'districts') placeholder = '-- Pilih Kecamatan --';
+                    else if (type === 'villages') placeholder = '-- Pilih Kelurahan/Desa --';
+
+                    let optionsHtml = `<option value="">${placeholder}</option>`;
+                    let matchedId = null;
+
+                    data.forEach(item => {
+                        const name = item.name.trim();
+                        const isSelected = selectedValue && (name.toLowerCase() === selectedValue.trim().toLowerCase());
+                        if (isSelected) matchedId = item.id;
+                        optionsHtml += `<option value="${name}" data-id="${item.id}" ${isSelected ? 'selected' : ''}>${name}</option>`;
+                    });
+
+                    targetSelect.innerHTML = optionsHtml;
+                    $(targetSelect).trigger('change.select2');
+                    return matchedId;
+                } catch (e) {
+                    console.error(`Error loading wilayah ${type}:`, e);
+                    return null;
+                }
+            }
+
+            async function setupWilayahPropertiCascade(initialVals = {}) {
+                const provSelect = document.getElementById('provinsiProperti');
+                const kotaSelect = document.getElementById('kotaProperti');
+                const kecSelect = document.getElementById('kecamatanProperti');
+                const kelSelect = document.getElementById('kelurahanProperti');
+
+                if (!provSelect) return;
+
+                // 1. Load Provinces
+                const provId = await loadWilayahProperti('provinces', provSelect, null, initialVals.province);
+
+                if (provId) {
+                    const kotaId = await loadWilayahProperti('regencies', kotaSelect, provId, initialVals.city);
+                    if (kotaId) {
+                        const kecId = await loadWilayahProperti('districts', kecSelect, kotaId, initialVals.district);
+                        if (kecId) {
+                            await loadWilayahProperti('villages', kelSelect, kecId, initialVals.village);
+                        }
+                    }
+                }
+
+                // On Province Change
+                $('#provinsiProperti').on('change', async function() {
+                    const selectedOpt = this.options[this.selectedIndex];
+                    const pId = selectedOpt ? selectedOpt.getAttribute('data-id') : null;
+                    kotaSelect.innerHTML = '<option value="">-- Pilih Kota/Kabupaten --</option>';
+                    kecSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+                    kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+                    $('#kotaProperti, #kecamatanProperti, #kelurahanProperti').trigger('change.select2');
+
+                    if (pId) {
+                        await loadWilayahProperti('regencies', kotaSelect, pId);
+                    }
+                });
+
+                // On City Change
+                $('#kotaProperti').on('change', async function() {
+                    const selectedOpt = this.options[this.selectedIndex];
+                    const cId = selectedOpt ? selectedOpt.getAttribute('data-id') : null;
+                    kecSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+                    kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+                    $('#kecamatanProperti, #kelurahanProperti').trigger('change.select2');
+
+                    if (cId) {
+                        await loadWilayahProperti('districts', kecSelect, cId);
+                    }
+                });
+
+                // On District Change
+                $('#kecamatanProperti').on('change', async function() {
+                    const selectedOpt = this.options[this.selectedIndex];
+                    const dId = selectedOpt ? selectedOpt.getAttribute('data-id') : null;
+                    kelSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+                    $('#kelurahanProperti').trigger('change.select2');
+
+                    if (dId) {
+                        await loadWilayahProperti('villages', kelSelect, dId);
+                    }
+                });
+            }
+
+            // Inisialisasi Wilayah
+            const initialWilayah = {
+                province: "{{ old('provinsi') }}",
+                city: "{{ old('kota') }}",
+                district: "{{ old('kecamatan') }}",
+                village: "{{ old('kelurahan') }}"
+            };
+            setupWilayahPropertiCascade(initialWilayah);
         });
 
-        // Leaflet Map
+        // Leaflet Map with Google Maps Tile Layers
         document.addEventListener("DOMContentLoaded", function() {
             let defaultLat = -8.1727;
             let defaultLng = 113.7000;
@@ -1430,18 +1471,77 @@
             let lngInput = document.querySelector('input[name="longitude"]');
             let btnLokasi = document.getElementById("btnLokasiSaya");
 
-            let lat = latInput.value ? parseFloat(latInput.value) : defaultLat;
-            let lng = lngInput.value ? parseFloat(lngInput.value) : defaultLng;
+            let lat = (latInput && latInput.value) ? parseFloat(latInput.value) : defaultLat;
+            let lng = (lngInput && lngInput.value) ? parseFloat(lngInput.value) : defaultLng;
 
-            let map = L.map('map').setView([lat, lng], 13);
+            // Google Maps Tile Layers
+            let googleRoadmap = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '&copy; Google Maps'
+            });
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(map);
+            let googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '&copy; Google Maps Satellite'
+            });
+
+            let googleTerrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+                maxZoom: 20,
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '&copy; Google Maps Terrain'
+            });
+
+            let map = L.map('map', {
+                center: [lat, lng],
+                zoom: 15,
+                layers: [googleRoadmap]
+            });
+
+            // Layer Switcher (Roadmap, Satellite, Terrain)
+            let baseMaps = {
+                "Google Roadmap": googleRoadmap,
+                "Google Satellite": googleHybrid,
+                "Google Terrain": googleTerrain
+            };
+            L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
+
+            let redIcon = L.divIcon({
+                className: 'custom-red-marker-pin',
+                html: `
+                    <div style="
+                        position: relative;
+                        width: 34px;
+                        height: 44px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        filter: drop-shadow(0 3px 6px rgba(0,0,0,0.35));
+                        cursor: grab;
+                    ">
+                        <svg width="34" height="44" viewBox="0 0 24 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 0C5.373 0 0 5.373 0 12C0 21 12 32 12 32C12 32 24 21 24 12C24 5.373 18.627 0 12 0Z" fill="#e53935"/>
+                            <circle cx="12" cy="11" r="5" fill="#ffffff"/>
+                            <circle cx="12" cy="11" r="2.5" fill="#b71c1c"/>
+                        </svg>
+                    </div>
+                `,
+                iconSize: [34, 44],
+                iconAnchor: [17, 44],
+                popupAnchor: [0, -40]
+            });
 
             let marker = L.marker([lat, lng], {
-                draggable: true
+                draggable: true,
+                icon: redIcon
             }).addTo(map);
+
+            setTimeout(() => {
+                map.invalidateSize();
+                map.setView([lat, lng], 15);
+                marker.setLatLng([lat, lng]);
+            }, 300);
 
             // Drag marker
             marker.on('dragend', function() {
@@ -1468,45 +1568,129 @@
                 }
             }
 
-            latInput.addEventListener('change', updateMarkerFromInput);
-            lngInput.addEventListener('change', updateMarkerFromInput);
+            if (latInput) latInput.addEventListener('change', updateMarkerFromInput);
+            if (lngInput) lngInput.addEventListener('change', updateMarkerFromInput);
 
             // Tombol Lokasi Saya
-            btnLokasi.addEventListener("click", function() {
-                if (!navigator.geolocation) {
-                    alert("Browser tidak mendukung geolocation.");
-                    return;
-                }
-
-                btnLokasi.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Mendeteksi...';
-                btnLokasi.disabled = true;
-
-                navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        let userLat = position.coords.latitude;
-                        let userLng = position.coords.longitude;
-
-                        marker.setLatLng([userLat, userLng]);
-                        latInput.value = userLat.toFixed(6);
-                        lngInput.value = userLng.toFixed(6);
-                        map.setView([userLat, userLng], 17);
-
-                        btnLokasi.innerHTML =
-                            '<i class="fas fa-location-dot me-1"></i> Gunakan Lokasi Saya';
-                        btnLokasi.disabled = false;
-                    },
-                    function() {
-                        alert("Gagal mendapatkan lokasi.");
-                        btnLokasi.innerHTML =
-                            '<i class="fas fa-location-dot me-1"></i> Gunakan Lokasi Saya';
-                        btnLokasi.disabled = false;
+            if (btnLokasi) {
+                btnLokasi.addEventListener("click", function() {
+                    if (!navigator.geolocation) {
+                        alert("Browser tidak mendukung geolocation.");
+                        return;
                     }
-                );
-            });
+
+                    btnLokasi.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Mendeteksi...';
+                    btnLokasi.disabled = true;
+
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            let userLat = position.coords.latitude;
+                            let userLng = position.coords.longitude;
+
+                            marker.setLatLng([userLat, userLng]);
+                            latInput.value = userLat.toFixed(6);
+                            lngInput.value = userLng.toFixed(6);
+                            map.setView([userLat, userLng], 17);
+
+                            btnLokasi.innerHTML =
+                                '<i class="fas fa-location-dot me-1"></i> Gunakan Lokasi Saya';
+                            btnLokasi.disabled = false;
+                        },
+                        function() {
+                            alert("Gagal mendapatkan lokasi.");
+                            btnLokasi.innerHTML =
+                                '<i class="fas fa-location-dot me-1"></i> Gunakan Lokasi Saya';
+                            btnLokasi.disabled = false;
+                        }
+                    );
+                });
+            }
+
+            // ===============================
+            // FILTER DOKUMEN SESUAI STATUS KEPEMILIKAN
+            // ===============================
+            const PASCA_CATEGORY_META = {
+                'SHM': {
+                    name: 'SHM (Sertifikat Hak Milik)',
+                    desc: '6 Dokumen Wajib: SHM Asli, KTP Penjual (Suami – Istri), Kartu Keluarga, Surat Nikah, NPWP, SPPT PBB atas obyek tanah: Lunas atau Nunggak.'
+                },
+                'HGB': {
+                    name: 'HGB (Hak Guna Bangunan)',
+                    desc: '6 Dokumen Wajib: Sertifikat HGB Asli, KTP Penjual (Suami – Istri), Kartu Keluarga, Surat Nikah, NPWP, SPPT PBB atas obyek tanah.'
+                },
+                'SHGB': {
+                    name: 'SHGB Induk Kawasan',
+                    desc: '6 Dokumen Wajib: Sertifikat SHGB Asli, KTP Penjual (Suami – Istri), Kartu Keluarga, Surat Nikah, NPWP, SPPT PBB atas obyek tanah.'
+                },
+                'AJB': {
+                    name: 'AJB / Akta Hibah',
+                    desc: '10 Dokumen Wajib: AJB/Hibah Asli, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.'
+                },
+                'APHB': {
+                    name: 'APHB (Akta Pembagian Hak Bersama)',
+                    desc: '11 Dokumen Wajib: APHB, Ket. Ahli Waris, Akta Kematian, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak Ahli Waris.'
+                },
+                'WARISAN': {
+                    name: 'AJB & Akta Hibah (Harta Warisan)',
+                    desc: '11 Dokumen Wajib: AJB/Hibah Asli, Ket. Waris, Akta Kematian, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.'
+                },
+                'PETOK_C': {
+                    name: 'Petok C / Girik Asli',
+                    desc: '10 Dokumen Wajib: Petok C Asli, Riwayat Tanah, Letter C, Penguasaan Fisik, Tanda Batas + 5 Dokumen Identitas & Pajak.'
+                }
+            };
+
+            function getNormalizedPascaCategory(raw) {
+                const val = (raw || '').toString().toUpperCase().trim();
+                if (!val) return 'SHM';
+                if (val.includes('APHB')) return 'APHB';
+                if (val.includes('WARIS')) return 'WARISAN';
+                if (val.includes('PETOK') || val.includes('GIRIK') || val.includes('LETTER')) return 'PETOK_C';
+                if (val.includes('AJB') || val.includes('HIBAH')) return 'AJB';
+                if (val.includes('SHGB') || val.includes('HGB')) return 'SHGB';
+                if (val.includes('SHM') || val.includes('HGU') || val.includes('HP')) return 'SHM';
+                return 'SHM';
+            }
+
+            window.filterPascaDocumentsByCategory = function(selectedVal) {
+                const cat = getNormalizedPascaCategory(selectedVal);
+                const nameEl = document.getElementById('pascaCategoryName');
+                const descEl = document.getElementById('pascaCategoryDesc');
+                const countEl = document.getElementById('pascaDocCountBadge');
+
+                let visibleCount = 0;
+                document.querySelectorAll('.doc-pasca-col').forEach(card => {
+                    let rawCats = card.getAttribute('data-categories');
+                    let cats = [];
+                    try {
+                        cats = typeof rawCats === 'string' ? JSON.parse(rawCats) : (rawCats || []);
+                    } catch (e) {
+                        cats = [];
+                    }
+
+                    if (cats && cats.length > 0 && cats.includes(cat)) {
+                        card.classList.remove('d-none');
+                        visibleCount++;
+                    } else {
+                        card.classList.add('d-none');
+                    }
+                });
+
+                const info = PASCA_CATEGORY_META[cat] || { name: (selectedVal || 'SHM'), desc: `Menampilkan ${visibleCount} dokumen wajib legalitas.` };
+                if (nameEl) nameEl.textContent = info.name;
+                if (descEl) descEl.textContent = info.desc;
+                if (countEl) countEl.textContent = visibleCount + ' Dokumen Wajib';
+            };
+
+            // Jalankan filter awal saat halaman dimuat
+            const initialOwner = document.getElementById('statusKepemilikan')?.value || 'SHM';
+            filterPascaDocumentsByCategory(initialOwner);
+
+            if (window.jQuery) {
+                jQuery('#statusKepemilikan').on('change select2:select', function() {
+                    window.filterPascaDocumentsByCategory(this.value);
+                });
+            }
         });
     </script>
-
-    {{-- Leaflet CSS & JS --}}
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 @endpush

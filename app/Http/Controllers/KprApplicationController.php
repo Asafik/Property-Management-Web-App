@@ -10,21 +10,29 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\Booking;
 use App\Models\KprDocument;
+use App\Models\Promo;
+use App\Models\MasterSkemaKpr;
 class KprApplicationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+  
     public function show(Booking $booking)
 {
     // load relasi customer + unit
-    $booking->load(['customer', 'unit']);
+    $booking->load(['customer.documents', 'unit']);
+
+    // Map customer documents for easy lookup in the view
+    $existingCustomerDocs = [];
+    if ($booking->customer && $booking->customer->documents) {
+        foreach ($booking->customer->documents as $doc) {
+            $existingCustomerDocs[$doc->document_name] = $doc->file;
+        }
+    }
 
     // ambil daftar bank aktif
     $banks = Banks::where('is_active', 1)->get();
-
+    $promos = Promo::all();
     // tampilkan form KPR untuk booking ini
-    return view('marketing.pengajuan', compact('booking', 'banks'));
+    return view('marketing.pengajuan', compact('booking', 'banks', 'promos', 'existingCustomerDocs'));
 }
 
 
@@ -47,6 +55,7 @@ class KprApplicationController extends Controller
  
 public function store(Request $request)
 {
+   
     DB::beginTransaction();
 
     try {
@@ -62,6 +71,7 @@ public function store(Request $request)
             'dp'          => 'required|numeric|min:0',
             'tenor'       => 'required|numeric|min:1',
             'bunga'       => 'required|numeric|min:0',
+            'promo_id'    => 'nullable|exists:promos,id',
         ]);
 
         // =============================
@@ -83,12 +93,53 @@ public function store(Request $request)
         }
 
         // =============================
-        // HITUNG PINJAMAN & ANGSURAN
+        // AMBIL PROMO (SNAPSHOT UNTUK AUDIT)
         // =============================
-        $jumlahPinjaman   = $hargaUnit - $dp;
-        $bungaTotal       = $jumlahPinjaman * ($bunga / 100);
-        $totalPinjaman    = $jumlahPinjaman + $bungaTotal;
-        $estimasiAngsuran = $totalPinjaman / ($tenor * 12);
+        $promoId    = $request->promo_id;
+        $promoValue = 0;
+        $promoName  = null;
+
+        if ($promoId) {
+            $promo = Promo::find($promoId);
+            $promoValue = $promo->value ?? 0;
+            $promoName  = $promo->name ?? null;
+        }
+
+        // =============================
+        // HITUNG PINJAMAN & ANGSURAN (DARI MASTER DATA SKEMA KPR)
+        // =============================
+        $hargaSetelahPromo = $hargaUnit - $promoValue;
+        $jumlahPinjaman    = $hargaSetelahPromo - $dp;
+
+        if ($jumlahPinjaman < 0) {
+            $jumlahPinjaman = 0;
+        }
+
+        // Ambil nominal angsuran dari input form (yang disinkronkan dari Master Skema KPR)
+        $estimasiAngsuran = (float) preg_replace('/[^0-9]/', '', (string)$request->estimasi_angsuran);
+
+        // Jika form tidak mengirimkan atau 0, cari langsung dari Master Data Skema KPR
+        if ($estimasiAngsuran <= 0) {
+            $skemaMaster = MasterSkemaKpr::where('bank_id', $request->banks_id)
+                ->where('tenor', $tenor)
+                ->where('is_active', true)
+                ->when($request->produk_kpr, function ($q) use ($request) {
+                    $q->where('produk_kpr', $request->produk_kpr);
+                })
+                ->orderBy('id', 'asc')
+                ->first();
+
+            if ($skemaMaster) {
+                $estimasiAngsuran = (float)$skemaMaster->angsuran_per_bulan;
+            }
+        }
+
+        // Fallback jika tidak ada konfigurasi di master data
+        if ($estimasiAngsuran <= 0) {
+            $bungaTotal       = $jumlahPinjaman * ($bunga / 100);
+            $totalPinjaman    = $jumlahPinjaman + $bungaTotal;
+            $estimasiAngsuran = ($tenor > 0) ? ($totalPinjaman / ($tenor * 12)) : 0;
+        }
 
         // =============================
         // SIMPAN DATA KPR
@@ -100,6 +151,12 @@ public function store(Request $request)
             'banks_id'          => $request->banks_id,
             'produk_kpr'        => $request->produk_kpr,
             'harga_unit'        => $hargaUnit,
+
+           
+            'promo_id'          => $promoId,
+            'promo_name'        => $promoName,
+            'promo_value'       => $promoValue,
+
             'jumlah_pinjaman'   => $jumlahPinjaman,
             'dp'                => $dp,
             'tenor'             => $tenor,
@@ -122,38 +179,116 @@ public function store(Request $request)
         $booking->status_akad   = 'pending';
         $booking->status_legal  = 'pending';
         $booking->status        = 'lanjut_kpr';
-
         $booking->save();
 
         // =============================
-        // UPLOAD FILE DOKUMEN
+        // UPLOAD FILE (STANDAR & DINAMIS)
         // =============================
         $fileFields = [
-            'slip_gaji',
-            'rekening_koran',
-            'npwp',
-            'sku',
-            'surat_nikah',
-            'ktp_pasangan',
-            'kk',
-            'ktp'
+            // 1. Dokumen Bank
+            'form_bank'                     => 'Form Bank',
+            'tapera_mobile'                 => 'Tapera Mobile',
+
+            // 2. Data Diri
+            'ktp'                           => 'KTP Pemohon',
+            'ktp_pasangan'                  => 'KTP Pasangan',
+            'kk'                            => 'Kartu Keluarga (KK) Pemohon',
+            'pas_foto'                      => 'Foto Berwarna Pemohon dan Pasangan',
+            'surat_nikah'                   => 'Buku Nikah / Ket. Belum Menikah / Akta Cerai',
+            'surat_belum_nikah_kembali'     => 'Surat Keterangan Belum Menikah Kembali',
+            'surat_domisili'                => 'Surat Keterangan Domisili',
+            'surat_belum_punya_rumah'       => 'Surat Keterangan Tidak Punya Rumah',
+            'surat_pasangan_tidak_bekerja'  => 'Surat Keterangan Pasangan Tidak Bekerja',
+
+            // 3. Dokumen Karyawan Swasta
+            'npwp'                          => 'NPWP Pemohon',
+            'spt'                           => 'SPT Tahunan',
+            'surat_keterangan_kerja'        => 'Surat Keterangan Kerja',
+            'slip_gaji'                     => 'Slip Gaji 3 Bulan Terakhir',
+            'rekening_koran'                => 'Rekening Koran 3 Bulan Terakhir',
+            'denah_tempat_kerja'            => 'Denah Tempat Kerja dan Foto',
+
+            // 4. Dokumen Wiraswasta
+            'npwp_wiraswasta'               => 'NPWP Pemohon',
+            'spt_wiraswasta'                => 'SPT Tahunan',
+            'sku'                           => 'Surat Keterangan Usaha (SKU)',
+            'slip_gaji_wiraswasta'          => 'Slip Gaji / Laporan 6 Bulan Terakhir',
+            'rekening_koran_wiraswasta'     => 'Rekening Koran 6 Bulan Terakhir',
+            'denah_tempat_kerja_wiraswasta' => 'Denah Tempat Usaha dan Foto Usaha',
         ];
 
-        foreach ($fileFields as $field) {
+        $docMap = [
+            'ktp'             => 'KTP',
+            'kk'              => 'Kartu Keluarga',
+            'npwp'            => 'NPWP',
+            'npwp_wiraswasta' => 'NPWP',
+            'ktp_pasangan'    => 'KTP Pasangan'
+        ];
+
+        $destination = public_path('uploads/kpr');
+        if (!file_exists($destination)) {
+            mkdir($destination, 0755, true);
+        }
+
+        // 1. Dokumen Standar
+        foreach ($fileFields as $field => $label) {
             if ($request->hasFile($field)) {
-                $path = $request->file($field)->store('kpr', 'public');
+                $file = $request->file($field);
+                $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move($destination, $filename);
+                $path = 'kpr/' . $filename;
 
                 KprDocument::create([
                     'kpr_application_id' => $kprApplication->id,
                     'type'               => $field,
+                    'document_name'      => $label,
                     'path'               => $path,
+                    'status'             => 'pending',
                 ]);
+            } elseif (isset($docMap[$field])) {
+                // If not uploaded but exists in customer documents, copy/reference the existing customer document path!
+                $customerDoc = \App\Models\CustomerDocument::where('customer_id', $request->customer_id)
+                    ->where('document_name', $docMap[$field])
+                    ->first();
+
+                if ($customerDoc && $customerDoc->file) {
+                    KprDocument::create([
+                        'kpr_application_id' => $kprApplication->id,
+                        'type'               => $field,
+                        'document_name'      => $label,
+                        'path'               => $customerDoc->file,
+                        'status'             => 'pending',
+                    ]);
+                }
+            }
+        }
+
+        // 2. Dokumen Tambahan Dinamis
+        if ($request->has('additional_documents') && is_array($request->additional_documents)) {
+            foreach ($request->additional_documents as $idx => $docData) {
+                if (isset($docData['file']) && $request->hasFile("additional_documents.{$idx}.file")) {
+                    $docFile = $request->file("additional_documents.{$idx}.file");
+                    $docName = !empty($docData['name']) ? trim($docData['name']) : 'Dokumen Pendukung ' . ($idx + 1);
+                    $docSlug = \Illuminate\Support\Str::slug($docName, '_');
+                    $filename = uniqid() . '_' . $docSlug . '.' . $docFile->getClientOriginalExtension();
+
+                    $docFile->move($destination, $filename);
+                    $path = 'kpr/' . $filename;
+
+                    KprDocument::create([
+                        'kpr_application_id' => $kprApplication->id,
+                        'type'               => 'custom_' . $docSlug,
+                        'document_name'      => $docName,
+                        'path'               => $path,
+                        'status'             => 'pending',
+                    ]);
+                }
             }
         }
 
         DB::commit();
 
-        return redirect()->back()
+        return redirect()->route('customer.kpr')
             ->with('success', 'Pengajuan KPR berhasil disimpan');
 
     } catch (\Throwable $e) {
@@ -164,7 +299,7 @@ public function store(Request $request)
             'error' => $e->getMessage()
         ]);
 
-        return redirect()->back()
+        return redirect()->route('customer.kpr')
             ->withInput()
             ->with('error', $e->getMessage());
     }
@@ -197,4 +332,39 @@ public function store(Request $request)
     {
         //
     }
+    public function serahTerima($id)
+    {
+        $application = KprApplication::with([
+            'customer',
+            'unit.activeBooking.sales',
+            'bank',
+            'booking.sales'
+        ])->findOrFail($id);
+
+        $unit = $application->unit;
+        $isKomersil = strtolower($unit->jenis ?? '') === 'komersil';
+        $isBuildingFinished = strtolower($unit->construction_progress ?? '') === 'selesai' || ($unit->construction_progress_percentage ?? 0) >= 100;
+
+        if ($isKomersil && !$isBuildingFinished) {
+            return redirect()->back()->with('error', 'Unit Komersil belum dapat diserahterimakan. Pembangunan fisik unit harus telah selesai 100% terlebih dahulu.');
+        }
+
+        $noBast = 'BAST/' . date('m/Y') . '/' . str_pad(
+            \App\Models\SerahTerima::count() + 1,
+            3,
+            '0',
+            STR_PAD_LEFT
+        );
+
+        return view('serah.serah-terima-kpr', [
+            'application' => $application,
+            'booking' => $application->booking,
+            'noBast' => $noBast
+        ]);
+    }
+public function pecahLegal($id)
+{
+    $application = KprApplication::findOrFail($id);
+    return redirect()->route('kpr.approve', $application->booking_id ?? $application->id);
+}
 }

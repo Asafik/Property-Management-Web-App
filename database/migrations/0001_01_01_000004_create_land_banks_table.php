@@ -73,6 +73,7 @@ return new class extends Migration
             $table->enum('status_cut_fill', ['planned', 'proses', 'selesai'])
                 ->default('planned');
     $table->timestamps();
+    
 });
 
 }

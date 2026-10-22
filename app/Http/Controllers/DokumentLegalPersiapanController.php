@@ -10,32 +10,47 @@ use Illuminate\Support\Facades\Storage;
 class DokumentLegalPersiapanController extends Controller
 {
     // Halaman daftar dokumen
-    public function index(Request $request)
-    {
-        $query = Document::query();
+   public function index(Request $request)
+{
+    $query = Document::query();
 
-        // Filter search by name
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where('name', 'like', "%{$search}%");
-        }
-
-        // Filter by has_expiry (yes/no)
-        if ($request->filled('has_expiry')) {
-            if ($request->has_expiry === 'yes') {
-                $query->where('has_expiry', true);
-            } elseif ($request->has_expiry === 'no') {
-                $query->where('has_expiry', false);
-            }
-        }
-
-        $perPage = $request->input('per_page', 10);
-
-        // Ambil data dokumen
-        $documentTypes = $query->latest()->paginate($perPage)->withQueryString();
-
-        return view('dokument.dokument-persiapan', compact('documentTypes'));
+    // Search nama dokumen
+    if ($request->filled('search')) {
+        $search = $request->search;
+        $query->where('name', 'like', "%{$search}%");
     }
+
+    // Filter wajib / opsional
+    if ($request->filled('required')) {
+
+        if ($request->required === 'yes') {
+            $query->where('required', true);
+        }
+
+        if ($request->required === 'no') {
+            $query->where('required', false);
+        }
+    }
+
+    // Sorting
+    $sortField = $request->input('sortField', 'created_at');
+    $sortDirection = $request->input('sortDirection', 'desc');
+
+    $allowedSortFields = ['name', 'description', 'required', 'created_at'];
+    if (in_array($sortField, $allowedSortFields)) {
+        $query->orderBy($sortField, $sortDirection === 'asc' ? 'asc' : 'desc');
+    } else {
+        $query->orderBy('created_at', 'desc');
+    }
+
+    $perPage = $request->input('per_page', 10);
+
+    $documentTypes = $query
+        ->paginate($perPage)
+        ->withQueryString();
+
+    return view('dokument.dokument-persiapan', compact('documentTypes'));
+}
 
     public function store(Request $request, $bookingId)
 {
@@ -61,6 +76,7 @@ class DokumentLegalPersiapanController extends Controller
     // Update status booking menjadi 'legal_done'
     $booking = Booking::findOrFail($bookingId);
     $booking->status = 'legal_done';
+    $booking->status_legal = 'done';
     $booking->save();
 
     return redirect()->back()->with('success', 'Dokumen berhasil diupload dan status booking diperbarui!');

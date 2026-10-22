@@ -1,1533 +1,876 @@
-@extends('layouts.partial.app')
+    @extends('layouts.partial.app')
 
-@section('title', 'Pengaturan - Property Management App')
+    @section('title', 'Pengaturan - Property Management App')
 
-@section('content')
-<style>
-/* ===== STYLING UNTUK HALAMAN PENGATURAN ===== */
-.card {
-    transition: all 0.3s ease;
-    margin-bottom: 1rem;
-}
+    @section('content')
+    <style>
+    /* ===== STYLING UNTUK HALAMAN PENGATURAN ===== */
+    .card {
+        transition: all 0.3s ease;
+        margin-bottom: 1rem;
+    }
 
-.card:hover {
-    box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-}
+    .card:hover {
+        box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
+    }
 
-.card-header {
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    border-bottom: 1px solid #e9ecef;
-    padding: 0.75rem;
-}
-
-@media (min-width: 576px) {
     .card-header {
-        padding: 1rem;
+        background: linear-gradient(135deg, #ffffff, #f8f9fa);
+        border-bottom: 1px solid #e9ecef;
+        padding: 0.75rem;
     }
-}
 
-@media (min-width: 768px) {
-    .card-header {
-        padding: 1.2rem;
+    @media (min-width: 576px) {
+        .card-header {
+            padding: 1rem;
+        }
     }
-}
 
-.card-body {
-    padding: 0.75rem;
-}
+    @media (min-width: 768px) {
+        .card-header {
+            padding: 1.2rem;
+        }
+    }
 
-@media (min-width: 576px) {
     .card-body {
-        padding: 1rem;
+        padding: 0.75rem;
     }
-}
 
-@media (min-width: 768px) {
-    .card-body {
-        padding: 1.2rem;
+    @media (min-width: 576px) {
+        .card-body {
+            padding: 1rem;
+        }
     }
-}
 
-/* Card Title */
-.card-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #9a55ff;
-    margin-bottom: 0;
-}
+    @media (min-width: 768px) {
+        .card-body {
+            padding: 1.2rem;
+        }
+    }
 
-@media (min-width: 576px) {
+    /* Card Title */
     .card-title {
-        font-size: 1rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #9a55ff;
+        margin-bottom: 0;
     }
-}
 
-@media (min-width: 768px) {
-    .card-title {
-        font-size: 1.1rem;
+    @media (min-width: 576px) {
+        .card-title {
+            font-size: 1rem;
+        }
     }
-}
 
-/* Form Styling */
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-group label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.3rem;
-    letter-spacing: 0.3px;
-    font-family: 'Nunito', sans-serif;
-    display: block;
-}
-
-.form-control {
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    background-color: #ffffff;
-    color: #2c2e3f;
-    width: 100%;
-}
-
-.form-control:focus {
-    border-color: #9a55ff;
-    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-    outline: none;
-}
-
-select.form-control {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239a55ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 12px;
-    padding-right: 2rem;
-}
-
-textarea.form-control {
-    min-height: 80px;
-    resize: vertical;
-}
-
-/* Input Group */
-.input-group {
-    display: flex;
-    align-items: center;
-}
-
-.input-group-prepend {
-    margin-right: -1px;
-}
-
-.input-group-text {
-    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-    border: 1px solid #e9ecef;
-    border-radius: 8px 0 0 8px;
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
-    color: #9a55ff;
-    font-weight: 600;
-}
-
-.input-group .form-control {
-    border-radius: 0 8px 8px 0;
-}
-
-/* File Upload */
-.file-upload-modern {
-    position: relative;
-    width: 100%;
-    margin-bottom: 1rem;
-}
-
-.file-upload-modern input[type="file"] {
-    position: absolute;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    z-index: 2;
-}
-
-.file-upload-label {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 8px;
-    padding: 1.5rem 1rem;
-    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-    border: 2px dashed #d0d4db;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-@media (min-width: 576px) {
-    .file-upload-label {
-        flex-direction: row;
-        text-align: left;
-        gap: 12px;
-        padding: 1rem 1.5rem;
+    @media (min-width: 768px) {
+        .card-title {
+            font-size: 1.1rem;
+        }
     }
-}
 
-.file-upload-modern:hover .file-upload-label {
-    border-color: #9a55ff;
-    background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
-}
+    /* Form Styling */
+    .form-group {
+        margin-bottom: 1rem;
+    }
 
-.file-upload-label i {
-    font-size: 2rem;
-    color: #9a55ff;
-    background: rgba(154, 85, 255, 0.1);
-    padding: 12px;
-    border-radius: 50%;
-}
+    .form-group label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #9a55ff !important;
+        margin-bottom: 0.3rem;
+        letter-spacing: 0.3px;
+        font-family: 'Nunito', sans-serif;
+        display: block;
+    }
 
-.file-upload-info {
-    flex: 1;
-}
+    .form-control {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        background-color: #ffffff;
+        color: #2c2e3f;
+        width: 100%;
+        height: 42px;
+    }
 
-.file-upload-info span {
-    display: block;
-    font-weight: 600;
-    color: #2c2e3f;
-    font-size: 0.9rem;
-    margin-bottom: 4px;
-}
+    .form-control:focus {
+        border-color: #9a55ff;
+        box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
+        outline: none;
+    }
 
-.file-upload-info small {
-    color: #6c7383;
-    font-size: 0.75rem;
-    display: block;
-}
+    textarea.form-control {
+        min-height: 80px;
+        height: auto;
+    }
 
-.file-upload-size {
-    font-size: 0.8rem;
-    color: #9a55ff;
-    font-weight: 600;
-    background: rgba(154, 85, 255, 0.1);
-    padding: 6px 12px;
-    border-radius: 20px;
-    white-space: nowrap;
-}
+    /* Input Group */
+    .input-group {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
 
-/* Tab Styling */
-.settings-tabs-wrapper {
-    background: #f6f9ff;
-    border-radius: 8px;
-    padding: 6px;
-    margin-bottom: 25px;
-    border: 1px solid #e9ecef;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
+    .input-group-prepend {
+        margin-right: -1px;
+    }
 
-.settings-tabs {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 4px;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    min-width: min-content;
-}
+    .input-group-text {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border: 1px solid #e9ecef;
+        border-radius: 8px 0 0 8px;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+        color: #9a55ff;
+        font-weight: 600;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+    }
 
-.settings-tab-item {
-    flex: 0 0 auto;
-}
+    .input-group .form-control {
+        border-radius: 0 8px 8px 0;
+        height: 42px;
+        flex: 1;
+    }
 
-.settings-tab-link {
-    display: flex;
-    align-items: center;
-    padding: 10px 16px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: #6c7383;
-    background: transparent;
-    border: none;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    gap: 6px;
-    font-family: 'Nunito', sans-serif;
-}
+    /* File Upload Styles */
+    .file-upload-wrapper {
+        position: relative;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
 
-.settings-tab-link i {
-    font-size: 1rem;
-    color: #a5b3cb;
-    transition: all 0.2s ease;
-}
+    .file-upload-area {
+        position: relative;
+        border: 2px dashed #d0d4db;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
 
-.settings-tab-link:hover {
-    color: #9a55ff;
-    background: #ffffff;
-    box-shadow: 0 2px 5px rgba(154, 85, 255, 0.1);
-}
+    .file-upload-area.has-preview {
+        border: 2px solid #9a55ff;
+        background: #ffffff;
+    }
 
-.settings-tab-link:hover i {
-    color: #9a55ff;
-}
+    .file-upload-area:hover {
+        border-color: #9a55ff;
+        box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
+    }
 
-.settings-tab-link.active {
-    color: #9a55ff;
-    background: #ffffff;
-    box-shadow: 0 2px 8px rgba(154, 85, 255, 0.15);
-    font-weight: 600;
-}
-
-.settings-tab-link.active i {
-    color: #9a55ff;
-}
-
-/* Tab Content */
-.settings-tab-pane {
-    display: none;
-}
-
-.settings-tab-pane.active {
-    display: block;
-    animation: fadeIn 0.3s ease;
-}
-
-@keyframes fadeIn {
-    from {
+    .file-upload-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Logo Preview */
-.logo-preview {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 0.5rem;
-    padding: 0.5rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-}
-
-.logo-preview img {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid #e9ecef;
-}
-
-.logo-preview-info {
-    flex: 1;
-}
-
-.logo-preview-info span {
-    display: block;
-    font-weight: 500;
-    color: #2c2e3f;
-    font-size: 0.9rem;
-}
-
-.logo-preview-info small {
-    color: #6c7383;
-    font-size: 0.7rem;
-}
-
-/* Button Styling */
-.btn {
-    font-size: 0.85rem;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    font-family: 'Nunito', sans-serif;
-    border: none;
-}
-
-@media (min-width: 576px) {
-    .btn {
-        font-size: 0.9rem;
-        padding: 0.7rem 1.2rem;
-        border-radius: 10px;
-    }
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.btn-gradient-primary {
-    background: linear-gradient(to right, #da8cff, #9a55ff);
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-}
-
-.btn-gradient-primary:hover {
-    background: linear-gradient(to right, #c77cff, #8a45e6);
-    box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4);
-}
-
-.btn-gradient-secondary {
-    background: #6c757d;
-    color: #ffffff;
-}
-
-.btn-gradient-secondary:hover {
-    background: #5a6268;
-}
-
-.btn-gradient-success {
-    background: linear-gradient(135deg, #28a745, #5cb85c);
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-}
-
-.btn-gradient-success:hover {
-    background: linear-gradient(135deg, #218838, #4cae4c);
-    box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
-}
-
-/* Badge */
-.badge {
-    padding: 0.35rem 0.6rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border-radius: 30px;
-    display: inline-block;
-    white-space: nowrap;
-}
-
-.badge.badge-info {
-    background: linear-gradient(135deg, #17a2b8, #5bc0de);
-    color: #ffffff;
-}
-
-.badge.badge-success {
-    background: linear-gradient(135deg, #28a745, #5cb85c);
-    color: #ffffff;
-}
-
-.badge.badge-warning {
-    background: linear-gradient(135deg, #ffc107, #ffdb6d);
-    color: #2c2e3f;
-}
-
-/* Responsive */
-@media (max-width: 576px) {
-    .settings-tab-link {
-        padding: 8px 12px;
-        font-size: 0.8rem;
+        cursor: pointer;
+        z-index: 10;
     }
 
-    .settings-tab-link i {
-        font-size: 0.9rem;
-    }
-}
-
-/* DataTables Custom Styling */
-.dataTables_filter,
-.dataTables_length,
-.dataTables_paginate,
-.dataTables_info {
-    display: none !important;
-}
-
-.sorting, .sorting_asc, .sorting_desc {
-    cursor: pointer;
-}
-
-.mdi {
-    vertical-align: middle;
-}
-</style>
-
-<div class="container-fluid p-2 p-sm-3 p-md-4">
-    <!-- Header Dashboard -->
-    <div class="row mb-3 mb-sm-3 mb-md-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-cog me-2" style="color: #9a55ff;"></i>
-                            Pengaturan
-                        </h3>
-                        <p class="text-muted mb-0">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Kelola pengaturan perusahaan dan aplikasi
-                        </p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-cog" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Settings Tabs -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <!-- Tab Navigation -->
-                    <div class="settings-tabs-wrapper overflow-auto mb-4">
-                        <ul class="settings-tabs" id="settingsTab" role="tablist">
-                            <li class="settings-tab-item">
-                                <a class="settings-tab-link active" id="company-tab" data-bs-toggle="tab" href="#company" role="tab">
-                                    <i class="mdi mdi-domain"></i>
-                                    <span>Profil Perusahaan</span>
-                                </a>
-                            </li>
-                            <li class="settings-tab-item">
-                                <a class="settings-tab-link" id="app-tab" data-bs-toggle="tab" href="#app" role="tab">
-                                    <i class="mdi mdi-cog"></i>
-                                    <span>Pengaturan Aplikasi</span>
-                                </a>
-                            </li>
-                            <li class="settings-tab-item">
-                                <a class="settings-tab-link" id="branding-tab" data-bs-toggle="tab" href="#branding" role="tab">
-                                    <i class="mdi mdi-palette"></i>
-                                    <span>Branding</span>
-                                </a>
-                            </li>
-                            <li class="settings-tab-item">
-                                <a class="settings-tab-link" id="notification-tab" data-bs-toggle="tab" href="#notification" role="tab">
-                                    <i class="mdi mdi-bell"></i>
-                                    <span>Notifikasi</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Tab Content -->
-                    <div class="tab-content" id="settingsTabContent">
-                        <!-- TAB 1: PROFIL PERUSAHAAN -->
-                        <div class="settings-tab-pane active" id="company" role="tabpanel">
-                            <form id="formCompany">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-domain me-1"></i>Nama Perusahaan / PT
-                                            </label>
-                                            <input type="text" class="form-control" name="company_name" value="PT Properti Management" placeholder="PT Properti Management">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-card-account-details me-1"></i>NPWP
-                                            </label>
-                                            <input type="text" class="form-control" name="npwp" value="01.234.567.8-123.000" placeholder="01.234.567.8-123.000">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-map-marker me-1"></i>Alamat Lengkap
-                                            </label>
-                                            <textarea class="form-control" name="address" rows="3">Jl. Sudirman No. 123, Jakarta Selatan 12190</textarea>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-city me-1"></i>Kota
-                                            </label>
-                                            <input type="text" class="form-control" name="city" value="Jakarta Selatan">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-map me-1"></i>Provinsi
-                                            </label>
-                                            <input type="text" class="form-control" name="province" value="DKI Jakarta">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-mailbox me-1"></i>Kode Pos
-                                            </label>
-                                            <input type="text" class="form-control" name="postal_code" value="12190">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-phone me-1"></i>No. Telepon
-                                            </label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">(021)</span>
-                                                </div>
-                                                <input type="text" class="form-control" name="phone" value="1234567">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-whatsapp me-1"></i>No. WhatsApp
-                                            </label>
-                                            <input type="text" class="form-control" name="whatsapp" value="081234567890">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-email me-1"></i>Email
-                                            </label>
-                                            <input type="email" class="form-control" name="email" value="info@propertimanagement.com">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-web me-1"></i>Website
-                                            </label>
-                                            <input type="text" class="form-control" name="website" value="www.propertimanagement.com">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-calendar me-1"></i>Tanggal Berdiri
-                                            </label>
-                                            <input type="date" class="form-control" name="founded_date" value="2010-01-01">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <hr class="my-4">
-
-                                <div class="d-flex justify-content-end gap-2">
-                                    <button type="reset" class="btn btn-gradient-secondary">Batal</button>
-                                    <button type="submit" class="btn btn-gradient-primary" onclick="alert('Data perusahaan berhasil disimpan (demo)'); return false;">Simpan Perubahan</button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- TAB 2: PENGATURAN APLIKASI -->
-                        <div class="settings-tab-pane" id="app" role="tabpanel">
-                            <form id="formApp">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-currency-usd me-1"></i>Mata Uang
-                                            </label>
-                                            <select class="form-control" name="currency">
-                                                <option value="IDR" selected>Rupiah (Rp)</option>
-                                                <option value="USD">Dolar AS (USD)</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-clock-outline me-1"></i>Zona Waktu
-                                            </label>
-                                            <select class="form-control" name="timezone">
-                                                <option value="Asia/Jakarta" selected>Asia/Jakarta (WIB)</option>
-                                                <option value="Asia/Makassar">Asia/Makassar (WITA)</option>
-                                                <option value="Asia/Jayapura">Asia/Jayapura (WIT)</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-calendar me-1"></i>Format Tanggal
-                                            </label>
-                                            <select class="form-control" name="date_format">
-                                                <option value="dd/mm/yyyy" selected>dd/mm/yyyy</option>
-                                                <option value="yyyy-mm-dd">yyyy-mm-dd</option>
-                                                <option value="mm/dd/yyyy">mm/dd/yyyy</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-ruler-square me-1"></i>Satuan Luas
-                                            </label>
-                                            <select class="form-control" name="area_unit">
-                                                <option value="m2" selected>Meter Persegi (m²)</option>
-                                                <option value="ha">Hektar (ha)</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-calculator me-1"></i>Jumlah Desimal
-                                            </label>
-                                            <select class="form-control" name="decimal_places">
-                                                <option value="0">0 (contoh: 1.000.000)</option>
-                                                <option value="2" selected>2 (contoh: 1.000.000,00)</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-percent me-1"></i>PPN Default
-                                            </label>
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" name="default_ppn" value="11" step="0.1">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">%</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <hr class="my-4">
-
-                                <div class="d-flex justify-content-end gap-2">
-                                    <button type="reset" class="btn btn-gradient-secondary">Batal</button>
-                                    <button type="submit" class="btn btn-gradient-primary" onclick="alert('Pengaturan aplikasi berhasil disimpan (demo)'); return false;">Simpan Perubahan</button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- TAB 3: BRANDING -->
-                        <div class="settings-tab-pane" id="branding" role="tabpanel">
-                            <form id="formBranding">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-format-title me-1"></i>Judul Aplikasi
-                                            </label>
-                                            <input type="text" class="form-control" name="app_name" value="Properti Management">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-palette me-1"></i>Warna Utama
-                                            </label>
-                                            <div class="input-group">
-                                                <input type="color" class="form-control" name="primary_color" value="#9a55ff" style="height: 42px; padding: 4px;">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">#9a55ff</span>
-                                                </div>
-                                            </div>
-                                            <small class="text-muted">Klik kotak warna untuk memilih warna</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-image me-1"></i>Logo Perusahaan
-                                            </label>
-                                            <div class="file-upload-modern">
-                                                <input type="file" id="uploadLogo" name="logo" accept=".jpg,.jpeg,.png,.svg">
-                                                <div class="file-upload-label">
-                                                    <i class="mdi mdi-cloud-upload"></i>
-                                                    <div class="file-upload-info">
-                                                        <span class="file-name-text">Klik untuk upload logo</span>
-                                                        <small>Format: JPG, PNG, SVG (Max 2MB)</small>
-                                                    </div>
-                                                    <span class="file-upload-size file-size-text"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>
-                                                <i class="mdi mdi-image me-1"></i>Favicon
-                                            </label>
-                                            <div class="file-upload-modern">
-                                                <input type="file" id="uploadFavicon" name="favicon" accept=".ico,.png">
-                                                <div class="file-upload-label">
-                                                    <i class="mdi mdi-cloud-upload"></i>
-                                                    <div class="file-upload-info">
-                                                        <span class="file-name-text">Klik untuk upload favicon</span>
-                                                        <small>Format: ICO, PNG (16x16, 32x32)</small>
-                                                    </div>
-                                                    <span class="file-upload-size file-size-text"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Preview Logo -->
-                                <div class="logo-preview">
-                                    <img src="https://via.placeholder.com/60x60/9a55ff/ffffff?text=Logo" alt="Logo Preview">
-                                    <div class="logo-preview-info">
-                                        <span>logo-properti-management.png</span>
-                                        <small>Ukuran: 124 KB | Terakhir diupload: 20 Feb 2026</small>
-                                    </div>
-                                </div>
-
-                                <hr class="my-4">
-
-                                <div class="d-flex justify-content-end gap-2">
-                                    <button type="reset" class="btn btn-gradient-secondary">Batal</button>
-                                    <button type="submit" class="btn btn-gradient-primary" onclick="alert('Branding berhasil disimpan (demo)'); return false;">Simpan Perubahan</button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- TAB 4: NOTIFIKASI -->
-                        <div class="settings-tab-pane" id="notification" role="tabpanel">
-                            <form id="formNotification">
-                                @csrf
-                                <div class="alert alert-info d-flex align-items-start gap-2 mb-4" style="background: linear-gradient(135deg, #d1ecf1, #bee5eb); border-left: 4px solid #17a2b8;">
-                                    <i class="mdi mdi-information-outline mt-1 flex-shrink-0" style="color: #17a2b8;"></i>
-                                    <span>Pengaturan notifikasi akan segera hadir di versi berikutnya.</span>
-                                </div>
-
-                                <div class="text-center py-5">
-                                    <i class="mdi mdi-bell" style="font-size: 5rem; color: #e0e4e9;"></i>
-                                    <h5 class="mt-3 text-muted">Fitur Notifikasi Sedang dalam Pengembangan</h5>
-                                    <p class="text-muted">Kami akan segera menambahkan fitur notifikasi email, WhatsApp, dan in-app.</p>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tombol Kembali -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body d-flex justify-content-start">
-                    <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
-                        <i class="mdi mdi-arrow-left me-1"></i>Kembali ke Dashboard
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-@push('scripts')
-<script>
-$(document).ready(function() {
-    // File upload preview untuk logo
-    $('#uploadLogo, #uploadFavicon').change(function(e) {
-        const fileName = e.target.files[0]?.name;
-        const fileSize = e.target.files[0]?.size;
-        const $fileUpload = $(this).closest('.file-upload-modern');
-        const $fileNameSpan = $fileUpload.find('.file-upload-info span');
-        const $fileSizeSpan = $fileUpload.find('.file-upload-size');
-
-        if (fileName) {
-            $fileNameSpan.text(fileName.length > 40 ? fileName.substring(0, 40) + '...' : fileName);
-            if (fileSize) {
-                const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                $fileSizeSpan.text(sizeInMB + ' MB');
-            }
-        } else {
-            const inputId = $(this).attr('id');
-            if (inputId === 'uploadLogo') {
-                $fileNameSpan.text('Klik untuk@extends('layouts.partial.app')
-
-@section('title', 'Pengaturan - Property Management App')
-
-@section('content')
-<style>
-/* ===== STYLING UNTUK HALAMAN PENGATURAN ===== */
-.card {
-    transition: all 0.3s ease;
-    margin-bottom: 1rem;
-}
-
-.card:hover {
-    box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-}
-
-.card-header {
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    border-bottom: 1px solid #e9ecef;
-    padding: 0.75rem;
-}
-
-@media (min-width: 576px) {
-    .card-header {
-        padding: 1rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .card-header {
-        padding: 1.2rem;
-    }
-}
-
-.card-body {
-    padding: 0.75rem;
-}
-
-@media (min-width: 576px) {
-    .card-body {
-        padding: 1rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .card-body {
-        padding: 1.2rem;
-    }
-}
-
-/* Card Title */
-.card-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #9a55ff;
-    margin-bottom: 0;
-}
-
-@media (min-width: 576px) {
-    .card-title {
-        font-size: 1rem;
-    }
-}
-
-@media (min-width: 768px) {
-    .card-title {
-        font-size: 1.1rem;
-    }
-}
-
-/* Form Styling */
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-group label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #9a55ff !important;
-    margin-bottom: 0.3rem;
-    letter-spacing: 0.3px;
-    font-family: 'Nunito', sans-serif;
-    display: block;
-}
-
-.form-control {
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
-    background-color: #ffffff;
-    color: #2c2e3f;
-    width: 100%;
-}
-
-.form-control:focus {
-    border-color: #9a55ff;
-    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-    outline: none;
-}
-
-select.form-control {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239a55ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 12px;
-    padding-right: 2rem;
-}
-
-textarea.form-control {
-    min-height: 80px;
-    resize: vertical;
-}
-
-/* Input Group */
-.input-group {
-    display: flex;
-    align-items: center;
-}
-
-.input-group-prepend {
-    margin-right: -1px;
-}
-
-.input-group-text {
-    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-    border: 1px solid #e9ecef;
-    border-radius: 8px 0 0 8px;
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
-    color: #9a55ff;
-    font-weight: 600;
-}
-
-.input-group .form-control {
-    border-radius: 0 8px 8px 0;
-}
-
-/* File Upload */
-.file-upload-modern {
-    position: relative;
-    width: 100%;
-    margin-bottom: 1rem;
-}
-
-.file-upload-modern input[type="file"] {
-    position: absolute;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-    z-index: 2;
-}
-
-.file-upload-label {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 8px;
-    padding: 1.5rem 1rem;
-    background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-    border: 2px dashed #d0d4db;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-@media (min-width: 576px) {
-    .file-upload-label {
-        flex-direction: row;
-        text-align: left;
-        gap: 12px;
-        padding: 1rem 1.5rem;
-    }
-}
-
-.file-upload-modern:hover .file-upload-label {
-    border-color: #9a55ff;
-    background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
-}
-
-.file-upload-label i {
-    font-size: 2rem;
-    color: #9a55ff;
-    background: rgba(154, 85, 255, 0.1);
-    padding: 12px;
-    border-radius: 50%;
-}
-
-.file-upload-info {
-    flex: 1;
-}
-
-.file-upload-info span {
-    display: block;
-    font-weight: 600;
-    color: #2c2e3f;
-    font-size: 0.9rem;
-    margin-bottom: 4px;
-}
-
-.file-upload-info small {
-    color: #6c7383;
-    font-size: 0.75rem;
-    display: block;
-}
-
-.file-upload-size {
-    font-size: 0.8rem;
-    color: #9a55ff;
-    font-weight: 600;
-    background: rgba(154, 85, 255, 0.1);
-    padding: 6px 12px;
-    border-radius: 20px;
-    white-space: nowrap;
-}
-
-/* Logo Preview */
-.logo-preview {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 0.5rem;
-    padding: 0.5rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-}
-
-.logo-preview img {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid #e9ecef;
-}
-
-.logo-preview-info {
-    flex: 1;
-}
-
-.logo-preview-info span {
-    display: block;
-    font-weight: 500;
-    color: #2c2e3f;
-    font-size: 0.9rem;
-}
-
-.logo-preview-info small {
-    color: #6c7383;
-    font-size: 0.7rem;
-}
-
-/* Button Styling */
-.btn {
-    font-size: 0.85rem;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    font-family: 'Nunito', sans-serif;
-    border: none;
-}
-
-@media (min-width: 576px) {
-    .btn {
-        font-size: 0.9rem;
-        padding: 0.7rem 1.2rem;
-        border-radius: 10px;
-    }
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.btn-gradient-primary {
-    background: linear-gradient(to right, #da8cff, #9a55ff);
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-}
-
-.btn-gradient-primary:hover {
-    background: linear-gradient(to right, #c77cff, #8a45e6);
-    box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4);
-}
-
-.btn-gradient-secondary {
-    background: #6c757d;
-    color: #ffffff;
-}
-
-.btn-gradient-secondary:hover {
-    background: #5a6268;
-}
-
-.btn-gradient-success {
-    background: linear-gradient(135deg, #28a745, #5cb85c);
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-}
-
-.btn-gradient-success:hover {
-    background: linear-gradient(135deg, #218838, #4cae4c);
-    box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
-}
-
-/* Badge */
-.badge {
-    padding: 0.35rem 0.6rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border-radius: 30px;
-    display: inline-block;
-    white-space: nowrap;
-}
-
-.badge.badge-info {
-    background: linear-gradient(135deg, #17a2b8, #5bc0de);
-    color: #ffffff;
-}
-
-.badge.badge-success {
-    background: linear-gradient(135deg, #28a745, #5cb85c);
-    color: #ffffff;
-}
-
-/* Section Title */
-.section-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #2c2e3f;
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #9a55ff;
-}
-
-.section-title i {
-    color: #9a55ff;
-    margin-right: 0.5rem;
-}
-
-/* Responsive */
-@media (max-width: 576px) {
-    .logo-preview {
+    .file-upload-content {
+        display: flex;
         flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
         text-align: center;
+        width: 100%;
     }
-}
 
-/* DataTables Custom Styling */
-.dataTables_filter,
-.dataTables_length,
-.dataTables_paginate,
-.dataTables_info {
-    display: none !important;
-}
+    .file-upload-content.preview-mode {
+        padding: 1rem;
+    }
 
-.sorting, .sorting_asc, .sorting_desc {
-    cursor: pointer;
-}
+    .file-upload-icon {
+        font-size: 2.5rem;
+        color: #9a55ff;
+        background: rgba(154, 85, 255, 0.1);
+        padding: 0.8rem;
+        border-radius: 50%;
+        margin-bottom: 0.5rem;
+    }
 
-.mdi {
-    vertical-align: middle;
-}
-</style>
+    .file-upload-title {
+        display: block;
+        font-weight: 600;
+        color: #2c2e3f;
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
+    }
 
-<div class="container-fluid p-2 p-sm-3 p-md-4">
-    <!-- Header Dashboard -->
-    <div class="row mb-3 mb-sm-3 mb-md-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <h3 class="text-dark mb-1">
-                            <i class="mdi mdi-cog me-2" style="color: #9a55ff;"></i>
-                            Pengaturan
-                        </h3>
-                        <p class="text-muted mb-0">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Kelola pengaturan perusahaan dan aplikasi
-                        </p>
-                    </div>
-                    <div class="d-none d-sm-block">
-                        <i class="mdi mdi-cog" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    .file-upload-subtitle {
+        display: block;
+        color: #6c7383;
+        font-size: 0.75rem;
+    }
 
-    <!-- Settings Form - Single Tab -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-white">
-                    <h5 class="card-title mb-0">
-                        <i class="mdi mdi-cog me-2 text-primary"></i>
-                        Pengaturan Lengkap
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <form id="formSettings">
-                        @csrf
+    /* Preview Styles */
+    .preview-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
 
-                        <!-- PROFIL PERUSAHAAN -->
-                        <div class="section-title">
-                            <i class="mdi mdi-domain"></i> Profil Perusahaan
-                        </div>
+    .preview-image-wrapper {
+        position: relative;
+        display: inline-block;
+    }
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>
-                                        <i class="mdi mdi-domain me-1"></i>Nama Perusahaan / PT
-                                    </label>
-                                    <input type="text" class="form-control" name="company_name" value="PT Properti Management" placeholder="PT Properti Management">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>
-                                        <i class="mdi mdi-card-account-details me-1"></i>NPWP
-                                    </label>
-                                    <input type="text" class="form-control" name="npwp" value="01.234.567.8-123.000" placeholder="01.234.567.8-123.000">
-                                </div>
-                            </div>
-                        </div>
+    .preview-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid #9a55ff;
+        background: #ffffff;
+        box-shadow: 0 4px 10px rgba(154, 85, 255, 0.2);
+    }
 
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>
-                                        <i class="mdi mdi-map-marker me-1"></i>Alamat Lengkap
-                                    </label>
-                                    <textarea class="form-control" name="address" rows="3">Jl. Sudirman No. 123, Jakarta Selatan 12190</textarea>
-                                </div>
-                            </div>
-                        </div>
+    /* Button Styling */
+    .btn {
+        font-size: 0.85rem;
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        font-family: 'Nunito', sans-serif;
+        border: none;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>
-                                        <i class="mdi mdi-city me-1"></i>Kota
-                                    </label>
-                                    <input type="text" class="form-control" name="city" value="Jakarta Selatan">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>
-                                        <i class="mdi mdi-map me-1"></i>Provinsi
-                                    </label>
-                                    <input type="text" class="form-control" name="province" value="DKI Jakarta">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>
-                                        <i class="mdi mdi-mailbox me-1"></i>Kode Pos
-                                    </label>
-                                    <input type="text" class="form-control" name="postal_code" value="12190">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>
-                                        <i class="mdi mdi-phone me-1"></i>No. Telepon
-                                    </label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">(021)</span>
-                                        </div>
-                                        <input type="text" class="form-control" name="phone" value="1234567">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>
-                                        <i class="mdi mdi-whatsapp me-1"></i>No. WhatsApp
-                                    </label>
-                                    <input type="text" class="form-control" name="whatsapp" value="081234567890">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label>
-                                        <i class="mdi mdi-email me-1"></i>Email
-                                    </label>
-                                    <input type="email" class="form-control" name="email" value="info@propertimanagement.com">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>
-                                        <i class="mdi mdi-web me-1"></i>Website
-                                    </label>
-                                    <input type="text" class="form-control" name="website" value="www.propertimanagement.com">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>
-                                        <i class="mdi mdi-calendar me-1"></i>Tanggal Berdiri
-                                    </label>
-                                    <input type="date" class="form-control" name="founded_date" value="2010-01-01">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- BRANDING -->
-                        <div class="section-title mt-4">
-                            <i class="mdi mdi-palette"></i> Branding
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>
-                                        <i class="mdi mdi-format-title me-1"></i>Judul Aplikasi
-                                    </label>
-                                    <input type="text" class="form-control" name="app_name" value="Properti Management">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>
-                                        <i class="mdi mdi-image me-1"></i>Logo Perusahaan
-                                    </label>
-                                    <div class="file-upload-modern">
-                                        <input type="file" id="uploadLogo" name="logo" accept=".jpg,.jpeg,.png,.svg">
-                                        <div class="file-upload-label">
-                                            <i class="mdi mdi-cloud-upload"></i>
-                                            <div class="file-upload-info">
-                                                <span class="file-name-text">Klik untuk upload logo</span>
-                                                <small>Format: JPG, PNG, SVG (Max 2MB)</small>
-                                            </div>
-                                            <span class="file-upload-size file-size-text"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>
-                                        <i class="mdi mdi-image me-1"></i>Favicon
-                                    </label>
-                                    <div class="file-upload-modern">
-                                        <input type="file" id="uploadFavicon" name="favicon" accept=".ico,.png">
-                                        <div class="file-upload-label">
-                                            <i class="mdi mdi-cloud-upload"></i>
-                                            <div class="file-upload-info">
-                                                <span class="file-name-text">Klik untuk upload favicon</span>
-                                                <small>Format: ICO, PNG (16x16, 32x32)</small>
-                                            </div>
-                                            <span class="file-upload-size file-size-text"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Preview Logo -->
-                        <div class="logo-preview">
-                            <img src="https://via.placeholder.com/60x60/9a55ff/ffffff?text=Logo" alt="Logo Preview">
-                            <div class="logo-preview-info">
-                                <span>logo-properti-management.png</span>
-                                <small>Ukuran: 124 KB | Terakhir diupload: 20 Feb 2026</small>
-                            </div>
-                        </div>
-
-                        <hr class="my-4">
-
-                        <!-- Tombol Aksi -->
-                        <div class="d-flex flex-wrap justify-content-end gap-2">
-                            <button type="reset" class="btn btn-gradient-secondary">Batal</button>
-                            <button type="submit" class="btn btn-gradient-primary" onclick="alert('Pengaturan berhasil disimpan (demo)'); return false;">
-                                <i class="mdi mdi-content-save me-1"></i>Simpan Perubahan
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tombol Kembali -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body d-flex justify-content-start">
-                    <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
-                        <i class="mdi mdi-arrow-left me-1"></i>Kembali ke Dashboard
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-@push('scripts')
-<script>
-$(document).ready(function() {
-    // File upload preview untuk logo
-    $('#uploadLogo, #uploadFavicon').change(function(e) {
-        const fileName = e.target.files[0]?.name;
-        const fileSize = e.target.files[0]?.size;
-        const $fileUpload = $(this).closest('.file-upload-modern');
-        const $fileNameSpan = $fileUpload.find('.file-upload-info span');
-        const $fileSizeSpan = $fileUpload.find('.file-upload-size');
-
-        if (fileName) {
-            $fileNameSpan.text(fileName.length > 40 ? fileName.substring(0, 40) + '...' : fileName);
-            if (fileSize) {
-                const sizeInMB = (fileSize / (1024 * 1024)).toFixed(2);
-                $fileSizeSpan.text(sizeInMB + ' MB');
-            }
-        } else {
-            const inputId = $(this).attr('id');
-            if (inputId === 'uploadLogo') {
-                $fileNameSpan.text('Klik untuk upload logo');
-            } else {
-                $fileNameSpan.text('Klik untuk upload favicon');
-            }
-            $fileSizeSpan.text('');
+    @media (min-width: 576px) {
+        .btn {
+            font-size: 0.9rem;
+            padding: 0.7rem 1.2rem;
         }
-    });
-});
-</script>
-@endpush
-@endsection upload logo');
-            } else {
-                $fileNameSpan.text('Klik untuk upload favicon');
-            }
-            $fileSizeSpan.text('');
-        }
-    });
+    }
 
-    // Reset form saat tab diganti (optional)
-    $('#settingsTab a').on('click', function() {
-        // Bisa ditambahkan logic jika diperlukan
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .btn-gradient-primary {
+        background: linear-gradient(to right, #da8cff, #9a55ff);
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
+    }
+
+    .btn-gradient-primary:hover {
+        background: linear-gradient(to right, #c77cff, #8a45e6);
+        box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4);
+        color: #ffffff;
+    }
+
+    .btn-gradient-secondary {
+        background: #6c757d;
+        color: #ffffff;
+    }
+
+    .btn-gradient-secondary:hover {
+        background: #5a6268;
+        color: #ffffff;
+    }
+
+    /* Section Title */
+    .section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #2c2e3f;
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #9a55ff;
+    }
+
+    .section-title i {
+        color: #9a55ff;
+        margin-right: 0.5rem;
+    }
+
+    /* Hidden Class */
+    .hidden {
+        display: none !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 576px) {
+        .preview-image {
+            width: 80px;
+            height: 80px;
+        }
+
+        .input-group {
+            flex-wrap: nowrap;
+        }
+
+        .input-group-text {
+            padding: 0.6rem 0.6rem;
+            font-size: 0.85rem;
+        }
+    }
+
+    .mdi {
+        vertical-align: middle;
+    }
+
+    /* Info Text */
+    .text-muted-small {
+        color: #6c7383;
+        font-size: 0.75rem;
+        margin-top: 4px;
+        display: block;
+    }
+
+    /* Alert Success */
+    .alert-success {
+        background-color: rgba(154, 85, 255, 0.1);
+        border-left: 4px solid #9a55ff;
+        color: #2c2e3f;
+        padding: 12px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .alert-success i {
+        font-size: 20px;
+        color: #9a55ff;
+    }
+    </style>
+
+    <div class="container-fluid p-2 p-sm-3 p-md-4">
+        <!-- Header Dashboard -->
+        <div class="row mb-3 mb-sm-3 mb-md-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="text-dark mb-1">
+                                <i class="mdi mdi-cog me-2" style="color: #9a55ff;"></i>
+                                Pengaturan
+                            </h3>
+                            <p class="text-muted mb-0">
+                                <i class="mdi mdi-information-outline me-1"></i>
+                                Kelola pengaturan perusahaan
+                            </p>
+                        </div>
+                        <div class="d-none d-sm-block">
+                            <i class="mdi mdi-cog" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Form -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">
+                            <i class="mdi mdi-cog me-2 text-primary"></i>
+                            Pengaturan Perusahaan
+                        </h5>
+                    </div>
+                    <div class="card-body">
+
+                        <!-- Alert Success -->
+                        @if(session('success'))
+                            <div class="alert-success">
+                                <i class="mdi mdi-check-circle"></i>
+                                {{ session('success') }}
+                            </div>
+                        @endif
+
+                        <form action="{{ route('setting.update') }}" method="POST" enctype="multipart/form-data" id="formSettings">
+                            @csrf
+
+                            <!-- PROFIL PERUSAHAAN -->
+                            <div class="section-title">
+                                <i class="mdi mdi-domain"></i> Profil Perusahaan
+                            </div>
+
+                            <!-- Baris 1: Nama Perusahaan dan NPWP -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>
+                                            <i class="mdi mdi-domain me-1"></i>Nama Perusahaan / PT
+                                        </label>
+                                        <input type="text" class="form-control @error('company_name') is-invalid @enderror" name="company_name" value="{{ old('company_name', $company->company_name ?? '') }}">
+                                        @error('company_name')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>
+                                            <i class="mdi mdi-card-account-details me-1"></i>NPWP
+                                        </label>
+                                        <input type="text" class="form-control @error('npwp') is-invalid @enderror" name="npwp" value="{{ old('npwp', $company->npwp ?? '') }}" id="npwpInput">
+                                        @error('npwp')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Baris 2: Alamat Lengkap (Full Width) -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>
+                                            <i class="mdi mdi-map-marker me-1"></i>Alamat Lengkap
+                                        </label>
+                                        <textarea class="form-control @error('address') is-invalid @enderror" name="address" rows="3">{{ old('address', $company->address ?? '') }}</textarea>
+                                        @error('address')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Baris 3: Kota, Provinsi, Kode Pos -->
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>
+                                            <i class="mdi mdi-city me-1"></i>Kota
+                                        </label>
+                                        <input type="text" class="form-control @error('city') is-invalid @enderror" name="city" value="{{ old('city', $company->city ?? '') }}">
+                                        @error('city')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>
+                                            <i class="mdi mdi-map me-1"></i>Provinsi
+                                        </label>
+                                        <input type="text" class="form-control @error('province') is-invalid @enderror" name="province" value="{{ old('province', $company->province ?? '') }}">
+                                        @error('province')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>
+                                            <i class="mdi mdi-mailbox me-1"></i>Kode Pos
+                                        </label>
+                                        <input type="text" class="form-control @error('postal_code') is-invalid @enderror" name="postal_code" value="{{ old('postal_code', $company->postal_code ?? '') }}">
+                                        @error('postal_code')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Baris 4: No Telepon, No WhatsApp, Email -->
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>
+                                            <i class="mdi mdi-phone me-1"></i>No. Telepon
+                                        </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">(021)</span>
+                                            </div>
+                                            <input type="text" class="form-control @error('phone') is-invalid @enderror" name="phone" value="{{ old('phone', $company->phone ?? '') }}">
+                                        </div>
+                                        @error('phone')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>
+                                            <i class="mdi mdi-whatsapp me-1"></i>No. WhatsApp
+                                        </label>
+                                        <input type="text" class="form-control @error('whatsapp') is-invalid @enderror" name="whatsapp" value="{{ old('whatsapp', $company->whatsapp ?? '') }}">
+                                        @error('whatsapp')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>
+                                            <i class="mdi mdi-email me-1"></i>Email
+                                        </label>
+                                        <input type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email', $company->email ?? '') }}">
+                                        @error('email')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Baris 5: Website dan Tanggal Berdiri -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>
+                                            <i class="mdi mdi-web me-1"></i>Website
+                                        </label>
+                                        <input type="text" class="form-control @error('website') is-invalid @enderror" name="website" value="{{ old('website', $company->website ?? '') }}">
+                                        @error('website')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>
+                                            <i class="mdi mdi-calendar me-1"></i>Tanggal Berdiri
+                                        </label>
+                                        <input type="date" class="form-control @error('founded_date') is-invalid @enderror"
+                                            name="founded_date"
+                                            value="{{ old('founded_date', isset($company->founded_date) ? $company->founded_date->format('Y-m-d') : '') }}">
+                                        @error('founded_date')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BRANDING -->
+                            <div class="section-title mt-4">
+                                <i class="mdi mdi-palette"></i> Branding
+                            </div>
+
+                            <!-- Baris 6: Logo dan Favicon (Kanan Kiri) -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>
+                                            <i class="mdi mdi-image me-1"></i>Logo Perusahaan
+                                        </label>
+
+                                        <!-- File Upload dengan Preview - TANPA TOMBOL HAPUS -->
+                                        <div class="file-upload-wrapper">
+                                            <div class="file-upload-area" id="logoArea">
+                                                <input type="file" class="file-upload-input" id="uploadLogo" name="logo" accept=".jpg,.jpeg,.png,.svg">
+
+                                                <!-- Default Upload State -->
+                                                <div class="file-upload-content" id="logoDefault">
+                                                    <i class="mdi mdi-cloud-upload file-upload-icon"></i>
+                                                    <div class="file-upload-info">
+                                                        <span class="file-upload-title">Klik untuk upload logo</span>
+                                                        <span class="file-upload-subtitle">Format: JPG, PNG, SVG (Max 5MB)</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Preview State (Hidden by default) - TANPA TOMBOL HAPUS -->
+                                                <div class="file-upload-content preview-mode hidden" id="logoPreview">
+                                                    <div class="preview-container">
+                                                        <div class="preview-image-wrapper">
+                                                            <img src="" alt="Preview Logo" class="preview-image" id="logoPreviewImage">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @error('logo')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>
+                                            <i class="mdi mdi-image me-1"></i>Favicon
+                                        </label>
+
+                                        <!-- File Upload dengan Preview untuk Favicon - TANPA TOMBOL HAPUS -->
+                                        <div class="file-upload-wrapper">
+                                            <div class="file-upload-area" id="faviconArea">
+                                                <input type="file" class="file-upload-input" id="uploadFavicon" name="favicon" accept=".ico,.png">
+
+                                                <!-- Default Upload State -->
+                                                <div class="file-upload-content" id="faviconDefault">
+                                                    <i class="mdi mdi-cloud-upload file-upload-icon"></i>
+                                                    <div class="file-upload-info">
+                                                        <span class="file-upload-title">Klik untuk upload favicon</span>
+                                                        <span class="file-upload-subtitle">Format: ICO, PNG (Max 5MB)</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Preview State (Hidden by default) - TANPA TOMBOL HAPUS -->
+                                                <div class="file-upload-content preview-mode hidden" id="faviconPreview">
+                                                    <div class="preview-container">
+                                                        <div class="preview-image-wrapper">
+                                                            <img src="" alt="Preview Favicon" class="preview-image" id="faviconPreviewImage">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @error('favicon')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <!-- Tombol Aksi -->
+                            <div class="d-flex flex-wrap justify-content-end gap-2">
+                                <button type="submit" class="btn btn-gradient-primary" id="saveBtn">
+                                    <i class="mdi mdi-content-save"></i>
+                                    Simpan Perubahan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tombol Kembali -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body d-flex justify-content-start">
+                        <a href="{{ route('dashboard') }}" class="btn btn-gradient-secondary">
+                            <i class="mdi mdi-arrow-left me-1"></i>Kembali ke Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @push('scripts')
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+    $(document).ready(function() {
+
+        // ===== FORMAT NPWP =====
+        function formatNPWP(value) {
+            let numbers = value.replace(/\D/g, '');
+            if (numbers.length > 15) numbers = numbers.substr(0, 15);
+
+            let formatted = '';
+            for (let i = 0; i < numbers.length; i++) {
+                if (i === 2 || i === 5) {
+                    formatted += '.' + numbers[i];
+                } else if (i === 8) {
+                    formatted += '.' + numbers[i] + '-';
+                } else if (i === 11) {
+                    formatted += '.' + numbers[i];
+                } else {
+                    formatted += numbers[i];
+                }
+            }
+            return formatted;
+        }
+
+        // Format NPWP saat ini (jika sudah ada data)
+        let npwpValue = $('input[name="npwp"]').val();
+        if (npwpValue && npwpValue.length === 15 && !npwpValue.includes('.')) {
+            $('input[name="npwp"]').val(formatNPWP(npwpValue));
+        }
+
+        // Format NPWP otomatis saat mengetik
+        $('input[name="npwp"]').on('input', function() {
+            let value = $(this).val();
+            let formatted = formatNPWP(value);
+            $(this).val(formatted);
+        });
+
+        // ===== PREVIEW LOGO =====
+        // Tampilkan preview logo jika sudah ada
+        @if(isset($company) && $company->logo)
+            $('#logoPreviewImage').attr('src', '{{ asset('storage/' . $company->logo) }}');
+            $('#logoDefault').addClass('hidden');
+            $('#logoPreview').removeClass('hidden');
+            $('#logoArea').addClass('has-preview');
+        @endif
+
+        // Tampilkan preview favicon jika sudah ada
+        @if(isset($company) && $company->favicon)
+            $('#faviconPreviewImage').attr('src', '{{ asset('storage/' . $company->favicon) }}');
+            $('#faviconDefault').addClass('hidden');
+            $('#faviconPreview').removeClass('hidden');
+            $('#faviconArea').addClass('has-preview');
+        @endif
+
+        // Preview untuk Logo - saat upload file baru
+        $('#uploadLogo').change(function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validasi tipe file
+                const fileName = file.name.toLowerCase();
+                if (!fileName.match(/\.(jpg|jpeg|png|svg)$/)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Format Tidak Didukung',
+                        text: 'Gunakan JPG, PNG, atau SVG.',
+                        confirmButtonColor: '#9a55ff'
+                    });
+                    $(this).val('');
+                    return;
+                }
+
+                // Validasi ukuran file (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ukuran File Terlalu Besar',
+                        text: 'Ukuran file maksimal 5MB.',
+                        confirmButtonColor: '#9a55ff'
+                    });
+                    $(this).val('');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#logoPreviewImage').attr('src', e.target.result);
+
+                    // Sembunyikan default, tampilkan preview
+                    $('#logoDefault').addClass('hidden');
+                    $('#logoPreview').removeClass('hidden');
+                    $('#logoArea').addClass('has-preview');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Preview untuk Favicon - saat upload file baru
+        $('#uploadFavicon').change(function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validasi tipe file
+                const fileName = file.name.toLowerCase();
+                if (!fileName.match(/\.(ico|png)$/)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Format Tidak Didukung',
+                        text: 'Gunakan ICO atau PNG.',
+                        confirmButtonColor: '#9a55ff'
+                    });
+                    $(this).val('');
+                    return;
+                }
+
+                // Validasi ukuran file (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ukuran File Terlalu Besar',
+                        text: 'Ukuran file maksimal 5MB.',
+                        confirmButtonColor: '#9a55ff'
+                    });
+                    $(this).val('');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#faviconPreviewImage').attr('src', e.target.result);
+
+                    // Sembunyikan default, tampilkan preview
+                    $('#faviconDefault').addClass('hidden');
+                    $('#faviconPreview').removeClass('hidden');
+                    $('#faviconArea').addClass('has-preview');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Submit form dengan konfirmasi SweetAlert
+        $('#formSettings').on('submit', function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Simpan Perubahan?',
+                text: "Apakah Anda yakin ingin menyimpan perubahan pengaturan?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#9a55ff',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Simpan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Tampilkan loading SweetAlert
+                    Swal.fire({
+                        title: 'Menyimpan...',
+                        text: 'Mohon tunggu sebentar',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    // Bersihkan format NPWP untuk dikirim ke database
+                    let npwp = $('input[name="npwp"]').val().replace(/\D/g, '');
+                    $('input[name="npwp"]').val(npwp);
+
+                    // Submit form
+                    this.submit();
+                }
+            });
+        });
+
+        // Tampilkan SweetAlert sukses jika ada session success
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#9a55ff',
+                timer: 3000,
+                timerProgressBar: true
+            });
+        @endif
+
+        // Tampilkan SweetAlert error jika ada error validasi
+        @if($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Validasi Gagal',
+                html: `
+                    <ul style="text-align: left; margin-top: 10px;">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                `,
+                confirmButtonColor: '#9a55ff'
+            });
+        @endif
     });
-});
-</script>
-@endpush
-@endsection
+    </script>
+    @endpush
+    @endsection

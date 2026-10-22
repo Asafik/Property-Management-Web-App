@@ -2,849 +2,635 @@
 
 @section('title', 'Lokasi Properti - Property Management App')
 
-@section('content')
-    <style>
-        /* ===== STYLING UNTUK HALAMAN LOKASI ===== */
-        .card {
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-header {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-header {
-                padding: 1.2rem;
-            }
-        }
-
-        .card-body {
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-body {
-                padding: 1.2rem;
-            }
-        }
-
-        /* Card Title */
-        .card-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #9a55ff;
-            margin-bottom: 0;
-        }
-
-        @media (min-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-title {
-                font-size: 1.1rem;
-            }
-        }
-
-        /* ===== FILTER SECTION ===== */
-        .filter-card {
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .filter-card .card-body {
-            padding: 1rem !important;
-        }
-
-        .filter-card .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.4rem;
-            letter-spacing: 0.3px;
-        }
-
-        .filter-card .form-control,
-        .filter-card .form-select {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            height: auto;
-            min-height: 40px;
-            border: 1px solid #e0e4e9;
-        }
-
-        .filter-card .btn {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-            min-height: 40px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-
-        /* Form Controls */
-        .form-control,
-        .form-select {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            height: auto;
-        }
-
-        @media (min-width: 576px) {
-
-            .form-control,
-            .form-select {
-                padding: 0.7rem 1rem;
-                font-size: 0.95rem;
-                border-radius: 10px;
-            }
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        /* Form Label */
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        /* Button Styling */
-        .btn {
-            font-size: 0.85rem;
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            border: none;
-        }
-
-        @media (min-width: 576px) {
-            .btn {
-                font-size: 0.9rem;
-                padding: 0.7rem 1.2rem;
-                border-radius: 10px;
-            }
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-sm {
-            padding: 0.35rem 0.7rem;
-            font-size: 0.8rem;
-            border-radius: 6px;
-        }
-
-        .btn-gradient-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary {
-            background: #6c757d !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-secondary:hover {
-            background: #5a6268 !important;
-        }
-
-        .btn-gradient-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-danger {
-            background: linear-gradient(135deg, #dc3545, #e4606d) !important;
-            color: #ffffff !important;
-        }
-
-        .btn-gradient-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
-            color: #ffffff !important;
-        }
-
-        /* Outline Buttons */
-        .btn-outline-primary {
-            background: transparent;
-            border: 1px solid #9a55ff;
-            color: #9a55ff;
-            padding: 0.4rem 0.75rem;
-        }
-
-        .btn-outline-primary:hover {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        /* ===== MAP STYLING ===== */
-        #map {
-            height: 450px;
-            width: 100%;
-            border-radius: 12px;
-            z-index: 1;
-        }
-
-        .leaflet-container {
-            border-radius: 12px;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        .leaflet-popup-content-wrapper {
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .leaflet-popup-content {
-            margin: 12px 16px;
-            font-family: 'Nunito', sans-serif;
-            color: #2c2e3f;
-        }
-
-        .leaflet-popup-content strong {
-            color: #9a55ff;
-            font-size: 1rem;
-        }
-
-        .leaflet-popup-content p {
-            margin: 5px 0;
-            font-size: 0.85rem;
-        }
-
-        .leaflet-popup-tip-container {
-            margin-top: -1px;
-        }
-
-        /* Custom marker styling */
-        .custom-marker {
-            background: linear-gradient(135deg, #da8cff, #9a55ff);
-            border: 3px solid white;
-            border-radius: 50%;
-            width: 40px !important;
-            height: 40px !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(154, 85, 255, 0.3);
-        }
-
-        .custom-marker i {
-            color: white;
-            font-size: 20px;
-        }
-
-        /* Info Panel */
-        .info-panel {
-            background: white;
-            border-radius: 12px;
-            padding: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e9ecef;
-            margin-top: 1rem;
-        }
-
-        .info-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .info-item:last-child {
-            border-bottom: none;
-        }
-
-        .info-icon {
-            width: 35px;
-            height: 35px;
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .info-icon i {
-            color: #9a55ff;
-            font-size: 1.2rem;
-        }
-
-        .info-content {
-            flex: 1;
-        }
-
-        .info-title {
-            font-size: 0.8rem;
-            color: #6c7383;
-            margin-bottom: 0.1rem;
-        }
-
-        .info-value {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #2c2e3f;
-        }
-
-        /* ===== PAGINATION STYLING ===== */
-        .pagination {
-            margin: 0;
-            gap: 3px;
-        }
-
-        .page-item .page-link {
-            border: 1px solid #e9ecef;
-            padding: 0.35rem 0.7rem;
-            font-size: 0.75rem;
-            color: #6c7383;
-            background-color: #ffffff;
-            border-radius: 6px !important;
-            transition: all 0.2s ease;
-            min-width: 32px;
-            text-align: center;
-        }
-
-        @media (min-width: 576px) {
-            .page-item .page-link {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
-                min-width: 36px;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .page-item .page-link {
-                padding: 0.45rem 0.9rem;
-                font-size: 0.85rem;
-                min-width: 40px;
-            }
-        }
-
-        .page-item.active .page-link {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            border-color: transparent;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .page-item .page-link:hover {
-            background-color: #f8f9fa;
-            border-color: #9a55ff;
-            color: #9a55ff;
-            transform: translateY(-1px);
-        }
-
-        /* Info text pagination */
-        .pagination-info {
-            font-size: 0.8rem;
-            color: #6c7383;
-        }
-
-        @media (min-width: 576px) {
-            .pagination-info {
-                font-size: 0.85rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .pagination-info {
-                font-size: 0.9rem;
-            }
-        }
-
-        /* Typography */
-        h3.text-dark,
-        h4.text-dark {
-            font-size: 1.3rem !important;
-            font-weight: 700;
-            color: #2c2e3f !important;
-            margin-bottom: 0.5rem !important;
-        }
-
-        @media (min-width: 576px) {
-
-            h3.text-dark,
-            h4.text-dark {
-                font-size: 1.5rem !important;
-            }
-        }
-
-        @media (min-width: 768px) {
-
-            h3.text-dark,
-            h4.text-dark {
-                font-size: 1.7rem !important;
-            }
-        }
-
-        /* Icon styling */
-        .mdi {
-            vertical-align: middle;
-        }
-
-        /* Styling untuk tombol reset icon-only */
-        .btn-icon-only {
-            width: 40px;
-            padding: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-icon-only i {
-            font-size: 1.2rem;
-            margin: 0;
-        }
-
-        /* Responsive untuk mobile */
-        @media (max-width: 576px) {
-            #map {
-                height: 300px;
-            }
-
-            .info-panel {
-                margin-top: 0.5rem;
-            }
-        }
-    </style>
-
+@push('styles')
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <!-- Leaflet JavaScript -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
+    <style>
+        /* Table Responsive & Text Wrapping persis Perizinan */
+        .table-lahan {
+            width: 100% !important;
+            margin-bottom: 0;
+        }
+        .table-lahan thead th {
+            background: #f8fafc !important;
+            color: #4b5563 !important;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0 !important;
+            padding: 0.75rem 0.65rem !important;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .table-lahan tbody td {
+            padding: 0.75rem 0.65rem !important;
+            vertical-align: middle;
+            font-size: 0.83rem;
+            border-bottom: 1px solid #f1f5f9;
+            white-space: normal !important;
+        }
+        .table-lahan .col-no {
+            width: 45px;
+            text-align: center;
+            white-space: nowrap !important;
+        }
+        .table-lahan .col-aksi {
+            width: 80px;
+            text-align: center;
+            white-space: nowrap !important;
+        }
 
-    <div class="container-fluid p-2 p-sm-3 p-md-4">
-        <!-- Header -->
-        <div class="row mb-3 mb-sm-3 mb-md-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="text-dark mb-1">
-                                <i class="mdi mdi-map-marker-radius me-2" style="color: #9a55ff;"></i>
-                                Lokasi Properti
-                            </h3>
-                            <p class="text-muted mb-0">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Peta lokasi properti yang tersedia
-                            </p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-map" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
-                    </div>
+        /* Compact Table Card persis Perizinan */
+        .card.compact-table-card,
+        .compact-table-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+            transition: border-color 0.2s ease;
+            overflow: hidden;
+        }
+        .card.compact-table-card:hover,
+        .compact-table-card:hover {
+            border-color: #cbd5e1 !important;
+            box-shadow: none !important;
+        }
+        .compact-table-card .card-header {
+            background: #ffffff !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            padding: 0.75rem 1.25rem !important;
+            border-top-left-radius: 8px !important;
+            border-top-right-radius: 8px !important;
+        }
+        .compact-table-card .card-body,
+        .card.compact-table-card .card-body {
+            padding: 0 !important;
+            background: #ffffff !important;
+        }
+
+        /* Badge Status */
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0.32rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        .badge-status.available {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+        .badge-status.booking {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
+        .badge-status.sold {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            border: none;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .btn-action.fase2 {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #ffffff !important;
+            box-shadow: 0 2px 5px rgba(2, 132, 199, 0.25);
+        }
+        .btn-action.fase2 i {
+            color: #ffffff !important;
+            font-size: 1.05rem;
+        }
+        .btn-action.fase2:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.4);
+            color: #ffffff !important;
+        }
+    </style>
+@endpush
+
+@section('content')
+
+<div class="container-fluid px-2 px-md-4 py-3">
+
+    <!-- Page Title & Subtitle (Persis Perizinan) -->
+    <div class="row align-items-center mb-4">
+        <div class="col">
+            <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
+                Peta Lokasi Properti
+            </h2>
+            <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                Pemetaan geografis dan status seluruh properti dan landbank
+            </p>
+        </div>
+    </div>
+
+    <!-- 4 KPI Metrics Card Grid (Persis Perizinan / Pra Tanah) -->
+    <div class="dash-kpi-grid mb-4">
+        
+        <!-- Card 1: Total Properti (Ungu) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon purple">
+                    <i class="mdi mdi-home-city-outline"></i>
                 </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Total Properti</div>
+                    <div class="dash-kpi-val">{{ $totalLandBanks ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Proyek Terdaftar</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action purple">
+                <i class="mdi mdi-arrow-right"></i>
             </div>
         </div>
 
-        <!-- Map and Filter in One Card -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-white">
-                        <h5 class="card-title mb-0">
-                            <i class="mdi mdi-map me-2 text-primary"></i>
-                            Peta Lokasi Properti
-                        </h5>
-                    </div>
-                    <div class="card-body p-2 p-sm-3">
-                        <!-- Filter Section - LANGSUNG DI DALAM CARD MAPS -->
-                        <div class="filter-card">
-                            <div class="card-body">
-                                <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                    <i class="mdi mdi-filter-outline me-1"></i>Cari Lokasi
-                                </h6>
-
-                                <form method="GET" action="{{ route('lokasi.index') }}">
-                                    <div class="d-block d-md-none">
-                                        <div class="mb-3">
-                                            <label class="form-label">
-                                                <i class="mdi mdi-magnify me-1"></i>Cari Properti
-                                            </label>
-                                            <input type="text" name="search" value="{{ request('search') }}"
-                                                class="form-control" placeholder="Cari nama properti...">
-                                        </div>
-
-                                        <div class="row g-2">
-                                             <div class="col-md-3">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-home me-1"></i>Kategori
-                                                </label>
-                                                <select name="kategori" class="form-control">
-                                                    <option value="">Semua</option>
-
-                                                    @foreach ($zonings as $zoning)
-                                                        <option value="{{ $zoning }}"
-                                                            {{ request('kategori') == $zoning ? 'selected' : '' }}>
-                                                            {{ $zoning }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                            <div class="col-6">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-counter me-1"></i>Tampil
-                                                </label>
-                                                <select name="tampil" class="form-control">
-                                                    <option value="10" {{ request('tampil') == 10 ? 'selected' : '' }}>10
-                                                    </option>
-                                                    <option value="25" {{ request('tampil') == 25 ? 'selected' : '' }}>25
-                                                    </option>
-                                                    <option value="50" {{ request('tampil') == 50 ? 'selected' : '' }}>50
-                                                    </option>
-                                                    <option value="100" {{ request('tampil') == 100 ? 'selected' : '' }}>100
-                                                    </option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="row g-2 mt-2">
-                                            <div class="col-12">
-                                                <button type="submit" class="btn btn-gradient-primary w-100">
-                                                    <i class="mdi mdi-magnify me-1"></i>Cari
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                                <form method="GET" action="{{ route('lokasi.index') }}">
-                                    <div class="d-none d-md-block">
-                                        <div class="row g-2 align-items-end">
-
-                                            <div class="col-md-5">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-magnify me-1"></i>Cari Properti
-                                                </label>
-                                                <input type="text" name="search" value="{{ request('search') }}"
-                                                    class="form-control" placeholder="Cari nama properti...">
-                                            </div>
-
-                                            <div class="col-md-3">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-home me-1"></i>Kategori
-                                                </label>
-                                                <select name="kategori" class="form-control">
-                                                    <option value="">Semua</option>
-
-                                                    @foreach ($zonings as $zoning)
-                                                        <option value="{{ $zoning }}"
-                                                            {{ request('kategori') == $zoning ? 'selected' : '' }}>
-                                                            {{ $zoning }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <label class="form-label">
-                                                    <i class="mdi mdi-counter me-1"></i>Tampil
-                                                </label>
-                                                <select name="tampil" class="form-control">
-                                                    <option value="10" {{ request('tampil') == 10 ? 'selected' : '' }}>10
-                                                    </option>
-                                                    <option value="25" {{ request('tampil') == 25 ? 'selected' : '' }}>25
-                                                    </option>
-                                                    <option value="50" {{ request('tampil') == 50 ? 'selected' : '' }}>50
-                                                    </option>
-                                                    <option value="100" {{ request('tampil') == 100 ? 'selected' : '' }}>100
-                                                    </option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <button type="submit" class="btn btn-gradient-primary w-100">
-                                                    <i class="mdi mdi-magnify me-1"></i>Cari
-                                                </button>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                        <!-- Map Container -->
-                        <div id="map"></div>
-
-                        <!-- Info Panel -->
-                        <div class="info-panel">
-                            <div class="row g-2">
-                                <div class="col-6 col-md-3">
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="mdi mdi-home-group"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <div class="info-title">Total Properti</div>
-                                            <div class="info-value">{{ $totalLandBanks }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-3">
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="mdi mdi-check-circle"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <div class="info-title">Tersedia</div>
-                                            <div class="info-value">{{ $totalReady }} Unit</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-3">
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="mdi mdi-clock"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <div class="info-title">Booking</div>
-                                            <div class="info-value"> {{ $totalBooked }} Unit</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-3">
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="mdi mdi-cash-check"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <div class="info-title">Terjual</div>
-                                            <div class="info-value"> {{ $totalSold }} Unit</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Card 2: Unit Tersedia (Hijau) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon green">
+                    <i class="mdi mdi-check-decagram-outline"></i>
                 </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Unit Tersedia</div>
+                    <div class="dash-kpi-val">{{ $totalReady ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Siap Dipasarkan</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action green">
+                <i class="mdi mdi-arrow-right"></i>
             </div>
         </div>
 
-        <!-- Daftar Properti -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">
-                            <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                            Daftar Properti Terdekat
-                        </h5>
-                      
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Nama Properti</th>
-                                        <th>Kategori</th>
-                                        <th>Lokasi</th>
-                                        <th>Jarak</th>
-                                        <th>Status</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($landBanks as $item)
-                                        <tr>
-                                            <td class="text-center fw-bold">{{ $loop->iteration }}</td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-home-variant text-primary me-2"></i>
-                                                    {{ $item->name }}
-                                                </div>
-                                            </td>
-                                            <td>{{ $item->zoning }}</td>
-                                            <td>{{ $item->address }}</td>
-                                            <td class="distance" data-lat="{{ $item->lat }}"
-                                                data-lng="{{ $item->lng }}">
-                                                Menghitung...
-                                            </td>
-                                            <td><span class="badge badge-gradient-success">{{ $item->status }}</span></td>
-                                            <td>
-                                                <button class="btn btn-outline-primary btn-sm"
-                                                    onclick="flyToLocation({{ $item->lat }}, {{ $item->lng }})">
-                                                    <i class="mdi mdi-map-marker"></i> Lihat
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+        <!-- Card 3: Unit Booking (Kuning / Amber) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon amber">
+                    <i class="mdi mdi-clock-outline"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Unit Booking</div>
+                    <div class="dash-kpi-val">{{ $totalBooked ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Proses Pemesanan</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action amber">
+                <i class="mdi mdi-arrow-right"></i>
+            </div>
+        </div>
 
-                        <!-- Pagination -->
-                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
-                            <div class="pagination-info mb-2 mb-sm-0">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan
-                                {{ $landBanks->firstItem() }} - {{ $landBanks->lastItem() }}
-                                dari {{ $landBanks->total() }} data
-                            </div>
+        <!-- Card 4: Unit Terjual (Biru) -->
+        <div class="dash-kpi-card">
+            <div class="dash-kpi-left">
+                <div class="dash-kpi-icon blue">
+                    <i class="mdi mdi-handshake-outline"></i>
+                </div>
+                <div class="dash-kpi-info">
+                    <div class="dash-kpi-label">Unit Terjual</div>
+                    <div class="dash-kpi-val">{{ $totalSold ?? 0 }}</div>
+                    <div class="dash-kpi-sub">Penjualan Selesai</div>
+                </div>
+            </div>
+            <div class="dash-kpi-action blue">
+                <i class="mdi mdi-arrow-right"></i>
+            </div>
+        </div>
 
-                            <!-- tombol pagination -->
-                            <div class="pagination-buttons mt-2">
-                                {{ $landBanks->links() }}
-                            </div>
+    </div>
 
-                        </div>
-                    </div>
+    <!-- Peta Lokasi Google Maps Card -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card compact-table-card shadow-sm border-0">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center py-3 border-bottom">
+                    <h5 class="card-title mb-0" style="font-weight: 700; color: #1e293b; font-size: 1.05rem;">
+                        <i class="mdi mdi-google-maps me-2" style="color: #9a55ff;"></i>Google Maps View
+                    </h5>
+                    <span class="badge bg-light text-muted fw-normal" style="font-size: 0.78rem;">
+                        <i class="mdi mdi-information-outline me-1"></i>Klik pin lokasi untuk melihat detail
+                    </span>
+                </div>
+                <div class="card-body p-0">
+                    <div id="map" style="height: 480px; width: 100%; z-index: 1;"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    @push('scripts')
-        <script>
-            $(document).ready(function() {
-                // Inisialisasi peta default Jember
-                var map = L.map('map').setView([-8.1725, 113.7026], 12);
-
-                // Tile layer OpenStreetMap
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                    maxZoom: 19
-                }).addTo(map);
-
-                // Ambil data lokasi dari backend
-                $.getJSON('/lokasi-data', function(locations) {
-                    locations.forEach(function(loc) {
-                        // Tentukan icon berdasarkan kategori
-                        let iconMap = {
-                            'Rumah': 'home-variant',
-                            'Apartemen': 'office-building',
-                            'Ruko': 'store',
-                            'Tanah': 'terrain'
-                        };
-                        var iconName = iconMap[loc.category] || 'map-marker';
-
-                        // Custom marker
-                        var customIcon = L.divIcon({
-                            className: 'custom-marker',
-                            html: '<i class="mdi mdi-' + iconName +
-                                '" style="font-size: 24px; color: #9a55ff;"></i>',
-                            iconSize: [40, 40],
-                            iconAnchor: [20, 40],
-                            popupAnchor: [0, -40]
-                        });
-
-                        // Marker
-                        var marker = L.marker([loc.lat, loc.lng], {
-                            icon: customIcon
-                        }).addTo(map);
-
-                        // Popup content
-                        var popupContent = `
-                <div style="min-width: 200px;">
-                    <strong>${loc.name}</strong>
-                    <p><i class="mdi mdi-map-marker" style="color: #9a55ff;"></i> ${loc.address}</p>
-                    <p><i class="mdi mdi-home" style="color: #9a55ff;"></i> ${loc.category}</p>
-                    <p><i class="mdi mdi-currency-usd" style="color: #9a55ff;"></i> ${loc.price}</p>
-                    <p>
-                        <span class="badge" style="background: ${
-                            loc.status === 'Tersedia' ? 'linear-gradient(135deg, #28a745, #5cb85c)' :
-                            loc.status === 'Booking' ? 'linear-gradient(135deg, #ffc107, #ffdb6d)' :
-                            'linear-gradient(135deg, #dc3545, #e4606d)'
-                        }; color: white; padding: 4px 8px; border-radius: 20px;">
-                            ${loc.status}
-                        </span>
-                    </p>
-                    <button class="btn btn-sm" style="background: linear-gradient(to right, #da8cff, #9a55ff); color: white; border: none; border-radius: 6px; padding: 5px 10px; margin-top: 5px;" onclick="alert('Detail ${loc.name}')">
-                        <i class="mdi mdi-eye"></i> Detail
-                    </button>
+    <!-- Daftar Properti & Filter Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card compact-table-card shadow-sm border-0">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 py-3 border-bottom">
+                    <div>
+                        <h5 class="card-title mb-0" style="font-weight: 700; color: #1e293b; font-size: 1.05rem;">
+                            <i class="mdi mdi-format-list-bulleted me-2" style="color: #9a55ff;"></i>Daftar Properti Terdekat
+                        </h5>
+                    </div>
                 </div>
-            `;
-                        marker.bindPopup(popupContent);
-                    });
-                });
 
-                // Fungsi flyTo lokasi
-                window.flyToLocation = function(lat, lng) {
-                    map.flyTo([lat, lng], 15, {
-                        animate: true,
-                        duration: 1.5
-                    });
-                };
-            });
-        </script>
-        <script>
-            function toRad(Value) {
-                return Value * Math.PI / 180;
-            }
+                <div class="card-body p-0">
+                    <!-- Filter Toolbar -->
+                    <div class="card-toolbar-box p-3 border-bottom bg-white">
+                        <!-- Desktop Filter -->
+                        <div class="d-none d-md-block">
+                            <form method="GET" action="{{ route('lokasi.index') }}">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                    <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                        <div style="min-width: 240px; max-width: 360px; flex: 1;">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="search" id="liveSearchInput"
+                                                    placeholder="Cari nama properti / alamat..."
+                                                    value="{{ request('search') }}"
+                                                    onkeyup="applyLiveSearch(this.value)"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                    type="submit" title="Cari"
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
 
-            function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-                var R = 6371; // Radius bumi km
-                var dLat = toRad(lat2 - lat1);
-                var dLon = toRad(lon2 - lon1);
-                var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                var d = R * c;
-                return d.toFixed(1); // km
-            }
+                                    <div class="d-flex align-items-center gap-2 ms-auto">
+                                        <div style="width: 115px;">
+                                            <select name="tampil" class="form-select" id="showSelect" onchange="this.form.submit()" style="height: 38px;">
+                                                <option value="10" {{ request('tampil', 10) == 10 ? 'selected' : '' }}>10 data</option>
+                                                <option value="25" {{ request('tampil') == 25 ? 'selected' : '' }}>25 data</option>
+                                                <option value="50" {{ request('tampil') == 50 ? 'selected' : '' }}>50 data</option>
+                                                <option value="100" {{ request('tampil') == 100 ? 'selected' : '' }}>100 data</option>
+                                            </select>
+                                        </div>
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    let userLat = position.coords.latitude;
-                    let userLng = position.coords.longitude;
+                                        <button type="submit" class="btn btn-gradient-primary d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0;" title="Filter">
+                                            <i class="mdi mdi-filter"></i>
+                                        </button>
+                                        <a href="{{ route('lokasi.index') }}" class="btn btn-gradient-secondary d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px; padding: 0;" title="Reset">
+                                            <i class="mdi mdi-refresh"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
 
-                    document.querySelectorAll('.distance').forEach(function(td) {
-                        let propLat = parseFloat(td.dataset.lat);
-                        let propLng = parseFloat(td.dataset.lng);
-                        let distance = getDistanceFromLatLonInKm(userLat, userLng, propLat, propLng);
-                        td.innerText = distance + ' km';
-                    });
-                }, function() {
-                    console.log("User tidak mengizinkan lokasi.");
-                });
-            } else {
-                console.log("Browser tidak mendukung Geolocation");
-            }
-        </script>
-    @endpush
+                        <!-- Mobile Filter -->
+                        <div class="d-block d-md-none">
+                            <form method="GET" action="{{ route('lokasi.index') }}">
+                                <div class="row g-2">
+                                    <div class="col-12 mb-2">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="search" id="searchInputMobile"
+                                                placeholder="Cari nama properti..."
+                                                value="{{ request('search') }}"
+                                                onkeyup="applyLiveSearch(this.value)"
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none; height: 38px;">
+                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                type="submit" title="Cari"
+                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-4">
+                                        <select name="tampil" class="form-select" id="showSelectMobile" onchange="this.form.submit()" style="height: 38px;">
+                                            <option value="10" {{ request('tampil', 10) == 10 ? 'selected' : '' }}>10 data</option>
+                                            <option value="25" {{ request('tampil') == 25 ? 'selected' : '' }}>25 data</option>
+                                            <option value="50" {{ request('tampil') == 50 ? 'selected' : '' }}>50 data</option>
+                                            <option value="100" {{ request('tampil') == 100 ? 'selected' : '' }}>100 data</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-4">
+                                        <button type="submit" class="btn btn-gradient-primary w-100" style="height: 38px;" title="Filter">
+                                            <i class="mdi mdi-filter"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="col-4">
+                                        <a href="{{ route('lokasi.index') }}" class="btn btn-gradient-secondary w-100 d-inline-flex align-items-center justify-content-center" style="height: 38px;" title="Reset">
+                                            <i class="mdi mdi-refresh"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Tabel Data Properti -->
+                    <div class="table-responsive">
+                        <table class="table table-lahan table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="col-no text-center">NO</th>
+                                    <th>NAMA PROPERTI</th>
+                                    <th>LOKASI</th>
+                                    <th>JARAK</th>
+                                    <th>STATUS</th>
+                                    <th class="col-aksi text-center">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($landBanks as $item)
+                                    @php
+                                        $searchKeywords = strtolower(($item->name ?? '') . ' ' . ($item->address ?? ''));
+                                    @endphp
+                                    <tr class="project-table-row" data-search="{{ $searchKeywords }}">
+                                        <td class="col-no text-center fw-bold text-muted">{{ $loop->iteration + ($landBanks->currentPage() - 1) * $landBanks->perPage() }}</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-home-city text-primary me-2" style="font-size: 1.15rem;"></i>
+                                                <span class="fw-bold text-dark" style="font-size: 0.88rem;">{{ $item->name }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="d-inline-flex align-items-center gap-1 text-muted" title="{{ $item->address }}">
+                                                <i class="mdi mdi-map-marker text-danger"></i>
+                                                <span>{{ Str::limit($item->address, 35) }}</span>
+                                            </span>
+                                        </td>
+                                        <td class="distance fw-semibold text-primary" data-lat="{{ $item->lat }}" data-lng="{{ $item->lng }}">
+                                            <span class="text-muted">Menghitung...</span>
+                                        </td>
+                                        <td>
+                                            @php $st = strtolower($item->status ?? ''); @endphp
+                                            @if (str_contains($st, 'tersedia') || str_contains($st, 'available'))
+                                                <span class="badge-status available">
+                                                    <i class="mdi mdi-check-circle-outline me-1"></i>Tersedia
+                                                </span>
+                                            @elseif(str_contains($st, 'booking') || str_contains($st, 'booked'))
+                                                <span class="badge-status booking">
+                                                    <i class="mdi mdi-calendar-clock me-1"></i>Booking
+                                                </span>
+                                            @elseif(str_contains($st, 'terjual') || str_contains($st, 'sold'))
+                                                <span class="badge-status sold">
+                                                    <i class="mdi mdi-close-circle-outline me-1"></i>Terjual
+                                                </span>
+                                            @else
+                                                <span class="badge-status available">
+                                                    {{ $item->status ?? 'Tersedia' }}
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td class="col-aksi text-center">
+                                            <button type="button" class="btn-action fase2" title="Lihat Lokasi di Google Maps"
+                                                onclick="flyToLocation({{ $item->lat ?? 0 }}, {{ $item->lng ?? 0 }}, '{{ addslashes($item->name) }}')">
+                                                <i class="mdi mdi-crosshairs-gps"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                            <i class="mdi mdi-information-outline me-2"></i> Tidak ada properti ditemukan.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    @if ($landBanks instanceof \Illuminate\Pagination\LengthAwarePaginator && $landBanks->total() > 0)
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center p-3 border-top bg-white">
+                            <div class="pagination-info mb-2 mb-sm-0 text-muted" style="font-size: 0.84rem;">
+                                Menampilkan {{ $landBanks->firstItem() ?? 0 }} - {{ $landBanks->lastItem() ?? 0 }} dari {{ $landBanks->total() }} data
+                            </div>
+                            <div>
+                                {{ $landBanks->appends(request()->query())->links('pagination::bootstrap-5') }}
+                            </div>
+                        </div>
+                    @endif
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
 @endsection
+
+@push('scripts')
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    function applyLiveSearch(query) {
+        var filter = (query || '').toLowerCase().trim();
+        var rows = document.querySelectorAll('.project-table-row');
+        rows.forEach(function(row) {
+            var text = row.getAttribute('data-search') || row.innerText.toLowerCase();
+            if (!filter || text.indexOf(filter) > -1) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        // Google Maps Tile Layers
+        var googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution: '&copy; Google Maps'
+        });
+
+        var googleHybrid = L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution: '&copy; Google Maps'
+        });
+
+        var googleTerrain = L.tileLayer('https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+            attribution: '&copy; Google Maps'
+        });
+
+        // Inisialisasi peta default Jember (Google Maps Streets)
+        var map = L.map('map', {
+            center: [-8.1725, 113.7026],
+            zoom: 12,
+            layers: [googleStreets]
+        });
+
+        // Layer Control (Streets, Hybrid/Satellite, Terrain)
+        var baseMaps = {
+            "Google Maps": googleStreets,
+            "Google Satellite / Hybrid": googleHybrid,
+            "Google Terrain": googleTerrain
+        };
+        L.control.layers(baseMaps).addTo(map);
+
+        var markersGroup = L.featureGroup().addTo(map);
+        var markersList = {};
+
+        // Ambil data lokasi dari endpoint JSON
+        $.getJSON("{{ route('lokasi.data') }}", function(locations) {
+            if (locations && locations.length > 0) {
+                locations.forEach(function(loc) {
+                    if (!loc.lat || !loc.lng) return;
+
+                    var iconMap = {
+                        'Rumah': 'home-variant',
+                        'Apartemen': 'office-building',
+                        'Ruko': 'store',
+                        'Tanah': 'terrain'
+                    };
+                    var iconName = iconMap[loc.category] || 'map-marker';
+
+                    // Modern Custom HTML Marker Pin
+                    var customIcon = L.divIcon({
+                        className: 'custom-google-marker',
+                        html: `<div style="
+                            width: 36px;
+                            height: 36px;
+                            background: linear-gradient(135deg, #da8cff, #9a55ff);
+                            border: 2px solid #ffffff;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            box-shadow: 0 4px 10px rgba(154, 85, 255, 0.4);
+                            color: #ffffff;
+                            font-size: 1.15rem;
+                            cursor: pointer;
+                        ">
+                            <i class="mdi mdi-${iconName}"></i>
+                        </div>`,
+                        iconSize: [36, 36],
+                        iconAnchor: [18, 18],
+                        popupAnchor: [0, -18]
+                    });
+
+                    var marker = L.marker([loc.lat, loc.lng], { icon: customIcon }).addTo(markersGroup);
+                    markersList[loc.lat + '_' + loc.lng] = marker;
+
+                    var statusBadge = (loc.status || 'Tersedia');
+                    var badgeBg = 'linear-gradient(135deg, #28a745, #5dd879)';
+                    if (statusBadge.toLowerCase().includes('booking')) {
+                        badgeBg = 'linear-gradient(135deg, #ffc107, #ffdb6d)';
+                    } else if (statusBadge.toLowerCase().includes('terjual') || statusBadge.toLowerCase().includes('sold')) {
+                        badgeBg = 'linear-gradient(135deg, #dc3545, #e4606d)';
+                    }
+
+                    var formattedPrice = loc.price ? 'Rp ' + Number(loc.price).toLocaleString('id-ID') : '-';
+
+                    var popupContent = `
+                        <div style="font-family: 'Nunito', sans-serif; min-width: 220px; padding: 4px;">
+                            <div style="font-weight: 700; font-size: 0.95rem; color: #2c2e3f; margin-bottom: 4px;">
+                                <i class="mdi mdi-home-city text-primary me-1"></i>${loc.name}
+                            </div>
+                            <div style="font-size: 0.8rem; color: #6c757d; margin-bottom: 6px;">
+                                <i class="mdi mdi-map-marker text-danger me-1"></i>${loc.address || '-'}
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <span style="font-size: 0.78rem; font-weight: 600; color: #9a55ff;">
+                                    <i class="mdi mdi-shape-outline me-1"></i>${loc.category || 'Tanah'}
+                                </span>
+                                <span style="background: ${badgeBg}; color: ${statusBadge.toLowerCase().includes('booking') ? '#2c2e3f' : '#ffffff'}; font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 4px;">
+                                    ${statusBadge}
+                                </span>
+                            </div>
+                            <div style="font-weight: 700; color: #28a745; font-size: 0.88rem; margin-bottom: 8px;">
+                                ${formattedPrice}
+                            </div>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=${loc.lat},${loc.lng}" target="_blank" 
+                                class="btn btn-sm btn-gradient-primary w-100 text-white text-center text-decoration-none d-block" 
+                                style="border-radius: 6px; font-size: 0.78rem; padding: 4px 8px;">
+                                <i class="mdi mdi-directions me-1"></i>Buka Rute Google Maps
+                            </a>
+                        </div>
+                    `;
+                    marker.bindPopup(popupContent);
+                });
+
+                if (markersGroup.getLayers().length > 0) {
+                    map.fitBounds(markersGroup.getBounds(), { padding: [40, 40] });
+                }
+            }
+        });
+
+        // Fungsi Fly to Location saat tombol aksi diklik
+        window.flyToLocation = function(lat, lng, name) {
+            if (!lat || !lng) {
+                alert('Koordinat lokasi tidak tersedia untuk properti ini.');
+                return;
+            }
+            $('html, body').animate({
+                scrollTop: $("#map").offset().top - 80
+            }, 500);
+
+            map.flyTo([lat, lng], 16, {
+                animate: true,
+                duration: 1.2
+            });
+
+            var key = lat + '_' + lng;
+            if (markersList[key]) {
+                setTimeout(function() {
+                    markersList[key].openPopup();
+                }, 1300);
+            }
+        };
+    });
+
+    // Geolocation Distance Calculation
+    function toRad(Value) {
+        return Value * Math.PI / 180;
+    }
+
+    function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+        var R = 6371;
+        var dLat = toRad(lat2 - lat1);
+        var dLon = toRad(lon2 - lon1);
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return (R * c).toFixed(1);
+    }
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            let userLat = position.coords.latitude;
+            let userLng = position.coords.longitude;
+
+            document.querySelectorAll('.distance').forEach(function(td) {
+                let propLat = parseFloat(td.dataset.lat);
+                let propLng = parseFloat(td.dataset.lng);
+                if (propLat && propLng) {
+                    let distance = getDistanceFromLatLonInKm(userLat, userLng, propLat, propLng);
+                    td.innerHTML = `<i class="mdi mdi-navigation-variant-outline me-1"></i>${distance} km`;
+                } else {
+                    td.innerHTML = `<span class="text-muted">-</span>`;
+                }
+            });
+        }, function() {
+            document.querySelectorAll('.distance').forEach(function(td) {
+                td.innerHTML = `<span class="text-muted">-</span>`;
+            });
+        });
+    }
+</script>
+@endpush

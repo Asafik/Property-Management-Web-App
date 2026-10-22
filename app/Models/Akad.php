@@ -12,6 +12,8 @@ class Akad extends Model
         'akad_date',
         'no_akad',
         'tanggal_akad',
+        'lokasi_akad',
+        'nama_notaris',
         'dokumen',
         'catatan',
         'status',

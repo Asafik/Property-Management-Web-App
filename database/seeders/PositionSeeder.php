@@ -11,20 +11,40 @@ class PositionSeeder extends Seeder
     {
         Position::insert([
             [
-                'name' => 'Manager',
+                'name' => 'Kepala Marketing',
+                'division_id' => 1
+            ],
+             [
+                'name' => 'Staff Marketing',
                 'division_id' => 1
             ],
             [
-                'name' => 'Supervisor',
-                'division_id' => 1
+                'name' => 'Kepala Legal',
+                'division_id' => 2
             ],
             [
-                'name' => 'Staff',
+                'name' => 'Staff Legal',
                 'division_id' => 2
             ],
             [
                 'name' => 'Admin',
+                'division_id' => 4
+            ],
+            [
+                'name' => 'Staff KPR',
                 'division_id' => 3
+            ],
+            [
+                'name' => 'Staff Keuangan',
+                'division_id' => 5
+            ],
+            [
+                'name' => 'Kepala Proyek',
+                'division_id' => 6
+            ],
+            [
+                'name' => 'Staff Proyek',
+                'division_id' => 6
             ],
         ]);
     }

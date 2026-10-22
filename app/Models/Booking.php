@@ -16,12 +16,15 @@ class Booking extends Model
         'agent_fee',
         'booking_code',
         'booking_fee',
+        'utj',
         'booking_date',
         'purchase_type',
         'status',
         'status_cash',
         'status_akad',
         'status_legal',
+        'akad_date',
+        'serah_terima_date',
         'notes',
     ];
     protected $casts = [
@@ -31,13 +34,13 @@ class Booking extends Model
     'akad_date' => 'date',
     'serah_terima_date' => 'date',
 ];
-    
+
     /*
     |--------------------------------------------------------------------------
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    
+
 
     // Booking -> Unit
     public function unit()
@@ -63,7 +66,7 @@ class Booking extends Model
         return $this->hasOne(KprApplication::class, 'booking_id');
     }
 
-    
+
     public function payments()
     {
         return $this->hasMany(Payment::class, 'booking_id');
@@ -80,5 +83,19 @@ public function serahTerima()
 {
     return $this->hasOne(SerahTerima::class);
 }
+public function documentUploads()
+{
+    return $this->hasMany(DocumentUpload::class);
+}
+public function promos()
+{
+    return $this->belongsToMany(Promo::class, 'booking_promos')
+                ->withPivot('nominal') // optional kalau mau simpan nilai saat itu
+                ->withTimestamps();
+}
 
+public function complaints()
+{
+    return $this->hasMany(Complaint::class, 'booking_id');
+}
 }

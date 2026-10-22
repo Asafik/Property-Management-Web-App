@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\LandBank;
 use App\Models\LandBankUnit;
+use App\Models\Spk;
+use App\Models\SpkTermin;
+use App\Models\MasterBiayaLegalitas;
 use App\Imports\LandBankUnitImport;
 use Maatwebsite\Excel\Facades\Excel;
 class LandBankUnitController extends Controller
@@ -15,6 +18,14 @@ class LandBankUnitController extends Controller
     public function create(Request $request, $land_bank_id)
     {
         $land = LandBank::findOrFail($land_bank_id);
+
+        if (!$land->canCreateKavling()) {
+            $detail = $land->getPerizinanPemecahanKavlingDetail();
+            return redirect()->route('kavling.index')->with(
+                'error',
+                "Dokumen perizinan POIN-18 'Proses Pemecahan SHGB Induk Perkavling (Pasca Land Bank)' untuk proyek '{$land->name}' belum selesai (Status: {$detail['label']}). Silakan selesaikan perizinan POIN-18 terlebih dahulu untuk dapat membuat unit kavling."
+            );
+        }
 
         // ===== FILTER =====
         $query = $land->units(); // LANGSUNG, tanpa ->query()
@@ -45,84 +56,133 @@ class LandBankUnitController extends Controller
             $query->where('facing', $request->facing);
         }
 
-        // Jumlah tampil per halaman (default 10, opsi: 10, 25, 50, 100)
-        $perPage = $request->input('per_page', 10);
+        // Jumlah tampil per halaman (default 5, opsi: 5, 10, 15, 25, 50, 100)
+        $perPage = (int) $request->input('per_page', 5);
 
         // Ambil data dengan pagination
         $units = $query->paginate($perPage)->withQueryString();
 
-        return view('properti.addkavling', compact('land', 'units', 'perPage'));
+        // Ambil data acuan tarif baku IJB dan AJB dari Master Data (Khusus Unit)
+        $masterIjb = MasterBiayaLegalitas::where('is_active', true)->where('kode_biaya', 'IJB-UNIT')->first()
+            ?? MasterBiayaLegalitas::where('is_active', true)->where('nama_biaya', 'like', '%ijb%unit%')->first();
+        $defaultIjbPrice = $masterIjb ? (int)$masterIjb->nominal_standar : 2000000;
+
+        $masterAjb = MasterBiayaLegalitas::where('is_active', true)->where('kode_biaya', 'AJB-UNIT')->first()
+            ?? MasterBiayaLegalitas::where('is_active', true)->where('nama_biaya', 'like', '%ajb%unit%')->first();
+        $defaultAjbPrice = $masterAjb ? (int)$masterAjb->nominal_standar : 1500000;
+
+        return view('properti.addkavling', compact('land', 'units', 'perPage', 'defaultIjbPrice', 'defaultAjbPrice'));
     }
 
-
-
-    // Simpan Manual
-    //  public function store(Request $request, $land_bank_id)
-    // {
-    //     dd($request->all());
-    //     // kode lain
-    // }
     public function store(Request $request, $land_bank_id)
     {
         $land = LandBank::findOrFail($land_bank_id);
 
-        $priceClean = $request->price ? str_replace(['.', ','], '', $request->price) : null;
-        $request->merge(['price' => $priceClean]);
+        if (!$land->canCreateKavling()) {
+            return back()->with(
+                'error',
+                "Dokumen perizinan POIN-18 'Proses Pemecahan SHGB Induk Perkavling (Pasca Land Bank)' untuk proyek '{$land->name}' belum selesai! Tidak dapat menambahkan unit kavling."
+            );
+        }
+
+        $priceClean = $request->filled('price') ? str_replace(['.', ','], '', $request->price) : null;
+        $ijbClean   = $request->filled('ijb_price') ? str_replace(['.', ','], '', $request->ijb_price) : null;
+        $ajbClean   = $request->filled('ajb_price') ? str_replace(['.', ','], '', $request->ajb_price) : null;
+        $request->merge([
+            'price'     => $priceClean,
+            'ijb_price' => $ijbClean,
+            'ajb_price' => $ajbClean,
+        ]);
 
         $request->validate([
             'block'         => 'required|string|max:5',
             'unit_number'   => 'required|string|max:5',
+            'jenis'         => 'required|string|max:255',
             'type'          => 'required|string|max:50',
             'unit_name'     => 'nullable|string|max:255',
             'area'          => 'required|numeric|min:1',
-            'building_area' => 'required|numeric|min:1',
+            'building_area' => 'nullable|numeric|min:0',
             'price'         => 'nullable|numeric|min:0',
             'ijb_price'     => 'nullable|numeric|min:0',
             'ajb_price'     => 'nullable|numeric|min:0',
             'facing'        => 'nullable|in:Utara,Selatan,Timur,Barat',
             'position'      => 'nullable|in:Hook,Tengah,Sudut',
-            'description'   => 'nullable|string|max:255',
+            'description'   => 'nullable|string',
+            'certificate_no'   => 'nullable|string|max:100',
+            'file_certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'no_spk'        => 'nullable|string|max:255',
+            'kontraktor'    => 'nullable|string|max:255',
+            'dokumen_spk'   => 'nullable|file|mimes:pdf|max:5120',
         ]);
 
-
-    
         if ($request->area > $land->remaining_area) {
             return back()->with('error', 'Luas unit melebihi sisa lahan!');
         }
+
         $unit_code = $request->block . '.' . $request->unit_number;
 
         if (LandBankUnit::where('unit_code', $unit_code)
+            ->where('unit_name', $request->unit_name)
             ->where('land_bank_id', $land->id)
             ->exists()
         ) {
+            return back()->with(
+                'error',
+                'Unit ' . $unit_code . ' dengan nama ' . ($request->unit_name ?? '-') . ' sudah ada di proyek ini.'
+            );
+        }
 
-            return back()->with('error', 'Unit ' . $unit_code . ' sudah ada di proyek ini.');
+        $dokumenSpkPath = null;
+        if ($request->hasFile('dokumen_spk')) {
+            $file = $request->file('dokumen_spk');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads'), $filename);
+            $dokumenSpkPath = 'uploads/' . $filename;
+        }
+
+        $fileCertPath = null;
+        if ($request->hasFile('file_certificate')) {
+            $file = $request->file('file_certificate');
+            $certDir = public_path('uploads/certificates');
+            if (!file_exists($certDir)) {
+                @mkdir($certDir, 0777, true);
+            }
+            $ext = $file->getClientOriginalExtension() ?: 'pdf';
+            $filename = 'cert_' . time() . '_' . uniqid() . '.' . $ext;
+            $file->move($certDir, $filename);
+            $fileCertPath = 'uploads/certificates/' . $filename;
         }
 
         LandBankUnit::create([
-            'land_bank_id' => $land->id,
-            'block'        => $request->block,
-            'unit_number'  => $request->unit_number,
-            'unit_code'    => $unit_code,
-            'type'         => $request->type,
-            'unit_name'    => $request->unit_name,
-            'area'         => $request->area,
-            'building_area' => $request->building_area,
-            'price'        => $request->price ?? 0,
-            'ijb_price'    => $request->ijb_price ?? 0,
-            'ajb_price'    => $request->ajb_price ?? 0,
-            'facing'       => $request->facing,
-            'position'     => $request->position,
-            'description'  => $request->description,
-            'status'       => 'draft',
+            'land_bank_id'     => $land->id,
+            'block'            => $request->block,
+            'unit_number'      => $request->unit_number,
+            'unit_code'        => $unit_code,
+            'jenis'            => $request->jenis,
+            'type'             => $request->type,
+            'unit_name'        => $request->unit_name,
+            'area'             => $request->area,
+            'building_area'    => $request->building_area,
+            'certificate_no'   => $request->certificate_no,
+            'file_certificate' => $fileCertPath,
+            'price'            => $priceClean,
+            'ijb_price'        => $ijbClean,
+            'ajb_price'        => $ajbClean,
+            'facing'           => $request->facing,
+            'position'         => $request->position,
+            'description'      => $request->description,
+            'status'           => (!empty($priceClean) && (float)$priceClean > 0) ? 'ready' : 'draft',
+            'no_spk'           => $request->no_spk,
+            'kontraktor'       => $request->kontraktor,
+            'dokumen_spk'      => $dokumenSpkPath,
         ]);
 
-        $land->remaining_area = max(0, $land->remaining_area - $request->area);
-        $land->development_status = 'progress'; // 🔥 UPDATE STATUS
-        $land->save();
+    $land->remaining_area = max(0, $land->remaining_area - $request->area);
+    $land->development_status = 'progress';
+    $land->save();
 
-        return back()->with('success', 'Unit ' . $unit_code . ' berhasil ditambahkan.');
-    }
+    return back()->with('success', 'Unit ' . $unit_code . ' berhasil ditambahkan.');
+}
 
 
     // public function store(Request $request, $land_bank_id)
@@ -251,31 +311,86 @@ class LandBankUnitController extends Controller
     // Update unit
     public function update(Request $request, LandBankUnit $unit)
     {
+        $priceClean = $request->filled('price') ? str_replace(['.', ','], '', $request->price) : ($unit->price ?? null);
+        $ijbClean   = $request->filled('ijb_price') ? str_replace(['.', ','], '', $request->ijb_price) : ($unit->ijb_price ?? null);
+        $ajbClean   = $request->filled('ajb_price') ? str_replace(['.', ','], '', $request->ajb_price) : ($unit->ajb_price ?? null);
+        
+        $request->merge([
+            'price'     => $priceClean,
+            'ijb_price' => $ijbClean,
+            'ajb_price' => $ajbClean,
+        ]);
+
         $request->validate([
-            'block'       => 'required|string|max:5',
-            'unit_number' => 'required|string|max:5',
-            'area'        => 'required|numeric|min:1',
-            'price'       => 'nullable|numeric|min:0',
-            'ijb_price'   => 'nullable|numeric|min:0',
-            'ajb_price'   => 'nullable|numeric|min:0',
-            'facing'      => 'nullable|in:Utara,Selatan,Timur,Barat',
-            'position'    => 'nullable|in:Hook,Tengah,Sudut',
-            'description' => 'nullable|string|max:255',
+            'block'         => 'required|string|max:5',
+            'unit_number'   => 'required|string|max:5',
+            'jenis'         => 'required|string|max:255',
+            'type'          => 'required|string|max:50',
+            'unit_name'     => 'nullable|string|max:255',
+            'area'          => 'required|numeric|min:1',
+            'building_area' => 'nullable|numeric|min:0',
+            'price'         => 'nullable|numeric|min:0',
+            'ijb_price'     => 'nullable|numeric|min:0',
+            'ajb_price'     => 'nullable|numeric|min:0',
+            'facing'        => 'nullable|in:Utara,Selatan,Timur,Barat',
+            'position'      => 'nullable|in:Hook,Tengah,Sudut',
+            'description'   => 'nullable|string',
+            'certificate_no'   => 'nullable|string|max:100',
+            'file_certificate' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:10240',
+            'no_spk'        => 'nullable|string|max:255',
+            'kontraktor'    => 'nullable|string|max:255',
+            'dokumen_spk'   => 'nullable|file|mimes:pdf|max:5120',
         ]);
 
         $unit_code = $request->block . '.' . $request->unit_number;
 
+        $dokumenSpkPath = $unit->dokumen_spk;
+        if ($request->hasFile('dokumen_spk')) {
+            if ($unit->dokumen_spk && file_exists(public_path($unit->dokumen_spk))) {
+                @unlink(public_path($unit->dokumen_spk));
+            }
+            $file = $request->file('dokumen_spk');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('uploads'), $filename);
+            $dokumenSpkPath = 'uploads/' . $filename;
+        }
+
+        $fileCertPath = $unit->file_certificate;
+        if ($request->hasFile('file_certificate')) {
+            if ($unit->file_certificate && file_exists(public_path($unit->file_certificate))) {
+                @unlink(public_path($unit->file_certificate));
+            }
+            $file = $request->file('file_certificate');
+            $certDir = public_path('uploads/certificates');
+            if (!file_exists($certDir)) {
+                @mkdir($certDir, 0777, true);
+            }
+            $ext = $file->getClientOriginalExtension() ?: 'pdf';
+            $filename = 'cert_' . time() . '_' . uniqid() . '.' . $ext;
+            $file->move($certDir, $filename);
+            $fileCertPath = 'uploads/certificates/' . $filename;
+        }
+
         $unit->update([
-            'block'       => $request->block,
-            'unit_number' => $request->unit_number,
-            'unit_code'   => $unit_code,
-            'area'        => $request->area,
-            'price'       => str_replace(['.', ','], '', $request->price ?? 0),
-            'ijb_price'   => str_replace(['.', ','], '', $request->ijb_price ?? 0),
-            'ajb_price'   => str_replace(['.', ','], '', $request->ajb_price ?? 0),
-            'facing'      => $request->facing,
-            'position'    => $request->position,
-            'description' => $request->description,
+            'block'            => $request->block,
+            'unit_number'      => $request->unit_number,
+            'unit_code'        => $unit_code,
+            'jenis'            => $request->jenis,
+            'type'             => $request->type,
+            'unit_name'        => $request->unit_name,
+            'area'             => $request->area,
+            'building_area'    => $request->building_area ?? $unit->building_area,
+            'certificate_no'   => $request->certificate_no,
+            'file_certificate' => $fileCertPath,
+            'price'            => $priceClean,
+            'ijb_price'        => $ijbClean,
+            'ajb_price'        => $ajbClean,
+            'facing'           => $request->facing ?? $unit->facing,
+            'position'         => $request->position ?? $unit->position,
+            'description'      => $request->description,
+            'no_spk'           => $request->no_spk,
+            'kontraktor'       => $request->kontraktor,
+            'dokumen_spk'      => $dokumenSpkPath,
         ]);
 
         return redirect()->back()->with('success', 'Unit ' . $unit_code . ' berhasil diperbarui.');
@@ -285,6 +400,14 @@ class LandBankUnitController extends Controller
     public function destroy(LandBankUnit $unit)
     {
         $unit_code = $unit->unit_code;
+
+        if ($unit->dokumen_spk && file_exists(public_path($unit->dokumen_spk))) {
+            @unlink(public_path($unit->dokumen_spk));
+        }
+        if ($unit->file_certificate && file_exists(public_path($unit->file_certificate))) {
+            @unlink(public_path($unit->file_certificate));
+        }
+
         $unit->delete();
 
         return redirect()->back()->with('success', 'Unit ' . $unit_code . ' berhasil dihapus.');
@@ -329,6 +452,12 @@ class LandBankUnitController extends Controller
     }
     public function import(Request $request, $land_bank_id)
     {
+        $land = LandBank::findOrFail($land_bank_id);
+
+        if (!$land->canCreateKavling()) {
+            return redirect()->back()->with('error', "Dokumen perizinan POIN-18 'Proses Pemecahan SHGB Induk Perkavling (Pasca Land Bank)' untuk proyek '{$land->name}' belum selesai! Tidak dapat mengimpor unit kavling.");
+        }
+
         $request->validate([
             'file' => 'required|file|mimes:xlsx,xls',
         ]);
@@ -343,5 +472,183 @@ class LandBankUnitController extends Controller
             Log::error('Import error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Terjadi kesalahan saat mengimpor: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Terbitkan / Hubungkan SPK ke beberapa unit kavling sekaligus (1 SPK untuk banyak unit).
+     */
+    public function assignSpk(Request $request, $land_bank_id)
+    {
+        $land = LandBank::findOrFail($land_bank_id);
+
+        $request->validate([
+            'no_spk'        => 'required|string|max:255',
+            'kontraktor'    => 'required|string|max:255',
+            'nilai_kontrak' => 'nullable|string|max:255',
+            'tanggal_spk'   => 'nullable|date',
+            'unit_ids'      => 'required|array|min:1',
+            'unit_ids.*'    => 'exists:land_bank_units,id',
+            'dokumen_spk'   => 'nullable|file|mimes:pdf|max:15360',
+            'description'   => 'nullable|string|max:500',
+        ], [
+            'unit_ids.required'   => 'Pilih minimal satu unit kavling untuk SPK ini.',
+            'unit_ids.min'        => 'Pilih minimal satu unit kavling untuk SPK ini.',
+            'no_spk.required'     => 'Nomor SPK wajib diisi.',
+            'kontraktor.required' => 'Nama Kontraktor wajib diisi.'
+        ]);
+
+        $unitCount = count($request->unit_ids);
+        $nilaiPerUnit = $request->nilai_kontrak ? (float) str_replace(['.', ',', 'Rp', ' '], '', $request->nilai_kontrak) : 0;
+        $totalNilaiKontrak = $nilaiPerUnit * $unitCount;
+
+        $spkPath = null;
+        if ($request->hasFile('dokumen_spk')) {
+            $file = $request->file('dokumen_spk');
+            $filename = 'SPK_' . time() . '_' . preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $file->getClientOriginalName());
+            $destination = public_path("uploads/landbank/{$land->id}/spk");
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+            $file->move($destination, $filename);
+            $spkPath = "uploads/landbank/{$land->id}/spk/{$filename}";
+        }
+
+        $updateData = [
+            'no_spk'     => $request->no_spk,
+            'kontraktor' => $request->kontraktor,
+        ];
+
+        if ($spkPath) {
+            $updateData['dokumen_spk'] = $spkPath;
+        }
+
+        // Update semua unit kavling yang dipilih dalam proyek ini
+        $affectedCount = LandBankUnit::whereIn('id', $request->unit_ids)
+            ->where('land_bank_id', $land->id)
+            ->update($updateData);
+
+        // Sync / Create / Update record di tabel spks
+        $spkData = [
+            'land_bank_id'        => $land->id,
+            'land_bank_unit_id'   => $unitCount == 1 ? $request->unit_ids[0] : null,
+            'jenis_spk'           => 'Pembangunan Unit',
+            'nama_pekerjaan'      => 'Pembangunan Unit Kavling Proyek ' . $land->name . ($unitCount > 1 ? " ({$unitCount} Unit)" : ''),
+            'kontraktor_nama'     => $request->kontraktor,
+            'tanggal_spk'         => $request->tanggal_spk ?: date('Y-m-d'),
+            'tanggal_mulai'       => $request->tanggal_mulai ?: ($request->tanggal_spk ?: date('Y-m-d')),
+            'tanggal_selesai'     => $request->tanggal_selesai ?: date('Y-m-d', strtotime(($request->tanggal_spk ?: date('Y-m-d')) . ' +90 days')),
+            'durasi_hari'         => 90,
+            'nilai_kontrak'       => $totalNilaiKontrak,
+            'sistem_pembayaran'   => 'termin',
+            'status'              => 'berjalan',
+            'progress'            => 0,
+            'keterangan'          => $request->description,
+        ];
+
+        if ($spkPath) {
+            $spkData['file_lampiran'] = $spkPath;
+        }
+
+        $spk = Spk::updateOrCreate(
+            ['no_spk' => $request->no_spk],
+            $spkData
+        );
+
+        // Jika SPK belum memiliki termin dan nilai kontrak > 0, generate termin standar otomatis
+        if ($spk->termins()->count() == 0 && $totalNilaiKontrak > 0) {
+            $defaultTermins = [
+                ['termin_ke' => 1, 'nama_tahap' => 'Termin 1 (Pondasi & Struktur Bawah)', 'persentase' => 25, 'syarat_progress' => 25],
+                ['termin_ke' => 2, 'nama_tahap' => 'Termin 2 (Dinding & Struktur Atas)', 'persentase' => 35, 'syarat_progress' => 60],
+                ['termin_ke' => 3, 'nama_tahap' => 'Termin 3 (Atap & Finishing)', 'persentase' => 35, 'syarat_progress' => 95],
+                ['termin_ke' => 4, 'nama_tahap' => 'Termin 4 / Retensi (Pemeliharaan)', 'persentase' => 5, 'syarat_progress' => 100],
+            ];
+
+            foreach ($defaultTermins as $t) {
+                SpkTermin::create([
+                    'spk_id'              => $spk->id,
+                    'termin_ke'           => $t['termin_ke'],
+                    'nama_tahap'          => $t['nama_tahap'],
+                    'persentase'          => $t['persentase'],
+                    'nominal'             => round(($t['persentase'] / 100) * $totalNilaiKontrak, 2),
+                    'syarat_progress'     => $t['syarat_progress'],
+                    'status_bayar'        => 'belum_dibayar',
+                    'tanggal_jatuh_tempo' => null,
+                ]);
+            }
+        } elseif ($spk->termins()->count() > 0 && $totalNilaiKontrak > 0) {
+            // Update termin jika sebelumnya nominalnya masih 0
+            $sumTermin = $spk->termins()->sum('nominal');
+            if ($sumTermin == 0) {
+                foreach ($spk->termins as $termin) {
+                    if ($termin->persentase > 0) {
+                        $termin->update([
+                            'nominal' => round(($termin->persentase / 100) * $totalNilaiKontrak, 2)
+                        ]);
+                    }
+                }
+            }
+        }
+
+        $formattedNilai = number_format($totalNilaiKontrak, 0, ',', '.');
+        return redirect()->route('properti.buatKavling', $land->id)
+            ->with('success', "SPK '{$request->no_spk}' (Total Rp {$formattedNilai}) berhasil diterbitkan dan terhubung ke {$affectedCount} unit kavling!");
+    }
+
+    public function savePolygon(Request $request)
+    {
+        $request->validate([
+            'unit_id' => 'required|exists:land_bank_units,id',
+            'polygon_points' => 'required',
+        ]);
+
+        $unit = LandBankUnit::findOrFail($request->unit_id);
+        
+        $points = $request->polygon_points;
+        if (is_string($points)) {
+            $points = json_decode($points, true);
+        }
+
+        $unit->polygon_points = $points;
+
+        if ($request->filled('pos_x')) {
+            $unit->pos_x = (int) $request->pos_x;
+        }
+        if ($request->filled('pos_y')) {
+            $unit->pos_y = (int) $request->pos_y;
+        }
+
+        $unit->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Titik poligon kavling berhasil dipetakan!',
+            'unit' => [
+                'id' => $unit->id,
+                'unit_code' => $unit->unit_code,
+                'polygon_points' => $unit->polygon_points,
+                'pos_x' => $unit->pos_x,
+                'pos_y' => $unit->pos_y
+            ]
+        ]);
+    }
+
+    public function deletePolygon(Request $request)
+    {
+        $request->validate([
+            'unit_id' => 'required|exists:land_bank_units,id',
+        ]);
+
+        $unit = LandBankUnit::findOrFail($request->unit_id);
+        $unit->polygon_points = null;
+        $unit->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pemetaan poligon unit berhasil dihapus.',
+            'unit' => [
+                'id' => $unit->id,
+                'unit_code' => $unit->unit_code
+            ]
+        ]);
     }
 }

@@ -26357,3 +26357,9 @@ dl li {
     color: #6b7280; /* abu-abu gelap */
 }
 /*# sourceMappingURL=maps/style.css.map */
+/* hide fa bars resposfiv */
+@media (max-width: 991px) {
+  .navbar .navbar-menu-wrapper .navbar-toggler.navbar-toggler-right.d-lg-none {
+    display: none !important;
+  }
+}

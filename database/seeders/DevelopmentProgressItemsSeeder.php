@@ -4,170 +4,171 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\LandBank;
+use App\Models\LandBankUnit;
+use App\Models\DevelopmentProgress;
+use App\Models\DevelopmentProgressItem;
+use App\Models\MasterProgressCategory;
+use App\Models\MasterProgressItem;
 
 class DevelopmentProgressItemsSeeder extends Seeder
 {
     public function run(): void
     {
-        $items = [
-            // ===== I. Pekerjaan Persiapan =====
+        // 1. Seed Master Categories & Master Items
+        $categoriesData = [
             [
-                'development_progress_id' => 1,
-                'kategori' => 'persiapan',
-                'kode' => '1.1',
-                'uraian' => 'Pembersihan Lahan',
-                'volume' => 1,
-                'satuan' => 'ls',
-                'harga_satuan' => 2000000,
-                'total' => 2000000,
-                'keterangan' => 'Manual',
-                'created_at' => now(),
-                'updated_at' => now()
+                'nama_kategori' => 'I. PEKERJAAN PERSIAPAN',
+                'slug'          => 'persiapan',
+                'prefix'        => '1',
+                'icon'          => 'tools',
+                'urutan'        => 1,
+                'items'         => [
+                    ['kode' => '1.1', 'uraian' => 'Pembersihan Lokasi, Urugan, & Bouwplank Pengukuran', 'default_volume' => 1, 'satuan' => 'ls', 'default_harga_satuan' => 2000000, 'keterangan' => 'Kayu 5/7 & Papan Kayu Meranti'],
+                    ['kode' => '1.2', 'uraian' => 'Pengukuran Elevasi, Peil Lantai & Pasang Patok Kavling', 'default_volume' => 1, 'satuan' => 'paket', 'default_harga_satuan' => 1000000, 'keterangan' => 'Theodolite / Waterpass'],
+                ]
             ],
             [
-                'development_progress_id' => 1,
-                'kategori' => 'persiapan',
-                'kode' => '1.2',
-                'uraian' => 'Pemasangan Pagar Pengaman',
-                'volume' => 50,
-                'satuan' => "m'",
-                'harga_satuan' => 150000,
-                'total' => 7500000,
-                'keterangan' => 'Seng',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-
-            // ===== II. Pekerjaan Pondasi =====
-            [
-                'development_progress_id' => 1,
-                'kategori' => 'pondasi',
-                'kode' => '2.1',
-                'uraian' => 'Galian Tanah Pondasi',
-                'volume' => 20,
-                'satuan' => 'm³',
-                'harga_satuan' => 50000,
-                'total' => 1000000,
-                'keterangan' => null,
-                'created_at' => now(),
-                'updated_at' => now()
+                'nama_kategori' => 'II. PEKERJAAN PONDASI',
+                'slug'          => 'pondasi',
+                'prefix'        => '2',
+                'icon'          => 'foundation',
+                'urutan'        => 2,
+                'items'         => [
+                    ['kode' => '2.1', 'uraian' => 'Galian Tanah Pondasi Batu Kali & Urugan Pasir Alas', 'default_volume' => 25, 'satuan' => 'm³', 'default_harga_satuan' => 75000, 'keterangan' => 'Kedalaman galian 80 cm'],
+                    ['kode' => '2.2', 'uraian' => 'Pasangan Pondasi Batu Kali Campuran 1:4 (Aanstamping)', 'default_volume' => 18, 'satuan' => 'm³', 'default_harga_satuan' => 380000, 'keterangan' => 'Batu belah & pasir pasang'],
+                    ['kode' => '2.3', 'uraian' => 'Pekerjaan Sloof Beton Bertulang 15/20 (Besi 10mm & Begel 6mm)', 'default_volume' => 42, 'satuan' => 'm\'', 'default_harga_satuan' => 145000, 'keterangan' => 'Mutu Beton K-225'],
+                ]
             ],
             [
-                'development_progress_id' => 1,
-                'kategori' => 'pondasi',
-                'kode' => '2.2',
-                'uraian' => 'Pemasangan Pondasi Batu Kali',
-                'volume' => 15,
-                'satuan' => 'm³',
-                'harga_satuan' => 250000,
-                'total' => 3750000,
-                'keterangan' => null,
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-
-            // ===== III. Struktur =====
-            [
-                'development_progress_id' => 1,
-                'kategori' => 'struktur',
-                'kode' => '3.1',
-                'uraian' => 'Pengecoran Kolom',
-                'volume' => 10,
-                'satuan' => 'm³',
-                'harga_satuan' => 800000,
-                'total' => 8000000,
-                'keterangan' => null,
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-
-            // ===== IV. Dinding =====
-            [
-                'development_progress_id' => 1,
-                'kategori' => 'dinding',
-                'kode' => '4.1',
-                'uraian' => 'Pemasangan Bata Merah',
-                'volume' => 100,
-                'satuan' => 'm²',
-                'harga_satuan' => 50000,
-                'total' => 5000000,
-                'keterangan' => null,
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-
-            // ===== V. Atap =====
-            [
-                'development_progress_id' => 1,
-                'kategori' => 'atap',
-                'kode' => '5.1',
-                'uraian' => 'Rangka Atap Baja Ringan',
-                'volume' => 50,
-                'satuan' => "m²",
-                'harga_satuan' => 150000,
-                'total' => 7500000,
-                'keterangan' => null,
-                'created_at' => now(),
-                'updated_at' => now()
+                'nama_kategori' => 'III. PEKERJAAN STRUKTUR',
+                'slug'          => 'struktur',
+                'prefix'        => '3',
+                'icon'          => 'bridge',
+                'urutan'        => 3,
+                'items'         => [
+                    ['kode' => '3.1', 'uraian' => 'Kolom Praktis Beton Bertulang 15/15', 'default_volume' => 36, 'satuan' => 'm\'', 'default_harga_satuan' => 95000, 'keterangan' => 'Besi 10mm ulir & begel 6mm'],
+                    ['kode' => '3.2', 'uraian' => 'Ringbalk Beton Bertulang 15/20', 'default_volume' => 42, 'satuan' => 'm\'', 'default_harga_satuan' => 125000, 'keterangan' => 'Pengikat pasangan dinding atas'],
+                    ['kode' => '3.3', 'uraian' => 'Cor Plat / Canopy Beton Teras & Talang Beton', 'default_volume' => 1, 'satuan' => 'ls', 'default_harga_satuan' => 2500000, 'keterangan' => 'Waterproofing Sika'],
+                ]
             ],
             [
-                'development_progress_id' => 1,
-                'kategori' => 'atap',
-                'kode' => '5.2',
-                'uraian' => 'Penutup Atap Genteng',
-                'volume' => 50,
-                'satuan' => "m²",
-                'harga_satuan' => 100000,
-                'total' => 5000000,
-                'keterangan' => null,
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-
-            // ===== VI. Finishing =====
-            [
-                'development_progress_id' => 1,
-                'kategori' => 'finishing',
-                'kode' => '6.1',
-                'uraian' => 'Plesteran dan Acian',
-                'volume' => 80,
-                'satuan' => 'm²',
-                'harga_satuan' => 40000,
-                'total' => 3200000,
-                'keterangan' => null,
-                'created_at' => now(),
-                'updated_at' => now()
+                'nama_kategori' => 'IV. PEKERJAAN DINDING',
+                'slug'          => 'dinding',
+                'prefix'        => '4',
+                'icon'          => 'wall',
+                'urutan'        => 4,
+                'items'         => [
+                    ['kode' => '4.1', 'uraian' => 'Pasangan Dinding Bata Ringan (Hebel) tebal 10 cm & Thinbed Mortar', 'default_volume' => 135, 'satuan' => 'm²', 'default_harga_satuan' => 85000, 'keterangan' => 'Perekat mortar instan'],
+                    ['kode' => '4.2', 'uraian' => 'Plesteran & Acian Halus Dinding Interior & Eksterior', 'default_volume' => 260, 'satuan' => 'm²', 'default_harga_satuan' => 65000, 'keterangan' => 'Mortar plester & acian halus'],
+                ]
             ],
             [
-                'development_progress_id' => 1,
-                'kategori' => 'finishing',
-                'kode' => '6.2',
-                'uraian' => 'Pengecatan Dinding',
-                'volume' => 80,
-                'satuan' => 'm²',
-                'harga_satuan' => 30000,
-                'total' => 2400000,
-                'keterangan' => null,
-                'created_at' => now(),
-                'updated_at' => now()
+                'nama_kategori' => 'V. PEKERJAAN ATAP',
+                'slug'          => 'atap',
+                'prefix'        => '5',
+                'icon'          => 'roofing',
+                'urutan'        => 5,
+                'items'         => [
+                    ['kode' => '5.1', 'uraian' => 'Rangka Atap Kuda-Kuda Baja Ringan Truss C75.75 & Reng 0.45', 'default_volume' => 65, 'satuan' => 'm²', 'default_harga_satuan' => 165000, 'keterangan' => 'Garansi struktur baja ringan'],
+                    ['kode' => '5.2', 'uraian' => 'Penutup Atap Genteng Beton Flat / Metal Pasir & Nok Bubungan', 'default_volume' => 65, 'satuan' => 'm²', 'default_harga_satuan' => 120000, 'keterangan' => 'Cat pelapis anti bocor'],
+                    ['kode' => '5.3', 'uraian' => 'Pemasangan Plafon Gypsum Board 9mm & Rangka Hollow Galvalum', 'default_volume' => 50, 'satuan' => 'm²', 'default_harga_satuan' => 95000, 'keterangan' => 'List profil gypsum keliling'],
+                ]
             ],
-
-            // ===== VII. Lainnya =====
             [
-                'development_progress_id' => 1,
-                'kategori' => 'lainnya',
-                'kode' => '7.1',
-                'uraian' => 'Pembersihan Akhir',
-                'volume' => 1,
-                'satuan' => 'ls',
-                'harga_satuan' => 1000000,
-                'total' => 1000000,
-                'keterangan' => 'Final Check',
-                'created_at' => now(),
-                'updated_at' => now()
+                'nama_kategori' => 'VI. PEKERJAAN FINISHING',
+                'slug'          => 'finishing',
+                'prefix'        => '6',
+                'icon'          => 'brush',
+                'urutan'        => 6,
+                'items'         => [
+                    ['kode' => '6.1', 'uraian' => 'Pasang Lantai Granit Tile 60x60 Polished & Plint Dinding', 'default_volume' => 45, 'satuan' => 'm²', 'default_harga_satuan' => 175000, 'keterangan' => 'Granit Homogenous Tile'],
+                    ['kode' => '6.2', 'uraian' => 'Pasang Keramik Lantai & Dinding Kamar Mandi + Waterproofing', 'default_volume' => 15, 'satuan' => 'm²', 'default_harga_satuan' => 150000, 'keterangan' => 'Keramik anti selip 25x25 & 25x40'],
+                    ['kode' => '6.3', 'uraian' => 'Kusen Aluminium 3 inch, Pintu Panel Utama & Jendela Kaca', 'default_volume' => 1, 'satuan' => 'paket', 'default_harga_satuan' => 8500000, 'keterangan' => 'Kaca polos 5mm & handle kunci set'],
+                    ['kode' => '6.4', 'uraian' => 'Instalasi Sanitair (Kloset Duduk, Hand Shower, Jetwasher & Kran)', 'default_volume' => 1, 'satuan' => 'paket', 'default_harga_satuan' => 3500000, 'keterangan' => 'Merk American Standard / Setara'],
+                    ['kode' => '6.5', 'uraian' => 'Pengecatan Dinding Interior & Eksterior (Weathercoat)', 'default_volume' => 260, 'satuan' => 'm²', 'default_harga_satuan' => 35000, 'keterangan' => 'Cat Jotun / Dulux 2 lapis'],
+                ]
+            ],
+            [
+                'nama_kategori' => 'VII. PEKERJAAN LAINNYA',
+                'slug'          => 'lainnya',
+                'prefix'        => '7',
+                'icon'          => 'dots-horizontal',
+                'urutan'        => 7,
+                'items'         => [
+                    ['kode' => '7.1', 'uraian' => 'Pekerjaan Carport Cor Beton Rabat, Tali Air & Kanstein Pembatas', 'default_volume' => 15, 'satuan' => 'm²', 'default_harga_satuan' => 180000, 'keterangan' => 'Tekstur sikat anti slip'],
+                    ['kode' => '7.2', 'uraian' => 'Pemasangan Bio Septic Tank 1000L & Sumur Resapan Air Kotor', 'default_volume' => 1, 'satuan' => 'unit', 'default_harga_satuan' => 3200000, 'keterangan' => 'Biofilter ramah lingkungan'],
+                    ['kode' => '7.3', 'uraian' => 'Pembersihan Akhir (General Cleaning) & Finishing Pra Serah Terima', 'default_volume' => 1, 'satuan' => 'ls', 'default_harga_satuan' => 1000000, 'keterangan' => 'Pembersihan kaca, lantai, & uji fungsi utilitas'],
+                ]
             ],
         ];
 
-        DB::table('development_progress_items')->insert($items);
+        foreach ($categoriesData as $catData) {
+            $items = $catData['items'];
+            unset($catData['items']);
+
+            $cat = MasterProgressCategory::updateOrCreate(
+                ['slug' => $catData['slug']],
+                $catData
+            );
+
+            foreach ($items as $idx => $itemData) {
+                MasterProgressItem::updateOrCreate(
+                    [
+                        'master_progress_category_id' => $cat->id,
+                        'kode'                        => $itemData['kode'],
+                    ],
+                    array_merge($itemData, [
+                        'urutan' => $idx + 1,
+                    ])
+                );
+            }
+        }
+
+        // 2. Jika ada Unit yang sudah dibuat secara manual, pasang template progress
+        $unit = LandBankUnit::first();
+        if ($unit) {
+            // Pastikan ada DevelopmentProgress
+            $progress = DevelopmentProgress::firstOrCreate(
+                ['land_bank_unit_id' => $unit->id],
+                ['title' => 'Progress Pembangunan Unit ' . $unit->unit_code]
+            );
+
+            // Hapus data lama pada progress ini jika ada
+            DevelopmentProgressItem::where('development_progress_id', $progress->id)->delete();
+
+            // Masukkan seluruh template dari Master Categories
+            $allMasterCategories = MasterProgressCategory::with('items')->where('is_active', true)->orderBy('urutan')->get();
+            $totalItemsCount = 0;
+
+            foreach ($allMasterCategories as $masterCat) {
+                foreach ($masterCat->items as $masterItem) {
+                    DevelopmentProgressItem::create([
+                        'development_progress_id' => $progress->id,
+                        'kategori'                => $masterCat->slug,
+                        'kode'                    => $masterItem->kode,
+                        'uraian'                  => $masterItem->uraian,
+                        'volume'                  => $masterItem->default_volume,
+                        'satuan'                  => $masterItem->satuan,
+                        'harga_satuan'            => $masterItem->default_harga_satuan,
+                        'total'                   => round($masterItem->default_volume * $masterItem->default_harga_satuan),
+                        'keterangan'              => $masterItem->keterangan,
+                    ]);
+                    $totalItemsCount++;
+                }
+            }
+
+            // Hitung total anggaran progress
+            $subtotal = $progress->items()->sum('total');
+            $ppn = round($subtotal * 0.1);
+            $totalAnggaran = $subtotal + $ppn;
+
+            $progress->update([
+                'total_anggaran' => $totalAnggaran,
+                'status'         => 'ongoing',
+            ]);
+        }
+
+        $this->command->info("✓ Master Kategori Dinamis & Template RAP Pembangunan berhasil dijalankan.");
     }
 }

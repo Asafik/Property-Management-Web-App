@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('block')->nullable(); // A
             $table->string('unit_number')->nullable(); // 1
             $table->string('unit_code')->nullable(); // A.1
-            $table->enum('type', ['subsidi', 'komersil'])->default('subsidi'); // tipe unit
+            $table->string('type')->nullable();
+            $table->enum('jenis', ['subsidi', 'komersil'])->default('subsidi'); // tipe unit
             $table->string('unit_name')->nullable(); // nama unit
 
             // ===== DATA KAVLING =====
@@ -56,7 +57,7 @@ return new class extends Migration
             // ===== POSISI DENAH =====
             $table->json('coordinates')->nullable();
             $table->float('map_scale')->nullable(); // optional untuk responsive
-
+            
             $table->timestamps();
         });
     }

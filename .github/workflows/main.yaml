@@ -1,0 +1,41 @@
+name: Deploy Laravel via FTP (Hostinger)
+
+on:
+  push:
+    branches:
+      - Production  # branch yang akan otomatis deploy
+     
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🚀 Deploy to Hostinger via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}        # contoh: 153.92.13.205
+          username: ${{ secrets.FTP_USERNAME }}  # propertyManagement
+          password: ${{ secrets.FTP_PASSWORD }}  # Bismillah123!
+          protocol: ftp                          # ganti ke sftp kalau Hostinger pakai SFTP
+          server-dir: /public_html/              # root Laravel di server
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.git/**
+            **/.github/**
+            **/.env
+            **/node_modules/**
+            **/storage/*.key
+            **/vendor/**
+            **/public/uploads/**
+            !**/public/uploads/**/.gitkeep
+            **/public/perizinan_dokumen/**
+            !**/public/perizinan_dokumen/.gitkeep
+            **/public/invoices/**
+            !**/public/invoices/.gitkeep
+            **/uploads/**
+            **/storage/app/**
+            **/storage/logs/**

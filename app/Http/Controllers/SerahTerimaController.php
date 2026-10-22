@@ -4,137 +4,219 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Booking;
-use App\Models\Serah_Terima;
 use App\Models\SerahTerima;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 class SerahTerimaController extends Controller
 {
-    //
-public function index($id)
-{
-    // Ambil semua booking, bisa diubah sesuai kebutuhan (misal pagination)
-   $booking = Booking::with('customer', 'unit')->find($id); // ambil 1 booking
-return view('serah.serah-terima', compact('booking'));
-}
+    /**
+     * Menampilkan halaman form serah terima
+     */
+    public function index($id)
+    {
+        $booking = Booking::with(['customer', 'unit'])->findOrFail($id);
+        $item = $booking->unit;
 
-
-public function store(Request $request, Booking $booking)
-{
-    $request->validate([
-        'tanggal_serah_terima' => 'required|date',
-        'lokasi_serah_terima' => 'required',
-    ]);
-
-    DB::beginTransaction();
-
-    try {
-
-        Log::info('Proses serah terima dimulai', [
-            'booking_id' => $booking->id,
-            'user_id' => auth()->id()
-        ]);
-
-        // Upload Foto
-        $foto1 = $request->file('foto_serah_kunci')?->store('serah_terima', 'public');
-        $foto2 = $request->file('foto_kondisi_unit')?->store('serah_terima', 'public');
-
-        Log::info('Upload foto selesai', [
-            'foto_serah_kunci' => $foto1,
-            'foto_kondisi_unit' => $foto2,
-        ]);
-
-        // Generate Nomor BAST
-        $noBast = 'BAST/' . date('m/Y') . '/' . str_pad(
-            SerahTerima::count() + 1,
-            3,
-            '0',
-            STR_PAD_LEFT
-        );
-
-        Log::info('Nomor BAST digenerate', [
-            'no_bast' => $noBast
-        ]);
-
-        // Simpan Serah Terima
-        $serah = SerahTerima::create([
-            'booking_id' => $booking->id,
-            'no_bast' => $noBast,
-            'tanggal_serah_terima' => $request->tanggal_serah_terima,
-            'lokasi_serah_terima' => $request->lokasi_serah_terima,
-            'catatan' => $request->catatan,
-            'foto_serah_kunci' => $foto1,
-            'foto_kondisi_unit' => $foto2,
-        ]);
-
-        Log::info('Data serah terima tersimpan', [
-            'serah_terima_id' => $serah->id
-        ]);
-
-        // Simpan Checklist Items
-        if ($request->items) {
-
-            foreach ($request->items as $item) {
-                $serah->items()->create([
-                    'item_name' => $item['name'],
-                    'is_checked' => isset($item['checked']) ? 1 : 0,
-                    'status' => isset($item['checked']) ? 'OK' : 'Perlu Perbaikan',
-                ]);
-            }
-
-            Log::info('Checklist items tersimpan', [
-                'total_items' => count($request->items)
-            ]);
-        }
-
-        // Simpan Dokumen
-        if ($request->documents) {
-
-            foreach ($request->documents as $doc) {
-                $serah->documents()->create([
-                    'document_name' => $doc['name'],
-                    'is_submitted' => isset($doc['submitted']) ? 1 : 0,
-                    'status' => isset($doc['submitted']) ? 'Sudah' : 'Proses',
-                ]);
-            }
-
-            Log::info('Dokumen tersimpan', [
-                'total_documents' => count($request->documents)
-            ]);
-        }
-
-        // Update Status Booking
-        $booking->update([
-            'status' => 'completed'
-        ]);
-
-        Log::info('Status booking diupdate ke completed', [
-            'booking_id' => $booking->id
-        ]);
-
-        DB::commit();
-
-        Log::info('Proses serah terima berhasil', [
-            'booking_id' => $booking->id,
-            'no_bast' => $noBast
-        ]);
-
-        return redirect()->back()->with('success', 'Serah terima berhasil diproses.');
-
-    } catch (\Exception $e) {
-
-        DB::rollback();
-
-        Log::error('Gagal proses serah terima', [
-            'booking_id' => $booking->id ?? null,
-            'error_message' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => $e->getTraceAsString()
-        ]);
-
-        return back()->with('error', 'Terjadi kesalahan saat proses serah terima.');
+        return view('serah.serah-terima', compact('booking', 'item'));
     }
-}
 
+    /**
+     * Memproses penyimpanan data serah terima
+     */
+    public function store(Request $request, Booking $booking)
+    {
+        $request->validate([
+            'tanggal_serah_terima' => 'required|date',
+            'lokasi_serah_terima' => 'required',
+            'persetujuan' => 'required',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            Log::info('Proses serah terima dimulai', [
+                'booking_id' => $booking->id,
+                'user_id' => auth()->id()
+            ]);
+
+            // =========================
+            // UPLOAD FOTO
+            // =========================
+            $foto1 = $request->file('foto_serah_kunci')
+                ?->store('serah_terima', 'public');
+
+            $foto2 = $request->file('foto_kondisi_unit')
+                ?->store('serah_terima', 'public');
+
+            // =========================
+            // GENERATE NO BAST
+            // =========================
+            $noBast = 'BAST/' . date('m/Y') . '/' . str_pad(
+                SerahTerima::count() + 1,
+                3,
+                '0',
+                STR_PAD_LEFT
+            );
+
+            // =========================
+            // SIMPAN SERAH TERIMA
+            // =========================
+            $serah = SerahTerima::create([
+                'booking_id' => $booking->id,
+                'no_bast' => $noBast,
+                'tanggal_serah_terima' => $request->tanggal_serah_terima,
+                'lokasi_serah_terima' => $request->lokasi_serah_terima,
+                'catatan' => $request->catatan,
+                'foto_serah_kunci' => $foto1,
+                'foto_kondisi_unit' => $foto2,
+                'saksi' => $request->saksi,
+            ]);
+
+            // =========================
+            // CHECKLIST ITEMS
+            // =========================
+            if ($request->items) {
+                foreach ($request->items as $item) {
+                    $serah->items()->create([
+                        'item_name' => $item['name'],
+                        'is_checked' => isset($item['checked']) ? 1 : 0,
+                        'status' => isset($item['checked']) ? 'OK' : 'Perlu Perbaikan',
+                    ]);
+                }
+            }
+
+            // =========================
+            // DOKUMEN
+            // =========================
+            if ($request->documents) {
+                foreach ($request->documents as $doc) {
+                    $serah->documents()->create([
+                        'document_name' => $doc['name'],
+                        'is_submitted' => isset($doc['submitted']) ? 1 : 0,
+                        'status' => isset($doc['submitted']) ? 'Sudah' : 'Proses',
+                    ]);
+                }
+            }
+
+            // =========================
+            // UPDATE STATUS
+            // =========================
+            $booking->update([
+                'status' => 'completed',
+                'serah_terima_date' => $request->tanggal_serah_terima
+            ]);
+
+            if ($booking->unit) {
+                $booking->unit->update([
+                    'status' => 'sold'
+                ]);
+            }
+
+            DB::commit();
+
+            Log::info('Proses serah terima berhasil', [
+                'booking_id' => $booking->id,
+                'no_bast' => $noBast
+            ]);
+
+            return redirect()->route('unit.selesai', ['bookingId' => $booking->id])
+                ->with('success', 'Serah terima berhasil diproses.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Gagal proses serah terima', [
+                'error_message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Halaman sukses
+     */
+    public function SellDone($bookingId)
+    {
+        $booking = Booking::with([
+            'unit',
+            'unit.landBank',
+            'customer',
+            'sales',
+            'serahTerima.items',
+            'serahTerima.documents',
+            'akad',
+            'kprApplication.bank',
+            'kprApplication.documents',
+            'payments',
+            'documentUploads',
+            'complaints'
+        ])->findOrFail($bookingId);
+
+        $unit = $booking->unit;
+
+        $complaintIdentifier = $booking->booking_code ?: $booking->id;
+        $complaintUrl = route('complaint.customer.form', $complaintIdentifier);
+        $qrCodeSvg = null;
+        try {
+            $qrCodeSvg = QrCode::format('svg')
+                ->size(130)
+                ->color(79, 70, 229)
+                ->generate($complaintUrl);
+        } catch (\Exception $e) {
+            $qrCodeSvg = null;
+        }
+
+        return view('marketing.done_sell', compact('booking', 'unit', 'complaintUrl', 'qrCodeSvg'));
+    }
+
+    /**
+     * Cetak Lembar Resmi Berita Acara Serah Terima (BAST) & Rincian Unit Terjual
+     */
+    public function cetak($bookingId)
+    {
+        $booking = Booking::with([
+            'unit',
+            'unit.landBank',
+            'customer',
+            'sales',
+            'serahTerima.items',
+            'serahTerima.documents',
+            'akad',
+            'complaints'
+        ])->findOrFail($bookingId);
+
+        $serahTerima = $booking->serahTerima;
+        $unit = $booking->unit;
+
+        return view('cetak.serah_terima_cetak', compact('booking', 'serahTerima', 'unit'));
+    }
+
+    /**
+     * Cetak Lembar Rincian Transaksi, Harga, Pembayaran & Notaris Lengkap
+     */
+    public function cetakRincianTransaksi($bookingId)
+    {
+        $booking = Booking::with([
+            'unit',
+            'unit.landBank',
+            'customer',
+            'sales',
+            'serahTerima',
+            'akad',
+            'kprApplication.bank',
+            'payments'
+        ])->findOrFail($bookingId);
+
+        $unit = $booking->unit;
+        $kpr = $booking->kprApplication;
+        $akad = $booking->akad;
+        $serahTerima = $booking->serahTerima;
+        $companySetting = \App\Models\CompanySetting::first();
+
+        return view('cetak.rincian_transaksi_terjual', compact('booking', 'unit', 'kpr', 'akad', 'serahTerima', 'companySetting'));
+    }
 }

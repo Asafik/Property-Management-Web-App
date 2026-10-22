@@ -2,2038 +2,3769 @@
 
 @section('title', 'Buat Kavling - Property Management App')
 
+@push('styles')
+<style>
+/* Status Badges & Action Buttons */
+.badge-kavling-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0.32rem 0.75rem;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.badge-kavling-status.status-draft {
+    background: #343a40;
+    color: #ffffff;
+    border: 1px solid #23272b;
+    box-shadow: 0 2px 4px rgba(52, 58, 64, 0.2);
+}
+
+.badge-kavling-status.status-sold {
+    background: rgba(255, 87, 87, 0.15);
+    color: #ff5757;
+    border: 1px solid rgba(255, 87, 87, 0.3);
+}
+
+.badge-kavling-status.status-booked {
+    background: rgba(255, 184, 0, 0.15);
+    color: #d97706;
+    border: 1px solid rgba(255, 184, 0, 0.3);
+}
+
+.badge-kavling-status.status-ready-subsidi {
+    background: rgba(0, 201, 167, 0.15);
+    color: #00897b;
+    border: 1px solid rgba(0, 201, 167, 0.3);
+}
+
+.badge-kavling-status.status-ready-komersil {
+    background: rgba(132, 94, 194, 0.15);
+    color: #845ec2;
+    border: 1px solid rgba(132, 94, 194, 0.3);
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.btn-action-edit {
+    background: linear-gradient(135deg, #36d1dc, #5b86e5);
+    color: #ffffff !important;
+    box-shadow: 0 2px 4px rgba(54, 209, 220, 0.25);
+}
+
+.btn-action-edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(54, 209, 220, 0.4);
+    color: #ffffff !important;
+}
+
+.btn-action-view {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: #ffffff !important;
+    box-shadow: 0 2px 4px rgba(154, 85, 255, 0.25);
+}
+
+.btn-action-view:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(154, 85, 255, 0.4);
+    color: #ffffff !important;
+}
+
+.btn-action-delete {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    color: #ffffff !important;
+    box-shadow: 0 2px 4px rgba(255, 65, 108, 0.25);
+}
+
+.btn-action-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 65, 108, 0.4);
+    color: #ffffff !important;
+}
+
+.btn-gradient-info {
+    background: linear-gradient(to right, #36d1dc, #5b86e5) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 2px 5px rgba(54, 209, 220, 0.3) !important;
+    transition: all 0.2s ease;
+}
+
+.btn-gradient-info:hover {
+    background: linear-gradient(to right, #2abec9, #4974d0) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(54, 209, 220, 0.45) !important;
+}
+
+/* Custom styling untuk Denah Kavling & Modal Tabs */
+.denah-container {
+    background-color: #f8f9fa;
+    padding: 1.25rem;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.denah-unit-box {
+    color: #ffffff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    position: relative;
+    min-width: 58px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.denah-unit-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+}
+
+.denah-type-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #1e1e2d;
+    color: #ffffff;
+    font-size: 8px;
+    padding: 1px 4px;
+    border-radius: 50%;
+    border: 1px solid #ffffff;
+}
+
+/* =========================================== */
+/* HOUSE CARD — Visualisasi Progress Bangunan  */
+/* =========================================== */
+.house-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 10px;
+    padding: 4px;
+}
+
+.house-card {
+    position: relative;
+    background: #ffffff;
+    border-radius: 10px;
+    border: 2px solid #dee2e6;
+    padding: 8px 6px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(.34,1.56,.64,1);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.house-card:hover {
+    transform: translateY(-4px) scale(1.04);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+    border-color: #9a55ff;
+    z-index: 5;
+}
+
+/* Atap rumah SVG */
+.house-roof {
+    width: 48px;
+    height: 24px;
+    margin: 0 auto 2px;
+    display: block;
+}
+
+/* Progress bar vertikal di dalam rumah */
+.house-progress-wrap {
+    position: relative;
+    width: 32px;
+    height: 38px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    margin: 0 auto 4px;
+    overflow: hidden;
+    border: 1px solid #dee2e6;
+}
+
+.house-progress-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 0 0 4px 4px;
+    transition: height 0.8s ease;
+}
+
+.house-unit-code {
+    font-size: 9px;
+    font-weight: 800;
+    color: #2c2e3f;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.house-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 2px;
+    flex-shrink: 0;
+}
+
+.house-status-label {
+    font-size: 8px;
+    font-weight: 600;
+    opacity: 0.85;
+    white-space: nowrap;
+}
+
+/* Animasi shimmer untuk unit yang sedang dibangun */
+@keyframes construction-shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+.house-card.in-progress::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff9800 0%, #ffc107 40%, #ff9800 100%);
+    background-size: 200% auto;
+    animation: construction-shimmer 1.5s linear infinite;
+}
+
+.house-card.selesai {
+    border-color: #28a74540;
+    background: linear-gradient(135deg, #f8fff8, #ffffff);
+}
+
+.house-card.selesai::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: #28a745;
+}
+
+.house-card.sold-unit {
+    opacity: 0.75;
+    border-color: #dc354540;
+    background: linear-gradient(135deg, #fff5f5, #ffffff);
+}
+
+.house-card.booked-unit {
+    border-color: #ffc10760;
+    background: linear-gradient(135deg, #fffdf0, #ffffff);
+}
+
+/* Badge progress di pojok kanan atas */
+.house-progress-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 8px;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 4px;
+    color: #fff;
+    line-height: 1.4;
+}
+
+/* Filter pill buttons */
+.denah-filter-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    background: #f0f0f5;
+    color: #6c757d;
+}
+
+.denah-filter-pill:hover,
+.denah-filter-pill.active {
+    background: #9a55ff;
+    color: #fff;
+    border-color: #9a55ff;
+    box-shadow: 0 2px 8px rgba(154,85,255,0.25);
+}
+
+/* Tooltip on hover */
+.house-tooltip {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e1e2d;
+    color: #fff;
+    font-size: 10px;
+    line-height: 1.5;
+    padding: 6px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    z-index: 99;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    transition: opacity 0.18s ease, visibility 0.18s ease;
+}
+
+.house-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #1e1e2d;
+}
+
+.house-card:hover .house-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Tab button siteplan */
+
+.modal-tabs-wrapper {
+    background: #f6f9ff;
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 1.25rem;
+    border: 1px solid #e9ecef;
+}
+
+.modal-tabs {
+    display: flex;
+    gap: 6px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.modal-tab-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6c757d;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-tab-link:hover {
+    color: #9a55ff;
+    background: rgba(154, 85, 255, 0.08);
+}
+
+.modal-tab-link.active {
+    color: #9a55ff;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(154, 85, 255, 0.15);
+}
+
+.modal-tab-pane {
+    display: none;
+}
+
+.modal-tab-pane.active {
+    display: block;
+    animation: fadeInTab 0.3s ease;
+}
+
+@keyframes fadeInTab {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.upload-dropzone-box {
+    border: 2px dashed #d9dce2;
+    border-radius: 12px;
+    padding: 1.25rem 1rem;
+    background: #fafbfc;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.upload-dropzone-box:hover {
+    border-color: #9a55ff;
+    background: #fbf9ff;
+}
+
+.upload-dropzone-box input[type="file"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 5;
+}
+
+/* Custom Responsive Modal Sizing (Lega & Nyaman) */
+.modal-custom .modal-dialog,
+.modal-dialog-compact {
+    max-width: 760px !important;
+    width: 92%;
+    margin: 1.5rem auto !important;
+}
+
+#modalSpkUnit .modal-dialog {
+    max-width: 780px !important;
+    width: 92%;
+    margin: 1.5rem auto !important;
+}
+
+.modal-dialog-scrollable {
+    max-height: calc(100vh - 2.5rem) !important;
+}
+
+.modal-dialog-scrollable .modal-content {
+    max-height: calc(100vh - 2.5rem) !important;
+    border-radius: 14px !important;
+    border: none !important;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18) !important;
+}
+
+.modal-header {
+    padding: 1rem 1.25rem !important;
+    border-bottom: 1px solid #f0f2f5 !important;
+}
+
+.modal-body {
+    padding: 1.25rem !important;
+}
+
+.modal-dialog-scrollable .modal-body {
+    max-height: calc(100vh - 11rem) !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    scrollbar-width: thin;
+    scrollbar-color: #da8cff #f1f5f9;
+}
+
+.modal-footer {
+    padding: 0.75rem 1.25rem !important;
+    border-top: 1px solid #f0f2f5 !important;
+}
+
+/* Prevent outer body background scroll when modal is open */
+html.modal-open,
+body.modal-open {
+    overflow: hidden !important;
+    height: 100vh !important;
+    padding-right: 0 !important;
+    touch-action: none;
+}
+
+body.modal-open .container-scroller,
+body.modal-open .main-panel,
+body.modal-open .content-wrapper,
+body.modal-open .page-body-wrapper {
+    overflow: hidden !important;
+    height: 100vh !important;
+}
+
+.modal {
+    padding: 1.25rem 0.5rem !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+}
+
+.modal-dialog-scrollable .modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-dialog-scrollable .modal-body::-webkit-scrollbar-thumb {
+    background: #da8cff;
+    border-radius: 4px;
+}
+
+@media (max-width: 991.98px) {
+    .modal-custom .modal-dialog,
+    .modal-dialog-compact,
+    #modalSpkUnit .modal-dialog {
+        max-width: 94% !important;
+        width: 94% !important;
+        margin: 1rem auto !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .modal {
+        padding: 0.5rem 0.25rem 2rem 0.25rem !important;
+    }
+
+    .modal-dialog-centered {
+        align-items: flex-start !important;
+        min-height: auto !important;
+        margin-top: 0.75rem !important;
+        margin-bottom: 2rem !important;
+    }
+
+    .modal-custom .modal-dialog,
+    .modal-dialog-compact,
+    #modalSpkUnit .modal-dialog {
+        max-width: 96% !important;
+        width: 96% !important;
+        margin: 0.75rem auto 2rem auto !important;
+        max-height: calc(100dvh - 3.5rem) !important;
+        max-height: calc(100vh - 3.5rem) !important;
+    }
+
+    .modal-dialog-scrollable .modal-content {
+        max-height: calc(100dvh - 3.5rem) !important;
+        max-height: calc(100vh - 3.5rem) !important;
+        border-radius: 12px !important;
+    }
+
+    .modal-dialog-scrollable .modal-body {
+        max-height: calc(100dvh - 9.5rem) !important;
+        max-height: calc(100vh - 9.5rem) !important;
+        padding: 0.85rem 0.75rem !important;
+    }
+
+    .modal-header {
+        padding: 0.75rem 0.9rem !important;
+    }
+
+    .modal-footer {
+        padding: 0.6rem 0.85rem !important;
+    }
+}
+
+/* Interactive Siteplan Styles */
+.siteplan-viewer-wrapper {
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    position: relative;
+}
+.siteplan-toolbar {
+    background: #ffffff;
+    border-bottom: 1px solid #eef2f6;
+    padding: 0.65rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.siteplan-toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #475569;
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none !important;
+}
+.siteplan-toolbar-btn:hover {
+    background: #f8fafc;
+    color: #9a55ff;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+.siteplan-toolbar-btn.btn-download {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(154, 85, 255, 0.25);
+}
+.siteplan-toolbar-btn.btn-download:hover {
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(154, 85, 255, 0.4);
+    transform: translateY(-1px);
+}
+.siteplan-viewport {
+    height: 420px;
+    overflow: auto;
+    position: relative;
+    background: #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    user-select: none;
+}
+.siteplan-viewport:active {
+    cursor: grabbing;
+}
+.siteplan-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.2s ease-out;
+    transform-origin: center center;
+}
+.siteplan-tab-btn {
+    border: 1.5px solid transparent;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    border-radius: 20px;
+    background: #f1f5f9;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.siteplan-tab-btn:hover {
+    background: #e2e8f0;
+    color: #334155;
+}
+/* ===== MODAL DETAIL UNIT LENGKAP STYLES ===== */
+.modal-detail-unit .modal-header {
+    background: linear-gradient(135deg, #da8cff, #9a55ff);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 1rem 1.5rem;
+    border: none;
+}
+.modal-detail-unit .modal-title {
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.modal-detail-unit .modal-header .btn-close {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+}
+.modal-detail-unit .modal-content {
+    border: none;
+    border-radius: 16px;
+}
+.modal-detail-unit .modal-body {
+    padding: 1.5rem;
+    background: #ffffff;
+}
+.timeline-detail-card {
+    background: linear-gradient(135deg, #faf7ff, #f4efff);
+    border: 1px solid #eadcff;
+    border-radius: 14px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+.timeline-detail-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #9a55ff;
+    margin-bottom: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.timeline-detail-item {
+    background: #ffffff;
+    border: 1px solid #efe6ff;
+    border-radius: 10px;
+    padding: 0.75rem 0.85rem;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+.timeline-detail-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(154, 85, 255, 0.1);
+    border-color: #9a55ff;
+}
+.timeline-detail-label {
+    font-size: 0.8rem;
+    color: #4b5563 !important;
+    margin-bottom: 0.35rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.timeline-detail-label i {
+    color: #9a55ff;
+    font-size: 1rem;
+}
+.timeline-detail-value {
+    font-size: 0.95rem;
+    color: #111827;
+    font-weight: 700;
+}
+.timeline-detail-value.price, .timeline-detail-value.fee-text {
+    color: #16a34a;
+    font-weight: 800;
+}
+.name-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+.name-initial {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+.name-title {
+    font-weight: 700;
+    color: #111827;
+    font-size: 0.9rem;
+}
+.progress-wrapper {
+    margin-top: 4px;
+}
+.progress-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.progress-row .progress {
+    flex: 1;
+    height: 10px;
+    border-radius: 6px;
+    background: #e5e7eb;
+}
+.progress-bar-custom {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.4s ease;
+}
+.progress-green {
+    background: linear-gradient(135deg, #28a745, #5cb85c);
+}
+.progress-percent {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: #111827;
+    white-space: nowrap;
+}
+
+/* ===== MODAL ATUR SPK UNIT KAVLING STYLES ===== */
+#modalSpkUnit .modal-dialog {
+    max-width: 800px !important;
+    width: 95% !important;
+    margin: 1.5rem auto !important;
+}
+
+#modalSpkUnit .modal-content {
+    border-radius: 16px !important;
+    border: none !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden;
+}
+
+#modalSpkUnit .modal-header {
+    background: #ffffff;
+    border-bottom: 1px solid #f1f5f9;
+    padding: 1rem 1.4rem;
+}
+
+#modalSpkUnit .form-control {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    height: 40px !important;
+    font-size: 0.88rem !important;
+    padding: 6px 12px !important;
+    color: #1e293b !important;
+    background-color: #ffffff !important;
+    transition: all 0.2s ease !important;
+}
+
+#modalSpkUnit .form-control:focus {
+    border-color: #9a55ff !important;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
+}
+
+/* Kavling Rupiah Input Box */
+.kavling-rupiah-box {
+    display: flex !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    border: 1px solid #ebedf2 !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+    height: 38px !important;
+    transition: all 0.2s ease !important;
+}
+
+.kavling-rupiah-box:focus-within {
+    border-color: #b66dff !important;
+    box-shadow: 0 0 0 3px rgba(182, 109, 255, 0.15) !important;
+}
+
+.kavling-rupiah-box .rupiah-prefix {
+    background: #f8f9fa !important;
+    color: #6c757d !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    padding: 0 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-right: 1px solid #ebedf2 !important;
+    user-select: none !important;
+}
+
+.kavling-rupiah-box input.rupiah-input {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 12px !important;
+    font-size: 0.875rem !important;
+    color: #495057 !important;
+    flex: 1 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: transparent !important;
+}
+
+/* SPK Rupiah Input Group */
+.spk-rupiah-box {
+    display: flex !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+    height: 40px !important;
+    transition: all 0.2s ease !important;
+}
+
+.spk-rupiah-box:focus-within {
+    border-color: #9a55ff !important;
+    box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.12) !important;
+}
+
+.spk-rupiah-box .spk-prefix {
+    background: #f8fafc !important;
+    color: #475569 !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    padding: 0 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-right: 1px solid #cbd5e1 !important;
+    user-select: none !important;
+}
+
+.spk-rupiah-box input.rupiah-spk-input {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 12px !important;
+    font-size: 0.92rem !important;
+    font-weight: 600 !important;
+    color: #1e293b !important;
+    flex: 1 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: transparent !important;
+}
+
+.spk-total-summary-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 5px;
+    padding: 3px 10px;
+    background: rgba(154, 85, 255, 0.08);
+    border-radius: 6px;
+    border: 1px solid rgba(154, 85, 255, 0.18);
+    font-size: 0.78rem;
+    color: #7c3aed;
+    font-weight: 600;
+}
+
+/* Upload Dropzone Box */
+.spk-upload-box {
+    position: relative;
+    border: 2px dashed #cbd5e1;
+    border-radius: 10px;
+    background: #f8fafc;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.spk-upload-box:hover {
+    border-color: #9a55ff;
+    background: #faf5ff;
+}
+
+.spk-upload-box input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.spk-upload-box > div {
+    pointer-events: none;
+}
+
+/* Unit Selection Grid */
+.spk-unit-card {
+    transition: all 0.2s ease;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.spk-unit-card:hover {
+    border-color: #c084fc !important;
+    background: #faf5ff !important;
+    transform: translateY(-1px);
+}
+
+.spk-unit-card.is-selected {
+    border-color: #9a55ff !important;
+    background: rgba(154, 85, 255, 0.08) !important;
+    box-shadow: 0 2px 6px rgba(154, 85, 255, 0.15) !important;
+}
+</style>
+@endpush
+
 @section('content')
-    <style>
-        /* Custom Tab Styling - BootstrapDash style */
-        .add-custom-tabs-wrapper {
-            background: #f6f9ff;
-            border-radius: 8px;
-            padding: 6px;
-            margin-bottom: 25px;
-            border: 1px solid #e9ecef;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
 
-        .add-custom-tabs {
-            display: flex;
-            flex-wrap: nowrap;
-            gap: 4px;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            min-width: min-content;
-        }
-
-        .add-custom-tab-item {
-            flex: 0 0 auto;
-        }
-
-        .add-custom-tab-link {
-            display: flex;
-            align-items: center;
-            padding: 10px 16px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #6c7383;
-            background: transparent;
-            border: none;
-            border-radius: 6px;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-            gap: 6px;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        .add-custom-tab-link i {
-            font-size: 1rem;
-            color: #a5b3cb;
-            transition: all 0.2s ease;
-        }
-
-        .add-custom-tab-link:hover {
-            color: #9a55ff;
-            background: #ffffff;
-            box-shadow: 0 2px 5px rgba(154, 85, 255, 0.1);
-        }
-
-        .add-custom-tab-link:hover i {
-            color: #9a55ff;
-        }
-
-        .add-custom-tab-link.active {
-            color: #9a55ff;
-            background: #ffffff;
-            box-shadow: 0 2px 8px rgba(154, 85, 255, 0.15);
-            font-weight: 600;
-        }
-
-        .add-custom-tab-link.active i {
-            color: #9a55ff;
-        }
-
-        /* Tab Content Animation */
-        .add-custom-tab-pane {
-            display: none;
-        }
-
-        .add-custom-tab-pane.active {
-            display: block;
-            animation: addFadeIn 0.3s ease;
-        }
-
-        @keyframes addFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ===== MODERN FORM STYLING UNTUK SEMUA TAB ===== */
-        .kavling-form-group {
-            margin-bottom: 1rem;
-        }
-
-        .kavling-form-group label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-            display: block;
-        }
-
-        .kavling-form-control {
-            border: 1px solid #e9ecef;
-            border-radius: 10px;
-            padding: 0.7rem 0.8rem;
-            font-size: 0.85rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            width: 100%;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        .kavling-form-control:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        select.kavling-form-control {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239a55ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 12px;
-            padding-right: 2rem;
-        }
-
-        /* ===== MODERN BUTTON STYLING UNTUK SEMUA TAB ===== */
-        .kavling-btn {
-            font-size: 0.8rem;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-family: 'Nunito', sans-serif;
-            display: inline-block;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            width: 100%;
-            text-align: center;
-        }
-
-        @media (min-width: 576px) {
-            .kavling-btn {
-                width: auto;
-                padding: 0.5rem 1.2rem;
-            }
-        }
-
-        .kavling-btn-primary {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .kavling-btn-primary:hover {
-            background: linear-gradient(to right, #c77cff, #8a45e6);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(154, 85, 255, 0.4);
-        }
-
-        .kavling-btn-outline-primary {
-            background: transparent;
-            border: 1px solid #9a55ff;
-            color: #9a55ff;
-        }
-
-        .kavling-btn-outline-primary:hover {
-            background: linear-gradient(135deg, #9a55ff, #da8cff);
-            color: #ffffff;
-            border-color: transparent;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .kavling-btn-outline-success {
-            background: transparent;
-            border: 1px solid #28a745;
-            color: #28a745;
-        }
-
-        .kavling-btn-outline-success:hover {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: #ffffff;
-            border-color: transparent;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-        }
-
-        .kavling-btn-light {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            color: #2c2e3f;
-        }
-
-        .kavling-btn-light:hover {
-            background: #e9ecef;
-            transform: translateY(-2px);
-        }
-
-        .kavling-btn-secondary {
-            background: linear-gradient(135deg, #f0f2f5, #e4e6ea);
-            border: 1px solid #e9ecef;
-            color: #2c2e3f;
-        }
-
-        .kavling-btn-secondary:hover {
-            background: linear-gradient(135deg, #e4e6ea, #d8dce2);
-            transform: translateY(-2px);
-            color: #2c2e3f;
-        }
-
-        .kavling-btn-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c);
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
-        }
-
-        .kavling-btn-success:hover {
-            background: linear-gradient(135deg, #218838, #4cae4c);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
-        }
-
-        /* ===== MODERN FILE UPLOAD STYLING ===== */
-        .kavling-file-upload-modern {
-            position: relative;
-            width: 100%;
-        }
-
-        .kavling-file-upload-modern input[type="file"] {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            z-index: 2;
-        }
-
-        .kavling-file-upload-modern .kavling-file-label-modern {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            gap: 6px;
-            padding: 1rem 0.6rem;
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 2px dashed #d0d4db;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-height: 100px;
-        }
-
-        @media (min-width: 576px) {
-            .kavling-file-upload-modern .kavling-file-label-modern {
-                flex-direction: row;
-                text-align: left;
-                gap: 8px;
-                padding: 0.75rem 1rem;
-                min-height: auto;
-            }
-        }
-
-        .kavling-file-upload-modern:hover .kavling-file-label-modern {
-            border-color: #9a55ff;
-            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(154, 85, 255, 0.1);
-        }
-
-        .kavling-file-upload-modern .kavling-file-label-modern i {
-            font-size: 1.6rem;
-            color: #9a55ff;
-            background: rgba(154, 85, 255, 0.1);
-            padding: 8px;
-            border-radius: 50%;
-        }
-
-        .kavling-file-upload-modern .kavling-file-label-modern .kavling-file-info-modern {
-            flex: 1;
-            width: 100%;
-        }
-
-        .kavling-file-upload-modern .kavling-file-label-modern .kavling-file-info-modern span {
-            display: block;
-            font-weight: 600;
-            color: #2c2e3f;
-            font-size: 0.8rem;
-            word-break: break-word;
-        }
-
-        .kavling-file-upload-modern .kavling-file-label-modern .kavling-file-info-modern small {
-            color: #6c7383;
-            font-size: 0.65rem;
-            display: block;
-            margin-top: 2px;
-        }
-
-        .kavling-file-upload-modern .kavling-file-label-modern .kavling-file-size {
-            font-size: 0.7rem;
-            color: #9a55ff;
-            font-weight: 600;
-            background: rgba(154, 85, 255, 0.1);
-            padding: 4px 10px;
-            border-radius: 20px;
-            white-space: nowrap;
-            margin-top: 5px;
-        }
-
-        @media (min-width: 576px) {
-            .kavling-file-upload-modern .kavling-file-label-modern .kavling-file-size {
-                margin-top: 0;
-            }
-        }
-
-        /* Text muted */
-        .kavling-text-muted {
-            color: #a5b3cb !important;
-            font-size: 0.7rem;
-            display: block;
-            margin-top: 0.2rem;
-        }
-
-        /* ===== FILTER SECTION - SAMA PERSIS DENGAN PROPERTI ===== */
-        .filter-card {
-            background: linear-gradient(135deg, #f9f7ff, #f2ecff);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .filter-card .card-body {
-            padding: 1rem !important;
-        }
-
-        .filter-card .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.4rem;
-            letter-spacing: 0.3px;
-            white-space: nowrap;
-        }
-
-        .filter-card .form-control,
-        .filter-card .form-select {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            height: 40px;
-            border: 1px solid #e0e4e9;
-            width: 100%;
-        }
-
-        .filter-card .btn {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.85rem;
-            height: 40px;
-            border-radius: 8px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        /* Form Controls */
-        .form-control,
-        .form-select {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            background-color: #ffffff;
-            color: #2c2e3f;
-            height: 40px;
-        }
-
-        @media (min-width: 576px) {
-
-            .form-control,
-            .form-select {
-                padding: 0.7rem 1rem;
-                font-size: 0.95rem;
-                border-radius: 10px;
-            }
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #9a55ff;
-            box-shadow: 0 0 0 3px rgba(154, 85, 255, 0.1);
-            outline: none;
-        }
-
-        /* Form Label */
-        .form-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #9a55ff !important;
-            margin-bottom: 0.3rem;
-            letter-spacing: 0.3px;
-            font-family: 'Nunito', sans-serif;
-        }
-
-        /* ===== CARD STYLING - PAKAI BAWAAN BOOTSTRAP ===== */
-        .card {
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(154, 85, 255, 0.1) !important;
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-header {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-header {
-                padding: 1.2rem;
-            }
-        }
-
-        .card-body {
-            padding: 0.75rem;
-        }
-
-        @media (min-width: 576px) {
-            .card-body {
-                padding: 1rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .card-body {
-                padding: 1.2rem;
-            }
-        }
-
-        /* ===== TABLE STYLING ===== */
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 0;
-        }
-
-        .table thead th {
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            color: #9a55ff;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #e9ecef;
-            padding: 0.8rem 0.5rem;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 576px) {
-            .table thead th {
-                font-size: 0.85rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table thead th {
-                font-size: 0.9rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        /* Kolom No - lebih rapat */
-        .table thead th:first-child {
-            padding-left: 0.75rem;
-            width: 60px;
-        }
-
-        .table tbody td:first-child {
-            padding-left: 0.75rem;
-            font-weight: 500;
-            width: 60px;
-        }
-
-        .table tbody td {
-            vertical-align: middle;
-            font-size: 0.85rem;
-            padding: 0.8rem 0.5rem;
-            border-bottom: 1px solid #e9ecef;
-            color: #2c2e3f;
-        }
-
-        @media (min-width: 576px) {
-            .table tbody td {
-                font-size: 0.9rem;
-                padding: 0.9rem 0.6rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .table tbody td {
-                font-size: 0.95rem;
-                padding: 1rem 0.75rem;
-            }
-        }
-
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        /* Nama properti - lebih rapat dengan nomor */
-        .table tbody td:nth-child(2) {
-            padding-left: 0.3rem;
-        }
-
-        .table tbody td .d-flex.align-items-center {
-            gap: 0.5rem;
-        }
-
-        /* Icon dalam tabel */
-        .table tbody td i {
-            font-size: 1rem;
-        }
-
-        /* Text colors */
-        .text-primary {
-            color: #9a55ff !important;
-        }
-
-        .text-info {
-            color: #17a2b8 !important;
-        }
-
-        .text-danger {
-            color: #dc3545 !important;
-        }
-
-        .text-success {
-            color: #28a745 !important;
-        }
-
-        .text-warning {
-            color: #ffc107 !important;
-        }
-
-        .fw-bold {
-            font-weight: 600 !important;
-        }
-
-        .text-muted {
-            color: #a5b3cb !important;
-        }
-
-        /* ===== PAGINATION STYLING - DIPERKECIL ===== */
-        .pagination {
-            margin: 0;
-            gap: 3px;
-        }
-
-        .page-item .page-link {
-            border: 1px solid #e9ecef;
-            padding: 0.35rem 0.7rem;
-            font-size: 0.75rem;
-            color: #6c7383;
-            background-color: #ffffff;
-            border-radius: 6px !important;
-            transition: all 0.2s ease;
-            min-width: 32px;
-            text-align: center;
-        }
-
-        @media (min-width: 576px) {
-            .page-item .page-link {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
-                min-width: 36px;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .page-item .page-link {
-                padding: 0.45rem 0.9rem;
-                font-size: 0.85rem;
-                min-width: 40px;
-            }
-        }
-
-        .page-item.active .page-link {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            border-color: transparent;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(154, 85, 255, 0.3);
-        }
-
-        .page-item .page-link:hover {
-            background-color: #f8f9fa;
-            border-color: #9a55ff;
-            color: #9a55ff;
-            transform: translateY(-1px);
-        }
-
-        /* Info text pagination */
-        .pagination-info {
-            font-size: 0.8rem;
-            color: #6c7383;
-        }
-
-        @media (min-width: 576px) {
-            .pagination-info {
-                font-size: 0.85rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .pagination-info {
-                font-size: 0.9rem;
-            }
-        }
-
-        /* Badge Styling */
-        .badge {
-            padding: 0.35rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 30px;
-            display: inline-block;
-            white-space: nowrap;
-        }
-
-        @media (min-width: 576px) {
-            .badge {
-                padding: 0.4rem 0.75rem;
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .badge {
-                padding: 0.45rem 0.8rem;
-                font-size: 0.85rem;
-            }
-        }
-
-        .badge.badge-success {
-            background: linear-gradient(135deg, #28a745, #5cb85c) !important;
-            color: #ffffff;
-        }
-
-        .badge.badge-warning {
-            background: linear-gradient(135deg, #ffc107, #ffdb6d) !important;
-            color: #2c2e3f;
-        }
-
-        .badge.badge-primary {
-            background: linear-gradient(135deg, #9a55ff, #da8cff) !important;
-            color: #ffffff;
-        }
-
-        .badge.badge-info {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de) !important;
-            color: #ffffff;
-        }
-
-        /* Action buttons styling */
-        .btn-outline-primary,
-        .btn-outline-info,
-        .btn-outline-danger {
-            border: 1px solid;
-            padding: 0.4rem 0.75rem;
-            font-size: 0.8rem;
-        }
-
-        .btn-outline-primary {
-            border-color: #9a55ff;
-            color: #9a55ff;
-        }
-
-        .btn-outline-primary:hover {
-            background: linear-gradient(to right, #da8cff, #9a55ff);
-            color: white;
-        }
-
-        .btn-outline-info {
-            border-color: #17a2b8;
-            color: #17a2b8;
-        }
-
-        .btn-outline-info:hover {
-            background: linear-gradient(135deg, #17a2b8, #5bc0de);
-            color: white;
-        }
-
-        .btn-outline-danger {
-            border-color: #dc3545;
-            color: #dc3545;
-        }
-
-        .btn-outline-danger:hover {
-            background: linear-gradient(135deg, #dc3545, #e4606d);
-            color: white;
-        }
-
-        /* Responsive untuk mobile */
-        @media (max-width: 576px) {
-            .table thead th {
-                font-size: 0.75rem;
-                padding: 0.6rem 0.3rem;
-            }
-
-            .table tbody td {
-                font-size: 0.8rem;
-                padding: 0.6rem 0.3rem;
-            }
-
-            .filter-card {
-                padding: 0.75rem;
-            }
-
-            .filter-card .form-label {
-                font-size: 0.8rem;
-            }
-
-            .filter-card .form-control,
-            .filter-card .form-select,
-            .filter-card .btn {
-                font-size: 0.8rem;
-                height: 38px;
-            }
-        }
-
-        /* DataTables Custom Styling - Sembunyikan elemen yang tidak diinginkan */
-        .dataTables_filter,
-        .dataTables_length,
-        .dataTables_paginate,
-        .dataTables_info {
-            display: none !important;
-        }
-
-        /* Tetap tampilkan sorting indicator */
-        .sorting,
-        .sorting_asc,
-        .sorting_desc {
-            cursor: pointer;
-        }
-
-        /* Icon styling */
-        .mdi {
-            vertical-align: middle;
-        }
-
-        /* Styling untuk tombol filter dan reset */
-        .btn-filter-reset {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            width: 100%;
-            height: 40px;
-        }
-
-        .btn-filter-reset i {
-            font-size: 1rem;
-        }
-
-        /* Row filter spacing */
-        .filter-row {
-            margin-bottom: 0.5rem;
-        }
-
-        .filter-row:last-child {
-            margin-bottom: 0;
-        }
-    </style>
-
-    <div class="container-fluid p-4">
-        <!-- Header - CARD TERPISAH -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div>
-                            <h4 class="mb-1 fw-bold text-dark">
-                                <i class="mdi mdi-pencil-ruler me-2" style="color: #9a55ff;"></i>
-                                Buat Kavling / Master Unit
-                            </h4>
-                            <p class="mb-0 text-muted small">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Buat unit-unit kavling dari tanah yang sudah diverifikasi
-                            </p>
-                        </div>
-                        <div class="d-none d-sm-block">
-                            <i class="mdi mdi-pencil-ruler" style="font-size: 2.5rem; color: #9a55ff; opacity: 0.2;"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                {{ $errors->first() }}
-            </div>
-        @endif
-
-        <!-- Info Tanah Induk -->
-        <div class="row">
-            <div class="col-12 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-header bg-white">
-                        <h5 class="card-title mb-0">
-                            <i class="mdi mdi-office-building text-primary me-2"></i>
-                            Informasi Tanah Induk
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            {{-- Nama Tanah / Proyek --}}
-                            <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label class="text-muted small">
-                                        <i class="mdi mdi-home me-1"></i>Nama Tanah / Proyek
-                                    </label>
-                                    <p class="fw-bold">{{ $land->name ?? '-' }}</p>
-                                </div>
-                            </div>
-
-                            {{-- Luas Total Tanah --}}
-                            <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label class="text-muted small">
-                                        <i class="mdi mdi-ruler-square me-1"></i>Luas Total Tanah
-                                    </label>
-                                    <p class="fw-bold">{{ number_format($land->area ?? 0, 0, ',', '.') }} m²</p>
-                                </div>
-                            </div>
-
-                            {{-- Sisa Luas Belum Dikavling --}}
-                            <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label class="text-muted small">
-                                        <i class="mdi mdi-chart-arc me-1"></i>Sisa Luas Belum Dikavling
-                                    </label>
-                                    <p class="fw-bold text-primary">
-                                        {{ number_format($land->remaining_area ?? ($land->area ?? 0), 0, ',', '.') }} m²
-                                    </p>
-                                </div>
-                            </div>
-
-                            {{-- Status Legal --}}
-                            <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label class="text-muted small">
-                                        <i class="mdi mdi-gavel me-1"></i>Status Legal
-                                    </label>
-                                    @if ($land->legal_status == 'verified')
-                                        <p class="fw-bold"><span class="badge badge-success"><i
-                                                    class="mdi mdi-check-circle me-1"></i>Terverifikasi</span></p>
-                                    @else
-                                        <p class="fw-bold"><span class="badge badge-warning"><i
-                                                    class="mdi mdi-clock-outline me-1"></i>{{ ucfirst($land->legal_status) ?? '-' }}</span>
-                                        </p>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Lokasi --}}
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="mb-2">
-                                    <label class="text-muted small">
-                                        <i class="mdi mdi-map-marker me-1"></i>Lokasi
-                                    </label>
-                                    <p class="fw-bold">
-                                        <i class="mdi mdi-map-marker text-danger me-1"></i>
-                                        {{ $land->address ?? '-' }},
-                                        Kel. {{ $land->village ?? '-' }},
-                                        Kec. {{ $land->district ?? '-' }},
-                                        {{ $land->city ?? '-' }},
-                                        {{ $land->province ?? '-' }}
-                                        {{ $land->postal_code ?? '' }}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Progress Steps -->
-        <div class="row">
-            <div class="col-12 mb-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <span class="text-success"><i class="mdi mdi-check-circle me-1"></i>Input Tanah</span>
-                            <span class="text-success"><i class="mdi mdi-check-circle me-1"></i>Verifikasi Legal</span>
-                            <span class="text-primary"><i class="mdi mdi-progress-clock me-1"></i>Buat Kavling</span>
-                            <span class="text-muted"><i class="mdi mdi-circle-outline me-1"></i>Siap Jual</span>
-                        </div>
-                        <div class="progress mt-2" style="height: 6px;">
-                            <div class="progress-bar bg-success" style="width: 50%"></div>
-                            <div class="progress-bar bg-primary" style="width: 25%"></div>
-                        </div>
-                        <p class="text-muted small mt-2">
-                            <i class="mdi mdi-information-outline me-1"></i>
-                            Tahap 3 dari 4: Buat Kavling / Master Unit
+<div class="container-fluid px-1 px-sm-2 px-md-3 py-2 py-md-3">
+
+    <!-- Header Card Banner -->
+    <div class="row mb-3 mb-md-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 header-card">
+                <div class="card-body p-3 p-md-4 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                    <div>
+                        <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
+                            Buat Kavling / Master Unit
+                        </h3>
+                        <p class="text-muted mb-0" style="font-size: 0.88rem;">
+                            Kelola pembagian unit kavling tanah induk
                         </p>
                     </div>
+                    <div>
+                        <a href="{{ route('properti-all') }}" class="btn btn-sm btn-gradient-secondary px-3 py-2" style="border-radius: 6px;">
+                            Kembali
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Pilihan Metode Pembuatan Kavling -->
-        <div class="row">
-            <div class="col-12 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-header bg-white">
-                        <h5 class="card-title mb-0">
-                            <i class="mdi mdi-tools me-2 text-primary"></i>
-                            Metode Pembuatan Kavling
-                        </h5>
+    {{-- Alert Section --}}
+    @if (session('success'))
+        <div class="alert alert-success border-0 shadow-sm d-flex align-items-center gap-2 mb-3 py-2 px-3" style="border-radius: 8px;">
+            <i class="mdi mdi-check-circle" style="font-size: 1.25rem;"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger border-0 shadow-sm d-flex align-items-center gap-2 mb-3 py-2 px-3" style="border-radius: 8px;">
+            <i class="mdi mdi-alert-circle" style="font-size: 1.25rem;"></i>
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
+    <!-- Card 1: Header Informasi Tanah Induk -->
+    @php
+        $totalUnits = $land->units->count();
+        $totalArea = $land->units->sum('area');
+        $sisaLuas = max(0, $land->remaining_area ?? ($land->area - $totalArea));
+        $totalNilai = $land->units->sum('price');
+
+        $mapProgress = [
+            'belum_mulai' => 0,
+            'pondasi' => 20,
+            'dinding' => 40,
+            'atap' => 60,
+            'finishing' => 80,
+            'selesai' => 100,
+        ];
+
+        $unitProgress = $land->units->map(function ($u) use ($mapProgress) {
+            $st = strtolower($u->construction_progress ?? 'belum_mulai');
+            return $mapProgress[$st] ?? 0;
+        });
+
+        $progressPercent = $unitProgress->count() > 0 ? $unitProgress->avg() : 0;
+    @endphp
+
+    <!-- 1. Statistic Cards (Cards Sendiri-Sendiri seperti di Dashboard - Paling Atas) -->
+    <div class="row g-3 mb-3 mb-md-4">
+        <!-- 1. Total Unit -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card shadow-sm border-0 h-100 mb-0" style="border-radius: 12px;">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h4 class="text-dark mb-1 fw-bold">{{ $totalUnits }} <span style="font-size: 0.85rem; font-weight: 500;" class="text-muted">Unit</span></h4>
+                        <p class="text-muted mb-0" style="font-size: 0.82rem;">Total Unit Kavling</p>
                     </div>
-                    <div class="card-body">
-                        <!-- Custom Tabs -->
-                        <div class="add-custom-tabs-wrapper overflow-auto mb-3">
-                            <ul class="add-custom-tabs" id="myTab" role="tablist">
-                                <li class="add-custom-tab-item">
-                                    <a class="add-custom-tab-link active" id="manual-tab" data-toggle="tab"
-                                        href="#manual" role="tab" aria-controls="manual" aria-selected="true">
-                                        <i class="mdi mdi-pencil"></i>
-                                        <span>Manual Satu per Satu</span>
-                                    </a>
-                                </li>
-
-                                <li class="add-custom-tab-item">
-                                    <a class="add-custom-tab-link" id="import-tab" data-toggle="tab" href="#import"
-                                        role="tab" aria-controls="import" aria-selected="false">
-                                        <i class="mdi mdi-import"></i>
-                                        <span>Import Excel</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Tab Content -->
-                        <div class="tab-content mt-3 mt-md-4" id="myTabContent">
-                            <!-- TAB MANUAL -->
-                            <div class="add-custom-tab-pane active" id="manual" role="tabpanel"
-                                aria-labelledby="manual-tab">
-                                <form action="{{ route('properti.storeKavling', $land->id) }}" method="POST">
-                                    @csrf
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Blok / No. Unit</label>
-                                                <input type="text" name="block" class="kavling-form-control"
-                                                    placeholder="Contoh: A">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="kavling-form-group">
-                                                <label>Nomor Unit</label>
-                                                <input type="text" name="unit_number" class="kavling-form-control"
-                                                    placeholder="1">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="kavling-form-group">
-                                                <label>Type Unit</label>
-                                                <select name="type" class="kavling-form-control">
-                                                    <option value="">-- Pilih Type --</option>
-                                                    <option value="subsidi">Subsidi</option>
-                                                    <option value="komersil">Komersil</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <div class="kavling-form-group">
-                                                <label>Nama Unit</label>
-                                                <input type="text" name="unit_name" class="kavling-form-control"
-                                                    placeholder="Cluster Mawar">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="kavling-form-group">
-                                                <label>Luas (m²)</label>
-                                                <input type="number" name="area" class="kavling-form-control"
-                                                    placeholder="200">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="kavling-form-group">
-                                                <label>Luas Bangunan(m²)</label>
-                                                <input type="number" name="building_area" class="kavling-form-control"
-                                                    placeholder="200">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Harga (Rp)</label>
-                                                <input type="text" name="price" class="kavling-form-control"
-                                                    placeholder="500.000.000">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Harga IJB (Rp)</label>
-                                                <input type="text" name="ijb_price" class="kavling-form-control"
-                                                    placeholder="500.000.000">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="kavling-form-group">
-                                                <label>Harga AJB (Rp)</label>
-                                                <input type="text" name="ajb_price" class="kavling-form-control"
-                                                    placeholder="500.000.000">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <div class="kavling-form-group">
-                                                <label>Hadap</label>
-                                                <select name="facing" class="kavling-form-control">
-                                                    <option>Utara</option>
-                                                    <option>Selatan</option>
-                                                    <option>Timur</option>
-                                                    <option>Barat</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="kavling-form-group">
-                                                <label>Posisi</label>
-                                                <select name="position" class="kavling-form-control">
-                                                    <option>Hook</option>
-                                                    <option>Tengah</option>
-                                                    <option>Sudut</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col-md-12">
-                                            <div class="kavling-form-group">
-                                                <label>Keterangan</label>
-                                                <input type="text" name="description" class="kavling-form-control"
-                                                    placeholder="Opsional">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-3">
-                                        <div class="col-md-12">
-                                            <button type="submit" class="kavling-btn kavling-btn-primary">
-                                                <i class="mdi mdi-plus me-1"></i>Tambah Unit ke Daftar
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <!-- TAB IMPORT EXCEL -->
-                            <div class="add-custom-tab-pane" id="import" role="tabpanel"
-                                aria-labelledby="import-tab">
-                                <div class="text-center py-4">
-                                    <i class="mdi mdi-file-excel text-success" style="font-size: 48px;"></i>
-                                    <h5 class="mt-3">Import Data Kavling dari Excel</h5>
-                                    <p class="text-muted">
-                                        <i class="mdi mdi-information-outline me-1"></i>
-                                        Download template Excel, isi data unit, lalu upload kembali
-                                    </p>
-
-                                    <div class="row justify-content-center">
-                                        <div class="col-md-6">
-                                            <div class="kavling-form-group">
-                                                <label>Download Template</label>
-                                                <div>
-                                                    <a href="{{ route('kavling.template') }}"
-                                                        class="kavling-btn kavling-btn-outline-success">
-                                                        <i class="mdi mdi-download me-1"></i>Template Kavling.xlsx
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <form action="{{ route('kavling.import', $land->id) }}" method="POST"
-                                                enctype="multipart/form-data">
-                                                @csrf
-
-
-                                                <div class="kavling-form-group">
-                                                    <label>Upload File Excel</label>
-
-                                                    <div class="kavling-file-upload-modern position-relative">
-
-                                                        <!-- Input Asli (Hidden) -->
-                                                        <input type="file" id="uploadExcel" name="file"
-                                                            accept=".xlsx,.xls" required
-                                                            style="opacity:0; position:absolute; inset:0; cursor:pointer;">
-
-                                                        <!-- UI Custom -->
-                                                        <div
-                                                            class="kavling-file-label-modern text-center p-4 border rounded">
-                                                            <i class="mdi mdi-cloud-upload" style="font-size:32px;"></i>
-                                                            <div class="kavling-file-info-modern mt-2">
-                                                                <span id="fileName">Upload File Excel</span>
-                                                                <small class="d-block text-muted">
-                                                                    Format: .xlsx, .xls (Max 5MB)
-                                                                </small>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-
-                                                <button class="kavling-btn kavling-btn-primary" type="submit"
-                                                    id="importButton" disabled>
-                                                    <i class="mdi mdi-import me-1"></i>Import Data
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-home-city" style="font-size: 2.2rem; color: #9a55ff; opacity: 0.25;"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Daftar Unit yang Akan Dibuat - FOKUS BAGIAN TABEL DENGAN FILTER -->
-        <div class="row">
-            <div class="col-12 grid-margin">
-                <div class="card">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">
-                            <i class="mdi mdi-format-list-bulleted me-2 text-primary"></i>
-                            Daftar Unit Kavling
-                        </h5>
-                        <span class="badge badge-primary"><i class="mdi mdi-counter me-1"></i>{{ $land->units->count() }}
-                            unit</span>
+        <!-- 2. Luas Total Tanah -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card shadow-sm border-0 h-100 mb-0" style="border-radius: 12px;">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h4 class="text-dark mb-1 fw-bold">{{ number_format($land->area ?? 0, 0, ',', '.') }} <span style="font-size: 0.85rem; font-weight: 500;" class="text-muted">m²</span></h4>
+                        <p class="text-muted mb-0" style="font-size: 0.82rem;">Luas Total Tanah</p>
                     </div>
-                    <div class="card-body">
-                        <!-- FILTER SECTION - SAMA PERSIS SEPERTI SEBELUMNYA -->
-                      <div class="row">
-                        <div class="col-md-12">
-                            <div class="filter-card">
-                                <div class="card-body">
-                                    <h6 class="card-title mb-3" style="font-size: 1rem;">
-                                        <i class="mdi mdi-filter-outline me-1"></i>Filter Data
-                                    </h6>
-
-                                    <!-- FILTER UNTUK MOBILE -->
-                                    <div class="d-block d-md-none">
-                                        <form method="GET" action="{{ url()->current() }}" id="filterFormMobile">
-                                            <!-- Baris 1: Pencarian -->
-                                            <div class="row filter-row">
-                                                <div class="col-12">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-magnify me-1"></i>Pencarian
-                                                    </label>
-                                                    <input type="text" name="search" id="searchInputMobile" class="form-control"
-                                                        value="{{ request('search') }}" placeholder="Cari blok/unit...">
-                                                </div>
-                                            </div>
-
-                                            <!-- Baris 2: Type & Posisi -->
-                                            <div class="row filter-row">
-                                                <div class="col-6">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-shape-outline me-1"></i>Type
-                                                    </label>
-                                                    <select name="type" id="filterTypeMobile" class="form-control">
-                                                        <option value="">Semua</option>
-                                                        @foreach ($land->units->pluck('type')->unique() as $type)
-                                                            @if ($type)
-                                                                <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>
-                                                                    {{ $type }}
-                                                                </option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-map-marker me-1"></i>Posisi
-                                                    </label>
-                                                    <select name="position" id="filterPosisiMobile" class="form-control">
-                                                        <option value="">Semua</option>
-                                                        @foreach ($land->units->pluck('position')->unique() as $position)
-                                                            @if ($position)
-                                                                <option value="{{ $position }}" {{ request('position') == $position ? 'selected' : '' }}>
-                                                                    {{ $position }}
-                                                                </option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <!-- Baris 3: Hadap & Tampil -->
-                                            <div class="row filter-row">
-                                                <div class="col-6">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-compass me-1"></i>Hadap
-                                                    </label>
-                                                    <select name="facing" id="filterHadapMobile" class="form-control">
-                                                        <option value="">Semua</option>
-                                                        @foreach ($land->units->pluck('facing')->unique() as $facing)
-                                                            @if ($facing)
-                                                                <option value="{{ $facing }}" {{ request('facing') == $facing ? 'selected' : '' }}>
-                                                                    {{ $facing }}
-                                                                </option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-counter me-1"></i>Tampil
-                                                    </label>
-                                                    <select name="per_page" id="showDataMobile" class="form-control">
-                                                        <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <!-- Baris 4: Button Filter & Reset -->
-                                            <div class="row filter-row">
-                                                <div class="col-6">
-                                                    <button type="submit" id="filterDataMobile"
-                                                        class="btn btn-gradient-primary btn-filter-reset">
-                                                        <i class="mdi mdi-filter-outline"></i> Filter
-                                                    </button>
-                                                </div>
-                                                <div class="col-6">
-                                                    <a href="{{ url()->current() }}" id="resetFilterMobile"
-                                                        class="btn btn-gradient-secondary btn-filter-reset">
-                                                        <i class="mdi mdi-refresh"></i> Reset
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-
-                                    <!-- FILTER UNTUK TABLET & DESKTOP -->
-                                    <div class="d-none d-md-block">
-                                        <form method="GET" action="{{ url()->current() }}" id="filterForm">
-                                            <div class="row g-2 align-items-end filter-row">
-                                                <div class="col-md-3">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-magnify me-1"></i>Pencarian
-                                                    </label>
-                                                    <input type="text" name="search" id="searchInput" class="form-control"
-                                                        value="{{ request('search') }}" placeholder="Cari blok/unit...">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-shape-outline me-1"></i>Type
-                                                    </label>
-                                                    <select name="type" id="filterType" class="form-control">
-                                                        <option value="">Semua</option>
-                                                        @foreach ($land->units->pluck('type')->unique() as $type)
-                                                            @if ($type)
-                                                                <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>
-                                                                    {{ $type }}
-                                                                </option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-map-marker me-1"></i>Posisi
-                                                    </label>
-                                                    <select name="position" id="filterPosisi" class="form-control">
-                                                        <option value="">Semua</option>
-                                                        @foreach ($land->units->pluck('position')->unique() as $position)
-                                                            @if ($position)
-                                                                <option value="{{ $position }}" {{ request('position') == $position ? 'selected' : '' }}>
-                                                                    {{ $position }}
-                                                                </option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-compass me-1"></i>Hadap
-                                                    </label>
-                                                    <select name="facing" id="filterHadap" class="form-control">
-                                                        <option value="">Semua</option>
-                                                        @foreach ($land->units->pluck('facing')->unique() as $facing)
-                                                            @if ($facing)
-                                                                <option value="{{ $facing }}" {{ request('facing') == $facing ? 'selected' : '' }}>
-                                                                    {{ $facing }}
-                                                                </option>
-                                                            @endif
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-1">
-                                                    <label class="form-label">
-                                                        <i class="mdi mdi-counter me-1"></i>Tampil
-                                                    </label>
-                                                    <select name="per_page" id="showData" class="form-control">
-                                                        <option value="10" {{ request('per_page', 10) == 10 ? 'selected' : '' }}>10</option>
-                                                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                                        <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-1">
-                                                    <label class="form-label" style="visibility: hidden;">Filter</label>
-                                                    <button type="submit" id="filterData"
-                                                        class="btn btn-gradient-primary w-100 btn-filter-reset">
-                                                        <i class="mdi mdi-filter-outline"></i>
-                                                    </button>
-                                                </div>
-                                                <div class="col-md-1">
-                                                    <label class="form-label" style="visibility: hidden;">Reset</label>
-                                                    <a href="{{ url()->current() }}" id="resetFilter"
-                                                        class="btn btn-gradient-secondary w-100 btn-filter-reset">
-                                                        <i class="mdi mdi-refresh"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-texture-box" style="font-size: 2.2rem; color: #36d1dc; opacity: 0.35;"></i>
                     </div>
+                </div>
+            </div>
+        </div>
 
-                        <!-- Tabel Data dengan Icon LENGKAP - KOLOM DIGABUNG -->
-                        <div class="table-responsive">
-                            <table id="tableKavling" class="table table-hover" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center"><i class="mdi mdi-counter me-1"></i>No</th>
-                                        <th><i class="mdi mdi-home me-1"></i>Unit</th> {{-- GABUNGAN Blok + No Unit --}}
-                                        <th><i class="mdi mdi-format-list-bulleted me-1"></i>Tipe / Nama</th>
-                                        {{-- GABUNGAN Type + Nama Unit --}}
-                                        <th><i class="mdi mdi-ruler-square me-1"></i>Luas Tanah</th>
-                                        <th><i class="mdi mdi-domain me-1"></i>Luas Bangunan</th>
-                                        <th><i class="mdi mdi-currency-usd me-1"></i>Harga</th>
-                                        <th><i class="mdi mdi-file-document me-1"></i>Harga IJB</th>
-                                        <th><i class="mdi mdi-file-document me-1"></i>Harga AJB</th>
-                                        <th><i class="mdi mdi-compass me-1"></i>Hadap / Posisi</th> {{-- GABUNGAN Hadap + Posisi --}}
-                                        <th class="text-center"><i class="mdi mdi-cog me-1"></i>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($units as $i => $unit)
-                                        <tr>
-                                            <td class="text-center fw-bold">
-                                                <span
-                                                    class="badge bg-light text-dark">{{ $units->firstItem() + $i }}</span>
-                                            </td>
+        <!-- 3. Sisa Luas Tanah -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card shadow-sm border-0 h-100 mb-0" style="border-radius: 12px;">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h4 class="text-warning mb-1 fw-bold">{{ number_format($sisaLuas, 0, ',', '.') }} <span style="font-size: 0.85rem; font-weight: 500;" class="text-muted">m²</span></h4>
+                        <p class="text-muted mb-0" style="font-size: 0.82rem;">Sisa Luas Tanah</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-chart-arc" style="font-size: 2.2rem; color: #ffb800; opacity: 0.35;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                                            {{-- GABUNGAN 1: BLOK + NO UNIT (contoh: A.1) --}}
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-home text-primary me-2"></i>
-                                                    <span class="fw-bold">
-                                                        @php
-                                                            $blok =
-                                                                $unit->block ??
-                                                                (explode('.', $unit->unit_code)[0] ?? '-');
-                                                            $nomor =
-                                                                $unit->unit_number ??
-                                                                (explode('.', $unit->unit_code)[1] ?? '-');
-                                                        @endphp
-                                                        {{ $blok }}.{{ $nomor }}
-                                                    </span>
-                                                </div>
-                                            </td>
+        <!-- 4. Total Luas Unit -->
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card shadow-sm border-0 h-100 mb-0" style="border-radius: 12px;">
+                <div class="card-body d-flex justify-content-between align-items-center p-3">
+                    <div>
+                        <h4 class="text-info mb-1 fw-bold">{{ number_format($totalArea, 0, ',', '.') }} <span style="font-size: 0.85rem; font-weight: 500;" class="text-muted">m²</span></h4>
+                        <p class="text-muted mb-0" style="font-size: 0.82rem;">Total Luas Terpakai</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <i class="mdi mdi-ruler-square" style="font-size: 2.2rem; color: #0d6efd; opacity: 0.25;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                                            <td>
-                                                <div style="display: flex; flex-direction: column;">
-                                                    <span style="font-weight: 600; color: #2c2e3f;">
-                                                        <i class="mdi mdi-home-city text-primary me-1"
-                                                            style="font-size: 0.8rem;"></i>
-                                                        {{ $unit->unit_name ?? '-' }}
-                                                    </span>
-                                                    <span style="font-size: 0.9rem; color: #6c757d; margin-top: 2px;">
-                                                        <i class="mdi mdi-format-list-bulleted text-info me-1"
-                                                            style="font-size: 0.7rem;"></i>
-                                                        {{ ucfirst($unit->type ?? '-') }}
-                                                    </span>
-                                                </div>
-                                            </td>
-                                            {{-- LUAS TANAH --}}
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-ruler-square text-warning me-2"></i>
-                                                    <span>{{ number_format($unit->area, 0, ',', '.') }} m²</span>
-                                                </div>
-                                            </td>
-
-                                            {{-- LUAS BANGUNAN --}}
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-domain text-secondary me-2"></i>
-                                                    <span>{{ number_format($unit->building_area ?? 0, 0, ',', '.') }}
-                                                        m²</span>
-                                                </div>
-                                            </td>
-
-                                            {{-- HARGA --}}
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-currency-usd text-success me-2"></i>
-                                                    <span>Rp {{ number_format($unit->price ?? 0, 0, ',', '.') }}</span>
-                                                </div>
-                                            </td>
-
-                                            {{-- HARGA IJB --}}
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-file-document text-info me-2"></i>
-                                                    <span>Rp {{ number_format($unit->ijb_price ?? 0, 0, ',', '.') }}</span>
-                                                </div>
-                                            </td>
-
-                                            {{-- HARGA AJB --}}
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-file-document text-primary me-2"></i>
-                                                    <span>Rp {{ number_format($unit->ajb_price ?? 0, 0, ',', '.') }}</span>
-                                                </div>
-                                            </td>
-
-                                            {{-- GABUNGAN 3: HADAP + POSISI --}}
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <i class="mdi mdi-compass text-info me-2"></i>
-                                                    <span>
-                                                        @if ($unit->facing || $unit->position)
-                                                            {{ $unit->facing ?? '-' }} / {{ $unit->position ?? '-' }}
-                                                        @else
-                                                            -
-                                                        @endif
-                                                    </span>
-                                                </div>
-                                            </td>
-
-                                            {{-- AKSI --}}
-                                            <td class="text-center">
-                                                <div class="d-flex justify-content-center gap-2">
-                                                    <a href="{{ route('properti.kavling.edit', ['unit' => $unit->id]) }}"
-                                                        class="btn btn-outline-primary btn-sm" title="Edit">
-                                                        <i class="mdi mdi-pencil"></i>
-                                                    </a>
-
-                                                    <a href="{{ route('properti.progress', ['land_bank_id' => $unit->land_bank_id]) }}"
-                                                        class="btn btn-outline-info btn-sm" title="Update Progress">
-                                                        <i class="mdi mdi-progress-clock"></i>
-                                                    </a>
-
-                                                    <form
-                                                        action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}"
-                                                        method="POST" style="display:inline-block;"
-                                                        onsubmit="return confirm('Hapus unit {{ $unit->unit_code }}?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button class="btn btn-outline-danger btn-sm" title="Hapus">
-                                                            <i class="mdi mdi-delete"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="10" class="text-center py-4">
-                                                <i class="mdi mdi-information-outline me-2"></i>
-                                                Belum ada unit kavling
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- PAGINATION -->
-                        @if($units->count() > 0)
-                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-3">
-                            <div class="pagination-info mb-2 mb-sm-0">
-                                <i class="mdi mdi-information-outline me-1"></i>
-                                Menampilkan {{ $units->firstItem() }} - {{ $units->lastItem() }} dari {{ $units->total() }} data
-                            </div>
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination pagination-sm flex-wrap justify-content-center mb-0" style="gap: 2px;">
-                                    @if($units->onFirstPage())
-                                        <li class="page-item disabled">
-                                            <span class="page-link" aria-label="Previous">
-                                                <i class="mdi mdi-chevron-left"></i>
-                                            </span>
-                                        </li>
-                                    @else
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $units->previousPageUrl() }}" aria-label="Previous">
-                                                <i class="mdi mdi-chevron-left"></i>
-                                            </a>
-                                        </li>
-                                    @endif
-
-                                    @foreach ($units->getUrlRange(1, $units->lastPage()) as $page => $url)
-                                        <li class="page-item {{ $units->currentPage() == $page ? 'active' : '' }}">
-                                            <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                                        </li>
-                                    @endforeach
-
-                                    @if($units->hasMorePages())
-                                        <li class="page-item">
-                                            <a class="page-link" href="{{ $units->nextPageUrl() }}" aria-label="Next">
-                                                <i class="mdi mdi-chevron-right"></i>
-                                            </a>
-                                        </li>
-                                    @else
-                                        <li class="page-item disabled">
-                                            <span class="page-link" aria-label="Next">
-                                                <i class="mdi mdi-chevron-right"></i>
-                                            </span>
-                                        </li>
-                                    @endif
-                                </ul>
-                            </nav>
-                        </div>
+    <!-- 2. Informasi Tanah Induk & Progress Pembangunan (Satu Card Terpadu di Bawah Stat Cards) -->
+    <div class="row mb-3 mb-md-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 header-card" style="background: #ffffff; border-radius: 12px;">
+                <div class="card-body p-3 p-md-4">
+                    <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                        <h4 class="text-dark mb-0 fw-bold" style="font-size: 1.25rem;">
+                            {{ $land->name ?? 'Proyek Tanah Induk' }}
+                        </h4>
+                        @if ($land->legal_status == 'verified')
+                            <span class="badge badge-success px-2.5 py-1">
+                                <i class="mdi mdi-check-decagram me-1"></i>Legalitas Terverifikasi
+                            </span>
+                        @else
+                            <span class="badge badge-warning px-2.5 py-1">
+                                {{ ucfirst($land->legal_status ?? 'Pending') }}
+                            </span>
                         @endif
-
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Ringkasan -->
-        <div class="row">
-            <div class="col-md-6 grid-margin stretch-card">
-                <div class="card bg-light">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="mdi mdi-chart-pie me-2" style="color: #9a55ff;"></i>
-                            Ringkasan Kavling
-                        </h5>
-                        @php
-                            $totalUnits = $land->units->count();
-                            $totalArea = $land->units->sum('area');
-                            $sisaLuas = max(0, $land->remaining_area ?? $land->area - $totalArea);
-                            $totalNilai = $land->units->sum('price');
-
-                            $map = [
-                                'belum_mulai' => 0,
-                                'pondasi' => 20,
-                                'dinding' => 40,
-                                'atap' => 60,
-                                'finishing' => 80,
-                                'selesai' => 100,
-                            ];
-
-                            $unitProgress = $land->units->map(function ($unit) use ($map) {
-                                $status = strtolower($unit->construction_progress ?? 'belum_mulai');
-                                return $map[$status] ?? 0;
-                            });
-
-                            $progressPercent = $unitProgress->count() > 0 ? $unitProgress->avg() : 0;
-                        @endphp
-
-                        <div class="row">
-                            <div class="col-6">
-                                <p class="text-muted mb-1"><i class="mdi mdi-counter me-1"></i>Total Unit</p>
-                                <h4>{{ $totalUnits }} unit</h4>
-                            </div>
-                            <div class="col-6">
-                                <p class="text-muted mb-1"><i class="mdi mdi-ruler-square me-1"></i>Total Luas</p>
-                                <h4>{{ number_format($totalArea, 0, ',', '.') }} m²</h4>
-                            </div>
-                        </div>
-
-                        <div class="row mt-3">
-                            <div class="col-6">
-                                <p class="text-muted mb-1"><i class="mdi mdi-chart-arc me-1"></i>Sisa Luas Tanah</p>
-                                <h4>{{ number_format($sisaLuas, 0, ',', '.') }} m²</h4>
-                            </div>
-                            <div class="col-6">
-                                <p class="text-muted mb-1"><i class="mdi mdi-currency-usd me-1"></i>Nilai Total</p>
-                                <h4>Rp {{ number_format($totalNilai, 0, ',', '.') }}</h4>
-                            </div>
-                        </div>
-
-                        <div class="mt-4">
-                            <p class="text-muted mb-1"><i class="mdi mdi-progress-clock me-1"></i>Progress Pembangunan</p>
-                            <div class="progress">
-                                <div class="progress-bar bg-success" role="progressbar"
-                                    style="width: {{ $progressPercent }}%;" aria-valuenow="{{ $progressPercent }}"
-                                    aria-valuemin="0" aria-valuemax="100">
-                                    {{ number_format($progressPercent, 0) }}%
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Denah Sederhana Dinamis -->
-            <div class="col-md-6 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-header bg-white">
-                        <h5 class="card-title mb-0">
-                            <i class="mdi mdi-map me-2 text-primary"></i>
-                            Denah Kavling
-                        </h5>
-                    </div>
-
-                    <div class="card-body text-center">
-                        <div style="background-color:#f8f9fa; padding:20px; border-radius:8px;">
-
-                            <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px;">
-
-                                @php
-                                    $allUnits = $land->units;
-
-                                    $blokKavlings = [];
-                                    foreach ($allUnits as $unit) {
-                                        $blok = explode('.', $unit->unit_code)[0];
-                                        $blokKavlings[$blok][] = $unit;
-                                    }
-
-                                    $allBloks = array_keys($blokKavlings);
-                                @endphp
-
-                                @foreach ($allBloks as $blok)
-                                    <div style="margin-bottom:15px; width:100%;">
-                                        @php
-                                            $typesInBlok = collect($blokKavlings[$blok])
-                                                ->pluck('type')
-                                                ->unique()
-                                                ->values()
-                                                ->toArray();
-
-                                            $typeLetters = [];
-
-                                            foreach ($typesInBlok as $type) {
-                                                if ($type == 'subsidi') {
-                                                    $typeLetters[] = 'S';
-                                                } elseif ($type == 'komersil') {
-                                                    $typeLetters[] = 'K';
-                                                }
-                                            }
-
-                                            $labelType = implode(' & ', $typeLetters);
-                                        @endphp
-
-                                        <strong>
-                                            Blok {{ $blok }} - {{ $labelType }}
-                                        </strong>
-
-                                        <div
-                                            style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:6px;">
-
-                                            @php
-                                                $numbers = [];
-                                                foreach ($blokKavlings[$blok] as $unit) {
-                                                    $num = (int) explode('.', $unit->unit_code)[1];
-                                                    $numbers[] = $num;
-                                                }
-                                                $maxNum = max($numbers);
-                                            @endphp
-
-                                            @for ($i = 1; $i <= $maxNum; $i++)
-                                                @php
-                                                    $unitFound = collect($blokKavlings[$blok])->firstWhere(
-                                                        'unit_code',
-                                                        $blok . '.' . $i,
-                                                    );
-
-                                                    $bgColor = '#6c757d';
-                                                    $icon = 'close';
-                                                    $borderStyle = 'none';
-                                                    $extraStyle = '';
-                                                    $typeBadge = '';
-                                                    if ($unitFound) {
-                                                        // =========================
-                                                        // WARNA BERDASARKAN STATUS
-                                                        // =========================
-                                                        switch ($unitFound->status) {
-                                                            case 'sold':
-                                                                $bgColor = '#dc3545';
-                                                                $icon = 'check';
-                                                                break;
-
-                                                            case 'booked':
-                                                                $bgColor = '#ffc107';
-                                                                $icon = 'clock';
-                                                                break;
-
-                                                            case 'draft':
-                                                                $bgColor = '#343a40';
-                                                                $icon = 'pencil';
-                                                                break;
-
-                                                            case 'ready':
-                                                                if ($unitFound->type == 'subsidi') {
-                                                                    $bgColor = '#28a745';
-                                                                    $typeBadge = 'S';
-                                                                } else {
-                                                                    $bgColor = '#0d6efd';
-                                                                    $typeBadge = 'K';
-                                                                }
-                                                                $icon = 'home';
-                                                                break;
-                                                        }
-
-                                                        // =========================
-                                                        // BORDER SELALU IKUT PROGRESS
-                                                        // =========================
-                                                        switch ($unitFound->construction_progress) {
-                                                            case 'belum_mulai':
-                                                                $borderStyle = '2px dashed #000';
-                                                                $extraStyle = 'background-image: repeating-linear-gradient(
-                                                                45deg,
-                                                                rgba(255,255,255,0.2),
-                                                                rgba(255,255,255,0.2) 5px,
-                                                                transparent 5px,
-                                                                transparent 10px
-                                                            );';
-                                                                break;
-
-                                                            case 'pondasi':
-                                                                $borderStyle = '2px solid #000';
-                                                                break;
-
-                                                            case 'dinding':
-                                                                $borderStyle = '3px solid #000';
-                                                                break;
-
-                                                            case 'atap':
-                                                                $borderStyle = '3px double #000';
-                                                                break;
-
-                                                            case 'finishing':
-                                                                $borderStyle = '3px groove #000';
-                                                                break;
-
-                                                            case 'selesai':
-                                                                $borderStyle = '3px solid #155724';
-                                                                break;
-                                                        }
-                                                    }
-                                                @endphp
-
-                                                <span
-                                                    style="
-                                        background-color: {{ $bgColor }};
-                                        color:white;
-                                        padding:6px 10px;
-                                        border-radius:4px;
-                                        font-size:12px;
-                                        border: {{ $borderStyle }};
-                                        {{ $extraStyle }}
-                                        position:relative;
-                                        min-width:60px;
-                                        display:inline-block;
-                                    ">
-
-                                                    @if ($typeBadge)
-                                                        <small
-                                                            style="
-                                                position:absolute;
-                                                top:-6px;
-                                                right:-6px;
-                                                background:#000;
-                                                color:#fff;
-                                                font-size:9px;
-                                                padding:2px 4px;
-                                                border-radius:50%;
-                                            ">
-                                                            {{ $typeBadge }}
-                                                        </small>
-                                                    @endif
-
-                                                    <i class="mdi mdi-{{ $icon }} me-1"></i>
-                                                    {{ $blok . '.' . $i }}
-                                                </span>
-                                            @endfor
-
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            <!-- LEGEND -->
-                            <div class="mt-4 text-start">
-
-                                <h6>Status Penjualan:</h6>
-                                <div class="d-flex flex-wrap gap-2 mb-3">
-                                    <span class="badge bg-danger">Sold</span>
-                                    <span class="badge bg-warning text-dark">Booked</span>
-                                    <span class="badge bg-dark">Draft</span>
-                                    <span class="badge bg-success">Ready - Subsidi</span>
-                                    <span class="badge bg-primary">Ready - Komersil</span>
-                                </div>
-
-                                <h6>Progress Pembangunan (Border):</h6>
-                                <div class="d-flex flex-wrap gap-2 mb-3">
-                                    <span style="border:2px dashed #000; padding:4px 8px;">Belum Mulai</span>
-                                    <span style="border:2px solid #000; padding:4px 8px;">Pondasi</span>
-                                    <span style="border:3px solid #000; padding:4px 8px;">Dinding</span>
-                                    <span style="border:3px double #000; padding:4px 8px;">Atap</span>
-                                    <span style="border:3px groove #000; padding:4px 8px;">Finishing</span>
-                                    <span style="border:3px solid #155724; padding:4px 8px;">Selesai</span>
-                                </div>
-
-                                <h6>Tipe Unit:</h6>
-                                <div class="d-flex gap-2">
-                                    <span class="badge bg-success">S = Subsidi</span>
-                                    <span class="badge bg-primary">K = Komersil</span>
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tombol Aksi -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-                        <div class="d-flex flex-wrap gap-2">
-                            <a href="{{ url('/properti/verifikasi-legal') }}" class="kavling-btn kavling-btn-light me-2">
-                                <i class="mdi mdi-arrow-left me-1"></i>Kembali
+                    @php
+                        $addressParts = [];
+                        if (!empty($land->address) && $land->address !== '-') {
+                            $addressParts[] = $land->address;
+                        }
+                        if (!empty($land->village) && $land->village !== '-') {
+                            $addressParts[] = 'Kel. ' . $land->village;
+                        }
+                        if (!empty($land->district) && $land->district !== '-') {
+                            $addressParts[] = 'Kec. ' . $land->district;
+                        }
+                        if (!empty($land->city) && $land->city !== '-') {
+                            $addressParts[] = $land->city;
+                        }
+                        if (!empty($land->province) && $land->province !== '-') {
+                            $addressParts[] = $land->province;
+                        }
+                        if (!empty($land->postal_code) && $land->postal_code !== '-') {
+                            $addressParts[] = '(' . $land->postal_code . ')';
+                        }
+                        $formattedAddress = !empty($addressParts) ? implode(', ', $addressParts) : '-';
+                    @endphp
+                    <p class="text-muted mb-3" style="font-size: 0.88rem;">
+                        <i class="mdi mdi-map-marker-outline text-danger me-1"></i>
+                        <span>{{ $formattedAddress }}</span>
+                        @if(empty($land->village) || empty($land->district) || empty($land->city))
+                            <a href="{{ route('properti.edit', $land->id) }}" class="badge bg-light text-primary border text-decoration-none ms-1.5 py-1 px-2" title="Lengkapi Kelurahan, Kecamatan, Kota di menu Edit Properti" style="font-size: 0.72rem; border-radius: 4px; vertical-align: middle;">
+                                <i class="mdi mdi-pencil-outline me-0.5"></i>Lengkapi Wilayah
                             </a>
-                            <button class="kavling-btn kavling-btn-secondary"
-                                onclick="alert('Draft kavling berhasil disimpan')">
-                                <i class="mdi mdi-content-save me-1"></i>Simpan Draft
-                            </button>
+                        @endif
+                    </p>
+
+                    <!-- Progress Pembangunan Full Width Kanan-Kiri di Bawah Alamat -->
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <small class="fw-bold text-dark" style="font-size: 0.82rem;"><i class="mdi mdi-progress-clock me-1 text-primary"></i>Progress Pembangunan</small>
+                            <small class="fw-bold text-primary">{{ number_format($progressPercent, 0) }}% Rata-rata</small>
                         </div>
-                        <div class="d-flex flex-wrap gap-2">
-                            <button class="kavling-btn kavling-btn-success" onclick="alert('Kavling berhasil disimpan.')">
-                                <i class="mdi mdi-check-circle me-1"></i>Simpan Kavling
-                            </button>
+                        <div class="progress" style="height: 7px; border-radius: 6px;">
+                            <div class="progress-bar bg-gradient-primary" role="progressbar" style="width: {{ $progressPercent }}%;"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Card 2: Daftar Unit Kavling -->
+    <div class="row mb-3 mb-md-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white d-flex flex-wrap flex-md-row justify-content-between align-items-center gap-2 py-3 border-bottom">
+                    <h5 class="card-title mb-0 fw-bold text-dark" style="font-size: 1.05rem;">
+                        Daftar Unit Kavling
+                    </h5>
+
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <button type="button" class="btn btn-sm btn-gradient-primary text-white px-3 py-1.5" data-bs-toggle="modal" data-bs-target="#tambahUnitModal" style="border-radius: 6px;">
+                            + Tambah Unit
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- Filter Section (Standard Sesuai Halaman Lain) -->
+                    <div class="filter-card mb-3">
+                        <!-- Desktop Version -->
+                        <div class="filter-row-desktop d-none d-md-block">
+                            <form id="filterForm" method="GET" action="{{ url()->current() }}" onsubmit="return showFilterLoading()">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                                    <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
+                                        <!-- Search Input -->
+                                        <div style="min-width: 220px; max-width: 280px; flex: 1;">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="search" id="searchInput"
+                                                    placeholder="Cari blok / unit / nama..."
+                                                    value="{{ request('search') }}"
+                                                    style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                                <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                    type="submit" title="Cari"
+                                                    style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                    <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Type Filter -->
+                                        <div style="width: 140px;">
+                                            <select class="form-control" name="type" id="filterType">
+                                                <option value="">Semua Type</option>
+                                                @foreach ($land->units->pluck('type')->unique() as $type)
+                                                    @if ($type)
+                                                        <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>{{ $type }}</option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right Limit & Buttons (Mentok Kanan) -->
+                                    <div class="d-flex align-items-center gap-2 ms-auto">
+                                        <div style="width: 110px;">
+                                            <select class="form-control" name="per_page" id="perPageSelect">
+                                                <option value="5" {{ request('per_page', 5) == 5 ? 'selected' : '' }}>5 data</option>
+                                                <option value="10" {{ request('per_page', 5) == 10 ? 'selected' : '' }}>10 data</option>
+                                                <option value="15" {{ request('per_page', 5) == 15 ? 'selected' : '' }}>15 data</option>
+                                                <option value="25" {{ request('per_page', 5) == 25 ? 'selected' : '' }}>25 data</option>
+                                                <option value="50" {{ request('per_page', 5) == 50 ? 'selected' : '' }}>50 data</option>
+                                                <option value="100" {{ request('per_page', 5) == 100 ? 'selected' : '' }}>100 data</option>
+                                            </select>
+                                        </div>
+
+                                        <button type="submit" class="btn btn-gradient-primary btn-icon-only" title="Filter">
+                                            <i class="mdi mdi-filter"></i>
+                                        </button>
+                                        <a href="{{ url()->current() }}" class="btn btn-gradient-secondary btn-icon-only" title="Reset" onclick="showResetLoading(event)">
+                                            <i class="mdi mdi-refresh"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Mobile Version -->
+                        <div class="filter-row-mobile d-block d-md-none">
+                            <form method="GET" action="{{ url()->current() }}" onsubmit="return showFilterLoading()">
+                                <div class="row g-2">
+                                    <div class="col-12 mb-2">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="search" id="searchInputMobile"
+                                                placeholder="Cari blok / unit..."
+                                                value="{{ request('search') }}"
+                                                style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important; border-right: none;">
+                                            <button class="btn btn-gradient-primary d-flex align-items-center justify-content-center px-3" 
+                                                type="submit" title="Cari"
+                                                style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important; border-top-right-radius: 4px !important; border-bottom-right-radius: 4px !important; height: 38px; box-shadow: none;">
+                                                <i class="mdi mdi-magnify" style="font-size: 1.15rem; color: #ffffff;"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 mb-2">
+                                        <select class="form-control" name="type" id="filterTypeMobile">
+                                            <option value="">Semua Type</option>
+                                            @foreach ($land->units->pluck('type')->unique() as $type)
+                                                @if ($type)
+                                                    <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>{{ $type }}</option>
+                                                @endif
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-6 mb-2">
+                                        <select class="form-control" name="per_page" id="perPageMobile">
+                                            <option value="5" {{ request('per_page', 5) == 5 ? 'selected' : '' }}>5 data</option>
+                                            <option value="10" {{ request('per_page', 5) == 10 ? 'selected' : '' }}>10 data</option>
+                                            <option value="15" {{ request('per_page', 5) == 15 ? 'selected' : '' }}>15 data</option>
+                                            <option value="25" {{ request('per_page', 5) == 25 ? 'selected' : '' }}>25 data</option>
+                                            <option value="50" {{ request('per_page', 5) == 50 ? 'selected' : '' }}>50 data</option>
+                                            <option value="100" {{ request('per_page', 5) == 100 ? 'selected' : '' }}>100 data</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="submit" class="btn btn-gradient-primary btn-icon-only-mobile w-100" title="Filter">
+                                            <i class="mdi mdi-filter me-1"></i> Filter
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="{{ url()->current() }}" class="btn btn-gradient-secondary btn-icon-only-mobile w-100" title="Reset" onclick="showResetLoading(event)">
+                                            <i class="mdi mdi-refresh me-1"></i> Reset
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Table Data Kavling -->
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0" style="min-width: 950px;">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 50px;">No</th>
+                                    <th>Nama Unit</th>
+                                    <th>Kode Unit</th>
+                                    <th>Luas Tanah</th>
+                                    <th>Jenis & Tipe</th>
+                                    <th>Biaya IJB</th>
+                                    <th>Biaya AJB</th>
+                                    <th>No. Sertifikat</th>
+                                    <th class="text-center" style="width: 120px;">Dokumen</th>
+                                    <th class="text-center" style="width: 100px;">Status</th>
+                                    <th class="text-center" style="width: 120px;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($units as $i => $unit)
+                                    <tr>
+                                        <td class="text-center fw-bold text-muted">{{ $units->firstItem() + $i }}</td>
+
+                                        <td>
+                                            <span class="fw-bold text-dark">{{ $unit->unit_name ?? '-' }}</span>
+                                        </td>
+
+                                        <td>
+                                            @php
+                                                $blok = $unit->block ?? (explode('.', $unit->unit_code)[0] ?? '-');
+                                                $nomor = $unit->unit_number ?? (explode('.', $unit->unit_code)[1] ?? '-');
+                                                $kodeTampil = $unit->unit_code ?? ($blok . '.' . $nomor);
+                                            @endphp
+                                            <span class="badge bg-light text-dark border px-2 py-1 fw-bold" style="font-size: 0.8rem;">
+                                                {{ $kodeTampil }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="fw-semibold text-dark">
+                                                {{ number_format($unit->area, 0, ',', '.') }} m²
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            @if (($unit->jenis ?? $unit->type) == 'subsidi')
+                                                <span class="badge badge-success px-2 py-1">
+                                                    Subsidi - {{ $unit->type ?: '-' }}
+                                                </span>
+                                            @else
+                                                <span class="badge badge-primary px-2 py-1">
+                                                    Komersil - {{ $unit->type ?: '-' }}
+                                                </span>
+                                            @endif
+                                        </td>
+
+                                        <td>
+                                            <span class="fw-semibold text-dark font-monospace" style="font-size: 0.82rem;">
+                                                Rp {{ number_format($unit->ijb_price ?? 0, 0, ',', '.') }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="fw-semibold text-dark font-monospace" style="font-size: 0.82rem;">
+                                                Rp {{ number_format($unit->ajb_price ?? 0, 0, ',', '.') }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            @if($unit->certificate_no)
+                                                <span class="fw-semibold text-dark" style="font-size: 0.82rem;">
+                                                    <i class="mdi mdi-certificate text-warning me-1"></i>{{ $unit->certificate_no }}
+                                                </span>
+                                            @else
+                                                <span class="text-muted small">-</span>
+                                            @endif
+                                        </td>
+
+                                        <td class="text-center">
+                                            @if($unit->file_certificate)
+                                                <a href="{{ asset($unit->file_certificate) }}" target="_blank" class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 py-1 px-2 text-decoration-none d-inline-flex align-items-center gap-1" style="font-size: 0.75rem;" title="Buka Dokumen Sertifikat">
+                                                    <i class="mdi mdi-file-document-outline"></i>Lihat Berkas
+                                                </a>
+                                            @else
+                                                <span class="text-muted small">-</span>
+                                            @endif
+                                        </td>
+
+
+                                        <td class="text-center">
+                                            @php
+                                                $st = strtolower($unit->status ?? 'ready');
+                                                $isSubsidi = ($unit->jenis ?? $unit->type) == 'subsidi';
+                                            @endphp
+                                            @if ($st == 'sold' || $st == 'terjual')
+                                                <span class="badge-kavling-status status-sold">
+                                                    <i class="mdi mdi-close-circle-outline"></i>Sold
+                                                </span>
+                                            @elseif($st == 'booked' || $st == 'booking')
+                                                <span class="badge-kavling-status status-booked">
+                                                    <i class="mdi mdi-calendar-clock"></i>Booked
+                                                </span>
+                                            @elseif($st == 'draft')
+                                                <span class="badge-kavling-status status-draft">
+                                                    <i class="mdi mdi-pencil-outline"></i>Draft
+                                                </span>
+                                            @else
+                                                @if($isSubsidi)
+                                                    <span class="badge-kavling-status status-ready-subsidi">
+                                                        <i class="mdi mdi-check-circle-outline"></i>Ready (Subsidi)
+                                                    </span>
+                                                @else
+                                                    <span class="badge-kavling-status status-ready-komersil">
+                                                        <i class="mdi mdi-check-circle-outline"></i>Ready (Komersil)
+                                                    </span>
+                                                @endif
+                                            @endif
+                                        </td>
+
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center align-items-center gap-1">
+                                                <button type="button" class="btn-action btn-action-edit" data-bs-toggle="modal" data-bs-target="#editUnitModal{{ $unit->id }}" title="Edit">
+                                                    <i class="mdi mdi-pencil"></i>
+                                                </button>
+
+                                                <form action="{{ route('properti.kavling.destroy', ['unit' => $unit->id]) }}" method="POST" class="d-inline delete-form">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn-action btn-action-delete" type="button" onclick="confirmDelete(this, '{{ $unit->unit_code }}')" title="Hapus">
+                                                        <i class="mdi mdi-delete"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+
+                                            <!-- Modal Edit Unit -->
+                                            <div class="modal fade modal-custom" id="editUnitModal{{ $unit->id }}" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title fw-bold text-dark">
+                                                                <i class="mdi mdi-pencil-circle me-1 text-primary"></i>Edit Unit Kavling - {{ $unit->unit_code }}
+                                                            </h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <div class="modal-body text-start p-3 p-md-4" style="max-height: 65vh; overflow-y: auto;">
+                                                            <form action="{{ route('properti.kavling.update', ['unit' => $unit->id]) }}" method="POST" id="formEditUnitManual{{ $unit->id }}" enctype="multipart/form-data">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                
+                                                                <div class="row g-3">
+                                                                    <!-- Baris 1: 2 Kolom Sejajar -->
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Blok / Kode <span class="text-danger">*</span></label>
+                                                                        <input type="text" name="block" class="form-control" value="{{ $unit->block }}" placeholder="Contoh: A" required>
+                                                                    </div>
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Nomor Unit <span class="text-danger">*</span></label>
+                                                                        <input type="text" name="unit_number" class="form-control" value="{{ $unit->unit_number }}" placeholder="Contoh: 1" required>
+                                                                    </div>
+
+                                                                    <!-- Baris 2: 2 Kolom Sejajar -->
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Nama Unit</label>
+                                                                        <input type="text" name="unit_name" class="form-control" value="{{ $unit->unit_name }}" placeholder="Contoh: Cluster A">
+                                                                    </div>
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Jenis Unit <span class="text-danger">*</span></label>
+                                                                        <select name="jenis" class="form-control" required>
+                                                                            <option value="">-- Pilih Jenis --</option>
+                                                                            <option value="subsidi" {{ ($unit->jenis ?? $unit->type) == 'subsidi' ? 'selected' : '' }}>Subsidi</option>
+                                                                            <option value="komersil" {{ ($unit->jenis ?? $unit->type) == 'komersil' ? 'selected' : '' }}>Komersil</option>
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <!-- Baris 3: Type Bangunan & Luas Tanah -->
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Type Bangunan <span class="text-danger">*</span></label>
+                                                                        <input type="text" name="type" class="form-control" value="{{ $unit->type }}" placeholder="Contoh: 36/60" required>
+                                                                    </div>
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Luas Tanah (m²) <span class="text-danger">*</span></label>
+                                                                        <input type="number" name="area" class="form-control" value="{{ $unit->area }}" placeholder="60" min="1" step="any" required>
+                                                                    </div>
+
+                                                                    <!-- Baris: Biaya IJB & Biaya AJB -->
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Biaya IJB</label>
+                                                                        <div class="kavling-rupiah-box">
+                                                                            <span class="rupiah-prefix">Rp</span>
+                                                                            <input type="text" name="ijb_price" class="rupiah-input price-format" 
+                                                                                value="{{ number_format($unit->ijb_price ?: ($defaultIjbPrice ?? 2000000), 0, ',', '.') }}" 
+                                                                                placeholder="2.000.000">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-12 col-md-6">
+                                                                        <label class="form-label fw-bold small mb-1">Biaya AJB</label>
+                                                                        <div class="kavling-rupiah-box">
+                                                                            <span class="rupiah-prefix">Rp</span>
+                                                                            <input type="text" name="ajb_price" class="rupiah-input price-format" 
+                                                                                value="{{ number_format($unit->ajb_price ?: ($defaultAjbPrice ?? 1500000), 0, ',', '.') }}" 
+                                                                                placeholder="1.500.000">
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <!-- Baris 4: Nomor Sertifikat (Kolom Tersendiri) -->
+                                                                    <div class="col-12">
+                                                                        <label class="form-label fw-bold small mb-1">Nomor Sertifikat</label>
+                                                                        <input type="text" name="certificate_no" class="form-control" value="{{ $unit->certificate_no }}" placeholder="Contoh: SHGB No. 1234">
+                                                                    </div>
+
+                                                                    <!-- Baris 5: Dokumen Sertifikat (Kolom Tersendiri) -->
+                                                                    <div class="col-12">
+                                                                        <label class="form-label fw-bold small mb-1">Dokumen Sertifikat</label>
+                                                                        @if($unit->file_certificate)
+                                                                            <!-- State: Berkas Sudah Terunggah -->
+                                                                            <div id="certUploadedBoxEdit{{ $unit->id }}" class="rounded-3 mb-1" style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 14px 20px; min-height: 64px;">
+                                                                                <div class="d-flex align-items-center justify-content-between gap-3">
+                                                                                    <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1" style="min-width: 0;">
+                                                                                        <div class="p-2 rounded-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="background: rgba(0, 201, 167, 0.15); color: #00c9a7; width: 38px; height: 38px;">
+                                                                                            <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
+                                                                                        </div>
+                                                                                        <div class="overflow-hidden" style="min-width: 0;">
+                                                                                            <span class="d-block fw-bold text-success text-truncate" id="certStatusTextEdit{{ $unit->id }}" style="font-size: 0.88rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="d-flex align-items-center flex-shrink-0" style="gap: 8px;">
+                                                                                        <a href="{{ asset($unit->file_certificate) }}" target="_blank" id="certViewLinkEdit{{ $unit->id }}" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                                                            <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                                                            <span>Lihat</span>
+                                                                                        </a>
+                                                                                        <button type="button" onclick="document.getElementById('fileCertEdit{{ $unit->id }}').click()" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                                                            <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                                                            <span>Ganti</span>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <input type="file" name="file_certificate" id="fileCertEdit{{ $unit->id }}" class="d-none" accept=".pdf,image/*" onchange="previewCertUpload(this, 'edit', '{{ $unit->id }}')">
+                                                                        @else
+                                                                            <!-- State: Belum Ada Berkas -->
+                                                                            <div id="certEmptyBoxEdit{{ $unit->id }}" class="spk-upload-box py-2.5 px-3.5" onclick="document.getElementById('fileCertEdit{{ $unit->id }}').click()" style="cursor: pointer; min-height: 64px; display: flex; align-items: center;">
+                                                                                <div class="d-flex align-items-center justify-content-start gap-2.5 w-100">
+                                                                                    <div class="rounded-circle p-1.5 bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 34px; height: 34px;">
+                                                                                        <i class="mdi mdi-file-certificate fs-5"></i>
+                                                                                    </div>
+                                                                                    <div class="text-start overflow-hidden">
+                                                                                        <span class="fw-bold text-dark d-block text-truncate" style="font-size: 0.8rem;">Pilih berkas sertifikat atau seret ke sini</span>
+                                                                                        <small class="text-muted" style="font-size: 0.7rem;">PDF / Scan Gambar (Maks 5MB)</small>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <!-- Box Hijau Setelah File Dipilih -->
+                                                                            <div id="certUploadedBoxEdit{{ $unit->id }}" class="rounded-3 mb-1" style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 14px 20px; min-height: 64px; display: none;">
+                                                                                <div class="d-flex align-items-center justify-content-between gap-3">
+                                                                                    <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1" style="min-width: 0;">
+                                                                                        <div class="p-2 rounded-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="background: rgba(0, 201, 167, 0.15); color: #00c9a7; width: 38px; height: 38px;">
+                                                                                            <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
+                                                                                        </div>
+                                                                                        <div class="overflow-hidden" style="min-width: 0;">
+                                                                                            <span class="d-block fw-bold text-success text-truncate" id="certStatusTextEdit{{ $unit->id }}" style="font-size: 0.88rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="d-flex align-items-center flex-shrink-0" style="gap: 8px;">
+                                                                                        <a href="#" target="_blank" id="certViewLinkEdit{{ $unit->id }}" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                                                            <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                                                            <span>Lihat</span>
+                                                                                        </a>
+                                                                                        <button type="button" onclick="document.getElementById('fileCertEdit{{ $unit->id }}').click()" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                                                            <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                                                            <span>Ganti</span>
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <input type="file" name="file_certificate" id="fileCertEdit{{ $unit->id }}" class="d-none" accept=".pdf,image/*" onchange="previewCertUpload(this, 'edit', '{{ $unit->id }}')">
+                                                                        @endif
+                                                                    </div>
+
+                                                                    <!-- Baris 5: Keterangan Tambahan (Textarea) -->
+                                                                    <div class="col-12">
+                                                                        <label class="form-label fw-bold small mb-1">Keterangan Tambahan</label>
+                                                                        <textarea name="description" class="form-control" rows="3" placeholder="Catatan tambahan (opsional)..." style="min-height: 80px; resize: vertical;">{{ $unit->description }}</textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-sm btn-gradient-secondary" data-bs-dismiss="modal">
+                                                                <i class="mdi mdi-close me-1"></i>Batal
+                                                            </button>
+                                                            <button type="submit" form="formEditUnitManual{{ $unit->id }}" class="btn btn-sm btn-gradient-primary">
+                                                                <i class="mdi mdi-content-save me-1"></i>Simpan Perubahan
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="11" class="text-center text-muted py-4">
+                                            <i class="mdi mdi-alert-circle-outline d-block mb-1" style="font-size: 2rem; color: #da8cff;"></i>
+                                            Belum ada data unit kavling untuk tanah induk ini.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    @if ($units->hasPages())
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center mt-4">
+                            <div class="pagination-info mb-2 mb-sm-0">
+                                Menampilkan {{ $units->firstItem() }} - {{ $units->lastItem() }} dari {{ $units->total() }} data
+                            </div>
+                            <div>
+                                {{ $units->links() }}
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Card 4: Denah Kavling Interaktif (Full Width Luas & Besar) -->
+    <div class="row mb-3 mb-md-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                @php
+                    $hasDenah = !empty($land->denah);
+                    $denahUrl = null;
+                    $isPdf = false;
+                    $denahFileName = null;
+                    if ($hasDenah) {
+                        $cleanPath = ltrim($land->denah, '/');
+                        if (str_starts_with($cleanPath, 'uploads/')) {
+                            $denahUrl = asset($cleanPath);
+                        } elseif (file_exists(public_path('uploads/' . $cleanPath))) {
+                            $denahUrl = asset('uploads/' . $cleanPath);
+                        } elseif (file_exists(public_path('storage/' . $cleanPath))) {
+                            $denahUrl = asset('storage/' . $cleanPath);
+                        } elseif (file_exists(public_path($cleanPath))) {
+                            $denahUrl = asset($cleanPath);
+                        } else {
+                            $denahUrl = asset('uploads/' . $cleanPath);
+                        }
+                        $denahFileName = basename($cleanPath);
+                        $ext = strtolower(pathinfo($cleanPath, PATHINFO_EXTENSION));
+                        $isPdf = ($ext === 'pdf');
+                    }
+                @endphp
+
+                <div class="card-header bg-white d-flex flex-wrap align-items-center justify-content-between gap-2 py-3 border-bottom">
+                    <div>
+                        <h5 class="card-title mb-0 fw-bold text-dark" style="font-size: 1.05rem;">Denah & Siteplan</h5>
+                    </div>
+                    
+                    <!-- Tab Switcher Header (Siteplan vs Matriks Blok vs Progress) -->
+                    <div class="d-flex align-items-center gap-1 bg-light p-1 rounded-pill border">
+                        <button type="button" class="siteplan-tab-btn {{ $hasDenah ? 'active' : '' }}" id="btnTabSiteplan" onclick="switchSiteplanView('siteplan')">
+                            Siteplan Asli
+                        </button>
+                        <button type="button" class="siteplan-tab-btn {{ !$hasDenah ? 'active' : '' }}" id="btnTabMatriks" onclick="switchSiteplanView('matriks')">
+                            Matriks Unit
+                        </button>
+                        <button type="button" class="siteplan-tab-btn" id="btnTabProgress" onclick="switchSiteplanView('progress')">
+                            <i class="mdi mdi-home-city-outline me-1"></i>Progress Bangunan
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body p-3 p-md-4">
+                    <!-- VIEW 1: SITEPLAN ASLI (DARI PASCA LAND BANK) -->
+                    <div id="viewSiteplanContainer" class="{{ $hasDenah ? '' : 'd-none' }}">
+                        @if ($hasDenah)
+                            <div class="siteplan-viewer-wrapper">
+                                <!-- Toolbar Kontrol Zoom & Aksi -->
+                                <div class="siteplan-toolbar">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-soft-primary text-primary px-2 py-1 rounded-pill small fw-bold">
+                                            <i class="mdi mdi-check-circle me-1"></i>Siteplan Terunggah
+                                        </span>
+                                        <span class="small text-muted text-truncate d-none d-sm-inline" style="max-width: 180px;" title="{{ $denahFileName }}">
+                                            {{ $denahFileName }}
+                                        </span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-1 flex-wrap">
+                                        @if(!$isPdf)
+                                            <button type="button" class="btn btn-sm btn-gradient-primary fw-bold text-white d-inline-flex align-items-center gap-1 shadow-sm rounded-pill px-3 py-1.5" id="btnModeMapping" onclick="toggleMappingMode()" title="Klik 4 titik sudut kotak kavling pada gambar denah JPG">
+                                                <i class="mdi mdi-vector-polygon me-1"></i> <span id="textBtnMapping">Petakan Kavling (Klik 4 Titik)</span>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger fw-bold d-none align-items-center gap-1 rounded-pill px-2.5 py-1" id="btnBatalTitik" onclick="resetCurrentPoints()" title="Reset titik yang baru diklik">
+                                                <i class="mdi mdi-refresh"></i> Ulang Titik
+                                            </button>
+                                            <button type="button" class="siteplan-toolbar-btn ms-1" onclick="zoomSiteplan(0.2)" title="Perbesar (Zoom In)">
+                                                <i class="mdi mdi-magnify-plus-outline"></i>
+                                            </button>
+                                            <button type="button" class="siteplan-toolbar-btn" onclick="zoomSiteplan(-0.2)" title="Perkecil (Zoom Out)">
+                                                <i class="mdi mdi-magnify-minus-outline"></i>
+                                            </button>
+                                            <button type="button" class="siteplan-toolbar-btn" onclick="resetSiteplanZoom()" title="Reset Ukuran">
+                                                <i class="mdi mdi-restore"></i>
+                                            </button>
+                                            <button type="button" class="siteplan-toolbar-btn" onclick="openSiteplanLightbox()" title="Lihat Layar Penuh">
+                                                <i class="mdi mdi-fullscreen"></i>
+                                            </button>
+                                        @endif
+                                        <a href="{{ $denahUrl }}" target="_blank" download class="siteplan-toolbar-btn btn-download" title="Unduh Berkas Asli">
+                                            <i class="mdi mdi-download"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Viewport Display -->
+                                @if ($isPdf)
+                                    <div class="p-4 text-center bg-light" style="min-height: 380px;">
+                                        <i class="mdi mdi-file-pdf-box text-danger" style="font-size: 4rem;"></i>
+                                        <h6 class="fw-bold text-dark mt-2 mb-1">Dokumen Siteplan format PDF</h6>
+                                        <p class="small text-muted mb-3">{{ $denahFileName }}</p>
+                                        <a href="{{ $denahUrl }}" target="_blank" class="btn btn-sm btn-gradient-primary px-3 rounded-pill shadow-sm">
+                                            <i class="mdi mdi-open-in-new me-1"></i>Buka & Lihat Berkas PDF Penuh
+                                        </a>
+                                    </div>
+                                @else
+                                    <!-- Banner Panduan Mode Pemetaan 4 Titik -->
+                                    <div id="mappingBanner" class="d-none alert alert-primary py-2 px-3 mb-2 rounded-3 d-flex align-items-center justify-content-between shadow-sm border-primary">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="spinner-grow spinner-grow-sm text-primary" role="status"></span>
+                                            <span class="small fw-bold text-dark">
+                                                <i class="mdi mdi-cursor-crosshair text-primary me-1"></i>
+                                                Mode Pemetaan Aktif: Klik 4 titik sudut kotak kavling di denah JPG secara berurutan.
+                                            </span>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge bg-primary text-white px-2.5 py-1.5 rounded-pill fw-bold" id="badgeTitikCounter" style="font-size: 11px;">
+                                                0 / 4 Titik
+                                            </span>
+                                            <button type="button" class="btn btn-xs btn-outline-danger py-0.5 px-2 rounded-pill small" onclick="toggleMappingMode()">
+                                                Tutup Mode
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Interactive Fabric.js Canvas Engine untuk Tim Legal (Tinggi 620px Besar & Luas) -->
+                                    <div class="siteplan-scroll-container" style="min-height: 580px; height: 620px; overflow: hidden; border: 2px solid #9a55ff; border-radius: 12px; background: #ffffff; display: flex; justify-content: center; align-items: center; position: relative;">
+                                        <canvas id="siteplanCanvasLegal"></canvas>
+                                    </div>
+
+                                    <!-- Legend Status Penjualan & Progress Pembangunan -->
+                                    <div class="mt-2 p-2 bg-light rounded-3 border small">
+                                        <div class="row g-2">
+                                            <div class="col-md-7 border-end">
+                                                <strong class="d-block text-dark mb-1" style="font-size: 10px;">
+                                                    <i class="mdi mdi-hammer-wrench text-warning me-1"></i>Status Pembangunan Fisik (Warna Kavling / Kotak Denah):
+                                                </strong>
+                                                <div class="d-flex flex-wrap gap-1">
+                                                    <span class="badge" style="background: #adb5bd; color: #fff; font-size: 9px;">Belum Mulai (0%)</span>
+                                                    <span class="badge" style="background: #fd7e14; color: #fff; font-size: 9px;">Pondasi (20%)</span>
+                                                    <span class="badge" style="background: #ffc107; color: #212529; font-size: 9px;">Dinding (40%)</span>
+                                                    <span class="badge" style="background: #17a2b8; color: #fff; font-size: 9px;">Atap (60%)</span>
+                                                    <span class="badge" style="background: #9a55ff; color: #fff; font-size: 9px;">Finishing (80%)</span>
+                                                    <span class="badge" style="background: #28a745; color: #fff; font-size: 9px;">Selesai (100%)</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <strong class="d-block text-dark mb-1" style="font-size: 10px;">
+                                                    <i class="mdi mdi-checkbox-blank-outline text-primary me-1"></i>Status Penjualan (Garis Border):
+                                                </strong>
+                                                <div class="d-flex flex-wrap gap-1">
+                                                    <span class="badge" style="background: rgba(220,53,69,0.15); color: #dc3545; border: 1.5px solid #dc3545; font-size: 9px;">Terjual / Sold (Border Merah)</span>
+                                                    <span class="badge" style="background: rgba(255,193,7,0.15); color: #d39e00; border: 1.5px solid #ffc107; font-size: 9px;">Booked (Border Emas)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-3 bg-white border-top rounded-bottom-3 d-flex flex-wrap justify-content-between align-items-center gap-3">
+                                        <span class="text-muted d-flex align-items-center gap-1" style="font-size: 0.85rem;">
+                                            <i class="mdi mdi-information-outline text-primary fs-5"></i>
+                                            Klik kotak kavling untuk melihat detail unit, atau klik <strong>Petakan Kavling (Klik 4 Titik)</strong> untuk mewarnai kotak denah JPG.
+                                        </span>
+                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                            <button type="button" class="btn btn-sm btn-gradient-primary px-3 py-2 d-inline-flex align-items-center gap-1.5 shadow-sm text-white rounded-3 fw-bold" onclick="savePositionLegal()">
+                                                <i class="mdi mdi-content-save fs-6"></i>Simpan Posisi Unit
+                                            </button>
+                                            <a href="{{ route('properti.edit', $land->id) }}" class="btn btn-sm btn-outline-primary px-3 py-2 d-inline-flex align-items-center gap-1.5 rounded-3 fw-bold" style="border-width: 1.5px; border-color: #9a55ff; color: #9a55ff; background: rgba(154, 85, 255, 0.08);">
+                                                <i class="mdi mdi-pencil-box-outline fs-6"></i>Ganti Siteplan
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        @else
+                            <!-- Empty State jika belum upload di pasca land bank -->
+                            <div class="p-4 text-center bg-light rounded-4 border" style="border-style: dashed !important; border-width: 2px !important;">
+                                <div class="mb-2">
+                                    <span class="p-3 bg-white rounded-circle shadow-sm d-inline-flex align-items-center justify-content-center text-primary" style="width: 60px; height: 60px;">
+                                        <i class="mdi mdi-map-marker-question-outline fs-2"></i>
+                                    </span>
+                                </div>
+                                <h6 class="fw-bold text-dark mb-1">Berkas Siteplan / Denah Belum Diunggah</h6>
+                                <p class="small text-muted mb-3" style="max-width: 440px; margin: 0 auto;">
+                                    Belum ada berkas siteplan yang dilampirkan untuk properti lahan ini di Pasca Land Bank. Anda dapat mengunggah denah gambar/PDF sekarang.
+                                </p>
+                                <a href="{{ route('properti.edit', $land->id) }}" class="btn btn-sm btn-gradient-primary px-3 rounded-pill shadow-sm">
+                                    <i class="mdi mdi-upload me-1"></i>Upload Denah / Siteplan di Edit Properti
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- VIEW 2: MATRIKS GRID UNIT (KAVLING BLOK) -->
+                    <div id="viewMatriksContainer" class="{{ !$hasDenah ? '' : 'd-none' }}">
+                        <div class="denah-container">
+                            @php
+                                $allUnits = $land->units;
+                                $blokKavlings = [];
+                                foreach ($allUnits as $unit) {
+                                    $blok = explode('.', $unit->unit_code)[0] ?? 'A';
+                                    $blokKavlings[$blok][] = $unit;
+                                }
+                                $allBloks = array_keys($blokKavlings);
+                            @endphp
+
+                            @forelse ($allBloks as $blok)
+                                <div class="mb-3 text-center">
+                                    <h6 class="fw-bold text-dark mb-2">Blok {{ $blok }}</h6>
+                                    <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                        @php
+                                            $numbers = [];
+                                            foreach ($blokKavlings[$blok] as $u) {
+                                                $num = (int) (explode('.', $u->unit_code)[1] ?? 0);
+                                                $numbers[] = $num;
+                                            }
+                                            $maxNum = count($numbers) ? max($numbers) : 0;
+                                        @endphp
+
+                                        @for ($i = 1; $i <= $maxNum; $i++)
+                                            @php
+                                                $uFound = collect($blokKavlings[$blok])->firstWhere('unit_code', $blok . '.' . $i);
+                                                $bgColor = '#6c757d';
+                                                $icon = 'close';
+                                                $borderStyle = 'none';
+                                                $typeBadge = '';
+
+                                                if ($uFound) {
+                                                    switch ($uFound->status) {
+                                                        case 'sold': $bgColor = '#dc3545'; $icon = 'check'; break;
+                                                        case 'booked': $bgColor = '#ffc107'; $icon = 'clock'; break;
+                                                        case 'draft': $bgColor = '#343a40'; $icon = 'pencil'; break;
+                                                        case 'ready':
+                                                            if ($uFound->type == 'subsidi') {
+                                                                $bgColor = '#28a745';
+                                                                $typeBadge = 'S';
+                                                            } else {
+                                                                $bgColor = '#0d6efd';
+                                                                $typeBadge = 'K';
+                                                            }
+                                                            $icon = 'home';
+                                                            break;
+                                                    }
+
+                                                    switch ($uFound->construction_progress) {
+                                                        case 'belum_mulai': $borderStyle = '2px dashed #000'; break;
+                                                        case 'pondasi': $borderStyle = '2px solid #000'; break;
+                                                        case 'dinding': $borderStyle = '3px solid #000'; break;
+                                                        case 'atap': $borderStyle = '3px double #000'; break;
+                                                        case 'finishing': $borderStyle = '3px groove #000'; break;
+                                                        case 'selesai': $borderStyle = '3px solid #155724'; break;
+                                                    }
+                                                }
+                                            @endphp
+
+                                            <span class="denah-unit-box" style="background-color: {{ $bgColor }}; border: {{ $borderStyle }};">
+                                                @if ($typeBadge)
+                                                    <small class="denah-type-badge">{{ $typeBadge }}</small>
+                                                @endif
+                                                <i class="mdi mdi-{{ $icon }} me-1"></i>{{ $blok . '.' . $i }}
+                                            </span>
+                                        @endfor
+                                    </div>
+                                </div>
+                            @empty
+                                <p class="text-muted text-center mb-0">Belum ada data kavling untuk divisualisasikan.</p>
+                            @endforelse
+
+                            <hr class="my-3">
+
+                            <!-- Legend Status -->
+                            <div class="small">
+                                <h6 class="fw-bold text-dark mb-2" style="font-size: 0.8rem;">Status Penjualan:</h6>
+                                <div class="d-flex flex-wrap gap-2 mb-3">
+                                    <span class="badge bg-danger">Sold</span>
+                                    <span class="badge bg-warning text-dark">Booked</span>
+                                    <span class="badge bg-dark">Draft</span>
+                                    <span class="badge bg-success">Ready (Subsidi)</span>
+                                    <span class="badge bg-primary">Ready (Komersil)</span>
+                                </div>
+
+                                <h6 class="fw-bold text-dark mb-2" style="font-size: 0.8rem;">Tipe Unit:</h6>
+                                <div class="d-flex gap-2">
+                                    <span class="badge bg-success">S = Subsidi</span>
+                                    <span class="badge bg-primary">K = Komersil</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ============================================== -->
+                    <!-- VIEW 3: PROGRESS BANGUNAN — VISUALISASI RUMAH  -->
+                    <!-- ============================================== -->
+                    <div id="viewProgressContainer" class="d-none">
+                        @php
+                            $allUnitsProgress = $land->units->sortBy('unit_code');
+                            $progressMap = [
+                                'belum_mulai' => ['label' => 'Belum Mulai', 'pct' => 0,   'color' => '#adb5bd'],
+                                'pondasi'     => ['label' => 'Pondasi',     'pct' => 20,  'color' => '#fd7e14'],
+                                'dinding'     => ['label' => 'Dinding',     'pct' => 40,  'color' => '#ffc107'],
+                                'atap'        => ['label' => 'Atap',        'pct' => 60,  'color' => '#17a2b8'],
+                                'finishing'   => ['label' => 'Finishing',   'pct' => 80,  'color' => '#9a55ff'],
+                                'selesai'     => ['label' => 'Selesai',     'pct' => 100, 'color' => '#28a745'],
+                            ];
+                            $blokGroupsProgress = [];
+                            foreach ($allUnitsProgress as $u) {
+                                $blk = explode('.', $u->unit_code)[0] ?? 'A';
+                                $blokGroupsProgress[$blk][] = $u;
+                            }
+                            $totalUnits      = $allUnitsProgress->count();
+                            $selesaiCount    = $allUnitsProgress->where('construction_progress', 'selesai')->count();
+                            $inProgressCount = $allUnitsProgress->whereIn('construction_progress', ['pondasi','dinding','atap','finishing'])->count();
+                            $belumCount      = $totalUnits - $selesaiCount - $inProgressCount;
+                            $avgPct = $totalUnits > 0 ? round($allUnitsProgress->map(fn($u) => ($progressMap[$u->construction_progress ?? 'belum_mulai']['pct'] ?? 0))->average()) : 0;
+                        @endphp
+
+                        @if($allUnitsProgress->isEmpty())
+                            <div class="text-center py-5 text-muted">
+                                <i class="mdi mdi-home-outline" style="font-size: 3rem; opacity: 0.3;"></i>
+                                <p class="mt-2 small">Belum ada unit kavling untuk divisualisasikan.</p>
+                            </div>
+                        @else
+                            <!-- Statistik Ringkasan -->
+                            <div class="row g-2 mb-3">
+                                <div class="col-6 col-md-3">
+                                    <div class="rounded-3 p-2 text-center" style="background: linear-gradient(135deg,#28a74515,#28a74508); border: 1px solid #28a74530;">
+                                        <div class="fw-bold fs-5 text-success">{{ $selesaiCount }}</div>
+                                        <div style="font-size: 10px;" class="text-muted">Selesai</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="rounded-3 p-2 text-center" style="background: linear-gradient(135deg,#ffc10715,#ff980008); border: 1px solid #ffc10740;">
+                                        <div class="fw-bold fs-5" style="color: #fd7e14;">{{ $inProgressCount }}</div>
+                                        <div style="font-size: 10px;" class="text-muted">Dibangun</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="rounded-3 p-2 text-center" style="background: linear-gradient(135deg,#6c757d15,#adb5bd08); border: 1px solid #adb5bd40;">
+                                        <div class="fw-bold fs-5 text-secondary">{{ $belumCount }}</div>
+                                        <div style="font-size: 10px;" class="text-muted">Belum Mulai</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="rounded-3 p-2 text-center" style="background: linear-gradient(135deg,#9a55ff15,#9a55ff08); border: 1px solid #9a55ff30;">
+                                        <div class="fw-bold fs-5" style="color: #9a55ff;">{{ $avgPct }}%</div>
+                                        <div style="font-size: 10px;" class="text-muted">Rata-rata</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Progress Bar Keseluruhan -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between small text-muted mb-1">
+                                    <span><i class="mdi mdi-home-city-outline me-1"></i>Progress Pembangunan Keseluruhan</span>
+                                    <span class="fw-bold">{{ $avgPct }}% rata-rata</span>
+                                </div>
+                                <div class="progress rounded-pill" style="height: 8px;">
+                                    <div class="progress-bar" role="progressbar"
+                                         style="width: {{ $avgPct }}%; background: linear-gradient(90deg, #9a55ff, #da8cff);"
+                                         aria-valuenow="{{ $avgPct }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                            <!-- Filter Pills Per Blok -->
+                            <div class="d-flex flex-wrap gap-1 mb-3">
+                                <button class="denah-filter-pill active" onclick="filterHouseBlok('all', this)">
+                                    <i class="mdi mdi-apps" style="font-size: 10px;"></i>Semua
+                                </button>
+                                @foreach(array_keys($blokGroupsProgress) as $blkKey)
+                                    <button class="denah-filter-pill" onclick="filterHouseBlok('{{ $blkKey }}', this)">
+                                        Blok {{ $blkKey }}
+                                    </button>
+                                @endforeach
+                            </div>
+
+                            <!-- Grid House Cards Per Blok -->
+                            @foreach($blokGroupsProgress as $blkName => $blokUnits)
+                                <div class="house-blok-section mb-4" data-blok="{{ $blkName }}">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <span class="badge bg-dark px-2 py-1" style="font-size: 10px; border-radius: 6px;">Blok {{ $blkName }}</span>
+                                        <span style="font-size: 10px; color: #adb5bd;">{{ count($blokUnits) }} unit</span>
+                                        <hr class="flex-grow-1 my-0" style="border-color: #dee2e6;">
+                                    </div>
+                                    <div class="house-card-grid">
+                                        @foreach($blokUnits as $hu)
+                                            @php
+                                                $prog  = $hu->construction_progress ?? 'belum_mulai';
+                                                $pInfo = $progressMap[$prog] ?? $progressMap['belum_mulai'];
+                                                $pct   = $pInfo['pct'];
+                                                $isInProgress = in_array($prog, ['pondasi','dinding','atap','finishing']);
+                                                $isSelesai    = ($prog === 'selesai');
+
+                                                $roofColor = match($hu->status ?? 'draft') {
+                                                    'sold'   => '#dc3545',
+                                                    'booked' => '#ffc107',
+                                                    'ready'  => ($hu->type === 'subsidi' ? '#28a745' : '#0d6efd'),
+                                                    default  => '#6c757d',
+                                                };
+
+                                                $cardClasses = 'house-card';
+                                                if ($isInProgress)         $cardClasses .= ' in-progress';
+                                                if ($isSelesai)            $cardClasses .= ' selesai';
+                                                if ($hu->status === 'sold')   $cardClasses .= ' sold-unit';
+                                                if ($hu->status === 'booked') $cardClasses .= ' booked-unit';
+
+                                                $hasSpk    = !empty($hu->no_spk);
+                                                $spkRecord = $hasSpk ? \App\Models\Spk::where('no_spk', $hu->no_spk)->first() : null;
+                                            @endphp
+
+                                            <div class="{{ $cardClasses }}" data-blok="{{ $blkName }}"
+                                                 data-bs-toggle="modal" data-bs-target="#editUnitModal{{ $hu->id }}"
+                                                 title="{{ $hu->unit_code }} — {{ $pInfo['label'] }} ({{ $pct }}%) — {{ ucfirst($hu->status ?? '-') }}">
+
+                                                <!-- Tooltip -->
+                                                <div class="house-tooltip">
+                                                    <strong>{{ $hu->unit_code }}</strong><br>
+                                                    Type: {{ $hu->type ?? '-' }}{{ $hu->building_area ? ' | ' . $hu->building_area . 'm²' : '' }}<br>
+                                                    Status: {{ ucfirst($hu->status ?? '-') }}<br>
+                                                    Bangunan: {{ $pInfo['label'] }} ({{ $pct }}%)<br>
+                                                    SPK: {{ $hasSpk ? $hu->no_spk : 'Belum diterbitkan' }}
+                                                </div>
+
+                                                <!-- Badge % progress -->
+                                                @if($pct > 0)
+                                                    <div class="house-progress-badge" style="background: {{ $pInfo['color'] }};">{{ $pct }}%</div>
+                                                @endif
+
+                                                <!-- Atap Rumah -->
+                                                <svg class="house-roof" viewBox="0 0 48 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <polygon points="0,24 24,2 48,24" fill="{{ $roofColor }}" />
+                                                    @if($isInProgress)
+                                                        <polygon points="22,13 26,13 25,19 23,19" fill="#fff" opacity="0.4"/>
+                                                    @endif
+                                                </svg>
+
+                                                <!-- Progress Bar Vertikal (Badan Rumah) -->
+                                                <div class="house-progress-wrap">
+                                                    <div class="house-progress-fill" style="height: {{ $pct }}%; background: {{ $pInfo['color'] }};"></div>
+                                                    @if($isInProgress)
+                                                        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;">
+                                                            <i class="mdi mdi-hammer-wrench" style="font-size:11px;color:#fd7e14;"></i>
+                                                        </div>
+                                                    @elseif($isSelesai)
+                                                        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;">
+                                                            <i class="mdi mdi-check" style="font-size:11px;color:#28a745;"></i>
+                                                        </div>
+                                                    @endif
+                                                </div>
+
+                                                <!-- Kode Unit -->
+                                                <div class="house-unit-code mb-1">{{ $hu->unit_code }}</div>
+
+                                                <!-- Status dot + label -->
+                                                <div class="d-flex align-items-center justify-content-center" style="gap:2px;">
+                                                    <span class="house-status-dot" style="background:{{ $pInfo['color'] }};"></span>
+                                                    <span class="house-status-label" style="color:{{ $pInfo['color'] }};">{{ $pInfo['label'] }}</span>
+                                                </div>
+
+                                                @if($hasSpk)
+                                                    <i class="mdi mdi-file-check" style="font-size:9px;color:#28a745;margin-top:2px;" title="SPK: {{ $hu->no_spk }}"></i>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+
+                            <!-- Legend -->
+                            <hr class="my-3">
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach($progressMap as $pv)
+                                    <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;background:{{ $pv['color'] }}18;color:{{ $pv['color'] }};padding:2px 8px;border-radius:8px;border:1px solid {{ $pv['color'] }}35;font-weight:600;">
+                                        <span style="width:6px;height:6px;border-radius:50%;background:{{ $pv['color'] }};display:inline-block;"></span>
+                                        {{ $pv['label'] }} {{ $pv['pct'] }}%
+                                    </span>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Unit -->
+    <div class="modal fade modal-custom" id="tambahUnitModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-dark">
+                        <i class="mdi mdi-plus-circle me-1 text-primary"></i>Tambah Unit Kavling Baru
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3 p-md-4" style="max-height: 65vh; overflow-y: auto;">
+                    <!-- Tab Switcher as Distinct Buttons -->
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <button type="button" class="btn btn-sm btn-gradient-primary modal-tab-btn active d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm" data-modal-tab="manual" style="border-radius: 8px;">
+                            <i class="mdi mdi-pencil" style="font-size: 0.95rem;"></i>
+                            <span>Manual Satu per Satu</span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary modal-tab-btn d-inline-flex align-items-center gap-1.5 px-3 py-2 shadow-sm" data-modal-tab="import" style="border-radius: 8px; background: #f8f9fa; color: #475569; border-color: #e2e8f0;">
+                            <i class="mdi mdi-file-excel text-success" style="font-size: 0.95rem;"></i>
+                            <span>Import File Excel</span>
+                        </button>
+                    </div>
+
+                    <!-- Pane Manual -->
+                    <div class="modal-tab-pane active" id="modal-manual-pane">
+                        <form action="{{ route('properti.storeKavling', $land->id) }}" method="POST" id="formTambahUnitManual" enctype="multipart/form-data">
+                            @csrf
+                            <div class="row g-3">
+                                <!-- Baris 1: Blok & Nomor Unit -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Blok / Kode <span class="text-danger">*</span></label>
+                                    <input type="text" name="block" class="form-control" placeholder="Contoh: A" required>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Nomor Unit <span class="text-danger">*</span></label>
+                                    <input type="text" name="unit_number" class="form-control" placeholder="Contoh: 1" required>
+                                </div>
+
+                                <!-- Baris 2: Nama Unit & Jenis Unit -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Nama Unit</label>
+                                    <input type="text" name="unit_name" class="form-control" placeholder="Contoh: Cluster A">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Jenis Unit <span class="text-danger">*</span></label>
+                                    <select name="jenis" class="form-control" required>
+                                        <option value="">-- Pilih Jenis --</option>
+                                        <option value="subsidi">Subsidi</option>
+                                        <option value="komersil">Komersil</option>
+                                    </select>
+                                </div>
+
+                                <!-- Baris 3: Type Bangunan & Luas Tanah -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Type Bangunan <span class="text-danger">*</span></label>
+                                    <input type="text" name="type" class="form-control" placeholder="Contoh: 36/60" required>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Luas Tanah (m²) <span class="text-danger">*</span></label>
+                                    <input type="number" name="area" class="form-control" placeholder="60" min="1" step="any" required>
+                                </div>
+
+                                <!-- Baris: Biaya IJB & Biaya AJB -->
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Biaya IJB</label>
+                                    <div class="kavling-rupiah-box">
+                                        <span class="rupiah-prefix">Rp</span>
+                                        <input type="text" name="ijb_price" class="rupiah-input price-format" 
+                                            value="{{ number_format($defaultIjbPrice ?? 2000000, 0, ',', '.') }}" 
+                                            placeholder="2.000.000">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label fw-bold small mb-1">Biaya AJB</label>
+                                    <div class="kavling-rupiah-box">
+                                        <span class="rupiah-prefix">Rp</span>
+                                        <input type="text" name="ajb_price" class="rupiah-input price-format" 
+                                            value="{{ number_format($defaultAjbPrice ?? 1500000, 0, ',', '.') }}" 
+                                            placeholder="1.500.000">
+                                    </div>
+                                </div>
+
+                                <!-- Baris 4: Nomor Sertifikat (Kolom Tersendiri) -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold small mb-1">Nomor Sertifikat</label>
+                                    <input type="text" name="certificate_no" class="form-control" placeholder="Contoh: SHGB No. 1234">
+                                </div>
+
+                                <!-- Baris 5: Dokumen Sertifikat (Kolom Tersendiri) -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold small mb-1">Dokumen Sertifikat</label>
+                                    <!-- Box Kosong (Sebelum Upload) -->
+                                    <div id="certEmptyBoxTambah" class="spk-upload-box py-2.5 px-3.5" onclick="document.getElementById('fileCertTambah').click()" style="cursor: pointer; min-height: 64px; display: flex; align-items: center;">
+                                        <div class="d-flex align-items-center justify-content-start gap-2.5 w-100">
+                                            <div class="rounded-circle p-1.5 bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 34px; height: 34px;">
+                                                <i class="mdi mdi-file-certificate fs-5"></i>
+                                            </div>
+                                            <div class="text-start overflow-hidden">
+                                                <span class="fw-bold text-dark d-block text-truncate" style="font-size: 0.8rem;">Pilih berkas sertifikat atau seret ke sini</span>
+                                                <small class="text-muted" style="font-size: 0.7rem;">PDF / Scan Gambar (Maks 5MB)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Box Hijau Setelah File Dipilih -->
+                                    <div id="certUploadedBoxTambah" class="rounded-3 mb-1" style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 14px 20px; min-height: 64px; display: none;">
+                                        <div class="d-flex align-items-center justify-content-between gap-3">
+                                            <div class="d-flex align-items-center gap-2.5 overflow-hidden flex-grow-1" style="min-width: 0;">
+                                                <div class="p-2 rounded-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="background: rgba(0, 201, 167, 0.15); color: #00c9a7; width: 38px; height: 38px;">
+                                                    <i class="mdi mdi-file-check-outline" style="font-size: 1.35rem;"></i>
+                                                </div>
+                                                <div class="overflow-hidden" style="min-width: 0;">
+                                                    <span class="d-block fw-bold text-success text-truncate" id="certStatusTextTambah" style="font-size: 0.88rem; line-height: 1.2;">Berkas SK Resmi Terunggah</span>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center flex-shrink-0" style="gap: 8px;">
+                                                <a href="#" target="_blank" id="certViewLinkTambah" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                    <i class="mdi mdi-eye" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                    <span>Lihat</span>
+                                                </a>
+                                                <button type="button" onclick="document.getElementById('fileCertTambah').click()" class="btn btn-sm text-white fw-bold px-3 py-1.5 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.78rem; border-radius: 6px; gap: 4px;">
+                                                    <i class="mdi mdi-cloud-sync" style="font-size: 0.95rem; line-height: 1;"></i>
+                                                    <span>Ganti</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="file" name="file_certificate" id="fileCertTambah" class="d-none" accept=".pdf,image/*" onchange="previewCertUpload(this, 'tambah')">
+                                </div>
+
+                                <!-- Baris 5: Keterangan Tambahan (Textarea) -->
+                                <div class="col-12">
+                                    <label class="form-label fw-bold small mb-1">Keterangan Tambahan</label>
+                                    <textarea name="description" class="form-control" rows="3" placeholder="Catatan tambahan (opsional)..." style="min-height: 80px; resize: vertical;"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Pane Import -->
+                    <div class="modal-tab-pane" id="modal-import-pane">
+                        <div class="text-center py-3">
+                            <div class="d-inline-flex p-3 rounded-circle bg-success bg-opacity-10 text-success mb-3">
+                                <i class="mdi mdi-file-excel" style="font-size: 2.5rem;"></i>
+                            </div>
+                            <h5 class="fw-bold text-dark mb-1">Import Unit Kavling dari Excel</h5>
+                            <p class="text-muted small mb-3">Unduh template file Excel, lengkapi data unit, lalu unggah kembali file tersebut.</p>
+
+                            <div class="mb-4">
+                                <a href="{{ route('kavling.template') }}" class="btn btn-sm btn-outline-success px-3">
+                                    <i class="mdi mdi-download me-1"></i>Unduh Template Kavling (.xlsx)
+                                </a>
+                            </div>
+
+                            <form action="{{ route('kavling.import', $land->id) }}" method="POST" enctype="multipart/form-data" id="formImportExcelModal">
+                                @csrf
+                                <div class="upload-dropzone-box">
+                                    <input type="file" id="uploadExcelModal" name="file" accept=".xlsx,.xls" required>
+                                    <i class="mdi mdi-cloud-upload-outline text-primary d-block mb-2" style="font-size: 2rem;"></i>
+                                    <span class="fw-bold text-dark d-block" id="fileNameModal">Pilih atau Drag & Drop file Excel di sini</span>
+                                    <small class="text-muted">Format didukung: .xlsx, .xls (Maksimal 5MB)</small>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-gradient-secondary" data-bs-dismiss="modal">
+                        <i class="mdi mdi-close me-1"></i>Batal
+                    </button>
+                    
+                    <button type="submit" form="formTambahUnitManual" id="btnSubmitManual" class="btn btn-sm btn-gradient-primary">
+                        <i class="mdi mdi-content-save me-1"></i>Simpan Unit
+                    </button>
+
+                    <button type="submit" form="formImportExcelModal" id="btnSubmitImport" class="btn btn-sm btn-gradient-success d-none">
+                        <i class="mdi mdi-upload me-1"></i>Import File Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal Lightbox Siteplan Fullscreen -->
+<div class="modal fade" id="modalSiteplanLightbox" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-bottom py-3">
+                <h5 class="modal-title fw-bold text-dark d-flex align-items-center gap-2">
+                    <i class="mdi mdi-image-area text-primary fs-4"></i>
+                    <span>Siteplan Proyek: {{ $land->name }}</span>
+                </h5>
+                <div class="d-flex align-items-center gap-2">
+                    @if($hasDenah)
+                        <a href="{{ $denahUrl }}" target="_blank" download class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                            <i class="mdi mdi-download me-1"></i>Unduh Asli
+                        </a>
+                    @endif
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="modal-body p-0 text-center bg-dark" style="min-height: 500px; display: flex; align-items: center; justify-content: center; overflow: auto;">
+                @if($hasDenah && !$isPdf)
+                    <img src="{{ $denahUrl }}" alt="Siteplan {{ $land->name }}" class="img-fluid" style="max-height: 80vh; object-fit: contain;">
+                @endif
+            </div>
+            <div class="modal-footer border-top py-2 px-3 justify-content-between bg-light">
+                <span class="small text-muted">Berkas resmi denah lahan Pasca Land Bank</span>
+                <button type="button" class="btn btn-secondary btn-sm rounded-pill px-3" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal Detail Unit Lengkap (Legal View) -->
+<div class="modal fade modal-detail-unit" id="detailUnitModalLegal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="mdi mdi-home-circle me-2"></i>
+                    Detail Unit Kavling Lengkap
+                </h5>
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-danger fw-bold px-3 rounded-pill" id="btnHapusPolygonLegal" onclick="hapusPemetaanCurrentUnit()" style="display: none;">
+                        <i class="mdi mdi-vector-polygon-remove me-1"></i>Hapus Pemetaan Kotak
+                    </button>
+                    <button type="button" class="btn btn-sm btn-light text-primary fw-bold px-3 rounded-pill" id="btnEditFromDetailLegal" style="display: none;">
+                        <i class="mdi mdi-pencil me-1"></i>Edit Data Unit
+                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+            </div>
+            <div class="modal-body p-4">
+                <!-- Informasi Unit -->
+                <div class="timeline-detail-card">
+                    <div class="timeline-detail-title">
+                        <i class="mdi mdi-home-outline me-1"></i>Informasi Unit
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-home-outline"></i>Nama Unit</div>
+                                <div class="timeline-detail-value" id="leg_unit_name">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-alpha-b-box-outline"></i>Blok</div>
+                                <div class="timeline-detail-value" id="leg_block">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-numeric"></i>Nomor Unit</div>
+                                <div class="timeline-detail-value" id="leg_unit_number">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-format-list-bulleted-type"></i>Jenis Unit</div>
+                                <div class="timeline-detail-value" id="leg_jenis">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-home-group"></i>Tipe Unit</div>
+                                <div class="timeline-detail-value" id="leg_type">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-ruler-square"></i>Luas Tanah</div>
+                                <div class="timeline-detail-value" id="leg_area">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-certificate-outline"></i>Nomor Sertifikat</div>
+                                <div class="timeline-detail-value" id="leg_certificate_no">-</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-file-certificate-outline"></i>Dokumen Sertifikat</div>
+                                <div class="timeline-detail-value" id="leg_certificate_doc">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-toggle-switch-outline"></i>Status Unit</div>
+                                <div class="timeline-detail-value" id="leg_status">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-progress-check"></i>Status Pembangunan</div>
+                                <div class="timeline-detail-value">
+                                    <div class="progress-wrapper">
+                                        <div class="progress-row">
+                                            <div class="progress">
+                                                <div class="progress-bar-custom progress-green" id="leg_progress_bar" style="width: 0%"></div>
+                                            </div>
+                                            <span class="progress-percent" id="leg_progress_pct">0%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-map-marker-outline"></i>Alamat / Lokasi</div>
+                                <div class="timeline-detail-value" id="leg_address">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Informasi Booking -->
+                <div class="timeline-detail-card" id="leg_booking_card">
+                    <div class="timeline-detail-title">
+                        <i class="mdi mdi-calendar-check-outline me-1"></i>Informasi Penjualan & Booking
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-account-outline"></i>Customer</div>
+                                <div class="timeline-detail-value">
+                                    <div class="name-wrap">
+                                        <div class="name-initial" id="leg_customer_initial" style="background: linear-gradient(135deg, #da8cff, #9a55ff);">-</div>
+                                        <div class="name-info">
+                                            <div class="name-title" id="leg_customer">-</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-account-tie-outline"></i>Sales / Agency</div>
+                                <div class="timeline-detail-value">
+                                    <div class="name-wrap">
+                                        <div class="name-initial" id="leg_sales_initial" style="background: linear-gradient(135deg, #667eea, #764ba2);">-</div>
+                                        <div class="name-info">
+                                            <div class="name-title" id="leg_sales">-</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-calendar-today"></i>Tanggal Booking</div>
+                                <div class="timeline-detail-value" id="leg_booking_date">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-cash-multiple"></i>Booking Fee</div>
+                                <div class="timeline-detail-value fee-text" id="leg_booking_fee">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-hand-coin-outline"></i>Agent Fee</div>
+                                <div class="timeline-detail-value fee-text" id="leg_agent_fee">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="timeline-detail-item">
+                                <div class="timeline-detail-label"><i class="mdi mdi-toggle-switch"></i>Status Booking</div>
+                                <div class="timeline-detail-value" id="leg_booking_status">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Placeholder jika tidak ada booking -->
+                <div class="timeline-detail-card" id="leg_no_booking_card" style="display:none;">
+                    <div class="text-center text-muted py-4">
+                        <i class="mdi mdi-information-outline text-primary" style="font-size: 2.5rem;"></i>
+                        <p class="mb-0 fw-semibold">Belum ada booking atau transaksi penjualan untuk unit ini.</p>
+                        <small class="text-muted">Unit masih berstatus Tersedia / Ready.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Hubungkan Poligon ke Unit Kavling -->
+<div class="modal fade" id="modalAssignPolygonUnit" tabindex="-1" aria-labelledby="modalAssignPolygonUnitLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0 rounded-4">
+            <div class="modal-header bg-light py-3 border-bottom">
+                <h5 class="modal-title fw-bold text-dark fs-6" id="modalAssignPolygonUnitLabel">
+                    <i class="mdi mdi-vector-polygon text-primary me-2 fs-5"></i>
+                    Hubungkan Kotak Denah ke Unit Kavling
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="cancelCurrentPoints()"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="alert alert-soft-success py-2.5 px-3 rounded-3 d-flex align-items-center gap-2 mb-3 border border-success border-opacity-25" style="background: rgba(40, 167, 69, 0.08);">
+                    <i class="mdi mdi-check-circle text-success fs-5"></i>
+                    <div class="small">
+                        <strong class="text-success d-block">4 Titik Sudut Berhasil Ditandai!</strong>
+                        <span class="text-muted">Pilih unit kavling yang ingin dihubungkan ke kotak denah ini.</span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="selectPolygonUnitId" class="form-label small fw-bold text-dark">
+                        Pilih Unit Kavling: <span class="text-danger">*</span>
+                    </label>
+                    <select class="form-select rounded-3 py-2" id="selectPolygonUnitId" style="font-size: 0.9rem;">
+                        <option value="">-- Pilih Unit Kavling --</option>
+                        @foreach ($land->units as $u)
+                            @php
+                                $isMapped = !empty($u->polygon_points);
+                                $unitTag = '[' . $u->unit_code . '] ' . ($u->unit_name ?: 'Unit') . ' (Tipe ' . ($u->type ?: '-') . ')';
+                                if ($isMapped) {
+                                    $unitTag .= ' ✓ [Sudah Dipetakan]';
+                                } else {
+                                    $unitTag .= ' ⚪ [Belum Dipetakan]';
+                                }
+                            @endphp
+                            <option value="{{ $u->id }}" data-unit-code="{{ $u->unit_code }}" data-is-mapped="{{ $isMapped ? '1' : '0' }}">
+                                {{ $unitTag }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <small class="text-muted d-block mt-1">
+                        Pewarnaan status pembangunan dan penjualan unit ini akan langsung mengisi kotak garis pada denah JPG.
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer bg-light py-2.5 px-4 border-top d-flex justify-content-between">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="resetCurrentPoints()">
+                    <i class="mdi mdi-refresh me-1"></i>Ulangi 4 Titik
+                </button>
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-sm btn-light border rounded-pill px-3" data-bs-dismiss="modal" onclick="cancelCurrentPoints()">
+                        Batal
+                    </button>
+                    <button type="button" class="btn btn-sm btn-gradient-primary fw-bold text-white rounded-pill px-4 shadow-sm" onclick="submitPolygonMapping()">
+                        <i class="mdi mdi-check me-1"></i>Simpan Pemetaan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
-    <script>
-        document.getElementById('uploadExcel').addEventListener('change', function(e) {
-
-            const file = e.target.files[0];
-            const button = document.getElementById('importButton');
-            const fileNameSpan = document.getElementById('fileName');
-
-            if (!file) {
-                button.disabled = true;
-                fileNameSpan.innerText = "Upload File Excel";
-                return;
-            }
-
-            // Validasi size max 5MB
-            if (file.size > 5 * 1024 * 1024) {
-                alert("File maksimal 5MB!");
-                e.target.value = "";
-                button.disabled = true;
-                fileNameSpan.innerText = "Upload File Excel";
-                return;
-            }
-
-            fileNameSpan.innerText = file.name;
-            button.disabled = false;
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            // Simple Tab Functionality
-            $('.add-custom-tab-link').on('click', function(e) {
-                e.preventDefault();
-
-                $('.add-custom-tab-link').removeClass('active');
-                $('.add-custom-tab-pane').removeClass('active');
-
-                $(this).addClass('active');
-                var target = $(this).attr('href');
-                $(target).addClass('active');
-            });
-
-            // CEK APAKAH TABEL MEMILIKI DATA
-            let hasData = false;
-            $('#tableKavling tbody tr').each(function() {
-                let rowText = $(this).text();
-                if (rowText && !rowText.includes('Belum ada unit kavling')) {
-                    hasData = true;
-                }
-            });
-
-            // Hancurkan instance DataTables jika sudah ada
-            if ($.fn.DataTable.isDataTable('#tableKavling')) {
-                $('#tableKavling').DataTable().destroy();
-            }
-
-            // HANYA inisialisasi DataTables JIKA ADA DATA
-            if (hasData) {
-                console.log('Data ditemukan, menginisialisasi DataTables');
-                let table = $('#tableKavling').DataTable({
-                    responsive: true,
-                    paging: false,
-                    info: false,
-                    searching: false,
-                    lengthChange: false,
-                    ordering: true,
-                    language: {
-                        emptyTable: "Belum ada unit kavling",
-                        zeroRecords: "Data tidak ditemukan",
-                    },
-                    columnDefs: [{
-                            targets: 0,
-                            orderable: false
-                        }, // Kolom No
-                        {
-                            targets: 9,
-                            orderable: false
-                        } // Kolom Aksi (index ke-9)
-                    ]
-                });
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+// Global File change preview for Dokumen Sertifikat
+function updateCertFileName(input, targetId) {
+    const file = input.files ? input.files[0] : null;
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    if (file) {
+        if (file.size > 10 * 1024 * 1024) {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire('Peringatan', 'Ukuran berkas dokumen sertifikat maksimal 10MB!', 'warning');
             } else {
-                console.log('Tabel kosong, DataTables tidak diinisialisasi');
+                alert('Ukuran berkas dokumen sertifikat maksimal 10MB!');
+            }
+            input.value = '';
+            target.innerText = 'Pilih berkas sertifikat atau seret ke sini';
+            const box = input.closest('.spk-upload-box');
+            if (box) {
+                box.style.borderColor = '';
+                box.style.backgroundColor = '';
+            }
+            return;
+        }
+        target.innerHTML = '<span class="text-primary fw-bold d-inline-flex align-items-center"><i class="mdi mdi-file-check me-1 text-success fs-6"></i>' + file.name + '</span>';
+        const box = input.closest('.spk-upload-box');
+        if (box) {
+            box.style.borderColor = '#28a745';
+            box.style.backgroundColor = '#f0fff4';
+        }
+    } else {
+        target.innerText = 'Pilih berkas sertifikat atau seret ke sini';
+        const box = input.closest('.spk-upload-box');
+        if (box) {
+            box.style.borderColor = '';
+            box.style.backgroundColor = '';
+        }
+    }
+}
+
+// Switch Siteplan vs Matriks Grid View vs Progress Bangunan
+function switchSiteplanView(view) {
+    // Reset all tab button active states
+    $('#btnTabSiteplan, #btnTabMatriks, #btnTabProgress').removeClass('active');
+    // Hide all containers
+    $('#viewSiteplanContainer, #viewMatriksContainer, #viewProgressContainer').addClass('d-none');
+
+    if (view === 'siteplan') {
+        $('#btnTabSiteplan').addClass('active');
+        $('#viewSiteplanContainer').removeClass('d-none');
+        if (typeof initLegalSiteplanCanvas === 'function') {
+            setTimeout(initLegalSiteplanCanvas, 100);
+        }
+    } else if (view === 'matriks') {
+        $('#btnTabMatriks').addClass('active');
+        $('#viewMatriksContainer').removeClass('d-none');
+    } else if (view === 'progress') {
+        $('#btnTabProgress').addClass('active');
+        $('#viewProgressContainer').removeClass('d-none');
+    }
+}
+
+@if($hasDenah && !$isPdf)
+// =========================================================================
+// FABRIC.JS SITEPLAN CANVAS ENGINE (TIM LEGAL MEMETAKAN BULETAN UNIT)
+// =========================================================================
+// FABRIC.JS SITEPLAN CANVAS ENGINE (TIM LEGAL MEMETAKAN BULETAN UNIT)
+// =========================================================================
+let canvasLegal = null;
+let isDraggingLegal = false;
+let lastPosXLegal, lastPosYLegal;
+let isMappingMode = false;
+let currentClickPoints = []; // [{x, y}, ...] in unscaled coordinates
+let currentTempVisuals = []; // Fabric objects for points and lines
+let currentScaleFactor = 1;
+let currentActiveUnitId = null;
+
+const legalUnitsData = [
+    @foreach ($land->units as $unit)
+    @php
+        $booking = $unit->bookings ? $unit->bookings->first() : null;
+        $custName = $booking ? ($booking->customer_name ?? ($booking->customer->name ?? '-')) : '-';
+        $salesName = $booking ? ($booking->sales_name ?? ($booking->sales->name ?? '-')) : '-';
+        $bDate = $booking && $booking->booking_date ? \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('d F Y') : '-';
+        $bFee = $booking->booking_fee ?? 0;
+        $aFee = $booking->agent_fee ?? 0;
+        $bStat = $booking->status ?? '-';
+        $hasBk = $booking ? true : false;
+        $polyPoints = !empty($unit->polygon_points) ? $unit->polygon_points : null;
+    @endphp
+    {
+        id: "{{ $unit->id }}",
+        unitCode: "{{ $unit->unit_code }}",
+        unitName: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_name ?? '-')) }}",
+        unitNumber: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->unit_number ?? '-')) }}",
+        block: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->block ?? '-')) }}",
+        jenis: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->jenis ?? 'rumah')) }}",
+        type: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->type ?? '-')) }}",
+        address: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->address ?? ($land->address ?? '-'))) }}",
+        area: "{{ $unit->area ?? '-' }}",
+        building: "{{ $unit->building_area ?? '-' }}",
+        price: {{ $unit->price ?? 0 }},
+        direction: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->facing ?? ($unit->direction ?? '-'))) }}",
+        certificateNo: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->certificate_no ?? '')) }}",
+        fileCertificate: "{{ $unit->file_certificate ? asset($unit->file_certificate) : '' }}",
+        statusRaw: "{{ $unit->status ?? 'ready' }}",
+        statusText: "{{ ucfirst($unit->status ?? 'ready') }}",
+        construction: "{{ $unit->construction_progress ?? 'belum_mulai' }}",
+        pos_x: {{ $unit->pos_x !== null ? $unit->pos_x : 'null' }},
+        pos_y: {{ $unit->pos_y !== null ? $unit->pos_y : 'null' }},
+        width: {{ $unit->width ?? 70 }},
+        angle: {{ $unit->angle ?? 0 }},
+        polygon_points: {!! $polyPoints ? json_encode($polyPoints) : 'null' !!},
+        hasPolygon: {{ $polyPoints ? 'true' : 'false' }},
+        hasBooking: {{ $hasBk ? 'true' : 'false' }},
+        customer: "{{ str_replace(["\r", "\n"], ' ', addslashes($custName)) }}",
+        sales: "{{ str_replace(["\r", "\n"], ' ', addslashes($salesName)) }}",
+        bookingDate: "{{ $bDate }}",
+        bookingFee: {{ $bFee }},
+        agentFee: {{ $aFee }},
+        bookingStatus: "{{ $bStat }}",
+    },
+    @endforeach
+];
+
+// Helper kalkulasi warna & border berdasarkan status pembangunan & penjualan
+function getUnitColors(u) {
+    let fillColor = '#adb5bd'; // default abu-abu untuk Belum Mulai (0%)
+    let strokeColor = '#495057';
+    let strokeWidth = 1.8;
+    let strokeDash = null;
+
+    switch (u.construction) {
+        case 'pondasi':
+            fillColor = '#fd7e14'; // Oranye
+            strokeColor = '#d96509';
+            strokeWidth = 2.5;
+            break;
+        case 'dinding':
+            fillColor = '#ffc107'; // Kuning Emas
+            strokeColor = '#d39e00';
+            strokeWidth = 2.5;
+            break;
+        case 'atap':
+            fillColor = '#17a2b8'; // Cyan
+            strokeColor = '#117a8b';
+            strokeWidth = 2.8;
+            break;
+        case 'finishing':
+            fillColor = '#9a55ff'; // Ungu
+            strokeColor = '#7a3bcf';
+            strokeWidth = 2.8;
+            break;
+        case 'selesai':
+            fillColor = '#28a745'; // Hijau Selesai
+            strokeColor = '#1e7e34';
+            strokeWidth = 2.5;
+            break;
+        default:
+            fillColor = '#adb5bd';
+            strokeColor = '#6c757d';
+            strokeWidth = 1.8;
+            break;
+    }
+
+    // Border status penjualan
+    const sRaw = (u.statusRaw || '').toLowerCase();
+    if (sRaw === 'sold' || sRaw === 'terjual') {
+        fillColor = '#dc3545'; // Merah Terjual
+        strokeColor = '#b02a37';
+        strokeWidth = 3;
+        strokeDash = null;
+    } else if (sRaw === 'booked') {
+        fillColor = '#ffc107'; // Kuning Booked
+        strokeColor = '#d39e00';
+        strokeWidth = 3;
+    }
+
+    return { fillColor, strokeColor, strokeWidth, strokeDash };
+}
+
+// Render 1 unit pada Canvas Fabric.js (bisa berupa Polygon kotak denah atau Circle marker)
+function renderUnitOnCanvas(u, scaleFactor) {
+    if (!canvasLegal) return;
+
+    // 1. KASUS UTAMA: Unit memiliki pemetaan titik polygon (mengikuti garis kotak di denah JPG)
+    if (u.polygon_points && Array.isArray(u.polygon_points) && u.polygon_points.length >= 3) {
+        const { fillColor, strokeColor, strokeWidth, strokeDash } = getUnitColors(u);
+
+        const scaledPoints = u.polygon_points.map(pt => ({
+            x: pt.x * scaleFactor,
+            y: pt.y * scaleFactor
+        }));
+
+        let cx = 0, cy = 0;
+        scaledPoints.forEach(pt => { cx += pt.x; cy += pt.y; });
+        cx /= scaledPoints.length;
+        cy /= scaledPoints.length;
+
+        const poly = new fabric.Polygon(scaledPoints, {
+            fill: fillColor,
+            opacity: 0.65, // Transparan agar garis & nomor asli denah JPG di bawahnya tetap terlihat
+            stroke: strokeColor,
+            strokeWidth: strokeWidth,
+            strokeDashArray: strokeDash,
+            selectable: false,
+            hasControls: false,
+            hoverCursor: 'pointer',
+            objectCaching: false
+        });
+
+        const labelText = u.unitCode || (u.block && u.unitNumber ? `${u.block}.${u.unitNumber}` : (u.unitName || 'Unit'));
+        const text = new fabric.Text(labelText, {
+            left: cx,
+            top: cy,
+            originX: 'center',
+            originY: 'center',
+            fontSize: 11,
+            fontWeight: 'bold',
+            fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+            fill: '#0f172a',
+            textAlign: 'center',
+            selectable: false,
+            evented: false, // Klik diteruskan ke Polygon
+            shadow: new fabric.Shadow({
+                color: 'rgba(255, 255, 255, 0.95)',
+                blur: 3,
+                offsetX: 0,
+                offsetY: 0
+            })
+        });
+
+        poly.unitId = u.id;
+        poly.unitData = u;
+        poly.labelObj = text;
+        poly.isPolygon = true;
+
+        canvasLegal.add(poly);
+        canvasLegal.add(text);
+        return;
+    }
+
+    // 2. KASUS KEDUA: Unit memiliki koordinat bulat legacy (jika pos_x & pos_y sudah pernah diatur)
+    if (u.pos_x !== null && u.pos_y !== null) {
+        const { fillColor, strokeColor, strokeWidth, strokeDash } = getUnitColors(u);
+        const radius = ((u.width || 70) * scaleFactor) / 2;
+
+        const circle = new fabric.Circle({
+            radius: radius,
+            fill: fillColor,
+            opacity: 0.85,
+            stroke: strokeColor,
+            strokeWidth: strokeWidth,
+            strokeDashArray: strokeDash,
+            originX: 'center',
+            originY: 'center'
+        });
+
+        const labelText = u.unitCode || (u.block && u.unitNumber ? `${u.block}.${u.unitNumber}` : (u.unitName || 'Unit'));
+        const fontSize = Math.max(11, Math.min(18, Math.round(radius * 0.58)));
+
+        const text = new fabric.Text(labelText, {
+            fontSize: fontSize,
+            fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+            fontWeight: 'bold',
+            fill: '#1e293b',
+            textAlign: 'center',
+            originX: 'center',
+            originY: 'center',
+            shadow: new fabric.Shadow({
+                color: 'rgba(255, 255, 255, 0.95)',
+                blur: 3,
+                offsetX: 0,
+                offsetY: 0
+            })
+        });
+
+        const markerGroup = new fabric.Group([circle, text], {
+            left: u.pos_x * scaleFactor,
+            top: u.pos_y * scaleFactor,
+            angle: u.angle || 0,
+            hasControls: true,
+            hasBorders: true,
+            lockRotation: false,
+            cornerColor: '#9a55ff',
+            cornerSize: 8,
+            transparentCorners: false
+        });
+
+        markerGroup.unitId = u.id;
+        markerGroup.unitData = u;
+        markerGroup.scaleFactor = scaleFactor;
+        markerGroup.isPolygon = false;
+
+        canvasLegal.add(markerGroup);
+    }
+}
+
+// Hapus objek unit tertentu dari Canvas Legal
+function removeUnitFromCanvas(unitId) {
+    if (!canvasLegal) return;
+    const objects = canvasLegal.getObjects();
+    const toRemove = [];
+    objects.forEach(obj => {
+        if (obj.unitId == unitId) {
+            toRemove.push(obj);
+            if (obj.labelObj) toRemove.push(obj.labelObj);
+        }
+    });
+    toRemove.forEach(obj => canvasLegal.remove(obj));
+}
+
+// Toggle Mode Pemetaan 4 Titik
+function toggleMappingMode() {
+    isMappingMode = !isMappingMode;
+    const btn = document.getElementById('btnModeMapping');
+    const textBtn = document.getElementById('textBtnMapping');
+    const banner = document.getElementById('mappingBanner');
+    const btnBatal = document.getElementById('btnBatalTitik');
+
+    resetCurrentPoints();
+
+    if (isMappingMode) {
+        if (btn) {
+            btn.classList.remove('btn-gradient-primary');
+            btn.classList.add('btn-danger');
+        }
+        if (textBtn) textBtn.innerText = 'Batal Petakan Kavling';
+        if (banner) banner.classList.remove('d-none');
+        if (btnBatal) btnBatal.classList.remove('d-none');
+        if (canvasLegal) {
+            canvasLegal.defaultCursor = 'crosshair';
+            canvasLegal.setCursor('crosshair');
+            canvasLegal.selection = false;
+        }
+    } else {
+        if (btn) {
+            btn.classList.remove('btn-danger');
+            btn.classList.add('btn-gradient-primary');
+        }
+        if (textBtn) textBtn.innerText = 'Petakan Kavling (Klik 4 Titik)';
+        if (banner) banner.classList.add('d-none');
+        if (btnBatal) btnBatal.classList.add('d-none');
+        if (canvasLegal) {
+            canvasLegal.defaultCursor = 'grab';
+            canvasLegal.setCursor('grab');
+            canvasLegal.selection = true;
+        }
+    }
+}
+
+// Reset 4 titik yang sedang diklik sementara
+function resetCurrentPoints() {
+    currentClickPoints = [];
+    currentTempVisuals.forEach(obj => {
+        if (canvasLegal) canvasLegal.remove(obj);
+    });
+    currentTempVisuals = [];
+    const counter = document.getElementById('badgeTitikCounter');
+    if (counter) counter.innerText = '0 / 4 Titik';
+    if (canvasLegal) canvasLegal.requestRenderAll();
+}
+
+function cancelCurrentPoints() {
+    resetCurrentPoints();
+    const modalEl = document.getElementById('modalAssignPolygonUnit');
+    if (modalEl) {
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+    }
+}
+
+// Submit Simpan Pemetaan 4 Titik Poligon ke Database
+function submitPolygonMapping() {
+    const select = document.getElementById('selectPolygonUnitId');
+    const unitId = select ? select.value : null;
+
+    if (!unitId) {
+        Swal.fire('Pilih Unit', 'Silakan pilih unit kavling yang sesuai terlebih dahulu!', 'warning');
+        return;
+    }
+
+    if (currentClickPoints.length !== 4) {
+        Swal.fire('Peringatan', 'Titik sudut belum lengkap 4 titik! Silakan klik 4 titik pada gambar.', 'warning');
+        return;
+    }
+
+    // Hitung koordinat tengah (centroid)
+    let cx = 0, cy = 0;
+    currentClickPoints.forEach(p => { cx += p.x; cy += p.y; });
+    cx = Math.round(cx / 4);
+    cy = Math.round(cy / 4);
+
+    Swal.fire({
+        title: 'Menyimpan Pemetaan...',
+        text: 'Menghubungkan 4 titik kotak kavling ke unit',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    fetch("{{ route('unit.save.polygon') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            unit_id: unitId,
+            polygon_points: currentClickPoints,
+            pos_x: cx,
+            pos_y: cy
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            // Tutup modal
+            const modalEl = document.getElementById('modalAssignPolygonUnit');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+
+            // Perbarui data lokal
+            const u = legalUnitsData.find(item => item.id == unitId);
+            if (u) {
+                u.polygon_points = currentClickPoints;
+                u.hasPolygon = true;
+                u.pos_x = cx;
+                u.pos_y = cy;
             }
 
-            // ===== FORMAT RUPIAH UNTUK INPUT HARGA =====
-            // Format tampilan Rupiah saat mengetik
-            $('input[name="price"], input[name="ijb_price"], input[name="ajb_price"]').on('keyup', function() {
-                let nilai = this.value.replace(/\D/g, '');
-                if (nilai) {
-                    // Batasi panjang karakter untuk block (misal block max 5)
-                    let fieldName = $(this).attr('name');
-                    if (fieldName === 'block' && nilai.length > 5) {
-                        // Block max 5 karakter
-                        this.value = this.value.substring(0, 5);
-                        return;
+            // Hapus objek lama unit ini dari canvas
+            removeUnitFromCanvas(unitId);
+
+            // Bersihkan visual klik sementara
+            currentTempVisuals.forEach(obj => canvasLegal.remove(obj));
+            currentTempVisuals = [];
+            currentClickPoints = [];
+
+            // Gambar poligon permanen pada denah
+            if (u) {
+                renderUnitOnCanvas(u, currentScaleFactor);
+            }
+
+            // Update keterangan pada select option
+            const opt = select.querySelector(`option[value="${unitId}"]`);
+            if (opt) {
+                opt.text = opt.text.replace('⚪ [Belum Dipetakan]', '✓ [Sudah Dipetakan]');
+            }
+
+            canvasLegal.renderAll();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil Dipetakan!',
+                text: 'Kotak kavling pada denah telah diwarnai mengikuti garis denah JPG.',
+                timer: 1800,
+                showConfirmButton: false
+            });
+
+            const counter = document.getElementById('badgeTitikCounter');
+            if (counter) counter.innerText = '0 / 4 Titik';
+        } else {
+            Swal.fire('Gagal', data.message || 'Gagal menyimpan pemetaan', 'error');
+        }
+    })
+    .catch(err => {
+        Swal.fire('Error', 'Terjadi kesalahan sistem saat menyimpan pemetaan', 'error');
+    });
+}
+
+// Hapus pemetaan poligon untuk unit yang sedang dibuka di modal
+function hapusPemetaanCurrentUnit() {
+    if (!currentActiveUnitId) return;
+
+    Swal.fire({
+        title: 'Hapus Pemetaan Kotak?',
+        text: 'Warna kotak kavling pada denah untuk unit ini akan dihapus.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus Pemetaan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch("{{ route('unit.delete.polygon') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ unit_id: currentActiveUnitId })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    const modalEl = document.getElementById('detailUnitModalLegal');
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+
+                    const u = legalUnitsData.find(item => item.id == currentActiveUnitId);
+                    if (u) {
+                        u.polygon_points = null;
+                        u.hasPolygon = false;
                     }
 
-                    let rupiah = new Intl.NumberFormat('id-ID').format(nilai);
-                    this.value = rupiah;
-                }
-            });
+                    removeUnitFromCanvas(currentActiveUnitId);
+                    canvasLegal.renderAll();
 
-            // Sebelum form disubmit, ubah format Rupiah ke angka biasa
-            $('form').on('submit', function() {
-                $('input[name="price"], input[name="ijb_price"], input[name="ajb_price"]').each(function() {
-                    let nilai = $(this).val().replace(/\./g, ''); // Hapus semua titik
-                    $(this).val(nilai); // Set ke angka asli (misal 5000000)
+                    // Update option di select modal
+                    const select = document.getElementById('selectPolygonUnitId');
+                    if (select) {
+                        const opt = select.querySelector(`option[value="${currentActiveUnitId}"]`);
+                        if (opt) {
+                            opt.text = opt.text.replace('✓ [Sudah Dipetakan]', '⚪ [Belum Dipetakan]');
+                        }
+                    }
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pemetaan Dihapus',
+                        text: 'Pemetaan kotak pada denah berhasil dihapus.',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire('Gagal', data.message || 'Gagal menghapus pemetaan', 'error');
+                }
+            })
+            .catch(() => Swal.fire('Error', 'Terjadi kesalahan sistem saat menghapus', 'error'));
+        }
+    });
+}
+
+function populateModalLegal(data) {
+    currentActiveUnitId = data.id || data.unitId;
+
+    document.getElementById('leg_unit_name').innerText = data.unitName || '-';
+    document.getElementById('leg_block').innerText = data.block || '-';
+    document.getElementById('leg_unit_number').innerText = data.unitNumber || '-';
+    document.getElementById('leg_jenis').innerText = data.jenis ? (data.jenis.charAt(0).toUpperCase() + data.jenis.slice(1)) : '-';
+    document.getElementById('leg_type').innerText = data.type || '-';
+    document.getElementById('leg_area').innerText = data.area ? data.area + ' m²' : '-';
+    if (document.getElementById('leg_building')) {
+        document.getElementById('leg_building').innerText = data.building ? data.building + ' m²' : '-';
+    }
+    if (document.getElementById('leg_direction')) {
+        document.getElementById('leg_direction').innerText = data.direction || '-';
+    }
+    if (document.getElementById('leg_certificate_no')) {
+        document.getElementById('leg_certificate_no').innerText = data.certificateNo ? data.certificateNo : '-';
+    }
+    if (document.getElementById('leg_certificate_doc')) {
+        if (data.fileCertificate) {
+            document.getElementById('leg_certificate_doc').innerHTML = `<a href="${data.fileCertificate}" target="_blank" class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 py-1 px-2 text-decoration-none d-inline-flex align-items-center gap-1" style="font-size: 0.78rem;"><i class="mdi mdi-file-document-outline"></i>Lihat Dokumen</a>`;
+        } else {
+            document.getElementById('leg_certificate_doc').innerHTML = `<span class="text-muted small">-</span>`;
+        }
+    }
+    if (document.getElementById('leg_price')) {
+        document.getElementById('leg_price').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.price || 0);
+    }
+    document.getElementById('leg_address').innerText = data.address || '-';
+
+    // Status Penjualan
+    const sRaw = (data.statusRaw || '').toLowerCase();
+    const tRaw = (data.type || '').toLowerCase();
+    let sHtml = '';
+    if (sRaw === 'ready' || sRaw === 'tersedia') {
+        if (tRaw === 'komersil') {
+            sHtml = `<span class="badge shadow-sm" style="background: #2675BB; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-office-building me-1"></i>Tersedia (Ready Komersil)</span>`;
+        } else {
+            sHtml = `<span class="badge shadow-sm" style="background: #28a745; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia (Ready Subsidi)</span>`;
+        }
+    } else if (sRaw === 'booked') {
+        sHtml = `<span class="badge shadow-sm" style="background: #ffc107; color: #212529 !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-bookmark-check me-1"></i>Booked (Terbooking)</span>`;
+    } else if (sRaw === 'sold' || sRaw === 'terjual') {
+        sHtml = `<span class="badge shadow-sm" style="background: #dc3545; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;"><i class="mdi mdi-close-circle me-1"></i>Terjual (Sold)</span>`;
+    } else {
+        sHtml = `<span class="badge bg-secondary shadow-sm" style="color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;">${data.statusText || sRaw}</span>`;
+    }
+    document.getElementById('leg_status').innerHTML = sHtml;
+
+    // Progress Pembangunan Fisik
+    const cMap = {
+        'belum_mulai': { pct: 0, label: '0% - Belum Mulai', bg: '#adb5bd' },
+        'pondasi': { pct: 20, label: '20% - Pondasi', bg: 'linear-gradient(135deg, #fd7e14, #ff922b)' },
+        'dinding': { pct: 40, label: '40% - Dinding', bg: 'linear-gradient(135deg, #ffc107, #ffd43b)' },
+        'atap': { pct: 60, label: '60% - Atap', bg: 'linear-gradient(135deg, #17a2b8, #3bc9db)' },
+        'finishing': { pct: 80, label: '80% - Finishing', bg: 'linear-gradient(135deg, #9a55ff, #da8cff)' },
+        'selesai': { pct: 100, label: '100% - Selesai', bg: 'linear-gradient(135deg, #28a745, #5cb85c)' }
+    };
+    const cInfo = cMap[data.construction] || { pct: 0, label: '0% - Belum Mulai', bg: '#adb5bd' };
+    const pBar = document.getElementById('leg_progress_bar');
+    pBar.style.width = cInfo.pct + '%';
+    pBar.style.background = cInfo.bg;
+    document.getElementById('leg_progress_pct').innerText = cInfo.label;
+
+    // Tombol Edit Unit
+    const btnEdit = document.getElementById('btnEditFromDetailLegal');
+    const uId = data.id || data.unitId;
+    if (uId) {
+        btnEdit.style.display = 'inline-block';
+        btnEdit.onclick = function() {
+            const detailModal = bootstrap.Modal.getInstance(document.getElementById('detailUnitModalLegal'));
+            if (detailModal) detailModal.hide();
+            setTimeout(() => {
+                const editModalEl = document.getElementById('editUnitModal' + uId);
+                if (editModalEl) {
+                    const m = new bootstrap.Modal(editModalEl);
+                    m.show();
+                }
+            }, 300);
+        };
+    } else {
+        btnEdit.style.display = 'none';
+    }
+
+    // Tombol Hapus Pemetaan Kotak
+    const btnHapusPoly = document.getElementById('btnHapusPolygonLegal');
+    if (btnHapusPoly) {
+        const uFound = legalUnitsData.find(item => item.id == uId);
+        if (uFound && uFound.polygon_points && uFound.polygon_points.length > 0) {
+            btnHapusPoly.style.display = 'inline-block';
+        } else {
+            btnHapusPoly.style.display = 'none';
+        }
+    }
+
+    // Informasi Booking
+    if (data.hasBooking) {
+        document.getElementById('leg_booking_card').style.display = 'block';
+        document.getElementById('leg_no_booking_card').style.display = 'none';
+
+        const cust = data.customer || '-';
+        const sales = data.sales || '-';
+        document.getElementById('leg_customer').innerText = cust;
+        document.getElementById('leg_customer_initial').innerText = (cust !== '-' && cust) ? cust.trim().charAt(0).toUpperCase() : '?';
+        document.getElementById('leg_sales').innerText = sales;
+        document.getElementById('leg_sales_initial').innerText = (sales !== '-' && sales) ? sales.trim().charAt(0).toUpperCase() : '?';
+        document.getElementById('leg_booking_date').innerText = data.bookingDate || '-';
+        document.getElementById('leg_booking_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.bookingFee || 0);
+        document.getElementById('leg_agent_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.agentFee || 0);
+
+        const bStatus = data.bookingStatus || '-';
+        let bBadge = '';
+        if (bStatus === 'active') {
+            bBadge = `<span class="badge bg-success px-2 py-1 rounded-pill"><i class="mdi mdi-check-circle me-1"></i>Aktif</span>`;
+        } else if (bStatus === 'completed' || bStatus === 'lunas') {
+            bBadge = `<span class="badge bg-success px-2 py-1 rounded-pill"><i class="mdi mdi-check-circle me-1"></i>Selesai</span>`;
+        } else if (bStatus === 'cancelled') {
+            bBadge = `<span class="badge bg-danger px-2 py-1 rounded-pill"><i class="mdi mdi-close-circle me-1"></i>Dibatalkan</span>`;
+        } else {
+            bBadge = `<span class="badge bg-secondary px-2 py-1 rounded-pill">${bStatus}</span>`;
+        }
+        document.getElementById('leg_booking_status').innerHTML = bBadge;
+    } else {
+        document.getElementById('leg_booking_card').style.display = 'none';
+        document.getElementById('leg_no_booking_card').style.display = 'block';
+    }
+}
+
+function openUnitDetailModalLegal(target) {
+    if (!target) return;
+    const uData = target.unitData || target;
+    if (!uData || (!uData.id && !uData.unitId)) return;
+    populateModalLegal(uData);
+    const modal = new bootstrap.Modal(document.getElementById('detailUnitModalLegal'));
+    modal.show();
+}
+
+function initLegalSiteplanCanvas() {
+    if (typeof fabric === 'undefined') return;
+    const canvasEl = document.getElementById('siteplanCanvasLegal');
+    if (!canvasEl) return;
+
+    const scrollContainer = canvasEl.closest('.siteplan-scroll-container') || canvasEl.parentElement;
+    const containerWidth = (scrollContainer && scrollContainer.clientWidth > 100) ? scrollContainer.clientWidth : 1100;
+    const containerHeight = (scrollContainer && scrollContainer.clientHeight > 100) ? scrollContainer.clientHeight : 620;
+
+    if (!canvasLegal) {
+        canvasLegal = new fabric.Canvas('siteplanCanvasLegal', {
+            defaultCursor: 'grab'
+        });
+
+        // Zoom via Mouse Wheel
+        canvasLegal.on('mouse:wheel', function(opt) {
+            const delta = opt.e.deltaY;
+            let zoomVal = canvasLegal.getZoom();
+            zoomVal *= (delta < 0 ? 1.1 : 0.9);
+            if (zoomVal > 4.0) zoomVal = 4.0;
+            if (zoomVal < 0.25) zoomVal = 0.25;
+            legalZoomLevel = zoomVal;
+            const pointer = canvasLegal.getPointer(opt.e);
+            canvasLegal.zoomToPoint(new fabric.Point(pointer.x, pointer.y), legalZoomLevel);
+            opt.e.preventDefault();
+            opt.e.stopPropagation();
+            canvasLegal.renderAll();
+        });
+
+        // Event Klik Canvas (Bisa untuk Mode Pemetaan 4 Titik atau Drag Pan)
+        let clickStartPosLegal = { x: 0, y: 0 };
+
+        canvasLegal.on('mouse:down', function(opt) {
+            if (isMappingMode) {
+                // KLIK 4 TITIK PADA GAMBAR DENAH JPG
+                const pointer = canvasLegal.getPointer(opt.e);
+                const sf = currentScaleFactor || 1;
+                const unscaledPt = {
+                    x: Math.round(pointer.x / sf),
+                    y: Math.round(pointer.y / sf)
+                };
+                const currentPt = {
+                    x: pointer.x,
+                    y: pointer.y
+                };
+
+                currentClickPoints.push(unscaledPt);
+                const ptIndex = currentClickPoints.length;
+
+                // Titik pin penanda
+                const dot = new fabric.Circle({
+                    left: currentPt.x,
+                    top: currentPt.y,
+                    radius: 5,
+                    fill: '#9a55ff',
+                    stroke: '#ffffff',
+                    strokeWidth: 2,
+                    originX: 'center',
+                    originY: 'center',
+                    selectable: false,
+                    evented: false
                 });
 
-                // Debug: lihat nilai yang dikirim
-                console.log('Form submitted dengan nilai:');
-                console.log('price:', $('input[name="price"]').val());
-                console.log('ijb_price:', $('input[name="ijb_price"]').val());
-                console.log('ajb_price:', $('input[name="ajb_price"]').val());
+                const numText = new fabric.Text(ptIndex.toString(), {
+                    left: currentPt.x,
+                    top: currentPt.y - 10,
+                    fontSize: 11,
+                    fontWeight: 'bold',
+                    fill: '#7a3bcf',
+                    stroke: '#ffffff',
+                    strokeWidth: 2.5,
+                    paintFirst: 'stroke',
+                    originX: 'center',
+                    originY: 'bottom',
+                    selectable: false,
+                    evented: false
+                });
 
-                return true; // Lanjutkan submit
-            });
+                canvasLegal.add(dot);
+                canvasLegal.add(numText);
+                currentTempVisuals.push(dot, numText);
 
-            // Validasi block field (max 5 karakter)
-            $('input[name="block"]').on('keyup', function() {
-                let nilai = $(this).val();
-                if (nilai.length > 5) {
-                    $(this).val(nilai.substring(0, 5));
-                    alert('Blok maksimal 5 karakter');
+                // Tarik garis penghubung dari titik sebelumnya
+                if (ptIndex > 1) {
+                    const prevUnscaled = currentClickPoints[ptIndex - 2];
+                    const line = new fabric.Line([
+                        prevUnscaled.x * sf, prevUnscaled.y * sf,
+                        currentPt.x, currentPt.y
+                    ], {
+                        stroke: '#9a55ff',
+                        strokeWidth: 2,
+                        strokeDashArray: [4, 3],
+                        selectable: false,
+                        evented: false
+                    });
+                    canvasLegal.add(line);
+                    currentTempVisuals.push(line);
                 }
+
+                const counter = document.getElementById('badgeTitikCounter');
+                if (counter) counter.innerText = ptIndex + ' / 4 Titik';
+
+                // Ketika sudah 4 titik sudut ditandai
+                if (ptIndex === 4) {
+                    const firstUnscaled = currentClickPoints[0];
+                    const closeLine = new fabric.Line([
+                        currentPt.x, currentPt.y,
+                        firstUnscaled.x * sf, firstUnscaled.y * sf
+                    ], {
+                        stroke: '#28a745',
+                        strokeWidth: 2.5,
+                        strokeDashArray: [4, 3],
+                        selectable: false,
+                        evented: false
+                    });
+                    canvasLegal.add(closeLine);
+                    currentTempVisuals.push(closeLine);
+
+                    // Preview poligon transparan
+                    const polyPreview = new fabric.Polygon(currentClickPoints.map(p => ({ x: p.x * sf, y: p.y * sf })), {
+                        fill: 'rgba(154, 85, 255, 0.30)',
+                        stroke: '#9a55ff',
+                        strokeWidth: 2,
+                        selectable: false,
+                        evented: false
+                    });
+                    canvasLegal.add(polyPreview);
+                    currentTempVisuals.push(polyPreview);
+
+                    canvasLegal.renderAll();
+
+                    // Buka modal pilih unit
+                    setTimeout(() => {
+                        const modal = new bootstrap.Modal(document.getElementById('modalAssignPolygonUnit'));
+                        modal.show();
+                    }, 200);
+                } else {
+                    canvasLegal.renderAll();
+                }
+                return;
+            }
+
+            // Normal Mode: Drag pan
+            if (opt.e) {
+                clickStartPosLegal = { x: opt.e.clientX, y: opt.e.clientY };
+            }
+            if (!canvasLegal.getActiveObject()) {
+                isDraggingLegal = true;
+                canvasLegal.selection = false;
+                canvasLegal.setCursor('grabbing');
+                lastPosXLegal = opt.e.clientX;
+                lastPosYLegal = opt.e.clientY;
+            }
+        });
+
+        canvasLegal.on('mouse:move', function(opt) {
+            if (isDraggingLegal && !isMappingMode) {
+                const e = opt.e;
+                const vpt = canvasLegal.viewportTransform;
+                vpt[4] += e.clientX - lastPosXLegal;
+                vpt[5] += e.clientY - lastPosYLegal;
+                canvasLegal.requestRenderAll();
+                lastPosXLegal = e.clientX;
+                lastPosYLegal = e.clientY;
+            }
+        });
+
+        canvasLegal.on('mouse:up', function(opt) {
+            if (!isMappingMode) {
+                canvasLegal.setViewportTransform(canvasLegal.viewportTransform);
+                isDraggingLegal = false;
+                canvasLegal.selection = true;
+                canvasLegal.setCursor('grab');
+
+                // Buka detail unit jika klik pada poligon atau lingkaran (single click dengan pergeseran minimal)
+                if (opt.target && (opt.target.unitId || opt.target.unitData) && opt.e) {
+                    const dist = Math.hypot(opt.e.clientX - clickStartPosLegal.x, opt.e.clientY - clickStartPosLegal.y);
+                    if (dist < 6) {
+                        openUnitDetailModalLegal(opt.target);
+                    }
+                }
+            }
+        });
+
+        // Double Click cadangan
+        canvasLegal.on('mouse:dblclick', function(opt) {
+            if (!isMappingMode && opt.target && (opt.target.unitId || opt.target.unitData)) {
+                openUnitDetailModalLegal(opt.target);
+            }
+        });
+
+        // Hover effect pada Polygon
+        canvasLegal.on('mouse:over', function(e) {
+            if (!isMappingMode && e.target && e.target.isPolygon) {
+                e.target.set('opacity', 0.88);
+                canvasLegal.renderAll();
+            }
+        });
+
+        canvasLegal.on('mouse:out', function(e) {
+            if (!isMappingMode && e.target && e.target.isPolygon) {
+                e.target.set('opacity', 0.65);
+                canvasLegal.renderAll();
+            }
+        });
+    } else {
+        canvasLegal.clear();
+    }
+
+    const denahUrl = "{{ $denahUrl }}";
+    fabric.Image.fromURL(denahUrl, function(img) {
+        if (!img || !img.width) return;
+
+        const scaleX = containerWidth / img.width;
+        const scaleY = containerHeight / img.height;
+        const scaleFactor = Math.max(scaleX, scaleY);
+        currentScaleFactor = scaleFactor;
+
+        canvasLegal.setWidth(containerWidth);
+        canvasLegal.setHeight(containerHeight);
+
+        img.set({
+            scaleX: scaleFactor,
+            scaleY: scaleFactor,
+            originX: 'left',
+            originY: 'top'
+        });
+
+        canvasLegal.setBackgroundImage(img, function() {
+            legalUnitsData.forEach(u => {
+                renderUnitOnCanvas(u, scaleFactor);
             });
 
-            $('#resetFilter, #resetFilterMobile').on('click', function() {
-                $('#searchInput, #searchInputMobile').val('');
-                $('#filterType, #filterTypeMobile').val('');
-                $('#filterPosisi, #filterPosisiMobile').val('');
-                $('#filterHadap, #filterHadapMobile').val('');
-                location.reload();
-            });
+            canvasLegal.renderAll();
         });
-    </script>
+    });
+}
+
+function savePositionLegal() {
+    if (!canvasLegal) return;
+    let units = [];
+    canvasLegal.getObjects().forEach(function(obj) {
+        if (obj.unitId && !obj.isPolygon) {
+            const sf = obj.scaleFactor || currentScaleFactor || 1;
+            units.push({
+                id: obj.unitId,
+                pos_x: Math.round(obj.left / sf),
+                pos_y: Math.round(obj.top / sf),
+                width: Math.round(obj.getScaledWidth() / sf),
+                height: Math.round(obj.getScaledHeight() / sf),
+                angle: Math.round(obj.angle || 0)
+            });
+        }
+    });
+
+    if (units.length === 0) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Informasi',
+            text: 'Semua unit yang dipetakan dengan poligon tersimpan otomatis secara presisi. Tidak ada marker lingkaran yang perlu disimpan.',
+            timer: 2000,
+            showConfirmButton: false
+        });
+        return;
+    }
+
+    Swal.fire({
+        title: 'Menyimpan Posisi...',
+        text: 'Menyimpan koordinat unit di siteplan',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    fetch("{{ route('unit.save.position') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ units: units })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Posisi unit di siteplan berhasil disimpan.',
+                timer: 1800,
+                showConfirmButton: false
+            });
+        } else {
+            Swal.fire('Gagal', 'Gagal menyimpan posisi unit', 'error');
+        }
+    })
+    .catch(error => {
+        Swal.fire('Error', 'Terjadi kesalahan sistem', 'error');
+    });
+}
+
+$(document).ready(function() {
+    setTimeout(initLegalSiteplanCanvas, 300);
+});
+@endif
+
+// Filter House Cards berdasarkan Blok di Tab Progress
+function filterHouseBlok(blok, btn) {
+    $('.denah-filter-pill').removeClass('active');
+    $(btn).addClass('active');
+
+    if (blok === 'all') {
+        $('.house-blok-section').removeClass('d-none');
+        $('.house-card').removeClass('d-none');
+    } else {
+        $('.house-blok-section').each(function() {
+            if ($(this).data('blok') === blok) {
+                $(this).removeClass('d-none');
+            } else {
+                $(this).addClass('d-none');
+            }
+        });
+    }
+}
+
+// Zoom Interactive Engine for Siteplan
+let currentZoom = 1.0;
+let legalZoomLevel = 1.0;
+
+function zoomSiteplan(delta) {
+    if (typeof canvasLegal !== 'undefined' && canvasLegal) {
+        legalZoomLevel = Math.max(0.3, Math.min(3.0, legalZoomLevel + delta));
+        canvasLegal.zoomToPoint(new fabric.Point(canvasLegal.getWidth() / 2, canvasLegal.getHeight() / 2), legalZoomLevel);
+        canvasLegal.renderAll();
+        return;
+    }
+    const img = document.getElementById('siteplanImageElement');
+    if (!img) return;
+    currentZoom = Math.max(0.5, Math.min(3.5, currentZoom + delta));
+    img.style.transform = `scale(${currentZoom})`;
+}
+
+function resetSiteplanZoom() {
+    if (typeof canvasLegal !== 'undefined' && canvasLegal) {
+        legalZoomLevel = 1.0;
+        canvasLegal.setZoom(1.0);
+        canvasLegal.setViewportTransform([1, 0, 0, 1, 0, 0]);
+        canvasLegal.renderAll();
+        return;
+    }
+    const img = document.getElementById('siteplanImageElement');
+    if (!img) return;
+    currentZoom = 1.0;
+    img.style.transform = 'scale(1)';
+}
+
+function openSiteplanLightbox() {
+    $('#modalSiteplanLightbox').modal('show');
+}
+
+function showFilterLoading() {
+    Swal.fire({
+        title: 'Memuat...',
+        text: 'Memfilter data unit kavling',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+    return true;
+}
+
+function showResetLoading(e) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'Mereset...',
+        text: 'Mengembalikan filter ke default',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+    window.location.href = "{{ url()->current() }}";
+}
+
+$(document).ready(function() {
+    // Auto-submit saat ganti opsi limit/filter
+    $('#perPageSelect, #filterType, #filterPosisi, #filterHadap').on('change', function() {
+        $('#filterForm').submit();
+    });
+
+    // Tab switching modal as distinct buttons
+    $('.modal-tab-btn').on('click', function(e) {
+        e.preventDefault();
+        $('.modal-tab-btn').removeClass('active btn-gradient-primary btn-gradient-success text-white')
+            .addClass('btn-outline-secondary')
+            .css({'background': '#f8f9fa', 'color': '#475569', 'border-color': '#e2e8f0'});
+        
+        var target = $(this).data('modal-tab');
+        $('.modal-tab-pane').removeClass('active');
+
+        if (target === 'manual') {
+            $(this).addClass('active btn-gradient-primary text-white').removeClass('btn-outline-secondary').css({'background': '', 'color': '', 'border-color': ''});
+            $('#modal-manual-pane').addClass('active');
+            $('#btnSubmitManual').removeClass('d-none');
+            $('#btnSubmitImport').addClass('d-none');
+        } else {
+            $(this).addClass('active btn-gradient-success text-white').removeClass('btn-outline-secondary').css({'background': '', 'color': '', 'border-color': ''});
+            $('#modal-import-pane').addClass('active');
+            $('#btnSubmitManual').addClass('d-none');
+            $('#btnSubmitImport').removeClass('d-none');
+        }
+    });
+
+    // File change Excel
+    $('#uploadExcelModal').on('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                Swal.fire('Error', 'Ukuran file maksimal 5MB!', 'error');
+                $(this).val('');
+                $('#fileNameModal').text('Pilih atau Drag & Drop file Excel di sini');
+                return;
+            }
+            $('#fileNameModal').text(file.name);
+        } else {
+            $('#fileNameModal').text('Pilih atau Drag & Drop file Excel di sini');
+        }
+    });
+
+
+    // Price formatting
+    $(document).on('keyup', '.price-format', function() {
+        let val = $(this).val().replace(/\D/g, '');
+        if (val) {
+            $(this).val(new Intl.NumberFormat('id-ID').format(val));
+        }
+    });
+
+    // Submit form manual
+    $('#formTambahUnitManual').on('submit', function(e) {
+        e.preventDefault();
+        $('.price-format').each(function() {
+            let val = $(this).val().replace(/\./g, '');
+            $(this).val(val);
+        });
+        Swal.fire({
+            title: 'Memuat...',
+            text: 'Sedang menyimpan unit kavling',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+        this.submit();
+    });
+
+    // Submit form edit
+    $(document).on('submit', '[id^="formEditUnitManual"]', function(e) {
+        e.preventDefault();
+        $(this).find('.price-format').each(function() {
+            let val = $(this).val().replace(/\./g, '');
+            $(this).val(val);
+        });
+        Swal.fire({
+            title: 'Memuat...',
+            text: 'Sedang menyimpan perubahan unit',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+        this.submit();
+    });
+
+    // Submit import
+    $('#formImportExcelModal').on('submit', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Mengimpor Data...',
+            text: 'Sedang memproses file Excel',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+        this.submit();
+    });
+
+});
+
+// Konfirmasi Hapus SweetAlert
+function confirmDelete(btn, code) {
+    Swal.fire({
+        title: 'Hapus Unit ' + code + '?',
+        text: 'Data unit kavling yang dihapus tidak dapat dikembalikan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            btn.closest('form').submit();
+        }
+    });
+}
+
+// Preview Upload Sertifikat (Tampilan Kotak Hijau + Lihat & Ganti)
+function previewCertUpload(input, mode, unitId = null) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const fileUrl = URL.createObjectURL(file);
+
+        if (mode === 'tambah') {
+            const emptyBox = document.getElementById('certEmptyBoxTambah');
+            const uploadedBox = document.getElementById('certUploadedBoxTambah');
+            const fileNameEl = document.getElementById('certFileNameTambah');
+            const viewLinkEl = document.getElementById('certViewLinkTambah');
+
+            if (fileNameEl) fileNameEl.textContent = file.name;
+            if (viewLinkEl) viewLinkEl.href = fileUrl;
+            if (emptyBox) emptyBox.style.display = 'none';
+            if (uploadedBox) uploadedBox.style.display = 'block';
+        } else if (mode === 'edit' && unitId) {
+            const emptyBox = document.getElementById('certEmptyBoxEdit' + unitId);
+            const uploadedBox = document.getElementById('certUploadedBoxEdit' + unitId);
+            const fileNameEl = document.getElementById('certFileNameEdit' + unitId);
+            const viewLinkEl = document.getElementById('certViewLinkEdit' + unitId);
+
+            if (fileNameEl) fileNameEl.textContent = file.name;
+            if (viewLinkEl) viewLinkEl.href = fileUrl;
+            if (emptyBox) emptyBox.style.display = 'none';
+            if (uploadedBox) uploadedBox.style.display = 'block';
+        }
+    }
+}
+</script>
 @endpush

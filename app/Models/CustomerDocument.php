@@ -9,6 +9,7 @@ class CustomerDocument extends Model
     //
     protected $fillable = [
     'customer_id',
+    'booking_id',
     'document_name',
     'document_number',
     'file',

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BankController;
+use App\Http\Controllers\NotarisController;
 use App\Http\Controllers\Admin\PropertyController;
 use App\Http\Controllers\Admin\LandBankUnitController;
 use App\Http\Controllers\Admin\DevelopmentProgressController;
@@ -34,13 +35,61 @@ use App\Http\Controllers\SiteplanController;
 use App\Http\Controllers\PromoController;
 use App\Http\Controllers\TamuController;
 use App\Http\Controllers\AkadController;
+use App\Http\Controllers\CustomerKPRRijectedController;
 use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\PositionController;
 use App\Http\Controllers\DocumentLegalController;
+use App\Http\Controllers\DocumentPersiapanPecahLegalController;
 use App\Http\Controllers\DokumentLegalPersiapanController;
+use App\Http\Controllers\PraLandBankController;
 use App\Http\Controllers\RABDeadlineController;
 use App\Http\Controllers\SerahTerimaController;
+use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TransaksiKPRController;
+use App\Http\Controllers\CompanySettingController;
+use App\Http\Controllers\LandingpageController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\TimelineCashTempoController;
+use App\Http\Controllers\DocumentPreviewController;
+use App\Http\Controllers\JobStaffMarketingController;
+use App\Http\Controllers\DocumentTypeController;
+use App\Http\Controllers\SpkController;
+use App\Http\Controllers\Finance\InvoiceMasterController;
+use App\Http\Controllers\Finance\ProjectAccountingController;
+use App\Http\Controllers\Finance\JurnalUmumController;
+use App\Http\Controllers\Finance\ArusKasController;
+use App\Http\Controllers\Finance\LabaRugiController;
+use App\Http\Controllers\Finance\NeracaController;
+use App\Http\Controllers\MasterDokumenPerizinanController;
+use App\Http\Controllers\MasterBiayaLegalitasController;
+use App\Http\Controllers\MasterSkemaKprController;
+
+/*
+|--------------------------------------------------------------------------
+| Landing Page
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/beranda', function () {
+    return view('home.index');
+});
+
+Route::get('/semua-unit', [LandingpageController::class, 'allUnits'])->name('home.units');
+Route::get('/unit', [LandingpageController::class, 'allUnits']);
+
+Route::get('/detail/{id?}', [LandingpageController::class, 'detail'])->name('home.detail');
+
+Route::get('/buku-tamu', [LandingpageController::class, 'bukuTamu'])->name('home.buku-tamu');
+Route::post('/buku-tamu', [LandingpageController::class, 'storeBukuTamu'])->name('home.buku-tamu.store');
+
+// ==========================================
+// PENGADUAN & KLAIM GARANSI KONSUMEN (PUBLIC & QR/BARCODE)
+// ==========================================
+Route::get('/pengaduan/{identifier}', [ComplaintController::class, 'customerForm'])->name('complaint.customer.form');
+Route::post('/pengaduan/{identifier}', [ComplaintController::class, 'customerStore'])->name('complaint.customer.store');
+Route::get('/pengaduan/{identifier}/sukses/{ticket}', [ComplaintController::class, 'customerSuccess'])->where('ticket', '.*')->name('complaint.customer.success');
+Route::get('/pengaduan/cetak-barcode/{bookingId}', [ComplaintController::class, 'printBarcodeSticker'])->name('complaint.barcode.print');
 
 /*
 |--------------------------------------------------------------------------
@@ -52,350 +101,849 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login'])->name('login.proses');
 });
 
+Route::get('/', [LandingpageController::class, 'index'])->name('landingpage');
+// Route::get('/', function () {
+//     return redirect()->route('login');
+// });
 
-Route::get('/', function () {
-    return redirect()->route('login');
-});
-
-Route::middleware(['auth','position:manager,admin,staff,marketing'])->group(function () {
+Route::middleware(['auth'])->group(function () {
 
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/kpr', [DashboardController::class, 'kprDashboardRoute'])->name('dashboard.kpr');
+    Route::get('/dashboard/detail/{id}', [DashboardController::class, 'show'])->name('dashboard.detail');
+    Route::get('/proyek/refresh', [DashboardController::class, 'refresh']);
+    Route::get('/notifications/read/{id}', function ($id) {
+        $notif = auth()->user()->notifications()->find($id);
 
-/*
-|--------------------------------------------------------------------------
-| ========================= MARKETING =========================
-|--------------------------------------------------------------------------
-*/
+        if ($notif) {
+            $notif->markAsRead();
+            return redirect($notif->data['url'] ?? '/');
+        }
 
-Route::get('/marketing/sell-unit', [SellUnitController::class, 'index'])->name('marketing.jual-unit');
-Route::post('/marketing/set-agency/{unitId}', [SellUnitController::class, 'setAgency'])->name('marketing.setAgency');
+        return back();
+    })->name('notifications.read');
 
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= MARKETING =========================
+    |--------------------------------------------------------------------------
+    */
 
-Route::post('/set-customer/{unitId}', [SellUnitController::class, 'setCustomer'])->name('set.customer');
-Route::get('/marketing/jual-unit/export/excel', [SellUnitController::class, 'exportExcel'])
-    ->name('marketing.jual-unit.export.excel');
+    Route::get('/marketing/sell-unit', [SellUnitController::class, 'index'])->name('marketing.jual-unit');
+    Route::get('/marketing/sell-unit/{id}', [SellUnitController::class, 'show'])->name('marketing.jual-unit.show');
+    Route::get('/marketing/unit', [\App\Http\Controllers\Marketing\UnitMarketingController::class, 'index'])->name('marketing.unit.index');
+    Route::post('/marketing/unit/{id}/price', [\App\Http\Controllers\Marketing\UnitMarketingController::class, 'updatePrice'])->name('marketing.unit.updatePrice');
+    Route::get('/marketing/landing-page', [\App\Http\Controllers\Marketing\LandingpageManagementController::class, 'index'])->name('marketing.landingpage.index');
+    Route::get('/marketing/landing-page/{id}/edit', [\App\Http\Controllers\Marketing\LandingpageManagementController::class, 'edit'])->name('marketing.landingpage.edit');
+    Route::put('/marketing/landing-page/{id}', [\App\Http\Controllers\Marketing\LandingpageManagementController::class, 'update'])->name('marketing.landingpage.update');
+    // Sosial Media Marketing (3 Sub-Menu: Tugas, Tugas Selesai, Analisa)
+    Route::get('/marketing/sosial-media', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'index'])->name('marketing.sosialmedia.index');
+    Route::get('/marketing/sosial-media/tugas', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'tugas'])->name('marketing.sosialmedia.tugas');
+    Route::get('/marketing/sosial-media/selesai', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'selesai'])->name('marketing.sosialmedia.selesai');
+    Route::get('/marketing/sosial-media/analisa', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'analisa'])->name('marketing.sosialmedia.analisa');
+    Route::get('/marketing/sosial-media/task/{id}', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'showTask'])->name('marketing.sosialmedia.task.show');
+    Route::post('/marketing/sosial-media/submit-task', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'submitTask'])->name('marketing.sosialmedia.submitTask');
+    Route::post('/marketing/sosial-media/task', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'storeTask'])->name('marketing.sosialmedia.task.store');
+    Route::put('/marketing/sosial-media/task/{id}', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'updateTask'])->name('marketing.sosialmedia.task.update');
+    Route::put('/marketing/sosial-media/task/{id}/metrics', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'updateMetrics'])->name('marketing.sosialmedia.task.metrics');
+    Route::post('/marketing/sosial-media/sync-all', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'syncAll'])->name('marketing.sosialmedia.syncAll');
+    Route::post('/marketing/sosial-media/task/{id}/sync', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'syncSingleTask'])->name('marketing.sosialmedia.task.sync');
+    Route::delete('/marketing/sosial-media/task/{id}', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'destroyTask'])->name('marketing.sosialmedia.task.destroy');
+    Route::post('/marketing/sosial-media/store', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'store'])->name('marketing.sosialmedia.store');
+    Route::post('/marketing/sosial-media/{id}/sync', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'sync'])->name('marketing.sosialmedia.sync');
+    Route::delete('/marketing/sosial-media/{id}', [\App\Http\Controllers\Marketing\SosialMediaController::class, 'destroy'])->name('marketing.sosialmedia.destroy');
+    Route::post('/marketing/set-agency/{unitId}', [SellUnitController::class, 'setAgency'])->name('marketing.setAgency');
+    Route::post('/unit/save-position', [SellUnitController::class, 'savePosition'])
+        ->name('unit.save.position');
 
-Route::get('/marketing/jual-unit/export/pdf', [SellUnitController::class, 'exportPdf'])
-    ->name('marketing.jual-unit.export.pdf');
+    Route::post('/set-customer/{unitId}', [SellUnitController::class, 'setCustomer'])->name('set.customer');
+    Route::get('/marketing/jual-unit/export/excel', [SellUnitController::class, 'exportExcel'])
+        ->name('marketing.jual-unit.export.excel');
+
+    Route::get('/marketing/jual-unit/export/pdf', [SellUnitController::class, 'exportPdf'])
+        ->name('marketing.jual-unit.export.pdf');
+
+    // Master Aturan Komisi Agent
+    Route::get('/marketing/commission-rules', [SellUnitController::class, 'commissionRulesIndex'])
+        ->name('marketing.commission-rules.index');
+    Route::post('/marketing/commission-rules/store', [SellUnitController::class, 'storeCommissionRule'])
+        ->name('marketing.commission-rules.store');
+    Route::put('/marketing/commission-rules/{id}', [SellUnitController::class, 'updateCommissionRule'])
+        ->name('marketing.commission-rules.update');
+    Route::delete('/marketing/commission-rules/{id}', [SellUnitController::class, 'destroyCommissionRule'])
+        ->name('marketing.commission-rules.destroy');
+    Route::post('/marketing/commission-rules/{id}/toggle', [SellUnitController::class, 'toggleCommissionRule'])
+        ->name('marketing.commission-rules.toggle');
+    Route::get('/marketing/commission-rules/calculate', [SellUnitController::class, 'calculateCommissionApi'])
+        ->name('marketing.commission-rules.calculate');
 
     Route::get('marketing/list-pengajuan', [ListPengajuanController::class, 'index'])->name('marketing.list_pengajuan');
+    Route::delete('/marketing/pengajuan/{id}', [ListPengajuanController::class, 'destroy'])
+    ->name('pengajuan.destroy');
 
-/*
-|--------------------------------------------------------------------------
-| VIEW MARKETING (sementara static)
-|--------------------------------------------------------------------------
-*/
-// Route::get('/dashboard-list-pengajuan', fn() => view('marketing.list_pengajuan'));
+    Route::get('/document-preview', [DocumentPreviewController::class, 'preview'])->name('document.preview');
 
-// Route::get('/dashboard-cash', fn() => view('marketing.cash'));
-Route::get('/dashboard-cash/{booking}', [ListPengajuanController::class, 'show'])->name('marketing.cash');
-Route::put('/bookings/{booking}/update-nego', [BookingController::class, 'updateNego'])
-    ->name('bookings.updateNego');
-Route::get('/dashboard-approved', fn() => view('marketing.approved'));
-Route::get('/dashboard-akad', fn() => view('marketing.akad'));
+    /*
+    |--------------------------------------------------------------------------
+    | VIEW MARKETING (sementara static)
+    |--------------------------------------------------------------------------
+    */
+    // Route::get('/dashboard-list-pengajuan', fn() => view('marketing.list_pengajuan'));
 
-Route::get('/dashboard-survey', fn() => view('marketing.survey'));
+    // Route::get('/dashboard-cash', fn() => view('marketing.cash'));
+    Route::get('/dashboard-cash/{booking}', [ListPengajuanController::class, 'show'])->name('marketing.cash');
+    Route::put('/bookings/{booking}/update-nego', [BookingController::class, 'updateNego'])
+        ->name('bookings.updateNego');
+    Route::get('/dashboard-approved', fn() => view('marketing.approved'));
+    Route::get('/dashboard-akad', fn() => view('marketing.akad'));
+
+    Route::get('/dashboard-survey', fn() => view('marketing.survey'));
 
 
 
-/*
-|--------------------------------------------------------------------------
-| CETAK
-|--------------------------------------------------------------------------
-*/
-Route::get('/dashboard-cetak-laporan', fn() => view('cetak.laporan'));
-// Route::get('/dashboard-cetak-invoice-cash', fn() => view('cetak.invoice_cash'));
-// Route untuk halaman web (dengan 2 tab)
-Route::get('/dashboard-cetak-invoice-cash/{booking}', [InvoiceController::class, 'index'])
-    ->name('cetak.invoice_cash');
+    /*
+    |--------------------------------------------------------------------------
+    | CETAK
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/dashboard-cetak-laporan', fn() => view('cetak.laporan'));
+    // Route::get('/dashboard-cetak-invoice-cash', fn() => view('cetak.invoice_cash'));
+    // Route untuk halaman web (dengan 2 tab)
+    Route::get('/dashboard-cetak-invoice-cash/{booking}', [InvoiceController::class, 'index'])
+        ->name('cetak.invoice_cash');
     Route::get('/invoice/{id}/wa', [InvoiceController::class, 'sendToWa'])
-    ->name('cetak.invoice_wa');
+        ->name('cetak.invoice_wa');
 
-// Route untuk download PDF Cash Awal
-Route::get('/dashboard-cetak-invoice-cash/{booking}/pdf', [InvoiceController::class, 'cetakPdf'])
-    ->name('dashboard.cetak.invoice.cash.pdf');
+    // Route untuk download PDF Cash Awal
+    Route::get('/dashboard-cetak-invoice-cash/{booking}/pdf', [InvoiceController::class, 'cetakPdf'])
+        ->name('dashboard.cetak.invoice.cash.pdf');
 
-// Route untuk download PDF Konversi
-Route::get('/dashboard-cetak-invoice-konversi/{booking}/pdf', [InvoiceController::class, 'cetakPdfKonversi'])
-    ->name('dashboard.cetak.invoice.konversi.pdf');
+    // Route untuk download PDF Konversi
+    Route::get('/dashboard-cetak-invoice-konversi/{booking}/pdf', [InvoiceController::class, 'cetakPdfKonversi'])
+        ->name('dashboard.cetak.invoice.konversi.pdf');
 
-Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
-// Route::get('/dashboard-cetak-rab', fn() => view('cetak.rab'));
-Route::get('/dashboard-cetak-rab/{unit_id}', [RABController::class, 'index'])->name('cetak.rab');
+    // Route Kuitansi UTJ (Uang Tanda Jadi)
+    Route::get('/dashboard-cetak-kuitansi-utj/{booking}', [InvoiceController::class, 'cetakKuitansiUtj'])
+        ->name('cetak.kuitansi_utj');
+    Route::get('/dashboard-cetak-kuitansi-utj/{booking}/pdf', [InvoiceController::class, 'cetakKuitansiUtjPdf'])
+        ->name('dashboard.cetak.kuitansi.utj.pdf');
+    Route::get('/dashboard-cetak-kuitansi-utj/{booking}/wa', [InvoiceController::class, 'sendUtjToWa'])
+        ->name('cetak.kuitansi_utj.wa');
 
-
-
-/*
-|--------------------------------------------------------------------------
-| ========================= PROPERTI =========================
-|--------------------------------------------------------------------------
-*/
-
-// list properti
-Route::get('/all-properti', [PropertyController::class, 'index'])->name('properti-all');
-
-// tambah properti
-Route::get('/create-landbank', [LandBankController::class, 'index'])->name('properti');
-Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
-Route::get('/properti/verifikasi-legal/{id}', [LandBankController::class, 'verifikasiLegal'])->name('properti.verifikasi');
+    Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
+    // Route::get('/dashboard-cetak-rab', fn() => view('cetak.rab'));
+    Route::get('/dashboard-cetak-rab/{unit_id}', [RABController::class, 'index'])->name('cetak.rab');
 
 
-/*
-|--------------------------------------------------------------------------
-| VERIFIKASI LEGAL
-|--------------------------------------------------------------------------
-*/
 
-Route::post('/dokumen/{id}/approve', [LandBankController::class, 'approveDocument'])->name('dokumen.approve');
-Route::post('/dokumen/{id}/reject', [LandBankController::class, 'rejectDocument'])->name('dokumen.reject');
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= PROPERTI =========================
+    |--------------------------------------------------------------------------
+    */
 
-Route::post('/properti/{id}/approve-all', [LandBankController::class, 'approveAllDocuments'])->name('properti.approveAll');
-Route::post('/properti/{id}/reject-all', [LandBankController::class, 'rejectAllDocuments'])->name('properti.rejectAll');
+    // list properti
+    Route::get('/all-properti', [PropertyController::class, 'index'])->name('properti-all');
+    Route::get('/properti/all', [PropertyController::class, 'index'])->name('properti.all');
+    Route::get('/all-pra-landbank', [PraLandBankController::class, 'indexpra'])->name('pralandbank.all');
+    Route::get('/properti/pra-landbank/proses/{id?}', [PraLandBankController::class, 'proses'])->name('pra-landbank.proses');
+    Route::get('/properti/pra-landbank/invoice/{id}', [PraLandBankController::class, 'invoice'])->name('pra-landbank.invoice');
+    // tambah properti
+    Route::get('/create-landbank', [LandBankController::class, 'index'])->name('properti');
+    Route::get('/create-pralandbank', [PraLandBankController::class, 'index'])->name('pra-landbank');
+    Route::post('/properti/pra-landbank/store', [PraLandBankController::class, 'store'])->name('pra-landbanks.store');
+    Route::delete('/properti/pra-landbank/{id}', [PraLandBankController::class, 'destroy'])->name('pra-landbanks.destroy');
+    Route::post('/pra-landbank/dokumen/{id}/approve', [PraLandBankController::class, 'approveDocument'])->name('pra-dokumen.approve');
+    Route::post('/pra-landbank/dokumen/{id}/reject', [PraLandBankController::class, 'rejectDocument'])->name('pra-dokumen.reject');
+    Route::post('/pra-landbank/dokumen/{id}/upload-completed', [PraLandBankController::class, 'uploadCompletedDocument'])->name('pra-dokumen.upload-completed');
+    Route::post('/properti/pra-landbank/{id}/upload-notary-doc', [PraLandBankController::class, 'uploadNotaryDoc'])->name('pra-landbank.upload-notary-doc');
+    Route::post('/properti/pra-landbank/{id}/update-notary-info', [PraLandBankController::class, 'updateNotaryInfo'])->name('pra-landbank.update-notary-info');
+    Route::post('/properti/pra-landbank/{id}/upload-workflow-doc', [PraLandBankController::class, 'uploadWorkflowDoc'])->name('pra-landbank.upload-workflow-doc');
+    Route::post('/properti/pra-landbank/{id}/upload-custom-workflow-doc', [PraLandBankController::class, 'uploadCustomWorkflowDoc'])->name('pra-landbank.upload-custom-workflow-doc');
+    Route::post('/properti/pra-landbank/{id}/delete-custom-workflow-doc', [PraLandBankController::class, 'deleteCustomWorkflowDoc'])->name('pra-landbank.delete-custom-workflow-doc');
+    Route::post('/properti/pra-landbank/{id}/load-fase4-template', [PraLandBankController::class, 'loadFase4DefaultTemplate'])->name('pra-landbank.load-fase4-template');
+    Route::post('/properti/pra-landbank/{id}/add-from-master', [PraLandBankController::class, 'addBatchFromMaster'])->name('pra-landbank.add-from-master');
+    Route::post('/properti/pra-landbank/{id}/finalize-pasca', [PraLandBankController::class, 'finalizeToPascaLandbank'])->name('pra-landbank.finalize-pasca');
+    Route::post('/properti/pra-landbank/{id}/update-company', [PraLandBankController::class, 'updateCompanyAjax'])->name('pra-landbank.update-company');
 
-Route::post('/properti/{id}/update-revisi', [LandBankController::class, 'updateRevisi'])->name('properti.updateRevisi');
-Route::post('/dokumen/{id}/update', [LandBankController::class, 'updateDocument'])->name('dokumen.update');
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= MASTER DOKUMEN PERIZINAN =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('master-data/dokumen-perizinan')->name('master.dokumen-perizinan.')->group(function () {
+        Route::get('/', [MasterDokumenPerizinanController::class, 'index'])->name('index');
+        Route::get('/{id}/edit', [MasterDokumenPerizinanController::class, 'edit'])->name('edit');
+        Route::post('/store', [MasterDokumenPerizinanController::class, 'store'])->name('store');
+        Route::put('/{id}', [MasterDokumenPerizinanController::class, 'update'])->name('update');
+        Route::delete('/{id}', [MasterDokumenPerizinanController::class, 'destroy'])->name('destroy');
+        Route::match(['post', 'patch'], '/{id}/toggle-status', [MasterDokumenPerizinanController::class, 'toggleStatus'])->name('toggle-status');
+        Route::get('/api/list', [MasterDokumenPerizinanController::class, 'apiList'])->name('api-list');
+    });
 
-Route::get('/properti-revisi/{id}', [LandBankController::class, 'revisi'])->name('properti.revisi');
-
-
-/*
-|--------------------------------------------------------------------------
-| ========================= KAVLING =========================
-|--------------------------------------------------------------------------
-*/
-Route::get('/kavling', [PropertyController::class, 'kavlingindex'])->name('kavling.index');
-Route::get('/properti-buat-kavling/template', [LandBankUnitController::class, 'downloadTemplate'])->name('kavling.template');
-Route::get('/properti-buat-kavling/{land_bank_id}', [LandBankUnitController::class, 'create'])->name('properti.buatKavling');
-Route::post('/properti-buat-kavling/{land_bank_id}/store', [LandBankUnitController::class, 'store'])->name('properti.storeKavling');
-Route::post('/properti-buat-kavling/{land_bank_id}/import',[LandBankUnitController::class, 'import'])->name('kavling.import');
-
-
-// edit kavling
-Route::get('/properti/kavling/{unit}/edit', [LandBankUnitController::class, 'edit'])->name('properti.kavling.edit');
-Route::put('/properti/kavling/{unit}', [LandBankUnitController::class, 'update'])->name('properti.kavling.update');
-Route::delete('/properti/kavling/{unit}', [LandBankUnitController::class, 'destroy'])->name('properti.kavling.destroy');
-
-
-/*
-|--------------------------------------------------------------------------
-| PROGRESS PEMBANGUNAN
-|--------------------------------------------------------------------------
-*/
-Route::get('properti/kavling/{unit}/update-progress', [LandBankUnitController::class, 'updateProgress'])->name('properti.kavling.updateProgress');
-
-Route::post('/properti/progress/acc-ajax/{unit}', [DevelopmentProgressController::class, 'accAjax'])->name('properti.progress.acc.ajax');
-Route::post('/progress/{item}/upload', [DevelopmentProgressController::class, 'uploadDocumentation'])->name('progress.uploadDocumentation');
-
-Route::get('/properti/progress/{land_bank_id}', [DevelopmentProgressController::class, 'index'])->name('properti.progress');
-Route::post('/properti/progress/store', [DevelopmentProgressController::class, 'store'])->name('properti.progress.store');
-Route::delete('/properti/progress/item/{itemId}', [DevelopmentProgressController::class, 'destroy'])->name('properti.progress.item.destroy');
-
-
-/*
-|--------------------------------------------------------------------------
-| ========================= AGENCY / SALES =========================
-|--------------------------------------------------------------------------
-*/
-Route::get('/agency', [AgencyPropertyController::class, 'index'])->name('agency.index');
-Route::get('/agency/create', [AgencyPropertyController::class, 'create'])->name('agency.create');
-Route::post('/agency/store', [AgencyPropertyController::class, 'store'])->name('agency.store');
-Route::get('/agency/{id}/edit', [AgencyPropertyController::class, 'edit'])->name('agency.edit');
-Route::put('/agency/{id}', [AgencyPropertyController::class, 'update'])->name('agency.update');
-Route::delete('/agency/{id}', [AgencyPropertyController::class, 'destroy'])->name('agency.destroy');
-/*
-|--------------------------------------------------------------------------
-| PENGAJUAN
-|--------------------------------------------------------------------------*/
-Route::get(
-    '/pengajuan/{booking}',
-    [KprApplicationController::class, 'show']
-)->name('pengajuan.show');
-
-Route::post('/pengajuan/store', [KprApplicationController::class, 'store'])->name('pengajuan.store');
-Route::get(
-    '/pengajuan/search-customer',
-    [CustomerController::class, 'search']
-)->name('pengajuan.search-customer');
-
-// Route::get('/dashboard-cash-pengajuan', function () {
-//     return view('marketing.cash_pengajuan');
-// });
-
-Route::get('/cash-pengajuan', [CashController::class, 'index'])->name('marketing.cash_pengajuan');
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= MASTER BIAYA LEGALITAS & ADMIN =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('master-data/biaya-legalitas')->name('master.biaya-legalitas.')->group(function () {
+        Route::get('/', [MasterBiayaLegalitasController::class, 'index'])->name('index');
+        Route::get('/tambah', [MasterBiayaLegalitasController::class, 'create'])->name('create');
+        Route::post('/store', [MasterBiayaLegalitasController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [MasterBiayaLegalitasController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [MasterBiayaLegalitasController::class, 'update'])->name('update');
+        Route::delete('/{id}', [MasterBiayaLegalitasController::class, 'destroy'])->name('destroy');
+        Route::match(['post', 'patch'], '/{id}/toggle-status', [MasterBiayaLegalitasController::class, 'toggleStatus'])->name('toggle-status');
+        Route::get('/api/list', [MasterBiayaLegalitasController::class, 'apiList'])->name('api-list');
+    });
+    Route::post('/properti/create', [LandBankController::class, 'store'])->name('properti.store');
+    Route::get('/properti/verifikasi-legal/{id}', [LandBankController::class, 'verifikasiLegal'])->name('properti.verifikasi');
+    Route::post('/properti/{id}/update-company', [PropertyController::class, 'updateCompanyAjax'])->name('properti.updateCompany');
+    Route::post('/properti/{id}/update', [PropertyController::class, 'update'])->name('properti.update');
+    Route::get('/properti/{id}/detail', [PropertyController::class, 'show'])->name('properti.show');
+    Route::get('/properti/{id}/edit', [PropertyController::class, 'edit'])->name('properti.edit');
+    Route::post('/properti/{id}/upload-custom-workflow-doc', [PropertyController::class, 'uploadCustomWorkflowDoc'])->name('properti.upload-custom-workflow-doc');
+    Route::post('/properti/{id}/delete-custom-workflow-doc', [PropertyController::class, 'deleteCustomWorkflowDoc'])->name('properti.delete-custom-workflow-doc');
+    Route::post('/properti/{id}/load-fase4-template', [PropertyController::class, 'loadFase4DefaultTemplate'])->name('properti.load-fase4-template');
+    Route::post('/properti/{id}/add-from-master', [PropertyController::class, 'addBatchFromMaster'])->name('properti.add-from-master');
 
 
-//bank
-Route::get('/master-data-bank', [BankController::class, 'index'])->name('bank.index');
-Route::post('/master-data-bank/store', [BankController::class, 'store'])->name('bank.store');
-Route::get('/master-data-bank/{id}/edit', [BankController::class, 'edit'])->name('bank.edit');
-Route::put('/master-data-bank/{id}', [BankController::class, 'update'])->name('bank.update');
-Route::delete('/master-data-bank/{id}', [BankController::class, 'destroy'])->name('bank.destroy');
+    /*
+    |--------------------------------------------------------------------------
+    | VERIFIKASI LEGAL
+    |--------------------------------------------------------------------------
+    */
 
-Route::get('/dashboard-akad-cash', function () {
-    return view('marketing.akad_cash');
+    Route::post('/dokumen/{id}/approve', [LandBankController::class, 'approveDocument'])->name('dokumen.approve');
+    Route::post('/dokumen/{id}/reject', [LandBankController::class, 'rejectDocument'])->name('dokumen.reject');
+
+    Route::post('/properti/{id}/approve-all', [LandBankController::class, 'approveAllDocuments'])->name('properti.approveAll');
+    Route::post('/properti/{id}/reject-all', [LandBankController::class, 'rejectAllDocuments'])->name('properti.rejectAll');
+
+    Route::post('/properti/{id}/update-revisi', [LandBankController::class, 'updateRevisi'])->name('properti.updateRevisi');
+    Route::post('/dokumen/{id}/update', [LandBankController::class, 'updateDocument'])->name('dokumen.update');
+    Route::post('/properti/{id}/update-legal-status', [LandBankController::class, 'updateLegalStatus'])->name('properti.updateLegalStatus');
+
+    Route::get('/properti-revisi/{id}', [LandBankController::class, 'revisi'])->name('properti.revisi');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= KAVLING =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/kavling', [PropertyController::class, 'kavlingindex'])->name('kavling.index');
+    Route::get('/properti-buat-kavling/template', [LandBankUnitController::class, 'downloadTemplate'])->name('kavling.template');
+    Route::get('/properti-buat-kavling/{land_bank_id}', [LandBankUnitController::class, 'create'])->name('properti.buatKavling');
+    Route::post('/properti-buat-kavling/{land_bank_id}/store', [LandBankUnitController::class, 'store'])->name('properti.storeKavling');
+    Route::post('/properti-buat-kavling/{land_bank_id}/import', [LandBankUnitController::class, 'import'])->name('kavling.import');
+    Route::post('/properti-buat-kavling/{land_bank_id}/assign-spk', [LandBankUnitController::class, 'assignSpk'])->name('properti.kavling.assignSpk');
+    Route::post('/properti/kavling/save-polygon', [LandBankUnitController::class, 'savePolygon'])->name('unit.save.polygon');
+    Route::post('/properti/kavling/delete-polygon', [LandBankUnitController::class, 'deletePolygon'])->name('unit.delete.polygon');
+
+
+    // edit kavling
+    Route::get('/properti/kavling/{unit}/edit', [LandBankUnitController::class, 'edit'])->name('properti.kavling.edit');
+    Route::put('/properti/kavling/{unit}', [LandBankUnitController::class, 'update'])->name('properti.kavling.update');
+    Route::delete('/properti/kavling/{unit}', [LandBankUnitController::class, 'destroy'])->name('properti.kavling.destroy');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PROGRESS PEMBANGUNAN UNIT (RAP) & PENGOLAHAN LAHAN (SITE DEVELOPMENT)
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/properti-pengolahan-lahan/{land_bank_id}', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'index'])->name('properti.pengolahanLahan');
+    Route::get('/properti/{land_bank_id}/pengolahan-lahan', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'index'])->name('properti.pengolahan-lahan');
+    Route::get('/properti/pengolahan_lahan/{land_bank_id}', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'index']);
+    Route::get('/properti pengolahan lahan/{land_bank_id}', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'index']);
+    Route::get('/properti/{land_bank_id}/infrastruktur', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'getItems'])->name('properti.infrastruktur.get');
+    Route::post('/properti/{land_bank_id}/infrastruktur/store', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'store'])->name('properti.infrastruktur.store');
+    Route::post('/properti/infrastruktur/{id}/update', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'update'])->name('properti.infrastruktur.update');
+    Route::delete('/properti/infrastruktur/{id}', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'destroy'])->name('properti.infrastruktur.destroy');
+    Route::post('/properti/{land_bank_id}/infrastruktur/finalize', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'finalizeStatus'])->name('properti.infrastruktur.finalize');
+    Route::post('/properti/{land_bank_id}/infrastruktur/phase/{phase}/finalize', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'finalizePhase'])->name('properti.infrastruktur.phase.finalize');
+
+    // Pencatatan Realisasi Keuangan & Pemakaian Bahan Pengolahan Lahan
+    Route::post('/properti/{land_bank_id}/infrastruktur/expense/store', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'storeExpense'])->name('properti.infrastruktur.expense.store');
+    Route::post('/properti/infrastruktur/expense/{id}/update', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'updateExpense'])->name('properti.infrastruktur.expense.update');
+    Route::delete('/properti/infrastruktur/expense/{id}', [\App\Http\Controllers\Admin\LandBankInfrastructureController::class, 'destroyExpense'])->name('properti.infrastruktur.expense.destroy');
+
+    // Master Bahan & Jasa Infrastruktur Pembangunan / Pengolahan Lahan
+    Route::get('/master-data-bahan-infrastruktur', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'index'])->name('master.bahan.index');
+    Route::get('/master-data-bahan-infrastruktur/{id}/edit', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'edit'])->name('master.bahan.edit');
+    Route::post('/master-data-bahan-infrastruktur/store', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'store'])->name('master.bahan.store');
+    Route::post('/master-data-bahan-infrastruktur/{id}/update', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'update'])->name('master.bahan.update');
+    Route::delete('/master-data-bahan-infrastruktur/{id}', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'destroy'])->name('master.bahan.destroy');
+    Route::get('/api/master-bahan-infrastruktur/search', [\App\Http\Controllers\Admin\InfrastructureMaterialController::class, 'searchApi'])->name('master.bahan.search');
+
+    // Master Tahapan & Item Progress Pembangunan Unit
+    Route::get('/master-data/progress-kategori', [\App\Http\Controllers\Admin\MasterProgressCategoryController::class, 'index'])->name('master.progress.index');
+    Route::post('/master-data/progress-kategori/store', [\App\Http\Controllers\Admin\MasterProgressCategoryController::class, 'storeCategory'])->name('master.progress.category.store');
+    Route::put('/master-data/progress-kategori/{id}', [\App\Http\Controllers\Admin\MasterProgressCategoryController::class, 'updateCategory'])->name('master.progress.category.update');
+    Route::delete('/master-data/progress-kategori/{id}', [\App\Http\Controllers\Admin\MasterProgressCategoryController::class, 'destroyCategory'])->name('master.progress.category.destroy');
+    Route::post('/master-data/progress-kategori/{categoryId}/item', [\App\Http\Controllers\Admin\MasterProgressCategoryController::class, 'storeItem'])->name('master.progress.item.store');
+    Route::put('/master-data/progress-kategori/item/{itemId}', [\App\Http\Controllers\Admin\MasterProgressCategoryController::class, 'updateItem'])->name('master.progress.item.update');
+    Route::delete('/master-data/progress-kategori/item/{itemId}', [\App\Http\Controllers\Admin\MasterProgressCategoryController::class, 'destroyItem'])->name('master.progress.item.destroy');
+
+    Route::get('properti/kavling/{unit}/update-progress', [LandBankUnitController::class, 'updateProgress'])->name('properti.kavling.updateProgress');
+
+    Route::post('/properti/progress/acc-ajax/{unit}', [DevelopmentProgressController::class, 'accAjax'])->name('properti.progress.acc.ajax');
+    Route::post('/progress/{item}/upload', [DevelopmentProgressController::class, 'uploadDocumentation'])->name('progress.uploadDocumentation');
+
+    Route::get('/properti/progress/{land_bank_id}', [DevelopmentProgressController::class, 'index'])->name('properti.progress');
+    Route::post('/properti/progress/store', [DevelopmentProgressController::class, 'store'])->name('properti.progress.store');
+    Route::post('/properti/progress/apply-template/{unit}', [DevelopmentProgressController::class, 'applyTemplate'])->name('properti.progress.applyTemplate');
+    Route::delete('/properti/progress/item/{itemId}', [DevelopmentProgressController::class, 'destroy'])->name('properti.progress.item.destroy');
+    Route::post('/properti/progress/checklist-kondisi/{unit}', [DevelopmentProgressController::class, 'updateChecklistKondisi'])->name('properti.progress.checklist');
+    Route::post('/properti/progress/spesifikasi-foto/{unit}', [DevelopmentProgressController::class, 'updateSpesifikasiFoto'])->name('properti.progress.spesifikasiFoto');
+
+    // === PEMBAYARAN TERMIN ===
+    Route::post('/properti/progress/termin/store', [DevelopmentProgressController::class, 'storeTermin'])->name('properti.progress.termin.store');
+    Route::put('/properti/progress/termin/{id}/status', [DevelopmentProgressController::class, 'updateTerminStatus'])->name('properti.progress.termin.status');
+    Route::delete('/properti/progress/termin/{id}', [DevelopmentProgressController::class, 'destroyTermin'])->name('properti.progress.termin.destroy');
+
+    // === OPNAME MINGGUAN ===
+    Route::post('/properti/progress/opname/store', [DevelopmentProgressController::class, 'storeOpname'])->name('properti.progress.opname.store');
+    Route::put('/properti/progress/opname/{id}/status', [DevelopmentProgressController::class, 'updateOpnameStatus'])->name('properti.progress.opname.status');
+    Route::delete('/properti/progress/opname/{id}', [DevelopmentProgressController::class, 'destroyOpname'])->name('properti.progress.opname.destroy');
+
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= PERIZINAN PROYEK =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/perizinan', [\App\Http\Controllers\Admin\PerizinanController::class, 'index'])->name('perizinan.index');
+    Route::get('/perizinan/{id}', [\App\Http\Controllers\Admin\PerizinanController::class, 'show'])->name('perizinan.show');
+    Route::get('/perizinan/{id}/dokumen/{item_id}', [\App\Http\Controllers\Admin\PerizinanController::class, 'kelolaDokumen'])->name('perizinan.dokumen.kelola');
+    Route::post('/perizinan/{id}/dokumen/{item_id}', [\App\Http\Controllers\Admin\PerizinanController::class, 'simpanKelolaDokumen'])->name('perizinan.dokumen.simpan');
+    Route::post('/perizinan/{id}/finalize-pasca', [\App\Http\Controllers\Admin\PerizinanController::class, 'finalizeToPasca'])->name('perizinan.finalize-pasca');
+
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= PEMBAGIAN TUGAS PERIZINAN (LEGAL) =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('perizinan-tugas')->name('perizinan.tugas.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'index'])->name('index');
+        Route::get('/tambah', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'create'])->name('create');
+        Route::post('/store', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'update'])->name('update');
+        Route::get('/{id}/progres', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'showProgress'])->name('progres');
+        Route::patch('/{id}/progress', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'updateProgress'])->name('progress');
+        Route::delete('/{id}', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'destroy'])->name('destroy');
+        Route::get('/{id}/logs', [\App\Http\Controllers\Admin\PerizinanTaskController::class, 'getLogs'])->name('logs');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= PROYEK: PROYEK, PENGOLAHAN LAHAN & UNIT =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/proyek', [\App\Http\Controllers\Admin\ProjectController::class, 'index'])->name('proyek.index');
+    Route::get('/pengolahan-lahan', [\App\Http\Controllers\Admin\ProjectPengolahanLahanController::class, 'index'])->name('proyek.pengolahan-lahan.index');
+    Route::get('/proyek-unit', [\App\Http\Controllers\Admin\ProjectUnitController::class, 'index'])->name('proyek.unit.index');
+    Route::post('/proyek-unit/assign-spk', [\App\Http\Controllers\Admin\ProjectUnitController::class, 'assignSpk'])->name('proyek.unit.assignSpk');
+    Route::get('/legal-unit', [\App\Http\Controllers\Legal\LegalUnitController::class, 'index'])->name('legal.unit.index');
+    Route::get('/legal-unit/{id}', [\App\Http\Controllers\Legal\LegalUnitController::class, 'show'])->name('legal.unit.show');
+
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= AGENCY / SALES =========================
+    |--------------------------------------------------------------------------
+    */
+
+    /*
+    |--------------------------------------------------------------------------
+    | PENGAJUAN
+    |--------------------------------------------------------------------------*/
+    Route::get(
+        '/pengajuan/{booking}',
+        [KprApplicationController::class, 'show']
+    )->name('pengajuan.show');
+
+    Route::post('/pengajuan/store', [KprApplicationController::class, 'store'])->name('pengajuan.store');
+    Route::get('/kpr/serah-terima/{id}', [KprApplicationController::class, 'serahTerima'])->name('kpr.serahterima');
+    Route::get('/kpr/pecah-legal/{id}', [KprApplicationController::class, 'pecahLegal'])->name('kpr.pecahlegal');
+
+
+    Route::get('/pengajuan/search-customer',[CustomerController::class, 'search'])->name('pengajuan.search-customer');
+
+    // Route::get('/dashboard-cash-pengajuan', function () {
+    //     return view('marketing.cash_pengajuan');
+    // });
+
+    Route::get('/marketing/cash/{booking}', [CashController::class, 'index'])->name('marketing.cash_tempo');
+    Route::post('/marketin/cash-tempo/store', [CashController::class, 'store'])->name('cash-tempo.store');
+
+    // Route::get('/dashboard-akad-cash', function () {
+    //     return view('marketing.akad_cash');
+    // });
+
+    Route::get('/dashboard-cash-dokument-legal', function () {
+        return view('marketing.cash_dokument_legal');
+    });
+
+
+    // Route::get('/dashboard-lokasi', function () {
+    //     return view('lokasi.lokasi');
+
+    // });
+    Route::prefix('lokasi')->name('lokasi.')->group(function () {
+        Route::get('/', [LokasiController::class, 'index'])->name('index');
+        Route::get('/data', [LokasiController::class, 'lokasiData'])->name('data'); // Untuk JSON
+
+    });
+
+
+    // Route::get('/dashboard-promo', function () {
+    //     return view('promo.promo');
+    // });
+
+    // Route::get('/dashboard-pt', function () {
+    //     return view('pt.pt');
+    // });
+
+
+
+
+
+    Route::get('/servis', [ComplaintController::class, 'index'])->name('servis');
+    Route::post('/complaints/store', [ComplaintController::class, 'store'])->name('complaints.store');
+    Route::match(['put', 'post'], '/complaints/{id}/update', [ComplaintController::class, 'update'])->name('complaints.update');
+    Route::delete('/complaints/{id}', [ComplaintController::class, 'destroy'])->name('complaints.destroy');
+
+    // ==========================================
+    // SISTEM KEUANGAN & PROJECT ACCOUNTING (ERP)
+    // ==========================================
+    Route::get('/keuangan/project-accounting', [ProjectAccountingController::class, 'index'])->name('keuangan.project-accounting.index');
+    Route::get('/keuangan/project-accounting/cetak', [ProjectAccountingController::class, 'cetak'])->name('keuangan.project-accounting.cetak');
+    Route::get('/keuangan/master-invoice', [InvoiceMasterController::class, 'index'])->name('keuangan.master-invoice.index');
+    Route::get('/keuangan/master-invoice/export/excel', [InvoiceMasterController::class, 'exportExcel'])->name('keuangan.master-invoice.export');
+    Route::post('/keuangan/master-invoice/sync', [InvoiceMasterController::class, 'syncPraLandbanks'])->name('keuangan.master-invoice.sync');
+    Route::get('/keuangan/master-invoice/{id}', [InvoiceMasterController::class, 'show'])->name('keuangan.master-invoice.show');
+
+    // Pencairan Dana KPR Bank (KPR Disbursement)
+    Route::get('/keuangan/pencairan-kpr', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'index'])->name('finance.kpr-disbursement.index');
+    Route::post('/keuangan/pencairan-kpr/store', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'store'])->name('finance.kpr-disbursement.store');
+    Route::delete('/keuangan/pencairan-kpr/{id}', [\App\Http\Controllers\Finance\KprDisbursementController::class, 'destroy'])->name('finance.kpr-disbursement.destroy');
+
+    // 1. Buku Jurnal Umum (General Journal)
+    Route::get('/keuangan/jurnal-umum', [JurnalUmumController::class, 'index'])->name('keuangan.jurnal.index');
+    Route::get('/keuangan/jurnal-umum/create', [JurnalUmumController::class, 'create'])->name('keuangan.jurnal.create');
+    Route::post('/keuangan/jurnal-umum', [JurnalUmumController::class, 'store'])->name('keuangan.jurnal.store');
+    Route::get('/keuangan/jurnal-umum/detail/{id}', [JurnalUmumController::class, 'show'])->name('keuangan.jurnal.show');
+    Route::get('/keuangan/jurnal-umum/cetak', [JurnalUmumController::class, 'cetak'])->name('keuangan.jurnal.cetak');
+    Route::post('/keuangan/jurnal-umum/sync', [JurnalUmumController::class, 'sync'])->name('keuangan.jurnal.sync');
+    Route::delete('/keuangan/jurnal-umum/{id}', [JurnalUmumController::class, 'destroy'])->name('keuangan.jurnal.destroy');
+
+    // 2. Laporan Arus Kas (Cash Flow)
+    Route::get('/keuangan/arus-kas', [ArusKasController::class, 'index'])->name('keuangan.arus-kas.index');
+    Route::get('/keuangan/arus-kas/create', [ArusKasController::class, 'create'])->name('keuangan.arus-kas.create');
+    Route::post('/keuangan/arus-kas/manual', [ArusKasController::class, 'storeManual'])->name('keuangan.arus-kas.store-manual');
+    Route::delete('/keuangan/arus-kas/manual/{id}', [ArusKasController::class, 'destroyManual'])->name('keuangan.arus-kas.destroy-manual');
+    Route::post('/keuangan/arus-kas/sync', [ArusKasController::class, 'sync'])->name('keuangan.arus-kas.sync');
+    Route::get('/keuangan/arus-kas/cetak', [ArusKasController::class, 'cetak'])->name('keuangan.arus-kas.cetak');
+
+    // 3. Laporan Laba Rugi (Profit & Loss)
+    Route::get('/keuangan/laba-rugi', [LabaRugiController::class, 'index'])->name('keuangan.laba-rugi.index');
+    Route::get('/keuangan/laba-rugi/cetak', [LabaRugiController::class, 'cetak'])->name('keuangan.laba-rugi.cetak');
+
+    // 4. Neraca Keuangan (Balance Sheet)
+    Route::get('/keuangan/neraca', [NeracaController::class, 'index'])->name('keuangan.neraca.index');
+    Route::get('/keuangan/neraca/cetak', [NeracaController::class, 'cetak'])->name('keuangan.neraca.cetak');
+
+
+
+    Route::resource('dokument', LandBankDocumentController::class);
+    Route::get('/dokument-persiapan-pecah-unit', [DokumentLegalPersiapanController::class, 'index'])->name('dokument.persiapan');
+
+
+
+
+
+
+
+    Route::get('/siteplan/{id}', [SiteplanController::class, 'show'])->name('siteplan.show');
+
+
+
+
+    Route::get('/customer/guest', [TamuController::class, 'index'])->name('customer.tamu');
+    Route::get('/customer/guest/create', [TamuController::class, 'create'])->name('customer.tamu.create');
+    Route::post('/customer/guest/store', [TamuController::class, 'store'])->name('customer.tamu.store');
+    Route::get('/customer/guest/{id}', [TamuController::class, 'show'])->name('customer.tamu.show');
+    Route::get('/customer/guest/{id}/edit', [TamuController::class, 'edit'])->name('customer.tamu.edit');
+    Route::put('/customer/guest/{id}', [TamuController::class, 'update'])->name('customer.tamu.update');
+    Route::get('/customer/guest/{id}/edit-ajax', [TamuController::class, 'editAjax'])->name('customer.tamu.edit-ajax');
+    Route::post('/customer/guest/follow-up', [TamuController::class, 'followUp'])->name('customer.tamu.followup');
+    Route::post('/customer/guest/{id}/convert', [TamuController::class, 'convert'])
+        ->name('costomer.guests.convert');
+    Route::delete('/customer/guest/{id}', [TamuController::class, 'destroy'])->name('customer.tamu.destroy');
+
+
+    Route::get('/akad/akad-cash-keras/{booking}', [AkadController::class, 'index'])->name('akad.cash');
+    Route::post('/akad/akad-cash/{booking}/store', [AkadController::class, 'store'])->name('akad.cash.store');
+    Route::get('/akad/akad-cash/serah-terima/{booking}', [SerahTerimaController::class, 'index'])->name('booking.serah-terima');
+    Route::post('/akad/akad-cash/serah-terima/{booking}/store', [SerahTerimaController::class, 'store'])->name('serah-terima.store');
+
+    // Route::get('/akad-serah-unit', function () {
+    //     return view('marketing.serah_unit');
+    // });
+
+    Route::get('/data-dokument/user/persiapan/legal', [DocumentPersiapanPecahLegalController::class, 'index'])->name('document.user.persiapan-legal');
+    Route::get('/document-legal/detail/{booking}', [DocumentPersiapanPecahLegalController::class, 'detail'])
+        ->name('document_legal.detail');
+    Route::get('persiapan-dokument-legal/cash/{booking}', [DocumentLegalController::class, 'index'])->name('cash.document.legal');
+    Route::post('persiapan-dokument-legal/cash/store/{booking}', [DocumentLegalController::class, 'store'])->name('document_legal.store');
+    Route::post('/document-upload', [DocumentPersiapanPecahLegalController::class, 'upload'])->name('document.upload');
+
+
+
+    Route::get('/customer-profil-cash', function () {
+        return view('customer.customer_profil_cash');
+    });
+
+    Route::get('/customer-profil-kpr', function () {
+        return view('customer.customer_profil_kpr');
+    });
+
+
+    // Route untuk Customer KPR
+    Route::get('/customer-kpr', [TransaksiKPRController::class, 'index'])->name('customer.kpr');
+
+    Route::get('/transaksi/kpr/{booking}/approve', [TransaksiKPRController::class, 'approve'])->name('transaksi.kpr.approve');
+    Route::get('/transaksi/kpr/{booking}/cetak-ba', [TransaksiKPRController::class, 'cetakBA'])->name('kpr.verifikasi.cetak-ba');
+
+    Route::post('/transaksi/kpr/{booking}/verifikasi', [TransaksiKPRController::class, 'storeVerifikasi'])->name('kpr.verifikasi.store');
+    Route::post('/transaksi/kpr/document/{document}/validate', [TransaksiKPRController::class, 'validateDocument'])->name('kpr.document.validate');
+    Route::post('/transaksi/kpr/{kprApplication}/validate-all-documents', [TransaksiKPRController::class, 'validateAllDocuments'])->name('kpr.document.validate-all');
+    Route::post('/transaksi/kpr/document/{document}/reupload', [TransaksiKPRController::class, 'reuploadDocument'])->name('kpr.document.reupload');
+    Route::post('/transaksi/kpr/{kprApplication}/upload-doc', [TransaksiKPRController::class, 'uploadNewDocument'])->name('kpr.document.upload-new');
+
+    Route::get('/transaksi/kpr/verified', [TransaksiKPRController::class, 'verified'])->name('kpr.customer-verified');
+
+    Route::get('/transaksi/kpr/{kprApplication}/survey', [TransaksiKPRController::class, 'survey'])->name('kpr.survey');
+
+    Route::get('/transaksi/kpr/{id}/akad', [TransaksiKPRController::class, 'akad'])->name('kpr.akad');
+    Route::get('/transaksi/kpr/akad-kpr/{id}', [AkadController::class, 'akadkpr'])->name('kpr.approve');
+    Route::get('/transaksi/kpr/akad-kpr/{id}/cetak', [AkadController::class, 'cetakAkad'])->name('akad.kpr.cetak');
+    Route::post('/transaksi/kpr/akad-kpr/store/{booking}', [AkadController::class, 'storeKPR'])->name('akad.kpr.store');
+
+    // Route untuk Customer KPR ACC (Survey)
+    Route::get('/customer-kpr-acc', [SurveyController::class, 'index'])->name('customer.kpr.survey');
+    Route::get('/customer-kpr-rijected', [CustomerKPRRijectedController::class, 'index'])->name('customer.kpr.rijected');
+    Route::post('/kpr/survey/{kprId}/store', [SurveyController::class, 'store'])->name('kpr.survey.store');
+    Route::get('/transaksi/kpr/{id}/cetak-survey', [SurveyController::class, 'cetakSurvey'])->name('kpr.survey.cetak');
+
+
+    Route::get('/customer-kpr-komersil/', [TransaksiKPRController::class, 'analisaKPRKomersil'])->name('analisa.kpr.komersil');
+    // Route::get('/dashboard-dedline-rab', function () {
+    //     return view('properti.dedline_rab');
+
+    // Route::get('/rab-deadline/{progressId}', [RABDeadlineController::class, 'index'])->name('rab.deadline.index');
+
+    Route::get('/rab-deadline', [RABDeadlineController::class, 'index'])->name('rab.deadline.index');
+
+    Route::get('/survey-komersil', function () {
+        return view('marketing.survey_komersil');
+    });
+
+    // Route::get('/devisi', function () {
+    //     return view('master_data.devisi');
+    // });
+
+
+    // MASTER DATA USER/CUSTOMER
+    Route::get('/data-customer', [CustomerController::class, 'customerData'])->name('customer.data');
+    Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
+    Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
+    Route::get('/customer/{id}/edit', [CustomerController::class, 'edit'])->name('customer.edit');
+    Route::put('/customer/{id}/update', [CustomerController::class, 'update'])->name('customer.update');
+    Route::delete('/customer/{id}/destroy', [CustomerController::class, 'destroy'])->name('customer.destroy');
+    // MASTER DATA DOKUMEN PASCA LANDBANK/DOKUMEN TYPE
+    Route::get('/dokument-tanah-induk', [LandBankDocumentController::class, 'index'])->name('dokument.index');
+    Route::post('/dokument/store', [LandBankDocumentController::class, 'store'])->name('document-types.store');
+    Route::get('/dokument/{id}/edit', [LandBankDocumentController::class, 'edit'])->name('document-types.edit');
+    Route::put('/dokument/{id}/update', [LandBankDocumentController::class, 'update'])->name('document-types.update');
+    Route::delete('/dokument/{id}/delete', [LandBankDocumentController::class, 'destroy'])->name('document-types.destroy');
+
+    // Route untuk Dokument Legal Persiapan
+    Route::get('/dokument-persiapan', [DokumentLegalPersiapanController::class, 'index'])->name('dokument.persiapan');
+    Route::post('/documents/persiapan-pecah-legal', [DocumentPersiapanPecahLegalController::class, 'store'])->name('documents.storePersiapanPecahLegal');
+    Route::get('/documents/persiapan-pecah-legal/{id}/edit', [DocumentPersiapanPecahLegalController::class, 'edit'])->name('documents.editPersiapanPecahLegal');
+    Route::put('/documents/persiapan-pecah-legal/{id}', [DocumentPersiapanPecahLegalController::class, 'update'])->name('documents.updatePersiapanPecahLegal');
+    Route::delete('/documents/{id}', [DocumentPersiapanPecahLegalController::class, 'destroy'])->name('documents.destroy');
+    Route::post('/documents/{booking}/store', [DokumentLegalPersiapanController::class, 'store'])->name('document_legal.store');
+
+    // ==============================================================
+    // MASTER DATA & MANAJEMEN SPK KONTRAKTOR
+    // ==============================================================
+    Route::get('/spk', [SpkController::class, 'index'])->name('spk.index');
+    Route::get('/spk/create', [SpkController::class, 'create'])->name('spk.create');
+    Route::post('/spk/store', [SpkController::class, 'store'])->name('spk.store');
+    Route::get('/spk/{id}', [SpkController::class, 'show'])->name('spk.show');
+    Route::get('/spk/{id}/edit', [SpkController::class, 'edit'])->name('spk.edit');
+    Route::put('/spk/{id}', [SpkController::class, 'update'])->name('spk.update');
+    Route::delete('/spk/{id}', [SpkController::class, 'destroy'])->name('spk.destroy');
+    Route::get('/spk/{id}/cetak', [SpkController::class, 'cetak'])->name('spk.cetak');
+    Route::get('/api/spk/project-units/{landBankId}', [SpkController::class, 'getUnitsByProject'])->name('spk.project-units');
+    Route::get('/api/spk/generate-number', [SpkController::class, 'generateNoSpk'])->name('spk.generate-number');
+
+
+    // EMPLOYEE/AGENCY
+    Route::get('/agency', [AgencyPropertyController::class, 'index'])->name('agency.index');
+    Route::get('/agency/create', [AgencyPropertyController::class, 'create'])->name('agency.create');
+    Route::post('/agency/store', [AgencyPropertyController::class, 'store'])->name('agency.store');
+    Route::get('/agency/{id}/edit', [AgencyPropertyController::class, 'edit'])->name('agency.edit');
+    Route::put('/agency/{id}', [AgencyPropertyController::class, 'update'])->name('agency.update');
+    Route::delete('/agency/{id}', [AgencyPropertyController::class, 'destroy'])->name('agency.destroy');
+    // MASTER DATA PROMO
+    Route::get('/master-data-promo', [PromoController::class, 'index'])->name('promo.index');
+    Route::post('/master-data-promo/store', [PromoController::class, 'store'])->name('promo.store');
+    Route::get('/master-data-promo/{id}/edit', [PromoController::class, 'edit'])->name('promo.edit');
+    Route::put('/master-data-promo/{id}', [PromoController::class, 'update'])->name('promo.update');
+    Route::delete('/master-data-promo/{id}', [PromoController::class, 'destroy'])->name('promo.destroy');
+    Route::get('/master-data-promo/{id}', [PromoController::class, 'show'])->name('promo.show');
+    Route::get('/master-data-promo/get/{id}', [PromoController::class, 'getPromo'])->name('promo.get');
+    // MASTER DATA PT/COMPANY
+    Route::get('/master-data-pt', [CompanyProfileController::class, 'index'])->name('company-profile.index');
+    Route::get('/master-data-pt/create', [CompanyProfileController::class, 'create'])->name('company-profile.create');
+    Route::post('/master-data-pt/store', [CompanyProfileController::class, 'store'])->name('company-profile.store');
+    Route::get('/master-data-pt/{companyProfile}/edit', [CompanyProfileController::class, 'edit'])->name('company-profile.edit');
+    Route::put('/master-data-pt/{companyProfile}', [CompanyProfileController::class, 'update'])->name('company-profile.update');
+    Route::delete('/master-data-pt/{companyProfile}', [CompanyProfileController::class, 'destroy'])->name('company-profile.destroy');
+    Route::get('/company/{id}/projects', [CompanyProfileController::class, 'getProjects']);
+    // MASTER DATA BANK
+    Route::get('/master-data-bank', [BankController::class, 'index'])->name('bank.index');
+    Route::post('/master-data-bank/store', [BankController::class, 'store'])->name('bank.store');
+    Route::get('/master-data-bank/{id}/edit', [BankController::class, 'edit'])->name('bank.edit');
+    Route::put('/master-data-bank/{id}', [BankController::class, 'update'])->name('bank.update');
+    Route::delete('/master-data-bank/{id}', [BankController::class, 'destroy'])->name('bank.destroy');
+    // MASTER DATA SKEMA ANGSURAN KPR
+    Route::get('/master-skema-kpr', [MasterSkemaKprController::class, 'index'])->name('master.skema-kpr.index');
+    Route::get('/master-skema-kpr/create', [MasterSkemaKprController::class, 'create'])->name('master.skema-kpr.create');
+    Route::post('/master-skema-kpr/store', [MasterSkemaKprController::class, 'store'])->name('master.skema-kpr.store');
+    Route::get('/master-skema-kpr/{id}/edit', [MasterSkemaKprController::class, 'edit'])->name('master.skema-kpr.edit');
+    Route::put('/master-skema-kpr/{id}', [MasterSkemaKprController::class, 'update'])->name('master.skema-kpr.update');
+    Route::delete('/master-skema-kpr/{id}', [MasterSkemaKprController::class, 'destroy'])->name('master.skema-kpr.destroy');
+    Route::get('/api/skema-kpr', [MasterSkemaKprController::class, 'getSkemaAjax'])->name('api.skema-kpr');
+    // MASTER DATA NOTARIS
+    Route::get('/master-data-notaris', [NotarisController::class, 'index'])->name('notaris.index');
+    Route::post('/master-data-notaris/store', [NotarisController::class, 'store'])->name('notaris.store');
+    Route::get('/master-data-notaris/{id}', [NotarisController::class, 'show'])->name('notaris.show');
+    Route::get('/master-data-notaris/{id}/edit', [NotarisController::class, 'edit'])->name('notaris.edit');
+    Route::put('/master-data-notaris/{id}', [NotarisController::class, 'update'])->name('notaris.update');
+    Route::delete('/master-data-notaris/{id}', [NotarisController::class, 'destroy'])->name('notaris.destroy');
+    Route::post('/master-data-notaris/{id}/toggle-status', [NotarisController::class, 'toggleStatus'])->name('notaris.toggle-status');
+    // MASTER DATA DIVISION
+    Route::get('/master-data/division', [DivisionController::class, 'index'])->name('master.data.division.index');
+    Route::post('/master-data/division/store', [DivisionController::class, 'store'])->name('master.data.division.store');
+    Route::put('/master-data/division/update/{id}', [DivisionController::class, 'update'])->name('master.data.division.update');
+    Route::delete('/master-data/division/{id}', [DivisionController::class, 'destroy'])->name('master.data.division.delete');
+    // MASTER DATA POSITION
+    Route::get('/master-data/posisi', [PositionController::class, 'index'])->name('master.data.posisi');
+    Route::post('/master-data/posisi/store', [PositionController::class, 'store'])->name('master.data.posisi.store');
+    Route::put('/master-data/posisi/update/{position}', [PositionController::class, 'update'])->name('master.data.posisi.update');
+    Route::delete('/master-data/posisi/{position}', [PositionController::class, 'destroy'])->name('master.data.posisi.delete');
+    Route::get('/master-data/posisi/get-by-division/{divisionId}', [PositionController::class, 'getByDivision'])->name('master.data.posisi.by-division');
+
+    // MASTER DATA JENIS DOKUMEN
+    Route::get('/master-data/jenis-dokumen', [DocumentTypeController::class, 'index'])->name('master.data.jenis-dokumen.index');
+    Route::post('/master-data/jenis-dokumen/store', [DocumentTypeController::class, 'store'])->name('master.data.jenis-dokumen.store');
+    Route::get('/master-data/jenis-dokumen/{id}/edit', [DocumentTypeController::class, 'edit'])->name('master.data.jenis-dokumen.edit');
+    Route::put('/master-data/jenis-dokumen/{id}', [DocumentTypeController::class, 'update'])->name('master.data.jenis-dokumen.update');
+    Route::delete('/master-data/jenis-dokumen/{id}', [DocumentTypeController::class, 'destroy'])->name('master.data.jenis-dokumen.destroy');
+
+    // Master Data Hak Akses Menu
+    Route::get('/master-data/permissions', [MenuController::class, 'index'])->name('master.data.menu');
+    Route::post('/menu/permissions/{position_id}/update', [MenuController::class, 'updatePermissions'])->name('positions.update_permissions');
+    Route::post('/menu/store-positions', [MenuController::class, 'storePositions'])->name('menu.store_positions');
+    // Route::get('/done', function () {
+    //     return view('marketing.done_sell');
+    // });
+    Route::get('customer/unit/booking/done/{bookingId}', [SerahTerimaController::class, 'SellDone'])
+        ->name('unit.selesai');
+    Route::get('customer/unit/booking/done/{bookingId}/cetak-rincian', [SerahTerimaController::class, 'cetakRincianTransaksi'])
+        ->name('unit.terjual.cetak-rincian');
+
+    // Route halaman pengaturan
+    Route::get('/pengaturan', [CompanySettingController::class, 'index'])->name('setting.index');
+    Route::post('/pengaturan', [CompanySettingController::class, 'update'])->name('setting.update');
+
+    // Route::get('/all-pra-landbank', function () {
+    //     return view('land_bank.all_pra_land_bank');
+    // });
+
+    // Route::get('/cash-tempo-timline', function () {
+    //     return view('transaksi.timline_pembayaran');
+    // });
+    Route::get('/cash-tempo-timeline', [TimelineCashTempoController::class, 'index'])->name('cash-tempo.timeline');
+    Route::get('/cash-tempo/timeline/{id}', [TimelineCashTempoController::class, 'timeline']);
+    Route::post('/cash-tempo/update', [TimelineCashTempoController::class, 'update'])->name('cash-tempo.update');
+    Route::post('/cash-tempo/payments', [TimelineCashTempoController::class, 'storePayment'])->name('cash-tempo.storePayment');
+
+    Route::get('/serah-terima/cetak/{id}', [SerahTerimaController::class, 'cetak'])->name('serah-terima.cetak');
+    Route::get('/serah-terima-cetak', fn() => view('cetak.serah_terima_cetak'));
+
+    Route::get('/dokumen/preview/{path}', function ($path) {
+        $path = urldecode($path);
+        $cleanPath = ltrim(preg_replace('/^uploads[\/\\\\]/', '', $path), '/\\');
+
+        // Cari file di beberapa kemungkinan lokasi (public_path, storage, dll)
+        $candidates = [
+            public_path('uploads/' . $cleanPath),
+            public_path($cleanPath),
+            public_path($path),
+            base_path('public/uploads/' . $cleanPath),
+            base_path('public/' . $path),
+            storage_path('app/public/' . $cleanPath),
+            storage_path('app/public/' . $path),
+            storage_path('app/' . $cleanPath),
+            storage_path('app/' . $path),
+        ];
+
+        foreach ($candidates as $fullPath) {
+            if (file_exists($fullPath) && is_file($fullPath)) {
+                $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+                $mimeType = match ($ext) {
+                    'pdf' => 'application/pdf',
+                    'jpg', 'jpeg' => 'image/jpeg',
+                    'png' => 'image/png',
+                    'webp' => 'image/webp',
+                    'gif' => 'image/gif',
+                    'svg' => 'image/svg+xml',
+                    default => mime_content_type($fullPath) ?: 'application/octet-stream'
+                };
+
+                return response()->file($fullPath, [
+                    'Content-Type' => $mimeType,
+                    'Content-Disposition' => 'inline; filename="' . basename($fullPath) . '"',
+                    'Cache-Control' => 'no-cache, private',
+                ]);
+            }
+        }
+
+        abort(404, 'Dokumen fisik tidak ditemukan di server.');
+    })->where('path', '.*')->name('dokumen.preview');
+
+    Route::get('/storage/{path}', function ($path) {
+        $path = urldecode($path);
+        $cleanPath = ltrim($path, '/\\');
+        $strippedPath = ltrim(preg_replace('/^(storage[\/\\\\]|public[\/\\\\]|app[\/\\\\])+/', '', $cleanPath), '/\\');
+
+        $candidates = [
+            storage_path('app/public/' . $cleanPath),
+            storage_path('app/public/' . $strippedPath),
+            storage_path('app/' . $cleanPath),
+            storage_path('app/' . $strippedPath),
+            public_path('storage/' . $cleanPath),
+            public_path('storage/' . $strippedPath),
+            public_path('uploads/' . $cleanPath),
+            public_path('uploads/' . $strippedPath),
+            public_path($cleanPath),
+            public_path($strippedPath),
+            base_path('storage/app/public/' . $cleanPath),
+            base_path('storage/app/public/' . $strippedPath),
+        ];
+
+        foreach ($candidates as $fullPath) {
+            if (file_exists($fullPath) && is_file($fullPath)) {
+                $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+                $mimeType = match ($ext) {
+                    'pdf' => 'application/pdf',
+                    'jpg', 'jpeg' => 'image/jpeg',
+                    'png' => 'image/png',
+                    'webp' => 'image/webp',
+                    'gif' => 'image/gif',
+                    'svg' => 'image/svg+xml',
+                    default => mime_content_type($fullPath) ?: 'application/octet-stream'
+                };
+
+                return response()->file($fullPath, [
+                    'Content-Type' => $mimeType,
+                    'Content-Disposition' => 'inline; filename="' . basename($fullPath) . '"',
+                    'Cache-Control' => 'public, max-age=86400',
+                ]);
+            }
+        }
+
+        abort(404, 'File storage tidak ditemukan di server.');
+    })->where('path', '.*')->name('storage.preview');
+
+    Route::get('/uploads/{path}', function ($path) {
+        $path = urldecode($path);
+        $cleanPath = ltrim(preg_replace('/^uploads[\/\\\\]/', '', $path), '/\\');
+
+        $candidates = [
+            public_path('uploads/' . $cleanPath),
+            base_path('public/uploads/' . $cleanPath),
+            base_path('uploads/' . $cleanPath),
+            public_path($cleanPath),
+            base_path('public/' . $cleanPath),
+            base_path($cleanPath),
+            storage_path('app/public/uploads/' . $cleanPath),
+            storage_path('app/public/' . $cleanPath),
+            storage_path('app/' . $cleanPath),
+        ];
+
+        foreach ($candidates as $fullPath) {
+            if (file_exists($fullPath) && is_file($fullPath)) {
+                $ext = strtolower(pathinfo($fullPath, PATHINFO_EXTENSION));
+                $mimeType = match ($ext) {
+                    'pdf' => 'application/pdf',
+                    'jpg', 'jpeg' => 'image/jpeg',
+                    'png' => 'image/png',
+                    'webp' => 'image/webp',
+                    'gif' => 'image/gif',
+                    'svg' => 'image/svg+xml',
+                    default => mime_content_type($fullPath) ?: 'application/octet-stream'
+                };
+
+                return response()->file($fullPath, [
+                    'Content-Type' => $mimeType,
+                    'Content-Disposition' => 'inline; filename="' . basename($fullPath) . '"',
+                    'Cache-Control' => 'public, max-age=86400',
+                ]);
+            }
+        }
+
+        abort(404, 'File uploads tidak ditemukan di server.');
+    })->where('path', '.*')->name('uploads.preview');
+    // Master data laporan job staf marketing
+    Route::get('/job-staff-marketing', [JobStaffMarketingController::class, 'index'])->name('master.data.tugas-staff-marketing');
+    Route::get('/job-staff-marketing/create', [JobStaffMarketingController::class, 'create'])->name('marketing.create');
+    Route::get('/job-staff-marketing/{id}/edit', [JobStaffMarketingController::class, 'edit'])->name('marketing.tugas.edit');
+    Route::post('/job-staff-marketing/store', [JobStaffMarketingController::class, 'store'])->name('marketing.tugas.store');
+    Route::delete('/job-staff-marketing/{id}', [JobStaffMarketingController::class, 'destroy'])->name('marketing.tugas.destroy');
+    Route::put('/job-staff-marketing/{id}', [JobStaffMarketingController::class, 'update'])->name('marketing.tugas.update');
+    Route::get('/job-staff-marketing/progress/{id}', [JobStaffMarketingController::class, 'progress'])->name('marketing.tugas.progress');
+    Route::post('/job-staff-marketing/progress/{id}', [JobStaffMarketingController::class, 'updateProgress'])->name('marketing.tugas.update-progress');
+
+    /*
+    |--------------------------------------------------------------------------
+    | ========================= KEUANGAN / FINANCE =========================
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('keuangan')->name('keuangan.')->group(function () {
+        Route::get('/master-invoice', [InvoiceMasterController::class, 'index'])->name('master-invoice.index');
+        Route::get('/master-invoice/{id}', [InvoiceMasterController::class, 'show'])->name('master-invoice.show');
+        Route::post('/master-invoice/store', [InvoiceMasterController::class, 'store'])->name('master-invoice.store');
+        Route::post('/master-invoice/{id}', [InvoiceMasterController::class, 'update'])->name('master-invoice.update');
+        Route::delete('/master-invoice/{id}', [InvoiceMasterController::class, 'destroy'])->name('master-invoice.destroy');
+        Route::post('/master-invoice-sync-all', [InvoiceMasterController::class, 'syncAll'])->name('master-invoice.sync-all');
+    });
+
+    // Master Skema Angsuran KPR
+    Route::prefix('master-skema-kpr')->name('master.skema-kpr.')->group(function () {
+        Route::get('/', [MasterSkemaKprController::class, 'index'])->name('index');
+        Route::post('/store', [MasterSkemaKprController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [MasterSkemaKprController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [MasterSkemaKprController::class, 'update'])->name('update');
+        Route::delete('/{id}', [MasterSkemaKprController::class, 'destroy'])->name('destroy');
+    });
+    Route::get('/api/skema-kpr', [MasterSkemaKprController::class, 'getSkemaAjax'])->name('api.skema-kpr');
 });
-
-Route::get('/dashboard-cash-dokument-legal', function () {
-    return view('marketing.cash_dokument_legal');
-});
-
-
-// Route::get('/dashboard-lokasi', function () {
-//     return view('lokasi.lokasi');
-
-// });
-Route::prefix('lokasi')->name('lokasi.')->group(function () {
-    Route::get('/', [LokasiController::class, 'index'])->name('index');
-    Route::get('/data', [LokasiController::class, 'lokasiData'])->name('data'); // Untuk JSON
-
-});
-
-//promo
-Route::get('/promo', [PromoController::class, 'index'])->name('promo.index');
-Route::post('/promo/store', [PromoController::class, 'store'])->name('promo.store');
-Route::get('/promo/{id}/edit', [PromoController::class, 'edit'])->name('promo.edit');
-Route::put('/promo/{id}', [PromoController::class, 'update'])->name('promo.update');
-Route::delete('/promo/{id}', [PromoController::class, 'destroy'])->name('promo.destroy');
-Route::get('/promo/{id}', [PromoController::class, 'show'])->name('promo.show');
-Route::get('/promo/get/{id}', [PromoController::class, 'getPromo'])->name('promo.get');
-// Route::get('/dashboard-promo', function () {
-//     return view('promo.promo');
-// });
-
-// Route::get('/dashboard-pt', function () {
-//     return view('pt.pt');
-// });
-Route::get('/pt', [CompanyProfileController::class, 'index'])->name('company-profile.index');
-Route::post('/pt/store', [CompanyProfileController::class, 'store'])->name('company-profile.store');
-Route::delete('/pt/{companyProfile}', [CompanyProfileController::class, 'destroy'])->name('company-profile.destroy');
-Route::get('/company/{id}/projects', [CompanyProfileController::class, 'getProjects']);
-Route::put('/pt/{companyProfile}', [CompanyProfileController::class, 'update'])->name('company-profile.update');
-
-Route::get('/servis', function () {
-    return view('servis.servis');
-});
-
-
-// Route::get('/dashboard-dokument', function () {
-//     return view('dokument.dokument');
-// });
-
-// Route untuk Document Types (Master Data)
-Route::get('/dokument-tanah-induk', [LandBankDocumentController::class, 'index'])
-    ->name('dokument.index');
-
-Route::post('/dokument/store', [LandBankDocumentController::class, 'store'])
-    ->name('document-types.store');
-
-Route::get('/dokument/{id}/edit', [LandBankDocumentController::class, 'edit'])
-    ->name('document-types.edit');
-
-Route::put('/dokument/{id}/update', [LandBankDocumentController::class, 'update'])
-    ->name('document-types.update');
-
-Route::delete('/dokument/{id}/delete', [LandBankDocumentController::class, 'destroy'])
-    ->name('document-types.destroy');
-
-// Route untuk Dokument Legal Persiapan
-Route::get('/dokument-persiapan', [DokumentLegalPersiapanController::class, 'index'])
-    ->name('dokument.persiapan');
-
-Route::post('/documents/{booking}/store', [DokumentLegalPersiapanController::class, 'store'])
-    ->name('document_legal.store');
-
-
-Route::get('/siteplan/{id}', [SiteplanController::class, 'show'])->name('siteplan.show');
-Route::get('/pengaturan', function () {
-    return view('setting.setting');
-});
-
-Route::get('/customer/create-customer', [CustomerController::class, 'index'])->name('customer.tambah_customer');
-Route::post('/customer/create-customer/store', [CustomerController::class, 'store'])->name('customer.store');
-Route::get('/customer/create', [CustomerController::class, 'create'])->name('customer.create');
-
-Route::get('/data-customer', [CustomerController::class, 'customerData'])->name('customer.data');// Route::get('/dashboard-tamu', function () {
-
-Route::get('/customer/guest', [TamuController::class, 'index'])->name('customer.tamu');
-Route::post('/customer/guest/store', [TamuController::class, 'store'])->name('customer.tamu.store');
-Route::post('/customer/guest/follow-up', [TamuController::class, 'followUp'])->name('customer.tamu.followup');
-Route::post('/customer/guest/{id}/convert', [TamuController::class, 'convert'])
-    ->name('costomer.guests.convert');
-Route::get('/customer/guest/{id}/edit', [TamuController::class, 'editAjax']);
-Route::put('/customer/guest/{id}', [TamuController::class, 'update']);
-
-
-Route::get('/akad/akad-cash/{booking}', [AkadController::class, 'index'])->name('akad.cash');
-Route::post('/akad/akad-cash/{booking}/store', [AkadController::class, 'store'])->name('akad.cash.store');
-Route::get('/akad/akad-cash/serah-terima/{booking}', [SerahTerimaController::class, 'index'])->name('booking.serah-terima');
-Route::post('/akad/akad-cash/serah-terima/{booking}/store', [SerahTerimaController::class, 'store'])->name('serah-terima.store');
-
-// Route::get('/akad-serah-unit', function () {
-//     return view('marketing.serah_unit');
-// });
-
-
-Route::get('/data-dokument-cash-legal', function () {
-    return view('dokument.data_dokument_cash');
-});
-
-Route::get('persiapan-dokument-legal/cash/{booking}', [DocumentLegalController::class, 'index'])->name('cash.document.legal');
-Route::post('persiapan-dokument-legal/cash/store', [DocumentLegalController::class, 'store'])->name('document_legal.store');
-
-
-Route::get('/customer-profil-cash', function () {
-    return view('customer.customer_profil_cash');
-});
-
-Route::get('/customer-profil-kpr', function () {
-    return view('customer.customer_profil_kpr');
-});
-
-
-// Route untuk Customer KPR
-Route::get('/customer-kpr', [TransaksiKPRController::class, 'index'])->name('customer.kpr');
-
-Route::get('/transaksi/kpr/{booking}/approve', [TransaksiKPRController::class, 'approve'])->name('transaksi.kpr.approve');
-
-Route::post('/transaksi/kpr/{booking}/verifikasi', [TransaksiKPRController::class, 'storeVerifikasi'])->name('kpr.verifikasi.store');
-
-Route::get('/transaksi/kpr/verified', [TransaksiKPRController::class, 'verified'])->name('kpr.customer-verified');
-
-Route::get('/transaksi/kpr/{kprApplication}/survey', [TransaksiKPRController::class, 'survey'])->name('kpr.survey');
-
-Route::get('/transaksi/kpr/{id}/akad', [TransaksiKPRController::class, 'akad'])->name('kpr.akad');
-
-// Route untuk Customer KPR ACC (Survey)
-Route::get('/customer-kpr-acc', [SurveyController::class, 'index'])->name('customer.kpr.survey');
-
-Route::post('/kpr/survey/{kprId}/store', [SurveyController::class, 'store'])->name('kpr.survey.store');
-
-
-// Route::get('/dashboard-dedline-rab', function () {
-//     return view('properti.dedline_rab');
-
-// Route::get('/rab-deadline/{progressId}', [RABDeadlineController::class, 'index'])->name('rab.deadline.index');
-
-Route::get('/rab-deadline', [RABDeadlineController::class, 'index'])->name('rab.deadline.index');
-
-Route::get('/survey-komersil', function () {
-    return view('marketing.survey_komersil');
-});
-
-// Route::get('/devisi', function () {
-//     return view('master_data.devisi');
-// });
-Route::get('/master-data/division',[DivisionController::class,'index'])->name('master.data.index');
-Route::post('/master-data/division/store', [DivisionController::class, 'store'])->name('master.data.division.store');
-Route::put('/master-data/division/update/{id}', [DivisionController::class, 'update'])->name('master.data.division.update');
-Route::delete('master-data/division/{id}', [DivisionController::class, 'destroy'])->name('master.data.division.delete');
-
-Route::get('/posisi', function () {
-    return view('master_data.posisi');
-});
-
-
-});
-
-

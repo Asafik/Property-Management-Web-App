@@ -4,111 +4,251 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\KprApplication;
+use App\Models\CompanyProfile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class SurveyController extends Controller
 {
-    public function index()
-    {
-        // Ambil data KPR yang statusnya 'survey'
-        $kprApplications = KprApplication::with(['customer', 'unit', 'bank'])
-            ->where('status', 'survey')
-            ->get();
+    public function index(Request $request)
+{
+    $perPage = $request->input('per_page', 10);
+    $sort = $request->input('sort', 'latest');
 
-        return view('transaksi.customer-kpr-acc', compact('kprApplications'));
+    if (!in_array($perPage, [10, 15, 25])) {
+        $perPage = 10;
     }
+
+    $query = KprApplication::with(['customer', 'unit', 'bank'])
+        ->select('kpr_applications.*')
+
+       
+        // Tampilkan customer KPR:
+        // 1. Unit Subsidi: yang SUDAH melalui tahap Survey Lapangan
+        // 2. Unit Komersil: yang SUDAH lolos verifikasi berkas KPR (approved, analisa, survey, akad)
+        ->where(function ($q) {
+            $q->where(function ($qs) {
+                $qs->whereHas('unit', function ($qu) {
+                    $qu->where('jenis', 'subsidi');
+                })->where(function ($sub) {
+                    $sub->where('kpr_applications.status', 'survey')
+                        ->orWhereNotNull('kpr_applications.survey_date')
+                        ->orWhereNotNull('kpr_applications.appraisal_value')
+                        ->orWhereNotNull('kpr_applications.rekomendasi');
+                });
+            })->orWhere(function ($qk) {
+                $qk->whereHas('unit', function ($qu) {
+                    $qu->where('jenis', 'komersil');
+                })->whereIn('kpr_applications.status', ['approved', 'analisa', 'survey', 'akad']);
+            });
+        })
+
+        ->when($request->filled('search'), function ($q) use ($request) {
+            $q->whereHas('customer', function ($qc) use ($request) {
+                $qc->where('full_name', 'like', '%' . $request->search . '%');
+            });
+        })
+
+        ->when($request->filled('status'), function ($q) use ($request) {
+            $q->where('kpr_applications.status', $request->status);
+        });
+
+    switch ($sort) {
+        case 'name_asc':
+            $query->join('customers', 'kpr_applications.customer_id', '=', 'customers.id')
+                  ->orderBy('customers.full_name', 'asc');
+            break;
+
+        case 'name_desc':
+            $query->join('customers', 'kpr_applications.customer_id', '=', 'customers.id')
+                  ->orderBy('customers.full_name', 'desc');
+            break;
+
+        case 'unit_asc':
+            $query->join('land_bank_units', 'kpr_applications.unit_id', '=', 'land_bank_units.id')
+                  ->orderBy('land_bank_units.unit_name', 'asc');
+            break;
+
+        case 'unit_desc':
+            $query->join('land_bank_units', 'kpr_applications.unit_id', '=', 'land_bank_units.id')
+                  ->orderBy('land_bank_units.unit_name', 'desc');
+            break;
+
+        case 'latest':
+        default:
+            $query->latest('kpr_applications.created_at');
+            break;
+    }
+
+    $kprApplications = $query->paginate($perPage)->withQueryString();
+
+    return view('transaksi.customer-kpr-acc', compact('kprApplications'));
+}
 
     public function store(Request $request, $kprId)
     {
         DB::beginTransaction();
 
         try {
+            $kpr = KprApplication::with('unit')->findOrFail($kprId);
 
-            $request->merge([
-                // Bersihkan angka
-                'appraisal_value'      => preg_replace('/[^0-9]/', '', $request->appraisal_value),
-                'luas_tanah'           => preg_replace('/[^0-9]/', '', $request->luas_tanah),
-                'luas_bangunan'        => preg_replace('/[^0-9]/', '', $request->luas_bangunan),
-                'persentase_kelayakan' => preg_replace('/[^0-9.]/', '', $request->persentase_kelayakan),
+            // Validasi Aturan Survey: Unit Subsidi WAJIB bangunan 100% selesai
+            $unit = $kpr->unit;
+            $isSubsidi = strtolower($unit->jenis ?? '') === 'subsidi';
+            $isBuildingFinished = strtolower($unit->construction_progress ?? '') === 'selesai' || ($unit->construction_progress_percentage ?? 0) === 100;
 
-                // Normalisasi checkbox
-                'listrik'    => $request->has('listrik') ? 1 : 0,
-                'air'        => $request->has('air') ? 1 : 0,
-                'akses'      => $request->has('akses') ? 1 : 0,
-                'sertifikat' => $request->has('sertifikat') ? 1 : 0,
-                'shm'        => $request->has('shm') ? 1 : 0,
-                'imb'        => $request->has('imb') ? 1 : 0,
-            ]);
+            if ($isSubsidi && !$isBuildingFinished) {
+                $statusProg = ucwords(str_replace('_', ' ', $unit->construction_progress ?? 'belum selesai'));
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', "Aturan KPR: Unit Subsidi tidak dapat disurvey karena bangunan belum selesai (Status Pembangunan: {$statusProg}). Survey baru dapat dilakukan setelah fisik bangunan 100% selesai / siap survey.");
+            }
 
-            $kpr = KprApplication::findOrFail($kprId);
+            // Bersihkan input angka rupiah/format
+            $cleanNumeric = function ($val) {
+                if (is_null($val) || $val === '') return null;
+                $cleaned = preg_replace('/[^0-9]/', '', (string)$val);
+                return $cleaned === '' ? null : (float)$cleaned;
+            };
 
-            // ✅ Validasi input survey
+            $appraisalValue = $cleanNumeric($request->appraisal_value);
+            $luasTanah = $cleanNumeric($request->luas_tanah);
+            $luasBangunan = $cleanNumeric($request->luas_bangunan);
+            $persentaseKelayakan = $request->filled('persentase_kelayakan') 
+                ? (float)preg_replace('/[^0-9.]/', '', (string)$request->persentase_kelayakan) 
+                : null;
+
+            // Validasi file upload jika ada
             $request->validate([
-                'appraisal_value' => 'nullable|numeric',
-                'luas_tanah' => 'nullable|numeric',
-                'luas_bangunan' => 'nullable|numeric',
-                'kondisi_bangunan' => 'nullable|string',
-                'listrik' => 'nullable|boolean',
-                'air' => 'nullable|boolean',
-                'akses' => 'nullable|boolean',
-                'sertifikat' => 'nullable|boolean',
-                'shm' => 'nullable|boolean',
-                'imb' => 'nullable|boolean',
-                'catatan_survey' => 'nullable|string',
-                'rekomendasi' => 'nullable|string',
-                'persentase_kelayakan' => 'nullable|numeric',
-                'foto_depan' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
-                'foto_interior' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
+                'foto_depan'      => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
+                'foto_interior'   => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
                 'foto_lingkungan' => 'nullable|file|mimes:jpg,jpeg,png|max:5120',
-                'surveyor_id' => 'nullable|exists:employees,id'
+                'surveyor_id'     => 'nullable|exists:employees,id'
             ]);
 
             // Update data survey
-            $kpr->appraisal_value = $request->appraisal_value;
-            $kpr->luas_tanah = $request->luas_tanah;
-            $kpr->luas_bangunan = $request->luas_bangunan;
-            $kpr->kondisi_bangunan = $request->kondisi_bangunan;
-            $kpr->listrik = $request->boolean('listrik');
-            $kpr->air = $request->boolean('air');
-            $kpr->akses = $request->boolean('akses');
-            $kpr->sertifikat = $request->boolean('sertifikat');
-            $kpr->shm = $request->boolean('shm');
-            $kpr->imb = $request->boolean('imb');
-            $kpr->catatan_survey = $request->catatan_survey;
-            $kpr->rekomendasi = $request->rekomendasi;
-            $kpr->persentase_kelayakan = $request->persentase_kelayakan;
-            $kpr->surveyor_id = $request->surveyor_id;
+            if ($appraisalValue !== null) {
+                $kpr->appraisal_value = $appraisalValue;
+            }
+            if ($luasTanah !== null) {
+                $kpr->luas_tanah = $luasTanah;
+            }
+            if ($luasBangunan !== null) {
+                $kpr->luas_bangunan = $luasBangunan;
+            }
+            if ($request->filled('kondisi_bangunan')) {
+                $kpr->kondisi_bangunan = $request->kondisi_bangunan;
+            }
 
-            // Upload foto jika ada
-            foreach (['foto_depan', 'foto_interior', 'foto_lingkungan'] as $fileField) {
-                if ($request->hasFile($fileField)) {
-                    $path = $request->file($fileField)->store('kpr/survey', 'public');
-                    $kpr->$fileField = $path;
+            $kpr->listrik = $request->has('listrik') ? 1 : 0;
+            $kpr->air = $request->has('air') ? 1 : 0;
+            $kpr->akses = $request->has('akses') ? 1 : 0;
+            $kpr->sertifikat = $request->has('sertifikat') ? 1 : 0;
+            $kpr->shm = $request->has('shm') ? 1 : 0;
+            $kpr->imb = $request->has('imb') ? 1 : 0;
+            
+            if ($request->filled('catatan_survey')) {
+                $kpr->catatan_survey = $request->catatan_survey;
+            }
+
+            if ($persentaseKelayakan === null && $appraisalValue !== null) {
+                $unitPrice = (float) ($kpr->unit->price ?? ($kpr->harga_unit ?? 0));
+                if ($unitPrice > 0) {
+                    $persentaseKelayakan = round(($appraisalValue / $unitPrice) * 100, 2);
                 }
             }
 
-            // Update status survey selesai
-            $kpr->status = 'analisa';
+            if ($persentaseKelayakan !== null) {
+                $kpr->persentase_kelayakan = $persentaseKelayakan;
+            }
+
+            if ($request->filled('rekomendasi')) {
+                $kpr->rekomendasi = $request->rekomendasi;
+            } elseif ($persentaseKelayakan !== null) {
+                if ($persentaseKelayakan >= 90) {
+                    $kpr->rekomendasi = 'Layak';
+                } elseif ($persentaseKelayakan >= 70) {
+                    $kpr->rekomendasi = 'Dipertimbangkan';
+                } else {
+                    $kpr->rekomendasi = 'Tidak Layak';
+                }
+            }
+
+            if ($request->filled('survey_date')) {
+                $kpr->survey_date = $request->survey_date;
+            }
+            if ($request->filled('survey_time')) {
+                $kpr->survey_time = $request->survey_time;
+            }
+            if ($request->filled('surveyor_id')) {
+                $kpr->surveyor_id = $request->surveyor_id;
+            }
+
+            $isAlreadyAkad = ($kpr->status === 'akad') || optional(optional($kpr->booking)->akad)->status === 'selesai';
+            if (!$isAlreadyAkad) {
+                $kpr->status = 'survey';
+            }
+
+            if ($kpr->booking) {
+                $kpr->booking->update(['status_survey' => 1]);
+            }
+
+            // Upload foto jika ada
+            $destination = public_path('uploads/kpr/survey');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+
+            foreach (['foto_depan', 'foto_interior', 'foto_lingkungan'] as $fileField) {
+                if ($request->hasFile($fileField)) {
+                    $file = $request->file($fileField);
+                    $filename = uniqid() . '_' . $fileField . '.' . $file->getClientOriginalExtension();
+                    $file->move($destination, $filename);
+                    $kpr->$fileField = 'kpr/survey/' . $filename;
+                }
+            }
+
             $kpr->save();
 
             DB::commit();
 
-            return redirect()->back()->with('success', 'Hasil survey berhasil disimpan!');
-        } catch (\Throwable $e) {
+            $isKomersil = strtolower(optional($kpr->unit)->jenis ?? '') === 'komersil';
+            if ($isKomersil) {
+                return redirect()->route('kpr.akad', $kpr->id)->with('success', 'Hasil survey dan nilai appraisal berhasil disimpan!');
+            }
 
+            return redirect()->route('customer.kpr.survey')->with('success', 'Hasil survey dan nilai appraisal berhasil disimpan! Silakan lanjutkan proses akad.');
+        } catch (\Throwable $e) {
             DB::rollBack();
 
             Log::error('Gagal menyimpan survey KPR', [
                 'kpr_id' => $kprId,
-                'user_id' => auth()->id(),
                 'error_message' => $e->getMessage()
             ]);
 
             return redirect()->back()
                 ->withInput()
-                ->with('error', $e->getMessage()); // 🔥 sementara tampilkan error asli
+                ->with('error', 'Gagal menyimpan survey: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Cetak Berita Acara / Laporan Hasil Survey Lapangan KPR
+     */
+    public function cetakSurvey($id)
+    {
+        $application = KprApplication::with([
+            'customer',
+            'unit.landBank',
+            'unit.activeBooking.sales',
+            'bank',
+            'booking.sales',
+            'surveyor.position'
+        ])->findOrFail($id);
+
+        $companyProfile = CompanyProfile::first();
+
+        return view('cetak.hasil_survey_kpr', compact('application', 'companyProfile'));
     }
 }

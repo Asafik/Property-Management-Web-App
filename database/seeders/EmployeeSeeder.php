@@ -10,10 +10,10 @@ class EmployeeSeeder extends Seeder
 {
     public function run(): void
     {
-        Employee::insert([
+        $employees = [
             [
-                'name' => 'Budi Santoso',
-                'username' => 'budi',
+                'name' => 'Kepala Marketing',
+                'username' => 'Kepala Marketing',
                 'password' => Hash::make('password'),
                 'division_id' => 1,
                 'position_id' => 1,
@@ -21,8 +21,8 @@ class EmployeeSeeder extends Seeder
                 'address' => 'Jember'
             ],
             [
-                'name' => 'Siti Rahma',
-                'username' => 'siti',
+                'name' => 'Kepala Legal',
+                'username' => 'Kepala Legal',
                 'password' => Hash::make('password'),
                 'division_id' => 2,
                 'position_id' => 3,
@@ -30,14 +30,63 @@ class EmployeeSeeder extends Seeder
                 'address' => 'Bondowoso'
             ],
             [
-                'name' => 'Ahmad Fauzi',
-                'username' => 'ahmad',
+                'name' => 'Admin',
+                'username' => 'admin',
                 'password' => Hash::make('password'),
                 'division_id' => 4,
-                'position_id' => 2,
+                'position_id' => 5,
                 'phone' => '08123456787',
                 'address' => 'Situbondo'
             ],
-        ]);
+            [
+                'name' => 'Staff Marketing',
+                'username' => 'marketing',
+                'password' => Hash::make('password'),
+                'division_id' => 1,
+                'position_id' => 2,
+                'phone' => '08123456789',
+                'address' => 'Jember'
+            ],
+            [
+                'name' => 'Staff KPR',
+                'username' => 'staffkpr',
+                'password' => Hash::make('password'),
+                'division_id' => 3,
+                'position_id' => 6,
+                'phone' => '08123456780',
+                'address' => 'Jember'
+            ],
+            [
+                'name' => 'Staff Keuangan',
+                'username' => 'keuangan',
+                'password' => Hash::make('password'),
+                'division_id' => 5,
+                'position_id' => 7,
+                'phone' => '08123456781',
+                'address' => 'Jember'
+            ],
+            [
+                'name' => 'Kepala Proyek',
+                'username' => 'kepalaproyek',
+                'password' => Hash::make('password'),
+                'division_id' => 6,
+                'position_id' => 8,
+                'phone' => '08123456785',
+                'address' => 'Jember'
+            ],
+            [
+                'name' => 'Staff Proyek',
+                'username' => 'staffproyek',
+                'password' => Hash::make('password'),
+                'division_id' => 6,
+                'position_id' => 9,
+                'phone' => '08123456786',
+                'address' => 'Jember'
+            ],
+        ];
+
+        foreach ($employees as $emp) {
+            Employee::updateOrCreate(['username' => $emp['username']], $emp);
+        }
     }
 }

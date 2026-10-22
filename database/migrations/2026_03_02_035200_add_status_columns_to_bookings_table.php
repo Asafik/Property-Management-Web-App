@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('bookings', function (Blueprint $table) {
             // Tambahkan kolom status untuk masing-masing tahapan
-            $table->enum('status_cash', ['pending', 'process', 'done'])->default('pending')->after('purchase_type');
+            $table->enum('status_cash', ['pending', 'process', 'done', 'rejected'])->default('pending')->after('purchase_type');
             $table->enum('status_akad', ['pending', 'done','cancelled'])->default('pending')->after('status_cash');
             $table->enum('status_legal', ['pending', 'done','cancelled'])->default('pending')->after('status_akad');
         });

@@ -11,10 +11,11 @@ class DivisionSeeder extends Seeder
     {
         Division::insert([
             ['name' => 'Marketing'],
-            ['name' => 'Finance'],
-            ['name' => 'HRD'],
-            ['name' => 'Project'],
             ['name' => 'Legal'],
+            ['name' => 'Bank'],
+            ['name' => 'Super Admin'],
+            ['name' => 'Keuangan'],
+            ['name' => 'Proyek']
         ]);
     }
 }

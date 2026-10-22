@@ -43,4 +43,8 @@ public function getFormattedValueAttribute()
 
     return $this->value_text;
 }
+public function bookings()
+{
+    return $this->belongsToMany(Booking::class, 'booking_promos');
+}
 }
