@@ -26,11 +26,25 @@ class ArusKasController extends Controller
      */
     public function index(Request $request)
     {
-        // Default periode: gunakan awal tahun berjalan (YTD) atau tanggal transaksi awal agar mutasi terlihat lengkap
-        $defaultStartDate = Carbon::now()->startOfYear()->toDateString();
+        // Auto-sync jika journal_entries belum pernah terisi / kosong
+        if (JournalEntry::whereIn('cash_flow_category', ['operating', 'investing', 'financing'])->count() === 0) {
+            $this->syncService->syncAll();
+        }
+
+        // Cari tanggal transaksi paling awal dan akhir dari seluruh data kas
         $firstEntryDate = JournalEntry::whereIn('cash_flow_category', ['operating', 'investing', 'financing'])
             ->orderBy('entry_date', 'asc')
             ->value('entry_date');
+        $lastEntryDate = JournalEntry::whereIn('cash_flow_category', ['operating', 'investing', 'financing'])
+            ->orderBy('entry_date', 'desc')
+            ->value('entry_date');
+
+        // Deteksi apakah filter "Semua Transaksi" dipilih (preset=all atau start_date & end_date dikosongkan)
+        $isAllPreset = $request->get('preset') === 'all' 
+            || ($request->has('start_date') && !$request->filled('start_date') && !$request->filled('end_date'));
+
+        // Default periode jika halaman pertama kali dibuka
+        $defaultStartDate = Carbon::now()->startOfYear()->toDateString();
         if ($firstEntryDate) {
             $parsedFirst = Carbon::parse($firstEntryDate)->toDateString();
             if ($parsedFirst < $defaultStartDate) {
@@ -38,8 +52,31 @@ class ArusKasController extends Controller
             }
         }
 
-        $startDate  = $request->get('start_date', $defaultStartDate);
-        $endDate    = $request->get('end_date', Carbon::now()->endOfMonth()->toDateString());
+        $defaultEndDate = Carbon::now()->endOfMonth()->toDateString();
+        if ($lastEntryDate) {
+            $parsedLast = Carbon::parse($lastEntryDate)->toDateString();
+            if ($parsedLast > $defaultEndDate) {
+                $defaultEndDate = $parsedLast;
+            }
+        }
+
+        if ($isAllPreset) {
+            $startDate = null;
+            $endDate   = null;
+        } else {
+            if ($request->has('start_date')) {
+                $startDate = $request->filled('start_date') ? $request->get('start_date') : null;
+            } else {
+                $startDate = $defaultStartDate;
+            }
+
+            if ($request->has('end_date')) {
+                $endDate = $request->filled('end_date') ? $request->get('end_date') : null;
+            } else {
+                $endDate = $defaultEndDate;
+            }
+        }
+
         $landBankId = $request->get('land_bank_id');
         $tab        = $request->get('tab', 'statement'); // statement or list
 
@@ -47,9 +84,14 @@ class ArusKasController extends Controller
 
         // List mutasi kas dengan pagination untuk tab daftar kas
         $mutasiQuery = JournalEntry::with(['items.account', 'landBank', 'creator'])
-            ->whereIn('cash_flow_category', ['operating', 'investing', 'financing'])
-            ->whereBetween('entry_date', [$startDate, $endDate]);
+            ->whereIn('cash_flow_category', ['operating', 'investing', 'financing']);
 
+        if ($startDate) {
+            $mutasiQuery->where('entry_date', '>=', $startDate);
+        }
+        if ($endDate) {
+            $mutasiQuery->where('entry_date', '<=', $endDate);
+        }
         if ($landBankId) {
             $mutasiQuery->where('land_bank_id', $landBankId);
         }
@@ -206,23 +248,53 @@ class ArusKasController extends Controller
     }
 
     /**
+     * Trigger Sinkronisasi Data Transaksi Proyek ke Buku Kas & Jurnal
+     */
+    public function sync()
+    {
+        $result = $this->syncService->syncAll();
+
+        if ($result['status']) {
+            $totalNew = array_sum($result['stats']);
+            return redirect()->back()->with('success', "Sinkronisasi berhasil! {$totalNew} transaksi telah diselaraskan ke Buku Kas & Jurnal.");
+        }
+
+        return redirect()->back()->with('error', "Sinkronisasi gagal: " . $result['message']);
+    }
+
+    /**
      * Cetak Laporan Arus Kas
      */
     public function cetak(Request $request)
     {
-        $defaultStartDate = Carbon::now()->startOfYear()->toDateString();
         $firstEntryDate = JournalEntry::whereIn('cash_flow_category', ['operating', 'investing', 'financing'])
             ->orderBy('entry_date', 'asc')
             ->value('entry_date');
-        if ($firstEntryDate) {
-            $parsedFirst = Carbon::parse($firstEntryDate)->toDateString();
-            if ($parsedFirst < $defaultStartDate) {
-                $defaultStartDate = $parsedFirst;
-            }
+        $lastEntryDate = JournalEntry::whereIn('cash_flow_category', ['operating', 'investing', 'financing'])
+            ->orderBy('entry_date', 'desc')
+            ->value('entry_date');
+
+        $isAllPreset = $request->get('preset') === 'all' 
+            || ($request->has('start_date') && !$request->filled('start_date') && !$request->filled('end_date'));
+
+        $defaultStartDate = Carbon::now()->startOfYear()->toDateString();
+        if ($firstEntryDate && Carbon::parse($firstEntryDate)->toDateString() < $defaultStartDate) {
+            $defaultStartDate = Carbon::parse($firstEntryDate)->toDateString();
         }
 
-        $startDate  = $request->get('start_date', $defaultStartDate);
-        $endDate    = $request->get('end_date', Carbon::now()->endOfMonth()->toDateString());
+        $defaultEndDate = Carbon::now()->endOfMonth()->toDateString();
+        if ($lastEntryDate && Carbon::parse($lastEntryDate)->toDateString() > $defaultEndDate) {
+            $defaultEndDate = Carbon::parse($lastEntryDate)->toDateString();
+        }
+
+        if ($isAllPreset) {
+            $startDate = null;
+            $endDate   = null;
+        } else {
+            $startDate = $request->has('start_date') ? ($request->filled('start_date') ? $request->get('start_date') : null) : $defaultStartDate;
+            $endDate   = $request->has('end_date') ? ($request->filled('end_date') ? $request->get('end_date') : null) : $defaultEndDate;
+        }
+
         $landBankId = $request->get('land_bank_id');
 
         $report = $this->syncService->getCashFlowReport($startDate, $endDate, $landBankId ? (int)$landBankId : null);

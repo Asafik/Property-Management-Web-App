@@ -380,7 +380,7 @@
             <h3 class="report-title">LAPORAN ARUS KAS (STATEMENT OF CASH FLOWS)</h3>
             <p class="report-meta-text">
                 Proyek: <strong>{{ $selectedProject ? $selectedProject->nama_land_bank : 'Semua Proyek (Konsolidasi)' }}</strong> &nbsp;&bull;&nbsp;
-                Periode: <strong>{{ date('d F Y', strtotime($startDate)) }} s/d {{ date('d F Y', strtotime($endDate)) }}</strong>
+                Periode: <strong>{{ $startDate && $endDate ? date('d F Y', strtotime($startDate)) . ' s/d ' . date('d F Y', strtotime($endDate)) : 'Semua Transaksi (Seluruh Riwayat)' }}</strong>
             </p>
         </div>
 

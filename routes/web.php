@@ -545,6 +545,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/keuangan/arus-kas/create', [ArusKasController::class, 'create'])->name('keuangan.arus-kas.create');
     Route::post('/keuangan/arus-kas/manual', [ArusKasController::class, 'storeManual'])->name('keuangan.arus-kas.store-manual');
     Route::delete('/keuangan/arus-kas/manual/{id}', [ArusKasController::class, 'destroyManual'])->name('keuangan.arus-kas.destroy-manual');
+    Route::post('/keuangan/arus-kas/sync', [ArusKasController::class, 'sync'])->name('keuangan.arus-kas.sync');
     Route::get('/keuangan/arus-kas/cetak', [ArusKasController::class, 'cetak'])->name('keuangan.arus-kas.cetak');
 
     // 3. Laporan Laba Rugi (Profit & Loss)

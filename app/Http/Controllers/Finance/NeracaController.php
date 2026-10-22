@@ -22,7 +22,7 @@ class NeracaController extends Controller
      */
     public function index(Request $request)
     {
-        $asOfDate   = $request->get('as_of_date', Carbon::today()->toDateString());
+        $asOfDate   = $request->filled('as_of_date') ? $request->get('as_of_date') : Carbon::today()->toDateString();
         $landBankId = $request->get('land_bank_id');
 
         $report = $this->syncService->getBalanceSheet(
@@ -45,7 +45,7 @@ class NeracaController extends Controller
      */
     public function cetak(Request $request)
     {
-        $asOfDate   = $request->get('as_of_date', Carbon::today()->toDateString());
+        $asOfDate   = $request->filled('as_of_date') ? $request->get('as_of_date') : Carbon::today()->toDateString();
         $landBankId = $request->get('land_bank_id');
 
         $report = $this->syncService->getBalanceSheet(

@@ -22,8 +22,8 @@ class LabaRugiController extends Controller
      */
     public function index(Request $request)
     {
-        $startDate  = $request->get('start_date', Carbon::now()->startOfYear()->toDateString());
-        $endDate    = $request->get('end_date', Carbon::now()->endOfMonth()->toDateString());
+        $startDate  = $request->filled('start_date') ? $request->get('start_date') : ($request->has('start_date') ? null : Carbon::now()->startOfYear()->toDateString());
+        $endDate    = $request->filled('end_date') ? $request->get('end_date') : ($request->has('end_date') ? null : Carbon::now()->endOfMonth()->toDateString());
         $landBankId = $request->get('land_bank_id');
 
         $report = $this->syncService->getIncomeStatement(
@@ -48,8 +48,8 @@ class LabaRugiController extends Controller
      */
     public function cetak(Request $request)
     {
-        $startDate  = $request->get('start_date', Carbon::now()->startOfYear()->toDateString());
-        $endDate    = $request->get('end_date', Carbon::now()->endOfMonth()->toDateString());
+        $startDate  = $request->filled('start_date') ? $request->get('start_date') : ($request->has('start_date') ? null : Carbon::now()->startOfYear()->toDateString());
+        $endDate    = $request->filled('end_date') ? $request->get('end_date') : ($request->has('end_date') ? null : Carbon::now()->endOfMonth()->toDateString());
         $landBankId = $request->get('land_bank_id');
 
         $report = $this->syncService->getIncomeStatement(

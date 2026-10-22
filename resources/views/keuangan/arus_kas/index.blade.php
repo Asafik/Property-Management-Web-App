@@ -361,12 +361,27 @@
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                 <div>
                     <div class="d-flex align-items-center gap-2 mb-1">
-                        <span class="text-muted" style="font-size: 0.8rem;"><i class="mdi mdi-calendar me-1"></i>{{ date('d M Y', strtotime($startDate)) }} s/d {{ date('d M Y', strtotime($endDate)) }}</span>
+                        <span class="text-muted" style="font-size: 0.8rem;">
+                            <i class="mdi mdi-calendar me-1"></i>
+                            @if($startDate && $endDate)
+                                {{ date('d M Y', strtotime($startDate)) }} s/d {{ date('d M Y', strtotime($endDate)) }}
+                            @else
+                                Semua Riwayat Transaksi (Tanpa Batas Tanggal)
+                            @endif
+                        </span>
                     </div>
                     <h4 class="mb-0 fw-bold text-dark">Laporan Arus Kas (Cash Flow)</h4>
                     <p class="text-muted mb-0 small">Memantau likuiditas kas masuk, kas keluar proyek, dan saldo kas rill perusahaan.</p>
                 </div>
                 <div class="d-flex flex-wrap align-items-center gap-2">
+                    {{-- Form Sinkronisasi Otomatis --}}
+                    <form action="{{ route('keuangan.arus-kas.sync') }}" method="POST" id="formSyncArusKas" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-neutral btn-sm px-3 py-2" title="Tarik dan selaraskan data transaksi otomatis dari booking fee, kas tempo, KPR, dan pra-landbank">
+                            <i class="mdi mdi-sync me-1"></i> Sinkronkan Transaksi
+                        </button>
+                    </form>
+
                     {{-- Tombol BKM (Halaman Sendiri) --}}
                     <a href="{{ route('keuangan.arus-kas.create', ['type' => 'BKM']) }}" class="btn btn-solid-green btn-sm px-3 py-2 shadow-sm">
                         <i class="mdi mdi-plus"></i> Kas Masuk (BKM)
@@ -412,7 +427,13 @@
                     <div class="dash-kpi-info">
                         <div class="dash-kpi-label">Saldo Awal Kas</div>
                         <div class="dash-kpi-val">Rp {{ number_format($report['saldo_awal'], 0, ',', '.') }}</div>
-                        <div class="dash-kpi-sub">Sebelum {{ date('d M Y', strtotime($startDate)) }}</div>
+                        <div class="dash-kpi-sub">
+                            @if($startDate)
+                                Sebelum {{ date('d M Y', strtotime($startDate)) }}
+                            @else
+                                Saldo Awal Historis
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
@@ -481,13 +502,13 @@
                         <!-- Mulai Tanggal -->
                         <div style="min-width: 160px; flex: 1;">
                             <label class="form-label small fw-semibold text-secondary mb-1" style="font-size: 0.78rem;">Mulai Tanggal</label>
-                            <input type="date" name="start_date" class="form-control" value="{{ $startDate }}" style="height: 38px;">
+                            <input type="date" name="start_date" class="form-control" value="{{ $startDate ?? '' }}" style="height: 38px;">
                         </div>
 
                         <!-- Sampai Tanggal -->
                         <div style="min-width: 160px; flex: 1;">
                             <label class="form-label small fw-semibold text-secondary mb-1" style="font-size: 0.78rem;">Sampai Tanggal</label>
-                            <input type="date" name="end_date" class="form-control" value="{{ $endDate }}" style="height: 38px;">
+                            <input type="date" name="end_date" class="form-control" value="{{ $endDate ?? '' }}" style="height: 38px;">
                         </div>
 
                         <!-- Filter Proyek / Landbank -->
@@ -519,7 +540,7 @@
                 @php
                     $isThisMonth = ($startDate === date('Y-m-01') && $endDate === date('Y-m-t'));
                     $isYtd = ($startDate === date('Y-01-01') && $endDate === date('Y-m-t'));
-                    $isAll = ($startDate === '2020-01-01' && $endDate === date('Y-12-31'));
+                    $isAll = empty($startDate) && empty($endDate);
                 @endphp
                 <div class="d-flex align-items-center gap-2 mt-3 pt-2 border-top flex-wrap">
                     <span class="fw-semibold text-secondary d-inline-flex align-items-center me-1" style="font-size: 0.76rem;">
@@ -535,7 +556,12 @@
                         <i class="mdi mdi-calendar-multiselect"></i> Semua Transaksi
                     </button>
                     <span class="ms-auto text-muted small d-inline-flex align-items-center" style="font-size: 0.74rem;">
-                        <i class="mdi mdi-calendar-check text-success me-1"></i> Periode aktif: <strong class="text-dark ms-1">{{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }}</strong> &nbsp;s/d&nbsp; <strong class="text-dark ms-1">{{ \Carbon\Carbon::parse($endDate)->format('d/m/Y') }}</strong>
+                        <i class="mdi mdi-calendar-check text-success me-1"></i> Periode aktif: 
+                        @if($startDate && $endDate)
+                            <strong class="text-dark ms-1">{{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }}</strong> &nbsp;s/d&nbsp; <strong class="text-dark ms-1">{{ \Carbon\Carbon::parse($endDate)->format('d/m/Y') }}</strong>
+                        @else
+                            <strong class="text-primary ms-1">Semua Riwayat Transaksi (Semua Tanggal)</strong>
+                        @endif
                     </span>
                 </div>
             </form>
@@ -835,8 +861,8 @@ function setPreset(type) {
         startInput.value = `${yyyy}-01-01`;
         endInput.value = `${yyyy}-${mm}-${String(lastDay).padStart(2, '0')}`;
     } else if (type === 'all') {
-        startInput.value = '2020-01-01';
-        endInput.value = `${yyyy}-12-31`;
+        startInput.value = '';
+        endInput.value = '';
     }
     startInput.form.submit();
 }
