@@ -1044,6 +1044,115 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="transaksi-form-group">
+                                            <label class="transaksi-form-label">Nama Notaris Rekanan <span class="text-danger">*</span></label>
+                                            <select class="form-control" name="nama_notaris" id="nama_notaris_cash" style="width: 100%;">
+                                                <option value="">-- Cari & Pilih Notaris Rekanan --</option>
+                                                @if(isset($notarisList))
+                                                    @foreach ($notarisList as $item)
+                                                        <option value="{{ $item->nama_notaris }}">
+                                                            {{ $item->nama_notaris }}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="transaksi-form-group">
+                                            <label class="transaksi-form-label">Lokasi Akad</label>
+                                            <input type="text" name="lokasi_akad" id="lokasi_akad_cash" class="transaksi-form-control"
+                                                value="Kantor Notaris" placeholder="Contoh: Kantor Notaris Rekanan">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section: Realisasi AJB (Akta Jual Beli) Notaris -->
+                                <div class="p-3 rounded-3 mb-3" style="background: #faf8ff; border: 1.5px solid #ede4fc;">
+                                    <div class="d-flex align-items-center justify-content-between pb-2 mb-3 border-bottom" style="border-color: #ede4fc !important;">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="p-1.5 rounded-2 text-white d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #da8cff, #9a55ff); width: 28px; height: 28px;">
+                                                <i class="mdi mdi-file-sign" style="font-size: 1.1rem;"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.92rem;">Realisasi Akta Jual Beli (AJB) Notaris</h6>
+                                                <small class="text-muted" style="font-size: 0.74rem;">Nomor Akta & Biaya AJB otomatis membuat Invoice di Divisi Keuangan</small>
+                                            </div>
+                                        </div>
+                                        <span class="badge bg-purple bg-opacity-10 text-primary border border-primary border-opacity-25" style="font-size: 0.72rem; padding: 4px 8px; border-radius: 6px;">Akta Otentik Notaris</span>
+                                    </div>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="transaksi-form-group mb-2">
+                                                <label class="transaksi-form-label mb-1" style="font-size: 0.82rem;">
+                                                    Nomor Akta AJB <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" class="transaksi-form-control" name="no_ajb" id="no_ajb_cash"
+                                                    value="{{ optional($booking->akad)->no_ajb ?? ($booking->no_ajb ?? '') }}"
+                                                    placeholder="Contoh: AJB/123/X/2026 atau No. 45/PPAT/2026">
+                                                <small class="text-muted mt-1 d-block" style="font-size: 0.72rem;">
+                                                    <i class="mdi mdi-information-outline me-1"></i>Nomor akta resmi dari Notaris
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="transaksi-form-group mb-2">
+                                                <label class="transaksi-form-label mb-1" style="font-size: 0.82rem;">
+                                                    Tanggal Penandatanganan AJB
+                                                </label>
+                                                <input type="date" class="transaksi-form-control" name="tanggal_ajb" id="tanggal_ajb_cash"
+                                                    value="{{ optional($booking->akad)->tanggal_ajb ? \Carbon\Carbon::parse(optional($booking->akad)->tanggal_ajb)->format('Y-m-d') : date('Y-m-d') }}">
+                                                <small class="text-muted mt-1 d-block" style="font-size: 0.72rem;">
+                                                    <i class="mdi mdi-information-outline me-1"></i>Tanggal pelaksanaan tanda tangan AJB di Notaris
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-3 mt-1">
+                                        <div class="col-md-6">
+                                            @php
+                                                $defaultAjbPriceCash = optional($booking->unit)->ajb_price ?? 0;
+                                                $savedAjbNominalCash = optional($booking->akad)->nominal_ajb ?? ($booking->ajb ?? $defaultAjbPriceCash);
+                                            @endphp
+                                            <div class="transaksi-form-group mb-2">
+                                                <label class="transaksi-form-label mb-1" style="font-size: 0.82rem;">
+                                                    Biaya / Nominal AJB (Rp)
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light text-primary fw-bold" style="font-size: 0.82rem; border-color: #cbd5e1;">Rp</span>
+                                                    <input type="text" class="transaksi-form-control rupiah-format" name="nominal_ajb" id="nominal_ajb_cash"
+                                                        value="{{ $savedAjbNominalCash > 0 ? number_format($savedAjbNominalCash, 0, ',', '.') : '' }}"
+                                                        placeholder="Contoh: 2.500.000">
+                                                </div>
+                                                <small class="text-muted mt-1 d-block" style="font-size: 0.72rem;">
+                                                    <i class="mdi mdi-information-outline me-1"></i>Tarif akta rekanan notaris (otomatis dibuatkan Invoice di Keuangan)
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="transaksi-form-group mb-2">
+                                                <label class="transaksi-form-label mb-1" style="font-size: 0.82rem;">
+                                                    Upload Scan Akta Jual Beli (AJB)
+                                                </label>
+                                                <div class="transaksi-file-upload">
+                                                    <input type="file" name="dokumen_ajb" id="uploadDokumenAjbCash" accept=".jpg,.jpeg,.png,.pdf">
+                                                    <div class="transaksi-file-label" id="labelDokumenAjbCash">
+                                                        <i class="mdi mdi-file-sign" style="font-size: 1.4rem; color: #9a55ff;"></i>
+                                                        <div class="transaksi-file-info">
+                                                            <span id="textDokumenAjbCash">Upload Scan Dokumen AJB</span>
+                                                            <small>Format: JPG, PNG, PDF (Max 5MB)</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="transaksi-form-group">
                                             <label class="transaksi-form-label">Total Pembayaran</label>
                                             <div class="transaksi-input-group">
                                                 <div class="transaksi-input-group-prepend">
@@ -1322,6 +1431,26 @@
                     $container.find('.transaksi-file-info span').text('Upload Dokumen Akad');
                     $container.find('.transaksi-file-info small').text('Format: JPG, PNG, PDF (Max 5MB)');
                 }
+            });
+
+            // File upload handler Dokumen AJB
+            $('#uploadDokumenAjbCash').on('change', function() {
+                const file = this.files[0];
+                const $label = $('#labelDokumenAjbCash');
+                const $text = $('#textDokumenAjbCash');
+                if (file) {
+                    $text.text(file.name.length > 28 ? file.name.substring(0, 28) + '...' : file.name);
+                    $label.addClass('border-success bg-light');
+                } else {
+                    $text.text('Upload Scan Dokumen AJB');
+                    $label.removeClass('border-success bg-light');
+                }
+            });
+
+            // Format Rupiah Input Nominal AJB
+            $('#nominal_ajb_cash').on('input', function() {
+                let val = $(this).val().replace(/[^0-9]/g, '');
+                $(this).val(val ? new Intl.NumberFormat('id-ID').format(val) : '');
             });
 
             @if (session('success'))

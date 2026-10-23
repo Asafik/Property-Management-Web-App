@@ -114,4 +114,104 @@ class Invoice extends Model
 
         return $invoice;
     }
+
+    /**
+     * Helper to automatically sync/generate Invoice from a Booking IJB
+     */
+    public static function createOrUpdateFromBookingIjb(Booking $booking, $ijbAmount = null, $proofPath = null): ?self
+    {
+        $ijb = (float)($ijbAmount !== null ? $ijbAmount : ($booking->ijb ?? 0));
+        if ($ijb <= 0) {
+            return null;
+        }
+
+        $booking->loadMissing(['customer', 'unit.landBank', 'sales']);
+        $customer = $booking->customer;
+        $unit = $booking->unit;
+        $projectName = $unit->landBank->name ?? 'Proyek';
+        $unitLabel = $unit ? ($unit->unit_code ?: ($unit->block . '-' . $unit->unit_number)) : 'Unit';
+
+        $year = $booking->booking_date ? \Carbon\Carbon::parse($booking->booking_date)->format('Y') : date('Y');
+        $invoiceNumber = 'INV-IJB/' . $year . '/' . str_pad($booking->id, 5, '0', STR_PAD_LEFT);
+
+        $recipientName = $customer->full_name ?? ($customer->name ?? 'Customer');
+        $recipientContact = $customer->phone ?? ($customer->no_hp ?? ($customer->whatsapp ?? null));
+
+        $filePath = $proofPath ?: ($booking->bukti_transfer_ijb ?: null);
+
+        $invoice = self::updateOrCreate(
+            [
+                'booking_id' => $booking->id,
+                'category'   => 'ijb',
+            ],
+            [
+                'invoice_number'   => $invoiceNumber,
+                'title'            => 'Ikatan Jual Beli (IJB) - ' . $unitLabel . ' (' . $projectName . ')',
+                'recipient_name'   => $recipientName,
+                'recipient_contact'=> $recipientContact,
+                'total_amount'     => $ijb,
+                'paid_amount'      => $filePath ? $ijb : 0,
+                'remaining_amount' => $filePath ? 0 : $ijb,
+                'payment_method'   => 'transfer',
+                'payment_status'   => $filePath ? 'lunas' : 'pending',
+                'invoice_date'     => $booking->booking_date ? \Carbon\Carbon::parse($booking->booking_date)->toDateString() : now()->toDateString(),
+                'due_date'         => now()->addDays(7)->toDateString(),
+                'notes'            => 'Invoice otomatis pembayaran Ikatan Jual Beli (IJB) untuk unit ' . $unitLabel . ' (' . $projectName . ') oleh customer ' . $recipientName . '.',
+                'file_path'        => $filePath,
+                'created_by'       => auth()->id() ?? ($booking->sales_id ?? null),
+            ]
+        );
+
+        return $invoice;
+    }
+
+    /**
+     * Helper to automatically sync/generate Invoice from an Akad AJB (Akta Jual Beli Notaris)
+     */
+    public static function createOrUpdateFromAkadAjb(Booking $booking, ?Akad $akad = null, $ajbAmount = null, $docPath = null): ?self
+    {
+        $akad = $akad ?: ($booking->akad ?: Akad::where('booking_id', $booking->id)->first());
+        $ajb = (float)($ajbAmount !== null ? $ajbAmount : (($akad && ($akad->nominal_ajb ?? 0) > 0) ? $akad->nominal_ajb : ($booking->ajb ?? (optional($booking->unit)->ajb_price ?? 0))));
+
+        $booking->loadMissing(['customer', 'unit.landBank', 'sales']);
+        $customer = $booking->customer;
+        $unit = $booking->unit;
+        $projectName = $unit->landBank->name ?? 'Proyek';
+        $unitLabel = $unit ? ($unit->unit_code ?: ($unit->block . '-' . $unit->unit_number)) : 'Unit';
+
+        $year = ($akad && $akad->tanggal_akad) ? \Carbon\Carbon::parse($akad->tanggal_akad)->format('Y') : date('Y');
+        $invoiceNumber = 'INV-AJB/' . $year . '/' . str_pad($booking->id, 5, '0', STR_PAD_LEFT);
+
+        $recipientName = $customer->full_name ?? ($customer->name ?? 'Customer');
+        $recipientContact = $customer->phone ?? ($customer->no_hp ?? ($customer->whatsapp ?? null));
+
+        $filePath = $docPath ?: ($akad->dokumen_ajb ?? ($booking->bukti_transfer_ajb ?? ($akad->dokumen ?? null)));
+        $notarisName = ($akad && !empty($akad->nama_notaris)) ? $akad->nama_notaris : '-';
+        $noAjbText = ($akad && !empty($akad->no_ajb)) ? $akad->no_ajb : ($booking->no_ajb ?? '-');
+
+        $invoice = self::updateOrCreate(
+            [
+                'booking_id' => $booking->id,
+                'category'   => 'ajb',
+            ],
+            [
+                'invoice_number'   => $invoiceNumber,
+                'title'            => 'Akta Jual Beli (AJB) - ' . $unitLabel . ' (' . $projectName . ')',
+                'recipient_name'   => $recipientName,
+                'recipient_contact'=> $recipientContact,
+                'total_amount'     => $ajb,
+                'paid_amount'      => $filePath ? $ajb : 0,
+                'remaining_amount' => $filePath ? 0 : $ajb,
+                'payment_method'   => 'transfer',
+                'payment_status'   => $filePath ? 'lunas' : 'pending',
+                'invoice_date'     => ($akad && $akad->tanggal_akad) ? \Carbon\Carbon::parse($akad->tanggal_akad)->toDateString() : now()->toDateString(),
+                'due_date'         => now()->addDays(7)->toDateString(),
+                'notes'            => 'Invoice otomatis Akta Jual Beli (AJB) No. ' . $noAjbText . ' di hadapan Notaris ' . $notarisName . ' untuk unit ' . $unitLabel . ' (' . $projectName . ') oleh customer ' . $recipientName . '.',
+                'file_path'        => $filePath,
+                'created_by'       => auth()->id() ?? ($booking->sales_id ?? null),
+            ]
+        );
+
+        return $invoice;
+    }
 }

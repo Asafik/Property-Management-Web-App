@@ -386,6 +386,8 @@
                                                 <select class="form-select" name="category" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
                                                     <option value="all" {{ request('category') == 'all' ? 'selected' : '' }}>Semua Kategori</option>
                                                     <option value="pra_landbank" {{ request('category') == 'pra_landbank' ? 'selected' : '' }}>Pra Land Bank (Lahan)</option>
+                                                    <option value="ijb" {{ request('category') == 'ijb' ? 'selected' : '' }}>Ikatan Jual Beli (IJB)</option>
+                                                    <option value="ajb" {{ request('category') == 'ajb' ? 'selected' : '' }}>Akta Jual Beli (AJB Notaris)</option>
                                                     <option value="unit_cash" {{ request('category') == 'unit_cash' ? 'selected' : '' }}>Unit Cash</option>
                                                     <option value="operasional" {{ request('category') == 'operasional' ? 'selected' : '' }}>Operasional</option>
                                                 </select>
@@ -449,6 +451,8 @@
                                             <select class="form-select" name="category" onchange="document.getElementById('filterFormMobile').submit()" style="height: 38px;">
                                                 <option value="all" {{ request('category') == 'all' ? 'selected' : '' }}>Semua Kategori</option>
                                                 <option value="pra_landbank" {{ request('category') == 'pra_landbank' ? 'selected' : '' }}>Pra Land Bank (Lahan)</option>
+                                                <option value="ijb" {{ request('category') == 'ijb' ? 'selected' : '' }}>Ikatan Jual Beli (IJB)</option>
+                                                <option value="ajb" {{ request('category') == 'ajb' ? 'selected' : '' }}>Akta Jual Beli (AJB Notaris)</option>
                                                 <option value="unit_cash" {{ request('category') == 'unit_cash' ? 'selected' : '' }}>Unit Cash</option>
                                                 <option value="operasional" {{ request('category') == 'operasional' ? 'selected' : '' }}>Operasional</option>
                                             </select>
@@ -527,6 +531,14 @@
                                                     <span class="badge-cat badge-cat-pra">
                                                         <i class="mdi mdi-map-clock"></i> Pra Land Bank
                                                     </span>
+                                                @elseif($inv->category === 'ijb')
+                                                    <span class="badge-cat" style="background-color: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe;">
+                                                        <i class="mdi mdi-file-sign"></i> IJB Unit
+                                                    </span>
+                                                @elseif($inv->category === 'ajb')
+                                                    <span class="badge-cat" style="background-color: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd;">
+                                                        <i class="mdi mdi-file-certificate"></i> AJB Notaris
+                                                    </span>
                                                 @elseif($inv->category === 'unit_cash')
                                                     <span class="badge-cat badge-cat-unit">
                                                         <i class="mdi mdi-home-outline"></i> Unit Cash
@@ -544,6 +556,10 @@
                                                 @if($inv->praLandbank)
                                                     <small class="text-muted d-block" style="font-size: 11px;">
                                                         <i class="mdi mdi-map-marker-outline"></i> {{ $inv->praLandbank->city ?? 'Lokasi Lahan' }} ({{ number_format($inv->praLandbank->area ?? 0, 0, ',', '.') }} m²)
+                                                    </small>
+                                                @elseif($inv->booking && $inv->booking->unit)
+                                                    <small class="text-muted d-block" style="font-size: 11px;">
+                                                        <i class="mdi mdi-home-outline text-primary"></i> Unit {{ $inv->booking->unit->unit_code ?: ($inv->booking->unit->block . '-' . $inv->booking->unit->unit_number) }} &bull; {{ $inv->booking->unit->landBank->name ?? '-' }}
                                                     </small>
                                                 @endif
                                             </td>
@@ -607,6 +623,10 @@
                                                     <!-- Tombol Cetak / PDF Format Resmi -->
                                                     @if($inv->pra_landbank_id)
                                                         <a href="{{ route('pra-landbank.invoice', $inv->pra_landbank_id) }}" target="_blank" class="btn-action print" title="Cetak Format Resmi Pra Land Bank">
+                                                            <i class="mdi mdi-printer"></i>
+                                                        </a>
+                                                    @elseif($inv->booking_id)
+                                                        <a href="{{ route('dashboard.cetak.invoice.cash.pdf', $inv->booking_id) }}" target="_blank" class="btn-action print" title="Cetak Format Resmi Invoice Unit">
                                                             <i class="mdi mdi-printer"></i>
                                                         </a>
                                                     @else
@@ -772,6 +792,8 @@
                                 <label class="form-label fw-bold">Kategori Transaksi <span class="text-danger">*</span></label>
                                 <select class="form-select" name="category" required>
                                     <option value="operasional">Operasional Keuangan</option>
+                                    <option value="ijb">Ikatan Jual Beli (IJB)</option>
+                                    <option value="ajb">Akta Jual Beli (AJB Notaris)</option>
                                     <option value="pra_landbank">Pengadaan Pra Land Bank</option>
                                     <option value="unit_cash">Penjualan Unit Cash</option>
                                     <option value="lainnya">Lain-lain</option>
@@ -979,7 +1001,7 @@
 
             Swal.fire({
                 title: 'Menyinkronkan Database Invoice...',
-                text: 'Sistem sedang membaca seluruh data pengadaan Pra Land Bank dan memperbarui tabel Master Invoice...',
+                text: 'Sistem sedang membaca seluruh data pengadaan Pra Land Bank, transaksi IJB, & realisasi AJB Notaris dan memperbarui tabel Master Invoice...',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
@@ -1161,6 +1183,62 @@
                                 </table>
                             </div>
                         </div>
+
+                        ${(inv.booking && inv.booking.unit) ? `
+                            <div class="col-12">
+                                <div class="p-3 rounded-3 border bg-light">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <small class="text-muted fw-bold text-uppercase" style="font-size: 11px;">
+                                            <i class="mdi mdi-home-outline text-primary me-1"></i>Informasi Unit Terkait
+                                        </small>
+                                        ${inv.category === 'ajb' ? `<span class="badge bg-info text-white" style="font-size: 10px;"><i class="mdi mdi-file-certificate me-1"></i>Realisasi AJB Notaris</span>` : ''}
+                                    </div>
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-2">
+                                        <div>
+                                            <span class="fw-bold text-dark fs-6">${inv.booking.unit.unit_name || ('Unit ' + (inv.booking.unit.unit_code || (inv.booking.unit.block + '-' + inv.booking.unit.unit_number)))}</span>
+                                            <span class="text-muted ms-2">&bull; Proyek: <strong>${(inv.booking.unit.land_bank && inv.booking.unit.land_bank.name) ? inv.booking.unit.land_bank.name : '-'}</strong></span>
+                                        </div>
+                                        <div>
+                                            ${inv.file_path ? `
+                                                <a href="{{ asset('uploads') }}/${inv.file_path}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2.5" style="border-radius: 6px; font-weight: 600;">
+                                                    <i class="${inv.category === 'ajb' ? 'mdi mdi-file-certificate' : 'mdi mdi-receipt-text-outline'}"></i> ${inv.category === 'ajb' ? 'Lihat Dokumen Akta AJB' : 'Lihat Bukti Transfer IJB'}
+                                                </a>
+                                            ` : ''}
+                                        </div>
+                                    </div>
+
+                                    ${inv.category === 'ajb' ? `
+                                        <div class="row g-2 mt-2 pt-2 border-top" style="font-size: 12.5px;">
+                                            <div class="col-sm-6">
+                                                <span class="text-muted">Nomor Akta AJB:</span>
+                                                <span class="fw-bold text-dark ms-1">${(inv.booking.akad && inv.booking.akad.no_ajb) ? inv.booking.akad.no_ajb : (inv.booking.no_ajb || '-')}</span>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <span class="text-muted">Notaris Rekanan:</span>
+                                                <span class="fw-bold text-dark ms-1">${(inv.booking.akad && inv.booking.akad.notaris_name) ? inv.booking.akad.notaris_name : '-'}</span>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <span class="text-muted">Tanggal AJB:</span>
+                                                <span class="fw-bold text-dark ms-1">${formatDateIndo((inv.booking.akad && inv.booking.akad.tanggal_ajb) ? inv.booking.akad.tanggal_ajb : inv.invoice_date)}</span>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <span class="text-muted">Biaya Resmi AJB:</span>
+                                                <span class="fw-bold text-primary ms-1">${formatRupiahNumber(inv.total_amount)}</span>
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        ` : (inv.file_path ? `
+                            <div class="col-12">
+                                <div class="p-2 px-3 rounded-3 border bg-light d-flex justify-content-between align-items-center">
+                                    <span class="text-muted small"><i class="mdi mdi-paperclip me-1"></i>Berkas Lampiran</span>
+                                    <a href="{{ asset('uploads') }}/${inv.file_path}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2.5" style="border-radius: 6px; font-weight: 600;">
+                                        <i class="mdi mdi-open-in-new"></i> Buka Berkas Lampiran
+                                    </a>
+                                </div>
+                            </div>
+                        ` : '')}
 
                         ${inv.notes ? `
                             <div class="col-12">

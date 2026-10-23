@@ -583,6 +583,8 @@
 
         .file-upload-modern input[type="file"] {
             position: absolute;
+            top: 0;
+            left: 0;
             opacity: 0;
             width: 100%;
             height: 100%;
@@ -592,47 +594,58 @@
 
         .file-upload-modern .file-label-modern {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            text-align: center;
-            gap: 6px;
-            padding: 1rem 0.6rem;
-            background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
-            border: 2px dashed #d0d4db;
-            border-radius: 12px;
+            text-align: left;
+            gap: 10px;
+            padding: 0.65rem 0.9rem;
+            background: #ffffff;
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            min-height: 100px;
-        }
-
-        @media (min-width: 576px) {
-            .file-upload-modern .file-label-modern {
-                flex-direction: row;
-                text-align: left;
-                gap: 8px;
-                padding: 0.75rem 1rem;
-                min-height: auto;
-            }
+            transition: all 0.25s ease;
+            min-height: 64px;
         }
 
         .file-upload-modern:hover .file-label-modern {
             border-color: #9a55ff;
-            background: linear-gradient(135deg, #f1f0ff, #f8f9fa);
-            transform: translateY(-2px);
+            background: #faf8ff;
+            transform: translateY(-1px);
         }
 
         .file-upload-modern .file-label-modern i {
-            font-size: 1.6rem;
+            font-size: 1.45rem;
             color: #9a55ff;
             background: rgba(154, 85, 255, 0.1);
-            padding: 8px;
-            border-radius: 50%;
+            padding: 7px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .file-upload-modern .file-info-modern {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .file-upload-modern .file-info-modern span {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .file-upload-modern .file-label-modern.file-selected {
-            border-color: #28a745;
-            background: linear-gradient(135deg, #f0fff4, #e6f7e6);
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .file-upload-modern .file-label-modern.file-selected i {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.12);
         }
 
         /* Seamless Rupiah Input Group (Prefix Rp on Left) */
@@ -1742,7 +1755,7 @@
                                                     <i class="mdi mdi-swap-vertical"></i>
                                                 @endif
                                             </th>
-                                            <th>Uang Tanda Jadi (UTJ)</th>
+                                            <th>UTJ & IJB</th>
                                             <th class="text-center">Aksi</th>
                                         </tr>
                                     </thead>
@@ -1884,8 +1897,16 @@
                                                     @endif
                                                 </td>
                                                 <td class="fee-text">
-                                                    Rp
-                                                    {{ number_format($unit->activeBooking->booking_fee ?? 0, 0, ',', '.') }}
+                                                    <div>
+                                                        <span class="text-muted small d-block" style="font-size: 0.72rem; font-weight: 500;">UTJ:</span>
+                                                        <span class="text-success fw-bold">Rp {{ number_format($unit->activeBooking->booking_fee ?? 0, 0, ',', '.') }}</span>
+                                                    </div>
+                                                    @if(!empty($unit->activeBooking->ijb) && (float)$unit->activeBooking->ijb > 0)
+                                                        <div class="mt-1 pt-1 border-top">
+                                                            <span class="text-muted small d-block" style="font-size: 0.72rem; font-weight: 500;">IJB:</span>
+                                                            <span class="text-primary fw-bold">Rp {{ number_format($unit->activeBooking->ijb, 0, ',', '.') }}</span>
+                                                        </div>
+                                                    @endif
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="action-group">
@@ -2652,14 +2673,14 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-4 col-lg-2">
                                                     <div class="timeline-detail-item">
                                                         <div class="timeline-detail-label"><i
                                                                 class="mdi mdi-calendar-today"></i>Tanggal Booking</div>
                                                         <div class="timeline-detail-value" id="m_booking_date">-</div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-4 col-lg-3">
                                                     <div class="timeline-detail-item">
                                                         <div class="timeline-detail-label"><i
                                                                 class="mdi mdi-cash-multiple"></i>Uang Tanda Jadi (UTJ)</div>
@@ -2667,7 +2688,15 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-4 col-lg-3">
+                                                    <div class="timeline-detail-item">
+                                                        <div class="timeline-detail-label"><i
+                                                                class="mdi mdi-file-sign text-primary"></i>Ikatan Jual Beli (IJB)</div>
+                                                        <div class="timeline-detail-value fee-text text-primary" id="m_ijb">-
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-lg-2">
                                                     <div class="timeline-detail-item">
                                                         <div class="timeline-detail-label"><i
                                                                 class="mdi mdi-hand-coin-outline"></i>Agent Fee</div>
@@ -2675,7 +2704,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-6 col-lg-2">
                                                     <div class="timeline-detail-item">
                                                         <div class="timeline-detail-label"><i
                                                                 class="mdi mdi-toggle-switch"></i>Status Booking</div>
@@ -2684,9 +2713,10 @@
                                                 </div>
                                                 <div class="col-12 mt-3 pt-2 border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
                                                     <div class="text-muted small">
-                                                        <i class="mdi mdi-receipt-text-check-outline text-success me-1"></i> Bukti Pembayaran Resmi Uang Tanda Jadi (UTJ)
+                                                        <i class="mdi mdi-receipt-text-check-outline text-success me-1"></i> Bukti Pembayaran Resmi Uang Tanda Jadi (UTJ) & Ikatan Jual Beli (IJB)
                                                     </div>
-                                                    <div>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span id="m_bukti_ijb_link"></span>
                                                         <a href="#" id="m_btn_cetak_kuitansi" target="_blank" class="btn btn-sm btn-gradient-primary d-inline-flex align-items-center gap-1 shadow-sm px-3 py-2" style="border-radius: 6px; font-weight: 600; text-decoration: none;">
                                                             <i class="mdi mdi-printer me-1" style="font-size: 1.1rem;"></i> Cetak Kuitansi UTJ
                                                         </a>
@@ -2748,91 +2778,159 @@
 
         <!-- MODAL CUSTOMER & BOOKING UNIT -->
         <div class="modal fade" id="modalCustomer" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" style="max-width: 520px;">
-                <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
+            <div class="modal-dialog modal-lg modal-dialog-centered" style="max-width: 860px;">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden; max-height: calc(100vh - 40px); display: flex; flex-direction: column;">
                     <div class="modal-header bg-light border-bottom" style="padding: 1.1rem 1.4rem;">
                         <div>
                             <h5 class="modal-title fw-bold text-dark mb-0 d-flex align-items-center">
                                 <i class="mdi mdi-account-plus text-primary me-2" style="font-size: 1.35rem;"></i>
                                 Formulir Booking Unit
                             </h5>
-                            <small class="text-muted" style="font-size: 0.78rem;">Pilih Customer pembeli unit dan rincian transaksi booking</small>
+                            <small class="text-muted" style="font-size: 0.78rem;">Pilih Customer pembeli unit dan rincian transaksi booking (UTJ & IJB)</small>
                         </div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body p-4">
+                    <div class="modal-body p-3 p-md-4" style="overflow-y: auto; max-height: calc(100vh - 160px);">
                         <form id="formCustomerBooking" method="POST" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" id="customer_unit_id" name="unit_id">
 
-                            <!-- Section: Pilih Customer -->
-                            <div class="mb-3">
-                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
-                                    <i class="mdi mdi-account-search text-primary me-1"></i>Pilih Customer <span class="text-danger">*</span>
-                                </label>
-                                <select class="form-control select2-customer-modal" id="select_customer_id" name="customer_id" style="width: 100%;" required>
-                                    <option value="">-- Cari & Pilih Customer (ID / Nama) --</option>
-                                    @foreach ($customers as $c)
-                                        @php
-                                            $isLengkap = $c->is_lengkap;
-                                        @endphp
-                                        <option value="{{ $c->id }}" data-id="{{ $c->customer_id ?? '' }}" data-lengkap="{{ $isLengkap ? '1' : '0' }}" {{ !$isLengkap ? 'disabled' : '' }}>
-                                            @if(!empty($c->customer_id)) [{{ $c->customer_id }}] @endif {{ $c->full_name }}
-                                            @if(!$isLengkap) (Belum Lengkap - Wajib Lengkapi Data) @endif
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <small class="text-muted mt-1 d-block" style="font-size: 0.78rem;">
-                                    <i class="mdi mdi-information-outline me-1"></i>Cari berdasarkan ID Customer atau nama lengkap
-                                </small>
-                            </div>
-
-                            <!-- Field Metode Pembayaran -->
-                            <div class="mb-3">
-                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
-                                    <i class="mdi mdi-credit-card-outline text-primary me-1"></i>Metode Pembayaran <span class="text-danger">*</span>
-                                </label>
-                                <select class="form-control select2-purchase-type-modal" id="select_purchase_type" name="purchase_type" required style="width: 100%;">
-                                    <option value="kpr" selected>KPR (Kredit Pemilikan Rumah)</option>
-                                    <option value="cash">Cash Keras (Tunai)</option>
-                                    <option value="cash_tempo">Cash Bertahap (Tempo)</option>
-                                </select>
-                            </div>
-
-                            <!-- Field Nominal Uang Tanda Jadi (UTJ) -->
-                            <div class="mb-3">
-                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
-                                    <i class="mdi mdi-cash-multiple text-primary me-1"></i>Nominal Uang Tanda Jadi (UTJ) <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group rupiah-input-group">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="text" class="form-control rupiah-format" id="booking_fee" name="booking_fee" placeholder="Contoh: 5.000.000" autocomplete="off" required>
+                            <!-- Baris 1: Pilih Customer & Metode Pembayaran -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-12 col-md-7">
+                                    <label class="form-label fw-bold mb-1" style="color: #3b3f5c; font-size: 0.85rem;">
+                                        <i class="mdi mdi-account-search text-primary me-1"></i>Pilih Customer <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-control select2-customer-modal" id="select_customer_id" name="customer_id" style="width: 100%;" required>
+                                        <option value="">-- Cari & Pilih Customer (ID / Nama) --</option>
+                                        @foreach ($customers as $c)
+                                            @php
+                                                $isLengkap = $c->is_lengkap;
+                                            @endphp
+                                            <option value="{{ $c->id }}" data-id="{{ $c->customer_id ?? '' }}" data-lengkap="{{ $isLengkap ? '1' : '0' }}" {{ !$isLengkap ? 'disabled' : '' }}>
+                                                @if(!empty($c->customer_id)) [{{ $c->customer_id }}] @endif {{ $c->full_name }}
+                                                @if(!$isLengkap) (Belum Lengkap - Wajib Lengkapi Data) @endif
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <small class="text-muted mt-1 d-block" style="font-size: 0.74rem;">
+                                        <i class="mdi mdi-information-outline me-1"></i>Cari berdasarkan ID Customer atau nama lengkap
+                                    </small>
                                 </div>
-                                <small class="text-muted mt-1 d-block" style="font-size: 0.78rem;">
-                                    <i class="mdi mdi-information-outline me-1"></i>Nominal uang tanda jadi yang dibayar oleh customer (tidak mengurangi harga jual unit)
-                                </small>
+                                <div class="col-12 col-md-5">
+                                    <label class="form-label fw-bold mb-1" style="color: #3b3f5c; font-size: 0.85rem;">
+                                        <i class="mdi mdi-credit-card-outline text-primary me-1"></i>Metode Pembayaran <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-control select2-purchase-type-modal" id="select_purchase_type" name="purchase_type" required style="width: 100%;">
+                                        <option value="kpr" selected>KPR (Kredit Pemilikan Rumah)</option>
+                                        <option value="cash">Cash Keras (Tunai)</option>
+                                        <option value="cash_tempo">Cash Bertahap (Tempo)</option>
+                                    </select>
+                                    <small class="text-muted mt-1 d-block" style="font-size: 0.74rem;">
+                                        <i class="mdi mdi-information-outline me-1"></i>Skema pembayaran unit terpilih
+                                    </small>
+                                </div>
                             </div>
 
-                            <!-- Field Upload Bukti Transfer UTJ -->
-                            <div class="mb-2">
-                                <label class="form-label fw-bold" style="color: #3b3f5c; font-size: 0.88rem;">
-                                    <i class="mdi mdi-cloud-upload text-primary me-1"></i>Upload Bukti Transfer UTJ <span class="text-danger">*</span>
-                                </label>
-                                <div class="file-upload-modern">
-                                    <input type="file" id="bukti_transfer" name="bukti_transfer" accept=".jpg,.jpeg,.png,.pdf" required>
-                                    <div class="file-label-modern" id="buktiLabel">
-                                        <i class="mdi mdi-cloud-upload" style="font-size: 1.75rem; color: #9a55ff;"></i>
-                                        <div class="file-info-modern">
-                                            <span id="buktiFileName" class="fw-bold text-dark">Upload Bukti Transfer UTJ</span>
-                                            <small class="text-muted d-block">Format: JPG, PNG, PDF (Max 2MB)</small>
+                            <!-- Baris 2: 2 Kolom untuk UTJ dan IJB -->
+                            <div class="row g-3">
+                                <!-- Kolom Kiri: Uang Tanda Jadi (UTJ) -->
+                                <div class="col-12 col-md-6">
+                                    <div class="p-3 rounded-3 h-100 d-flex flex-column justify-content-between" style="background: #f8fafc; border: 1.5px solid #e2e8f0;">
+                                        <div>
+                                            <div class="d-flex align-items-center justify-content-between pb-2 mb-2.5 border-bottom" style="border-color: #e2e8f0 !important;">
+                                                <span class="fw-bold text-dark d-flex align-items-center" style="font-size: 0.88rem;">
+                                                    <i class="mdi mdi-cash-multiple text-success me-1.5" style="font-size: 1.15rem;"></i>
+                                                    Uang Tanda Jadi (UTJ)
+                                                </span>
+                                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25" style="font-size: 0.7rem; padding: 3px 8px; border-radius: 6px;">Wajib</span>
+                                            </div>
+
+                                            <!-- Field Nominal Uang Tanda Jadi (UTJ) -->
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold mb-1" style="color: #3b3f5c; font-size: 0.82rem;">
+                                                    Nominal UTJ <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="input-group rupiah-input-group">
+                                                    <span class="input-group-text">Rp</span>
+                                                    <input type="text" class="form-control rupiah-format" id="booking_fee" name="booking_fee" placeholder="Contoh: 5.000.000" autocomplete="off" required>
+                                                </div>
+                                                <small class="text-muted mt-1 d-block" style="font-size: 0.73rem;">
+                                                    <i class="mdi mdi-information-outline me-1"></i>Tanda jadi pemesanan unit
+                                                </small>
+                                            </div>
+
+                                            <!-- Field Upload Bukti Transfer UTJ -->
+                                            <div>
+                                                <label class="form-label fw-bold mb-1" style="color: #3b3f5c; font-size: 0.82rem;">
+                                                    Upload Bukti Transfer UTJ <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="file-upload-modern">
+                                                    <input type="file" id="bukti_transfer" name="bukti_transfer" accept=".jpg,.jpeg,.png,.pdf" required>
+                                                    <div class="file-label-modern" id="buktiLabel">
+                                                        <i class="mdi mdi-cloud-upload"></i>
+                                                        <div class="file-info-modern">
+                                                            <span id="buktiFileName" class="fw-bold text-dark" style="font-size: 0.82rem;">Upload Bukti Transfer UTJ</span>
+                                                            <small class="text-muted d-block" style="font-size: 0.72rem;">Format: JPG, PNG, PDF (Max 2MB)</small>
+                                                        </div>
+                                                        <span class="file-size text-muted small ms-auto" id="buktiFileSize"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <span class="file-size text-muted small" id="buktiFileSize"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Kolom Kanan: Ikatan Jual Beli (IJB) -->
+                                <div class="col-12 col-md-6">
+                                    <div class="p-3 rounded-3 h-100 d-flex flex-column justify-content-between" style="background: #faf8ff; border: 1.5px solid #ede4fc;">
+                                        <div>
+                                            <div class="d-flex align-items-center justify-content-between pb-2 mb-2.5 border-bottom" style="border-color: #ede4fc !important;">
+                                                <span class="fw-bold text-dark d-flex align-items-center" style="font-size: 0.88rem;">
+                                                    <i class="mdi mdi-file-sign text-primary me-1.5" style="font-size: 1.15rem;"></i>
+                                                    Ikatan Jual Beli (IJB)
+                                                </span>
+                                                <span class="badge bg-purple bg-opacity-10 text-primary border border-primary border-opacity-25" style="font-size: 0.7rem; padding: 3px 8px; border-radius: 6px;">Opsional</span>
+                                            </div>
+
+                                            <!-- Field Nominal Ikatan Jual Beli (IJB) -->
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold mb-1" style="color: #3b3f5c; font-size: 0.82rem;">
+                                                    Nominal IJB <span class="text-muted fw-normal">(Opsional)</span>
+                                                </label>
+                                                <div class="input-group rupiah-input-group">
+                                                    <span class="input-group-text">Rp</span>
+                                                    <input type="text" class="form-control rupiah-format" id="ijb" name="ijb" placeholder="Contoh: 10.000.000" autocomplete="off">
+                                                </div>
+                                                <small class="text-muted mt-1 d-block" style="font-size: 0.73rem;">
+                                                    <i class="mdi mdi-information-outline me-1"></i>Otomatis dibuatkan invoice di Keuangan
+                                                </small>
+                                            </div>
+
+                                            <!-- Field Upload Bukti Transfer IJB -->
+                                            <div>
+                                                <label class="form-label fw-bold mb-1" style="color: #3b3f5c; font-size: 0.82rem;">
+                                                    Upload Bukti Transfer IJB <span class="text-muted fw-normal">(Opsional)</span>
+                                                </label>
+                                                <div class="file-upload-modern">
+                                                    <input type="file" id="bukti_transfer_ijb" name="bukti_transfer_ijb" accept=".jpg,.jpeg,.png,.pdf">
+                                                    <div class="file-label-modern" id="buktiLabelIjb">
+                                                        <i class="mdi mdi-cloud-upload"></i>
+                                                        <div class="file-info-modern">
+                                                            <span id="buktiFileNameIjb" class="fw-bold text-dark" style="font-size: 0.82rem;">Upload Bukti Transfer IJB</span>
+                                                            <small class="text-muted d-block" style="font-size: 0.72rem;">Format: JPG, PNG, PDF (Max 2MB)</small>
+                                                        </div>
+                                                        <span class="file-size text-muted small ms-auto" id="buktiFileSizeIjb"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
-                    <div class="modal-footer bg-light border-top px-4 py-3 d-flex justify-content-end gap-2">
+                    <div class="modal-footer bg-light border-top px-4 py-2.5 d-flex justify-content-end gap-2">
                         <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 600;">
                             Batal
                         </button>
@@ -3353,6 +3451,8 @@
                 sales_phone: "{{ $unit->activeBooking->sales->phone ?? '' }}",
                 bookingDate: "{{ $unit->activeBooking ? \Carbon\Carbon::parse($unit->activeBooking->booking_date)->format('d F Y') : '-' }}",
                 bookingFee: {{ $unit->activeBooking->booking_fee ?? 0 }},
+                ijb: {{ $unit->activeBooking->ijb ?? 0 }},
+                buktiTransferIjb: "{{ $unit->activeBooking->bukti_transfer_ijb ?? '' }}",
                 agentFee: {{ $unit->activeBooking->agent_fee ?? 0 }},
                 bookingStatus: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->status ?? '-')) }}",
                 pos_x: {{ $unit->pos_x !== null ? $unit->pos_x : 'null' }},
@@ -4030,6 +4130,9 @@
                 document.getElementById('m_sales_initial').innerText = (sales !== '-' && sales) ? sales.trim().charAt(0).toUpperCase() : '?';
                 document.getElementById('m_booking_date').innerText = data.bookingDate || '-';
                 document.getElementById('m_booking_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.bookingFee || 0);
+                if (document.getElementById('m_ijb')) {
+                    document.getElementById('m_ijb').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.ijb || 0);
+                }
                 document.getElementById('m_agent_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.agentFee || 0);
 
                 const bStatus = data.bookingStatus || '-';
@@ -4044,6 +4147,17 @@
                     bBadge = `<span class="badge-soft badge-draft">${bStatus}</span>`;
                 }
                 document.getElementById('m_booking_status').innerHTML = bBadge;
+
+                // Bukti IJB jika tersedia
+                const buktiIjbEl = document.getElementById('m_bukti_ijb_link');
+                if (buktiIjbEl) {
+                    if (data.buktiTransferIjb) {
+                        const ijbUrl = data.buktiTransferIjb.startsWith('http') ? data.buktiTransferIjb : "{{ asset('uploads') }}/" + data.buktiTransferIjb;
+                        buktiIjbEl.innerHTML = `<a href="${ijbUrl}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 shadow-sm px-3 py-2" style="border-radius: 6px; font-weight: 600; text-decoration: none;"><i class="mdi mdi-receipt-text-outline me-1"></i> Bukti Transfer IJB</a>`;
+                    } else {
+                        buktiIjbEl.innerHTML = '';
+                    }
+                }
 
                 // Tombol Cetak Kuitansi UTJ
                 const btnKuitansi = document.getElementById('m_btn_cetak_kuitansi');
@@ -4258,6 +4372,12 @@
             $('#buktiFileSize').text('');
             $('#buktiLabel').removeClass('file-selected');
 
+            $('#ijb').val('');
+            $('#bukti_transfer_ijb').val('');
+            $('#buktiFileNameIjb').text('Upload Bukti Transfer IJB');
+            $('#buktiFileSizeIjb').text('');
+            $('#buktiLabelIjb').removeClass('file-selected');
+
             $('#modalCustomer').modal('show');
         };
 
@@ -4356,13 +4476,13 @@
             });
 
             // Format Rupiah
-            $('#booking_fee, #agent_fee_modal').on('input', function() {
+            $('#booking_fee, #ijb, #agent_fee_modal').on('input', function() {
                 let value = $(this).val().replace(/[^0-9]/g, '');
                 if (value) $(this).val(new Intl.NumberFormat('id-ID').format(value));
                 else $(this).val('');
             });
 
-            // File upload handler
+            // File upload handler UTJ
             $('#bukti_transfer').on('change', function() {
                 const file = this.files[0];
                 const $label = $('#buktiLabel');
@@ -4380,6 +4500,24 @@
                 }
             });
 
+            // File upload handler IJB
+            $('#bukti_transfer_ijb').on('change', function() {
+                const file = this.files[0];
+                const $label = $('#buktiLabelIjb');
+                const $fileName = $('#buktiFileNameIjb');
+                const $fileSize = $('#buktiFileSizeIjb');
+                if (file) {
+                    $fileName.text(file.name.length > 30 ? file.name.substring(0, 30) + '...' : file.name);
+                    if (file.size < 1024 * 1024) $fileSize.text((file.size / 1024).toFixed(1) + ' KB');
+                    else $fileSize.text((file.size / (1024 * 1024)).toFixed(1) + ' MB');
+                    $label.addClass('file-selected');
+                } else {
+                    $fileName.text('Upload Bukti Transfer IJB');
+                    $fileSize.text('');
+                    $label.removeClass('file-selected');
+                }
+            });
+
             // Simpan Customer & Booking Unit
             $('#btnSimpanCustomer').on('click', function(e) {
                 e.preventDefault();
@@ -4388,6 +4526,8 @@
                 let unitId = $('#modalCustomer').attr('data-unit-id') || $('#customer_unit_id').val();
                 let bookingFee = $('#booking_fee').val().replace(/\./g, '').replace(/,/g, '').trim();
                 let buktiTransfer = $('#bukti_transfer')[0].files[0];
+                let ijb = $('#ijb').val().replace(/\./g, '').replace(/,/g, '').trim();
+                let buktiTransferIjb = $('#bukti_transfer_ijb')[0].files[0];
 
                 if (!unitId) {
                     Swal.fire({
@@ -4442,7 +4582,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'File Terlalu Besar',
-                        text: 'Ukuran file maksimal 2MB!'
+                        text: 'Ukuran file bukti transfer UTJ maksimal 2MB!'
                     });
                     return;
                 }
@@ -4451,9 +4591,28 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Tipe File Tidak Didukung',
-                        text: 'Format file harus JPG, PNG, atau PDF!'
+                        text: 'Format file bukti transfer UTJ harus JPG, PNG, atau PDF!'
                     });
                     return;
+                }
+
+                if (buktiTransferIjb) {
+                    if (buktiTransferIjb.size > 2 * 1024 * 1024) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'File IJB Terlalu Besar',
+                            text: 'Ukuran file bukti transfer IJB maksimal 2MB!'
+                        });
+                        return;
+                    }
+                    if (!allowedTypes.includes(buktiTransferIjb.type)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Tipe File IJB Tidak Didukung',
+                            text: 'Format file bukti transfer IJB harus JPG, PNG, atau PDF!'
+                        });
+                        return;
+                    }
                 }
 
                 let formData = new FormData();
@@ -4462,6 +4621,12 @@
                 formData.append('purchase_type', purchaseType);
                 formData.append('booking_fee', bookingFee);
                 formData.append('bukti_transfer', buktiTransfer);
+                if (ijb) {
+                    formData.append('ijb', ijb);
+                }
+                if (buktiTransferIjb) {
+                    formData.append('bukti_transfer_ijb', buktiTransferIjb);
+                }
 
                 let actionUrl = "{{ route('set.customer', ':unitId') }}".replace(':unitId', unitId);
 

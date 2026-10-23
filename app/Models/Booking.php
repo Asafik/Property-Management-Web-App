@@ -17,6 +17,11 @@ class Booking extends Model
         'booking_code',
         'booking_fee',
         'utj',
+        'ijb',
+        'bukti_transfer_ijb',
+        'no_ajb',
+        'ajb',
+        'bukti_transfer_ajb',
         'booking_date',
         'purchase_type',
         'status',
@@ -97,5 +102,20 @@ public function promos()
 public function complaints()
 {
     return $this->hasMany(Complaint::class, 'booking_id');
+}
+
+public function invoices()
+{
+    return $this->hasMany(Invoice::class, 'booking_id');
+}
+
+public function ijbInvoice()
+{
+    return $this->hasOne(Invoice::class, 'booking_id')->where('category', 'ijb');
+}
+
+public function ajbInvoice()
+{
+    return $this->hasOne(Invoice::class, 'booking_id')->where('category', 'ajb');
 }
 }

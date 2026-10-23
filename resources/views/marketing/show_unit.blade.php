@@ -668,6 +668,25 @@
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td class="col-lbl">Ikatan Jual Beli (IJB)</td>
+                                            <td class="col-sep">:</td>
+                                            <td class="col-val text-primary" style="font-size: 1rem; font-weight: 800;">
+                                                Rp {{ number_format($unit->activeBooking->ijb ?? 0, 0, ',', '.') }}
+                                                @if(!empty($unit->activeBooking->bukti_transfer_ijb))
+                                                    @php
+                                                        $ijbDocPath = $unit->activeBooking->bukti_transfer_ijb;
+                                                        $ijbFileUrl = file_exists(public_path('uploads/' . $ijbDocPath)) 
+                                                            ? asset('uploads/' . $ijbDocPath) 
+                                                            : (file_exists(public_path($ijbDocPath)) ? asset($ijbDocPath) : asset('uploads/' . $ijbDocPath));
+                                                    @endphp
+                                                    <a href="{{ $ijbFileUrl }}" target="_blank" class="badge py-1 px-2 text-decoration-none ms-2 d-inline-flex align-items-center gap-1" style="background-color: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; font-size: 0.76rem; border-radius: 6px;" title="Lihat Bukti Transfer IJB">
+                                                        <i class="mdi mdi-receipt-text-outline"></i>
+                                                        <span>Bukti IJB</span>
+                                                    </a>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td class="col-lbl">Status Booking</td>
                                             <td class="col-sep">:</td>
                                             <td class="col-val">

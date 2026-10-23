@@ -384,6 +384,8 @@ class SellUnitController extends Controller
             'bukti_transfer' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'sales_id'      => 'nullable|exists:employees,id',
             'agent_fee'     => 'nullable',
+            'ijb'           => 'nullable',
+            'bukti_transfer_ijb' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
         $unit = LandBankUnit::findOrFail($unitId);
@@ -411,8 +413,9 @@ class SellUnitController extends Controller
         // Bersihkan format rupiah
         $bookingFee = str_replace(['.', ',', ' '], '', $request->booking_fee);
         $agentFee = $request->filled('agent_fee') ? (float) str_replace(['.', ',', ' '], '', $request->agent_fee) : 0;
+        $ijb = $request->filled('ijb') ? (float) str_replace(['.', ',', ' '], '', $request->ijb) : 0;
 
-        // Upload file
+        // Upload file bukti transfer UTJ
         $filePath = null;
         if ($request->hasFile('bukti_transfer')) {
             $file = $request->file('bukti_transfer');
@@ -427,6 +430,21 @@ class SellUnitController extends Controller
             $filePath = 'payments/booking_fee/' . $filename;
         }
 
+        // Upload file bukti transfer IJB (opsional)
+        $ijbFilePath = null;
+        if ($request->hasFile('bukti_transfer_ijb')) {
+            $fileIjb = $request->file('bukti_transfer_ijb');
+            $filenameIjb = uniqid() . '.' . $fileIjb->getClientOriginalExtension();
+            $destinationIjb = $_SERVER['DOCUMENT_ROOT'] . '/uploads/payments/ijb';
+
+            if (!file_exists($destinationIjb)) {
+                mkdir($destinationIjb, 0755, true);
+            }
+
+            $fileIjb->move($destinationIjb, $filenameIjb);
+            $ijbFilePath = 'payments/ijb/' . $filenameIjb;
+        }
+
         $user = Auth::user();
         $isStaffMarketing = false;
         if ($user) {
@@ -436,7 +454,7 @@ class SellUnitController extends Controller
             }
         }
 
-        DB::transaction(function () use ($request, $unit, $bookingFee, $agentFee, $filePath, $user, $isStaffMarketing) {
+        DB::transaction(function () use ($request, $unit, $bookingFee, $agentFee, $ijb, $filePath, $ijbFilePath, $user, $isStaffMarketing) {
             $booking = Booking::where('unit_id', $unit->id)
                 ->where('status', 'active')
                 ->first();
@@ -449,28 +467,32 @@ class SellUnitController extends Controller
             if ($booking) {
                 $finalSalesId = $targetSalesId ?? ($booking->sales_id ?: ($user ? $user->id : null));
                 $booking->update([
-                    'customer_id'   => $request->customer_id,
-                    'booking_date'  => now(),
-                    'purchase_type' => $request->purchase_type,
-                    'booking_fee'   => $bookingFee,
-                    'utj'           => $bookingFee,
-                    'sales_id'      => $finalSalesId,
-                    'agent_fee'     => $agentFee ?: ($booking->agent_fee ?? 0),
-                    'status'        => 'active',
+                    'customer_id'        => $request->customer_id,
+                    'booking_date'       => now(),
+                    'purchase_type'      => $request->purchase_type,
+                    'booking_fee'        => $bookingFee,
+                    'utj'                => $bookingFee,
+                    'ijb'                => $ijb ?: ($booking->ijb ?? 0),
+                    'bukti_transfer_ijb' => $ijbFilePath ?: ($booking->bukti_transfer_ijb ?? null),
+                    'sales_id'           => $finalSalesId,
+                    'agent_fee'          => $agentFee ?: ($booking->agent_fee ?? 0),
+                    'status'             => 'active',
                 ]);
             } else {
                 $finalSalesId = $targetSalesId ?? ($user ? $user->id : null);
                 $booking = Booking::create([
-                    'booking_code'  => 'BOOK-' . date('Ymd') . '-' . strtoupper(Str::random(4)),
-                    'unit_id'       => $unit->id,
-                    'customer_id'   => $request->customer_id,
-                    'sales_id'      => $finalSalesId,
-                    'agent_fee'     => $agentFee ?: 0,
-                    'booking_date'  => now(),
-                    'purchase_type' => $request->purchase_type,
-                    'booking_fee'   => $bookingFee,
-                    'utj'           => $bookingFee,
-                    'status'        => 'active',
+                    'booking_code'       => 'BOOK-' . date('Ymd') . '-' . strtoupper(Str::random(4)),
+                    'unit_id'            => $unit->id,
+                    'customer_id'        => $request->customer_id,
+                    'sales_id'           => $finalSalesId,
+                    'agent_fee'          => $agentFee ?: 0,
+                    'booking_date'       => now(),
+                    'purchase_type'      => $request->purchase_type,
+                    'booking_fee'        => $bookingFee,
+                    'utj'                => $bookingFee,
+                    'ijb'                => $ijb,
+                    'bukti_transfer_ijb' => $ijbFilePath,
+                    'status'             => 'active',
                 ]);
             }
 
@@ -483,6 +505,21 @@ class SellUnitController extends Controller
                 'reference_number' => $filePath,
                 'notes'            => 'Bukti transfer Uang Tanda Jadi (UTJ) - Tidak mengurangi harga jual unit',
             ]);
+
+            if ($ijb > 0) {
+                Payment::create([
+                    'booking_id'       => $booking->id,
+                    'type'             => 'ijb',
+                    'amount'           => $ijb,
+                    'payment_date'     => now(),
+                    'method'           => 'transfer',
+                    'reference_number' => $ijbFilePath ?: $filePath,
+                    'notes'            => 'Bukti transfer Ikatan Jual Beli (IJB)',
+                ]);
+
+                // OTOMATIS BUATKAN INVOICE DI DIVISI KEUANGAN
+                Invoice::createOrUpdateFromBookingIjb($booking, $ijb, $ijbFilePath ?: $filePath);
+            }
 
             $unit->update(['status' => 'booked']);
 

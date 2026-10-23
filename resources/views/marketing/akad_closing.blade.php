@@ -1762,6 +1762,120 @@ a.badge-doc-status.status-disetujui:hover {
                                     </div>
                                 </div>
 
+                                <!-- Section: Realisasi AJB (Akta Jual Beli) Notaris -->
+                                <div class="p-3 rounded-3 mb-3" style="background: #faf8ff; border: 1.5px solid #ede4fc;">
+                                    <div class="d-flex align-items-center justify-content-between pb-2 mb-3 border-bottom" style="border-color: #ede4fc !important;">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="p-1.5 rounded-2 text-white d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #da8cff, #9a55ff); width: 28px; height: 28px;">
+                                                <i class="mdi mdi-file-sign" style="font-size: 1.1rem;"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.92rem;">Realisasi Akta Jual Beli (AJB) Notaris</h6>
+                                                <small class="text-muted" style="font-size: 0.74rem;">Nomor Akta & Biaya AJB otomatis membuat Invoice di Divisi Keuangan</small>
+                                            </div>
+                                        </div>
+                                        <span class="badge bg-purple bg-opacity-10 text-primary border border-primary border-opacity-25" style="font-size: 0.72rem; padding: 4px 8px; border-radius: 6px;">Akta Otentik Notaris</span>
+                                    </div>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="akad-form-group mb-2">
+                                                <label class="akad-form-label mb-1" style="font-size: 0.82rem;">
+                                                    Nomor Akta AJB <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" class="akad-form-control" name="no_ajb" id="no_ajb"
+                                                    value="{{ optional($kpr->booking->akad)->no_ajb ?? ($kpr->booking->no_ajb ?? '') }}"
+                                                    placeholder="Contoh: AJB/123/X/2026 atau No. 45/PPAT/2026">
+                                                <small class="text-muted mt-1 d-block" style="font-size: 0.72rem;">
+                                                    <i class="mdi mdi-information-outline me-1"></i>Nomor resmi akta dari Notaris / PPAT
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="akad-form-group mb-2">
+                                                <label class="akad-form-label mb-1" style="font-size: 0.82rem;">
+                                                    Tanggal Penandatanganan AJB
+                                                </label>
+                                                <input type="date" class="akad-form-control" name="tanggal_ajb" id="tanggal_ajb"
+                                                    value="{{ optional($kpr->booking->akad)->tanggal_ajb ? \Carbon\Carbon::parse(optional($kpr->booking->akad)->tanggal_ajb)->format('Y-m-d') : date('Y-m-d') }}">
+                                                <small class="text-muted mt-1 d-block" style="font-size: 0.72rem;">
+                                                    <i class="mdi mdi-information-outline me-1"></i>Tanggal pelaksanaan tanda tangan AJB di Notaris
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-3 mt-1">
+                                        <div class="col-md-6">
+                                            @php
+                                                $defaultAjbPrice = optional($kpr->booking->unit)->ajb_price ?? 0;
+                                                $savedAjbNominal = optional($kpr->booking->akad)->nominal_ajb ?? ($kpr->booking->ajb ?? $defaultAjbPrice);
+                                            @endphp
+                                            <div class="akad-form-group mb-2">
+                                                <label class="akad-form-label mb-1" style="font-size: 0.82rem;">
+                                                    Biaya / Nominal AJB (Rp)
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-light text-primary fw-bold" style="font-size: 0.82rem; border-color: #cbd5e1;">Rp</span>
+                                                    <input type="text" class="akad-form-control rupiah-format" name="nominal_ajb" id="nominal_ajb"
+                                                        value="{{ $savedAjbNominal > 0 ? number_format($savedAjbNominal, 0, ',', '.') : '' }}"
+                                                        placeholder="Contoh: 2.500.000">
+                                                </div>
+                                                <small class="text-muted mt-1 d-block" style="font-size: 0.72rem;">
+                                                    <i class="mdi mdi-information-outline me-1"></i>Tarif akta rekanan notaris (otomatis tercatat di Invoice Keuangan)
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="akad-form-group mb-2">
+                                                <label class="akad-form-label mb-1" style="font-size: 0.82rem;">
+                                                    Upload Scan Akta Jual Beli (AJB)
+                                                </label>
+                                                @php
+                                                    $hasDokumenAjb = !empty(optional($kpr->booking->akad)->dokumen_ajb);
+                                                    $dokumenAjbUrl = $hasDokumenAjb ? asset('uploads/' . $kpr->booking->akad->dokumen_ajb) : '#';
+                                                    $dokumenAjbName = $hasDokumenAjb ? basename($kpr->booking->akad->dokumen_ajb) : '';
+                                                @endphp
+                                                <div id="dokumen_ajb_empty_box" class="verifikasi-file-upload" onclick="document.getElementById('inputDokumenAjb').click()" style="cursor: pointer; padding: 10px 14px; {{ $hasDokumenAjb ? 'display: none;' : '' }}">
+                                                    <div class="verifikasi-file-label" style="gap: 8px;">
+                                                        <i class="mdi mdi-cloud-upload" style="font-size: 1.3rem; color: #9a55ff;"></i>
+                                                        <div class="verifikasi-file-info">
+                                                            <span style="font-size: 0.82rem;">Upload Scan Dokumen AJB</span>
+                                                            <small style="font-size: 0.7rem;">Format: PDF, JPG, PNG (Max 5MB)</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="dokumen_ajb_uploaded_box" class="rounded-3 mb-0" style="background: #f0fdf4; border: 1.5px solid #86efac; padding: 8px 12px; min-height: 54px; {{ $hasDokumenAjb ? '' : 'display: none;' }}">
+                                                    <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                                                        <div class="d-flex align-items-center gap-2 overflow-hidden flex-grow-1" style="min-width: 0;">
+                                                            <div class="p-1.5 rounded-2 flex-shrink-0 d-flex align-items-center justify-content-center" style="background: rgba(0, 201, 167, 0.15); color: #00c9a7; width: 32px; height: 32px;">
+                                                                <i class="mdi mdi-file-check-outline" style="font-size: 1.15rem;"></i>
+                                                            </div>
+                                                            <div class="overflow-hidden" style="min-width: 0;">
+                                                                <span class="d-block fw-bold text-success text-truncate" id="dokumen_ajb_status_text" style="font-size: 0.82rem; line-height: 1.2;">
+                                                                    {{ $hasDokumenAjb ? $dokumenAjbName : 'Scan AJB Terunggah' }}
+                                                                </span>
+                                                                <small class="text-muted" id="dokumen_ajb_size_text" style="font-size: 0.7rem;">{{ $hasDokumenAjb ? 'Berkas Tersimpan' : '' }}</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex align-items-center flex-shrink-0" style="gap: 5px;">
+                                                            <a href="{{ $dokumenAjbUrl }}" target="_blank" id="dokumen_ajb_view_link" class="btn btn-sm text-white fw-bold px-2 py-1 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #10b981; border: none; font-size: 0.74rem; border-radius: 6px; gap: 3px; text-decoration: none; {{ $hasDokumenAjb ? '' : 'display: none;' }}">
+                                                                <i class="mdi mdi-eye"></i>
+                                                                <span>Lihat</span>
+                                                            </a>
+                                                            <button type="button" onclick="document.getElementById('inputDokumenAjb').click()" class="btn btn-sm text-white fw-bold px-2 py-1 shadow-sm d-inline-flex align-items-center justify-content-center" style="background-color: #9a55ff; border: 1px solid #9a55ff; font-size: 0.74rem; border-radius: 6px; gap: 3px;">
+                                                                <i class="mdi mdi-cloud-sync"></i>
+                                                                <span>Ganti</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <input type="file" name="dokumen_ajb" id="inputDokumenAjb" class="d-none" accept=".jpg,.jpeg,.png,.pdf" onchange="previewAkadFile(this, 'dokumen_ajb')">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="akad-form-group">
                                     <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
                                         <label class="akad-form-label mb-0">Upload Dokumen Hasil Akad (Scan TTD Para Pihak) <span class="text-danger">*</span></label>
@@ -2304,6 +2418,12 @@ a.badge-doc-status.status-disetujui:hover {
             }
 
             initNotarisSelect2();
+
+            // Format Rupiah Input Nominal AJB
+            $('#nominal_ajb').on('input', function() {
+                let val = $(this).val().replace(/[^0-9]/g, '');
+                $(this).val(val ? new Intl.NumberFormat('id-ID').format(val) : '');
+            });
 
             // Handler perubahan pilihan notaris -> auto-fill Lokasi Akad menyesuaikan nama notaris
             $selectNotaris.on('change select2:select', function() {

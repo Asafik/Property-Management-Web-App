@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Finance;
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
 use App\Models\PraLandbank;
+use App\Models\Booking;
+use App\Models\Akad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -33,12 +35,13 @@ class InvoiceMasterController extends Controller
     {
         $this->authorizeFinanceAccess();
 
-        // Auto sync PraLandbank records if invoice table is empty or on load
+        // Auto sync PraLandbank and Booking IJB records if invoice table is empty or on load
         if (Invoice::count() === 0) {
             $this->syncPraLandbanksInternal();
+            $this->syncBookingsIjbInternal();
         }
 
-        $query = Invoice::with(['praLandbank', 'booking', 'creator']);
+        $query = Invoice::with(['praLandbank', 'booking.unit.landBank', 'booking.customer', 'creator']);
 
         // Search Keyword
         if ($request->filled('search')) {
@@ -98,6 +101,8 @@ class InvoiceMasterController extends Controller
             'count_partial'        => $allMatching->where('payment_status', 'partial')->count(),
             'count_pending'        => $allMatching->where('payment_status', 'pending')->count(),
             'count_pra_landbank'   => $allMatching->where('category', 'pra_landbank')->count(),
+            'count_ijb'            => $allMatching->where('category', 'ijb')->count(),
+            'count_ajb'            => $allMatching->where('category', 'ajb')->count(),
         ];
 
         // Pagination
@@ -113,12 +118,27 @@ class InvoiceMasterController extends Controller
     public function show($id)
     {
         try {
-            $invoice = Invoice::with(['praLandbank.payments', 'praLandbank.documents.documentType', 'booking', 'creator'])->findOrFail($id);
+            $invoice = Invoice::with([
+                'praLandbank.payments',
+                'praLandbank.documents.documentType',
+                'booking.unit.landBank',
+                'booking.customer',
+                'booking.sales',
+                'booking.akad',
+                'creator'
+            ])->findOrFail($id);
+
+            $printUrl = null;
+            if ($invoice->pra_landbank_id) {
+                $printUrl = route('pra-landbank.invoice', $invoice->pra_landbank_id);
+            } elseif ($invoice->booking_id) {
+                $printUrl = route('dashboard.cetak.invoice.cash.pdf', $invoice->booking_id);
+            }
 
             return response()->json([
                 'success'   => true,
                 'data'      => $invoice,
-                'print_url' => $invoice->pra_landbank_id ? route('pra-landbank.invoice', $invoice->pra_landbank_id) : null
+                'print_url' => $printUrl
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -283,16 +303,19 @@ class InvoiceMasterController extends Controller
     }
 
     /**
-     * Sync all Pra Land Bank records to Invoices table
+     * Sync all Pra Land Bank, Booking IJB, and Akad AJB records to Invoices table
      */
     public function syncAll()
     {
         try {
             $count = $this->syncPraLandbanksInternal();
+            $countIjb = $this->syncBookingsIjbInternal();
+            $countAjb = $this->syncBookingsAjbInternal();
+            $total = $count + $countIjb + $countAjb;
             return response()->json([
                 'success' => true,
-                'message' => "Sinkronisasi berhasil! {$count} data transaksi Pra Land Bank telah sinkron ke Master Invoice database.",
-                'count'   => $count
+                'message' => "Sinkronisasi berhasil! {$count} Pra Land Bank, {$countIjb} IJB Unit, dan {$countAjb} AJB Notaris telah sinkron ke Master Invoice database.",
+                'count'   => $total
             ]);
         } catch (\Exception $e) {
             Log::error('Error syncAll invoices: ' . $e->getMessage());
@@ -311,6 +334,47 @@ class InvoiceMasterController extends Controller
         foreach ($lands as $land) {
             Invoice::syncFromPraLandbank($land);
             $synced++;
+        }
+
+        return $synced;
+    }
+
+    /**
+     * Internal helper to sync Booking IJB
+     */
+    private function syncBookingsIjbInternal(): int
+    {
+        $bookings = Booking::whereNotNull('ijb')->where('ijb', '>', 0)->get();
+        $synced = 0;
+
+        foreach ($bookings as $b) {
+            Invoice::createOrUpdateFromBookingIjb($b);
+            $synced++;
+        }
+
+        return $synced;
+    }
+
+    /**
+     * Internal helper to sync Akad AJB
+     */
+    private function syncBookingsAjbInternal(): int
+    {
+        $akads = Akad::where('status', 'selesai')
+            ->where(function ($q) {
+                $q->whereNotNull('no_ajb')
+                  ->orWhere('nominal_ajb', '>', 0)
+                  ->orWhereNotNull('dokumen_ajb');
+            })
+            ->with(['booking.customer', 'booking.unit.landBank', 'booking.sales'])
+            ->get();
+
+        $synced = 0;
+        foreach ($akads as $akad) {
+            if ($akad->booking) {
+                Invoice::createOrUpdateFromAkadAjb($akad->booking, $akad);
+                $synced++;
+            }
         }
 
         return $synced;

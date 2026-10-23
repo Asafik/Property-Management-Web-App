@@ -7,6 +7,8 @@ use App\Models\Akad;
 use App\Models\KprApplication;
 use App\Models\CompanyProfile;
 use App\Models\Notaris;
+use App\Models\Invoice;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
@@ -20,7 +22,9 @@ class AkadController extends Controller
             return redirect()->back()->with('error', 'Booking belum bisa masuk tahap akad.');
         }
 
-        return view('marketing.akad_cash', compact('booking'));
+        $notarisList = Notaris::where('is_active', true)->orderBy('nama_notaris', 'asc')->get();
+
+        return view('marketing.akad_cash', compact('booking', 'notarisList'));
     }
     function generateNoAkad()
     {
@@ -55,7 +59,13 @@ class AkadController extends Controller
             // Validasi request
             $request->validate([
                 'tanggal_akad' => 'nullable|date',
-                'dokumen' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+                'lokasi_akad' => 'nullable|string',
+                'nama_notaris' => 'nullable|string',
+                'no_ajb' => 'nullable|string',
+                'tanggal_ajb' => 'nullable|date',
+                'nominal_ajb' => 'nullable|string',
+                'dokumen_ajb' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+                'dokumen' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
                 'catatan' => 'nullable|string',
                 'no_akad' => 'nullable|string',
                 'alasan_batal' => 'nullable|string',
@@ -71,33 +81,88 @@ class AkadController extends Controller
                 Log::info('Dokumen akad diupload', ['file' => $filePath]);
             }
 
+            // Upload dokumen AJB jika ada
+            $filePathAjb = null;
+            if ($request->hasFile('dokumen_ajb')) {
+                $file = $request->file('dokumen_ajb');
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $cleanName    = preg_replace('/[^A-Za-z0-9\-]/', '_', $originalName);
+                $extension    = $file->getClientOriginalExtension();
+                $filename = time() . '_ajb_' . $cleanName . '.' . $extension;
+                $destination = public_path('uploads/dokumen_ajb');
+
+                if (!file_exists($destination)) {
+                    mkdir($destination, 0755, true);
+                }
+
+                $file->move($destination, $filename);
+                $filePathAjb = 'dokumen_ajb/' . $filename;
+                Log::info('Dokumen AJB diupload', ['file' => $filePathAjb]);
+            }
+
             // ===== FORM SELESAI =====
             if ($request->filled('tanggal_akad')) {
                 $noAkad = $request->no_akad ?? $this->generateNoAkad();
+                $rawAjb = $request->nominal_ajb !== null ? preg_replace('/[^0-9]/', '', (string)$request->nominal_ajb) : null;
+                $nominalAjb = ($rawAjb !== null && $rawAjb !== '') ? (float)$rawAjb : (float)(optional($booking->unit)->ajb_price ?? 0);
+                $noAjb = $request->no_ajb ?: null;
+                $tanggalAjb = $request->tanggal_ajb ?: ($request->tanggal_akad ?: now()->toDateString());
+                $namaNotaris = $request->nama_notaris ?: null;
 
-                Akad::create([
-                    'booking_id' => $booking->id,
-                    'no_akad' => $noAkad,
-                    'tanggal_akad' => $request->tanggal_akad,
-                    'dokumen' => $filePath,
-                    'catatan' => $request->catatan,
-                    'status' => 'selesai'
-                ]);
+                $akadRecord = Akad::updateOrCreate(
+                    ['booking_id' => $booking->id],
+                    [
+                        'no_akad' => $noAkad,
+                        'tanggal_akad' => $request->tanggal_akad,
+                        'lokasi_akad' => $request->lokasi_akad ?? ($namaNotaris ? 'Kantor Notaris ' . $namaNotaris : null),
+                        'nama_notaris' => $namaNotaris,
+                        'no_ajb' => $noAjb,
+                        'tanggal_ajb' => $tanggalAjb,
+                        'nominal_ajb' => $nominalAjb,
+                        'dokumen_ajb' => $filePathAjb,
+                        'dokumen' => $filePath,
+                        'catatan' => $request->catatan,
+                        'status' => 'selesai',
+                        'tindakan' => null
+                    ]
+                );
 
                 // Update status akad di booking
                 $booking->update([
                     'status_akad' => 'done',
                     'status' => 'akad',
-                    'akad_date' => now()
-
+                    'akad_date' => now(),
+                    'no_ajb' => $noAjb,
+                    'ajb' => $nominalAjb,
+                    'bukti_transfer_ajb' => $filePathAjb,
                 ]);
+
+                // Catat pembayaran AJB dan buatkan otomatis Invoice AJB di Divisi Keuangan
+                if ($nominalAjb > 0 || $noAjb || $filePathAjb) {
+                    Payment::updateOrCreate(
+                        [
+                            'booking_id' => $booking->id,
+                            'type'       => 'ajb',
+                        ],
+                        [
+                            'amount'           => $nominalAjb,
+                            'payment_date'     => $tanggalAjb,
+                            'method'           => 'transfer',
+                            'reference_number' => $noAjb ?: ($filePathAjb ?: 'AJB Notaris'),
+                            'notes'            => 'Biaya Akta Jual Beli (AJB) Notaris ' . ($namaNotaris ?? '-'),
+                        ]
+                    );
+
+                    Invoice::createOrUpdateFromAkadAjb($booking, $akadRecord, $nominalAjb, $filePathAjb);
+                }
 
                 Log::info('Akad selesai berhasil diproses', [
                     'booking_id' => $booking->id,
-                    'no_akad' => $noAkad
+                    'no_akad' => $noAkad,
+                    'no_ajb' => $noAjb
                 ]);
 
-                return redirect()->back()->with('success', 'Akad selesai berhasil diproses.');
+                return redirect()->back()->with('success', 'Akad selesai berhasil diproses! Data AJB dan Invoice Keuangan telah disinkronkan.');
             }
 
             // ===== FORM BATAL =====
@@ -295,6 +360,23 @@ class AkadController extends Controller
                 $filePathTolak = 'dokumen_akad/' . $filename;
             }
 
+            $filePathAjb = $existingAkad ? $existingAkad->dokumen_ajb : null;
+            if ($request->hasFile('dokumen_ajb')) {
+                $file = $request->file('dokumen_ajb');
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $cleanName    = preg_replace('/[^A-Za-z0-9\-]/', '_', $originalName);
+                $extension    = $file->getClientOriginalExtension();
+                $filename = time() . '_ajb_' . $cleanName . '.' . $extension;
+                $destination = public_path('uploads/dokumen_ajb');
+
+                if (!file_exists($destination)) {
+                    mkdir($destination, 0755, true);
+                }
+
+                $file->move($destination, $filename);
+                $filePathAjb = 'dokumen_ajb/' . $filename;
+            }
+
             // =========================
             // ✅ SELESAI
             // =========================
@@ -313,13 +395,22 @@ class AkadController extends Controller
                     }
                 }
 
-                Akad::updateOrCreate(
+                $rawAjb = $request->nominal_ajb !== null ? preg_replace('/[^0-9]/', '', (string)$request->nominal_ajb) : null;
+                $nominalAjb = ($rawAjb !== null && $rawAjb !== '') ? (float)$rawAjb : (float)(optional($booking->unit)->ajb_price ?? 0);
+                $noAjb = $request->no_ajb ?: null;
+                $tanggalAjb = $request->tanggal_ajb ?: ($request->tanggal_akad ?: now()->toDateString());
+
+                $akadRecord = Akad::updateOrCreate(
                     ['booking_id' => $booking->id],
                     [
                         'no_akad' => $noAkad,
                         'tanggal_akad' => $request->tanggal_akad,
                         'lokasi_akad' => $request->lokasi_akad,
                         'nama_notaris' => $request->nama_notaris,
+                        'no_ajb' => $noAjb,
+                        'tanggal_ajb' => $tanggalAjb,
+                        'nominal_ajb' => $nominalAjb,
+                        'dokumen_ajb' => $filePathAjb,
                         'dokumen' => $filePath,
                         'catatan' => $request->catatan,
                         'status' => 'selesai',
@@ -330,8 +421,30 @@ class AkadController extends Controller
                 $booking->update([
                     'status_akad' => 'done',
                     'status' => 'akad',
-                    'akad_date' => now()
+                    'akad_date' => now(),
+                    'no_ajb' => $noAjb,
+                    'ajb' => $nominalAjb,
+                    'bukti_transfer_ajb' => $filePathAjb,
                 ]);
+
+                // Catat pembayaran AJB dan buatkan otomatis Invoice AJB di Divisi Keuangan
+                if ($nominalAjb > 0 || $noAjb || $filePathAjb) {
+                    Payment::updateOrCreate(
+                        [
+                            'booking_id' => $booking->id,
+                            'type'       => 'ajb',
+                        ],
+                        [
+                            'amount'           => $nominalAjb,
+                            'payment_date'     => $tanggalAjb,
+                            'method'           => 'transfer',
+                            'reference_number' => $noAjb ?: ($filePathAjb ?: 'AJB Notaris'),
+                            'notes'            => 'Biaya Akta Jual Beli (AJB) Notaris ' . ($request->nama_notaris ?? '-'),
+                        ]
+                    );
+
+                    Invoice::createOrUpdateFromAkadAjb($booking, $akadRecord, $nominalAjb, $filePathAjb);
+                }
 
                 $kpr = KprApplication::where('booking_id', $booking->id)->first();
                 if ($kpr) {
@@ -343,10 +456,10 @@ class AkadController extends Controller
 
                 $isKomersil = strtolower(optional($booking->unit)->jenis ?? '') === 'komersil';
                 if ($isKomersil) {
-                    return redirect()->route('kpr.customer-verified')->with('success', 'Akad selesai berhasil diproses! Data telah diteruskan ke daftar KPR Terverifikasi.');
+                    return redirect()->route('kpr.customer-verified')->with('success', 'Akad selesai berhasil diproses! Data AJB dan Invoice Keuangan telah disinkronkan.');
                 }
 
-                return redirect()->back()->with('success', 'Akad selesai berhasil diproses!');
+                return redirect()->back()->with('success', 'Akad selesai berhasil diproses! Data AJB dan Invoice Keuangan telah disinkronkan.');
             }
 
             // =========================
