@@ -213,11 +213,14 @@
                             Perubahan data kontrak, progres lapangan, skema termin, dan ketentuan SPK
                         </p>
                     </div>
+                    @php
+                        $backUrl = ($spk->jenis_spk === 'Pembangunan Unit') ? route('spk.pembangunan.index') : route('spk.pekerjaan-lain.index');
+                    @endphp
                     <div class="d-flex align-items-center gap-2">
                         <a href="{{ route('spk.cetak', $spk->id) }}" target="_blank" class="btn btn-success-modern btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5">
                             <i class="mdi mdi-printer fs-6"></i> Cetak SPK
                         </a>
-                        <a href="{{ route('spk.index') }}" class="btn btn-secondary-modern btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5">
+                        <a href="{{ $backUrl }}" class="btn btn-secondary-modern btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5">
                             <i class="mdi mdi-arrow-left fs-6"></i> Kembali
                         </a>
                     </div>
@@ -656,11 +659,11 @@
         <!-- Tombol Aksi Submit Footer Card -->
         <div class="card shadow-sm border-0 mb-5" style="border-radius: 12px; background: #ffffff;">
             <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <a href="{{ route('spk.index') }}" class="btn btn-secondary-modern px-3 py-2 d-inline-flex align-items-center gap-1.5">
+                <a href="{{ $backUrl }}" class="btn btn-secondary-modern px-3 py-2 d-inline-flex align-items-center gap-1.5">
                     <i class="mdi mdi-arrow-left"></i> Kembali ke Daftar SPK
                 </a>
                 <div class="d-flex align-items-center gap-2">
-                    <a href="{{ route('spk.index') }}" class="btn btn-secondary-modern px-4 py-2">
+                    <a href="{{ $backUrl }}" class="btn btn-secondary-modern px-4 py-2">
                         Batal
                     </a>
                     <button type="submit" class="btn btn-gradient-purple px-4 py-2.5 fw-bold text-white shadow d-inline-flex align-items-center gap-2">

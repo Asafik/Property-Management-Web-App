@@ -683,6 +683,8 @@ Route::middleware(['auth'])->group(function () {
     // MASTER DATA & MANAJEMEN SPK KONTRAKTOR
     // ==============================================================
     Route::get('/spk', [SpkController::class, 'index'])->name('spk.index');
+    Route::get('/spk/pembangunan', [SpkController::class, 'indexPembangunan'])->name('spk.pembangunan.index');
+    Route::get('/spk/pekerjaan-lain', [SpkController::class, 'indexPekerjaanLain'])->name('spk.pekerjaan-lain.index');
     Route::get('/spk/create', [SpkController::class, 'create'])->name('spk.create');
     Route::post('/spk/store', [SpkController::class, 'store'])->name('spk.store');
     Route::get('/spk/{id}', [SpkController::class, 'show'])->name('spk.show');

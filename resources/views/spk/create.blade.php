@@ -241,23 +241,31 @@
         <div class="col-12">
             <div class="card shadow-sm border-0 header-card" style="border-radius: 12px; background: #ffffff;">
                 <div class="card-body p-3 p-md-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    @php
+                        $backUrl = match($kategori ?? null) {
+                            'pekerjaan_lain' => route('spk.pekerjaan-lain.index'),
+                            'pembangunan'    => route('spk.pembangunan.index'),
+                            default          => route('spk.index'),
+                        };
+                    @endphp
                     <div>
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <span class="badge px-2.5 py-1" style="background: rgba(154, 85, 255, 0.1); color: #9a55ff; font-weight: 600; font-size: 0.78rem; border-radius: 6px;">
-                                <i class="mdi mdi-file-sign me-1"></i>Modul Kontrak Kerja
+                                <i class="mdi {{ ($kategori ?? '') === 'pekerjaan_lain' ? 'mdi-hammer-wrench' : 'mdi-home-plus-outline' }} me-1"></i>
+                                {{ ($kategori ?? '') === 'pekerjaan_lain' ? 'SPK Pekerjaan Lain' : (($kategori ?? '') === 'pembangunan' ? 'SPK Pembangunan Unit' : 'SPK Kontraktor') }}
                             </span>
                             <span class="text-muted small">|</span>
-                            <span class="text-muted small">SPK Kontraktor</span>
+                            <span class="text-muted small">Modul Proyek</span>
                         </div>
                         <h3 class="text-dark mb-1 fw-bold" style="font-size: 1.35rem;">
-                            Buat Surat Perintah Kerja (SPK)
+                            {{ ($kategori ?? '') === 'pekerjaan_lain' ? 'Buat SPK Pekerjaan Lain (Infrastruktur / Fasum / dsb)' : (($kategori ?? '') === 'pembangunan' ? 'Buat SPK Pembangunan Unit Rumah' : 'Buat Surat Perintah Kerja (SPK)') }}
                         </h3>
                         <p class="text-muted mb-0" style="font-size: 0.88rem;">
-                            Penerbitan surat perintah kerja resmi antara developer dan mitra kontraktor/pemborong
+                            {{ ($kategori ?? '') === 'pekerjaan_lain' ? 'Penerbitan surat perintah kerja resmi untuk sarana, infrastruktur jalan, cut & fill, atau pekerjaan subkon.' : 'Penerbitan surat perintah kerja resmi antara developer dan mitra kontraktor/pemborong.' }}
                         </p>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <a href="{{ route('spk.index') }}" class="btn btn-secondary-modern btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5">
+                        <a href="{{ $backUrl }}" class="btn btn-secondary-modern btn-sm px-3 py-2 d-inline-flex align-items-center gap-1.5">
                             <i class="mdi mdi-arrow-left fs-6"></i> Kembali
                         </a>
                     </div>
@@ -318,12 +326,12 @@
                     <div class="col-md-4">
                         <label class="form-label fw-semibold text-dark small">Jenis SPK <span class="text-danger">*</span></label>
                         <select name="jenis_spk" id="jenis_spk" class="form-select select2" required onchange="handleJenisSpkChange(this.value)">
-                            <option value="Pembangunan Unit" {{ old('jenis_spk') == 'Pembangunan Unit' ? 'selected' : '' }}>Pembangunan Unit Rumah</option>
-                            <option value="Infrastruktur Jalan & Drainase" {{ old('jenis_spk') == 'Infrastruktur Jalan & Drainase' ? 'selected' : '' }}>Infrastruktur (Jalan, Paving, Saluran)</option>
-                            <option value="Fasilitas Umum & Sarana" {{ old('jenis_spk') == 'Fasilitas Umum & Sarana' ? 'selected' : '' }}>Fasilitas Umum (Pos, Gerbang, Taman, Masjid)</option>
-                            <option value="Pematangan Lahan (Cut & Fill)" {{ old('jenis_spk') == 'Pematangan Lahan (Cut & Fill)' ? 'selected' : '' }}>Pematangan Lahan (Cut & Fill / Talud)</option>
-                            <option value="Pekerjaan Khusus / Subkon" {{ old('jenis_spk') == 'Pekerjaan Khusus / Subkon' ? 'selected' : '' }}>Pekerjaan Khusus / Sub-Kontraktor</option>
-                            <option value="Lainnya" {{ old('jenis_spk') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                            <option value="Pembangunan Unit" {{ old('jenis_spk', $defaultJenisSpk ?? '') == 'Pembangunan Unit' ? 'selected' : '' }}>Pembangunan Unit Rumah</option>
+                            <option value="Infrastruktur Jalan & Drainase" {{ old('jenis_spk', $defaultJenisSpk ?? '') == 'Infrastruktur Jalan & Drainase' ? 'selected' : '' }}>Infrastruktur (Jalan, Paving, Saluran)</option>
+                            <option value="Fasilitas Umum & Sarana" {{ old('jenis_spk', $defaultJenisSpk ?? '') == 'Fasilitas Umum & Sarana' ? 'selected' : '' }}>Fasilitas Umum (Pos, Gerbang, Taman, Masjid)</option>
+                            <option value="Pematangan Lahan (Cut & Fill)" {{ old('jenis_spk', $defaultJenisSpk ?? '') == 'Pematangan Lahan (Cut & Fill)' ? 'selected' : '' }}>Pematangan Lahan (Cut & Fill / Talud)</option>
+                            <option value="Pekerjaan Khusus / Subkon" {{ old('jenis_spk', $defaultJenisSpk ?? '') == 'Pekerjaan Khusus / Subkon' ? 'selected' : '' }}>Pekerjaan Khusus / Sub-Kontraktor</option>
+                            <option value="Lainnya" {{ old('jenis_spk', $defaultJenisSpk ?? '') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                         </select>
                     </div>
 
@@ -643,11 +651,11 @@
         <!-- Tombol Aksi Submit Footer Card -->
         <div class="card shadow-sm border-0 mb-5" style="border-radius: 12px; background: #ffffff;">
             <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <a href="{{ route('spk.index') }}" class="btn btn-secondary-modern px-3 py-2 d-inline-flex align-items-center gap-1.5">
+                <a href="{{ $backUrl }}" class="btn btn-secondary-modern px-3 py-2 d-inline-flex align-items-center gap-1.5">
                     <i class="mdi mdi-arrow-left"></i> Kembali ke Daftar SPK
                 </a>
                 <div class="d-flex align-items-center gap-2">
-                    <a href="{{ route('spk.index') }}" class="btn btn-secondary-modern px-4 py-2">
+                    <a href="{{ $backUrl }}" class="btn btn-secondary-modern px-4 py-2">
                         Batal
                     </a>
                     <button type="submit" class="btn btn-gradient-purple px-4 py-2.5 fw-bold text-white shadow d-inline-flex align-items-center gap-2">

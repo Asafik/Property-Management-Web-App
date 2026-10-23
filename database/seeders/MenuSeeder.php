@@ -150,13 +150,21 @@ class MenuSeeder extends Seeder
         ]);
         $proyekMenu->positions()->attach($proyekRoles);
 
-        $spkMenu = Menu::create([
-            'name'  => 'SPK Kontraktor',
-            'route' => 'spk.index',
-            'icon'  => 'mdi-file-sign',
+        $spkPembangunanMenu = Menu::create([
+            'name'  => 'SPK untuk Pembangunan',
+            'route' => 'spk.pembangunan.index',
+            'icon'  => 'mdi-home-plus-outline',
             'order' => 8.5
         ]);
-        $spkMenu->positions()->attach($proyekRoles);
+        $spkPembangunanMenu->positions()->attach($proyekRoles);
+
+        $spkLainMenu = Menu::create([
+            'name'  => 'SPK untuk Pekerjaan Lain',
+            'route' => 'spk.pekerjaan-lain.index',
+            'icon'  => 'mdi-hammer-wrench',
+            'order' => 8.6
+        ]);
+        $spkLainMenu->positions()->attach($proyekRoles);
 
         $unitMenu = Menu::create([
             'name'  => 'Unit',

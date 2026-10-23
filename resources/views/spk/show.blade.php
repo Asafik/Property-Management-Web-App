@@ -206,7 +206,10 @@
                     <i class="mdi mdi-pencil"></i>
                     <span>Edit SPK</span>
                 </a>
-                <a href="{{ route('spk.index') }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1" style="border-radius: 6px; padding: 0.45rem 0.9rem;">
+                @php
+                    $backUrl = ($spk->jenis_spk === 'Pembangunan Unit') ? route('spk.pembangunan.index') : route('spk.pekerjaan-lain.index');
+                @endphp
+                <a href="{{ $backUrl }}" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1" style="border-radius: 6px; padding: 0.45rem 0.9rem;">
                     <i class="mdi mdi-arrow-left"></i>
                     <span>Kembali</span>
                 </a>

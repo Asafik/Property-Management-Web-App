@@ -1,6 +1,6 @@
 @extends('layouts.partial.app')
 
-@section('title', 'Master Data SPK Kontraktor - Property Management App')
+@section('title', ($pageMeta['title'] ?? 'SPK Kontraktor') . ' - Property Management App')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/dashboard-clean.css') }}?v={{ time() }}">
@@ -208,15 +208,53 @@
         @endif
 
         <!-- Page Title & Subtitle -->
-        <div class="row align-items-center mb-4">
+        <div class="row align-items-center mb-3">
             <div class="col-12">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge px-2.5 py-1" style="background: rgba(124, 58, 237, 0.1); color: #7c3aed; font-weight: 600; font-size: 0.78rem; border-radius: 6px;">
+                        <i class="mdi {{ ($pageMeta['kategori'] ?? '') === 'pekerjaan_lain' ? 'mdi-hammer-wrench' : 'mdi-home-plus-outline' }} me-1"></i>{{ $pageMeta['badge'] ?? 'SPK Kontraktor' }}
+                    </span>
+                    <span class="text-muted small">|</span>
+                    <span class="text-muted small">Modul Proyek</span>
+                </div>
                 <h2 class="text-dark mb-1 fw-bold" style="font-size: 1.55rem; letter-spacing: -0.02em;">
-                    Surat Perintah Kerja (SPK) Kontraktor
+                    {{ $pageMeta['title'] ?? 'Surat Perintah Kerja (SPK) Kontraktor' }}
                 </h2>
                 <p class="text-muted mb-0" style="font-size: 0.88rem;">
-                    Buat, kelola, monitor termin pembayaran, dan cetak surat resmi SPK kontraktor & pemborong.
+                    {{ $pageMeta['subtitle'] ?? 'Buat, kelola, monitor termin pembayaran, dan cetak surat resmi SPK kontraktor & pemborong.' }}
                 </p>
             </div>
+        </div>
+
+        <!-- Tab Switcher Nav: Pembangunan vs Pekerjaan Lain vs Semua -->
+        <div class="d-flex align-items-center gap-2 mb-4 p-1.5" style="background: #f1f5f9; border-radius: 10px; width: fit-content; max-width: 100%; overflow-x: auto;">
+            <a href="{{ route('spk.pembangunan.index') }}" 
+               class="btn btn-sm d-inline-flex align-items-center gap-2 text-decoration-none px-3 py-2 fw-semibold"
+               style="border-radius: 8px; font-size: 0.83rem; transition: all 0.2s; {{ ($pageMeta['kategori'] ?? '') === 'pembangunan' ? 'background: #7c3aed; color: #ffffff; box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);' : 'background: transparent; color: #475569;' }}">
+                <i class="mdi mdi-home-plus-outline"></i>
+                <span>SPK untuk Pembangunan</span>
+                <span class="badge rounded-pill {{ ($pageMeta['kategori'] ?? '') === 'pembangunan' ? 'bg-white text-dark' : 'bg-secondary text-white' }}" style="font-size: 0.7rem; padding: 0.2em 0.55em;">
+                    {{ $tabCounts['pembangunan'] ?? 0 }}
+                </span>
+            </a>
+            <a href="{{ route('spk.pekerjaan-lain.index') }}" 
+               class="btn btn-sm d-inline-flex align-items-center gap-2 text-decoration-none px-3 py-2 fw-semibold"
+               style="border-radius: 8px; font-size: 0.83rem; transition: all 0.2s; {{ ($pageMeta['kategori'] ?? '') === 'pekerjaan_lain' ? 'background: #7c3aed; color: #ffffff; box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);' : 'background: transparent; color: #475569;' }}">
+                <i class="mdi mdi-hammer-wrench"></i>
+                <span>SPK untuk Pekerjaan Lain</span>
+                <span class="badge rounded-pill {{ ($pageMeta['kategori'] ?? '') === 'pekerjaan_lain' ? 'bg-white text-dark' : 'bg-secondary text-white' }}" style="font-size: 0.7rem; padding: 0.2em 0.55em;">
+                    {{ $tabCounts['pekerjaan_lain'] ?? 0 }}
+                </span>
+            </a>
+            <a href="{{ route('spk.index') }}" 
+               class="btn btn-sm d-inline-flex align-items-center gap-2 text-decoration-none px-3 py-2 fw-semibold"
+               style="border-radius: 8px; font-size: 0.83rem; transition: all 0.2s; {{ ($pageMeta['kategori'] ?? '') === 'semua' ? 'background: #7c3aed; color: #ffffff; box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);' : 'background: transparent; color: #475569;' }}">
+                <i class="mdi mdi-file-document-multiple-outline"></i>
+                <span>Semua SPK</span>
+                <span class="badge rounded-pill {{ ($pageMeta['kategori'] ?? '') === 'semua' ? 'bg-white text-dark' : 'bg-secondary text-white' }}" style="font-size: 0.7rem; padding: 0.2em 0.55em;">
+                    {{ $tabCounts['semua'] ?? 0 }}
+                </span>
+            </a>
         </div>
 
         <!-- 4 KPI Metrics Card Grid (Persis Catalog Unit & Perizinan) -->
@@ -230,7 +268,7 @@
                     <div class="dash-kpi-info">
                         <div class="dash-kpi-label">Total SPK</div>
                         <div class="dash-kpi-val">{{ $stats['total_spk'] }}</div>
-                        <div class="dash-kpi-sub">Seluruh SPK Dibuat</div>
+                        <div class="dash-kpi-sub">{{ $pageMeta['badge'] ?? 'SPK Terdaftar' }}</div>
                     </div>
                 </div>
                 <div class="dash-kpi-action purple">
@@ -300,10 +338,10 @@
                                 <i class="mdi mdi-format-list-bulleted fs-5"></i>
                             </div>
                             <div>
-                                <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Daftar SPK Kontraktor</span>
+                                <span style="font-size: 0.95rem; font-weight: 700; color: #0f172a;">Daftar {{ $pageMeta['title'] ?? 'SPK Kontraktor' }}</span>
                             </div>
                         </div>
-                        <a href="{{ route('spk.create') }}" class="btn btn-sm btn-solid-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 fw-semibold shadow-sm text-decoration-none text-white" style="border-radius: 6px; font-size: 0.82rem; height: 36px; white-space: nowrap;">
+                        <a href="{{ $pageMeta['create_url'] ?? route('spk.create') }}" class="btn btn-sm btn-solid-primary d-inline-flex align-items-center gap-1.5 px-3 py-1.5 fw-semibold shadow-sm text-decoration-none text-white" style="border-radius: 6px; font-size: 0.82rem; height: 36px; white-space: nowrap;">
                             <i class="mdi mdi-plus-circle-outline fs-6"></i>
                             <span>Buat SPK Baru</span>
                         </a>
@@ -314,11 +352,11 @@
                         <div class="card-toolbar-box p-3 border-bottom bg-white">
                             <!-- Desktop Version -->
                             <div class="filter-row-desktop d-none d-md-block">
-                                <form id="filterForm" method="GET" action="{{ route('spk.index') }}" onsubmit="return showFilterLoading()">
+                                <form id="filterForm" method="GET" action="{{ $pageMeta['current_url'] ?? route('spk.index') }}" onsubmit="return showFilterLoading()">
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
                                         <div class="d-flex flex-wrap align-items-center gap-2 flex-grow-1">
                                             <!-- Search Input -->
-                                            <div style="min-width: 260px; max-width: 360px; flex: 1;">
+                                            <div style="min-width: 240px; max-width: 340px; flex: 1;">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" name="search" id="searchInput"
                                                         placeholder="Cari no SPK / kontraktor / pekerjaan..."
@@ -333,7 +371,7 @@
                                             </div>
 
                                             <!-- Proyek / Land Bank Filter -->
-                                            <div style="min-width: 200px;">
+                                            <div style="min-width: 190px;">
                                                 <select class="form-control" name="land_bank_id" id="landBankSelect">
                                                     <option value="">Semua Proyek / Land Bank</option>
                                                     @foreach($landBanks as $lb)
@@ -344,8 +382,22 @@
                                                 </select>
                                             </div>
 
+                                            <!-- Jenis Pekerjaan Filter (Jika jenis_spk > 1 opsi) -->
+                                            @if(isset($jenisSpkOptions) && count($jenisSpkOptions) > 1)
+                                                <div style="min-width: 180px;">
+                                                    <select class="form-control" name="jenis_spk" id="jenisSpkSelect">
+                                                        <option value="">Semua Jenis Pekerjaan</option>
+                                                        @foreach($jenisSpkOptions as $val => $label)
+                                                            <option value="{{ $val }}" {{ request('jenis_spk') == $val ? 'selected' : '' }}>
+                                                                {{ $label }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            @endif
+
                                             <!-- Status Filter -->
-                                            <div style="width: 155px;">
+                                            <div style="width: 145px;">
                                                 <select class="form-control" name="status" id="statusSelect">
                                                     <option value="">Semua Status</option>
                                                     <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
@@ -370,7 +422,7 @@
                                             <button type="submit" class="btn btn-solid-primary btn-icon-only" title="Filter">
                                                 <i class="mdi mdi-filter"></i>
                                             </button>
-                                            <a href="{{ route('spk.index') }}" class="btn btn-solid-secondary btn-icon-only" title="Reset" onclick="showResetLoading(event)">
+                                            <a href="{{ $pageMeta['current_url'] ?? route('spk.index') }}" class="btn btn-solid-secondary btn-icon-only" title="Reset" onclick="showResetLoading(event)">
                                                 <i class="mdi mdi-refresh"></i>
                                             </a>
                                         </div>
@@ -380,7 +432,7 @@
 
                             <!-- Mobile Version -->
                             <div class="filter-row-mobile d-block d-md-none">
-                                <form method="GET" action="{{ route('spk.index') }}" onsubmit="return showFilterLoading()">
+                                <form method="GET" action="{{ $pageMeta['current_url'] ?? route('spk.index') }}" onsubmit="return showFilterLoading()">
                                     <div class="row g-2">
                                         <div class="col-12 mb-2">
                                             <div class="input-group">
@@ -407,6 +459,19 @@
                                             </select>
                                         </div>
 
+                                        @if(isset($jenisSpkOptions) && count($jenisSpkOptions) > 1)
+                                            <div class="col-12 mb-2">
+                                                <select class="form-control" name="jenis_spk">
+                                                    <option value="">Semua Jenis Pekerjaan</option>
+                                                    @foreach($jenisSpkOptions as $val => $label)
+                                                        <option value="{{ $val }}" {{ request('jenis_spk') == $val ? 'selected' : '' }}>
+                                                            {{ $label }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        @endif
+
                                         <div class="col-12 mb-2">
                                             <select class="form-control" name="status">
                                                 <option value="">Semua Status</option>
@@ -432,7 +497,7 @@
                                             </button>
                                         </div>
                                         <div class="col-6">
-                                            <a href="{{ route('spk.index') }}" class="btn btn-solid-secondary w-100 d-flex align-items-center justify-content-center gap-1" onclick="showResetLoading(event)">
+                                            <a href="{{ $pageMeta['current_url'] ?? route('spk.index') }}" class="btn btn-solid-secondary w-100 d-flex align-items-center justify-content-center gap-1" onclick="showResetLoading(event)">
                                                 <i class="mdi mdi-refresh"></i> Reset
                                             </a>
                                         </div>
@@ -481,8 +546,13 @@
                                                 </small>
                                             </td>
                                             <td>
-                                                <div class="fw-bold text-dark mb-1">
-                                                    {{ $spk->nama_pekerjaan }}
+                                                <div class="d-flex align-items-center gap-1 mb-1 flex-wrap">
+                                                    <span class="fw-bold text-dark">{{ $spk->nama_pekerjaan }}</span>
+                                                    @if(($pageMeta['kategori'] ?? '') !== 'pembangunan')
+                                                        <span class="badge bg-light text-primary border" style="font-size: 0.7rem; font-weight: 600;">
+                                                            {{ $spk->jenis_spk }}
+                                                        </span>
+                                                    @endif
                                                 </div>
                                                 <div class="small text-muted d-flex align-items-center gap-1">
                                                     <i class="mdi mdi-domain" style="color: #7c3aed;"></i>

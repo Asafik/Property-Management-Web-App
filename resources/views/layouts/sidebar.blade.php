@@ -71,6 +71,8 @@
             'dokument.persiapan' => 'mdi-file-tree-outline',
             'document.user.persiapan-legal' => 'mdi-file-certificate-outline',
             'spk.index' => 'mdi-file-sign',
+            'spk.pembangunan.index' => 'mdi-home-plus-outline',
+            'spk.pekerjaan-lain.index' => 'mdi-hammer-wrench',
             // Pengguna
             'agency.create' => 'mdi-account-plus-outline',
             'agency.index' => 'mdi-account-group-outline',
@@ -120,7 +122,9 @@
             'proyek.index' => ['proyek.index', 'properti.edit', 'properti.tambah', 'properti.store', 'properti.update'],
             'proyek.pengolahan-lahan.index' => ['proyek.pengolahan-lahan.*'],
             'proyek.unit.index' => ['proyek.unit.*'],
-            'spk.index' => ['spk.*', 'spk'],
+            'spk.index' => ['spk.index*'],
+            'spk.pembangunan.index' => ['spk.pembangunan.*', 'spk.pembangunan'],
+            'spk.pekerjaan-lain.index' => ['spk.pekerjaan-lain.*', 'spk.pekerjaan-lain'],
             'master.biaya-legalitas.index' => ['master.biaya-legalitas.*'],
             'keuangan.arus-kas.index' => ['keuangan.arus-kas.*'],
             'keuangan.jurnal.index' => ['keuangan.jurnal.*'],
@@ -154,7 +158,9 @@
             'dokument.index' => ['dokument.index*', 'dokument.*'],
             'dokument.persiapan' => ['dokument.persiapan*'],
             'document.user.persiapan-legal' => ['document.user.persiapan-legal*'],
-            'spk.index' => ['spk.index*', 'spk.*'],
+            'spk.index' => ['spk.index*'],
+            'spk.pembangunan.index' => ['spk.pembangunan.*', 'spk.pembangunan'],
+            'spk.pekerjaan-lain.index' => ['spk.pekerjaan-lain.*', 'spk.pekerjaan-lain'],
             'agency.create' => ['agency.create*'],
             'agency.index' => ['agency.index*', 'agency.edit*'],
             'master.data.menu' => ['master.data.menu*'],
@@ -196,6 +202,10 @@
             'Proyek'                  => 7,
             'Pengolahan Lahan'        => 8,
             'SPK Kontraktor'          => 8.5,
+            'SPK untuk Pembangunan'   => 8.5,
+            'SPK Pembangunan'         => 8.5,
+            'SPK untuk Pekerjaan Lain'=> 8.6,
+            'SPK Pekerjaan Lain'      => 8.6,
 
             // Kelompok Marketing & Transaksi
             'Marketing'               => 10,
@@ -238,6 +248,10 @@
             'Proyek'                  => 'Proyek',
             'Pengolahan Lahan'        => 'Proyek',
             'SPK Kontraktor'          => 'Proyek',
+            'SPK untuk Pembangunan'   => 'Proyek',
+            'SPK Pembangunan'         => 'Proyek',
+            'SPK untuk Pekerjaan Lain'=> 'Proyek',
+            'SPK Pekerjaan Lain'      => 'Proyek',
 
             // Marketing
             'Marketing'               => 'Marketing',
@@ -279,8 +293,11 @@
             if ($m->route === 'proyek.pengolahan-lahan.index') {
                 return 8;
             }
-            if ($m->route === 'spk.index') {
+            if ($m->route === 'spk.index' || $m->route === 'spk.pembangunan.index') {
                 return 8.5;
+            }
+            if ($m->route === 'spk.pekerjaan-lain.index') {
+                return 8.6;
             }
             if ($m->route === 'proyek.unit.index') {
                 return 9;
@@ -359,7 +376,7 @@
                     $sectionName = 'Perizinan';
                 } elseif ($main->route === 'legal.unit.index') {
                     $sectionName = 'Legal';
-                } elseif ($main->route === 'proyek.index' || $main->route === 'proyek.pengolahan-lahan.index' || $main->route === 'proyek.unit.index' || $main->route === 'spk.index') {
+                } elseif ($main->route === 'proyek.index' || $main->route === 'proyek.pengolahan-lahan.index' || $main->route === 'proyek.unit.index' || $main->route === 'spk.index' || $main->route === 'spk.pembangunan.index' || $main->route === 'spk.pekerjaan-lain.index') {
                     $sectionName = 'Proyek';
                 } else {
                     $sectionName = $categoryMap[$main->name] ?? ($categoryMap[$mainDisplayName] ?? $mainDisplayName);

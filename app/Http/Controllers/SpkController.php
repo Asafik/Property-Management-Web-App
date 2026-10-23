@@ -42,6 +42,8 @@ class SpkController extends Controller
                 ->where('menu_position.position_id', $user->position_id)
                 ->where(function ($q) {
                     $q->where('menus.route', 'spk.index')
+                      ->orWhere('menus.route', 'spk.pembangunan.index')
+                      ->orWhere('menus.route', 'spk.pekerjaan-lain.index')
                       ->orWhere('menus.name', 'like', '%spk%');
                 })->exists();
 
@@ -54,15 +56,47 @@ class SpkController extends Controller
     }
 
     /**
-     * Tampilkan daftar SPK Kontraktor dengan filter dan statistik.
+     * Tampilkan daftar SPK untuk Pembangunan (Unit Rumah / Kavling).
+     */
+    public function indexPembangunan(Request $request)
+    {
+        return $this->renderIndex($request, 'pembangunan');
+    }
+
+    /**
+     * Tampilkan daftar SPK untuk Pekerjaan Lain (Infrastruktur, Fasum, Cut & Fill, Subkon).
+     */
+    public function indexPekerjaanLain(Request $request)
+    {
+        return $this->renderIndex($request, 'pekerjaan_lain');
+    }
+
+    /**
+     * Tampilkan daftar SPK Kontraktor (Semua / filter kategori).
      */
     public function index(Request $request)
+    {
+        $kategori = $request->input('kategori', 'pembangunan');
+        return $this->renderIndex($request, $kategori);
+    }
+
+    /**
+     * Helper render view index SPK dengan filter kategori, statistik, dan pencarian.
+     */
+    private function renderIndex(Request $request, string $kategori)
     {
         if (!$this->canAccessSpk()) {
             return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki hak akses ke menu SPK Kontraktor.');
         }
 
         $query = Spk::with(['landBank', 'unit', 'termins'])->latest();
+
+        // Filter Utama Kategori SPK
+        if ($kategori === 'pembangunan') {
+            $query->where('jenis_spk', 'Pembangunan Unit');
+        } elseif ($kategori === 'pekerjaan_lain') {
+            $query->where('jenis_spk', '!=', 'Pembangunan Unit');
+        }
 
         // Filter Pencarian
         if ($request->filled('search')) {
@@ -85,7 +119,7 @@ class SpkController extends Controller
             $query->where('status', $request->status);
         }
 
-        // Filter Jenis SPK
+        // Filter Jenis SPK Spesifik
         if ($request->filled('jenis_spk')) {
             $query->where('jenis_spk', $request->jenis_spk);
         }
@@ -93,28 +127,95 @@ class SpkController extends Controller
         $perPage = (int) $request->input('per_page', 10);
         $spks = $query->paginate($perPage)->withQueryString();
 
-        // Data Statistik
+        // Data Statistik khusus kategori yang aktif
+        $baseStatsQuery = Spk::query();
+        if ($kategori === 'pembangunan') {
+            $baseStatsQuery->where('jenis_spk', 'Pembangunan Unit');
+        } elseif ($kategori === 'pekerjaan_lain') {
+            $baseStatsQuery->where('jenis_spk', '!=', 'Pembangunan Unit');
+        }
+
         $stats = [
-            'total_spk' => Spk::count(),
-            'spk_berjalan' => Spk::where('status', 'berjalan')->count(),
-            'spk_selesai' => Spk::where('status', 'selesai')->count(),
-            'spk_draft' => Spk::where('status', 'draft')->count(),
-            'total_nilai' => Spk::where('status', '!=', 'dibatalkan')->sum('nilai_kontrak'),
+            'total_spk'    => (clone $baseStatsQuery)->count(),
+            'spk_berjalan' => (clone $baseStatsQuery)->where('status', 'berjalan')->count(),
+            'spk_selesai'  => (clone $baseStatsQuery)->where('status', 'selesai')->count(),
+            'spk_draft'    => (clone $baseStatsQuery)->where('status', 'draft')->count(),
+            'total_nilai'  => (clone $baseStatsQuery)->where('status', '!=', 'dibatalkan')->sum('nilai_kontrak'),
         ];
+
+        // Total Counts untuk navigasi Tab
+        $tabCounts = [
+            'pembangunan'    => Spk::where('jenis_spk', 'Pembangunan Unit')->count(),
+            'pekerjaan_lain' => Spk::where('jenis_spk', '!=', 'Pembangunan Unit')->count(),
+            'semua'          => Spk::count(),
+        ];
+
+        // Metadata Halaman
+        $pageMeta = match($kategori) {
+            'pembangunan' => [
+                'kategori'    => 'pembangunan',
+                'title'       => 'SPK untuk Pembangunan',
+                'badge'       => 'Pembangunan Unit',
+                'subtitle'    => 'Kelola Surat Perintah Kerja (SPK) konstruksi pembangunan unit perumahan & kavling.',
+                'create_url'  => route('spk.create', ['kategori' => 'pembangunan']),
+                'current_url' => route('spk.pembangunan.index'),
+            ],
+            'pekerjaan_lain' => [
+                'kategori'    => 'pekerjaan_lain',
+                'title'       => 'SPK untuk Pekerjaan Lain',
+                'badge'       => 'Infrastruktur & Sarana',
+                'subtitle'    => 'Kelola Surat Perintah Kerja (SPK) infrastruktur jalan, drainase, fasum, cut & fill, dan pekerjaan khusus/subkon.',
+                'create_url'  => route('spk.create', ['kategori' => 'pekerjaan_lain']),
+                'current_url' => route('spk.pekerjaan-lain.index'),
+            ],
+            default => [
+                'kategori'    => 'semua',
+                'title'       => 'Semua SPK Kontraktor',
+                'badge'       => 'Seluruh Kategori',
+                'subtitle'    => 'Rekapitulasi seluruh Surat Perintah Kerja (SPK) baik pembangunan unit maupun pekerjaan lainnya.',
+                'create_url'  => route('spk.create'),
+                'current_url' => route('spk.index'),
+            ],
+        };
+
+        // Opsi Jenis SPK untuk dropdown filter
+        $jenisSpkOptions = match($kategori) {
+            'pembangunan' => [
+                'Pembangunan Unit' => 'Pembangunan Unit Rumah',
+            ],
+            'pekerjaan_lain' => [
+                'Infrastruktur Jalan & Drainase' => 'Infrastruktur (Jalan, Paving, Saluran)',
+                'Fasilitas Umum & Sarana'         => 'Fasilitas Umum (Pos, Gerbang, Taman, Masjid)',
+                'Pematangan Lahan (Cut & Fill)'  => 'Pematangan Lahan (Cut & Fill / Talud)',
+                'Pekerjaan Khusus / Subkon'      => 'Pekerjaan Khusus / Sub-Kontraktor',
+                'Lainnya'                        => 'Lainnya',
+            ],
+            default => [
+                'Pembangunan Unit'               => 'Pembangunan Unit Rumah',
+                'Infrastruktur Jalan & Drainase' => 'Infrastruktur (Jalan, Paving, Saluran)',
+                'Fasilitas Umum & Sarana'         => 'Fasilitas Umum (Pos, Gerbang, Taman, Masjid)',
+                'Pematangan Lahan (Cut & Fill)'  => 'Pematangan Lahan (Cut & Fill / Talud)',
+                'Pekerjaan Khusus / Subkon'      => 'Pekerjaan Khusus / Sub-Kontraktor',
+                'Lainnya'                        => 'Lainnya',
+            ],
+        };
 
         $landBanks = LandBank::orderBy('name', 'asc')->get();
 
-        return view('spk.index', compact('spks', 'stats', 'landBanks', 'perPage'));
+        return view('spk.index', compact('spks', 'stats', 'tabCounts', 'pageMeta', 'jenisSpkOptions', 'landBanks', 'perPage'));
     }
 
     /**
      * Form pembuatan SPK baru.
      */
-    public function create()
+    public function create(Request $request)
     {
         if (!$this->canAccessSpk()) {
             return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki hak akses ke menu SPK Kontraktor.');
         }
+
+        $kategori = $request->input('kategori');
+        $defaultJenisSpk = ($kategori === 'pekerjaan_lain') ? 'Infrastruktur Jalan & Drainase' : 'Pembangunan Unit';
 
         $landBanks = LandBank::with('units')->orderBy('name', 'asc')->get();
         $companySetting = CompanySetting::first();
@@ -130,7 +231,7 @@ class SpkController extends Controller
         // Draft Klausul / Pasal Standar SPK Developer
         $defaultPasal = $this->getDefaultPasalText();
 
-        return view('spk.create', compact('landBanks', 'companySetting', 'companyProfile', 'defaultNoSpk', 'defaultPasal'));
+        return view('spk.create', compact('landBanks', 'companySetting', 'companyProfile', 'defaultNoSpk', 'defaultPasal', 'kategori', 'defaultJenisSpk'));
     }
 
     /**
@@ -248,7 +349,10 @@ class SpkController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('spk.index')->with('success', "Surat Perintah Kerja (SPK) {$spk->no_spk} berhasil dibuat!");
+            $redirectRoute = ($spk->jenis_spk === 'Pembangunan Unit')
+                ? route('spk.pembangunan.index')
+                : route('spk.pekerjaan-lain.index');
+            return redirect($redirectRoute)->with('success', "Surat Perintah Kerja (SPK) {$spk->no_spk} berhasil dibuat!");
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error store SPK: ' . $e->getMessage());
@@ -267,7 +371,8 @@ class SpkController extends Controller
 
         $spk = Spk::with(['landBank', 'unit', 'termins'])->findOrFail($id);
         $companySetting = CompanySetting::first();
-        return view('spk.show', compact('spk', 'companySetting'));
+        $kategori = ($spk->jenis_spk === 'Pembangunan Unit') ? 'pembangunan' : 'pekerjaan_lain';
+        return view('spk.show', compact('spk', 'companySetting', 'kategori'));
     }
 
     /**
@@ -284,7 +389,8 @@ class SpkController extends Controller
         $companySetting = CompanySetting::first();
         $companyProfile = CompanyProfile::first();
 
-        return view('spk.edit', compact('spk', 'landBanks', 'companySetting', 'companyProfile'));
+        $kategori = ($spk->jenis_spk === 'Pembangunan Unit') ? 'pembangunan' : 'pekerjaan_lain';
+        return view('spk.edit', compact('spk', 'landBanks', 'companySetting', 'companyProfile', 'kategori'));
     }
 
     /**
@@ -402,7 +508,10 @@ class SpkController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('spk.index')->with('success', "Data SPK {$spk->no_spk} berhasil diperbarui!");
+            $redirectRoute = ($spk->jenis_spk === 'Pembangunan Unit')
+                ? route('spk.pembangunan.index')
+                : route('spk.pekerjaan-lain.index');
+            return redirect($redirectRoute)->with('success', "Data SPK {$spk->no_spk} berhasil diperbarui!");
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error update SPK: ' . $e->getMessage());
