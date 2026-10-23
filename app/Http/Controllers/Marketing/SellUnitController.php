@@ -304,23 +304,46 @@ class SellUnitController extends Controller
         // ambil unit dari DB
         $unitsForSvg = (clone $statsQuery)->get(); // ambil semua kolom dan relasi agar detail unit lengkap terisi di siteplan
 
-        // set warna sesuai tipe
-        // Tentukan warna berdasarkan status & type
+        // set warna mandiri khusus divisi marketing (fokus: tersedia bentuk rumah, booking, sold out, draft)
         foreach ($unitsForSvg as $unit) {
-            if ($unit->status === 'draft' || empty($unit->price) || (float)$unit->price <= 0) {
-                $unit->fillColor = '#64748b'; // abu-abu / slate untuk draft
-            } elseif ($unit->type === 'komersil' && in_array($unit->status, ['ready', 'tersedia'])) {
+            $cleanStatus = strtolower((string)($unit->status ?? 'draft'));
+            $isKomersil = (strtolower((string)($unit->jenis ?? '')) === 'komersil' || strtolower((string)($unit->type ?? '')) === 'komersil');
+            $hasPrice = !empty($unit->price) && (float)$unit->price > 0;
+
+            if (!$hasPrice && !in_array($cleanStatus, ['booked', 'booking', 'sold', 'terjual'])) {
+                $unit->marketingStatus = 'draft';
+                $unit->marketingStatusLabel = 'Draft (Belum Diberi Harga)';
+                $unit->fillColor = '#64748b'; // abu-abu / slate
+                $unit->strokeColor = '#475569';
+            } elseif ($cleanStatus === 'sold' || $cleanStatus === 'terjual') {
+                $unit->marketingStatus = 'sold';
+                $unit->marketingStatusLabel = 'Sold Out (Terjual)';
+                $unit->fillColor = '#dc3545'; // merah
+                $unit->strokeColor = '#b02a37';
+            } elseif ($cleanStatus === 'booked' || $cleanStatus === 'booking') {
+                $unit->marketingStatus = 'booked';
+                $unit->marketingStatusLabel = 'Booking (Terbooking)';
+                $unit->fillColor = '#f59e0b'; // amber / kuning emas
+                $unit->strokeColor = '#d97706';
+            } elseif ($isKomersil) {
+                $unit->marketingStatus = 'ready_komersil';
+                $unit->marketingStatusLabel = 'Tersedia (Ready Komersil)';
                 $unit->fillColor = '#2675BB'; // biru
-            } elseif (in_array($unit->status, ['ready', 'tersedia'])) {
-                $unit->fillColor = '#28a745'; // hijau
-            } elseif (in_array($unit->status, ['booked', 'booking'])) {
-                $unit->fillColor = '#f59e0b'; // amber
-            } elseif (in_array($unit->status, ['sold', 'terjual'])) {
-                $unit->fillColor = '#CE2A2E'; // merah
+                $unit->strokeColor = '#1d4ed8';
             } else {
-                $unit->fillColor = '#64748b'; // default draft
+                $unit->marketingStatus = 'ready_subsidi';
+                $unit->marketingStatusLabel = 'Tersedia (Ready Subsidi)';
+                $unit->fillColor = '#28a745'; // hijau
+                $unit->strokeColor = '#1e7e34';
             }
         }
+
+        // Akses edit posisi siteplan: Divisi marketing hanya melihat saja (view only).
+        // Pengaturan posisi dan kotak denah digambar oleh Tim Legal / Admin.
+        $userPosName = strtolower($user->position->name ?? '');
+        $isMarketing = (strpos($userPosName, 'marketing') !== false || strpos($userPosName, 'sales') !== false || strpos($userPosName, 'agency') !== false);
+        $canEditPosition = !$isMarketing && in_array($userPosName, ['admin', 'super admin', 'kepala legal', 'staff legal']);
+
         // =========================
         // RETURN VIEW
         // =========================
@@ -344,7 +367,8 @@ class SellUnitController extends Controller
             'sortField',
             'sortDirection',
             'commissionRules',
-            'isStaffMarketing'
+            'isStaffMarketing',
+            'canEditPosition'
         ));
     }
 
@@ -593,6 +617,15 @@ class SellUnitController extends Controller
     // }
     public function savePosition(Request $request)
     {
+        $user = Auth::user();
+        $userPosName = strtolower($user->position->name ?? '');
+        $isMarketing = (strpos($userPosName, 'marketing') !== false || strpos($userPosName, 'sales') !== false || strpos($userPosName, 'agency') !== false);
+        if ($isMarketing) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Divisi Marketing hanya memiliki akses melihat denah unit dan melakukan booking.'
+            ], 403);
+        }
 
         foreach ($request->units as $unit) {
 

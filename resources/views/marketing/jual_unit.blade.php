@@ -7,6 +7,13 @@
 @endpush
 
 @section('content')
+    @php
+        if (!isset($canEditPosition)) {
+            $userPosName = strtolower(auth()->user()->position->name ?? '');
+            $isMarketing = (strpos($userPosName, 'marketing') !== false || strpos($userPosName, 'sales') !== false || strpos($userPosName, 'agency') !== false);
+            $canEditPosition = !$isMarketing && in_array($userPosName, ['admin', 'super admin', 'kepala legal', 'staff legal']);
+        }
+    @endphp
     <style>
         /* ===== JUAL UNIT SPECIFIC STYLES ===== */
         .btn-outline-primary {
@@ -2395,41 +2402,97 @@
                                     <canvas id="siteplanCanvas"></canvas>
                                 </div>
 
-                                <!-- Legend Status Penjualan & Status Pembangunan Fisik -->
+                                <!-- Legenda Pewarnaan Siteplan Divisi Marketing -->
                                 <div class="mt-3 p-3 bg-white rounded-3 border shadow-sm">
-                                    <div class="row g-3">
-                                        <!-- Status Progress Pembangunan -->
-                                        <div class="col-md-7 border-end">
-                                            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.82rem;">
-                                                <i class="mdi mdi-hammer-wrench text-warning me-1"></i>Status Pembangunan Fisik (Warna Bulatan):
-                                            </h6>
-                                            <div class="d-flex flex-wrap gap-2">
-                                                <span class="badge" style="background: #adb5bd; color: #fff; font-size: 11px; padding: 4px 8px;">Belum Mulai (0%)</span>
-                                                <span class="badge" style="background: #fd7e14; color: #fff; font-size: 11px; padding: 4px 8px;">Pondasi (20%)</span>
-                                                <span class="badge" style="background: #ffc107; color: #212529; font-size: 11px; padding: 4px 8px;">Dinding (40%)</span>
-                                                <span class="badge" style="background: #17a2b8; color: #fff; font-size: 11px; padding: 4px 8px;">Atap (60%)</span>
-                                                <span class="badge" style="background: #9a55ff; color: #fff; font-size: 11px; padding: 4px 8px;">Finishing (80%)</span>
-                                                <span class="badge" style="background: #28a745; color: #fff; font-size: 11px; padding: 4px 8px;">Selesai (100%)</span>
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-2 border-bottom pb-2">
+                                        <h6 class="fw-bold text-dark mb-0 d-flex align-items-center" style="font-size: 0.88rem;">
+                                            <i class="mdi mdi-palette-swatch text-primary me-2"></i>Pewarnaan & Status Unit Divisi Marketing
+                                        </h6>
+                                        <div class="text-muted small">
+                                            <i class="mdi mdi-auto-fix text-success me-1"></i><strong>Pewarnaan Otomatis</strong> sesuai status unit &bull; Titik kotak koordinat dari Tim Legal
+                                        </div>
+                                    </div>
+                                    <div class="row g-2 align-items-center">
+                                        <!-- 1. Tersedia Subsidi (Rumah) -->
+                                        <div class="col-6 col-sm-4 col-md-auto">
+                                            <div class="d-flex align-items-center gap-2 p-2 rounded-2 border bg-light">
+                                                <span style="display:inline-block; width:18px; height:18px; background:#28a745; border:2px solid #1e7e34; border-radius:4px;"></span>
+                                                <div>
+                                                    <div class="fw-bold" style="font-size: 0.78rem; color: #1e7e34;">
+                                                        <i class="mdi mdi-home me-1"></i>Tersedia (Subsidi)
+                                                    </div>
+                                                    <small class="text-muted" style="font-size: 0.7rem;">Rumah Siap Booking</small>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <!-- Status Penjualan -->
-                                        <div class="col-md-5">
-                                            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.82rem;">
-                                                <i class="mdi mdi-circle-outline text-primary me-1"></i>Status Penjualan (Garis Border):
-                                            </h6>
-                                            <div class="d-flex flex-wrap gap-2">
-                                                <span class="badge" style="background: rgba(220, 53, 69, 0.15); color: #dc3545; border: 1.5px solid #dc3545; font-size: 11px; padding: 4px 8px;">Terjual / Sold (Border Merah)</span>
-                                                <span class="badge" style="background: rgba(255, 193, 7, 0.15); color: #d39e00; border: 1.5px solid #ffc107; font-size: 11px; padding: 4px 8px;">Booked (Border Emas)</span>
+                                        <!-- 2. Tersedia Komersil (Rumah) -->
+                                        <div class="col-6 col-sm-4 col-md-auto">
+                                            <div class="d-flex align-items-center gap-2 p-2 rounded-2 border bg-light">
+                                                <span style="display:inline-block; width:18px; height:18px; background:#2675BB; border:2px solid #1d4ed8; border-radius:4px;"></span>
+                                                <div>
+                                                    <div class="fw-bold" style="font-size: 0.78rem; color: #2675BB;">
+                                                        <i class="mdi mdi-home-modern me-1"></i>Tersedia (Komersil)
+                                                    </div>
+                                                    <small class="text-muted" style="font-size: 0.7rem;">Rumah Siap Booking</small>
+                                                </div>
                                             </div>
+                                        </div>
+
+                                        <!-- 3. Booking -->
+                                        <div class="col-6 col-sm-4 col-md-auto">
+                                            <div class="d-flex align-items-center gap-2 p-2 rounded-2 border bg-light">
+                                                <span style="display:inline-block; width:18px; height:18px; background:#f59e0b; border:2px solid #d97706; border-radius:4px;"></span>
+                                                <div>
+                                                    <div class="fw-bold" style="font-size: 0.78rem; color: #d97706;">
+                                                        <i class="mdi mdi-bookmark-check me-1"></i>Booking
+                                                    </div>
+                                                    <small class="text-muted" style="font-size: 0.7rem;">Sudah UTJ / Nego</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 4. Sold Out -->
+                                        <div class="col-6 col-sm-4 col-md-auto">
+                                            <div class="d-flex align-items-center gap-2 p-2 rounded-2 border bg-light">
+                                                <span style="display:inline-block; width:18px; height:18px; background:#dc3545; border:2px solid #b02a37; border-radius:4px;"></span>
+                                                <div>
+                                                    <div class="fw-bold" style="font-size: 0.78rem; color: #dc3545;">
+                                                        <i class="mdi mdi-close-circle me-1"></i>Sold Out
+                                                    </div>
+                                                    <small class="text-muted" style="font-size: 0.7rem;">Terjual / Lunas</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 5. Draft / Belum Siap Jual -->
+                                        <div class="col-6 col-sm-4 col-md-auto">
+                                            <div class="d-flex align-items-center gap-2 p-2 rounded-2 border bg-light">
+                                                <span style="display:inline-block; width:18px; height:18px; background:#64748b; border:2px solid #475569; border-radius:4px;"></span>
+                                                <div>
+                                                    <div class="fw-bold" style="font-size: 0.78rem; color: #64748b;">
+                                                        <i class="mdi mdi-file-document-outline me-1"></i>Draft
+                                                    </div>
+                                                    <small class="text-muted" style="font-size: 0.7rem;">Belum Rilis Harga</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Hint Interaktif -->
+                                        <div class="col-12 col-md mt-2 mt-md-0 text-md-end">
+                                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1.5" style="font-size: 0.75rem;">
+                                                <i class="mdi mdi-cursor-pointer me-1"></i>Klik unit pada denah untuk melihat data & langsung booking
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
 
+                                @if(!empty($canEditPosition) && $canEditPosition)
                                 <div class="mt-3 text-center">
                                     <button type="button" class="btn btn-save-position" onclick="savePosition()"><i
                                             class="mdi mdi-content-save me-2"></i>Simpan Posisi Unit</button>
                                 </div>
+                                @endif
                             </div>
                         </div>
 
@@ -2638,6 +2701,23 @@
                                                 <i class="mdi mdi-information-outline" style="font-size: 3rem;"></i>
                                                 <p class="mb-0">Belum ada booking untuk unit ini.</p>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <!-- Modal Footer dengan Aksi Langsung Booking & Halaman Penuh -->
+                                    <div class="modal-footer bg-light border-top d-flex flex-wrap justify-content-between align-items-center px-4 py-3">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span id="m_footer_status_badge"></span>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <button type="button" class="btn btn-secondary px-3 py-2" data-bs-dismiss="modal" style="border-radius: 8px; font-weight: 600;">
+                                                Tutup
+                                            </button>
+                                            <a href="#" id="m_btn_open_full_page" class="btn btn-outline-primary px-3 py-2" style="border-radius: 8px; font-weight: 600;">
+                                                <i class="mdi mdi-open-in-new me-1"></i>Halaman Penuh
+                                            </a>
+                                            <button type="button" class="btn btn-success px-4 py-2 fw-bold shadow-sm" id="m_btn_booking_direct" onclick="bookUnitFromDetailModal()" style="border-radius: 8px;">
+                                                <i class="mdi mdi-account-plus me-1"></i>Booking Unit Ini
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -3229,6 +3309,7 @@
 
         
         // ========== SITEPLAN CANVAS (DINAMIS DENAH LANDBANK) ==========
+        const canEditPosition = {{ (!empty($canEditPosition) && $canEditPosition) ? 'true' : 'false' }};
         const canvas = new fabric.Canvas('siteplanCanvas');
         let originalWidth = 0;
         let originalHeight = 0;
@@ -3256,6 +3337,12 @@
                 fileCertificate: "{{ $unit->file_certificate ? asset($unit->file_certificate) : '' }}",
                 statusRaw: "{{ $unit->status }}",
                 statusText: "{{ ($unit->status == 'ready' || $unit->status == 'tersedia') ? 'Tersedia' : ($unit->status == 'sold' ? 'Terjual' : ($unit->status == 'booked' ? 'Booking' : 'Draft')) }}",
+                marketingStatus: "{{ $unit->marketingStatus ?? 'ready_subsidi' }}",
+                marketingStatusLabel: "{{ $unit->marketingStatusLabel ?? 'Tersedia' }}",
+                fillColor: "{{ $unit->fillColor ?? '#28a745' }}",
+                strokeColor: "{{ $unit->strokeColor ?? '#1e7e34' }}",
+                isKomersil: {{ (strtolower($unit->jenis ?? '') === 'komersil' || strtolower($unit->type ?? '') === 'komersil') ? 'true' : 'false' }},
+                hasPrice: {{ (!empty($unit->price) && (float)$unit->price > 0) ? 'true' : 'false' }},
                 construction: "{{ $unit->construction_progress ?? 'belum_mulai' }}",
                 hasBooking: {{ $unit->activeBooking ? 1 : 0 }},
                 bookingId: "{{ $unit->activeBooking->id ?? '' }}",
@@ -3322,61 +3409,60 @@
                         : [];
 
                     unitsToShow.forEach(u => {
-                        let fillColor = '#adb5bd'; // default abu-abu untuk Belum Mulai (0%)
-                        let strokeColor = '#495057';
-                        let strokeWidth = 1.5;
+                        // Pewarnaan Mandiri Divisi Marketing (Fokus: Tersedia Bentuk Rumah, Booking, Sold Out, Draft)
+                        const sRaw = (u.statusRaw || '').toLowerCase();
+                        const jRaw = (u.jenis || '').toLowerCase();
+                        const tRaw = (u.type || '').toLowerCase();
+                        const isKomersil = (jRaw === 'komersil' || tRaw === 'komersil' || u.isKomersil === true);
+                        const hasPrice = (u.hasPrice === true || (!isNaN(parseFloat(u.price)) && parseFloat(u.price) > 0));
+                        const hasBooking = (u.hasBooking == 1 || u.hasBooking === true);
+
+                        let fillColor = '#64748b'; // default draft
+                        let strokeColor = '#475569';
+                        let strokeWidth = 2.4;
                         let strokeDash = null;
+                        let statusCategory = 'draft';
+                        let statusLabel = 'Draft (Belum Diberi Harga)';
+                        let houseSymbol = '';
 
-                        switch (u.construction) {
-                            case 'pondasi':
-                                fillColor = '#fd7e14'; // Oranye
-                                strokeColor = '#d96509';
-                                strokeWidth = 3;
-                                strokeDash = [5, 2];
-                                break;
-                            case 'dinding':
-                                fillColor = '#ffc107'; // Kuning Emas
-                                strokeColor = '#d39e00';
-                                strokeWidth = 3;
-                                strokeDash = [5, 2];
-                                break;
-                            case 'atap':
-                                fillColor = '#17a2b8'; // Cyan
-                                strokeColor = '#117a8b';
-                                strokeWidth = 3.5;
-                                strokeDash = [6, 2];
-                                break;
-                            case 'finishing':
-                                fillColor = '#9a55ff'; // Ungu
-                                strokeColor = '#7a3bcf';
-                                strokeWidth = 3.5;
-                                strokeDash = [6, 2];
-                                break;
-                            case 'selesai':
-                                fillColor = '#28a745'; // HIJAU HANYA JIKA PEMBANGUNAN SUDAH SELESAI (100%)
-                                strokeColor = '#1e7e34';
-                                strokeWidth = 3;
-                                break;
-                            default:
-                                fillColor = '#adb5bd';
-                                strokeColor = '#6c757d';
-                                strokeWidth = 1.5;
-                                break;
+                        if (!hasPrice && !['booked', 'booking', 'sold', 'terjual'].includes(sRaw) && !hasBooking) {
+                            fillColor = '#64748b'; // Slate abu-abu
+                            strokeColor = '#334155';
+                            strokeWidth = 1.8;
+                            statusCategory = 'draft';
+                            statusLabel = 'Draft (Belum Diberi Harga)';
+                            houseSymbol = '';
+                        } else if (sRaw === 'sold' || sRaw === 'terjual') {
+                            fillColor = '#dc3545'; // Merah Terjual / Sold Out
+                            strokeColor = '#991b1b';
+                            strokeWidth = 3;
+                            statusCategory = 'sold';
+                            statusLabel = 'Sold Out (Terjual)';
+                            houseSymbol = '✕ ';
+                        } else if (sRaw === 'booked' || sRaw === 'booking' || hasBooking) {
+                            fillColor = '#f59e0b'; // Amber / Kuning Emas
+                            strokeColor = '#b45309';
+                            strokeWidth = 3;
+                            statusCategory = 'booked';
+                            statusLabel = 'Booking (Terbooking)';
+                            houseSymbol = '🔖 ';
+                        } else if (isKomersil) {
+                            fillColor = '#2675BB'; // Biru Komersil
+                            strokeColor = '#1d4ed8';
+                            strokeWidth = 2.8;
+                            statusCategory = 'ready_komersil';
+                            statusLabel = 'Tersedia (Ready Komersil)';
+                            houseSymbol = '🏠 ';
+                        } else {
+                            fillColor = '#28a745'; // Hijau Subsidi
+                            strokeColor = '#15803d';
+                            strokeWidth = 2.8;
+                            statusCategory = 'ready_subsidi';
+                            statusLabel = 'Tersedia (Ready Subsidi)';
+                            houseSymbol = '🏠 ';
                         }
 
-                        // Border status penjualan
-                        if (u.statusRaw === 'sold' || u.statusRaw === 'terjual') {
-                            fillColor = '#dc3545';
-                            strokeColor = '#b02a37';
-                            strokeWidth = 3.5;
-                            strokeDash = null;
-                        } else if (u.statusRaw === 'booked') {
-                            fillColor = '#ffc107';
-                            strokeColor = '#d39e00';
-                            strokeWidth = 3.5;
-                        }
-
-                        // 1. JIKA MEMILIKI TITIK POLIGON (KOTAK DENAH ASLI)
+                        // 1. JIKA MEMILIKI TITIK POLIGON (KOTAK DENAH ASLI YANG DIGAMBAR TIM LEGAL)
                         if (u.polygon_points && Array.isArray(u.polygon_points) && u.polygon_points.length >= 3) {
                             let cx = 0, cy = 0;
                             u.polygon_points.forEach(pt => { cx += pt.x; cy += pt.y; });
@@ -3385,7 +3471,7 @@
 
                             const poly = new fabric.Polygon(u.polygon_points, {
                                 fill: fillColor,
-                                opacity: 0.65,
+                                opacity: 0.72,
                                 stroke: strokeColor,
                                 strokeWidth: strokeWidth,
                                 strokeDashArray: strokeDash,
@@ -3395,7 +3481,10 @@
                                 objectCaching: false
                             });
 
-                            const labelText = u.unitCode || (u.block && u.unitNumber ? `${u.block}.${u.unitNumber}` : (u.unitName || 'Unit'));
+                            const unitIdentifier = u.unitCode || (u.block && u.unitNumber ? `${u.block}.${u.unitNumber}` : (u.unitName || 'Unit'));
+                            const labelText = `${houseSymbol}${unitIdentifier}`;
+                            const isLightBg = (statusCategory === 'booked');
+
                             const text = new fabric.Text(labelText, {
                                 left: cx,
                                 top: cy,
@@ -3404,20 +3493,16 @@
                                 fontSize: 11,
                                 fontWeight: 'bold',
                                 fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-                                fill: '#0f172a',
+                                fill: isLightBg ? '#0f172a' : '#ffffff',
                                 textAlign: 'center',
                                 selectable: false,
                                 evented: false,
-                                shadow: new fabric.Shadow({
-                                    color: 'rgba(255, 255, 255, 0.95)',
-                                    blur: 3,
-                                    offsetX: 0,
-                                    offsetY: 0
-                                })
+                                shadow: isLightBg
+                                    ? new fabric.Shadow({ color: 'rgba(255, 255, 255, 0.95)', blur: 3, offsetX: 0, offsetY: 0 })
+                                    : new fabric.Shadow({ color: 'rgba(0, 0, 0, 0.95)', blur: 4, offsetX: 0, offsetY: 1 })
                             });
 
-                            // Attach all unit properties
-                            Object.assign(poly, {
+                            const unitProps = {
                                 unitId: u.id,
                                 unitCode: u.unitCode,
                                 unitName: u.unitName,
@@ -3430,10 +3515,15 @@
                                 building: u.building,
                                 price: u.price,
                                 direction: u.direction,
+                                certificateNo: u.certificateNo,
+                                fileCertificate: u.fileCertificate,
                                 statusRaw: u.statusRaw,
-                                statusText: u.statusText,
+                                statusText: statusLabel,
+                                statusCategory: statusCategory,
+                                fillColor: fillColor,
+                                strokeColor: strokeColor,
                                 construction: u.construction,
-                                hasBooking: u.hasBooking,
+                                hasBooking: hasBooking ? 1 : 0,
                                 bookingId: u.bookingId,
                                 customer: u.customer,
                                 sales: u.sales,
@@ -3441,84 +3531,127 @@
                                 bookingFee: u.bookingFee,
                                 agentFee: u.agentFee,
                                 bookingStatus: u.bookingStatus,
-                                isPolygon: true
-                            });
+                                isPolygon: true,
+                                origFill: fillColor,
+                                origStroke: strokeColor,
+                                origWidth: strokeWidth
+                            };
+
+                            Object.assign(poly, unitProps);
+                            Object.assign(text, unitProps);
 
                             canvas.add(poly);
                             canvas.add(text);
                             return;
                         }
 
-                        // 2. FALLBACK JIKA MASIH MENGGUNAKAN POSISI CIRCLE (LEGACY)
+                        // 2. FALLBACK JIKA BELUM MEMILIKI TITIK KOTAK (BENTUK RUMAH / HOUSE SHAPE)
                         if (u.pos_x !== null && u.pos_y !== null) {
-                            const radius = (u.width || 80) / 2;
+                            const w = Math.max(38, Math.min(65, Math.round((u.width || 75) * 0.65)));
+                            const h = Math.round(w * 1.15);
+                            const roofH = Math.round(h * 0.42);
+                            const bodyW = Math.round(w * 0.82);
 
-                            const circle = new fabric.Circle({
-                                radius: radius,
+                            // Titik poligon bentuk rumah (atap segitiga + badan kotak persegi)
+                            const housePoints = [
+                                { x: 0, y: -Math.round(h / 2) },
+                                { x: Math.round(w / 2), y: -Math.round(h / 2) + roofH },
+                                { x: Math.round(bodyW / 2), y: -Math.round(h / 2) + roofH },
+                                { x: Math.round(bodyW / 2), y: Math.round(h / 2) },
+                                { x: -Math.round(bodyW / 2), y: Math.round(h / 2) },
+                                { x: -Math.round(bodyW / 2), y: -Math.round(h / 2) + roofH },
+                                { x: -Math.round(w / 2), y: -Math.round(h / 2) + roofH }
+                            ];
+
+                            const houseShape = new fabric.Polygon(housePoints, {
                                 fill: fillColor,
-                                opacity: 0.88,
+                                opacity: 0.90,
                                 stroke: strokeColor,
                                 strokeWidth: strokeWidth,
-                                strokeDashArray: strokeDash,
-                                originX: 'center',
-                                originY: 'center'
-                            });
-
-                            const labelText = u.unitCode || (u.block && u.unitNumber ? `${u.block}.${u.unitNumber}` : (u.unitName || 'Unit'));
-                            const fontSize = Math.max(12, Math.min(20, Math.round(radius * 0.58)));
-
-                            const text = new fabric.Text(labelText, {
-                                fontSize: fontSize,
-                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
-                                fontWeight: 'bold',
-                                fill: '#1e293b',
-                                textAlign: 'center',
                                 originX: 'center',
                                 originY: 'center',
                                 shadow: new fabric.Shadow({
-                                    color: 'rgba(255, 255, 255, 0.95)',
-                                    blur: 3,
+                                    color: 'rgba(0, 0, 0, 0.25)',
+                                    blur: 5,
                                     offsetX: 0,
-                                    offsetY: 0
+                                    offsetY: 2
                                 })
                             });
 
-                            const markerGroup = new fabric.Group([circle, text], {
+                            const labelText = u.unitCode || (u.block && u.unitNumber ? `${u.block}.${u.unitNumber}` : (u.unitName || 'Unit'));
+                            const fontSize = Math.max(10, Math.min(13, Math.round(w * 0.26)));
+                            const houseIconSymbol = (statusCategory.startsWith('ready')) ? '🏠' : (statusCategory === 'booked' ? '🔒' : (statusCategory === 'sold' ? '✕' : ''));
+                            const fullLabel = houseIconSymbol ? `${houseIconSymbol}\n${labelText}` : labelText;
+                            const isLightBg = (statusCategory === 'booked');
+
+                            const text = new fabric.Text(fullLabel, {
+                                fontSize: fontSize,
+                                fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
+                                fontWeight: 'bold',
+                                fill: isLightBg ? '#0f172a' : '#ffffff',
+                                textAlign: 'center',
+                                originX: 'center',
+                                originY: 'center',
+                                top: Math.round(roofH * 0.22),
+                                shadow: isLightBg
+                                    ? new fabric.Shadow({ color: 'rgba(255, 255, 255, 0.95)', blur: 2 })
+                                    : new fabric.Shadow({ color: 'rgba(0, 0, 0, 0.85)', blur: 3, offsetY: 1 })
+                            });
+
+                            const markerGroup = new fabric.Group([houseShape, text], {
                                 left: u.pos_x,
                                 top: u.pos_y,
                                 angle: u.angle || 0,
-                                hasControls: true,
-                                hasBorders: true,
-                                lockRotation: false,
+                                hasControls: canEditPosition,
+                                hasBorders: canEditPosition,
+                                lockMovementX: !canEditPosition,
+                                lockMovementY: !canEditPosition,
+                                lockRotation: !canEditPosition,
+                                lockScalingX: !canEditPosition,
+                                lockScalingY: !canEditPosition,
                                 cornerColor: '#9a55ff',
                                 cornerSize: 8,
-                                transparentCorners: false
+                                transparentCorners: false,
+                                hoverCursor: 'pointer',
+                                selectable: true
                             });
 
-                            markerGroup.unitId = u.id;
-                            markerGroup.unitCode = u.unitCode;
-                            markerGroup.unitName = u.unitName;
-                            markerGroup.unitNumber = u.unitNumber;
-                            markerGroup.block = u.block;
-                            markerGroup.jenis = u.jenis;
-                            markerGroup.type = u.type;
-                            markerGroup.address = u.address;
-                            markerGroup.area = u.area;
-                            markerGroup.building = u.building;
-                            markerGroup.price = u.price;
-                            markerGroup.direction = u.direction;
-                            markerGroup.statusRaw = u.statusRaw;
-                            markerGroup.statusText = u.statusText;
-                            markerGroup.construction = u.construction;
-                            markerGroup.hasBooking = u.hasBooking;
-                            markerGroup.bookingId = u.bookingId;
-                            markerGroup.customer = u.customer;
-                            markerGroup.sales = u.sales;
-                            markerGroup.bookingDate = u.bookingDate;
-                            markerGroup.bookingFee = u.bookingFee;
-                            markerGroup.agentFee = u.agentFee;
-                            markerGroup.bookingStatus = u.bookingStatus;
+                            const unitProps = {
+                                unitId: u.id,
+                                unitCode: u.unitCode,
+                                unitName: u.unitName,
+                                unitNumber: u.unitNumber,
+                                block: u.block,
+                                jenis: u.jenis,
+                                type: u.type,
+                                address: u.address,
+                                area: u.area,
+                                building: u.building,
+                                price: u.price,
+                                direction: u.direction,
+                                certificateNo: u.certificateNo,
+                                fileCertificate: u.fileCertificate,
+                                statusRaw: u.statusRaw,
+                                statusText: statusLabel,
+                                statusCategory: statusCategory,
+                                fillColor: fillColor,
+                                strokeColor: strokeColor,
+                                construction: u.construction,
+                                hasBooking: hasBooking ? 1 : 0,
+                                bookingId: u.bookingId,
+                                customer: u.customer,
+                                sales: u.sales,
+                                bookingDate: u.bookingDate,
+                                bookingFee: u.bookingFee,
+                                agentFee: u.agentFee,
+                                bookingStatus: u.bookingStatus,
+                                isPolygon: false,
+                                origFill: fillColor,
+                                origStroke: strokeColor,
+                                origWidth: strokeWidth
+                            };
 
+                            Object.assign(markerGroup, unitProps);
                             canvas.add(markerGroup);
                         }
                     });
@@ -3734,6 +3867,7 @@
 
         // Keyboard navigation for micro-adjustments (Arrow Keys)
         document.addEventListener('keydown', function(e) {
+            if (!canEditPosition) return;
             if (typeof canvas === 'undefined' || !canvas) return;
             const activeObject = canvas.getActiveObject();
             if (!activeObject) return;
@@ -3794,6 +3928,8 @@
 
         // Populate Modal Detail Unit secara langsung dari objek Canvas
         window.populateModalDirectly = function(data) {
+            window.currentModalUnitId = data.unitId;
+
             document.getElementById('m_unit_name').innerText = data.unitName || '-';
             document.getElementById('m_block').innerText = data.block || '-';
             document.getElementById('m_unit_number').innerText = data.unitNumber || '-';
@@ -3819,27 +3955,52 @@
             }
             document.getElementById('m_address').innerText = data.address || '-';
 
-            // Status Penjualan
+            // Status Penjualan & Pewarnaan Marketing (Tersedia Subsidi/Komersil, Booking, Sold Out, Draft)
             const sRaw = (data.statusRaw || '').toLowerCase();
             const jRaw = (data.jenis || '').toLowerCase();
             const tRaw = (data.type || '').toLowerCase();
+            const hasBooking = data.hasBooking == 1 || data.hasBooking === true;
             let sHtml = '';
-            if (sRaw === 'ready' || sRaw === 'tersedia') {
+
+            if (sRaw === 'sold' || sRaw === 'terjual') {
+                sHtml = `<span class="badge shadow-sm" style="background: #dc3545; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-close-circle me-1"></i>Sold Out (Terjual)</span>`;
+            } else if (hasBooking || sRaw === 'booked' || sRaw === 'booking') {
+                sHtml = `<span class="badge shadow-sm" style="background: #f59e0b; color: #1e293b !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-bookmark-check me-1"></i>Booking (Terbooking)</span>`;
+            } else if (sRaw === 'ready' || sRaw === 'tersedia') {
                 if (tRaw === 'komersil' || jRaw === 'komersil') {
-                    sHtml = `<span class="badge shadow-sm" style="background: #2675BB; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-office-building me-1"></i>Tersedia (Ready Komersil)</span>`;
+                    sHtml = `<span class="badge shadow-sm" style="background: #2675BB; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-home-outline me-1"></i>Tersedia (Ready Komersil)</span>`;
                 } else {
-                    sHtml = `<span class="badge shadow-sm" style="background: #28a745; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-check-circle me-1"></i>Tersedia (Ready Subsidi)</span>`;
+                    sHtml = `<span class="badge shadow-sm" style="background: #28a745; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-home-heart me-1"></i>Tersedia (Ready Subsidi)</span>`;
                 }
-            } else if (sRaw === 'booked') {
-                sHtml = `<span class="badge shadow-sm" style="background: #ffc107; color: #212529 !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-bookmark-check me-1"></i>Booked (Terbooking)</span>`;
-            } else if (sRaw === 'sold' || sRaw === 'terjual') {
-                sHtml = `<span class="badge shadow-sm" style="background: #dc3545; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-close-circle me-1"></i>Terjual (Sold)</span>`;
             } else if (sRaw === 'draft') {
                 sHtml = `<span class="badge shadow-sm" style="background: #64748b; color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;"><i class="mdi mdi-file-document-edit-outline me-1"></i>Draft (Belum Diberi Harga)</span>`;
             } else {
                 sHtml = `<span class="badge bg-secondary shadow-sm" style="color: #ffffff !important; font-size: 0.82rem; font-weight: 700; padding: 6px 12px; border-radius: 6px;">${data.statusText || sRaw}</span>`;
             }
             document.getElementById('m_status').innerHTML = sHtml;
+
+            // Update badge di footer modal
+            const footerBadge = document.getElementById('m_footer_status_badge');
+            if (footerBadge) {
+                footerBadge.innerHTML = sHtml;
+            }
+
+            // Update link "Halaman Penuh" di modal footer
+            const btnFull = document.getElementById('m_btn_open_full_page');
+            if (btnFull && data.unitId) {
+                btnFull.href = "{{ url('/marketing/sell-unit') }}/" + data.unitId;
+            }
+
+            // Update tombol langsung "Booking Unit Ini" di modal footer
+            const isAvailableForBooking = (sRaw === 'ready' || sRaw === 'tersedia') && !hasBooking && (sRaw !== 'sold' && sRaw !== 'terjual' && sRaw !== 'draft');
+            const btnBookingDirect = document.getElementById('m_btn_booking_direct');
+            if (btnBookingDirect) {
+                if (isAvailableForBooking) {
+                    btnBookingDirect.style.display = 'inline-flex';
+                } else {
+                    btnBookingDirect.style.display = 'none';
+                }
+            }
 
             // Progress Pembangunan Fisik
             const progressMap = { belum_mulai: 0, pondasi: 20, dinding: 40, atap: 60, finishing: 80, selesai: 100 };
@@ -3852,7 +4013,6 @@
             document.getElementById('m_progress_pct').innerText = pct + '% (' + strokeInfo.label + ')';
 
             // Booking info
-            const hasBooking = data.hasBooking == 1 || data.hasBooking === true;
             document.getElementById('m_booking_card').style.display = hasBooking ? '' : 'none';
             document.getElementById('m_no_booking_card').style.display = hasBooking ? 'none' : '';
 
@@ -3893,13 +4053,81 @@
             }
         };
 
-        function openUnitDetailFromObject(target) {
+        // Buka modal detail unit langsung dari objek canvas siteplan
+        window.openUnitDetailFromObject = function(target) {
             if (!target || !target.unitId) return;
-            window.location.href = "{{ url('/marketing/sell-unit') }}/" + target.unitId;
-        }
 
+            let fullData = null;
+            if (typeof allUnitsData !== 'undefined' && Array.isArray(allUnitsData)) {
+                fullData = allUnitsData.find(u => u.id == target.unitId);
+            }
 
-        // Buka modal detail saat bulatan di-KLIK (single click)
+            const merged = Object.assign({}, target, fullData || {});
+            populateModalDirectly(merged);
+
+            const modalEl = document.getElementById('detailUnitModal');
+            if (modalEl) {
+                const modalObj = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modalObj.show();
+            }
+        };
+
+        // Aksi tombol Booking Unit dari dalam Modal Detail
+        window.bookUnitFromDetailModal = function() {
+            const modalEl = document.getElementById('detailUnitModal');
+            if (modalEl) {
+                const modalObj = bootstrap.Modal.getInstance(modalEl);
+                if (modalObj) {
+                    modalObj.hide();
+                }
+            }
+            if (window.currentModalUnitId) {
+                setTimeout(function() {
+                    openCustomerModal(window.currentModalUnitId);
+                }, 350);
+            }
+        };
+
+        // Hover Effect Interaktif di Canvas Siteplan
+        canvas.on('mouse:over', function(e) {
+            if (e.target && e.target.unitId) {
+                canvas.defaultCursor = 'pointer';
+                if (e.target.isPolygon) {
+                    e.target.set({
+                        stroke: '#ffffff',
+                        strokeWidth: (e.target.origWidth || 2) + 2.5,
+                        opacity: 0.98
+                    });
+                } else {
+                    e.target.set({
+                        scaleX: 1.08,
+                        scaleY: 1.08
+                    });
+                }
+                canvas.requestRenderAll();
+            }
+        });
+
+        canvas.on('mouse:out', function(e) {
+            if (e.target && e.target.unitId) {
+                canvas.defaultCursor = 'default';
+                if (e.target.isPolygon) {
+                    e.target.set({
+                        stroke: e.target.origStroke || e.target.strokeColor,
+                        strokeWidth: e.target.origWidth || 2,
+                        opacity: 0.88
+                    });
+                } else {
+                    e.target.set({
+                        scaleX: 1.0,
+                        scaleY: 1.0
+                    });
+                }
+                canvas.requestRenderAll();
+            }
+        });
+
+        // Buka modal detail saat unit di-KLIK (single click)
         let clickStartPos = { x: 0, y: 0 };
         canvas.on('mouse:down', function(e) {
             if (e.e) {
@@ -3924,6 +4152,14 @@
         });
 
         function savePosition() {
+            if (!canEditPosition) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Akses Dibatasi',
+                    text: 'Divisi Marketing hanya memiliki akses melihat denah unit dan melakukan booking.'
+                });
+                return;
+            }
             let units = [];
             canvas.getObjects().forEach(function(obj) {
                 if (obj.unitId) {
@@ -4691,6 +4927,25 @@
                 showFilterLoading();
                 return true;
             });
+
+            // Auto switch to siteplan or auto trigger booking modal from URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const tabParam = urlParams.get('tab');
+            const bookingUnitParam = urlParams.get('booking_unit');
+
+            if (tabParam === 'siteplan' || tabParam === 'sitepland') {
+                if (typeof switchView === 'function') {
+                    switchView('sitepland');
+                }
+            }
+
+            if (bookingUnitParam) {
+                setTimeout(function() {
+                    if (typeof openCustomerModal === 'function') {
+                        openCustomerModal(bookingUnitParam);
+                    }
+                }, 400);
+            }
         });
 
         // Fungsi loading untuk filter

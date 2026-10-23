@@ -229,6 +229,12 @@
                 </p>
             </div>
             <div class="d-flex align-items-center gap-2">
+                @if(!$unit->activeBooking && in_array(strtolower($unit->status ?? ''), ['ready', 'tersedia']) && !empty($unit->price) && (float)$unit->price > 0)
+                    <a href="{{ route('marketing.jual-unit', ['booking_unit' => $unit->id]) }}" class="btn btn-sm d-inline-flex align-items-center gap-1 px-3 py-2 shadow-sm text-white fw-bold" style="background-color: #10b981; border: 1px solid #10b981; border-radius: 8px;">
+                        <i class="mdi mdi-account-plus fs-5"></i>
+                        <span>Booking Unit Ini</span>
+                    </a>
+                @endif
                 <a href="{{ route('marketing.jual-unit') }}" class="btn btn-sm d-inline-flex align-items-center gap-2 px-3 py-2 shadow-sm text-white fw-bold btn-kembali-proyek">
                     <i class="mdi mdi-arrow-left text-white" style="font-size: 1.1rem; line-height: 1;"></i>
                     <span>Kembali</span>
