@@ -35,19 +35,13 @@ class SellUnitController extends Controller
             'activeBooking.sales',
             'activeBooking.customer',
         ]);
-        // Jika posisi Staff Marketing (sales) -> hanya tampilkan unit yang sudah dikaitkan oleh Kepala Marketing ke dirinya
+        // Posisi Staff Marketing (sales)
         $isStaffMarketing = false;
         if ($user) {
             $posName = strtolower($user->position->name ?? '');
             if ($user->position_id == 2 || (strpos($posName, 'marketing') !== false && strpos($posName, 'kepala') === false)) {
                 $isStaffMarketing = true;
             }
-        }
-
-        if ($isStaffMarketing) {
-            $query->whereHas('activeBooking', function ($q) use ($user) {
-                $q->where('sales_id', $user->id);
-            });
         }
         // =========================
         // FILTER SECTION
@@ -301,8 +295,13 @@ class SellUnitController extends Controller
             // tambahkan semua unit...
         ];
 
-        // ambil unit dari DB
-        $unitsForSvg = (clone $statsQuery)->get(); // ambil semua kolom dan relasi agar detail unit lengkap terisi di siteplan
+        // Ambil SEMUA unit dari DB untuk denah siteplan (lengkap dengan relasi booking dan polygon points)
+        $unitsForSvg = LandBankUnit::with([
+            'landBank',
+            'activeBooking',
+            'activeBooking.sales',
+            'activeBooking.customer',
+        ])->get();
 
         // set warna mandiri khusus divisi marketing (fokus: tersedia bentuk rumah, booking, sold out, draft)
         foreach ($unitsForSvg as $unit) {

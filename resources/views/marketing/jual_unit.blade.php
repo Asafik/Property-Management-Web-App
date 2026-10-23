@@ -3359,7 +3359,7 @@
                 pos_y: {{ $unit->pos_y !== null ? $unit->pos_y : 'null' }},
                 width: {{ $unit->width ?? 80 }},
                 angle: {{ $unit->angle ?? 0 }},
-                polygon_points: {!! !empty($unit->polygon_points) ? json_encode($unit->polygon_points) : 'null' !!},
+                polygon_points: {!! !empty($unit->polygon_points) ? (is_string($unit->polygon_points) ? $unit->polygon_points : json_encode($unit->polygon_points)) : 'null' !!},
             },
             @endforeach
         ];
@@ -3463,13 +3463,18 @@
                         }
 
                         // 1. JIKA MEMILIKI TITIK POLIGON (KOTAK DENAH ASLI YANG DIGAMBAR TIM LEGAL)
-                        if (u.polygon_points && Array.isArray(u.polygon_points) && u.polygon_points.length >= 3) {
-                            let cx = 0, cy = 0;
-                            u.polygon_points.forEach(pt => { cx += pt.x; cy += pt.y; });
-                            cx /= u.polygon_points.length;
-                            cy /= u.polygon_points.length;
+                        let polyPoints = u.polygon_points;
+                        if (typeof polyPoints === 'string') {
+                            try { polyPoints = JSON.parse(polyPoints); } catch(e) {}
+                        }
 
-                            const poly = new fabric.Polygon(u.polygon_points, {
+                        if (polyPoints && Array.isArray(polyPoints) && polyPoints.length >= 3) {
+                            let cx = 0, cy = 0;
+                            polyPoints.forEach(pt => { cx += pt.x; cy += pt.y; });
+                            cx /= polyPoints.length;
+                            cy /= polyPoints.length;
+
+                            const poly = new fabric.Polygon(polyPoints, {
                                 fill: fillColor,
                                 opacity: 0.72,
                                 stroke: strokeColor,
