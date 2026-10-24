@@ -122,13 +122,19 @@ class InvoiceController extends Controller
 
     public function cetakKuitansiUtj($id)
     {
-        $booking = Booking::with(['unit', 'unit.landBank', 'customer', 'sales', 'payments'])->findOrFail($id);
+        $booking = Booking::with(['unit', 'unit.landBank', 'customer', 'sales', 'payments', 'utjInstallments'])->findOrFail($id);
         
         $kuitansiNumber = 'KW-UTJ/' . date('Ymd', strtotime($booking->booking_date ?? now())) . '/' . str_pad($booking->id, 4, '0', STR_PAD_LEFT);
         
         $utjPayment = $booking->payments->where('type', 'booking_fee')->first();
-        $nominalUtj = $booking->utj ?? $booking->booking_fee ?? ($utjPayment->amount ?? 0);
-        $terbilang = $this->terbilang($nominalUtj);
+        $isCicilan = ($booking->utj_payment_type === 'cicilan');
+        $nominalDiterima = ($isCicilan && ($booking->sisa_utj ?? 0) > 0)
+            ? ($booking->booking_fee ?? ($utjPayment->amount ?? 0))
+            : ($booking->utj ?? $booking->booking_fee ?? ($utjPayment->amount ?? 0));
+        $nominalUtj = $nominalDiterima;
+        $totalKesepakatanUtj = $booking->utj ?? $nominalUtj;
+        $sisaUtj = $booking->sisa_utj ?? max(0, $totalKesepakatanUtj - $nominalDiterima);
+        $terbilang = $this->terbilang($nominalDiterima);
 
         $downloadUrl = route('dashboard.cetak.kuitansi.utj.pdf', $booking->id);
 
@@ -136,6 +142,10 @@ class InvoiceController extends Controller
             'booking',
             'kuitansiNumber',
             'nominalUtj',
+            'nominalDiterima',
+            'totalKesepakatanUtj',
+            'sisaUtj',
+            'isCicilan',
             'terbilang',
             'utjPayment',
             'downloadUrl'
@@ -144,42 +154,63 @@ class InvoiceController extends Controller
 
     public function cetakKuitansiUtjPdf($id)
     {
-        $booking = Booking::with(['unit', 'unit.landBank', 'customer', 'sales', 'payments'])->findOrFail($id);
+        $booking = Booking::with(['unit', 'unit.landBank', 'customer', 'sales', 'payments', 'utjInstallments'])->findOrFail($id);
         
         $kuitansiNumber = 'KW-UTJ/' . date('Ymd', strtotime($booking->booking_date ?? now())) . '/' . str_pad($booking->id, 4, '0', STR_PAD_LEFT);
         
         $utjPayment = $booking->payments->where('type', 'booking_fee')->first();
-        $nominalUtj = $booking->utj ?? $booking->booking_fee ?? ($utjPayment->amount ?? 0);
-        $terbilang = $this->terbilang($nominalUtj);
+        $isCicilan = ($booking->utj_payment_type === 'cicilan');
+        $nominalDiterima = ($isCicilan && ($booking->sisa_utj ?? 0) > 0)
+            ? ($booking->booking_fee ?? ($utjPayment->amount ?? 0))
+            : ($booking->utj ?? $booking->booking_fee ?? ($utjPayment->amount ?? 0));
+        $nominalUtj = $nominalDiterima;
+        $totalKesepakatanUtj = $booking->utj ?? $nominalUtj;
+        $sisaUtj = $booking->sisa_utj ?? max(0, $totalKesepakatanUtj - $nominalDiterima);
+        $terbilang = $this->terbilang($nominalDiterima);
 
         $pdf = Pdf::loadView('cetak.kuitansi_utj', [
-            'booking' => $booking,
-            'kuitansiNumber' => $kuitansiNumber,
-            'nominalUtj' => $nominalUtj,
-            'terbilang' => $terbilang,
-            'utjPayment' => $utjPayment,
-            'pdf' => true
+            'booking'             => $booking,
+            'kuitansiNumber'      => $kuitansiNumber,
+            'nominalUtj'          => $nominalUtj,
+            'nominalDiterima'     => $nominalDiterima,
+            'totalKesepakatanUtj' => $totalKesepakatanUtj,
+            'sisaUtj'             => $sisaUtj,
+            'isCicilan'           => $isCicilan,
+            'terbilang'           => $terbilang,
+            'utjPayment'          => $utjPayment,
+            'pdf'                 => true
         ])->setPaper('A4', 'portrait')->setOption('isRemoteEnabled', true)->setOption('isHtml5ParserEnabled', true);
 
         $fileName = 'kuitansi_utj_' . str_replace(['/', '\\'], '-', $kuitansiNumber) . '.pdf';
         return $pdf->download($fileName);
     }
+
     public function sendUtjToWa($id)
     {
-        $booking = Booking::with(['unit', 'unit.landBank', 'customer', 'sales', 'payments'])->findOrFail($id);
+        $booking = Booking::with(['unit', 'unit.landBank', 'customer', 'sales', 'payments', 'utjInstallments'])->findOrFail($id);
 
         $kuitansiNumber = 'KW-UTJ/' . date('Ymd', strtotime($booking->booking_date ?? now())) . '/' . str_pad($booking->id, 4, '0', STR_PAD_LEFT);
         $utjPayment = $booking->payments->where('type', 'booking_fee')->first();
-        $nominalUtj = $booking->utj ?? $booking->booking_fee ?? ($utjPayment->amount ?? 0);
-        $terbilang = $this->terbilang($nominalUtj);
+        $isCicilan = ($booking->utj_payment_type === 'cicilan');
+        $nominalDiterima = ($isCicilan && ($booking->sisa_utj ?? 0) > 0)
+            ? ($booking->booking_fee ?? ($utjPayment->amount ?? 0))
+            : ($booking->utj ?? $booking->booking_fee ?? ($utjPayment->amount ?? 0));
+        $nominalUtj = $nominalDiterima;
+        $totalKesepakatanUtj = $booking->utj ?? $nominalUtj;
+        $sisaUtj = $booking->sisa_utj ?? max(0, $totalKesepakatanUtj - $nominalDiterima);
+        $terbilang = $this->terbilang($nominalDiterima);
 
         $pdf = Pdf::loadView('cetak.kuitansi_utj', [
-            'booking' => $booking,
-            'kuitansiNumber' => $kuitansiNumber,
-            'nominalUtj' => $nominalUtj,
-            'terbilang' => $terbilang,
-            'utjPayment' => $utjPayment,
-            'pdf' => true
+            'booking'             => $booking,
+            'kuitansiNumber'      => $kuitansiNumber,
+            'nominalUtj'          => $nominalUtj,
+            'nominalDiterima'     => $nominalDiterima,
+            'totalKesepakatanUtj' => $totalKesepakatanUtj,
+            'sisaUtj'             => $sisaUtj,
+            'isCicilan'           => $isCicilan,
+            'terbilang'           => $terbilang,
+            'utjPayment'          => $utjPayment,
+            'pdf'                 => true
         ])->setPaper('A4', 'portrait')->setOption('isRemoteEnabled', true)->setOption('isHtml5ParserEnabled', true);
 
         $folderPath = public_path('invoices');
@@ -199,18 +230,27 @@ class InvoiceController extends Controller
 
         $proyek = $booking->unit->landBank->name ?? '-';
         $unitCode = $booking->unit->unit_name ?? ($booking->unit->unit_code ?? '-');
-        $nominalFormatted = 'Rp ' . number_format($nominalUtj, 0, ',', '.');
+        $nominalFormatted = 'Rp ' . number_format($nominalDiterima, 0, ',', '.');
         $tanggal = \Carbon\Carbon::parse($booking->booking_date ?? now())->translatedFormat('d F Y');
         $customerName = $booking->customer->full_name ?? ($booking->customer->name ?? 'Bpk/Ibu');
+
+        if ($isCicilan && $sisaUtj > 0) {
+            $statusSection = "✅ *Status*       : *TERVERIFIKASI (SKEMA CICILAN)*\n"
+                . "💵 *Diterima Awal*: {$nominalFormatted}\n"
+                . "📑 *Total UTJ*    : Rp " . number_format($totalKesepakatanUtj, 0, ',', '.') . "\n"
+                . "⏳ *Sisa UTJ*     : Rp " . number_format($sisaUtj, 0, ',', '.') . " (" . $booking->utjInstallments->count() . "x tahapan)";
+        } else {
+            $statusSection = "💵 *Jumlah UTJ*   : {$nominalFormatted}\n"
+                . "✅ *Status*       : *LUNAS / TERVERIFIKASI*";
+        }
 
         $text = "Halo Bapak/Ibu *{$customerName}*,\n\n"
             . "Berikut kami sampaikan *Kuitansi Resmi Penerimaan Uang Tanda Jadi (UTJ)* pemesanan unit properti Anda:\n\n"
             . "📋 *No. Kuitansi* : {$kuitansiNumber}\n"
             . "🏠 *Unit Proyek*  : {$proyek} (Blok {$unitCode})\n"
-            . "💵 *Jumlah UTJ*   : {$nominalFormatted}\n"
-            . "✅ *Status*       : *LUNAS / TERVERIFIKASI*\n"
+            . "{$statusSection}\n"
             . "📅 *Tanggal*      : {$tanggal}\n\n"
-            . "Dokumen kuitansi resmi dapat Anda unduh/lihat pada tautan berikut:\n"
+            . "Dokumen kuitansi resmi beserta rincian jadwal cicilan dapat Anda unduh/lihat pada tautan berikut:\n"
             . "👉 " . url('invoices/' . $fileName) . "\n\n"
             . "Terima kasih atas kepercayaan Anda.\n"
             . "*PT. GRAHA CIPTA SEJAHTERA*";

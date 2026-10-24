@@ -17,6 +17,8 @@ class Booking extends Model
         'booking_code',
         'booking_fee',
         'utj',
+        'utj_payment_type',
+        'sisa_utj',
         'ijb',
         'bukti_transfer_ijb',
         'no_ajb',
@@ -76,6 +78,12 @@ class Booking extends Model
     {
         return $this->hasMany(Payment::class, 'booking_id');
     }
+
+    public function utjInstallments()
+    {
+        return $this->hasMany(BookingUtjInstallment::class, 'booking_id')->orderBy('installment_number');
+    }
+
     public function akad()
 {
     return $this->hasOne(Akad::class);
@@ -107,6 +115,11 @@ public function complaints()
 public function invoices()
 {
     return $this->hasMany(Invoice::class, 'booking_id');
+}
+
+public function utjInvoice()
+{
+    return $this->hasOne(Invoice::class, 'booking_id')->where('category', 'utj');
 }
 
 public function ijbInvoice()

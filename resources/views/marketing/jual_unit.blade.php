@@ -2682,10 +2682,12 @@
                                                 </div>
                                                 <div class="col-md-4 col-lg-3">
                                                     <div class="timeline-detail-item">
-                                                        <div class="timeline-detail-label"><i
-                                                                class="mdi mdi-cash-multiple"></i>Uang Tanda Jadi (UTJ)</div>
-                                                        <div class="timeline-detail-value fee-text" id="m_booking_fee">-
+                                                        <div class="timeline-detail-label d-flex justify-content-between align-items-center">
+                                                            <span><i class="mdi mdi-cash-multiple"></i>Uang Tanda Jadi (UTJ)</span>
+                                                            <span id="m_utj_type_badge" class="badge bg-light text-muted border" style="font-size: 0.65rem;">-</span>
                                                         </div>
+                                                        <div class="timeline-detail-value fee-text" id="m_booking_fee">-</div>
+                                                        <div id="m_utj_breakdown_hint" class="small mt-1" style="font-size: 0.72rem; display: none;"></div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4 col-lg-3">
@@ -2709,6 +2711,32 @@
                                                         <div class="timeline-detail-label"><i
                                                                 class="mdi mdi-toggle-switch"></i>Status Booking</div>
                                                         <div class="timeline-detail-value" id="m_booking_status">-</div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Container Tabel Rincian Cicilan Sisa UTJ di Modal Detail -->
+                                                <div class="col-12 mt-2.5" id="m_utj_installments_box" style="display: none;">
+                                                    <div class="p-2.5 rounded-2" style="background: #f8fafc; border: 1.5px dashed #cbd5e1;">
+                                                        <div class="d-flex justify-content-between align-items-center mb-1.5">
+                                                            <span class="fw-bold text-dark d-flex align-items-center" style="font-size: 0.77rem;">
+                                                                <i class="mdi mdi-calendar-clock text-primary me-1"></i>Rincian Jadwal Cicilan Sisa UTJ (Data Keuangan &amp; IJB):
+                                                            </span>
+                                                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25" style="font-size: 0.68rem;">Dicicil</span>
+                                                        </div>
+                                                        <div class="table-responsive">
+                                                            <table class="table table-sm table-bordered align-middle mb-0 bg-white" style="font-size: 0.74rem;">
+                                                                <thead class="table-light">
+                                                                    <tr>
+                                                                        <th class="py-1">Tahap Cicilan</th>
+                                                                        <th class="py-1">Nominal Angsuran</th>
+                                                                        <th class="py-1">Jatuh Tempo</th>
+                                                                        <th class="py-1 text-center">Status</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="m_utj_installments_tbody">
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 mt-3 pt-2 border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
@@ -2778,7 +2806,7 @@
 
         <!-- MODAL CUSTOMER & BOOKING UNIT -->
         <div class="modal fade" id="modalCustomer" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered" style="max-width: 860px;">
+            <div class="modal-dialog modal-lg modal-dialog-centered" style="max-width: 960px;">
                 <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden; max-height: calc(100vh - 40px); display: flex; flex-direction: column;">
                     <div class="modal-header bg-light border-bottom" style="padding: 1.1rem 1.4rem;">
                         <div>
@@ -2786,7 +2814,7 @@
                                 <i class="mdi mdi-account-plus text-primary me-2" style="font-size: 1.35rem;"></i>
                                 Formulir Booking Unit
                             </h5>
-                            <small class="text-muted" style="font-size: 0.78rem;">Pilih Customer pembeli unit dan rincian transaksi booking (UTJ & IJB)</small>
+                            <small class="text-muted" style="font-size: 0.78rem;">Pilih Customer pembeli unit dan rincian transaksi booking (UTJ &amp; IJB)</small>
                         </div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -2802,7 +2830,7 @@
                                         <i class="mdi mdi-account-search text-primary me-1"></i>Pilih Customer <span class="text-danger">*</span>
                                     </label>
                                     <select class="form-control select2-customer-modal" id="select_customer_id" name="customer_id" style="width: 100%;" required>
-                                        <option value="">-- Cari & Pilih Customer (ID / Nama) --</option>
+                                        <option value="">-- Cari &amp; Pilih Customer (ID / Nama) --</option>
                                         @foreach ($customers as $c)
                                             @php
                                                 $isLengkap = $c->is_lengkap;
@@ -2834,9 +2862,9 @@
 
                             <!-- Baris 2: 2 Kolom untuk UTJ dan IJB -->
                             <div class="row g-3">
-                                <!-- Kolom Kiri: Uang Tanda Jadi (UTJ) -->
-                                <div class="col-12 col-md-6">
-                                    <div class="p-3 rounded-3 h-100 d-flex flex-column justify-content-between" style="background: #f8fafc; border: 1.5px solid #e2e8f0;">
+                                <!-- Kolom Kiri: Uang Tanda Jadi (UTJ) & Skema Cicilan -->
+                                <div class="col-12 col-lg-7">
+                                    <div class="p-3 rounded-3 h-100 d-flex flex-column justify-content-between" style="background: #f8fafc; border: 1.5px solid #cbd5e1;">
                                         <div>
                                             <div class="d-flex align-items-center justify-content-between pb-2 mb-2.5 border-bottom" style="border-color: #e2e8f0 !important;">
                                                 <span class="fw-bold text-dark d-flex align-items-center" style="font-size: 0.88rem;">
@@ -2846,23 +2874,111 @@
                                                 <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25" style="font-size: 0.7rem; padding: 3px 8px; border-radius: 6px;">Wajib</span>
                                             </div>
 
-                                            <!-- Field Nominal Uang Tanda Jadi (UTJ) -->
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold mb-1" style="color: #3b3f5c; font-size: 0.82rem;">
-                                                    Nominal UTJ <span class="text-danger">*</span>
-                                                </label>
-                                                <div class="input-group rupiah-input-group">
-                                                    <span class="input-group-text">Rp</span>
-                                                    <input type="text" class="form-control rupiah-format" id="booking_fee" name="booking_fee" placeholder="Contoh: 5.000.000" autocomplete="off" required>
+                                            <!-- Field Total Kesepakatan UTJ -->
+                                            <div class="mb-2.5">
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <label class="form-label fw-bold mb-0" style="color: #3b3f5c; font-size: 0.82rem;">
+                                                        Total Kesepakatan UTJ <span class="text-danger">*</span>
+                                                    </label>
+                                                    <span class="badge bg-white text-muted border" style="font-size: 0.68rem;">Sesuai Promo / Standar Unit</span>
                                                 </div>
-                                                <small class="text-muted mt-1 d-block" style="font-size: 0.73rem;">
-                                                    <i class="mdi mdi-information-outline me-1"></i>Tanda jadi pemesanan unit
+                                                <div class="input-group rupiah-input-group">
+                                                    <span class="input-group-text bg-white fw-bold text-success">Rp</span>
+                                                    <input type="text" class="form-control rupiah-format fw-bold text-dark" id="nominal_utj" name="utj" placeholder="Contoh: 5.500.000" autocomplete="off" required>
+                                                </div>
+                                                <small class="text-muted mt-1 d-block" style="font-size: 0.72rem;">
+                                                    <i class="mdi mdi-information-outline me-1"></i>Total uang tanda jadi yang disepakati untuk unit ini
                                                 </small>
+                                            </div>
+
+                                            <!-- Pilihan Skema Pembayaran UTJ -->
+                                            <div class="mb-3 p-2 rounded-2" style="background: #f1f5f9; border: 1px solid #e2e8f0;">
+                                                <label class="form-label fw-bold mb-1.5 d-block text-dark" style="font-size: 0.76rem;">
+                                                    <i class="mdi mdi-tune-vertical text-primary me-1"></i>Skema Pembayaran UTJ:
+                                                </label>
+                                                <div class="d-flex gap-2">
+                                                    <div class="form-check form-check-inline flex-fill m-0">
+                                                        <label class="btn btn-sm btn-outline-primary active w-100 d-flex align-items-center justify-content-center py-1.5" id="label_utj_lunas" style="border-radius: 6px; font-size: 0.76rem; font-weight: 600; cursor: pointer;">
+                                                            <input type="radio" name="utj_payment_type" id="utj_type_lunas" value="lunas" checked class="d-none">
+                                                            <i class="mdi mdi-cash-check me-1"></i>Bayar Lunas Langsung
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline flex-fill m-0">
+                                                        <label class="btn btn-sm btn-outline-primary w-100 d-flex align-items-center justify-content-center py-1.5" id="label_utj_cicilan" style="border-radius: 6px; font-size: 0.76rem; font-weight: 600; cursor: pointer;">
+                                                            <input type="radio" name="utj_payment_type" id="utj_type_cicilan" value="cicilan" class="d-none">
+                                                            <i class="mdi mdi-calendar-clock me-1"></i>Dicicil / Bertahap
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Kontainer Skema Dicicil / Bertahap -->
+                                            <div id="utj_cicilan_container" style="display: none;">
+                                                <!-- Field Nominal Bayar Hari Ini (Tanda Jadi Awal) -->
+                                                <div class="mb-2.5">
+                                                    <label class="form-label fw-bold mb-1" style="color: #3b3f5c; font-size: 0.82rem;">
+                                                        Bayar Hari Ini (Tanda Jadi Awal) <span class="text-danger">*</span>
+                                                    </label>
+                                                    <div class="input-group rupiah-input-group">
+                                                        <span class="input-group-text bg-white fw-bold text-primary">Rp</span>
+                                                        <input type="text" class="form-control rupiah-format fw-bold text-dark" id="booking_fee" name="booking_fee" placeholder="Contoh: 500.000" autocomplete="off">
+                                                    </div>
+                                                    <small class="text-muted mt-1 d-block" style="font-size: 0.72rem;">
+                                                        <i class="mdi mdi-lightning-bolt-circle text-warning me-1"></i>Nominal kunci unit yang disetor customer saat ini
+                                                    </small>
+                                                </div>
+
+                                                <!-- Box Ringkasan Sisa UTJ -->
+                                                <div class="p-2.5 mb-2.5 rounded-2 d-flex justify-content-between align-items-center" style="background: #fffbeb; border: 1px dashed #f59e0b;">
+                                                    <div>
+                                                        <span class="text-muted d-block" style="font-size: 0.71rem;">Sisa UTJ yang Akan Dicicil:</span>
+                                                        <span class="fw-bold text-dark" id="display_sisa_utj" style="font-size: 0.95rem; color: #b45309 !important;">Rp 0</span>
+                                                    </div>
+                                                    <span class="badge bg-warning bg-opacity-20 text-warning-emphasis border border-warning" style="font-size: 0.7rem; padding: 4px 8px;">
+                                                        <i class="mdi mdi-clock-outline me-1"></i>Piutang UTJ
+                                                    </span>
+                                                </div>
+
+                                                <!-- Tabel Rencana Cicilan Sisa UTJ -->
+                                                <div class="mb-3 p-2.5 rounded-2 bg-white border" style="border-color: #e2e8f0 !important;">
+                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                        <span class="fw-bold text-dark d-flex align-items-center" style="font-size: 0.78rem;">
+                                                            <i class="mdi mdi-format-list-numbered text-primary me-1"></i>Rencana Cicilan Sisa UTJ
+                                                        </span>
+                                                        <div class="btn-group btn-group-sm">
+                                                            <button type="button" class="btn btn-outline-secondary py-0 px-2" style="font-size: 0.7rem;" onclick="setInstallmentPreset(2)">2x Cicil</button>
+                                                            <button type="button" class="btn btn-outline-secondary py-0 px-2" style="font-size: 0.7rem;" onclick="setInstallmentPreset(3)">3x Cicil</button>
+                                                            <button type="button" class="btn btn-outline-primary py-0 px-2" style="font-size: 0.7rem;" onclick="addInstallmentRow()"><i class="mdi mdi-plus me-0.5"></i>Tambah</button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="table-responsive" style="max-height: 180px; overflow-y: auto;">
+                                                        <table class="table table-sm table-bordered align-middle mb-0" id="tableUtjInstallments" style="font-size: 0.76rem;">
+                                                            <thead class="table-light">
+                                                                <tr>
+                                                                    <th style="width: 22%;" class="py-1">Tahap</th>
+                                                                    <th style="width: 40%;" class="py-1">Nominal (Rp)</th>
+                                                                    <th style="width: 30%;" class="py-1">Jatuh Tempo</th>
+                                                                    <th style="width: 8%; text-align: center;" class="py-1">Aksi</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="tbodyUtjInstallments">
+                                                                <!-- Baris dinamis JS -->
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                    <!-- Validator Bar Total Cicilan vs Sisa UTJ -->
+                                                    <div class="mt-2 pt-1.5 border-top d-flex justify-content-between align-items-center" id="inst_validator_box" style="font-size: 0.72rem;">
+                                                        <span class="text-muted" id="inst_total_summary">Total Cicilan: Rp 0</span>
+                                                        <span id="inst_status_badge" class="badge bg-secondary">Menunggu Input</span>
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             <!-- Field Upload Bukti Transfer UTJ -->
                                             <div>
-                                                <label class="form-label fw-bold mb-1" style="color: #3b3f5c; font-size: 0.82rem;">
+                                                <label class="form-label fw-bold mb-1" style="color: #3b3f5c; font-size: 0.82rem;" id="labelBuktiUtj">
                                                     Upload Bukti Transfer UTJ <span class="text-danger">*</span>
                                                 </label>
                                                 <div class="file-upload-modern">
@@ -2882,7 +2998,7 @@
                                 </div>
 
                                 <!-- Kolom Kanan: Ikatan Jual Beli (IJB) -->
-                                <div class="col-12 col-md-6">
+                                <div class="col-12 col-lg-5">
                                     <div class="p-3 rounded-3 h-100 d-flex flex-column justify-content-between" style="background: #faf8ff; border: 1.5px solid #ede4fc;">
                                         <div>
                                             <div class="d-flex align-items-center justify-content-between pb-2 mb-2.5 border-bottom" style="border-color: #ede4fc !important;">
@@ -2908,7 +3024,7 @@
                                             </div>
 
                                             <!-- Field Upload Bukti Transfer IJB -->
-                                            <div>
+                                            <div class="mb-3">
                                                 <label class="form-label fw-bold mb-1" style="color: #3b3f5c; font-size: 0.82rem;">
                                                     Upload Bukti Transfer IJB <span class="text-muted fw-normal">(Opsional)</span>
                                                 </label>
@@ -2923,6 +3039,15 @@
                                                         <span class="file-size text-muted small ms-auto" id="buktiFileSizeIjb"></span>
                                                     </div>
                                                 </div>
+                                            </div>
+
+                                            <!-- Info Banner IJB & Cicilan -->
+                                            <div class="p-2.5 rounded-2" style="background: #f5f3ff; border: 1px solid #ddd6fe; font-size: 0.73rem; color: #5b21b6;">
+                                                <i class="mdi mdi-shield-check-outline me-1"></i>
+                                                <strong>Integrasi Data IJB:</strong>
+                                                <p class="mb-0 mt-1" style="line-height: 1.35; color: #6d28d9;">
+                                                    Rincian pembayaran awal dan seluruh jadwal cicilan UTJ akan otomatis tersinkron ke dokumen &amp; keuangan IJB.
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -3449,8 +3574,11 @@
                 sales_id: "{{ $unit->activeBooking->sales_id ?? '' }}",
                 sales_name: "{{ str_replace(["\r", "\n"], ' ', addslashes($unit->activeBooking->sales->name ?? '')) }}",
                 sales_phone: "{{ $unit->activeBooking->sales->phone ?? '' }}",
-                bookingDate: "{{ $unit->activeBooking ? \Carbon\Carbon::parse($unit->activeBooking->booking_date)->format('d F Y') : '-' }}",
                 bookingFee: {{ $unit->activeBooking->booking_fee ?? 0 }},
+                utj: {{ $unit->activeBooking->utj ?? ($unit->activeBooking->booking_fee ?? 0) }},
+                utjPaymentType: "{{ $unit->activeBooking->utj_payment_type ?? 'lunas' }}",
+                sisaUtj: {{ $unit->activeBooking->sisa_utj ?? 0 }},
+                utjInstallments: {!! json_encode($unit->activeBooking ? $unit->activeBooking->utjInstallments : []) !!},
                 ijb: {{ $unit->activeBooking->ijb ?? 0 }},
                 buktiTransferIjb: "{{ $unit->activeBooking->bukti_transfer_ijb ?? '' }}",
                 agentFee: {{ $unit->activeBooking->agent_fee ?? 0 }},
@@ -4129,7 +4257,53 @@
                 document.getElementById('m_sales').innerText = sales;
                 document.getElementById('m_sales_initial').innerText = (sales !== '-' && sales) ? sales.trim().charAt(0).toUpperCase() : '?';
                 document.getElementById('m_booking_date').innerText = data.bookingDate || '-';
-                document.getElementById('m_booking_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.bookingFee || 0);
+
+                // Tampilan UTJ & Cicilan
+                const utjType = data.utjPaymentType || 'lunas';
+                const totalUtj = data.utj || data.bookingFee || 0;
+                const bayarAwal = data.bookingFee || 0;
+                const sisaUtj = data.sisaUtj || 0;
+
+                const utjTypeBadge = document.getElementById('m_utj_type_badge');
+                if (utjTypeBadge) {
+                    utjTypeBadge.innerText = utjType === 'cicilan' ? 'Dicicil' : 'Lunas';
+                    utjTypeBadge.className = utjType === 'cicilan' ? 'badge bg-warning bg-opacity-20 text-warning-emphasis border border-warning' : 'badge bg-success bg-opacity-20 text-success border border-success';
+                }
+
+                document.getElementById('m_booking_fee').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(totalUtj);
+                const hintEl = document.getElementById('m_utj_breakdown_hint');
+                if (hintEl) {
+                    if (utjType === 'cicilan') {
+                        hintEl.style.display = 'block';
+                        hintEl.innerHTML = `<span class="text-success fw-bold">Awal: Rp ${new Intl.NumberFormat('id-ID').format(bayarAwal)}</span> &bull; <span class="text-warning-emphasis fw-bold">Sisa: Rp ${new Intl.NumberFormat('id-ID').format(sisaUtj)}</span>`;
+                    } else {
+                        hintEl.style.display = 'none';
+                    }
+                }
+
+                // Render installment table di detail modal
+                const instBox = document.getElementById('m_utj_installments_box');
+                const instTbody = document.getElementById('m_utj_installments_tbody');
+                if (instBox && instTbody) {
+                    if (utjType === 'cicilan' && data.utjInstallments && data.utjInstallments.length > 0) {
+                        let html = '';
+                        data.utjInstallments.forEach(function(inst) {
+                            const stBadge = inst.status === 'paid' ? '<span class="badge bg-success">Lunas</span>' : '<span class="badge bg-warning text-dark">Pending</span>';
+                            const tgl = inst.due_date ? new Date(inst.due_date).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '-';
+                            html += `<tr>
+                                <td class="fw-bold">Cicilan #${inst.installment_number}</td>
+                                <td class="fw-bold text-primary">Rp ${new Intl.NumberFormat('id-ID').format(inst.amount)}</td>
+                                <td>${tgl}</td>
+                                <td class="text-center">${stBadge}</td>
+                            </tr>`;
+                        });
+                        instTbody.innerHTML = html;
+                        instBox.style.display = 'block';
+                    } else {
+                        instBox.style.display = 'none';
+                    }
+                }
+
                 if (document.getElementById('m_ijb')) {
                     document.getElementById('m_ijb').innerText = 'Rp ' + new Intl.NumberFormat('id-ID').format(data.ijb || 0);
                 }
@@ -4352,6 +4526,153 @@
             }
         }
 
+        // ========== UTJ & INSTALLMENTS MANAGEMENT LOGIC ==========
+        window.toggleUtjPaymentType = function(type) {
+            if (type === 'cicilan') {
+                $('#utj_type_cicilan').prop('checked', true);
+                $('#label_utj_cicilan').addClass('active btn-primary text-white').removeClass('btn-outline-primary');
+                $('#label_utj_lunas').removeClass('active btn-primary text-white').addClass('btn-outline-primary');
+                $('#utj_cicilan_container').slideDown(180);
+                $('#labelBuktiUtj').html('Upload Bukti Transfer Booking Awal <span class="text-danger">*</span>');
+
+                let totalUtj = parseRupiahVal($('#nominal_utj').val());
+                let curDp = parseRupiahVal($('#booking_fee').val());
+                if (!curDp || curDp >= totalUtj) {
+                    $('#booking_fee').val(new Intl.NumberFormat('id-ID').format(500000));
+                }
+
+                if ($('#tbodyUtjInstallments tr').length === 0) {
+                    setInstallmentPreset(2);
+                } else {
+                    updateUtjInstallmentCalculations();
+                }
+            } else {
+                $('#utj_type_lunas').prop('checked', true);
+                $('#label_utj_lunas').addClass('active btn-primary text-white').removeClass('btn-outline-primary');
+                $('#label_utj_cicilan').removeClass('active btn-primary text-white').addClass('btn-outline-primary');
+                $('#utj_cicilan_container').slideUp(180);
+                $('#labelBuktiUtj').html('Upload Bukti Transfer UTJ <span class="text-danger">*</span>');
+
+                let totalUtj = parseRupiahVal($('#nominal_utj').val());
+                $('#booking_fee').val(new Intl.NumberFormat('id-ID').format(totalUtj));
+                updateUtjInstallmentCalculations();
+            }
+        };
+
+        function parseRupiahVal(str) {
+            if (!str) return 0;
+            return parseFloat(String(str).replace(/[^0-9]/g, '')) || 0;
+        }
+
+        window.updateUtjInstallmentCalculations = function() {
+            let totalUtj = parseRupiahVal($('#nominal_utj').val());
+            let isCicilan = $('#utj_type_cicilan').is(':checked');
+
+            if (!isCicilan) {
+                return;
+            }
+
+            let dp = parseRupiahVal($('#booking_fee').val());
+            let sisaUtj = Math.max(0, totalUtj - dp);
+            $('#display_sisa_utj').text('Rp ' + new Intl.NumberFormat('id-ID').format(sisaUtj));
+
+            let totalInstallments = 0;
+            $('#tbodyUtjInstallments tr').each(function(idx) {
+                $(this).find('.inst-num').text('Cicilan #' + (idx + 1));
+                let val = parseRupiahVal($(this).find('.inst-amount').val());
+                totalInstallments += val;
+            });
+
+            $('#inst_total_summary').html(`Total Cicilan: <strong>Rp ${new Intl.NumberFormat('id-ID').format(totalInstallments)}</strong> / Sisa: Rp ${new Intl.NumberFormat('id-ID').format(sisaUtj)}`);
+
+            let diff = sisaUtj - totalInstallments;
+            let $badge = $('#inst_status_badge');
+
+            if (totalInstallments === 0 && sisaUtj > 0) {
+                $badge.attr('class', 'badge bg-warning text-dark').text('Belum Ada Cicilan');
+            } else if (diff === 0 && sisaUtj > 0) {
+                $badge.attr('class', 'badge bg-success').html('<i class="mdi mdi-check-circle me-1"></i>Total Pas');
+            } else if (diff > 0) {
+                $badge.attr('class', 'badge bg-danger').text(`Kurang Rp ${new Intl.NumberFormat('id-ID').format(diff)}`);
+            } else {
+                $badge.attr('class', 'badge bg-danger').text(`Lebih Rp ${new Intl.NumberFormat('id-ID').format(Math.abs(diff))}`);
+            }
+        };
+
+        window.addInstallmentRow = function(amount, dueDate) {
+            let num = $('#tbodyUtjInstallments tr').length + 1;
+            let amtStr = amount ? new Intl.NumberFormat('id-ID').format(amount) : '';
+            let dateVal = dueDate || '';
+
+            if (!dateVal) {
+                let d = new Date();
+                d.setDate(d.getDate() + (num * 14));
+                dateVal = d.toISOString().split('T')[0];
+            }
+
+            let rowHtml = `
+                <tr class="inst-row">
+                    <td class="inst-num fw-bold text-dark py-1.5" style="font-size: 0.74rem;">Cicilan #${num}</td>
+                    <td class="py-1">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text py-0 px-1.5 bg-light" style="font-size: 0.72rem;">Rp</span>
+                            <input type="text" class="form-control form-control-sm rupiah-format inst-amount fw-bold" value="${amtStr}" placeholder="0" style="font-size: 0.76rem;" oninput="onInstallmentAmountInput(this)">
+                        </div>
+                    </td>
+                    <td class="py-1">
+                        <input type="date" class="form-control form-control-sm inst-date" value="${dateVal}" style="font-size: 0.74rem;" onchange="updateUtjInstallmentCalculations()">
+                    </td>
+                    <td class="py-1 text-center">
+                        <button type="button" class="btn btn-sm btn-outline-danger p-0 px-1" title="Hapus" onclick="removeInstallmentRow(this)">
+                            <i class="mdi mdi-close" style="font-size: 0.85rem;"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+
+            $('#tbodyUtjInstallments').append(rowHtml);
+            updateUtjInstallmentCalculations();
+        };
+
+        window.removeInstallmentRow = function(btn) {
+            $(btn).closest('tr').remove();
+            updateUtjInstallmentCalculations();
+        };
+
+        window.onInstallmentAmountInput = function(input) {
+            let val = $(input).val().replace(/[^0-9]/g, '');
+            if (val) $(input).val(new Intl.NumberFormat('id-ID').format(val));
+            else $(input).val('');
+            updateUtjInstallmentCalculations();
+        };
+
+        window.setInstallmentPreset = function(count) {
+            let totalUtj = parseRupiahVal($('#nominal_utj').val());
+            let dp = parseRupiahVal($('#booking_fee').val());
+            let sisaUtj = Math.max(0, totalUtj - dp);
+
+            if (sisaUtj <= 0) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Perhatian',
+                    text: 'Total UTJ atau sisa UTJ belum tersedia. Pastikan nominal UTJ dan tanda jadi awal sudah diisi.'
+                });
+                return;
+            }
+
+            $('#tbodyUtjInstallments').empty();
+            let baseAmount = Math.floor(sisaUtj / count);
+            let remainder = sisaUtj % count;
+
+            for (let i = 1; i <= count; i++) {
+                let amt = baseAmount + (i === count ? remainder : 0);
+                let d = new Date();
+                d.setDate(d.getDate() + (i * 14));
+                let dateStr = d.toISOString().split('T')[0];
+                addInstallmentRow(amt, dateStr);
+            }
+        };
+
         // ========== OPEN CUSTOMER MODAL (BOOKING) ==========
         window.openCustomerModal = function(unitId) {
             if (!unitId) {
@@ -4366,7 +4687,15 @@
             $('#customer_unit_id').val(unitId);
             $('#select_customer_id').val('').trigger('change');
             $('#select_purchase_type').val('kpr').trigger('change');
-            $('#booking_fee').val('');
+
+            // Default nominal UTJ 5.500.000 atau bisa disesuaikan
+            $('#nominal_utj').val(new Intl.NumberFormat('id-ID').format(5500000));
+            $('#booking_fee').val(new Intl.NumberFormat('id-ID').format(5500000));
+
+            // Reset ke skema Lunas
+            toggleUtjPaymentType('lunas');
+
+            $('#tbodyUtjInstallments').empty();
             $('#bukti_transfer').val('');
             $('#buktiFileName').text('Upload Bukti Transfer UTJ');
             $('#buktiFileSize').text('');
@@ -4476,10 +4805,29 @@
             });
 
             // Format Rupiah
-            $('#booking_fee, #ijb, #agent_fee_modal').on('input', function() {
+            $('#nominal_utj, #booking_fee, #ijb, #agent_fee_modal').on('input', function() {
                 let value = $(this).val().replace(/[^0-9]/g, '');
                 if (value) $(this).val(new Intl.NumberFormat('id-ID').format(value));
                 else $(this).val('');
+                if (this.id === 'nominal_utj' || this.id === 'booking_fee') {
+                    if ($('#utj_type_lunas').is(':checked') && this.id === 'nominal_utj') {
+                        $('#booking_fee').val($(this).val());
+                    }
+                    updateUtjInstallmentCalculations();
+                }
+            });
+
+            // Radio change listeners for UTJ payment type
+            $('input[name="utj_payment_type"]').on('change', function() {
+                toggleUtjPaymentType($(this).val());
+            });
+            $('#label_utj_lunas').on('click', function(e) {
+                e.preventDefault();
+                toggleUtjPaymentType('lunas');
+            });
+            $('#label_utj_cicilan').on('click', function(e) {
+                e.preventDefault();
+                toggleUtjPaymentType('cicilan');
             });
 
             // File upload handler UTJ
@@ -4524,6 +4872,8 @@
                 let customerId = $('#select_customer_id').val();
                 let purchaseType = $('#select_purchase_type').val();
                 let unitId = $('#modalCustomer').attr('data-unit-id') || $('#customer_unit_id').val();
+                let nominalUtj = $('#nominal_utj').val().replace(/\./g, '').replace(/,/g, '').trim();
+                let utjPaymentType = $('input[name="utj_payment_type"]:checked').val() || 'lunas';
                 let bookingFee = $('#booking_fee').val().replace(/\./g, '').replace(/,/g, '').trim();
                 let buktiTransfer = $('#bukti_transfer')[0].files[0];
                 let ijb = $('#ijb').val().replace(/\./g, '').replace(/,/g, '').trim();
@@ -4562,14 +4912,91 @@
                     });
                     return;
                 }
-                if (!bookingFee || parseInt(bookingFee) <= 0) {
+                if (!nominalUtj || parseInt(nominalUtj) <= 0) {
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Booking Fee Kosong',
-                        text: 'Nominal booking fee harus diisi dan lebih dari 0!'
+                        title: 'Nominal UTJ Kosong',
+                        text: 'Total kesepakatan nominal UTJ harus diisi dan lebih dari 0!'
                     });
                     return;
                 }
+
+                let installments = [];
+                let parsedUtj = parseInt(nominalUtj);
+
+                if (utjPaymentType === 'cicilan') {
+                    if (!bookingFee || parseInt(bookingFee) <= 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Tanda Jadi Awal Kosong',
+                            text: 'Nominal bayar hari ini (tanda jadi awal booking) harus diisi dan lebih dari 0!'
+                        });
+                        return;
+                    }
+                    let parsedDp = parseInt(bookingFee);
+                    if (parsedDp >= parsedUtj) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Nominal Tidak Valid',
+                            text: 'Nominal bayar hari ini tidak boleh sama atau melebihi total UTJ jika memilih skema dicicil. Silakan pilih "Bayar Lunas Langsung" jika ingin lunas sekaligus.'
+                        });
+                        return;
+                    }
+                    let sisaUtj = parsedUtj - parsedDp;
+
+                    // Validasi baris cicilan
+                    let $instRows = $('#tbodyUtjInstallments tr');
+                    if ($instRows.length === 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Rencana Cicilan Belum Dibuat',
+                            text: 'Silakan klik "2x Cicil" atau "Tambah" untuk menyusun jadwal cicilan sisa UTJ!'
+                        });
+                        return;
+                    }
+
+                    let sumInst = 0;
+                    let hasInvalidRow = false;
+                    $instRows.each(function(idx) {
+                        let amt = parseRupiahVal($(this).find('.inst-amount').val());
+                        let dt = $(this).find('.inst-date').val();
+                        if (!amt || amt <= 0 || !dt) {
+                            hasInvalidRow = true;
+                            return false;
+                        }
+                        sumInst += amt;
+                        installments.push({
+                            installment_number: idx + 1,
+                            nominal: amt,
+                            jatuh_tempo: dt
+                        });
+                    });
+
+                    if (hasInvalidRow) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Data Cicilan Belum Lengkap',
+                            text: 'Pastikan seluruh nominal dan tanggal jatuh tempo pada tiap baris cicilan sudah terisi dengan benar!'
+                        });
+                        return;
+                    }
+
+                    if (sumInst !== sisaUtj) {
+                        let diff = Math.abs(sisaUtj - sumInst);
+                        let msg = sumInst < sisaUtj 
+                            ? `Total rincian cicilan (Rp ${new Intl.NumberFormat('id-ID').format(sumInst)}) masih kurang Rp ${new Intl.NumberFormat('id-ID').format(diff)} dari sisa UTJ (Rp ${new Intl.NumberFormat('id-ID').format(sisaUtj)}).`
+                            : `Total rincian cicilan (Rp ${new Intl.NumberFormat('id-ID').format(sumInst)}) melebihi sisa UTJ (Rp ${new Intl.NumberFormat('id-ID').format(sisaUtj)}) sebesar Rp ${new Intl.NumberFormat('id-ID').format(diff)}.`;
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Jumlah Cicilan Tidak Sesuai',
+                            text: msg
+                        });
+                        return;
+                    }
+                } else {
+                    bookingFee = nominalUtj;
+                }
+
                 if (!buktiTransfer) {
                     Swal.fire({
                         icon: 'warning',
@@ -4619,8 +5046,13 @@
                 formData.append('_token', '{{ csrf_token() }}');
                 formData.append('customer_id', customerId);
                 formData.append('purchase_type', purchaseType);
+                formData.append('utj', nominalUtj);
+                formData.append('utj_payment_type', utjPaymentType);
                 formData.append('booking_fee', bookingFee);
                 formData.append('bukti_transfer', buktiTransfer);
+                if (installments.length > 0) {
+                    formData.append('installments', JSON.stringify(installments));
+                }
                 if (ijb) {
                     formData.append('ijb', ijb);
                 }

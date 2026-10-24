@@ -34,6 +34,7 @@ class SellUnitController extends Controller
             'activeBooking',
             'activeBooking.sales',
             'activeBooking.customer',
+            'activeBooking.utjInstallments',
         ]);
         // Posisi Staff Marketing (sales)
         $isStaffMarketing = false;
@@ -301,6 +302,7 @@ class SellUnitController extends Controller
             'activeBooking',
             'activeBooking.sales',
             'activeBooking.customer',
+            'activeBooking.utjInstallments',
         ])->get();
 
         // set warna mandiri khusus divisi marketing (fokus: tersedia bentuk rumah, booking, sold out, draft)
@@ -378,14 +380,17 @@ class SellUnitController extends Controller
     public function setCustomer(Request $request, $unitId)
     {
         $request->validate([
-            'customer_id'   => 'required|exists:customers,id',
-            'purchase_type' => 'required|in:cash,kpr,cash_tempo',
-            'booking_fee'   => 'required',
-            'bukti_transfer' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'sales_id'      => 'nullable|exists:employees,id',
-            'agent_fee'     => 'nullable',
-            'ijb'           => 'nullable',
+            'customer_id'        => 'required|exists:customers,id',
+            'purchase_type'      => 'required|in:cash,kpr,cash_tempo',
+            'utj'                => 'nullable',
+            'utj_payment_type'   => 'nullable|in:lunas,cicilan',
+            'booking_fee'        => 'required',
+            'bukti_transfer'     => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'sales_id'           => 'nullable|exists:employees,id',
+            'agent_fee'          => 'nullable',
+            'ijb'                => 'nullable',
             'bukti_transfer_ijb' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'installments'       => 'nullable',
         ]);
 
         $unit = LandBankUnit::findOrFail($unitId);
@@ -411,9 +416,32 @@ class SellUnitController extends Controller
         }
 
         // Bersihkan format rupiah
-        $bookingFee = str_replace(['.', ',', ' '], '', $request->booking_fee);
+        $utjTotal = $request->filled('utj')
+            ? (float) str_replace(['.', ',', ' '], '', $request->utj)
+            : (float) str_replace(['.', ',', ' '], '', $request->booking_fee);
+
+        $utjPaymentType = $request->input('utj_payment_type', 'lunas');
+
+        if ($utjPaymentType === 'cicilan') {
+            $bookingFee = (float) str_replace(['.', ',', ' '], '', $request->booking_fee);
+            $sisaUtj = max(0, $utjTotal - $bookingFee);
+        } else {
+            $bookingFee = $utjTotal;
+            $sisaUtj = 0;
+        }
+
         $agentFee = $request->filled('agent_fee') ? (float) str_replace(['.', ',', ' '], '', $request->agent_fee) : 0;
         $ijb = $request->filled('ijb') ? (float) str_replace(['.', ',', ' '], '', $request->ijb) : 0;
+
+        $installmentsData = [];
+        if ($utjPaymentType === 'cicilan' && $request->filled('installments')) {
+            $raw = $request->input('installments');
+            if (is_string($raw)) {
+                $installmentsData = json_decode($raw, true) ?: [];
+            } elseif (is_array($raw)) {
+                $installmentsData = $raw;
+            }
+        }
 
         // Upload file bukti transfer UTJ
         $filePath = null;
@@ -454,7 +482,7 @@ class SellUnitController extends Controller
             }
         }
 
-        DB::transaction(function () use ($request, $unit, $bookingFee, $agentFee, $ijb, $filePath, $ijbFilePath, $user, $isStaffMarketing) {
+        DB::transaction(function () use ($request, $unit, $utjTotal, $bookingFee, $utjPaymentType, $sisaUtj, $installmentsData, $agentFee, $ijb, $filePath, $ijbFilePath, $user, $isStaffMarketing) {
             $booking = Booking::where('unit_id', $unit->id)
                 ->where('status', 'active')
                 ->first();
@@ -471,7 +499,9 @@ class SellUnitController extends Controller
                     'booking_date'       => now(),
                     'purchase_type'      => $request->purchase_type,
                     'booking_fee'        => $bookingFee,
-                    'utj'                => $bookingFee,
+                    'utj'                => $utjTotal,
+                    'utj_payment_type'   => $utjPaymentType,
+                    'sisa_utj'           => $sisaUtj,
                     'ijb'                => $ijb ?: ($booking->ijb ?? 0),
                     'bukti_transfer_ijb' => $ijbFilePath ?: ($booking->bukti_transfer_ijb ?? null),
                     'sales_id'           => $finalSalesId,
@@ -489,11 +519,34 @@ class SellUnitController extends Controller
                     'booking_date'       => now(),
                     'purchase_type'      => $request->purchase_type,
                     'booking_fee'        => $bookingFee,
-                    'utj'                => $bookingFee,
+                    'utj'                => $utjTotal,
+                    'utj_payment_type'   => $utjPaymentType,
+                    'sisa_utj'           => $sisaUtj,
                     'ijb'                => $ijb,
                     'bukti_transfer_ijb' => $ijbFilePath,
                     'status'             => 'active',
                 ]);
+            }
+
+            // Sinkronkan rincian jadwal cicilan sisa UTJ
+            $booking->utjInstallments()->delete();
+            if ($utjPaymentType === 'cicilan' && !empty($installmentsData)) {
+                $num = 1;
+                foreach ($installmentsData as $item) {
+                    $itemNominal = (float) str_replace(['.', ',', ' '], '', $item['nominal'] ?? $item['amount'] ?? 0);
+                    $itemDueDate = $item['jatuh_tempo'] ?? $item['due_date'] ?? null;
+                    if ($itemNominal > 0) {
+                        \App\Models\BookingUtjInstallment::create([
+                            'booking_id'         => $booking->id,
+                            'installment_number' => $num,
+                            'amount'             => $itemNominal,
+                            'due_date'           => $itemDueDate,
+                            'status'             => 'pending',
+                            'notes'              => 'Rencana Cicilan UTJ Ke-' . $num,
+                        ]);
+                        $num++;
+                    }
+                }
             }
 
             Payment::create([
@@ -503,8 +556,13 @@ class SellUnitController extends Controller
                 'payment_date'     => now(),
                 'method'           => 'transfer',
                 'reference_number' => $filePath,
-                'notes'            => 'Bukti transfer Uang Tanda Jadi (UTJ) - Tidak mengurangi harga jual unit',
+                'notes'            => $utjPaymentType === 'cicilan'
+                                      ? 'Bukti transfer Uang Tanda Jadi (UTJ) - Pembayaran Awal Booking (Sisa Rp ' . number_format($sisaUtj, 0, ',', '.') . ' dicicil)'
+                                      : 'Bukti transfer Uang Tanda Jadi (UTJ) - Lunas',
             ]);
+
+            // OTOMATIS BUATKAN / SINKRONKAN INVOICE UTJ DI KEUANGAN
+            Invoice::createOrUpdateFromBookingUtj($booking, $utjTotal, $bookingFee, $filePath);
 
             if ($ijb > 0) {
                 Payment::create([

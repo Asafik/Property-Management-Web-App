@@ -35,13 +35,14 @@ class InvoiceMasterController extends Controller
     {
         $this->authorizeFinanceAccess();
 
-        // Auto sync PraLandbank and Booking IJB records if invoice table is empty or on load
+        // Auto sync PraLandbank, Booking UTJ, and Booking IJB records if invoice table is empty or on load
         if (Invoice::count() === 0) {
             $this->syncPraLandbanksInternal();
+            $this->syncBookingsUtjInternal();
             $this->syncBookingsIjbInternal();
         }
 
-        $query = Invoice::with(['praLandbank', 'booking.unit.landBank', 'booking.customer', 'creator']);
+        $query = Invoice::with(['praLandbank', 'booking.unit.landBank', 'booking.customer', 'booking.utjInstallments', 'creator']);
 
         // Search Keyword
         if ($request->filled('search')) {
@@ -101,6 +102,7 @@ class InvoiceMasterController extends Controller
             'count_partial'        => $allMatching->where('payment_status', 'partial')->count(),
             'count_pending'        => $allMatching->where('payment_status', 'pending')->count(),
             'count_pra_landbank'   => $allMatching->where('category', 'pra_landbank')->count(),
+            'count_utj'            => $allMatching->where('category', 'utj')->count(),
             'count_ijb'            => $allMatching->where('category', 'ijb')->count(),
             'count_ajb'            => $allMatching->where('category', 'ajb')->count(),
         ];
@@ -125,12 +127,15 @@ class InvoiceMasterController extends Controller
                 'booking.customer',
                 'booking.sales',
                 'booking.akad',
+                'booking.utjInstallments',
                 'creator'
             ])->findOrFail($id);
 
             $printUrl = null;
             if ($invoice->pra_landbank_id) {
                 $printUrl = route('pra-landbank.invoice', $invoice->pra_landbank_id);
+            } elseif ($invoice->category === 'utj' && $invoice->booking_id) {
+                $printUrl = route('cetak.kuitansi_utj', $invoice->booking_id);
             } elseif ($invoice->booking_id) {
                 $printUrl = route('dashboard.cetak.invoice.cash.pdf', $invoice->booking_id);
             }
@@ -309,12 +314,13 @@ class InvoiceMasterController extends Controller
     {
         try {
             $count = $this->syncPraLandbanksInternal();
+            $countUtj = $this->syncBookingsUtjInternal();
             $countIjb = $this->syncBookingsIjbInternal();
             $countAjb = $this->syncBookingsAjbInternal();
-            $total = $count + $countIjb + $countAjb;
+            $total = $count + $countUtj + $countIjb + $countAjb;
             return response()->json([
                 'success' => true,
-                'message' => "Sinkronisasi berhasil! {$count} Pra Land Bank, {$countIjb} IJB Unit, dan {$countAjb} AJB Notaris telah sinkron ke Master Invoice database.",
+                'message' => "Sinkronisasi berhasil! {$count} Pra Land Bank, {$countUtj} UTJ Booking, {$countIjb} IJB Unit, dan {$countAjb} AJB Notaris telah sinkron ke Master Invoice database.",
                 'count'   => $total
             ]);
         } catch (\Exception $e) {
@@ -333,6 +339,27 @@ class InvoiceMasterController extends Controller
 
         foreach ($lands as $land) {
             Invoice::syncFromPraLandbank($land);
+            $synced++;
+        }
+
+        return $synced;
+    }
+
+    /**
+     * Internal helper to sync Booking UTJ
+     */
+    private function syncBookingsUtjInternal(): int
+    {
+        $bookings = Booking::where(function($q) {
+            $q->whereNotNull('utj')->where('utj', '>', 0)
+              ->orWhere(function($sub) {
+                  $sub->whereNotNull('booking_fee')->where('booking_fee', '>', 0);
+              });
+        })->get();
+        $synced = 0;
+
+        foreach ($bookings as $b) {
+            Invoice::createOrUpdateFromBookingUtj($b);
             $synced++;
         }
 

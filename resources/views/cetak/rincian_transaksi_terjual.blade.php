@@ -523,8 +523,41 @@
                 <tr>
                     <td class="td-label">Uang Tanda Jadi (UTJ / Booking Fee)</td>
                     <td class="td-colon">:</td>
-                    <td class="td-value">Rp {{ number_format($utjAmount, 0, ',', '.') }}</td>
+                    <td class="td-value">
+                        Rp {{ number_format($utjAmount, 0, ',', '.') }}
+                        @if($booking->utj_payment_type === 'cicilan' && ($booking->sisa_utj ?? 0) > 0)
+                            <span style="font-size: 8.5pt; color: #d97706; font-weight: bold; margin-left: 6px;">(Skema Dicicil: Awal Rp {{ number_format($booking->booking_fee ?? 0, 0, ',', '.') }}, Sisa Rp {{ number_format($booking->sisa_utj ?? 0, 0, ',', '.') }})</span>
+                        @endif
+                    </td>
                 </tr>
+                @if($booking->utj_payment_type === 'cicilan' && $booking->utjInstallments && $booking->utjInstallments->isNotEmpty())
+                <tr>
+                    <td class="td-label" style="vertical-align: top; padding-top: 4px;">Jadwal Cicilan Sisa UTJ</td>
+                    <td class="td-colon" style="vertical-align: top; padding-top: 4px;">:</td>
+                    <td class="td-value" style="padding-top: 4px; padding-bottom: 6px;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 8pt; border: 1px solid #cbd5e1;">
+                            <tr style="background-color: #f1f5f9; font-weight: bold;">
+                                <th style="padding: 2.5px 5px; border: 1px solid #cbd5e1; width: 22%;">Tahap</th>
+                                <th style="padding: 2.5px 5px; border: 1px solid #cbd5e1; width: 33%;">Jatuh Tempo</th>
+                                <th style="padding: 2.5px 5px; border: 1px solid #cbd5e1; width: 25%; text-align: right;">Nominal</th>
+                                <th style="padding: 2.5px 5px; border: 1px solid #cbd5e1; width: 20%; text-align: center;">Status</th>
+                            </tr>
+                            @foreach($booking->utjInstallments as $inst)
+                            <tr>
+                                <td style="padding: 2.5px 5px; border: 1px solid #cbd5e1;">Cicilan Ke-{{ $inst->installment_number }}</td>
+                                <td style="padding: 2.5px 5px; border: 1px solid #cbd5e1;">{{ $inst->due_date ? \Carbon\Carbon::parse($inst->due_date)->translatedFormat('d F Y') : '-' }}</td>
+                                <td style="padding: 2.5px 5px; border: 1px solid #cbd5e1; text-align: right; font-weight: bold;">Rp {{ number_format($inst->amount, 0, ',', '.') }}</td>
+                                <td style="padding: 2.5px 5px; border: 1px solid #cbd5e1; text-align: center;">
+                                    <span style="font-weight: bold; color: {{ $inst->status === 'paid' ? '#059669' : '#d97706' }};">
+                                        {{ $inst->status === 'paid' ? 'LUNAS' : 'PENDING' }}
+                                    </span>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </table>
+                    </td>
+                </tr>
+                @endif
                 @if($purchaseType == 'kpr' && $kpr)
                     <tr>
                         <td class="td-label">Uang Muka / DP (Down Payment)</td>

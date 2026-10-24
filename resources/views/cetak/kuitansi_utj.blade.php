@@ -410,7 +410,7 @@
     <div class="kuitansi-container">
         @if(!isset($pdf) || !$pdf)
         <!-- WATERMARK WEB -->
-        <div class="watermark-bg">LUNAS - UTJ</div>
+        <div class="watermark-bg">{{ ($booking->utj_payment_type === 'cicilan' && ($booking->sisa_utj ?? 0) > 0) ? 'UTJ - CICILAN' : 'LUNAS - UTJ' }}</div>
         @endif
 
         <div class="content-wrap">
@@ -434,7 +434,13 @@
                 <div class="doc-title">Kuitansi Tanda Terima Pembayaran UTJ</div>
                 <div class="doc-number">Nomor: {{ $kuitansiNumber }}</div>
                 <div>
-                    <span class="stamp-lunas">LUNAS / TERVERIFIKASI</span>
+                    @if($booking->utj_payment_type === 'cicilan' && ($booking->sisa_utj ?? 0) > 0)
+                        <span class="stamp-lunas" style="border-color: #d97706; color: #b45309; background-color: #fffbeb;">
+                            TERVERIFIKASI (SKEMA CICILAN)
+                        </span>
+                    @else
+                        <span class="stamp-lunas">LUNAS / TERVERIFIKASI</span>
+                    @endif
                 </div>
             </div>
 
@@ -479,6 +485,32 @@
             </table>
 
             <!-- BOX JUMLAH UANG & TERBILANG (PURE TABLE) -->
+            @if($booking->utj_payment_type === 'cicilan' && ($booking->sisa_utj ?? 0) > 0)
+            <table class="amount-box-table" style="border-color: #d97706; background-color: #fffdf5;">
+                <tr>
+                    <td style="width: 52%; font-size: 9.5pt; font-weight: bold; text-transform: uppercase; color: #92400e;">
+                        Tanda Jadi Awal Diterima Hari Ini :
+                    </td>
+                    <td style="width: 48%; font-size: 13.5pt; font-weight: bold; color: #b45309; text-align: right;">
+                        Rp {{ number_format($nominalDiterima ?? $nominalUtj, 0, ',', '.') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size: 8.5pt; color: #78350f; border-top: 1px dashed #fcd34d; padding-top: 3px; padding-bottom: 3px;">
+                        <strong>Total Kesepakatan UTJ:</strong> Rp {{ number_format($booking->utj ?? $nominalUtj, 0, ',', '.') }} &nbsp;&bull;&nbsp; 
+                        <strong>Sisa UTJ yang Dicicil:</strong> <span style="color: #dc2626; font-weight: bold;">Rp {{ number_format($booking->sisa_utj ?? 0, 0, ',', '.') }}</span>
+                        @if($booking->utjInstallments && $booking->utjInstallments->isNotEmpty())
+                            ({{ $booking->utjInstallments->count() }}x Tahap Angsuran)
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="font-size: 8.5pt; font-style: italic; color: #78350f; border-top: 1px solid #fef3c7; padding-top: 3px; padding-bottom: 5px;">
+                        <strong>Terbilang (Nominal Diterima):</strong> # {{ ucwords(trim($terbilang)) }} Rupiah #
+                    </td>
+                </tr>
+            </table>
+            @else
             <table class="amount-box-table">
                 <tr>
                     <td style="width: 50%; font-size: 10pt; font-weight: bold; text-transform: uppercase; color: #004b93;">
@@ -494,6 +526,7 @@
                     </td>
                 </tr>
             </table>
+            @endif
 
             <!-- DETAIL UNIT KAVLING -->
             <table class="unit-info-table">
@@ -530,14 +563,57 @@
                 </tbody>
             </table>
 
+            @if($booking->utj_payment_type === 'cicilan' && $booking->utjInstallments && $booking->utjInstallments->isNotEmpty())
+            <!-- RINCIAN JADWAL CICILAN SISA UTJ (DATA KEUANGAN & LAMPIRAN IJB) -->
+            <table class="unit-info-table" style="margin-bottom: 8px;">
+                <thead>
+                    <tr>
+                        <th colspan="4" style="background-color: #fef3c7; color: #92400e; font-weight: bold; font-size: 8.5pt;">
+                            Rincian Kesepakatan Jadwal Cicilan Sisa UTJ (Data Keuangan &amp; Lampiran IJB)
+                        </th>
+                    </tr>
+                    <tr style="background-color: #f8fafc; font-size: 8pt; text-transform: uppercase;">
+                        <th style="width: 18%; text-align: center;">Tahap</th>
+                        <th style="width: 32%;">Tanggal Jatuh Tempo</th>
+                        <th style="width: 28%; text-align: right;">Nominal Cicilan</th>
+                        <th style="width: 22%; text-align: center;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($booking->utjInstallments as $inst)
+                    <tr>
+                        <td style="text-align: center; font-weight: bold;">Cicilan Ke-{{ $inst->installment_number }}</td>
+                        <td>{{ $inst->due_date ? \Carbon\Carbon::parse($inst->due_date)->translatedFormat('d F Y') : '-' }}</td>
+                        <td style="text-align: right; font-weight: bold;">Rp {{ number_format($inst->amount, 0, ',', '.') }}</td>
+                        <td style="text-align: center;">
+                            @if($inst->status === 'paid')
+                                <span style="color: #059669; font-weight: bold; font-size: 7.8pt;">LUNAS</span>
+                            @else
+                                <span style="color: #d97706; font-weight: bold; font-size: 7.8pt;">BELUM LUNAS</span>
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                    <tr style="background-color: #f8fafc; font-weight: bold; font-size: 8.5pt;">
+                        <td colspan="2" style="text-align: right;">Total Sisa UTJ yang Dicicil :</td>
+                        <td style="text-align: right; color: #dc2626;">Rp {{ number_format($booking->utjInstallments->sum('amount'), 0, ',', '.') }}</td>
+                        <td style="text-align: center; font-size: 7.5pt; color: #64748b;">(Wajib Lunas s/d IJB)</td>
+                    </tr>
+                </tbody>
+            </table>
+            @endif
+
             <!-- KETENTUAN SINGKAT UTJ -->
             <table class="notes-table">
                 <tr>
                     <td>
                         <div style="font-weight: bold; color: #1f2937; margin-bottom: 2px; text-transform: uppercase; font-size: 8pt;">Ketentuan &amp; Catatan Resmi Uang Tanda Jadi (UTJ):</div>
-                        <ol style="margin-left: 14px; font-size: 7.8pt; line-height: 1.35; color: #4b5563; padding-left: 0;">
+                        <ol style="margin-left: 14px; font-size: 7.6pt; line-height: 1.35; color: #4b5563; padding-left: 0;">
                             <li>Kuitansi ini merupakan bukti sah penerimaan Uang Tanda Jadi (UTJ) / Booking Fee pemesanan unit kavling.</li>
                             <li>Uang Tanda Jadi (UTJ) berfungsi sebagai tanda keseriusan pemesanan dan penguncian unit kavling agar tidak ditawarkan kepada pihak lain selama proses administrasi/pemberkasan berlangsung.</li>
+                            @if($booking->utj_payment_type === 'cicilan' && ($booking->sisa_utj ?? 0) > 0)
+                            <li>Untuk pemesanan dengan skema cicilan UTJ, sisa kewajiban sebesar <strong>Rp {{ number_format($booking->sisa_utj, 0, ',', '.') }}</strong> wajib dilunasi sesuai jadwal rincian tahapan di atas selambat-lambatnya pada saat penandatanganan Ikatan Jual Beli (IJB).</li>
+                            @endif
                             <li>Nominal Uang Tanda Jadi (UTJ) tidak mengurangi total harga jual unit properti.</li>
                             <li>Pemberkasan dan kelengkapan dokumen persyaratan wajib diserahkan dalam jangka waktu sesuai ketentuan SOP Developer.</li>
                         </ol>
@@ -545,8 +621,26 @@
                 </tr>
             </table>
 
+            <!-- TANDA TANGAN PARA PIHAK -->
+            <table style="width: 100%; margin-top: 12px; margin-bottom: 8px; border-collapse: collapse; table-layout: fixed; page-break-inside: avoid;">
+                <tr>
+                    <td style="width: 50%; text-align: center; vertical-align: top; font-size: 8.5pt; padding: 2px 10px;">
+                        <div style="font-weight: 500; color: #475569;">Penyetor / Pembeli Kavling,</div>
+                        <div style="height: 48px;"></div>
+                        <div style="font-weight: bold; text-decoration: underline; color: #0f172a;">{{ $booking->customer->full_name ?? ($booking->customer->name ?? 'Konsumen') }}</div>
+                        <div style="font-size: 7.5pt; color: #64748b;">(Tanda Tangan &amp; Nama Terang)</div>
+                    </td>
+                    <td style="width: 50%; text-align: center; vertical-align: top; font-size: 8.5pt; padding: 2px 10px;">
+                        <div style="font-weight: 500; color: #475569;">Jember, {{ \Carbon\Carbon::parse($booking->booking_date ?? now())->translatedFormat('d F Y') }}<br>Penerima / Kasir Keuangan,</div>
+                        <div style="height: 36px;"></div>
+                        <div style="font-weight: bold; text-decoration: underline; color: #0f172a;">PT. GRAHA CIPTA SEJAHTERA</div>
+                        <div style="font-size: 7.5pt; color: #64748b;">(Bagian Keuangan &amp; Administrasi)</div>
+                    </td>
+                </tr>
+            </table>
+
             <!-- FOOTER ELEKTRONIK RESMI -->
-            <div style="margin-top: 14px; text-align: center; font-size: 7.5pt; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 6px; page-break-inside: avoid;">
+            <div style="margin-top: 10px; text-align: center; font-size: 7.5pt; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 6px; page-break-inside: avoid;">
                 <p>Kuitansi ini sah dan diterbitkan secara resmi melalui Sistem Informasi Manajemen Properti PT. Graha Cipta Sejahtera</p>
                 <p>Waktu Cetak Dokumen: {{ date('d/m/Y H:i:s') }} WIB &bull; Kode Booking: {{ $booking->booking_code ?? '-' }}</p>
             </div>

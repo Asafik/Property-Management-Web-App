@@ -386,6 +386,7 @@
                                                 <select class="form-select" name="category" onchange="document.getElementById('filterForm').submit()" style="height: 38px;">
                                                     <option value="all" {{ request('category') == 'all' ? 'selected' : '' }}>Semua Kategori</option>
                                                     <option value="pra_landbank" {{ request('category') == 'pra_landbank' ? 'selected' : '' }}>Pra Land Bank (Lahan)</option>
+                                                    <option value="utj" {{ request('category') == 'utj' ? 'selected' : '' }}>Uang Tanda Jadi (UTJ)</option>
                                                     <option value="ijb" {{ request('category') == 'ijb' ? 'selected' : '' }}>Ikatan Jual Beli (IJB)</option>
                                                     <option value="ajb" {{ request('category') == 'ajb' ? 'selected' : '' }}>Akta Jual Beli (AJB Notaris)</option>
                                                     <option value="unit_cash" {{ request('category') == 'unit_cash' ? 'selected' : '' }}>Unit Cash</option>
@@ -451,6 +452,7 @@
                                             <select class="form-select" name="category" onchange="document.getElementById('filterFormMobile').submit()" style="height: 38px;">
                                                 <option value="all" {{ request('category') == 'all' ? 'selected' : '' }}>Semua Kategori</option>
                                                 <option value="pra_landbank" {{ request('category') == 'pra_landbank' ? 'selected' : '' }}>Pra Land Bank (Lahan)</option>
+                                                <option value="utj" {{ request('category') == 'utj' ? 'selected' : '' }}>Uang Tanda Jadi (UTJ)</option>
                                                 <option value="ijb" {{ request('category') == 'ijb' ? 'selected' : '' }}>Ikatan Jual Beli (IJB)</option>
                                                 <option value="ajb" {{ request('category') == 'ajb' ? 'selected' : '' }}>Akta Jual Beli (AJB Notaris)</option>
                                                 <option value="unit_cash" {{ request('category') == 'unit_cash' ? 'selected' : '' }}>Unit Cash</option>
@@ -530,6 +532,10 @@
                                                 @if($inv->category === 'pra_landbank')
                                                     <span class="badge-cat badge-cat-pra">
                                                         <i class="mdi mdi-map-clock"></i> Pra Land Bank
+                                                    </span>
+                                                @elseif($inv->category === 'utj')
+                                                    <span class="badge-cat" style="background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a;">
+                                                        <i class="mdi mdi-bookmark-check"></i> UTJ Booking
                                                     </span>
                                                 @elseif($inv->category === 'ijb')
                                                     <span class="badge-cat" style="background-color: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe;">
@@ -1198,14 +1204,58 @@
                                             <span class="fw-bold text-dark fs-6">${inv.booking.unit.unit_name || ('Unit ' + (inv.booking.unit.unit_code || (inv.booking.unit.block + '-' + inv.booking.unit.unit_number)))}</span>
                                             <span class="text-muted ms-2">&bull; Proyek: <strong>${(inv.booking.unit.land_bank && inv.booking.unit.land_bank.name) ? inv.booking.unit.land_bank.name : '-'}</strong></span>
                                         </div>
-                                        <div>
+                                        <div class="d-flex gap-1 flex-wrap">
+                                            ${inv.category === 'utj' && inv.booking_id ? `
+                                                <a href="{{ url('dashboard-cetak-kuitansi-utj') }}/${inv.booking_id}" target="_blank" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 py-1 px-2.5" style="border-radius: 6px; font-weight: 600;">
+                                                    <i class="mdi mdi-printer"></i> Cetak Kuitansi UTJ
+                                                </a>
+                                            ` : ''}
                                             ${inv.file_path ? `
                                                 <a href="{{ asset('uploads') }}/${inv.file_path}" target="_blank" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1 py-1 px-2.5" style="border-radius: 6px; font-weight: 600;">
-                                                    <i class="${inv.category === 'ajb' ? 'mdi mdi-file-certificate' : 'mdi mdi-receipt-text-outline'}"></i> ${inv.category === 'ajb' ? 'Lihat Dokumen Akta AJB' : 'Lihat Bukti Transfer IJB'}
+                                                    <i class="${inv.category === 'ajb' ? 'mdi mdi-file-certificate' : 'mdi mdi-receipt-text-outline'}"></i> ${inv.category === 'ajb' ? 'Lihat Dokumen Akta AJB' : (inv.category === 'utj' ? 'Lihat Bukti Transfer' : 'Lihat Bukti Transfer IJB')}
                                                 </a>
                                             ` : ''}
                                         </div>
                                     </div>
+
+                                    ${(inv.category === 'utj' && inv.booking && inv.booking.utj_installments && inv.booking.utj_installments.length > 0) ? `
+                                        <div class="mt-3 pt-2 border-top">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="fw-bold text-dark" style="font-size: 12.5px;">
+                                                    <i class="mdi mdi-calendar-clock text-warning me-1"></i> Rincian Jadwal Cicilan Sisa UTJ (${inv.booking.utj_installments.length} Tahapan)
+                                                </span>
+                                                <span class="badge" style="background-color: #fef3c7; color: #92400e; font-size: 10px; border: 1px solid #fde68a;">
+                                                    Sinkron Keuangan &amp; IJB
+                                                </span>
+                                            </div>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-bordered mb-0" style="font-size: 12px; background-color: #ffffff;">
+                                                    <thead class="bg-light">
+                                                        <tr>
+                                                            <th class="text-center" width="18%">Tahap</th>
+                                                            <th width="32%">Jatuh Tempo</th>
+                                                            <th class="text-end" width="28%">Nominal Cicilan</th>
+                                                            <th class="text-center" width="22%">Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        ${inv.booking.utj_installments.map(item => `
+                                                            <tr>
+                                                                <td class="text-center fw-bold">Cicilan Ke-${item.installment_number}</td>
+                                                                <td>${formatDateIndo(item.due_date)}</td>
+                                                                <td class="text-end fw-bold text-dark">${formatRupiahNumber(item.amount)}</td>
+                                                                <td class="text-center">
+                                                                    <span class="badge ${item.status === 'paid' ? 'bg-success' : 'bg-warning'} text-white" style="font-size: 10px;">
+                                                                        ${item.status === 'paid' ? 'LUNAS' : 'BELUM LUNAS'}
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                        `).join('')}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    ` : ''}
 
                                     ${inv.category === 'ajb' ? `
                                         <div class="row g-2 mt-2 pt-2 border-top" style="font-size: 12.5px;">

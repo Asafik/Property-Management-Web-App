@@ -116,6 +116,85 @@ class Invoice extends Model
     }
 
     /**
+     * Helper to automatically sync/generate Invoice from a Booking UTJ
+     */
+    public static function createOrUpdateFromBookingUtj(Booking $booking, $utjTotal = null, $paidNow = null, $proofPath = null): ?self
+    {
+        $total = (float)($utjTotal !== null ? $utjTotal : ($booking->utj ?: ($booking->booking_fee ?? 0)));
+        if ($total <= 0) {
+            return null;
+        }
+
+        $booking->loadMissing(['customer', 'unit.landBank', 'sales', 'utjInstallments', 'payments']);
+        $customer = $booking->customer;
+        $unit = $booking->unit;
+        $projectName = $unit->landBank->name ?? 'Proyek';
+        $unitLabel = $unit ? ($unit->unit_code ?: ($unit->block . '-' . $unit->unit_number)) : 'Unit';
+
+        $year = $booking->booking_date ? \Carbon\Carbon::parse($booking->booking_date)->format('Y') : date('Y');
+        $invoiceNumber = 'INV-UTJ/' . $year . '/' . str_pad($booking->id, 5, '0', STR_PAD_LEFT);
+
+        $recipientName = $customer->full_name ?? ($customer->name ?? 'Customer');
+        $recipientContact = $customer->phone ?? ($customer->no_hp ?? ($customer->whatsapp ?? null));
+
+        $paid = 0;
+        if ($paidNow !== null) {
+            $paid = (float)$paidNow;
+        } else {
+            $paid = (float)$booking->booking_fee;
+            if ($booking->relationLoaded('utjInstallments')) {
+                $paid += (float)$booking->utjInstallments->where('status', 'paid')->sum('amount');
+            }
+        }
+
+        $remaining = max(0, $total - $paid);
+
+        $status = 'pending';
+        if ($paid >= $total && $total > 0) {
+            $status = 'lunas';
+        } elseif ($paid > 0) {
+            $status = 'partial';
+        }
+
+        $filePath = $proofPath ?: optional($booking->payments->where('type', 'booking_fee')->first())->reference_number;
+
+        $notes = 'Invoice Uang Tanda Jadi (UTJ) unit ' . $unitLabel . ' (' . $projectName . ')';
+        if ($booking->utj_payment_type === 'cicilan') {
+            $countInstallment = $booking->relationLoaded('utjInstallments') ? $booking->utjInstallments->count() : 0;
+            if ($countInstallment > 0) {
+                $notes .= ' dengan skema dicicil ' . $countInstallment . 'x.';
+            } else {
+                $notes .= ' dengan skema dicicil.';
+            }
+        }
+
+        $invoice = self::updateOrCreate(
+            [
+                'booking_id' => $booking->id,
+                'category'   => 'utj',
+            ],
+            [
+                'invoice_number'   => $invoiceNumber,
+                'title'            => 'Uang Tanda Jadi (UTJ) - ' . $unitLabel . ' (' . $projectName . ')',
+                'recipient_name'   => $recipientName,
+                'recipient_contact'=> $recipientContact,
+                'total_amount'     => $total,
+                'paid_amount'      => $paid,
+                'remaining_amount' => $remaining,
+                'payment_method'   => 'transfer',
+                'payment_status'   => $status,
+                'invoice_date'     => $booking->booking_date ? \Carbon\Carbon::parse($booking->booking_date)->toDateString() : now()->toDateString(),
+                'due_date'         => now()->addDays(14)->toDateString(),
+                'notes'            => $notes,
+                'file_path'        => $filePath,
+                'created_by'       => auth()->id() ?? ($booking->sales_id ?? null),
+            ]
+        );
+
+        return $invoice;
+    }
+
+    /**
      * Helper to automatically sync/generate Invoice from a Booking IJB
      */
     public static function createOrUpdateFromBookingIjb(Booking $booking, $ijbAmount = null, $proofPath = null): ?self

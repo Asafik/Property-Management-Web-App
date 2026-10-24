@@ -208,7 +208,8 @@ class SerahTerimaController extends Controller
             'serahTerima',
             'akad',
             'kprApplication.bank',
-            'payments'
+            'payments',
+            'utjInstallments'
         ])->findOrFail($bookingId);
 
         $unit = $booking->unit;
